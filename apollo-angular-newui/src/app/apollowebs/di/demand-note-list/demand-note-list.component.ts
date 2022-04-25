@@ -51,12 +51,12 @@ export class DemandNoteListComponent implements OnInit {
                 type: 'custom',
                 renderComponent: CurrencyFormatterComponent,
             },
-            paymentStatus: {
+            paymentStatusDesc: {
                 title: 'PAYMENT STATUS',
-                type: 'custom'
+                type: 'string'
             },
-            varField10: {
-                title: 'Status',
+            postingStatusDesc: {
+                title: 'SAGE Status',
                 type: 'string'
             }
         },

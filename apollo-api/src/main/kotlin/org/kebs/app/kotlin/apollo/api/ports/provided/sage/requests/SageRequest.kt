@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
-import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
+import org.kebs.app.kotlin.apollo.store.repo.BillSummary
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -20,10 +21,14 @@ class RequestItems {
     @JsonProperty("CFValue")
     var cfValue: BigDecimal? = null
 
+    @JsonProperty("DetailAmount")
+    var detailAmount: BigDecimal? = null
+
     companion object {
         fun fromEntity(item: CdDemandNoteItemsDetailsEntity): RequestItems {
             val itm = RequestItems().apply {
                 cfValue = item.cfvalue
+                detailAmount = item.amountPayable
             }
             try {
                 itm.rate = item.rate?.toDoubleOrNull()
@@ -71,6 +76,9 @@ class SageRequest {
     @JsonProperty("Courier")
     var courier: String? = null
 
+    @JsonProperty("BatchNo")
+    var billRefNumber: String? = null
+
     @JsonProperty("OtherInfo")
     var otherInfo: String? = null
 
@@ -117,23 +125,23 @@ class InvoiceRequestItems {
     var taxAmount: BigDecimal? = null
 
     companion object {
-        fun fromEntity(item: BillTransactionsEntity, accountNumber: String, accountDescription: String): InvoiceRequestItems {
+        fun fromEntity(item: BillSummary, accountDescription: String): InvoiceRequestItems {
             val itm = InvoiceRequestItems().apply {
-                amount = item.amount
-                taxAmount = BigDecimal.ZERO
-                taxable = 0
+                amount = item.getTotalAmount()
+                taxAmount = item.getTotalTax() ?: BigDecimal.ZERO
             }
-            itm.revenueAcc = accountNumber
+            itm.taxable = when {
+                itm.taxAmount != null && itm.taxAmount!! > BigDecimal.ZERO -> 1
+                else -> 0
+            }
+            itm.revenueAcc = item.getRevenueLine()
             itm.revenueAccDesc = accountDescription
-            if ((item.description?.length ?: 0) > 50) {
-                itm.revenueAcc = item.description?.substring(0, 49)
-            }
             return itm
         }
 
-        fun fromList(items: List<BillTransactionsEntity>, accountNumber: String, accountDescription: String): List<InvoiceRequestItems> {
+        fun fromList(items: List<BillSummary>, accountDescription: String): List<InvoiceRequestItems> {
             val dtos = mutableListOf<InvoiceRequestItems>()
-            items.forEach { dtos.add(fromEntity(it, accountNumber, accountDescription)) }
+            items.forEach { dtos.add(fromEntity(it, accountDescription)) }
             return dtos
         }
     }
@@ -147,11 +155,17 @@ class SageInvoiceRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     var documentDate: Timestamp? = null
 
-    @JsonProperty("InvoiceType")
+    @JsonProperty("ServiceType")
     var invoiceType: Int? = null
+
+    @JsonProperty("InvoiceType")
+    var serviceType: String? = null
 
     @JsonProperty("CurrencyCode")
     var currencyCode: String? = null
+
+    @JsonProperty("CustomerNumber")
+    var customerNumber: String? = null
 
     @JsonProperty("CustomerCode")
     var customerCode: String? = null
@@ -167,16 +181,18 @@ class SageInvoiceRequest {
 
 
     companion object {
-        fun fromEntity(dn: BillPayments): SageInvoiceRequest {
+        fun fromEntity(dn: BillPayments, corporate: CorporateCustomerAccounts): SageInvoiceRequest {
             val req = SageInvoiceRequest().apply {
                 batchNo = dn.billNumber
                 documentDate = dn.billDate
-                invoiceType = dn.billType ?: 1
+                invoiceType = 1 // 1- Invoice Note, 2- Debit note - Always 1
+                serviceType = dn.billServiceType ?: "DI"
                 currencyCode = dn.currencyCode
-                customerCode = dn.customerCode
-                customerName = dn.customerName
+                customerNumber = corporate.corporateIdentifier
+                customerCode = dn.customerCode ?: corporate.corporateCode
+                customerName = dn.customerName ?: corporate.corporateName
                 invoiceDesc = dn.billDescription
-                invoiceAmnt = dn.billAmount
+                invoiceAmnt = dn.totalAmount
             }
             return req
         }
