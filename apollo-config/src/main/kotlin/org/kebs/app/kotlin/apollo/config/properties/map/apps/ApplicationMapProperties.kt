@@ -991,6 +991,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.page.records}")
     val pageRecords: Int = 1
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.suspended}")
+    val suspended: Long? = null
+
     /**
      * TODO: Why do we need this
      */

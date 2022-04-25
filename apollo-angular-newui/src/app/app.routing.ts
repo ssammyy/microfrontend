@@ -176,6 +176,7 @@ import {UploadSacSummaryComponent} from "./apollowebs/standards-development/adop
 import {ViewSacSummaryComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component";
 import {ViewSacSummaryApprovedComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component";
 import {NwaTasksComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component";
+import {AdminBusinessManagementComponent} from "./apollowebs/admin/admin-business-management/admin-business-management.component";
 
 export const routes: Routes = [
     {
@@ -329,11 +330,22 @@ export const routes: Routes = [
 
         children: [{path: '', component: InvoiceDetailsComponent}]
     },
-    {
-        path: 'user_management', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
 
-        children: [{path: '', component: UsermanagementComponent}]
+    {
+        path: 'admin',
+        canActivate: [RouteGuard],
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: 'user_management',
+                component: UsermanagementComponent
+            },
+            {
+                path: 'business_management',
+                component: AdminBusinessManagementComponent
+            }
+
+        ]
     },
     {
         path: 'fmark/fMarkAllApp', component: AdminLayoutComponent,

@@ -36,11 +36,17 @@ export const ROUTES: RouteInfo[] = [
     },
 
     {
-        path: '/user_management',
+        path: '/admin',
         title: 'Admin',
-        type: 'link',
+        type: 'sub',
         icontype: 'dashboard',
-        privilege: ['SYSADMIN_VIEW']
+        collapse: 'admin',
+        privilege: ['SYSADMIN_VIEW'],
+        children: [
+            {path: 'user_management', title: 'User Management', ab: 'UM'},
+            {path: 'business_management', title: 'Business Management', ab: 'BM'},
+
+        ]
     },
 
     {
