@@ -10,7 +10,7 @@ import {ManageCorporateCustomerComponent} from "../manage-corporate-customer/man
     styleUrls: ['./view-corporate.component.css']
 })
 export class ViewCorporateComponent implements OnInit {
-    displayedColumns = ["billNumber", "invoiceNumber", "billAmount", "penaltyAmount", "totalAmount", "paymentDate", "paymentReceipts", "actions"]
+    displayedColumns = ["billNumber", "billReference", "invoiceNumber", "billAmount", "penaltyAmount", "totalAmount", "paymentDate", "paymentReceipts", "actions"]
 
     active: number = 0
     page = 0

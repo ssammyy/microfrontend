@@ -956,13 +956,15 @@ export class SmarkComponent implements OnInit {
                 icon: 'error'
             });
         } else {
+            this.SpinnerService.show();
+
             let data = this.form.value.permits;
             for (let i = 0; i < data.length; i++) {
                 const obj = data[i];
                 this.permit_id = obj.id
             }
 
-            const bar: PermitDto = { permitId: this.permit_id, permitIdBeingMigrated: id };
+            const bar: PermitDto = {permitId: this.permit_id, permitIdBeingMigrated: id};
 
 
 
@@ -971,7 +973,19 @@ export class SmarkComponent implements OnInit {
                 (response) => {
                     console.log(response);
                     this.SpinnerService.hide();
-                    // this.showToasterSuccess(response.httpStatus, `Successfully submitted SAC Summary`);
+
+                    swal.fire({
+                        title: 'Permit Updated Successfully! Proceed to renew permit.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    }).then(function() {
+                        location.reload(); // this is your location reload.
+                    });
+                    this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.allPermitDetails.permitDetails.id)});
+
                     // this.onClickSaveUploads(response.body.savedRowID)
                     // this.prepareSacSummaryFormGroup.reset();
                 },

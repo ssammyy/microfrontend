@@ -63,21 +63,21 @@
                 </box>
                 <imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
             </image>
-			<staticText>
-				<reportElement x="184" y="20" width="286" height="18" uuid="02d0061a-51ba-4e79-a291-921532af5414"/>
-				<textElement verticalAlignment="Middle">
-					<font size="11" isBold="false"/>
-				</textElement>
-				<text><![CDATA[STANDARDS ACT.CAP. 496 LAWS OF KENYA]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="183" y="-4" width="287" height="18" uuid="898b0506-29ab-469f-979d-035b83ad796d">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
+            <staticText>
+                <reportElement x="184" y="20" width="286" height="18" uuid="02d0061a-51ba-4e79-a291-921532af5414"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="11" isBold="false"/>
+                </textElement>
+                <text><![CDATA[STANDARDS ACT.CAP. 496 LAWS OF KENYA]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="183" y="-4" width="287" height="18" uuid="898b0506-29ab-469f-979d-035b83ad796d">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement verticalAlignment="Middle">
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
             </staticText>
             <staticText>
                 <reportElement mode="Opaque" x="1" y="69" width="552" height="29" backcolor="#D9E1F2"
@@ -87,8 +87,8 @@
                 <textElement textAlignment="Center">
                     <font fontName="Arial" size="16" isBold="true" isItalic="false" isUnderline="false"/>
                 </textElement>
-                <text>
-                    <![CDATA[MOTOR VEHICLE INSPECTION REQUEST (MVIR) FORM                                       ]]></text>
+                <text><![CDATA[
+                    MOTOR VEHICLE INSPECTION REQUEST (MVIR) FORM                                       ]]></text>
             </staticText>
             <staticText>
                 <reportElement style="TextStatic" x="325" y="45" width="56" height="20"
@@ -159,7 +159,7 @@
                 </textField>
             </frame>
         </band>
-	</title>
+    </title>
     <detail>
         <band height="598" splitType="Prevent">
             <property name="com.jaspersoft.studio.layout"/>
@@ -181,8 +181,8 @@
                 <textElement>
                     <font size="12" isBold="false"/>
                 </textElement>
-                <text>
-                    <![CDATA[Please carry out mechanical inspection on the motor vehicle with the following particulars:]]></text>
+                <text><![CDATA[
+                    Please carry out mechanical inspection on the motor vehicle with the following particulars:]]></text>
             </staticText>
             <staticText>
                 <reportElement style="TextStatic" mode="Opaque" x="2" y="119" width="550" height="20"
@@ -705,9 +705,9 @@
                     <textElement>
                         <font size="10"/>
                     </textElement>
-                    <textFieldExpression><![CDATA[$P{dutyStation}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$P{inspectionRegion}]]></textFieldExpression>
                 </textField>
             </frame>
         </band>
-	</detail>
+    </detail>
 </jasperReport>

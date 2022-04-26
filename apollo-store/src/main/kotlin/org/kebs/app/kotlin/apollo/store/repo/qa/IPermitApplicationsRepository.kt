@@ -702,16 +702,18 @@ interface IQaMachineryRepository : HazelcastRepository<QaMachineryEntity, Long> 
 @Repository
 interface IQaRawMaterialRepository : HazelcastRepository<QaRawMaterialEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaRawMaterialEntity>?
-    @Query(value="INSERT INTO DAT_KEBS_QA_RAW_MATERIAL t1\n" +
+    @Query(value="INSERT INTO DAT_KEBS_QA_RAW_MATERIAL tt1\n" +
             "(\n" +
-            "    t1.NAME,t1.ORIGIN,t1.STATUS,t1.SPECIFICATIONS,t1.QUALITY_CHECKS_TESTING_RECORDS,t1.STA10_ID\n" +
+            "    tt1.NAME,tt1.ORIGIN,tt1.STATUS,tt1.SPECIFICATIONS,tt1.QUALITY_CHECKS_TESTING_RECORDS,tt1.STA10_ID\n" +
             ")\n" +
-            "SELECT   t2.NAME,t2.ORIGIN,t2.STATUS,t2.SPECIFICATIONS,t2.QUALITY_CHECKS_TESTING_RECORDS,:sta10IdToBeUpdated\n" +
-            "FROM DAT_KEBS_QA_RAW_MATERIAL t2 WHERE t2.STA10_ID =:sta10Id;", nativeQuery = true)
+            "SELECT   tt2.NAME,tt2.ORIGIN,tt2.STATUS,tt2.SPECIFICATIONS,tt2.QUALITY_CHECKS_TESTING_RECORDS,:sta10IdToBeUpdated\n" +
+            "FROM DAT_KEBS_QA_RAW_MATERIAL tt2 WHERE tt2.STA10_ID =:sta10Id", nativeQuery = true)
     fun updateRawMaterials(
         @Param("sta10Id") sta10Id: Long,
         @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
     ): String
+
+
 }
 
 @Repository
@@ -722,8 +724,8 @@ interface IQaManufactureProcessRepository : HazelcastRepository<QaManufacturingP
             "    t1.PROCESS_FLOW_OF_PRODUCTION,t1.OPERATIONS,t1.CRITICAL_PROCESS_PARAMETERS_MONITORED,t1.FREQUENCY,t1.PROCESS_MONITORING_RECORDS,t1.STATUS,t1.STA10_ID\n" +
             ")\n" +
             "SELECT\n" +
-            "    t2.PROCESS_FLOW_OF_PRODUCTION,t2.OPERATIONS,t2.CRITICAL_PROCESS_PARAMETERS_MONITORED,t2.FREQUENCY,t2.PROCESS_MONITORING_RECORDS,t2.STATUS,:sta10IdToBeUpdated,\n" +
-            "FROM DAT_KEBS_QA_MANUFACTURING_PROCESS t2 WHERE t2.STA10_ID =:sta10Id;\n", nativeQuery = true)
+            "    t2.PROCESS_FLOW_OF_PRODUCTION,t2.OPERATIONS,t2.CRITICAL_PROCESS_PARAMETERS_MONITORED,t2.FREQUENCY,t2.PROCESS_MONITORING_RECORDS,t2.STATUS,:sta10IdToBeUpdated\n" +
+            "FROM DAT_KEBS_QA_MANUFACTURING_PROCESS t2 WHERE t2.STA10_ID =:sta10Id\n", nativeQuery = true)
     fun updateManufacturing(
         @Param("sta10Id") sta10Id: Long,
         @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
@@ -735,10 +737,10 @@ interface IQaProductBrandEntityRepository : HazelcastRepository<QaProductManufac
     fun findBySta10Id(sta10Id: Long): List<QaProductManufacturedEntity>?
     @Query(value="INSERT INTO DAT_KEBS_QA_PRODUCT t1\n" +
             "(\n" +
-            "    t1.AVAILABLE,t1.PRODUCT_BRAND,t1.PRODUCT_NAME,t1.STATUS,t1.STA10_ID,\n" +
+            "    t1.AVAILABLE,t1.PRODUCT_BRAND,t1.PRODUCT_NAME,t1.STATUS,t1.STA10_ID\n" +
             ")\n" +
             "SELECT\n" +
-            "   t2.AVAILABLE,t2.PRODUCT_BRAND,t2.PRODUCT_NAME,t2.STATUS,:sta10IdToBeUpdated,\n" +
+            "   t2.AVAILABLE,t2.PRODUCT_BRAND,t2.PRODUCT_NAME,t2.STATUS,:sta10IdToBeUpdated\n" +
             "FROM DAT_KEBS_QA_PRODUCT t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true)
     fun updateProduct(
         @Param("sta10Id") sta10Id: Long,

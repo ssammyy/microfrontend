@@ -303,7 +303,11 @@ class ConsignmentDocumentDaoService(
         if (consignmentDocumentDetails == null) {
             consignmentDocumentDetails = cdDetails
         }
-
+        // Update CFS station, reject if CFS is not known
+        val cdCfsEntity = consignmentDocDetails.cdTransport?.freightStation?.let { daoServices.findCfsCd(it) }
+                ?: throw ExpectedDataNotFound("Invalid CFS code found on the consignment: ${consignmentDocDetails.cdTransport?.freightStation}")
+        consignmentDocumentDetails.freightStation = cdCfsEntity
+        consignmentDocumentDetails = daoServices.updateCdDetailsInDB(consignmentDocumentDetails, null)
         //Add CD STANDARDS DETAILS
         consignmentDocDetails.cdStandard?.let {
             processesStages.process2?.let { it1 ->
@@ -544,17 +548,6 @@ class ConsignmentDocumentDaoService(
                             idfNumber = ucrNumber?.let { daoServices.findIdf(it)?.baseDocRefNo }
                             issuedDateTime = documentSummary.issuedDateTime
                             summaryPageURL = documentSummary.summaryPageURL
-
-                            val transportDetails = fetchedCdDetails.cdTransport?.let { daoServices.findCdTransportDetails(it) }
-                            val cdCfsEntity = transportDetails?.freightStation?.let { daoServices.findCfsCd(it) }
-                                    ?: throw ExpectedDataNotFound("Invalid CFS code found on the consignment: ${transportDetails?.freightStation}")
-//                        val cdCfsAndUserCfs = cdCfsEntity?.id?.let { daoServices.findCfsUserFromCdCfs(it) }
-//            val sectionL3 = cdCfsAndUserCfs?.userCfs?.let { daoServices.findFreightStation(it) }
-//                        freightStation = cdCfsAndUserCfs?.userCfs
-                            freightStation = cdCfsEntity
-//                        val sectionsLevel2 = freightStation?.let { commonDaoServices.findSectionLevel2WIthId(it) }
-//                        clusterId = sectionsLevel2?.subSectionLevel1Id?.id
-//                        portOfArrival = sectionsLevel2?.sectionId?.id
                         }
 
                         val updatedConsignmentDocumentDetails =

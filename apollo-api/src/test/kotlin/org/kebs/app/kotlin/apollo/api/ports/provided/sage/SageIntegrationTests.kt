@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.service.BillStatus
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.repo.IBillPaymentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -60,7 +61,7 @@ class SageIntegrationTests {
         this.billPaymentRepository.findFirstByBillStatusAndPaymentStatusAndPostingStatusOrderByCreateOnDesc(BillStatus.CLOSED.status, 0, 0)?.let { billPayment ->
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             KotlinLogging.logger { }.info("Invoice Number No: ${billPayment.invoiceNumber}")
-            sageService.postInvoiceTransactionToSage(billPayment, "test", map)
+            sageService.postInvoiceTransactionToSage(billPayment, "test", CorporateCustomerAccounts(), map)
             Assert.assertEquals(1, billPayment.postingStatus)
             Assert.assertNotNull("Expected remote reference", billPayment.paymentRequestReference)
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))

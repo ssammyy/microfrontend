@@ -746,7 +746,7 @@ class DITest {
         this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(0, "PN890230023")?.let { demandNote ->
             KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            billingService.registerBillTransaction(demandNote, null, map)?.let {
+            billingService.registerBillTransaction(demandNote, null, null, map)?.let {
                 KotlinLogging.logger { }.info("Billing temp ref: ${it.tempReceiptNumber}")
             } ?: throw ExpectedDataNotFound("Expected demand note to be added to billing")
             Thread.sleep(TimeUnit.SECONDS.toMillis(5))

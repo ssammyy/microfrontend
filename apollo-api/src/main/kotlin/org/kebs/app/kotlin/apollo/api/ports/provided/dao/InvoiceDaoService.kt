@@ -4,18 +4,13 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
-import org.kebs.app.kotlin.apollo.store.model.PaymentMethodsEntity
-import org.kebs.app.kotlin.apollo.store.model.StagingPaymentReconciliation
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
+import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
-import org.kebs.app.kotlin.apollo.store.repo.IBillTransactionsEntityRepository
-import org.kebs.app.kotlin.apollo.store.repo.IPaymentMethodsRepository
-import org.kebs.app.kotlin.apollo.store.repo.IStagingPaymentReconciliationRepo
-import org.kebs.app.kotlin.apollo.store.repo.InvoiceBatchDetailsRepo
+import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,6 +25,7 @@ import java.math.BigDecimal
 class InvoiceDaoService(
         private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
         private val billTransactionRepo: IBillTransactionsEntityRepository,
+        private val billsRepo: IBillPaymentsRepository,
         private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
         private val iPaymentMethodsRepo: IPaymentMethodsRepository,
         private val applicationMapProperties: ApplicationMapProperties,
@@ -273,8 +269,21 @@ class InvoiceDaoService(
                 }
     }
 
-    fun findBillTransactions(billId: Long): List<BillTransactionsEntity> {
-        return this.billTransactionRepo.findByBillId(billId)
+    fun findBillTransactions(billId: Long): List<BillSummary> {
+        return this.billTransactionRepo.sumTotalAmountByRevenueLineAndBillId(billId, 0)
+    }
+
+    fun findBillDetails(billId: Long): BillPayments? {
+        return this.billsRepo.findByIdOrNull(billId)
+    }
+
+    fun postBillToSage(bill: BillPayments, user: String, map: ServiceMapsEntity, corporate: CorporateCustomerAccounts) {
+        postInvoiceToSageServices.postInvoiceTransactionToSage(bill, user, corporate, map)
+        billsRepo.save(bill)
+        // Check if posting to sage was successful and raise error to allow retry
+        if (bill.postingStatus != map.activeStatus) {
+            throw ExpectedDataNotFound(bill.varField3)
+        }
     }
 
     class InvoiceAccountDetails {

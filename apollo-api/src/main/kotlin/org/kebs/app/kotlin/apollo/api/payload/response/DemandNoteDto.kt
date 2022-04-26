@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.payload.response;
 
+import org.kebs.app.kotlin.apollo.api.service.PaymentStatus
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNotePaymentEntity
 import java.math.BigDecimal
@@ -119,9 +120,10 @@ class DemandNoteDto {
                 paymentStatus = note.paymentStatus
                 paymentStatusDesc = when (note.paymentStatus) {
                     -1 -> "PAYMENT REJECTED"
-                    0 -> "PENDING PAYMENT"
-                    1 -> "PAYMENT COMPLETED"
-                    5 -> "PARTIALLY PAID"
+                    PaymentStatus.NEW.code -> "PENDING PAYMENT"
+                    PaymentStatus.PAID.code -> "PAYMENT COMPLETED"
+                    PaymentStatus.BILLED.code -> "PAYMENT BILLED"
+                    PaymentStatus.PARTIAL_PAYMENT.code -> "PARTIALLY PAID"
                     else -> "UNKNOWN"
                 }
                 paymentPurpose = note.paymentPurpose

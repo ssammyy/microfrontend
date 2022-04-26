@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestForm
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestItem
 import org.kebs.app.kotlin.apollo.api.payload.response.CallbackResponses
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.PaymentStatusResult
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -38,6 +39,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+enum class PaymentStatus(val code: Int) {
+    NEW(0), PAID(1), BILLED(4), PARTIAL_PAYMENT(5);
+}
 
 @Service("invoiceService")
 class InvoicePaymentService(
@@ -47,6 +51,7 @@ class InvoicePaymentService(
         private val reportsDaoService: ReportsDaoService,
         private val exchangeRateRepository: ICfgCurrencyExchangeRateRepository,
         private val service: DaoService,
+        private val diBpmn: DestinationInspectionBpmn,
         private val auctionRequestsRepository: IAuctionRequestsRepository,
         private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
         // Demand notes
@@ -116,7 +121,6 @@ class InvoicePaymentService(
                 demand.varField10 = remarks
 
                 // Update CD status
-                consignmentDocument = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_APPROVED)
                 consignmentDocument.sendDemandNote = map.activeStatus
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update demand note
@@ -136,17 +140,26 @@ class InvoicePaymentService(
         try {
             // Update submission status
             if (demandNote.isPresent) {
-                var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+                val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
                 val demand = demandNote.get()
                 // Update CD status
-                consignmentDocument = daoServices.updateCDStatus(
-                        consignmentDocument,
-                        ConsignmentDocumentStatus.PAYMENT_APPROVED
-                )
-                demand.varField3 = "UPDATED DEMAND NOTE STATUS"
-                consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
-                consignmentDocument.varField10 = "Demand Approved, awaiting payment"
-                this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+                if (demand.paymentStatus == PaymentStatus.BILLED.code) {
+                    demand.varField3 = "BILLED DEMAND NOTE STATUS"
+                    consignmentDocument.varField10 = "Demand Approved, billed to user"
+                    consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
+                    daoServices.updateCDStatus(
+                            consignmentDocument,
+                            ConsignmentDocumentStatus.PAYMENT_MADE
+                    )
+                } else {
+                    demand.varField3 = "UPDATED DEMAND NOTE STATUS"
+                    consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
+                    consignmentDocument.varField10 = "Demand Approved, awaiting payment"
+                    daoServices.updateCDStatus(
+                            consignmentDocument,
+                            ConsignmentDocumentStatus.PAYMENT_APPROVED
+                    )
+                }
                 // Update Demand note status
                 this.iDemandNoteRepo.save(demand)
             }
@@ -170,17 +183,25 @@ class InvoicePaymentService(
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)!!
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
-            val transportDetails = daoServices.findCdTransportDetails(consignmentDocument.cdTransport ?: 0)
-            this.billingService.registerBillTransaction(demandNote, transportDetails.blawb, map)?.let { billTrx ->
-                demandNote.paymentStatus = 1
+            val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
+            val transportDetails = consignmentDocument.cdStandard
+            this.billingService.registerBillTransaction(demandNote, transportDetails?.courierPin, consignmentDocument.cdType?.varField1
+                    ?: "", map)?.let { billTrx ->
+                demandNote.paymentStatus = PaymentStatus.BILLED.code
+                demandNote.courierPin = transportDetails?.courierPin
                 demandNote.receiptNo = billTrx.tempReceiptNumber
                 demandNote.billId = billTrx.id
-                this.iDemandNoteRepo.save(demandNote)
+                val dn = this.iDemandNoteRepo.save(demandNote)
                 KotlinLogging.logger { }.info("Added demand note to bill transaction:${demandNote.demandNoteNumber} <=> ${billTrx.tempReceiptNumber}")
+                // Create bill payment on SAGE
+                invoiceDaoService.postRequestToSage(
+                        loggedInUser.userName!!,
+                        dn
+                )
+                KotlinLogging.logger { }.info("Posted demand note to SAGE:${demandNote.demandNoteNumber} <=> ${billTrx.tempReceiptNumber}")
             } ?: run {
                 demandNote.demandNoteNumber?.let {
                     KotlinLogging.logger { }.info("Generate demand note Sage:${demandNote.demandNoteNumber}")
-                    val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
                     // Create payment batch
                     val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
                     // Add demand note details to batch
@@ -223,7 +244,6 @@ class InvoicePaymentService(
                 response.responseCode = "Demand note is already posted"
                 return response
             }
-            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
             demandNote.demandNoteNumber?.let {
                 KotlinLogging.logger { }.info("Generate demand note Sage:${demandNote.demandNoteNumber}")
@@ -274,7 +294,12 @@ class InvoicePaymentService(
                 daoServices.sendDemandNotGeneratedToKWIS(it)
                 consignmentDocument.varField10 = "DEMAND NOTE SENT TO KENTRADE, AWAITING PAYMENT"
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+                // Send payment status if its billed
+                if (it.paymentStatus == PaymentStatus.BILLED.code) {
+                    diBpmn.triggerDemandNotePaidBpmTask(it)
+                }
             }
+
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to update status", ex)
@@ -291,27 +316,41 @@ class InvoicePaymentService(
             val demandNoteDetails = daoServices.upDateDemandNote(demandNote)
             val consignmentDocument = daoServices.findCD(demandNoteDetails.cdId!!)
             // 2. Update CD status
-            if (demandNote.paymentStatus == map.activeStatus) {
-                daoServices.updateCDStatus(
-                        consignmentDocument,
-                        ConsignmentDocumentStatus.PAYMENT_MADE
-                )
-            } else {
-                daoServices.updateCDStatus(
-                        consignmentDocument,
-                        ConsignmentDocumentStatus.PARTIAL_PAYMENT_MADE
-                )
+            when (demandNote.paymentStatus) {
+                PaymentStatus.PAID.code -> {
+                    daoServices.updateCDStatus(
+                            consignmentDocument,
+                            ConsignmentDocumentStatus.PAYMENT_MADE
+                    )
+                }
+                PaymentStatus.BILLED.code -> {
+                    daoServices.updateCDStatus(
+                            consignmentDocument,
+                            ConsignmentDocumentStatus.PAYMENT_BILLED
+                    )
+                }
+                PaymentStatus.PARTIAL_PAYMENT.code -> {
+                    daoServices.updateCDStatus(
+                            consignmentDocument,
+                            ConsignmentDocumentStatus.PARTIAL_PAYMENT_MADE
+                    )
+                }
             }
+            return true
         }
-        return true
+        return false
     }
 
-    fun invoicePaymentCompleted(cdId: Long, demandNoteId: Long, amount: BigDecimal?): Boolean {
+    fun invoicePaymentCompleted(cdId: Long, demandNoteId: Long, amount: BigDecimal? = null): Boolean {
         try {
             var consignmentDocument = this.daoServices.findCD(cdId)
             // 1. Send demand payment status to SW
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
-                daoServices.sendDemandNotePayedStatusToKWIS(demandNote, amount)
+                if (amount != null) {
+                    daoServices.sendDemandNotePayedStatusToKWIS(demandNote, amount)
+                } else {
+                    daoServices.sendDemandNotePayedStatusToKWIS(demandNote, demandNote.totalAmount)
+                }
                 demandNote
             } ?: throw ExpectedDataNotFound("Demand note with $demandNoteId was not found")
 
@@ -323,8 +362,10 @@ class InvoicePaymentService(
             consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
             consignmentDocument = this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             // 4. Update payment status for invoice
-            if (demandNote.paymentStatus == 1) {
+            if (demandNote.paymentStatus == PaymentStatus.PAID.code) {
                 this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_MADE)
+            } else if (demandNote.paymentStatus == PaymentStatus.BILLED.code) {
+                this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_BILLED)
             } else {
                 this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PARTIAL_PAYMENT_MADE)
             }
@@ -463,7 +504,7 @@ class InvoicePaymentService(
         val paymentRef = responseStatus.response?.demandNoteNo?.trim()?.toUpperCase()
                 ?: ""
         iDemandNoteRepo.findByPostingReference(paymentRef)?.let { demandNote ->
-            if (demandNote.paymentStatus == 1) {
+            if (demandNote.paymentStatus == PaymentStatus.PAID.code) {
                 throw ExpectedDataNotFound("Payment has already been made, duplicate callback")
             }
             // Check duplicate receipts
@@ -472,7 +513,7 @@ class InvoicePaymentService(
             if (demandNote.currentBalance!! <= BigDecimal.ZERO) {
                 demandNoteUpdated.paymentStatus = map.activeStatus
             } else {
-                demandNoteUpdated.paymentStatus = 5
+                demandNoteUpdated.paymentStatus = PaymentStatus.PARTIAL_PAYMENT.code
             }
             // Check for payment completed status
             if (demandNoteUpdated.paymentStatus == map.activeStatus) {
@@ -494,12 +535,18 @@ class InvoicePaymentService(
                 response.message = "Partial Payment received"
             }
             iDemandNoteRepo.save(demandNoteUpdated)
+            if (demandNote.billId != null) {
+                billingService.demandNoteTransactionPaid(demandNote.demandNoteNumber ?: "", demandNote.receiptNo
+                        ?: "", demandNote.billId!!)
+            }
             // Completion event
             GlobalScope.launch(Dispatchers.IO) {
                 delay(100L)
                 when (demandNote.paymentPurpose) {
                     PaymentPurpose.CONSIGNMENT.code -> {
-                        invoicePaymentCompleted(demandNoteUpdated.cdId!!, demandNoteUpdated.id!!, responseStatus.response?.paymentAmount)
+                        if (demandNote.billId == null) {
+                            invoicePaymentCompleted(demandNoteUpdated.cdId!!, demandNoteUpdated.id!!, responseStatus.response?.paymentAmount)
+                        }
                     }
                     PaymentPurpose.AUDIT.code -> {
                         if (demandNoteUpdated.paymentStatus == map.activeStatus) {
@@ -577,6 +624,7 @@ class InvoicePaymentService(
                         entryAblNumber = form.ablNumber
                         totalAmount = BigDecimal.ZERO
                         amountPayable = BigDecimal.ZERO
+                        revenueLine = form.revenueLineNumber
                         receiptNo = "NOT PAID"
                         product = form.product ?: "UNKNOWN"
                         rate = "UNKNOWN"

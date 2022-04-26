@@ -21,13 +21,21 @@ class BillTransactionsEntity : Serializable {
     @Column(name = "BILL_ID")
     var billId: Long? = 0
 
-    @Column(name = "INVOICE_NUMBER")
+    @Column(name = "INVOICE_NUMBER", unique = true)
     @Basic
     var invoiceNumber: String? = null
+
+    @Column(name = "REVENUE_LINE")
+    @Basic
+    var revenueLine: String? = null
 
     @Column(name = "TEMP_RECEIPT_NUMBER")
     @Basic
     var tempReceiptNumber: String? = null
+
+    @Column(name = "RECEIPT_NUMBER")
+    @Basic
+    var receiptNumber: String? = null
 
     @Column(name = "TRANSACTION_TYPE")
     @Basic
@@ -61,9 +69,17 @@ class BillTransactionsEntity : Serializable {
     @Basic
     var amount: BigDecimal? = null
 
+    @Column(name = "TAX_AMOUNT")
+    @Basic
+    var taxAmount: BigDecimal? = null
+
     @Column(name = "PAID_STATUS")
     @Basic
     var paidStatus: Long? = null
+
+    @Column(name = "RECEIPT_DATE")
+    @Basic
+    var receiptDate: Timestamp? = null
 
     @Column(name = "DESCRIPTION")
     @Basic

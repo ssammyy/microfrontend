@@ -55,10 +55,20 @@ interface ICorporateCustomerRepository : HazelcastRepository<CorporateCustomerAc
     fun countByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp): Long
 }
 
+interface BillSummary {
+    fun getTotalAmount(): BigDecimal?
+    fun getTotalTax(): BigDecimal?
+    fun getRevenueLine(): String
+}
+
 @Repository
 interface IBillTransactionsEntityRepository : HazelcastRepository<BillTransactionsEntity, Long> {
     fun findAllByCorporateIdAndBillId(corporateId: Long, billId: Long): List<BillTransactionsEntity>
     fun findByBillId(billId: Long): List<BillTransactionsEntity>
+
+    @Query(value = "select sum(CASE WHEN bt.AMOUNT>0 then bt.AMOUNT else 0.0 END) TOTAL_AMOUNT,sum(CASE WHEN bt.TAX_AMOUNT>0 then bt.TAX_AMOUNT else 0.0 END) TOTAL_TAX, bt.REVENUE_LINE from DAT_KEBS_BILL_TRANSACTIONS bt  where BILL_ID=:billId and bt.PAID_STATUS=:billStatus group by bt.REVENUE_LINE", nativeQuery = true)
+    fun sumTotalAmountByRevenueLineAndBillId(@Param("billId") billId: Long?, @Param("billStatus") status: Int): List<BillSummary>
+    fun findByInvoiceNumberAndBillId(demandNoteNumber: String, billId: Long): BillTransactionsEntity?
 }
 
 
@@ -69,8 +79,8 @@ interface IBillPaymentsRepository : HazelcastRepository<BillPayments, Long> {
     fun findAllByPaymentStatusAndNextNoticeDateGreaterThan(status: Int, date: Date): List<BillPayments>
     fun findAllByBillNumberPrefixAndPaymentStatus(billNumberPrefix: String, status: Int): List<BillPayments>
     fun countByCorporateIdAndBillNumber(corporateId: Long?, billNumber: String): Long
+    fun countByCorporateId(corporateId: Long?): Long
     fun findFirstByCorporateIdAndBillNumberAndPaymentStatus(corporateId: Long?, billNumber: String, status: Int): Optional<BillPayments>
-
     @Query(value = "select sum(CASE WHEN bt.AMOUNT>0 then bt.AMOUNT else 0.0 END) TOTAL_AMOUNT from DAT_KEBS_BILL_TRANSACTIONS bt  where CORPORATE_ID=:corporateId and BILL_ID=:billId", nativeQuery = true)
     fun sumTotalAmountByCorporateIdAndBillId(@Param("corporateId") corporateId: Long?, @Param("billId") billId: Long): BigDecimal?
     fun findAllByCorporateIdAndPaymentStatusIn(corporateId: Long?, status: List<Int>): List<BillPayments>

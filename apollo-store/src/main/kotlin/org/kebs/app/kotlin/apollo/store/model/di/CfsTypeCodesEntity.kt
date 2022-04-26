@@ -26,6 +26,10 @@ class CfsTypeCodesEntity : Serializable {
     @Basic
     var cfsNumber: String? = null
 
+    @Column(name = "REVENUE_LINE_NUMBER")
+    @Basic
+    var revenueLineNumber: String? = null
+
     @Column(name = "CFS_NAME")
     @Basic
     var cfsName: String? = null

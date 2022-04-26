@@ -23,6 +23,10 @@ class BillPayments : Serializable {
     @Basic
     var billNumber: String? = null
 
+    @Column(name = "BILL_REF_NUMBER")
+    @Basic
+    var billRefNumber: String? = null
+
     @Column(name = "BILL_NUMBER_PREFIX")
     @Basic
     var billNumberPrefix: String? = null
@@ -46,6 +50,10 @@ class BillPayments : Serializable {
     @Column(name = "TOTAL_AMOUNT")
     @Basic
     var totalAmount: BigDecimal? = null
+
+    @Column(name = "TOTAL_BALANCE")
+    @Basic
+    var totalBalance: BigDecimal? = null
 
     @Column(name = "PAYMENT_STATUS")
     @Basic
@@ -83,6 +91,11 @@ class BillPayments : Serializable {
     @Basic
     var billType: Int? = null
 
+
+    @Column(name = "BILL_SERVICE_TYPE")
+    @Basic
+    var billServiceType: String? = null
+
     @Column(name = "BILL_STATUS")
     @Basic
     var billStatus: Int? = null
@@ -101,7 +114,7 @@ class BillPayments : Serializable {
 
     @Column(name = "NOTICE_COUNT")
     @Basic
-    var noticeCount:Long? = null
+    var noticeCount: Long? = null
 
     @Column(name = "NEXT_NOTICE_DATE")
     @Basic
@@ -110,6 +123,10 @@ class BillPayments : Serializable {
     @Column(name = "PAYMENT_RECEIPT")
     @Basic
     var paymentReceipts: String? = null
+
+    @Column(name = "MANUAL_CLOSE_REMARKS")
+    @Basic
+    var remarks: String? = null
 
     @Column(name = "STATUS")
     @Basic
