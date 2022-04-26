@@ -7,7 +7,7 @@ import {
     ApproveVisitTask,
     AssignCompanyTaskDTO, Branch,
     CompanyModel,
-    ConfirmEditCompanyDTO, DirectorsList,
+    ConfirmEditCompanyDTO, DirectorsList, DocumentDTO,
     EditCompanyDTO,
     ManufactureCompletedTask,
     ManufactureCompleteTask,
@@ -108,6 +108,9 @@ export class LevyService {
             })
         );
     }
+
+
+
     public editCompany(editCompanyDTO: EditCompanyDTO): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDIT_COMPANY);
         const params = new HttpParams();
@@ -287,6 +290,12 @@ export class LevyService {
     //     const params = new HttpParams();
     //     return this.http.get<EditCompanyDTO>(url, {params}).pipe();
     // }
+
+    public getVisitDocumentList(visitId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_VISIT_REPORT_DOCUMENT_LIST);
+        const params = new HttpParams().set('visitId', visitId);
+        return this.http.get<DocumentDTO[]>(url, {params}).pipe();
+    }
 
     public getCompanyEditedDetails(manufactureId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDITED_COMPANY_DATA);

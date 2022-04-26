@@ -145,6 +145,10 @@ export interface StdLevyScheduleSiteVisitDTO {
     taskId: string;
 
 }
+
+export interface DocumentDTO{
+    id: number;
+}
 export interface EditCompanyDTO {
     postalAddress: string;
     physicalAddress: string;

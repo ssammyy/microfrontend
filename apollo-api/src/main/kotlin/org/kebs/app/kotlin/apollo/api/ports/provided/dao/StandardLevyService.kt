@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -864,8 +865,12 @@ return getUserTasks();
 
     // View Report Document
     fun findUploadedReportFileBYId(visitId: Long): SlVisitUploadsEntity {
-        return slUploadsRepo.findByVisitId(visitId)
+        return slUploadsRepo.findAllById(visitId)
             ?: throw ExpectedDataNotFound("No File found with the following [ id=$visitId]")
+    }
+
+    fun getVisitDocumentList(visitId: Long): List<SiteVisitListHolder> {
+        return slUploadsRepo.findAllDocumentId(visitId)
     }
 
     fun decisionOnSiteReport(

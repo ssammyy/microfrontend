@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angu
 import {Subject} from "rxjs";
 import {UsersEntity} from "../../../core/store/data/std/std.model";
 import {
-    ConfirmEditCompanyDTO, ManufactureDetailList,
+    ConfirmEditCompanyDTO, DocumentDTO, ManufactureDetailList,
     ManufacturePendingTask,
     SiteVisitRemarks
 } from "../../../core/store/data/levy/levy.model";
@@ -38,6 +38,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
     rejectStatus: string;
     role:string;
 
+    documentDTOs: DocumentDTO[] = [];
   public users !: UsersEntity[] ;
   public approveUsersOne !: UsersEntity[] ;
   public approveUsersTwo !: UsersEntity[] ;
@@ -78,6 +79,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
   isShowRejectForm2= true;
   isShowSaveFeedBackForm= true;
   isShowRemarksTab= true;
+    isShowDocumentsTab= true;
     isShowApproveRequestForm=true;
     isShowRejectRequestForm=true;
 
@@ -85,20 +87,44 @@ export class StdLevyPendingTasksComponent implements OnInit {
     toggleDisplayApproveEditRequest(){
       this.isShowApproveRequestForm=!this.isShowApproveRequestForm;
       this.isShowRejectRequestForm=true;
+      this.isShowDocumentsTab=true;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
+        this.isShowApprovalForm1= true;
+        this.isShowRejectForm1= true;
     }
     toggleDisplayRejectEditRequest(){
         this.isShowRejectRequestForm=!this.isShowRejectRequestForm;
         this.isShowApproveRequestForm=true;
+        this.isShowDocumentsTab=true;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
+        this.isShowApprovalForm1= true;
+        this.isShowRejectForm1= true;
     }
   toggleDisplayScheduleForm() {
     this.isShowScheduleForm = !this.isShowScheduleForm;
     this.isShowReportForm= true;
     this.isShowRemarksTab= true;
+    this.isShowDocumentsTab= true;
+    this.isShowApproveRequestForm=true;
+    this.isShowRejectRequestForm=true;
+      this.isShowRejectForm2 = true;
+      this.isShowApprovalForm2 = true;
+      this.isShowApprovalForm1= true;
+      this.isShowRejectForm1= true;
   }
   toggleDisplayReportForm() {
     this.isShowReportForm = !this.isShowReportForm;
     this.isShowScheduleForm= true;
     this.isShowRemarksTab= true;
+    this.isShowDocumentsTab= true;
+      this.isShowApproveRequestForm=true;
+      this.isShowRejectRequestForm=true;
+      this.isShowRejectForm2 = true;
+      this.isShowApprovalForm2 = true;
+      this.isShowApprovalForm1= true;
+      this.isShowRejectForm1= true;
   }
   toggleDisplayRemarksTab(siteVisitId: number){
       this.loadingText = "Loading ...."
@@ -119,33 +145,91 @@ export class StdLevyPendingTasksComponent implements OnInit {
     this.isShowScheduleForm= true;
       this.isShowRejectForm1 = true;
       this.isShowApprovalForm1 = true;
+      this.isShowDocumentsTab = true;
+      this.isShowApproveRequestForm=true;
+      this.isShowRejectRequestForm=true;
+      this.isShowRejectForm2 = true;
+      this.isShowApprovalForm2 = true;
   }
   toggleDisplayApprovalForm1() {
     this.isShowApprovalForm1 = !this.isShowApprovalForm1;
     this.isShowRejectForm1 = true;
     this.isShowRemarksTab = true;
+    this.isShowDocumentsTab = true;
+      this.isShowApproveRequestForm=true;
+      this.isShowRejectRequestForm=true;
+      this.isShowRejectForm2 = true;
+      this.isShowApprovalForm2 = true;
   }
   toggleDisplayRejectForm1() {
     this.isShowRejectForm1 = !this.isShowRejectForm1;
     this.isShowApprovalForm1= true;
     this.isShowRemarksTab= true;
+    this.isShowDocumentsTab= true;
+      this.isShowApproveRequestForm=true;
+      this.isShowRejectRequestForm=true;
+      this.isShowRejectForm2 = true;
+      this.isShowApprovalForm2 = true;
   }
   toggleDisplayApprovalForm2() {
     this.isShowApprovalForm2 = !this.isShowApprovalForm2;
     this.isShowRejectForm2 = true;
     this.isShowRemarksTab = true;
+    this.isShowDocumentsTab = true;
+      this.isShowApproveRequestForm=true;
+      this.isShowRejectRequestForm=true;
+      this.isShowApprovalForm1= true;
+      this.isShowRejectForm1= true;
   }
 
   toggleDisplayRejectForm2() {
     this.isShowRejectForm2 = !this.isShowRejectForm2;
     this.isShowApprovalForm1 = true;
     this.isShowRemarksTab = true;
+    this.isShowDocumentsTab = true;
+      this.isShowApproveRequestForm=true;
+      this.isShowRejectRequestForm=true;
+      this.isShowApprovalForm2 = true;
+      this.isShowApprovalForm1= true;
+      this.isShowRejectForm1= true;
   }
 
   toggleDisplaySaveFeedBackForm() {
     this.isShowSaveFeedBackForm = !this.isShowSaveFeedBackForm;
     this.isShowRemarksTab =  true;
+    this.isShowDocumentsTab =  true;
+      this.isShowApproveRequestForm=true;
+      this.isShowRejectRequestForm=true;
+      this.isShowRejectForm2 = true;
+      this.isShowApprovalForm2 = true;
+      this.isShowApprovalForm1= true;
+      this.isShowRejectForm1= true;
   }
+
+    toggleDisplayDocuments(visitId: number) {
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.levyService.getVisitDocumentList(visitId).subscribe(
+            (response: DocumentDTO[]) => {
+                this.documentDTOs = response;
+                this.SpinnerService.hide();
+                console.log(this.documentDTOs)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.isShowDocumentsTab = !this.isShowDocumentsTab;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
+        this.isShowRemarksTab = true;
+        this.isShowApproveRequestForm=true;
+        this.isShowRejectRequestForm=true;
+        this.isShowApprovalForm1= true;
+        this.isShowRejectForm1= true;
+
+    }
 
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
