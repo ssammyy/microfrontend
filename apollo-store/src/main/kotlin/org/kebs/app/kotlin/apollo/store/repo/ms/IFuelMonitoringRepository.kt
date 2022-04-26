@@ -48,6 +48,11 @@ interface IFuelBatchRepository : HazelcastRepository<MsFuelBatchInspectionEntity
 }
 
 @Repository
+interface IMsRemarksFuelInspectionRepository : HazelcastRepository<MsRemarksEntity, Long>{
+    fun findAllByFuelInspectionId(fuelInspectionId: Long): List<MsRemarksEntity>?
+}
+
+@Repository
 interface IWorkplanYearsCodesRepository: HazelcastRepository<WorkplanYearsCodesEntity, Long> {
 
     fun findByYearNameAndStatus(yearName: String, status: Int) : WorkplanYearsCodesEntity?
@@ -139,5 +144,7 @@ interface ISampleCollectParameterRepository : HazelcastRepository<MsCollectionPa
 @Repository
 interface IMsUploadsRepository : HazelcastRepository<MsUploadsEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsUploadsEntity>
+
+    fun findAllByMsComplaintIdAndComplaintUploads(msComplaintId: Long, complaintUploads: Int): List<MsUploadsEntity>?
 
 }

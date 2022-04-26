@@ -158,6 +158,10 @@ class ComplaintEntity : Serializable {
     @Basic
     var division: Long? = null
 
+    @Column(name = "MS_PROCESS_ID")
+    @Basic
+    var msProcessId: Long? = null
+
     @Column(name = "PROGRESS_STEP")
     @Basic
     var progressStep: String? = null

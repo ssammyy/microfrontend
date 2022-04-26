@@ -1,10 +1,7 @@
 package org.kebs.app.kotlin.apollo.common.dto.ms
 
-import org.kebs.app.kotlin.apollo.common.dto.qa.SSFComplianceStatusDetailsDto
-import org.kebs.app.kotlin.apollo.common.dto.qa.SSFPDFListDetailsDto
 import java.math.BigDecimal
 import java.sql.Date
-import java.sql.Timestamp
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
@@ -56,6 +53,7 @@ data class FuelInspectionDto(
         var proFormaInvoiceStatus: Boolean? = null,
         var batchDetails: FuelBatchDetailsDto?= null,
         var officersList: List<MsUsersDto>? = null,
+        var remarksDetails: List<MSRemarksDto>? = null,
         var officersAssigned: MsUsersDto? = null,
         var rapidTest: FuelEntityRapidTestDto? = null,
         var sampleCollected: SampleCollectionDto? = null,
@@ -134,6 +132,14 @@ data class SampleCollectionItemsDto(
         var batchNo: String? = null,
         var batchSize: String? = null,
         var sampleSize: String? = null,
+)
+
+data class RemarksToAddDto(
+        var remarksDescription: String? = null,
+        var remarksStatus: Int? = null,
+        var processBy: String? = null,
+        var processName: String? = null,
+        var userId: Long? = null,
 )
 
 data class SampleSubmissionDto(
@@ -226,6 +232,13 @@ data class LIMSFilesFoundDto(
         var fileName: String? = null,
 )
 
+data class ComplaintsFilesFoundDto(
+        var id: Long? = null,
+        var fileName: String? = null,
+        var documentType: String? = null,
+        var fileContentType: String? = null,
+)
+
 data class PDFSaveComplianceStatusDto(
         @NotNull(message = "Required field")
         var ssfID: Long,
@@ -296,6 +309,7 @@ data class ComplaintApproveRejectAssignDto(
 )
 
 data class ComplaintApproveDto(
+        var department: Long? = null,
         var division: Long? = null,
         var approved: Int? = null,
         var approvedRemarks: String? = null
@@ -330,6 +344,24 @@ data class ComplaintAssignDto(
         var assignedIo: Long? = null
 )
 
+data class MSRemarksDto(
+        var id: Long? = null,
+        var remarksDescription: String? = null,
+        var processBy: String? = null,
+        var processName: String? = null
+)
+
+data class AllComplaintsDetailsDto(
+        var complaintsDetails: ComplaintsDetailsDto? = null,
+        var officersList: List<MsUsersDto>? = null,
+        var officersAssigned: MsUsersDto? = null,
+        var remarksDetails: List<MSRemarksDto>? = null,
+        var sampleCollected: SampleCollectionDto? = null,
+        var sampleSubmitted: SampleSubmissionDto? = null,
+        var sampleLabResults: MSSSFLabResultsDto? = null,
+//        var fuelRemediation: FuelRemediationDto? = null,
+)
+
 data class ComplaintsDetailsDto(
         var id: Long? = null,
         var refNumber: String? = null,
@@ -351,21 +383,22 @@ data class ComplaintsDetailsDto(
         var buildingName: String? = null,
         var date: Date? = null,
         var status: String? = null,
-        var officersList: List<MsUsersDto>? = null,
-        var divisionList: List<MsDivisionDto>? = null,
+//        var officersList: List<MsUsersDto>? = null,
+//        var divisionList: List<MsDivisionDto>? = null,
         var approvedStatus: Int? = null,
         var assignedIOStatus: Int? = null,
-        var rejectedStatusStatus: Int? = null
+        var rejectedStatusStatus: Int? = null,
+        var complaintFiles: List<ComplaintsFilesFoundDto>? = null
 
 )
 
-data class ComplaintsDto(
-        var refNumber: String? = null,
-        var complainantName: String? = null,
-        var complaintCategory: String? = null,
+data class ComplaintsListDto(
+        var referenceNumber: String? = null,
         var complaintTitle: String? = null,
-        var date: Date? = null,
-        var status: String? = null
+        var targetedProducts: String? = null,
+//        var complaintCategory: String? = null,
+        var transactionDate: Date? = null,
+        var progressStep: String? = null
 )
 
 data class MsDepartmentDto(

@@ -296,23 +296,23 @@ export class ComplaintNewComponent implements OnInit {
   saveDetailsFirst(): any {
     if (this.uploadedFiles.length > 0) {
       this.SpinnerService.show();
-      this.msService.createNewComplaint( this.stepOneForm.value, this.stepTwoForm.value, this.stepThreeForm.value)
-          .subscribe(
-              (data: MSComplaintSubmittedSuccessful) => {
-                console.log(data);
-                this.savedDetails = data;
+      // this.msService.createNewComplaint( this.stepOneForm.value, this.stepTwoForm.value, this.stepThreeForm.value)
+      //     .subscribe(
+      //         (data: MSComplaintSubmittedSuccessful) => {
+      //           console.log(data);
+      //           this.savedDetails = data;
                 const file = this.uploadedFiles;
                 const newComplaintDto = new NewComplaintDto();
                 newComplaintDto.customerDetails = this.stepOneForm.value;
                 newComplaintDto.complaintDetails = this.stepTwoForm.value;
                 newComplaintDto.locationDetails = this.stepThreeForm.value;
                 const formData = new FormData();
-                // formData.append('data', JSON.stringify(newComplaintDto));
+                formData.append('data', JSON.stringify(newComplaintDto));
                 for (let i = 0; i < file.length; i++) {
                   console.log(file[i]);
                   formData.append('docFile', file[i], file[i].name);
                 }
-                this.msService.saveComplaintFiles(this.savedDetails.refNumber, formData).subscribe(
+                this.msService.saveComplaintFiles(formData).subscribe(
                     (data2: MSComplaintSubmittedSuccessful) => {
                       console.log(data2);
                       this.savedDetails = data2;
@@ -327,13 +327,13 @@ export class ComplaintNewComponent implements OnInit {
                     }
                 );
 
-              },
-              error => {
-                this.SpinnerService.hide();
-                console.log(error);
-                this.msService.showError('AN Error Occurred, Try Again Later');
-              }
-          );
+          //     },
+          //     error => {
+          //       this.SpinnerService.hide();
+          //       console.log(error);
+          //       this.msService.showError('AN Error Occurred, Try Again Later');
+          //     }
+          // );
     }
 
   }

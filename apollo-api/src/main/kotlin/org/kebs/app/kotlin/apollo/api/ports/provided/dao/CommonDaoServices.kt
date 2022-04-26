@@ -55,13 +55,11 @@ import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
+import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationEmailDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEntryNumberEmailDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
-import org.kebs.app.kotlin.apollo.common.dto.CustomResponse
-import org.kebs.app.kotlin.apollo.common.dto.HashedStringDto
-import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
-import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -732,6 +730,37 @@ class CommonDaoServices(
                 return section
             }
             ?: throw ExpectedDataNotFound("Section with id = ${sectionId}, does not Exist")
+    }
+
+    fun setSuccessResponse(dataList: Any?, dataPgNumber: Int?,dataTotalPages: Int?, dataTotalElements: Long? ): ApiResponseModel {
+        val response = ApiResponseModel()
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.message = "Success"
+        response.pageNo = dataPgNumber
+        response.data = dataList
+        response.totalPages = dataTotalPages
+        response.totalCount = dataTotalElements
+
+        return response
+    }
+
+    fun setErrorResponse(errorMessage: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        response.responseCode = ResponseCodes.FAILED_CODE
+        response.message = errorMessage
+        return response
+    }
+
+    fun setExceptionResponse(errorMessage: String , ex: Exception): ApiResponseModel {
+        val response = ApiResponseModel()
+        response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        response.message = errorMessage
+        response.errors = ex.toString()
+    // response.data = dataList
+    // response.totalPages = dataTotalPages
+    // response.totalCount = dataTotalElements
+
+        return response
     }
 
     fun findSectionLevel1WIthId(sectionL1Id: Long): SubSectionsLevel1Entity {

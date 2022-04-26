@@ -541,9 +541,20 @@ class AngularRoutes {
     @Bean
     fun migrationMarketSurveillanceRoutes(handler: NewMarketSurveillanceHandler) = router {
         "/api/v1/migration/ms".nest {
+            "/common".nest {
+                GET("/departments", handler::msDepartments)
+                GET("/divisions", handler::msDivisions)
+                GET("/standardProductCategory", handler::msStandardsCategory)
+                GET("/productCategories", handler::msProductCategories)
+                GET("/broadProductCategory", handler::msBroadProductCategory)
+                GET("/products", handler::msProducts)
+                GET("/productSubcategory", handler::msProductSubcategory)
+            }
             "/complaint".nest {
-                GET("/list", handler::getAllFuelInspectionList)
-                POST("/new", handler::saveNewComplaint)
+                GET("/list", handler::getAllComplaintList)
+                GET("/details", handler::getComplaintDetails)
+                PUT("/accept", handler::updateComplaintByAccepting)
+//                POST("/new", handler::saveNewComplaint)
             }
 //            "/workPlan".nest {
 //

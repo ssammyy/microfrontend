@@ -1,23 +1,19 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import swal from 'sweetalert2';
+import { Component, OnInit } from '@angular/core';
 import {
-  BatchFileFuelSaveDto,
-  BSNumberSaveDto, CompliantRemediationDto,
+  AllComplaintsDetailsDto,
+  BSNumberSaveDto, ComplaintDetailsDto, ComplaintsFilesFoundDto, CompliantRemediationDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
-  FuelInspectionDto, LaboratoryDto,
-  LIMSFilesFoundDto, MSSSFPDFListDetailsDto, PDFSaveComplianceStatusDto, RemediationDto,
-  SampleCollectionDto,
-  SampleCollectionItemsDto,
-  SampleSubmissionDto,
-  SampleSubmissionItemsDto, SSFSaveComplianceStatusDto
+  FuelInspectionDto, LaboratoryDto, LIMSFilesFoundDto, MSRemarksDto, MSSSFPDFListDetailsDto, PDFSaveComplianceStatusDto, RemediationDto,
+  SampleCollectionDto, SampleCollectionItemsDto, SampleSubmissionDto, SampleSubmissionItemsDto, SSFSaveComplianceStatusDto
 } from '../../../../core/store/data/ms/ms.model';
-import {MsService} from '../../../../core/store/data/ms/ms.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {NgxSpinnerService} from 'ngx-spinner';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Store} from '@ngrx/store';
 import {LoggedInUser, selectUserInfo} from '../../../../core/store';
+import {MsService} from '../../../../core/store/data/ms/ms.service';
+import {Store} from '@ngrx/store';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {ActivatedRoute, Router} from '@angular/router';
+
 declare global {
   interface Window {
     $: any;
@@ -25,18 +21,22 @@ declare global {
 }
 
 @Component({
-  selector: 'app-view-fuel-sheduled-details',
-  templateUrl: './view-fuel-sheduled-details.component.html',
-  styleUrls: ['./view-fuel-sheduled-details.component.css']
+  selector: 'app-complaint-details',
+  templateUrl: './complaint-details.component.html',
+  styleUrls: ['./complaint-details.component.css']
 })
-export class ViewFuelSheduledDetailsComponent implements OnInit {
+export class ComplaintDetailsComponent implements OnInit {
+
   active: Number = 0;
   selectedRefNo: string;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
-  fuelInspection: FuelInspectionDto;
+  complaintInspection: AllComplaintsDetailsDto;
   currDiv!: string;
   currDivLabel!: string;
+  remarksSavedForm!: FormGroup;
+  acceptComplaintForm!: FormGroup;
+
   assignOfficerForm!: FormGroup;
   rapidTestForm!: FormGroup;
   sampleCollectForm!: FormGroup;
@@ -390,6 +390,62 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       perPage: 20
     }
   };
+  public settingsComplaintsFiles = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        // {name: 'viewPDFRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
+        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View</i>'}
+      ],
+      position: 'right' // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      documentType: {
+        title: 'File NAME',
+        type: 'string',
+        filter: false
+      },
+      fileName: {
+        title: 'DOCUMENT TYPE',
+        type: 'string',
+        filter: false
+      },
+      // complianceStatus: {
+      //   title: 'COMPLIANCE STATUS',
+      //   type: 'boolean',
+      //   filter: false
+      // },
+      // sampled: {
+      //   title: 'Sampled',
+      //   type: 'string'
+      // },
+      // inspectionDate: {
+      //   title: 'Inspection Date',
+      //   type: 'date'
+      // },
+      // sampleUpdated: {
+      //   title: 'Sample Updated',
+      //   type: 'custom',
+      //   renderComponent: ConsignmentStatusComponent
+      // }
+    },
+    pager: {
+      display: true,
+      perPage: 20
+    }
+  };
   public settingsRemarks = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
@@ -448,15 +504,14 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   };
 
 
-
   constructor(
       private msService: MsService,
-              // private dialog: MatDialog,
+      // private dialog: MatDialog,
       private formBuilder: FormBuilder,
       private store$: Store<any>,
       private SpinnerService: NgxSpinnerService,
-              private activatedRoute: ActivatedRoute,
-              private router: Router) {
+      private activatedRoute: ActivatedRoute,
+      private router: Router) {
   }
 
   ngOnInit(): void {
@@ -470,8 +525,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(
         rs => {
           this.selectedRefNo = rs.get('referenceNumber');
-          this.selectedBatchRefNo = rs.get('batchReferenceNumber');
-          this.loadData(this.selectedRefNo, this.selectedBatchRefNo);
+          // this.selectedBatchRefNo = rs.get('batchReferenceNumber');
+          this.loadData(this.selectedRefNo);
         }
     );
 
@@ -480,9 +535,19 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       remarks: null,
     });
 
+    this.acceptComplaintForm = this.formBuilder.group({
+      assignedUserID: ['', Validators.required],
+      remarks: null,
+    });
+
     this.rapidTestForm = this.formBuilder.group({
       rapidTestStatus: ['', Validators.required],
       rapidTestRemarks: null,
+    });
+
+    this.remarksSavedForm = this.formBuilder.group({
+      processBy: null,
+      remarksDescription: null,
     });
 
     this.sampleCollectForm = this.formBuilder.group({
@@ -589,7 +654,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     return this.pdfSaveComplianceStatusForm.controls;
   }
 
- get formSSFSaveComplianceStatusForm(): any {
+  get formSSFSaveComplianceStatusForm(): any {
     return this.ssfSaveComplianceStatusForm.controls;
   }
 
@@ -624,16 +689,16 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     return this.remediationForm.controls;
   }
 
-  private loadData(referenceNumber: string, batchReferenceNumber: string ): any {
+  private loadData(referenceNumber: string): any {
     this.SpinnerService.show();
     // let params = {'personal': this.personalTasks}
     // this.fuelInspection = this.msService.fuelInspectionDetailsExamples()
     // this.totalCount = this.loadedData.fuelInspectionDto.length;
     // this.dataSet.load(this.loadedData.fuelInspectionDto);
     // this.SpinnerService.hide();
-    this.msService.msFuelInspectionScheduledDetails(batchReferenceNumber, referenceNumber).subscribe(
+    this.msService.msComplaintDetails(referenceNumber).subscribe(
         (data) => {
-          this.fuelInspection = data;
+          this.complaintInspection = data;
           // if(this.fuelInspection.sampleSubmittedStatus!= true){
           //   this.msService.loadMSLabList().subscribe(
           //       (data) => {
@@ -797,271 +862,270 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
 
   onClickSaveAssignOfficerBatch(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
-      this.msService.msFuelInspectionScheduledAssignOfficer(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          }
-      );
-    }
-  }
-
-  onClickSaveRapidTestResults(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSaveRapidTest = {...this.dataSaveRapidTest, ...this.rapidTestForm.value};
-      this.msService.msFuelInspectionScheduledRapidTest(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveRapidTest).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('RAPID TEST RESULTS SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          }
-      );
-    }
-  }
-
-  onClickSaveSampleCollected(valid: boolean, valid2: boolean) {
-    if (valid && valid2) {
-      this.SpinnerService.show();
-      this.dataSaveSampleCollect = {...this.dataSaveSampleCollect, ...this.sampleCollectForm.value};
-      this.dataSaveSampleCollectItems = {...this.dataSaveSampleCollectItems, ...this.sampleCollectItemsForm.value};
-
-      const sampleCollectionItemsDto: SampleCollectionItemsDto[] = [];
-      sampleCollectionItemsDto.push(this.dataSaveSampleCollectItems);
-      this.dataSaveSampleCollect.productsList = sampleCollectionItemsDto;
-
-      this.msService.msFuelInspectionScheduledAddSampleCollection(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('SAMPLE COLLECTION SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          }
-      );
-    }
-  }
-
-  onClickSaveSampleSubmitted(valid: boolean, valid2: boolean) {
-    if (valid && valid2) {
-      this.SpinnerService.show();
-      this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
-      this.dataSaveSampleSubmitParam = {...this.dataSaveSampleSubmitParam, ...this.sampleSubmitParamsForm.value};
-
-      const sampleSubmissionParamsDto: SampleSubmissionItemsDto[] = [];
-      sampleSubmissionParamsDto.push(this.dataSaveSampleSubmitParam);
-      this.dataSaveSampleSubmit.parametersList = sampleSubmissionParamsDto;
-
-      this.msService.msFuelInspectionScheduledAddSampleSubmission(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleSubmit).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('SAMPLE SUBMISSION SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          }
-      );
-    }
-  }
-
-  onClickSaveBSNumber(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSaveSampleSubmitBSNumber = {...this.dataSaveSampleSubmitBSNumber, ...this.sampleSubmitBSNumberForm.value};
-      this.msService.msFuelInspectionScheduledAddSampleSubmissionBSNumber(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('BS NUMBER ADDED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          }
-      );
-    }
-  }
-
-  onClickSavePDFSelected(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataPDFSaveComplianceStatus = {...this.dataPDFSaveComplianceStatus, ...this.pdfSaveComplianceStatusForm.value};
-      this.dataPDFSaveComplianceStatus.ssfID = this.fuelInspection.sampleLabResults.ssfResultsList.sffId;
-      this.dataPDFSaveComplianceStatus.bsNumber = this.fuelInspection.sampleLabResults.ssfResultsList.bsNumber;
-      this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      if (this.fuelInspection.sampleLabResults.savedPDFFiles.length === 0) {
-        this.msService.msFuelInspectionScheduledSavePDFLIMS(this.fuelInspection.batchDetails.referenceNumber,
-            this.fuelInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
-            (data: any) => {
-              this.fuelInspection = data;
-              console.log(data);
-              this.SpinnerService.hide();
-              this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
-            },
-            error => {
-              this.SpinnerService.hide();
-              console.log(error);
-              this.msService.showError('AN ERROR OCCURRED');
-            }
-        );
-      } else {
-        for (const savedPdf of this.fuelInspection.sampleLabResults.savedPDFFiles) {
-          if (savedPdf.pdfName !== this.selectedPDFFileName) {
-            this.msService.msFuelInspectionScheduledSavePDFLIMS(this.fuelInspection.batchDetails.referenceNumber,
-                this.fuelInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
-                (data: any) => {
-                  this.fuelInspection = data;
-                  console.log(data);
-                  this.SpinnerService.hide();
-                  this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
-                },
-                error => {
-                  this.SpinnerService.hide();
-                  console.log(error);
-                  this.msService.showError('AN ERROR OCCURRED');
-                }
-            );
-          } else {
-            this.SpinnerService.hide();
-            this.msService.showError('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved');
-          }
-        }
-      }
-    }
-  }
-
-  onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
-      this.dataSSFSaveComplianceStatus.ssfID = this.fuelInspection.sampleLabResults.ssfResultsList.sffId;
-      this.dataSSFSaveComplianceStatus.bsNumber = this.fuelInspection.sampleLabResults.ssfResultsList.bsNumber;
-      // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      this.msService.msFuelInspectionScheduledSaveSSFComplianceStatus(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSSFSaveComplianceStatus).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          }
-      );
-    }
-  }
-
-  onClickSaveScheduleRemediation(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSaveScheduleRemediation = {...this.dataSaveScheduleRemediation, ...this.scheduleRemediationForm.value};
-      this.msService.msFuelInspectionScheduledRemediation(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveScheduleRemediation).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('REMEDIATION SCHEDULE SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          }
-      );
-    }
-  }
-
-  onClickSaveNotCompliantInvoice(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSaveNotCompliantInvoice = {...this.dataSaveNotCompliantInvoice, ...this.notCompliantInvoiceForm.value};
-      this.msService.msFuelInspectionNotCompliantRemediationInvoice(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveNotCompliantInvoice).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('REMEDIATION INVOICE GENERATED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          }
-      );
-    }
-  }
-
-  onClickSaveRemediationForm(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
-      this.msService.msFuelInspectionRemediation(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveRemediation).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('REMEDIATION DETAILS SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          }
-      );
-    }
-  }
-
-  onClickSaveEndRemediation() {
     // if (valid) {
-      this.SpinnerService.show();
-      // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
-      this.msService.msFuelInspectionEnd(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('FUEL INSPECTION ENDED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          }
-      );
+    //   this.SpinnerService.show();
+    //   this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
+    //   this.msService.msFuelInspectionScheduledAssignOfficer(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
+    //       (data: any) => {
+    //         this.complaintInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       }
+    //   );
     // }
   }
 
+  onClickSaveRapidTestResults(valid: boolean) {
+    // if (valid) {
+    //   this.SpinnerService.show();
+    //   this.dataSaveRapidTest = {...this.dataSaveRapidTest, ...this.rapidTestForm.value};
+    //   this.msService.msFuelInspectionScheduledRapidTest(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSaveRapidTest).subscribe(
+    //       (data: any) => {
+    //         this.complaintInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('RAPID TEST RESULTS SAVED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       }
+    //   );
+    // }
+  }
+
+  onClickSaveSampleCollected(valid: boolean, valid2: boolean) {
+    // if (valid && valid2) {
+    //   this.SpinnerService.show();
+    //   this.dataSaveSampleCollect = {...this.dataSaveSampleCollect, ...this.sampleCollectForm.value};
+    //   this.dataSaveSampleCollectItems = {...this.dataSaveSampleCollectItems, ...this.sampleCollectItemsForm.value};
+    //
+    //   const sampleCollectionItemsDto: SampleCollectionItemsDto[] = [];
+    //   sampleCollectionItemsDto.push(this.dataSaveSampleCollectItems);
+    //   this.dataSaveSampleCollect.productsList = sampleCollectionItemsDto;
+    //
+    //   this.msService.msFuelInspectionScheduledAddSampleCollection(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
+    //       (data: any) => {
+    //         this.complaintInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('SAMPLE COLLECTION SAVED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       }
+    //   );
+    // }
+  }
+
+  onClickSaveSampleSubmitted(valid: boolean, valid2: boolean) {
+    // if (valid && valid2) {
+    //   this.SpinnerService.show();
+    //   this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
+    //   this.dataSaveSampleSubmitParam = {...this.dataSaveSampleSubmitParam, ...this.sampleSubmitParamsForm.value};
+    //
+    //   const sampleSubmissionParamsDto: SampleSubmissionItemsDto[] = [];
+    //   sampleSubmissionParamsDto.push(this.dataSaveSampleSubmitParam);
+    //   this.dataSaveSampleSubmit.parametersList = sampleSubmissionParamsDto;
+    //
+    //   this.msService.msFuelInspectionScheduledAddSampleSubmission(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSaveSampleSubmit).subscribe(
+    //       (data: any) => {
+    //         this.complaintInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('SAMPLE SUBMISSION SAVED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       }
+    //   );
+    // }
+  }
+
+  onClickSaveBSNumber(valid: boolean) {
+    // if (valid) {
+    //   this.SpinnerService.show();
+    //   this.dataSaveSampleSubmitBSNumber = {...this.dataSaveSampleSubmitBSNumber, ...this.sampleSubmitBSNumberForm.value};
+    //   this.msService.msFuelInspectionScheduledAddSampleSubmissionBSNumber(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
+    //       (data: any) => {
+    //         this.complaintInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('BS NUMBER ADDED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       }
+    //   );
+    // }
+  }
+
+  onClickSavePDFSelected(valid: boolean) {
+    // if (valid) {
+    //   this.SpinnerService.show();
+    //   this.dataPDFSaveComplianceStatus = {...this.dataPDFSaveComplianceStatus, ...this.pdfSaveComplianceStatusForm.value};
+    //   this.dataPDFSaveComplianceStatus.ssfID = this.complaintInspection.sampleLabResults.ssfResultsList.sffId;
+    //   this.dataPDFSaveComplianceStatus.bsNumber = this.complaintInspection.sampleLabResults.ssfResultsList.bsNumber;
+    //   this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+    //   if (this.complaintInspection.sampleLabResults.savedPDFFiles.length === 0) {
+    //     this.msService.msFuelInspectionScheduledSavePDFLIMS(this.complaintInspection.batchDetails.referenceNumber,
+    //         this.complaintInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+    //         (data: any) => {
+    //           this.complaintInspection = data;
+    //           console.log(data);
+    //           this.SpinnerService.hide();
+    //           this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
+    //         },
+    //         error => {
+    //           this.SpinnerService.hide();
+    //           console.log(error);
+    //           this.msService.showError('AN ERROR OCCURRED');
+    //         }
+    //     );
+    //   } else {
+    //     for (const savedPdf of this.complaintInspection.sampleLabResults.savedPDFFiles) {
+    //       if (savedPdf.pdfName !== this.selectedPDFFileName) {
+    //         this.msService.msFuelInspectionScheduledSavePDFLIMS(this.complaintInspection.batchDetails.referenceNumber,
+    //             this.complaintInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+    //             (data: any) => {
+    //               this.complaintInspection = data;
+    //               console.log(data);
+    //               this.SpinnerService.hide();
+    //               this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
+    //             },
+    //             error => {
+    //               this.SpinnerService.hide();
+    //               console.log(error);
+    //               this.msService.showError('AN ERROR OCCURRED');
+    //             }
+    //         );
+    //       } else {
+    //         this.SpinnerService.hide();
+    //         this.msService.showError('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved');
+    //       }
+    //     }
+    //   }
+    // }
+  }
+
+  onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
+    // if (valid) {
+    //   this.SpinnerService.show();
+    //   this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
+    //   this.dataSSFSaveComplianceStatus.ssfID = this.complaintInspection.sampleLabResults.ssfResultsList.sffId;
+    //   this.dataSSFSaveComplianceStatus.bsNumber = this.complaintInspection.sampleLabResults.ssfResultsList.bsNumber;
+    //   // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+    //   this.msService.msFuelInspectionScheduledSaveSSFComplianceStatus(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSSFSaveComplianceStatus).subscribe(
+    //       (data: any) => {
+    //         this.complaintInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       }
+    //   );
+    // }
+  }
+
+  onClickSaveScheduleRemediation(valid: boolean) {
+    // if (valid) {
+    //   this.SpinnerService.show();
+    //   this.dataSaveScheduleRemediation = {...this.dataSaveScheduleRemediation, ...this.scheduleRemediationForm.value};
+    //   this.msService.msFuelInspectionScheduledRemediation(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSaveScheduleRemediation).subscribe(
+    //       (data: any) => {
+    //         this.complaintInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('REMEDIATION SCHEDULE SAVED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       }
+    //   );
+    // }
+  }
+
+  onClickSaveNotCompliantInvoice(valid: boolean) {
+    // if (valid) {
+    //   this.SpinnerService.show();
+    //   this.dataSaveNotCompliantInvoice = {...this.dataSaveNotCompliantInvoice, ...this.notCompliantInvoiceForm.value};
+    //   this.msService.msFuelInspectionNotCompliantRemediationInvoice(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSaveNotCompliantInvoice).subscribe(
+    //       (data: any) => {
+    //         this.complaintInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('REMEDIATION INVOICE GENERATED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       }
+    //   );
+    // }
+  }
+
+  onClickSaveRemediationForm(valid: boolean) {
+    // if (valid) {
+    //   this.SpinnerService.show();
+    //   this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+    //   this.msService.msFuelInspectionRemediation(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSaveRemediation).subscribe(
+    //       (data: any) => {
+    //         this.complaintInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('REMEDIATION DETAILS SAVED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       }
+    //   );
+    // }
+  }
+
+  onClickSaveEndRemediation() {
+    // // if (valid) {
+    // this.SpinnerService.show();
+    // // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+    // this.msService.msFuelInspectionEnd(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber).subscribe(
+    //     (data: any) => {
+    //       this.complaintInspection = data;
+    //       console.log(data);
+    //       this.SpinnerService.hide();
+    //       this.msService.showSuccess('FUEL INSPECTION ENDED SUCCESSFULLY');
+    //     },
+    //     error => {
+    //       this.SpinnerService.hide();
+    //       console.log(error);
+    //       this.msService.showError('AN ERROR OCCURRED');
+    //     }
+    // );
+    // // }
+  }
+
   goBack() {
-    console.log('TEST 101' + this.fuelInspection.batchDetails.referenceNumber);
-    this.router.navigate([`/epra`, this.fuelInspection.batchDetails.referenceNumber]);
+    this.router.navigate([`/complaint`]);
   }
 
   viewLIMSPDFRecord(data: LIMSFilesFoundDto, bsNumber: string) {
@@ -1077,12 +1141,26 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
+  viewComplaintFileSaved(data: ComplaintsFilesFoundDto) {
+    this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
+  }
+
   viewLIMSPDFSavedRemarks(data: MSSSFPDFListDetailsDto) {
     console.log('TEST 101 REF NO VIEW FILE: ' + data.pdfSavedId);
     this.selectedPDFFileName = data.pdfName;
     this.currDivLabel = `COMPLIANCE STATUS AND REMARKS FOR PDF # ${this.selectedPDFFileName}`;
     this.currDiv = 'viewPdfSaveCompliance';
     this.pdfSaveComplianceStatusForm.patchValue(data);
+
+    window.$('#myModal1').modal('show');
+    // this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
+    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+  }
+
+  viewSavedRemarks(data: MSRemarksDto) {
+    this.currDivLabel = `REMARKS FOR ${data.processName}`;
+    this.currDiv = 'viewSavedRemarks';
+    this.remarksSavedForm.patchValue(data);
 
     window.$('#myModal1').modal('show');
     // this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
@@ -1122,5 +1200,22 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         break;
     }
   }
+
+  public onCustomRemarksViewAction(event: any): void {
+    switch (event.action) {
+      case 'viewPDFRemarks':
+        this.viewLIMSPDFSavedRemarks(event.data);
+        break;
+    }
+  }
+
+  public onCustomComplaintFileViewAction(event: any): void {
+    switch (event.action) {
+      case 'viewPDFRecord':
+        this.viewComplaintFileSaved(event.data);
+        break;
+    }
+  }
+
 
 }

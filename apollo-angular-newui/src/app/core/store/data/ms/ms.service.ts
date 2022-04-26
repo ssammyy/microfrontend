@@ -4,22 +4,41 @@ import {Observable, throwError} from 'rxjs';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
 import {
+    ApiResponseModel,
     BatchFileFuelSaveDto,
-    BSNumberSaveDto, ComplaintCustomersDto, ComplaintDto, ComplaintLocationDto, CompliantRemediationDto,
+    BSNumberSaveDto,
+    ComplaintCustomersDto,
+    ComplaintDto,
+    ComplaintLocationDto,
+    ComplaintDetailsDto,
+    CompliantRemediationDto,
     FuelBatchDetailsDto,
     FuelEntityAssignOfficerDto,
     FuelEntityDto,
     FuelEntityRapidTestDto,
     FuelInspectionDto,
-    FuelInspectionScheduleListDetailsDto, LaboratoryDto,
+    FuelInspectionScheduleListDetailsDto,
+    LaboratoryDto,
     LabResultsParamDto,
-    LIMSFilesFoundDto, MSComplaintSubmittedSuccessful, MSSSFComplianceStatusDetailsDto, MSSSFLabResultsDto,
+    LIMSFilesFoundDto,
+    MSComplaintSubmittedSuccessful,
+    MSSSFComplianceStatusDetailsDto,
+    MSSSFLabResultsDto,
     MSSSFPDFListDetailsDto,
-    MsUsersDto, NewComplaintDto, PDFSaveComplianceStatusDto, RemediationDto,
+    MsUsersDto,
+    NewComplaintDto,
+    PDFSaveComplianceStatusDto,
+    RemediationDto,
     SampleCollectionDto,
     SampleCollectionItemsDto,
     SampleSubmissionDto,
-    SampleSubmissionItemsDto, SSFSaveComplianceStatusDto
+    SampleSubmissionItemsDto,
+    SSFSaveComplianceStatusDto,
+    AllComplaintsDetailsDto,
+    MsDepartment,
+    MsDivisionDetails,
+    MsProducts,
+    MsProductCategories, MsBroadProductCategory, MsProductSubcategory
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidatorFn} from '@angular/forms';
@@ -318,6 +337,90 @@ export class MsService {
         });
     }
 
+    public msDepartmentListDetails(): Observable<MsDepartment[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_DEPARTMENTS);
+        return this.http.get<MsDepartment[]>(url).pipe(
+            map(function (response: MsDepartment[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msDivisionListDetails(): Observable<MsDivisionDetails[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_DIVISIONS);
+        return this.http.get<MsDivisionDetails[]>(url).pipe(
+            map(function (response: MsDivisionDetails[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msProductListDetails(): Observable<MsProducts[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_PRODUCTS);
+        return this.http.get<MsProducts[]>(url).pipe(
+            map(function (response: MsProducts[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msProductCategoryListDetails(): Observable<MsProductCategories[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_PRODUCT_CATEGORIES);
+        return this.http.get<MsProductCategories[]>(url).pipe(
+            map(function (response: MsProductCategories[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msProductBroadCategoryListDetails(): Observable<MsBroadProductCategory[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_BROAD_PRODUCT_CATEGORY);
+        return this.http.get<MsBroadProductCategory[]>(url).pipe(
+            map(function (response: MsBroadProductCategory[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public msProductSubCategoryListDetails(): Observable<MsProductSubcategory[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_PRODUCT_SUB_CATEGORY);
+        return this.http.get<MsProductSubcategory[]>(url).pipe(
+            map(function (response: MsProductSubcategory[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     // tslint:disable-next-line:max-line-length
     public createNewComplaint(customerDetails: ComplaintCustomersDto, complaintDetails: ComplaintDto, locationDetails: ComplaintLocationDto): Observable<MSComplaintSubmittedSuccessful> {
         const newComplaintDto = new NewComplaintDto();
@@ -337,16 +440,50 @@ export class MsService {
         );
     }
 
-    public saveComplaintFiles(refNumber: string, data: FormData): Observable<any> {
+    public saveComplaintFiles(data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.UPLOAD_COMPLIANT_FILE);
         // const params = new HttpParams()
         //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'refNumber': refNumber}
+            }, params: {'refNumber': 'refNumber'}
         }).pipe(
             map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadMSComplaintList(page: string, records: string): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.ALL_COMPLAINT_LIST);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+
+    public msComplaintDetails(referenceNo: string): Observable<AllComplaintsDetailsDto> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNo);
+        return this.http.get<AllComplaintsDetailsDto>(url, {params}).pipe(
+            map(function (response: AllComplaintsDetailsDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

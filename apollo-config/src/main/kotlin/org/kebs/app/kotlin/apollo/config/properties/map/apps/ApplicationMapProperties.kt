@@ -1033,6 +1033,21 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.transaction.exception.status}")
     val transactionExceptionStatus: Int = 99
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.onLine}")
+    val msComplaintProcessOnlineSubmitted: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.letter}")
+    val msComplaintProcessLetterSubmitted: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.mandate}")
+    val msComplaintProcessMandate: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.not.mandate}")
+    val msComplaintProcessNotMandate: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.assign.officer}")
+    val msComplaintProcessAssignOfficer: Long? = null
+
     @Value("\${org.kebs.app.kotlin.apollo.application.page.start}")
     val pageStart: Int = 1
 

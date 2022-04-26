@@ -38,13 +38,16 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceComplaintProcessDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MasterDataDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
@@ -60,6 +63,7 @@ import org.springframework.web.servlet.function.paramOrNull
 @Component
 class NewMarketSurveillanceHandler(
     private val applicationMapProperties: ApplicationMapProperties,
+    private val masterDataDaoService: MasterDataDaoService,
     private val marketSurveillanceFuelDaoServices: MarketSurveillanceFuelDaoServices,
     private val marketSurveillanceComplaintDaoServices: MarketSurveillanceComplaintProcessDaoServices,
     private val commonDaoServices: CommonDaoServices,
@@ -68,7 +72,102 @@ class NewMarketSurveillanceHandler(
 
     final val appId: Int = applicationMapProperties.mapMarketSurveillance
 
+    /*******************************************************************************************************************************************************************************************************************************************************************************************/
+                            /**************************************
+                             ******THE START OF MS COMMON DETAILS*******
+                             **************************************/
+    /*******************************************************************************************************************************************************************************************************************************************************************************************/
+
+
     fun notSupported(req: ServerRequest): ServerResponse = ServerResponse.badRequest().body("Invalid Request: Not supported")
+
+    fun msDepartments(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            marketSurveillanceComplaintDaoServices.listMsDepartments(map.activeStatus)
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Ms Departments found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+
+    fun msDivisions(req: ServerRequest): ServerResponse {
+        try {
+//            val map = commonDaoServices.serviceMapDetails(appId)
+//            val departmentID = req.pathVariable("departmentID").toLong()
+            masterDataDaoService.getAllDivisions()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Ms Departments found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    fun msStandardsCategory(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllStandardProductCategory()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Standard Product Category found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    fun msProductCategories(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllProductCategories()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Standard Product Category found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    fun msBroadProductCategory(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllBroadProductCategory()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Standard Product Category found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    fun msProducts(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllProducts()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Standard Product Category found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    fun msProductSubcategory(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllProductSubcategory()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Standard Product Category found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
 
     fun getAllLaboratoryList(req: ServerRequest): ServerResponse {
         return try {
@@ -83,6 +182,13 @@ class NewMarketSurveillanceHandler(
             ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+    /*******************************************************************************************************************************************************************************************************************************************************************************************/
+                                /**************************************
+                                 ******THE START OF MS FUEL DETAILS*******
+                                 **************************************/
+    /*******************************************************************************************************************************************************************************************************************************************************************************************/
+
 
     fun getAllFuelBatchList(req: ServerRequest): ServerResponse {
         return try {
@@ -468,14 +574,18 @@ class NewMarketSurveillanceHandler(
 
     fun saveNewComplaint(req: ServerRequest): ServerResponse {
         return try {
-            val body = req.body<NewComplaintDto>()
+//            val body = req.body<NewComplaintDto>()
+            val docFile = req.paramOrNull("docFile") ?: throw ExpectedDataNotFound("Required  docFile, check parameters")
+            val data = req.paramOrNull("data") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val gson = Gson()
+            val body = gson.fromJson(data, NewComplaintDto::class.java)
 //            val referenceNo = req.headers().contentType().MultipartFile("docFile") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
             val errors: Errors = BeanPropertyBindingResult(body, NewComplaintDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
                     val page = commonDaoServices.extractPageRequest(req)
-                    marketSurveillanceComplaintDaoServices.saveNewComplaint(body,page)
+                    marketSurveillanceComplaintDaoServices.saveNewComplaint(body,docFile as List<MultipartFile>)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -490,6 +600,61 @@ class NewMarketSurveillanceHandler(
             ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+
+    fun getAllComplaintList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msComplaintLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getComplaintDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            marketSurveillanceComplaintDaoServices.getComplaintDetailsBasedOnRefNo(referenceNo)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updateComplaintByAccepting(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val body = req.body<ComplaintApproveDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ComplaintApproveDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.updateComplaintAcceptStatus(referenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+
 
 
 //    fun saveNewComplaint(req: ServerRequest): ServerResponse {

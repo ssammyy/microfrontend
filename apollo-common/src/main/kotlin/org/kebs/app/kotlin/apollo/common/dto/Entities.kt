@@ -323,6 +323,17 @@ data class UserCompanyDto(
         var manufactureStatus: Int? = null,
 )
 
+class ApiResponseModel {
+        var extras: Any? = null
+        var message: String ? = null
+        var responseCode: String ? = null
+        var data: Any? = null
+        var errors: Any? = null
+        var pageNo: Int? = null
+        var totalPages: Int? = null
+        var totalCount: Long? = null
+}
+
 data class BrsConfirmationRequest(
         @NotEmpty(message = "is required")
         val registrationNumber: String,

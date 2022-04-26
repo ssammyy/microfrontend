@@ -1,6 +1,20 @@
 import {County} from '../county';
+import {UserDetails} from '../master/master.model';
 
 export class Ms {
+}
+
+export class ComplaintApproveDto {
+    department: number;
+    division: number;
+    approveStatus: number;
+    approvedRemarks: string;
+}
+
+export class ComplaintAdviceRejectDto {
+    rejectStatus: number;
+    advisedWhereToRemarks: string;
+    rejectedRemarks: string;
 }
 
 export class MSComplaintSubmittedSuccessful {
@@ -10,12 +24,157 @@ export class MSComplaintSubmittedSuccessful {
     errorMessage: string;
 }
 
+export class MsDepartment {
+    id?: number;
+    department?: string;
+    descriptions?: string;
+    directorateId?: number;
+    status?: boolean;
+}
+
+export class MsDivisionDetails {
+    id?: string;
+    division?: string;
+    descriptions?: string;
+    status?: string;
+    departmentId?: number;
+}
+
+export class MsStandardProductCategory {
+    id?: number;
+    standardCategory?: string;
+    standardNickname?: string;
+    standardId?: number;
+    status?: boolean;
+}
+
+export class MsProductCategories {
+    id?: number;
+    name?: string;
+    status?: boolean;
+    broadProductCategoryId?: number;
+}
+
+export class MsBroadProductCategory {
+    id?: number;
+    category?: string;
+    status?: boolean;
+    divisionId?: number;
+}
+
+export class MsProducts {
+    id?: number;
+    name?: string;
+    status?: boolean;
+    productCategoryId?: number;
+}
+
+export class MsProductSubcategory {
+    id?: number;
+    name?: string;
+    status?: boolean;
+    productId?: number;
+}
+
 export class NewComplaintDto {
     complaintDetails: ComplaintDto;
     customerDetails: ComplaintCustomersDto;
     locationDetails: ComplaintLocationDto;
 }
 
+export class ApiResponseModel {
+    totalCount: number;
+    extras: any;
+    message: string;
+    responseCode: string;
+    data: any;
+    errors: any;
+    pageNo: number;
+    totalPages: number;
+}
+
+
+
+export class AllComplaintsDetailsDto {
+    complaintsDetails: ComplaintDetailsDto;
+    officersList: MsUsersDto[];
+    officersAssigned: MsUsersDto;
+    remarksDetails: MSRemarksDto[];
+    sampleCollected: SampleCollectionDto;
+    sampleSubmitted: SampleSubmissionDto;
+    sampleLabResults: MSSSFLabResultsDto;
+}
+
+export class MSRemarksDto {
+    id: number;
+    remarksDescription: string;
+    processBy: string;
+    processName: string;
+}
+
+export class ComplaintsListDto {
+    referenceNumber: string;
+    complaintTitle: string;
+    targetedProducts: string;
+    transactionDate: Date;
+    progressStep: string;
+}
+
+export class ComplaintDetailsDto {
+    id: number;
+    refNumber: string;
+    complainantName: string;
+    complainantEmail: string;
+    complainantPhoneNumber: string;
+    complainantPostalAddress: string;
+    complaintCategory: string;
+    complaintTitle: string;
+    complaintDescription: string;
+    broadProductCategory: string;
+    productClassification: string;
+    productSubcategory: string;
+    productName: string;
+    productBrand: string;
+    county: string;
+    town: string;
+    marketCenter: string;
+    buildingName: string;
+    date: Date;
+    status: string;
+    approvedStatus: number;
+    assignedIOStatus: number;
+    rejectedStatusStatus: number;
+    complaintFiles: ComplaintsFilesFoundDto[];
+}
+
+
+export class DivisionDetails {
+    id?: string;
+    division?: string;
+    descriptions?: string;
+    status?: string;
+    departmentId?: number;
+}
+
+// export class UserDetails {
+//     id?: number;
+//     firstName?: string;
+//     lastName?: string;
+//     userName?: string;
+//     email?: string;
+//     status?: boolean;
+// }
+
+export class FindWithRefNumber {
+    refNumber?: string;
+}
+
+export class ComplaintsFilesFoundDto {
+    id: number;
+    fileName: string;
+    documentType: string;
+    fileContentType: string;
+}
 
 
 export class ComplaintDto {
@@ -138,6 +297,7 @@ export class FuelInspectionDto {
     endInspectionStatus: boolean;
     batchDetails: FuelBatchDetailsDto;
     officersList: MsUsersDto[];
+    remarksDetails: MSRemarksDto[];
     officersAssigned: MsUsersDto;
     rapidTest: FuelEntityRapidTestDto;
     sampleCollected: SampleCollectionDto;

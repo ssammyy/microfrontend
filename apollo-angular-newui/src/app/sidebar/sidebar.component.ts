@@ -22,7 +22,7 @@ export interface ChildrenItems {
     title: string;
     ab: string;
     type?: string;
-    privilege?: string[]
+    privilege?: string[];
 }
 
 // Menu Items
@@ -263,8 +263,16 @@ export const ROUTES: RouteInfo[] = [
         title: 'EPRA',
         type: 'link',
         collapse: 'epra',
-        privilege: ['EPRA','MS_MP_MODIFY','MS_IOP_MODIFY'],
+        privilege: ['EPRA', 'MS_MP_MODIFY', 'MS_IOP_MODIFY'],
         icontype: 'receipt'
+    },
+    {
+        path: '/complaint',
+        title: 'MS COMPLAINTS',
+        type: 'link',
+        collapse: 'complaint',
+        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
+        icontype: 'diamond'
     }
 ];
 
@@ -305,16 +313,16 @@ export class SidebarComponent implements OnInit {
     // Check if role is in required privileges
     canViewRole(privileges?: string[]): Boolean {
         if (!privileges) {
-            return true
+            return true;
         }
-        for (let role of this.roles) {
-            for (let p of privileges) {
+        for (const role of this.roles) {
+            for (const p of privileges) {
                 if (role == p) {
-                    return true
+                    return true;
                 }
             }
         }
-        return false
+        return false;
     }
 
     updatePS(): void {

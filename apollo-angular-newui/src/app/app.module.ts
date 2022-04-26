@@ -282,6 +282,8 @@ import { ViewAuctionItemsComponent } from './apollowebs/di/auction/view-auction-
 import { UploadFileComponent } from './apollowebs/di/auction/upload-file/upload-file.component';
 import { AuctionItemDetailsComponent } from './apollowebs/di/auction/auction-item-details/auction-item-details.component';
 import { ComplaintNewComponent } from './apollowebs/market-surveillance/complaint/complaint-new/complaint-new.component';
+import { ComplaintListComponent } from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
+import { ComplaintDetailsComponent } from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
 
 
 // @NgModule({
@@ -712,7 +714,9 @@ import { ComplaintNewComponent } from './apollowebs/market-surveillance/complain
         EpraBatchNewComponent,
         ViewFuelSheduledDetailsComponent,
         MatMultilineTabMsDirective,
-        ComplaintNewComponent
+        ComplaintNewComponent,
+        ComplaintListComponent,
+        ComplaintDetailsComponent
 
     ]
 

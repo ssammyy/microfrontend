@@ -132,6 +132,8 @@ import {EpraBatchListComponent} from "./apollowebs/market-surveillance/fuel/epra
 import {EpraListComponent} from "./apollowebs/market-surveillance/fuel/epra-list/epra-list.component";
 import {ViewFuelSheduledDetailsComponent} from "./apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component";
 import {ComplaintNewComponent} from './apollowebs/market-surveillance/complaint/complaint-new/complaint-new.component';
+import {ComplaintListComponent} from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
+import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
 // import {HoSicTasksComponent} from "./apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component";
 // export const AppRoutes: Routes = [
 //     {
@@ -909,22 +911,57 @@ export const routes: Routes = [
         path: 'stdLevyHome', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyDashboardComponent}]
     },
+
     {
-        path: 'epra',
+        path: 'epra', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: EpraBatchListComponent}]
+    },
+    {
+        path: 'epra/:referenceNumber', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: EpraListComponent}]
+    },
+    {
+        path: 'epra/fuelInspection/details/:referenceNumber/:batchReferenceNumber', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ViewFuelSheduledDetailsComponent}]
+    },
+    // {
+    //     path: 'epra',
+    //     component: AdminLayoutComponent,
+    //     canActivate: [RouteGuard],
+    //     children: [
+    //         {
+    //             path: '',
+    //             component: EpraBatchListComponent},
+    //         {
+    //             path: ':referenceNumber',
+    //             component: EpraListComponent
+    //         },
+    //         {
+    //             path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
+    //             component: ViewFuelSheduledDetailsComponent
+    //         }
+    //     ]
+    // },
+    {
+        path: 'complaint',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [
             {
                 path: '',
-                component: EpraBatchListComponent},
+                component: ComplaintListComponent},
             {
-                path: ':referenceNumber',
-                component: EpraListComponent
-            },
-            {
-                path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
-                component: ViewFuelSheduledDetailsComponent
+                path: 'details/:referenceNumber',
+                component: ComplaintDetailsComponent
             }
+            // ,
+            // {
+            //     path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
+            //     component: ViewFuelSheduledDetailsComponent
+            // }
         ]
     },
     {
@@ -934,11 +971,12 @@ export const routes: Routes = [
             {
                 path: '',
                 component: ComplaintNewComponent
-            },
-            {
-                path: 'complain',
-                component: ComplaintNewComponent
             }
+            // ,
+            // {
+            //     path: 'complain',
+            //     component: ComplaintNewComponent
+            // }
 
         ],
         data: {

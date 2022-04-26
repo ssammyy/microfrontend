@@ -92,6 +92,7 @@ export class ApiEndpointService {
     public static MS_CONTEXT = '/api/v1/migration/ms';
     public static MS_FUEL_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/fuel`;
     public static MS_COMPLAINT_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/complaint`;
+    public static MS_COMMON_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/common`;
 
     /**
      * Map of API endpoints.
@@ -459,9 +460,22 @@ export class ApiEndpointService {
         // CLIENT_LIST: `${ApiEndpointService.VERSION_THREE_CONTEXT}/client-list`,
     };
 
+    public static MARKET_SURVEILLANCE_COMMON = {
+        MS_DEPARTMENTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/departments`,
+        MS_DIVISIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/divisions`,
+        MS_STANDARD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/standardProductCategory`,
+        MS_PRODUCT_CATEGORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/productCategories`,
+        MS_BROAD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/broadProductCategory`,
+        MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
+        MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`
+      };
+
     public static MARKET_SURVEILLANCE_COMPLAINT = {
         CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
-        UPLOAD_COMPLIANT_FILE: `${ApiEndpointService.ANONYMOUS_CONTEXT_MS}/complaint/file/save`,
+        UPLOAD_COMPLIANT_FILE: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/file/save`,
+        ALL_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list`,
+        COMPLAINT_DETAILS: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/details`,
+        VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
       };
     /**

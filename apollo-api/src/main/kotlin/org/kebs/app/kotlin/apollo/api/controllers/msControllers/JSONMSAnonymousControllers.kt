@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.msControllers
 
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceComplaintProcessDaoServices
@@ -7,7 +8,10 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelD
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.ms.MSComplaintSubmittedSuccessful
+import org.kebs.app.kotlin.apollo.common.dto.ms.NewComplaintDto
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
@@ -25,7 +29,7 @@ import javax.servlet.http.HttpServletResponse
 
 
 @RestController
-@RequestMapping("/api/v1/migration/ms/anonymous")
+@RequestMapping("/api/v1/migration/anonymous")
 class JSONMSAnonymousControllers(
     private val applicationMapProperties: ApplicationMapProperties,
     private val msUploadRepo: IMsUploadsRepository,
@@ -44,49 +48,16 @@ class JSONMSAnonymousControllers(
     @PostMapping("/complaint/file/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFilesMsComplaintFile(
-        @RequestParam("refNumber") refNumber: String,
+//        @RequestParam("refNumber") refNumber: String,
         @RequestParam("docFile") docFile: List<MultipartFile>,
-//        @RequestParam("data") data: List<MultipartFile>,
+        @RequestParam("data") data: String,
         model: Model
     ): MSComplaintSubmittedSuccessful {
-        val map = commonDaoServices.serviceMapDetails(appId)
-//        val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val complaintDetails = marketSurveillanceDaoComplaintServices.findComplaintByRefNumber(refNumber)
-
-        docFile.forEach { fileDoc ->
-            var sr = commonDaoServices.createServiceRequest(map)
-            try {
-                var upload = MsUploadsEntity()
-                with(upload) {
-                    msComplaintId = complaintDetails.id
-                    complaintUploads = 1
-                    ordinaryStatus = 0
-                    versionNumber = 1
-                    name = fileDoc.name
-                    fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(fileDoc.name)
-                    documentType = "COMPLAINT FILE"
-                    document = fileDoc.bytes
-                    transactionDate = commonDaoServices.getCurrentDate()
-                    status = 1
-                    createdBy = complaintDetails.createdBy
-                    createdOn = commonDaoServices.getTimestamp()
-                }
-                upload = msUploadRepo.save(upload)
-            } catch (e: Exception) {
-                KotlinLogging.logger { }.error(e.message, e)
-//            KotlinLogging.logger { }.trace(e.message, e)
-                sr.payload = "${fileDoc.bytes}"
-                sr.status = sr.serviceMapsId?.exceptionStatus
-                sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
-                sr.responseMessage = e.message
-                sr = serviceRequestsRepo.save(sr)
-
-            }
-            KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        }
-
-        return MSComplaintSubmittedSuccessful(complaintDetails.referenceNumber,true,"Complaint submitted successful with ref number ${complaintDetails.referenceNumber}", null)
+        val gson = Gson()
+        val body = gson.fromJson(data, NewComplaintDto::class.java)
+        return  marketSurveillanceDaoComplaintServices.saveNewComplaint(body,docFile)
     }
+
 
 
 
