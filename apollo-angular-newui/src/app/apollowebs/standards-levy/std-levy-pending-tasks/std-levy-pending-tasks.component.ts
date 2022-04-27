@@ -804,7 +804,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         (response) => {
           //console.log(response);
           this.getMnPendingTask();
-          this.SpinnerService.hide();
+          // this.SpinnerService.hide();
 
           this.onClickSaveUploads(response.body.savedRowID)
           this.prepareReportFormGroup.reset();
