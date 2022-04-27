@@ -9,7 +9,19 @@ import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
+class KraRequest {
 
+    @JsonProperty("HEADER")
+    @NotNull(message = "Required field")
+    @Valid
+    var header: KraHeader? = null
+
+
+    @JsonProperty("DETAILS")
+    @Valid
+    @NotNull(message = "Required field")
+    var details: MutableList<KraDetails>? = null
+}
 
 class KraHeader {
 
@@ -31,63 +43,11 @@ class KraHeader {
 
     @NotNull(message = "Required field")
 //    DD-MM-YYYY’T’HH:MM:SS
-  //  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")
+    //  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")
     var transmissionDate: String? = globalVar
 
 
 }
-
-data class KraDataRequest(
-    @JsonProperty("REQUEST")
-   @NotNull(message = "Required field")
-    @Valid
-    var request : List<Any>? = null
-    //var request: KraRequests? = null
-
-
-)
-
-class KraRequest {
-
-    @JsonProperty("HEADER")
-    @NotNull(message = "Required field")
-    @Valid
-    var header: KraHeader? = null
-
-
-    @JsonProperty("DETAILS")
-    @Valid
-    @NotNull(message = "Required field")
-    var details: MutableList<KraDetails>? = null
-}
-
-class KraRequestHeader{
-    @JsonProperty("HEADER")
-    @NotNull(message = "Required field")
-    @Valid
-    var header: KraHeader? = null
-}
-
-class KraRequestDetails{
-    @JsonProperty("DETAILS")
-    @Valid
-    @NotNull(message = "Required field")
-    var details: KraDetails? = null
-   // var details: List<KraDetails>? = null
-}
-
-
-
-//class KraRequest {
-//
-//    @JsonProperty("REQUEST")
-//    @NotNull(message = "Required field")
-//    @Valid
-//    var request : List<Any>? = null
-//}
-
-
-
 
 
 class KraDetails {
@@ -105,10 +65,8 @@ class KraDetails {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     var registrationDate: String? = null
 
-     @NotEmpty(message = "Required field")
+    @NotEmpty(message = "Required field")
     var status: String? = null
 
 }
-
-
 

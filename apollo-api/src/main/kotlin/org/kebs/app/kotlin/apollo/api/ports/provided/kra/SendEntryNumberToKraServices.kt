@@ -72,7 +72,6 @@ class SendEntryNumberToKraServices(
             val list= mutableListOf<KraDetails>()
             list.add(detailBody)
 
-
             val rootRequest = KraRequest().apply {
                 header = headerBody
                 details = list
@@ -80,9 +79,6 @@ class SendEntryNumberToKraServices(
 
             val requestBody = JSONObject()
             requestBody["REQUEST"] = rootRequest
-
-
-
 
             var transactionsRequest = KraEntryNumberRequestLogEntity().apply  {
                 requestHash = headerBody.hash
@@ -171,6 +167,8 @@ class SendEntryNumberToKraServices(
         return encryptThisString(hashedData)
 
     }
+
+
 }
 
 
