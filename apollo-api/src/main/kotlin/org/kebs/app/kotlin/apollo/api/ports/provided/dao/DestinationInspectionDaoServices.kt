@@ -2367,22 +2367,29 @@ class DestinationInspectionDaoServices(
     }
 
     fun updateCDDetailsWithForeignDocuments(cdDetailsEntity: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDetailsEntity {
-        // Attch COC
+        KotlinLogging.logger { }.info("Map Foreign Documents to consignment: ${cdDetailsEntity.ucrNumber}")
+        // Attach COC
         this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
-                ?: "", ConsignmentCertificatesIssues.COC.nameDesc)?.let {
-            cdDetailsEntity.cocNumber = it.cocNumber
+                ?: "", ConsignmentCertificatesIssues.COC.nameDesc)?.let { coc ->
+            cdDetailsEntity.cocNumber = coc.cocNumber
             cdDetailsEntity.localCocOrCorStatus = 1
+            coc.consignmentDocId = cdDetailsEntity
+            cocRepo.save(coc)
         }
         // Attach NCR
         this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
-                ?: "", ConsignmentCertificatesIssues.NCR.nameDesc)?.let {
-            cdDetailsEntity.ncrNumber = it.cocNumber
-            cdDetailsEntity.localCocOrCorStatus = 1
+                ?: "", ConsignmentCertificatesIssues.NCR.nameDesc)?.let { ncr ->
+            cdDetailsEntity.ncrNumber = ncr.cocNumber
+            ncr.consignmentDocId = cdDetailsEntity
+            cocRepo.save(ncr)
         }
         // Attach COI
         this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
-                ?: "", ConsignmentCertificatesIssues.COI.nameDesc)?.let {
+                ?: "", ConsignmentCertificatesIssues.COI.nameDesc)?.let { coi ->
             cdDetailsEntity.localCoi = 1
+            cdDetailsEntity.cocNumber = coi.coiNumber
+            coi.consignmentDocId = cdDetailsEntity
+            cocRepo.save(coi)
         }
         // Attach COR
         findVehicleFromCd(cdDetailsEntity)?.let { vehicle ->

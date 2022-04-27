@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.store.repo.BillSummary
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
+import java.time.Instant
 
 class RequestItems {
     @JsonProperty("ProductName")
@@ -184,13 +185,13 @@ class SageInvoiceRequest {
         fun fromEntity(dn: BillPayments, corporate: CorporateCustomerAccounts): SageInvoiceRequest {
             val req = SageInvoiceRequest().apply {
                 batchNo = dn.billNumber
-                documentDate = dn.billDate
+                documentDate = dn.billDate ?: Timestamp.from(Instant.now())
                 invoiceType = 1 // 1- Invoice Note, 2- Debit note - Always 1
                 serviceType = dn.billServiceType ?: "DI"
-                currencyCode = dn.currencyCode
+                currencyCode = dn.currencyCode ?: "KES"
                 customerNumber = corporate.corporateIdentifier
-                customerCode = dn.customerCode ?: corporate.corporateCode
-                customerName = dn.customerName ?: corporate.corporateName
+                customerCode = corporate.corporateCode
+                customerName = corporate.corporateName
                 invoiceDesc = dn.billDescription
                 invoiceAmnt = dn.totalAmount
             }

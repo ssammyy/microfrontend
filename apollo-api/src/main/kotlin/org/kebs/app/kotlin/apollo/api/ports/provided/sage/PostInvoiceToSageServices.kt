@@ -205,9 +205,17 @@ class PostInvoiceToSageServices(
 
             val requestBody = mutableMapOf<String, Any>()
             val tmpRequest = SageInvoiceRequest.fromEntity(billPayment, corporate)
+            val invoiceLines = invoiceDaoService.findBillTransactions(billPayment.id)
             requestBody["header"] = headerBody
+            // Add Tax to total amount
+            for (inv in invoiceLines) {
+                inv.getTotalTax()?.let {
+                    tmpRequest.invoiceAmnt = tmpRequest.invoiceAmnt?.plus(it)
+                }
+            }
             requestBody["request"] = tmpRequest
-            requestBody["details"] = InvoiceRequestItems.fromList(invoiceDaoService.findBillTransactions(billPayment.id), "Account Line")
+            requestBody["details"] = InvoiceRequestItems.fromList(invoiceLines, "Account Line")
+
             // Send and log request
             val log = daoService.createTransactionLog(0, "${billPayment.billNumber}_1")
             val resp = daoService.getHttpResponseFromPostCall(

@@ -311,7 +311,8 @@ import {NwaTasksComponent} from './apollowebs/standards-development/workshop-agr
 import {GenerateAuctionKraReportComponent} from "./apollowebs/di/auction/generate-auction-kra-report/generate-auction-kra-report.component";
 import {UpdateComplaintTaskComponent} from "./apollowebs/pvoc/complaints/update-complaint-task/update-complaint-task.component";
 import {UpdateExemptionTaskComponent} from "./apollowebs/pvoc/exemptions/update-exemption-task/update-exemption-task.component";
-import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
+
+// import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 
 
 @NgModule({
@@ -377,7 +378,7 @@ import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
         MatTabsModule,
         MatProgressSpinnerModule,
         MDBBootstrapModule.forRoot(),
-        NgxMatSelectSearchModule
+        // NgxMatSelectSearchModule
     ],
     declarations: [
         AppComponent,
