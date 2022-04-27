@@ -236,11 +236,25 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.sectionValue}}</td
                                                         <tr>
                                                             <td><strong>
                                                                 Status</strong></td>
-                                                            <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+
+                                                            <ng-template
+                                                                    [ngIf]="allPermitDetails?.permitDetails?.processStatusID ==59"
+                                                                    [ngIfElse]="elseBlock">
+                                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
 text-justify: inter-word;">
-                                                                <mark style="  background-color: #0066b5;
+                                                                    <mark style="  background-color: #fd0b0b;
 color: #ffffff;"><strong>{{allPermitDetails?.permitDetails?.processStatusName}}</strong></mark>
-                                                            </td>
+                                                                </td>
+                                                            </ng-template>
+                                                            <ng-template #elseBlock>
+                                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+text-justify: inter-word;">
+                                                                    <mark style="  background-color: #0066b5;
+color: #ffffff;"><strong>{{allPermitDetails?.permitDetails?.processStatusName}}</strong></mark>
+                                                                </td>
+                                                            </ng-template>
+
+
                                                         </tr>
                                                         <tr>
                                                             <td><strong>
@@ -1636,7 +1650,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
 
                         <button style="width: -webkit-fill-available"
-                                *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true && allPermitDetails?.permitDetails?.oldPermitStatus == false"
+                                *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true && allPermitDetails?.permitDetails?.oldPermitStatus == false && allPermitDetails?.permitDetails?.processStatusID !=59"
                                 mat-raised-button=""
                                 (click)="submitRenewalApplication()"
                                 class="btn btn-kebs mat-raised-button mat-button-base"><span
@@ -1656,7 +1670,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <div *ngIf="allPermitDetails?.permitDetails?.sendApplication == false ">
+                        <div *ngIf="allPermitDetails?.permitDetails?.sendApplication == false  && allPermitDetails?.permitDetails?.versionNumber != null ">
                             <a style="width: -webkit-fill-available" href="/smark/newSmarkPermit#{{sta1?.id}}"
                                mat-raised-button=""
                                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
@@ -2058,34 +2072,64 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             </div>
                             <form [formGroup]="form">
                                 <div class="modal-body">
-
-                                    <p>
-                                        This Is A Migrated Permit. Please Select A Similar Permit To Fill In The Missing
-                                        Details.
-                                    </p>
-                                    <div class="form-group bmd-form-group is-filled">
-                                        <p>
-                                            <ng-multiselect-dropdown
-                                                    formControlName="permits"
-                                                    [placeholder]="'Enter Permit Number'"
-                                                    [settings]="dropdownSettings"
-                                                    [data]="dropdownList"
-                                            >
-                                            </ng-multiselect-dropdown>
-                                        </p>
-
+                                    <div class="row">
+                                        <div class="w-50 mx-auto">
+                                            <h3 style="margin-left: 20px" class="modal-title">This Is A Migrated
+                                                Permit.</h3>
+                                        </div>
                                     </div>
 
+                                    <div class="row">
+                                        <div class="col-md-8 offset-md-2">
+                                            <p>
+                                                1) Please Select A Similar Permit To Fill In The Missing Details.
+                                            </p>
+                                            <div class="form-group bmd-form-group is-filled">
+                                                <p>
+                                                    <ng-multiselect-dropdown
+                                                            formControlName="permits"
+                                                            [placeholder]="'Enter Permit Number'"
+                                                            [settings]="dropdownSettings"
+                                                            [data]="dropdownList"
+                                                    >
+                                                    </ng-multiselect-dropdown>
+                                                </p>
+
+                                            </div>
+                                            <button style="width: -webkit-fill-available" class="btn btn-info"
+                                                    data-dismiss="modal" #closeModal
+                                                    (click)="updatePermitWithData(actionRequest?.id)">Update Permit Data
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                    <br><br><br>
+                                    <div class="row">
+                                        <div class="col-md-8 offset-md-2">
+                                            <p>
+                                                2) Please Manually Fill In The Missing Details.
+                                            </p>
+                                            <!--                                            <button class="btn btn-info" data-dismiss="modal" #closeModal-->
+                                            <!--                                                    (click)="updatePermitWithData(actionRequest?.id)">Fill Manually-->
+                                            <!--                                            </button>-->
+                                            <a style="width: -webkit-fill-available"
+                                               href="/smark/newSmarkPermit#{{sta1?.id}}"
+                                               mat-raised-button=""
+                                               class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                                    class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                                 <input hidden name="id" id="id">
-                                <div class="modal-footer justify-content-between">
+                                <div class="modal-footer">
 
                                     <button class="btn btn-danger" data-dismiss="modal" #closeModal
                                     >Close
                                     </button>
-                                    <button class="btn btn-info" data-dismiss="modal" #closeModal
-                                            (click)="updatePermitWithData(actionRequest?.id)">Update Permit Data
-                                    </button>
+
                                 </div>
                             </form>
                         </div>

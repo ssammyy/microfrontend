@@ -130,6 +130,15 @@ class QADaoServices(
 
     }
 
+
+//    fun findPermitIdByPermitRefNumber(permitRefNumber: String): PermitApplicationsEntity
+//    {
+//        permitRepo.findByPermitRefNumber(permitRefNumber)?.let {
+//            return it
+//        } ?: throw ExpectedDataNotFound("No Permit  found with the following [RefNumber=$permitRefNumber]")
+//
+//    }
+
     fun findALlCreatedWorkPlanWIthOfficerID(officerID: Long): List<QaWorkplanEntity> {
         workPlanCreatedRepo.findByOfficerId(officerID)
                 ?.let { createdWorkPlan ->
@@ -5033,12 +5042,13 @@ class QADaoServices(
             )
 
             //Todo: Payment selection
-            val manufactureDetails =
-                    commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
+            val manufactureDetails = commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
             with(myAccountDetails) {
+                reveneCode = manufactureDetails.name
+                revenueDesc = manufactureDetails.name
                 accountName = manufactureDetails.name
-                accountNumber = manufactureDetails.registrationNumber
+                accountNumber = manufactureDetails.kraPin
                 currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
             }
 
@@ -6161,12 +6171,11 @@ class QADaoServices(
             loggedInUser: UsersEntity,
             map: ServiceMapsEntity
     ): BatchInvoiceDto {
-        val allInvoicesInBatch =
-                findALlInvoicesPermitWithBatchID(batchInvoiceEntity.id ?: throw Exception("MISSING INVOICE BATCH ID"))
-        val companyProfile =
-                commonDaoServices.findCompanyProfile(loggedInUser.id ?: throw  Exception("MISSING USER ID FOUND"))
+        val allInvoicesInBatch = findALlInvoicesPermitWithBatchID(batchInvoiceEntity.id ?: throw Exception("MISSING INVOICE BATCH ID"))
+        val companyProfile = commonDaoServices.findCompanyProfile(loggedInUser.id ?: throw  Exception("MISSING USER ID FOUND"))
 
         return BatchInvoiceDto(
+            batchInvoiceEntity.sageInvoiceNumber,
                 populateInvoiceDetails(companyProfile, batchInvoiceEntity, map),
                 listPermitsInvoices(allInvoicesInBatch, null, map)
         )

@@ -155,6 +155,7 @@ data class NewBatchInvoiceDto(
 
 
 data class BatchInvoiceDto(
+    var sageInvoiceNumber: String? = null,
     var batchDetails: InvoiceDto? = null,
     var AllRelatedBatchInvoices: List<PermitInvoiceDto>? = null,
 )

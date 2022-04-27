@@ -431,6 +431,9 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitRefNumber: String
     ): List<PermitApplicationsEntity>?
 
+
+
+
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): PermitApplicationsEntity?
     fun findByIdAndAttachedPlantId(id: Long, attachedPlantId: Long): PermitApplicationsEntity?
 }

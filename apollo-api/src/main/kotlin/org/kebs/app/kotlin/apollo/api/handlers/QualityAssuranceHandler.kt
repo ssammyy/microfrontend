@@ -3244,16 +3244,26 @@ class QualityAssuranceHandler(
             val dto = req.body<NewBatchInvoiceDto>()
             //Create invoice consolidation list
             var batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
+
+            //find Permit Id
+           // val permit = dto.permitRefNumber?.let { qaDaoServices.findPermitIdByPermitRefNumber(it) }
+
+
+            ///Pass invoice Dto to Sage
+         //   val permitType = permit?.permitType?.let { qaDaoServices.findPermitType(it) }
+
+
+
+
+
             //Add created invoice consolidated id to my batch id to be submitted
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             with(newBatchInvoiceDto) {
-                batchID =
-                    batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID = batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
             //submit to staging invoices
-            batchInvoiceDetails =
-                qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, newBatchInvoiceDto).second
+            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, newBatchInvoiceDto).second
 
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
