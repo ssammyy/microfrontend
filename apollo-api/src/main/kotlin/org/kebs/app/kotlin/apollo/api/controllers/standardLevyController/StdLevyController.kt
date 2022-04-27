@@ -17,6 +17,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -839,12 +840,23 @@ class StdLevyController(
         return standardLevyService.getSiteReport()
     }
 
+    @GetMapping("/getVisitDocumentList")
+    fun getVisitDocumentList(
+        response: HttpServletResponse,
+        @RequestParam("visitId") visitId: Long
+    ): List<SiteVisitListHolder> {
+        return standardLevyService.getVisitDocumentList(visitId)
+    }
+
+
+
     //View Site Visit Report Document
     @GetMapping("/view/siteVisitReport")
     fun viewPDFile(
         response: HttpServletResponse,
         @RequestParam("visitID") visitID: Long
     ) {
+
         val fileUploaded = standardLevyService.findUploadedReportFileBYId(visitID)
         val fileDoc = commonDaoServices.mapClass(fileUploaded)
         response.contentType = "application/pdf"

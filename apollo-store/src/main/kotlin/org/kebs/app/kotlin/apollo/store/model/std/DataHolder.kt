@@ -70,6 +70,9 @@ interface UserDetailHolder {
     fun getFirstName(): String?
     fun getLastName(): String?
 }
+interface SiteVisitListHolder {
+    fun getId(): Long?
+}
 interface ManufactureListHolder {
     fun getId(): Long?
     fun getName(): String?

@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {ManufactureCompletedTask, SiteVisitRemarks} from "../../../core/store/data/levy/levy.model";
+import {DocumentDTO, ManufactureCompletedTask, SiteVisitRemarks} from "../../../core/store/data/levy/levy.model";
 import {Router} from "@angular/router";
 import {Store} from "@ngrx/store";
 import {FormBuilder} from "@angular/forms";
@@ -26,9 +26,10 @@ export class StdLevyCompleteTasksComponent implements OnInit {
     isDtInitialized: boolean = false
     loadingText: string;
     siteVisitRemarks: SiteVisitRemarks[] = [];
+    blob: Blob;
     isShowRemarksTab= true;
-  blob: Blob;
-
+    isShowDocumentsTab= true;
+    documentDTOs: DocumentDTO[] = [];
   manufactureCompleteTasks: ManufactureCompletedTask[] = [];
   public actionRequestComplete: ManufactureCompletedTask | undefined;
 
@@ -102,6 +103,25 @@ export class StdLevyCompleteTasksComponent implements OnInit {
             }
         );
         this.isShowRemarksTab = !this.isShowRemarksTab;
+        this.isShowDocumentsTab = true;
+
+    }
+    toggleDisplayDocuments(visitId: number) {
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.levyService.getVisitDocumentList(visitId).subscribe(
+            (response: DocumentDTO[]) => {
+                this.documentDTOs = response;
+                this.SpinnerService.hide();
+                console.log(this.documentDTOs)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.isShowDocumentsTab = !this.isShowDocumentsTab;
+        this.isShowRemarksTab = true;
 
     }
 
