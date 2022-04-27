@@ -175,12 +175,12 @@ class KappaPaymentsDaoService(
              * Attempt to log in
              */
             try {
-                reactiveAuthenticationManager.authenticate(
-                    UsernamePasswordAuthenticationToken(
-                        value.header?.connectionID,
-                        value.header?.connectionPassword
-                    )
-                ).awaitSingleOrNull()
+//                reactiveAuthenticationManager.authenticate(
+//                    UsernamePasswordAuthenticationToken(
+//                        value.header?.connectionID,
+//                        value.header?.connectionPassword
+//                    )
+//                ).awaitSingleOrNull()
 
                 value.request?.billReferenceNo
                     ?.let { code ->
@@ -212,7 +212,7 @@ class KappaPaymentsDaoService(
                                         ?.let { sage ->
                                             sage.status = 10
                                             sage.description = daoService.mapper().writeValueAsString(value)
-                                            sage.modifiedBy = value.header?.connectionID
+//                                            sage.modifiedBy = value.header?.connectionID
                                             sage.modifiedOn = Timestamp.from(Instant.now())
                                             sageRepo.save(sage)
                                         }

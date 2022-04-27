@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.kra
 
 import com.google.gson.Gson
-import com.nhaarman.mockitokotlin2.internal.createInstance
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
@@ -12,13 +11,13 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader.Companion.globalVar
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.response.KraResponse
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.KraEntryNumberRequestLogEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IKraEntryNumberRequestLogEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.ILogKraEntryNumberRequestEntityRepository
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -181,14 +180,14 @@ class SendEntryNumberToKraServices(
 
 
             var transDate = commonDaoServices.getTimestamp()
-            val headerBody = SageHeader().apply {
+            val headerBody = SageQAHeader().apply {
                 globalVar = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").format(transDate)
                 serviceName = "BSKApp"
                 connectionPassword = jasyptStringEncryptor.decrypt(config.password)
                 messageID = "BSK"
                 connectionID = "BSKAccount"
             }
-            val requestBody = SageRequest().apply {
+            val requestBody = SageQARequest().apply {
                 BatchNo = ""
                 DocumentDate = SimpleDateFormat("dd-mm-yyyy").format(transDate)
                 InvoiceType = 4
@@ -201,19 +200,19 @@ class SendEntryNumberToKraServices(
                 TaxPINNo = "PL2435353QC"
 
             }
-            val detailBody = SageDetails().apply {
+            val detailBody = SageQADetails().apply {
                 RevenueAcc = "10170"
                 RevenueAccDesc = "QA"
-                Taxable = 11160
-                MAmount = 11160
-                TaxAmount = 11160
+                Taxable = 1
+                MAmount = BigDecimal(11160)
+                TaxAmount = BigDecimal(11160)
 
 
             }
-            val list = mutableListOf<SageDetails>()
+            val list = mutableListOf<SageQADetails>()
             list.add(detailBody)
 
-            val rootRequest = SageRequestBody().apply {
+            val rootRequest = SageQARequestBody().apply {
                 header = headerBody
                 request = requestBody
                 details = list
@@ -278,9 +277,7 @@ class SendEntryNumberToKraServices(
 //            }responseSage
 
             val gson = Gson()
-
-
-            val response: Triple<WorkflowTransactionsEntity, SagePostingResponseResult?, HttpResponse?> =
+            val response: Triple<WorkflowTransactionsEntity, SageQaPostingResponseResult?, HttpResponse?> =
                 daoService.processResponses(resp, log, configUrl, config)
 
             KotlinLogging.logger {  }.info { "Request respones: ${gson.toJson(response.second)}" }

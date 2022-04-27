@@ -32,6 +32,10 @@ class QaBatchInvoiceEntity : Serializable {
     @Basic
     var totalAmount: BigDecimal? = null
 
+    @Column(name = "TOTAL_TAX_AMOUNT")
+    @Basic
+    var totalTaxAmount: BigDecimal? = null
+
     @Column(name = "CREATION_DATE")
     @Basic
     var creationDate: Date? = null

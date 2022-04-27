@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -243,6 +244,14 @@ class QADaoServices(
                     return it
                 }
                 ?: throw ExpectedDataNotFound("Invoices With [batch ID = ${batchID}], does not Exist")
+    }
+
+    fun findBatchInvoicesWithRefNO(refNumber: String): QaBatchInvoiceEntity {
+        invoiceQaBatchRepo.findByInvoiceNumber(refNumber)
+                ?.let { it ->
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("Invoices With [refNumber = ${refNumber}], does not Exist")
     }
 
     fun findCreatedWorkPlanWIthOfficerID(officerID: Long, refNumber: String): QaWorkplanEntity {
@@ -476,6 +485,17 @@ class QADaoServices(
 //    ): List<PermitEntityDto> {
 //        return listPermits(findAllLoadedPermitList(userId, permitNumber, attachedPlantId), map)
 //    }
+
+    fun updateQAInvoiceBatchDetails(
+        invoiceBatchDetails: QaBatchInvoiceEntity,
+        user: String
+    ): QaBatchInvoiceEntity {
+        with(invoiceBatchDetails) {
+            modifiedBy = user
+            modifiedOn = commonDaoServices.getTimestamp()
+        }
+        return invoiceQaBatchRepo.save(invoiceBatchDetails)
+    }
 
 
     fun findAllUserPermitWithPermitTypeAwardedStatusAndFmarkGeneratedSTatusISNull(
@@ -4556,6 +4576,9 @@ class QADaoServices(
     ): Pair<QaBatchInvoiceEntity, PermitApplicationsEntity> {
         //Consolidate invoice now first
         var permit = findPermitBYID(permitID)
+        val permitType =  findPermitType(permit.permitType ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
+
+
         val newBatchInvoiceDto = NewBatchInvoiceDto()
         with(newBatchInvoiceDto) {
             permitInvoicesID = arrayOf(permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
@@ -4567,7 +4590,7 @@ class QADaoServices(
             batchID = batchInvoice.id!!
         }
 
-        batchInvoice = permitMultipleInvoiceSubmitInvoice(map, loggedInUser, newBatchInvoiceDto).second
+        batchInvoice = permitMultipleInvoiceSubmitInvoice(permitType,map, loggedInUser, newBatchInvoiceDto).second
 
         //Update Permit Details
         with(permit) {
@@ -4809,9 +4832,9 @@ class QADaoServices(
 
                             with(invoiceDetails) {
                                 description = "${permitInvoiceFound.invoiceRef},$description"
-                                totalAmount = totalAmount?.plus(
-                                    permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
-                                )
+                                totalAmount = totalAmount?.plus(permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT"))
+                                totalTaxAmount = totalTaxAmount?.plus(permitInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT"))
+
                             }
                             invoiceBatchDetails = invoiceQaBatchRepo.save(invoiceDetails)
                         }
@@ -4829,6 +4852,7 @@ class QADaoServices(
                                 status = s.activeStatus
                                 description = "${permitInvoiceFound.invoiceRef}"
                                 totalAmount = permitInvoiceFound.totalAmount
+                                totalTaxAmount = permitInvoiceFound.taxAmount
                                 createdBy = commonDaoServices.concatenateName(user)
                                 createdOn = commonDaoServices.getTimestamp()
                             }
@@ -4851,7 +4875,7 @@ class QADaoServices(
                         KotlinLogging.logger { }.info("batch ID = ${invoiceBatchDetails?.id}")
 
                         sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.createdBy}]"
-                        sr.names = "${permitInvoiceFound.invoiceRef} ${permitInvoiceFound.totalAmount}"
+                        sr.names = "${permitInvoiceFound.invoiceRef} ${permitInvoiceFound.totalAmount}${permitInvoiceFound.taxAmount}"
                         sr.varField1 = invoiceBatchDetails?.id.toString()
 
                         sr.responseStatus = sr.serviceMapsId?.successStatusCode
@@ -4936,84 +4960,83 @@ class QADaoServices(
         return Pair(sr, invoiceDetails)
     }
 
-    fun permitMultipleInvoiceUpdateStagingInvoice(
-            s: ServiceMapsEntity,
-            user: UsersEntity,
-            batchID: Long,
-    ): Pair<ServiceRequestsEntity, QaBatchInvoiceEntity> {
-
-        var sr = commonDaoServices.createServiceRequest(s)
-        val invoiceDetails = invoiceQaBatchRepo.findByIdOrNull(batchID)
-                ?: throw Exception("INVOICE BATCH WITH ID=${batchID},DOES NOT EXIST ")
-        try {
-
-            invoiceBatchDetailsRepo.findByIdOrNull(invoiceDetails.invoiceBatchNumberId)?.let {
-                var invoiceBatchDetails = it
-                when (invoiceBatchDetails.paymentStarted) {
-                    1 -> {
-                        throw Exception("INVOICE IS  ALREADY BEING PAID FOR YOU CAN'T BE ABLE TO ADD/REMOVE")
-                    }
-                    else -> {
-                        with(invoiceBatchDetails) {
-                            totalAmount = invoiceDetails.totalAmount
-                            //TODO: remove details from description also
-                            modifiedOn = commonDaoServices.getTimestamp()
-                            modifiedBy = commonDaoServices.concatenateName(user)
-                        }
-                        invoiceBatchDetails = invoiceBatchDetailsRepo.save(invoiceBatchDetails)
-
-                        var stagingReconciliationDetails =
-                                invoiceStagingReconciliationRepo.findByReferenceCodeAndInvoiceId(
-                                        invoiceBatchDetails.batchNumber
-                                                ?: throw Exception("MISSING BATCH NUMBER=${invoiceBatchDetails.batchNumber}"),
-                                        invoiceBatchDetails.id
-                                )
-                                        ?: throw Exception("INVOICE ON STAGING RECONCILIATION WITH ID=${invoiceDetails.invoiceBatchNumberId},DOES NOT EXIST ")
-                        with(stagingReconciliationDetails) {
-                            invoiceAmount = invoiceBatchDetails.totalAmount
-                            actualAmount = invoiceBatchDetails.totalAmount
-                            paidAmount = BigDecimal.ZERO
-                            modifiedOn = commonDaoServices.getTimestamp()
-                            modifiedBy = commonDaoServices.concatenateName(user)
-                        }
-                        stagingReconciliationDetails =
-                                invoiceStagingReconciliationRepo.save(stagingReconciliationDetails)
-
-                        sr.payload = "STAGING RECONCILIATION UPDATED [id= ${stagingReconciliationDetails.id}]"
-                        sr.names =
-                                "BY USER NAME ${commonDaoServices.getUserName(user)} to this amount ${stagingReconciliationDetails.invoiceAmount}"
-                        sr.varField1 = batchID.toString()
-
-                        sr.responseStatus = sr.serviceMapsId?.successStatusCode
-                        sr.responseMessage = "Success ${sr.payload}"
-                        sr.status = s.successStatus
-                        sr = serviceRequestsRepository.save(sr)
-                        sr.processingEndDate = Timestamp.from(Instant.now())
-                    }
-                }
-            } ?: kotlin.run {
-                val newBatchInvoiceDto = NewBatchInvoiceDto()
-                newBatchInvoiceDto.batchID =
-                        invoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
-                KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
-                permitMultipleInvoiceSubmitInvoice(s, user, newBatchInvoiceDto).second
-            }
-
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message, e)
-//            KotlinLogging.logger { }.trace(e.message, e)
-            sr.status = sr.serviceMapsId?.exceptionStatus
-            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
-            sr.responseMessage = e.message
-            sr = serviceRequestsRepository.save(sr)
-
-        }
-
-        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return Pair(sr, invoiceDetails)
-    }
+//    fun permitMultipleInvoiceUpdateStagingInvoice(
+//            s: ServiceMapsEntity,
+//            user: UsersEntity,
+//            batchID: Long,
+//    ): Pair<ServiceRequestsEntity, QaBatchInvoiceEntity> {
+//
+//        var sr = commonDaoServices.createServiceRequest(s)
+//        val invoiceDetails = invoiceQaBatchRepo.findByIdOrNull(batchID) ?: throw Exception("INVOICE BATCH WITH ID=${batchID},DOES NOT EXIST ")
+//        try {
+//
+//            invoiceBatchDetailsRepo.findByIdOrNull(invoiceDetails.invoiceBatchNumberId)?.let {
+//                var invoiceBatchDetails = it
+//                when (invoiceBatchDetails.paymentStarted) {
+//                    1 -> {
+//                        throw Exception("INVOICE IS  ALREADY BEING PAID FOR YOU CAN'T BE ABLE TO ADD/REMOVE")
+//                    }
+//                    else -> {
+//                        with(invoiceBatchDetails) {
+//                            totalAmount = invoiceDetails.totalAmount
+//                            //TODO: remove details from description also
+//                            modifiedOn = commonDaoServices.getTimestamp()
+//                            modifiedBy = commonDaoServices.concatenateName(user)
+//                        }
+//                        invoiceBatchDetails = invoiceBatchDetailsRepo.save(invoiceBatchDetails)
+//
+//                        var stagingReconciliationDetails =
+//                                invoiceStagingReconciliationRepo.findByReferenceCodeAndInvoiceId(
+//                                        invoiceBatchDetails.batchNumber
+//                                                ?: throw Exception("MISSING BATCH NUMBER=${invoiceBatchDetails.batchNumber}"),
+//                                        invoiceBatchDetails.id
+//                                )
+//                                        ?: throw Exception("INVOICE ON STAGING RECONCILIATION WITH ID=${invoiceDetails.invoiceBatchNumberId},DOES NOT EXIST ")
+//                        with(stagingReconciliationDetails) {
+//                            invoiceAmount = invoiceBatchDetails.totalAmount
+//                            actualAmount = invoiceBatchDetails.totalAmount
+//                            paidAmount = BigDecimal.ZERO
+//                            modifiedOn = commonDaoServices.getTimestamp()
+//                            modifiedBy = commonDaoServices.concatenateName(user)
+//                        }
+//                        stagingReconciliationDetails =
+//                                invoiceStagingReconciliationRepo.save(stagingReconciliationDetails)
+//
+//                        sr.payload = "STAGING RECONCILIATION UPDATED [id= ${stagingReconciliationDetails.id}]"
+//                        sr.names =
+//                                "BY USER NAME ${commonDaoServices.getUserName(user)} to this amount ${stagingReconciliationDetails.invoiceAmount}"
+//                        sr.varField1 = batchID.toString()
+//
+//                        sr.responseStatus = sr.serviceMapsId?.successStatusCode
+//                        sr.responseMessage = "Success ${sr.payload}"
+//                        sr.status = s.successStatus
+//                        sr = serviceRequestsRepository.save(sr)
+//                        sr.processingEndDate = Timestamp.from(Instant.now())
+//                    }
+//                }
+//            } ?: kotlin.run {
+//                val newBatchInvoiceDto = NewBatchInvoiceDto()
+//                newBatchInvoiceDto.batchID = invoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+//                KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
+//                permitMultipleInvoiceSubmitInvoice(s, user, newBatchInvoiceDto).second
+//            }
+//
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message, e)
+////            KotlinLogging.logger { }.trace(e.message, e)
+//            sr.status = sr.serviceMapsId?.exceptionStatus
+//            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+//            sr.responseMessage = e.message
+//            sr = serviceRequestsRepository.save(sr)
+//
+//        }
+//
+//        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+//        return Pair(sr, invoiceDetails)
+//    }
 
     fun permitMultipleInvoiceSubmitInvoice(
+        permitType : PermitTypesEntity,
             s: ServiceMapsEntity,
             user: UsersEntity,
             batchInvoiceDto: NewBatchInvoiceDto,
@@ -5045,8 +5068,8 @@ class QADaoServices(
             val manufactureDetails = commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
             with(myAccountDetails) {
-                reveneCode = manufactureDetails.name
-                revenueDesc = manufactureDetails.name
+                reveneCode = permitType.revenueCode
+                revenueDesc = permitType.revenueDesc
                 accountName = manufactureDetails.name
                 accountNumber = manufactureDetails.kraPin
                 currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix

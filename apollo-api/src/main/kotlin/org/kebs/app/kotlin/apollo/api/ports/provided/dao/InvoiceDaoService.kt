@@ -92,11 +92,13 @@ class InvoiceDaoService(
             tableSourcePrefix: String,
             detailsDescription: String,
             user: UsersEntity,
-            amount: BigDecimal
+            amount: BigDecimal,
+            taxAmount: BigDecimal
     ): InvoiceBatchDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
         with(invoiceBatchDetails) {
             totalAmount = amount
+            totalTaxAmount = taxAmount
             description = "{DETAILS :[$detailsDescription]}"
             tableSource = tableSourcePrefix
             status = map.inactiveStatus
@@ -106,9 +108,32 @@ class InvoiceDaoService(
         return invoiceBatchDetailsRepo.save(invoiceBatchDetails)
     }
 
+    fun updateInvoiceBatchDetails(
+            invoiceBatchDetails: InvoiceBatchDetailsEntity,
+            user: String
+    ): InvoiceBatchDetailsEntity {
+        with(invoiceBatchDetails) {
+            modifiedBy = user
+            modifiedOn = commonDaoServices.getTimestamp()
+        }
+        return invoiceBatchDetailsRepo.save(invoiceBatchDetails)
+    }
+
+    fun updateStgReconciliationTableDetails(
+        invoiceStgRecoDetails: StagingPaymentReconciliation,
+        user: String
+    ): StagingPaymentReconciliation {
+        with(invoiceStgRecoDetails) {
+            modifiedBy = user
+            modifiedOn = commonDaoServices.getTimestamp()
+        }
+        return invoicePaymentRepo.save(invoiceStgRecoDetails)
+    }
+
     fun addInvoiceDetailsToBatchInvoice(addDetails: Any, tableSourcePrefix: String, user: UsersEntity, invoiceBatchDetails: InvoiceBatchDetailsEntity): InvoiceBatchDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
         var totalAmount: BigDecimal = 0.toBigDecimal()
+        var totalTaxAmount: BigDecimal = 0.toBigDecimal()
         var detailsDescription = ""
 
         when (tableSourcePrefix) {
@@ -136,11 +161,12 @@ class InvoiceDaoService(
                 invoiceNote = qaDaoServices.qaInvoiceBatchUpdateDetails(invoiceNote, user)
 
                 totalAmount = invoiceNote.totalAmount?.let { totalAmount.plus(it) }!!
+                totalTaxAmount = invoiceNote.totalTaxAmount?.let { totalTaxAmount.plus(it) }!!
                 detailsDescription = "PERMIT INVOICE NUMBER:${invoiceNote.invoiceNumber}"
             }
         }
 
-        return updateInvoiceBatchDetails(invoiceBatchDetails, tableSourcePrefix, detailsDescription, user, totalAmount)
+        return updateInvoiceBatchDetails(invoiceBatchDetails, tableSourcePrefix, detailsDescription, user, totalAmount,totalTaxAmount)
     }
 
     fun findPaymentMethodtype(paymentMethodID: Long): PaymentMethodsEntity {
@@ -174,6 +200,7 @@ class InvoiceDaoService(
             invoiceId = invoiceBatchDetails.id
             referenceCode = invoiceBatchDetails.batchNumber
             invoiceAmount = invoiceBatchDetails.totalAmount
+            invoiceTaxAmount = invoiceBatchDetails.totalTaxAmount
             actualAmount = invoiceBatchDetails.totalAmount
             transactionDate = commonDaoServices.getCurrentDate()
             invoiceDate = commonDaoServices.getCurrentDate()
@@ -189,9 +216,7 @@ class InvoiceDaoService(
         }
         invoiceDetails = invoicePaymentRepo.save(invoiceDetails)
 
-        postInvoiceToSageServices.postInvoiceTransactionToSage(
-                invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"), user, map
-        )
+        postInvoiceToSageServices.postInvoiceTransactionToSageQa(invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"),invoiceAccountDetails, user, map)
 
         return invoiceDetails
     }

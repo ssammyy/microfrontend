@@ -25,6 +25,10 @@ class StagingPaymentReconciliation : Serializable {
     @Basic
     var referenceCode: String? = null
 
+    @Column(name = "SAGE_INVOICE_NUMBER")
+    @Basic
+    var sageInvoiceNumber: String? = null
+
     @Column(name = "ACCOUNT_NAME")
     @Basic
     var accountName: String? = null
@@ -56,6 +60,10 @@ class StagingPaymentReconciliation : Serializable {
     @Column(name = "INVOICE_AMOUNT")
     @Basic
     var invoiceAmount: BigDecimal? = null
+
+    @Column(name = "INVOICE_TAX_AMOUNT")
+    @Basic
+    var invoiceTaxAmount: BigDecimal? = null
 
     @Column(name = "PAID_AMOUNT")
     @Basic
