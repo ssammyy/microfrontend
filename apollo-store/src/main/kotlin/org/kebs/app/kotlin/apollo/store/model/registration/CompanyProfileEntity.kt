@@ -123,6 +123,14 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var status: Int? = null
 
+    @Column(name = "SUSPENSION_STATUS")
+    @Basic
+    var suspensionStatus: Int? = null
+
+    @Column(name = "CLOSURE_STATUS")
+    @Basic
+    var closureStatus: Int? = null
+
     @Column(name = "CLOSED_COMMODITY_MANUFACTURED")
     @Basic
     var closedCommodityManufactured: Int? = null
@@ -318,7 +326,9 @@ class CompanyProfileEntity : Serializable {
                 businessNatureName == that.businessNatureName &&
                 regionName == that.regionName &&
                 countyName == that.countyName &&
-                townName == that.townName
+                townName == that.townName &&
+                suspensionStatus == that.suspensionStatus &&
+                closureStatus == that.closureStatus
     }
 
     override fun hashCode(): Int {

@@ -135,6 +135,29 @@ data class ReportOnSiteVisitDTO(
 class ProcessInstanceResponseValueSite(val savedRowID: Long?,val processId: String, val isEnded: Boolean) {
 }
 
+class LevyClosureValue(val savedRowID: Long?) {
+}
+
+data class SuspendCompanyDto(
+   var id: Long? = null,
+   var name: String? = null,
+   var reason: String? = null,
+   var dateOfSuspension: Timestamp? = null,
+
+){
+
+}
+
+data class CloseCompanyDto(
+    var id: Long? = null,
+    var name: String? = null,
+    var reason: String? = null,
+    var dateOfClosure: Timestamp? = null,
+
+    ){
+
+}
+
 data class SiteVisitReportDecisionDTO(
     var taskId: String? = null,
     var accentTo: Boolean? = null,

@@ -68,7 +68,9 @@ data class InvoiceDto(
     var paidStatus: Int? = null,
     var submittedStatus: Int? = null,
     var plantId: Long? = null,
-)
+    var sageInvoiceNumber: String?,
+
+    )
 
 data class ConsolidatedInvoiceDto(
     var id: Long? = null,

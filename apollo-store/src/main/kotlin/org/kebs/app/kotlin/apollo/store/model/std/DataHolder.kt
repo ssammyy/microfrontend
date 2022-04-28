@@ -73,6 +73,21 @@ interface UserDetailHolder {
 interface SiteVisitListHolder {
     fun getId(): Long?
 }
+
+interface WindingUpReportListHolder {
+    fun getId(): Long?
+}
+interface LevyPayments{
+    fun getId(): Long?
+    fun getEntryNumber(): String?
+    fun getPaymentDate(): String?
+    fun getPaymentAmount(): String?
+    fun getCompanyId(): Long?
+    fun getCompanyName(): String?
+    fun getAssignStatus(): Long?
+    fun getFirstName(): String?
+    fun getLastName(): String?
+}
 interface ManufactureListHolder {
     fun getId(): Long?
     fun getName(): String?
