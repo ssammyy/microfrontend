@@ -406,6 +406,8 @@ class PostInvoiceToSageServices(
                     var batchInvoiceDetails = invoiceDaoService.findInvoiceBatchDetails(stgReconDetails.invoiceId?:throw  ExpectedDataNotFound("Missing Invoice Batch ID"))
                     with(batchInvoiceDetails){
                         sageInvoiceNumber = response.second?.response?.documentNo
+                        KotlinLogging.logger { }.error { "Sage Invoice Number: $sageInvoiceNumber" }
+
                     }
                     batchInvoiceDetails =invoiceDaoService.updateInvoiceBatchDetails(batchInvoiceDetails,user)
 
@@ -413,6 +415,7 @@ class PostInvoiceToSageServices(
                     with(qaBatchInvoice){
                         sageInvoiceNumber = response.second?.response?.documentNo
                     }
+
 
                     qaDaoServices.updateQAInvoiceBatchDetails(qaBatchInvoice,user)
                 }

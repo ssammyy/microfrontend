@@ -83,7 +83,7 @@ export class InvoiceConsolidateComponent implements OnInit {
     }
   }
 
-  payNowForOneInvoice(invoicesID: any) {
+  payNowForOneInvoice(invoicesID: any, permitRefNumber: any) {
 
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -109,7 +109,7 @@ export class InvoiceConsolidateComponent implements OnInit {
         const consolidatedInvoice = new GenerateInvoiceDto;
         consolidatedInvoice.batchID = null;
         consolidatedInvoice.plantID = null;
-        consolidatedInvoice.permitRefNumber = null;
+        consolidatedInvoice.permitRefNumber = permitRefNumber;
         consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
         this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
             (data) => {

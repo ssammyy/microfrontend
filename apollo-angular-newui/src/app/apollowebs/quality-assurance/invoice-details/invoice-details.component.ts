@@ -1,11 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {
-    AllBatchInvoiceDetailsDto,
-    PermitInvoiceDto,
-    AllPermitDetailsDto,
-    PermitEntityDto, MPesaPushDto, StgInvoiceBalanceDto
-} from '../../../core/store/data/qa/qa.model';
+import {AllBatchInvoiceDetailsDto, PermitInvoiceDto, StgInvoiceBalanceDto} from '../../../core/store/data/qa/qa.model';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
@@ -71,7 +66,7 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
                     this.allPermitData = data.allRelatedBatchInvoices;
                     // tslint:disable-next-line:max-line-length
-                    formattedArray = data.allRelatedBatchInvoices.map(i => [i.invoiceNumber, i.commodityDescription, i.brandName, i.totalAmount, i.paidStatus]);
+                    formattedArray = data.allRelatedBatchInvoices.map(i => [i.sageInvoiceNumber, i.commodityDescription, i.brandName, i.totalAmount, i.paidStatus]);
 
                     this.dataTable = {
                         headerRow: ['INVOICE REF NO', 'COMMODITY DESCRIPTION', 'BRAND NAME', 'TOTAL AMOUNT', 'PAID STATUS', 'Actions'],

@@ -44,7 +44,7 @@
                                             <td>{{task.invoiceNumber}}</td>
                                             <td *ngIf="task.totalAmount != 0">
                                                 <button style="width: auto" type="button" class="btn btn-primary"
-                                                        (click)="payNowForOneInvoice(task.permitID)">
+                                                        (click)="payNowForOneInvoice(task.permitID,task.permitRefNumber)">
                                                     PAY NOW
                                                 </button>
                                             </td>

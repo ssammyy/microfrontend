@@ -1757,26 +1757,26 @@ class QualityAssuranceController(
     }
 
 
-    @PostMapping("/kebs/invoice/submit-invoice-detail/save")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun permitInvoiceBatchSubmitDetails(
-        @ModelAttribute("NewBatchInvoiceDto") NewBatchInvoiceDto: NewBatchInvoiceDto,
-        model: Model,
-    ): String? {
-
-        val map = commonDaoServices.serviceMapDetails(appId)
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-        val result: ServiceRequestsEntity?
-
-        result = qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, NewBatchInvoiceDto).first
-
-        val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${result.varField1}"
-        sm.message = "Batch Invoice Submitted Successful"
-
-        return commonDaoServices.returnValues(result, map, sm)
-    }
+//    @PostMapping("/kebs/invoice/submit-invoice-detail/save")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun permitInvoiceBatchSubmitDetails(
+//        @ModelAttribute("NewBatchInvoiceDto") NewBatchInvoiceDto: NewBatchInvoiceDto,
+//        model: Model,
+//    ): String? {
+//
+//        val map = commonDaoServices.serviceMapDetails(appId)
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//
+//        val result: ServiceRequestsEntity?
+//
+////        result = qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, NewBatchInvoiceDto).first
+//
+//        val sm = CommonDaoServices.MessageSuccessFailDTO()
+//        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${result.varField1}"
+//        sm.message = "Batch Invoice Submitted Successful"
+//
+//        return commonDaoServices.returnValues(result, map, sm)
+//    }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @GetMapping("/kebs/resubmit/permit-details/save")
