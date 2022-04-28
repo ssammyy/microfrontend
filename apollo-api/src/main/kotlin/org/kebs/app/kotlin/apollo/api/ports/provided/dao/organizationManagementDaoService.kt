@@ -24,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.servlet.function.ServerRequest
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -95,31 +96,35 @@ class RegistrationManagementDaoService(
      */
     fun provideCompanyDetailsForUser(): UserCompanyDetailsDto? {
         val user = commonDaoServices.loggedInUserDetails()
-        val counter = user.companyId?.let {
-            manufacturePlantRepository.countByCompanyProfileId(
-                it
+        user.companyId?.let {
+
+            val counter = user.companyId?.let {
+                manufacturePlantRepository.countByCompanyProfileId(
+                    it
+                )
+            }
+            val turnOver = companyRepo.findByIdOrNull(user.companyId)?.yearlyTurnover
+            val countAwarded = user.companyId?.let {
+                permitRepo.countByCompanyIdAndPermitAwardStatus(
+                    it, 1
+                )
+            }
+            val countExpired = user.companyId?.let {
+                permitRepo.countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
+                    it, 1, 1
+                )
+            }
+            return UserCompanyDetailsDto(
+                user.companyId,
+                user.plantId,
+                counter,
+                turnOver,
+                user.id,
+                countAwarded,
+                countExpired
             )
         }
-        val turnOver = companyRepo.findByIdOrNull(user.companyId)?.yearlyTurnover
-        val countAwarded = user.companyId?.let {
-            permitRepo.countByCompanyIdAndPermitAwardStatus(
-                it, 1
-            )
-        }
-        val countExpired = user.companyId?.let {
-            permitRepo.countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
-                it, 1, 1
-            )
-        }
-        return UserCompanyDetailsDto(
-            user.companyId,
-            user.plantId,
-            counter,
-            turnOver,
-            user.id,
-            countAwarded,
-            countExpired
-        )
+        return null
     }
 
     /**
@@ -255,12 +260,13 @@ class RegistrationManagementDaoService(
      * @param request the Http payload of SendTokenRequestDto
      * @return CustomResponse
      */
-    fun validateTokenFromThePhone(request: ValidateTokenRequestDto): CustomResponse? =
-        usersRepo.findByUserName(request.username)
+    fun validateTokenFromThePhone(request: ValidateTokenRequestDto, req: ServerRequest?=null): CustomResponse? =
+        usersRepo.findByEmail(request.username)
             ?.let { u ->
                 commonDaoServices.validateOTPToken(
                     request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
-                    u.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+                    u.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required"),
+                    req
                 )
             }
             ?: throw NullValueNotAllowedException("")
@@ -274,7 +280,7 @@ class RegistrationManagementDaoService(
     fun sendTokenToThePhone(request: SendTokenRequestDto): CustomResponse? {
         val result = CustomResponse()
         try {
-            usersRepo.findByUserName(request.username)
+            usersRepo.findByEmail(request.username)
                 ?.let { user ->
 //                    val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
                     val otp = commonDaoServices.randomNumber(6)
@@ -1110,7 +1116,7 @@ class RegistrationManagementDaoService(
     fun loggedInUserDetails(): UsersEntity {
         SecurityContextHolder.getContext().authentication?.name
             ?.let { username ->
-                usersRepo.findByUserName(username)
+                usersRepo.findByEmail(username)
                     ?.let { loggedInUser ->
                         return loggedInUser
                     }

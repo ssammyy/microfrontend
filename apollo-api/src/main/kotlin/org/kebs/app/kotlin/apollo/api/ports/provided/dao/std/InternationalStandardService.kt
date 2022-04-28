@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
+import com.google.gson.Gson
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
@@ -9,7 +11,9 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
@@ -37,7 +41,9 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
                                     private val departmentRepository: DepartmentRepository,
                                     private val departmentListRepository: DepartmentListRepository,
                                     private val isJustificationUploadsRepository: ISJustificationUploadsRepository,
-                                    private val isStandardUploadsRepository: ISStandardUploadsRepository
+                                    private val isStandardUploadsRepository: ISStandardUploadsRepository,
+                                    private val sdisGazetteNoticeUploadsRepository: SDISGazetteNoticeUploadsRepository,
+                                    private val notifications: Notifications
 
                                     )
 {
@@ -80,7 +86,11 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         iSAdoptionProposal.proposalNumber = getPRNumber()
 
         variables["proposalNumber"] = iSAdoptionProposal.proposalNumber!!
-
+//email to stakeholders
+        val recipient= "Ashraf.Mohammed@bskglobaltech.com"
+        val subject = "New Adoption Proposal Document"
+        val messageBody= "An adoption document has been uploaded Kindly login to the system to comment on it"
+        notifications.sendEmail(recipient, subject, messageBody)
 
         val ispDetails = isAdoptionProposalRepository.save(iSAdoptionProposal)
         variables["ID"] = ispDetails.id
@@ -90,7 +100,6 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         )
 
     }
-
     fun uploadISFile(
         uploads: SdIsDocumentUploads,
         docFile: MultipartFile,
@@ -103,7 +112,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 //            filepath = docFile.path
             name = commonDaoServices.saveDocuments(docFile)
 //            fileType = docFile.contentType
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            fileType = docFile.contentType
             documentType = doc
             description=DocDescription
             document = docFile.bytes
@@ -115,6 +124,8 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
         return sdIsDocumentUploadsRepository.save(uploads)
     }
+
+
 
 
     //Function to retrieve task details for any candidate group
@@ -134,6 +145,11 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_STAKEHOLDERS).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
+    }
+
+    //Get justification Document
+    fun findUploadedFileBYId(isDocumentId: Long): SdIsDocumentUploads {
+        return sdIsDocumentUploadsRepository.findByIsDocumentId(isDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$isDocumentId]")
     }
 
     //Submit Adoption Proposal comments
@@ -239,6 +255,8 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         )
 
     }
+
+
     fun uploadISJFile(
         uploads: ISJustificationUploads,
         docFile: MultipartFile,
@@ -251,7 +269,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 //            filepath = docFile.path
             name = commonDaoServices.saveDocuments(docFile)
 //            fileType = docFile.contentType
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            fileType = docFile.contentType
             documentType = doc
             description=DocDescription
             document = docFile.bytes
@@ -272,7 +290,10 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SPC_SEC).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
     }
-
+    //Get IS justification Document
+    fun findUploadedJSFileBYId(isJSDocumentId: Long): ISJustificationUploads {
+        return isJustificationUploadsRepository.findByIsJSDocumentId(isJSDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$isJSDocumentId]")
+    }
 
     // Decision
     fun decisionOnJustification(isJustificationDecision: ISJustificationDecision) : List<TaskDetails> {
@@ -326,6 +347,12 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
                     accentTo = true
                 }
                 iSAdoptionJustificationRepository.save(iSAdoptionJustification)
+                //email to stakeholders
+                val recipient= "Ashraf.Mohammed@bskglobaltech.com"
+                val subject = "Justification Approved"
+                val messageBody= "Justification for International Standard has been approved by the SAC."
+                notifications.sendEmail(recipient, subject, messageBody)
+
             }?: throw Exception("TASK NOT FOUND")
 
         }else if(variables["No"]==false) {
@@ -371,6 +398,12 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         variable["iSNumber"] = iSUploadStandard.iSNumber!!
 
         val isuDetails = iSUploadStandardRepository.save(iSUploadStandard)
+        //email to legal
+        val recipient= "Ashraf.Mohammed@bskglobaltech.com"
+        val subject = "International Standard Uploaded"
+        val messageBody= "International Standard has been uploaded by the Head of Publishing."
+        notifications.sendEmail(recipient, subject, messageBody)
+
         variable["ID"] = isuDetails.id
         taskService.complete(iSUploadStandard.taskId, variable)
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
@@ -379,6 +412,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         )
 
     }
+
     fun uploadISFile(
         uploads: ISStandardUploads,
         docFile: MultipartFile,
@@ -391,7 +425,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 //            filepath = docFile.path
             name = commonDaoServices.saveDocuments(docFile)
 //            fileType = docFile.contentType
-            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            fileType = docFile.contentType
             documentType = doc
             description=DocDescription
             document = docFile.bytes
@@ -405,6 +439,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
     }
 
 
+
     //Return task details for HO SIC
     fun getHoSiCTasks():List<TaskDetails>
     {
@@ -412,8 +447,13 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         return getTaskDetails(tasks)
     }
 
+    //Get IS Standard Document
+    fun findUploadedSTFileBYId(isStandardID: Long): ISStandardUploads {
+        return isStandardUploadsRepository.findByIsStdDocumentId(isStandardID) ?: throw ExpectedDataNotFound("No File found with the following [ id=$isStandardID]")
+    }
+
     // Upload NWA Gazette notice on Website
-    fun uploadGazetteNotice(iSGazetteNotice: ISGazetteNotice)
+    fun uploadGazetteNotice(iSGazetteNotice: ISGazetteNotice) : ProcessInstanceResponseGazzette
     {
         val variable:MutableMap<String, Any> = HashMap()
         iSGazetteNotice.iSNumber?.let{variable.put("iSNumber", it)}
@@ -423,10 +463,45 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         variable["dateUploaded"] = iSGazetteNotice.dateUploaded!!
         print(iSGazetteNotice.toString())
 
-        iSGazetteNoticeRepository.save(iSGazetteNotice)
-        taskService.complete(iSGazetteNotice.taskId, variable)
+        val isuDetails = iSGazetteNoticeRepository.save(iSGazetteNotice)
         println("IS Gazette Notice has been uploaded")
+        variable["ID"] = isuDetails.id
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "Gazette ID " + gson.toJson(isuDetails) }
+        KotlinLogging.logger { }.info { "Gazette Notice" + gson.toJson(isuDetails) }
+        taskService.complete(iSGazetteNotice.taskId, variable)
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstanceResponseGazzette(isuDetails.id, processInstance.id, processInstance.isEnded
+        )
+    }
+    fun uploadISGFile(
+        uploads: SDISGazetteNoticeUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): SDISGazetteNoticeUploads {
 
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return sdisGazetteNoticeUploadsRepository.save(uploads)
+    }
+
+    //Get IS Gazetted Standard Document
+    fun findUploadedSTGFileBYId(isStandardID: Long): SDISGazetteNoticeUploads {
+        return sdisGazetteNoticeUploadsRepository.findByIsGnDocumentId(isStandardID) ?: throw ExpectedDataNotFound("No File found with the following [ id=$isStandardID]")
     }
 
     // Upload NWA Gazette date

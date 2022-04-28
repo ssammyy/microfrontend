@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.config
 
 import mu.KotlinLogging
+import org.jasypt.encryption.StringEncryptor
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kebs.app.kotlin.apollo.config.properties.jpa.JpaConnectionProperties
@@ -14,9 +15,13 @@ class ConfigApplicationTest {
     @Autowired
     lateinit var jpaConnectionProperties: JpaConnectionProperties
 
+    @Autowired
+    lateinit var jasyptStringEncryptor: StringEncryptor
+
     @Test
     fun contextLoads() {
-
+        KotlinLogging.logger { }.info("USER: " + jasyptStringEncryptor.encrypt("BskAccount"))
+        KotlinLogging.logger { }.info("PWD: " + jasyptStringEncryptor.encrypt("P@\$\$word2021"))
     }
 
     @Test

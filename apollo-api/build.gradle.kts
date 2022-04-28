@@ -170,6 +170,8 @@ dependencies {
     implementation("org.glassfish.metro:webservices-rt:2.4.4")
     implementation("org.glassfish.metro:webservices-api:2.4.4")
     implementation("com.sun.xml.messaging.saaj:saaj-impl")
+    implementation("com.googlecode.json-simple:json-simple:1.1.1")
+
 
     implementation("org.springframework.boot:spring-boot-starter-web-services")
     implementation("javax.xml.bind:jaxb-api:2.3.0")

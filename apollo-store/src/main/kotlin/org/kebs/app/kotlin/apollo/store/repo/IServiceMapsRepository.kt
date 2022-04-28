@@ -46,7 +46,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import javax.persistence.Column
 
 
 @Repository
@@ -78,9 +77,9 @@ interface ISftpTransmissionEntityRepository : HazelcastRepository<SftpTransmissi
     fun findFirstByFilenameOrderByCreatedOn(fileName: String): SftpTransmissionEntity?
     fun findFirstByVarField10(exchangeId: String): SftpTransmissionEntity?
     fun findFirstByTransactionReference(exchangeId: String): SftpTransmissionEntity?
-    fun findFirstByFilenameContainingOrderByCreatedOn(fileName: String,pageable: Pageable): Page<SftpTransmissionEntity>
-    fun findByTransactionStatusInAndFlowDirection(statuses: List<Int>, flowDirection: String?,pageable: Pageable): Page<SftpTransmissionEntity>
-    fun findByTransactionStatusNotInAndFlowDirection(statuses: List<Int>, flowDirection: String?,pageable: Pageable): Page<SftpTransmissionEntity>
+    fun findFirstByFilenameContainingOrderByTransactionDateDesc(fileName: String, pageable: Pageable): Page<SftpTransmissionEntity>
+    fun findByTransactionStatusInAndFlowDirectionOrderByTransactionDateDesc(statuses: List<Int>, flowDirection: String?, pageable: Pageable): Page<SftpTransmissionEntity>
+    fun findByTransactionStatusNotInAndFlowDirectionOrderByTransactionDateDesc(statuses: List<Int>, flowDirection: String?, pageable: Pageable): Page<SftpTransmissionEntity>
 
     @Query("select count(*) as totalDocuments, FLOW_DIRECTION as flowDirection,RESPONSE_STATUS as responseStatus,FILE_TYPE as fileType from LOG_SFTP_TRANSMISSION where to_char(TRANSACTION_DATE,'DD-MM-YYYY')=:dateOfRef group by FLOW_DIRECTION, RESPONSE_STATUS,FILE_TYPE", nativeQuery = true)
     fun findStatisticsForDate(@Param("dateOfRef") date: String): List<FileStats>
@@ -95,6 +94,7 @@ interface IServiceMapsWorkflowsRepository : HazelcastRepository<ServiceMapsWorkf
 @Repository
 interface IIntegrationConfigurationRepository : HazelcastRepository<IntegrationConfigurationEntity, Long> {
     fun findByWorkflowId(workflowId: Long): IntegrationConfigurationEntity?
+    fun findByConfigKeyword(configKeyworkd: String): IntegrationConfigurationEntity?
 }
 
 @Repository

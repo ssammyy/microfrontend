@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
+import java.sql.Timestamp
+import java.util.*
 
 
 /***********
@@ -32,27 +34,24 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): Page<ConsignmentDocumentDetailsEntity>
 
 
-    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNull(
+    fun findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
             assignedInspectionOfficer: UsersEntity,
             cdType: ConsignmentDocumentTypesEntity,
+            statuses: List<Int?>,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
-
-    fun findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNotNullOrApproveRejectCdStatusIsNotNull(
+    fun findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
             assignedInspectionOfficer: UsersEntity,
-            cdType: ConsignmentDocumentTypesEntity,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNotNullOrApproveRejectCdStatusIsNotNull(
-            assignedInspectionOfficer: UsersEntity,
+            statuses: List<Int?>,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
     fun countByUcrNumber(ucrNumber: String): Long
-
+    fun findByUcrNumberAndIdNot(ucrNumber: String, id: Long?): List<ConsignmentDocumentDetailsEntity>
     fun findByUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity?
+    fun countByUcrNumberAndVersion(ucrNumber: String, version: Long): Long
+    fun findByUcrNumberAndVersion(ucrNumber: String, version: Long): ConsignmentDocumentDetailsEntity?
     fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
     fun findTopByUcrNumberOrderByIdDesc(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUuid(uuid: String): ConsignmentDocumentDetailsEntity?
@@ -63,29 +62,27 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
             statuses: List<Int?>,
             page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
-    fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNull(
+    fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
             cfsIds: MutableList<Long>,
             cdType: ConsignmentDocumentTypesEntity,
+            statuses: List<Int?>,
             page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
-    fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNull(
-            cfsIds: MutableList<Long>,
-            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
-
-    fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndCompliantStatusIn(
+    fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
             cfsIds: MutableList<Long>,
             statuses: List<Int?>,
             page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
 
-    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNull(
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
             usersEntity: UsersEntity,
+            statuses: List<Int?>,
             page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
-    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
+    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
             usersEntity: UsersEntity,
             cdStatus: ConsignmentDocumentTypesEntity,
-            statuses: List<Int>, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+            statuses: List<Int?>, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
     fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
             usersEntity: UsersEntity,
@@ -107,6 +104,7 @@ interface ICdStatusTypesEntityRepository : HazelcastRepository<CdStatusTypesEnti
     fun findByTypeNameAndStatus(typeName: String, status: Long): CdStatusTypesEntity?
     fun findByCategoryAndStatus(category: String, status: Int): CdStatusTypesEntity?
     fun findByStatus(status: Int): List<CdStatusTypesEntity>?
+    fun findByStatusAndApplicationStatus(status: Int, appStatus: Int): List<CdStatusTypesEntity>
 //    fun findAllById(Id: Long): List<ConsignmentDocumentTypesEntity>?
 }
 
@@ -203,6 +201,12 @@ interface ICfgMoneyTypeCodesRepository : HazelcastRepository<MoneyTypeCodesEntit
 
 @Repository
 interface ICfgCurrencyExchangeRateRepository : HazelcastRepository<CurrencyExchangeRates, Long> {
+    fun findAllByCurrencyCodeAndCurrentRate(code: String, current: Int): List<CurrencyExchangeRates>
+    fun findFirstByCurrencyCodeAndCurrentRateAndStatus(code: String, current: Int, status: Int): CurrencyExchangeRates?
+    fun findAllByCurrentRateAndStatus(current: Int, status: Int): List<CurrencyExchangeRates>
+
+    fun findAllByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp): List<CurrencyExchangeRates>
+
     @Query("SELECT * from CFG_CURRENCY_EXCHANGE_RATES where to_char(APPLICABLE_DATE,'DD-MM-YYYY')=:date and STATUS=:status", nativeQuery = true)
     fun findByApplicableDateAndStatus(@Param("date") date: String, @Param("status") status: Int): List<CurrencyExchangeRates>
 
@@ -298,25 +302,28 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
     fun findAllByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): List<CdDemandNoteEntity>
     fun findFirstByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): CdDemandNoteEntity?
     fun findByCdId(cdId: Long): CdDemandNoteEntity?
+    fun findFirstByCdId(cdId: Long): CdDemandNoteEntity?
+    fun findByPostingReference(demandNoteNumber: String): CdDemandNoteEntity?
+    fun findByReceiptNo(receiptNumber: String): Optional<CdDemandNoteEntity>
     fun findByDemandNoteNumber(demandNoteNumber: String): CdDemandNoteEntity?
 
     @Query("select * from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date and STATUS in(:status)", nativeQuery = true)
-    fun findByModifiedOnAndModifiedOnLessThanAndStatusOrderByIdAsc(@Param("date") dateGenerated: String, @Param("status") status: List<Int>, pageable: Pageable): Page<CdDemandNoteEntity>
+    fun findByModifiedOnAndModifiedOnLessThanAndPaymentStatusOrderByIdAsc(@Param("date") dateGenerated: String, @Param("status") status: List<Int>, pageable: Pageable): Page<CdDemandNoteEntity>
 
     @Query("select * from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date and PAYMENT_STATUS=:paymentStatus and STATUS in(:status)", nativeQuery = true)
     fun findByModifiedOnAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(@Param("date") dateGenerated: String, @Param("paymentStatus") paymentStatus: Int, @Param("status") status: List<Int>, page: Pageable): Page<CdDemandNoteEntity>
     fun findByPaymentStatusAndStatusOrderByIdAsc(paymentStatus: Int, status: Int, page: Pageable): Page<CdDemandNoteEntity>
     fun findByStatusOrderByIdAsc(status: Int, page: Pageable): Page<CdDemandNoteEntity>
-    fun findByDemandNoteNumberContainingAndStatusOrderByIdAsc(demandNoteNumber: String, status: Int, page: Pageable): Page<CdDemandNoteEntity>
+    fun findByDemandNoteNumberContainingOrPostingReferenceContainingAndPaymentStatusInOrderByIdAsc(demandNoteNumber: String, referenceNumber: String, status: List<Int>, page: Pageable): Page<CdDemandNoteEntity>
     fun findByInvoiceBatchNumberId(invoiceBatchNumberId: Long): List<CdDemandNoteEntity>?
-    fun findByCdIdAndPaymentStatus(cdId: Long, paymentStatus: Int): CdDemandNoteEntity?
+    fun findFirstByCdIdAndPaymentStatusAndPaymentPurpose(cdId: Long, paymentStatus: Int, purpose: String): CdDemandNoteEntity?
     fun findFirstByUcrNumberAndPaymentStatusIn(refNum: String, paymentStatuses: List<Int>): CdDemandNoteEntity?
     fun findByCdIdAndPaymentStatusIn(cdId: Long, paymentStatuses: List<Int>): List<CdDemandNoteEntity>
-    fun findAllByPaymentStatusAndSwStatusIn(paymentStatus: Int, swStatus: List<Int?>): List<CdDemandNoteEntity>
+    fun findAllByPaymentStatusAndSwStatusInAndPaymentPurpose(paymentStatus: Int, swStatus: List<Int?>, paymentPurpose: String): List<CdDemandNoteEntity>
     fun findAllByPaymentStatus(paymentStatus: Int): List<CdDemandNoteEntity>?
     fun findFirstByPaymentStatusAndCdRefNoIsNotNull(paymentStatus: Int): CdDemandNoteEntity?
     fun findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(paymentStatus: Int): CdDemandNoteEntity?
-    fun findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(paymentStatus: Int,importerPin: String): CdDemandNoteEntity?
+    fun findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(paymentStatus: Int, importerPin: String): CdDemandNoteEntity?
 
     @Query("select count(*) as totalCount, sum(AMOUNT_PAYABLE) totalAmount,paymentStatus from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date group by PAYMENT_STATUS", nativeQuery = true)
     fun transactionStats(date: String): List<TransactionStats>
@@ -329,6 +336,14 @@ interface IDemandNoteItemsDetailsRepository : HazelcastRepository<CdDemandNoteIt
     fun findByItemIdAndDemandNoteId(itemId: Long?, demandNoteId: Long?): CdDemandNoteItemsDetailsEntity?
 }
 
+@Repository
+interface CdDemandNotePaymentRepository : HazelcastRepository<CdDemandNotePaymentEntity, Long> {
+    fun findByDemandNoteId(demandNoteId: Long): List<CdDemandNotePaymentEntity>
+
+    @Query(value = "SELECT sum(AMOUNT) from DAT_KEBS_CD_DEMAND_NOTE_PAYMENTS where DEMAND_NOTE_ID=:demandNoteId and STATUS=:status", nativeQuery = true)
+    fun sumByDemandNoteIdAndStatus(demandNoteId: Long, status: Int): BigDecimal?
+    fun findByReceiptNumber(demandNoteNumber: String): CdDemandNotePaymentEntity?
+}
 
 @Repository
 interface IChecklistCategoryRepository : HazelcastRepository<CdChecklistCategoryEntity, Long> {
@@ -365,7 +380,7 @@ interface ICdInspectionChecklistRepository : HazelcastRepository<CdInspectionChe
 
 @Repository
 interface ICdInspectionGeneralRepository : HazelcastRepository<CdInspectionGeneralEntity, Long> {
-    fun findFirstByCdDetails(cdItemDetails: ConsignmentDocumentDetailsEntity): CdInspectionGeneralEntity?
+    fun findFirstByCdDetailsAndCurrentChecklist(cdItemDetails: ConsignmentDocumentDetailsEntity, current: Int): CdInspectionGeneralEntity?
     fun findAllByCdDetails(cdItemDetails: ConsignmentDocumentDetailsEntity): List<CdInspectionGeneralEntity>
     fun findFirstByCdDetails_Uuid(docId: String): CdInspectionGeneralEntity?
 }
@@ -478,9 +493,13 @@ interface ICdValuesHeaderLevelEntityRepository : HazelcastRepository<CdValuesHea
 interface IUsersCfsAssignmentsRepository : HazelcastRepository<UsersCfsAssignmentsEntity, Long> {
     fun findAllById(Id: Long): List<UsersCfsAssignmentsEntity>?
     fun findAllByCfsId(Id: Long): List<UsersCfsAssignmentsEntity>?
+    fun findAllByCfsIdInAndStatus(Ids: List<Long>, status: Int): List<UsersCfsAssignmentsEntity>
 
     @Query("select CKCTC.CFS_CODE from CFG_USERS_CFS_ASSIGNMENTS CCA left join CFG_KEBS_CFS_TYPE_CODES CKCTC on CCA.CFS_ID = CKCTC.ID where CCA.STATUS=1 and CCA.USER_PROFILE_ID=:profileId", nativeQuery = true)
     fun findAllUserCfsCodes(@Param("profileId") Id: Long): List<String>
+
+    @Query("select count(CKCTC.CFS_CODE) from CFG_USERS_CFS_ASSIGNMENTS CCA left join CFG_KEBS_CFS_TYPE_CODES CKCTC on CCA.CFS_ID = CKCTC.ID where CCA.STATUS=1 and CCA.USER_PROFILE_ID=:profileId and CCA.CFS_ID=:cfsId", nativeQuery = true)
+    fun countUserCfsCodes(@Param("profileId") Id: Long, @Param("cfsId") cfsId: Long): Long
     fun findByUserProfileId(userProfileId: Long): List<UsersCfsAssignmentsEntity>?
     fun findByUserProfileIdAndCfsId(userProfileId: Long, cfsId: Long): UsersCfsAssignmentsEntity?
     fun findByUserProfileIdAndCfsIdAndStatus(userProfileId: Long, cfsId: Long, status: Int): UsersCfsAssignmentsEntity?
@@ -537,8 +556,10 @@ interface ICdThirdPartyDetailsRepository : HazelcastRepository<CdThirdPartyDetai
 @Repository
 interface IConsignmentItemsRepository : HazelcastRepository<CdItemDetailsEntity, Long> {
     fun findByCdDocId(cdDocId: ConsignmentDocumentDetailsEntity): List<CdItemDetailsEntity>?
+    fun findFirstByCdDocIdAndChassisNumberIsNotNull(cdDocId: ConsignmentDocumentDetailsEntity): Optional<CdItemDetailsEntity>
     fun findByCdDocIdAndDnoteStatus(cdDocId: ConsignmentDocumentDetailsEntity, dnoteStatus: Int): List<CdItemDetailsEntity>?
     fun findByCdDocIdAndSampledStatus(cdDocId: ConsignmentDocumentDetailsEntity, sampledStatus: Int): List<CdItemDetailsEntity>
+    fun findByCdDocIdAndSampledStatusAndAllTestReportStatusNotIn(cdDocId: ConsignmentDocumentDetailsEntity, sampledStatus: Int, testStatus: List<Int>): List<CdItemDetailsEntity>
     fun findByUuid(uuid: String): CdItemDetailsEntity?
     fun findByCdDocIdAndId(cdType: ConsignmentDocumentDetailsEntity, id: Long?): CdItemDetailsEntity
     fun findByMinistrySubmissionStatus(status: Int): List<CdItemDetailsEntity>?
@@ -600,12 +621,12 @@ interface IPvocPartnersCountriesRepository : HazelcastRepository<PvocPartnersCou
 }
 
 @Repository
-interface IPvocPartnersRegion : HazelcastRepository<PvocPartnersRegionEntity, Long>{
+interface IPvocPartnersRegion : HazelcastRepository<PvocPartnersRegionEntity, Long> {
     fun findAllByStatus(status: Int): List<PvocPartnersRegionEntity>
 }
 
 @Repository
-interface IPvocPartnerTypeRepository : HazelcastRepository<PvocPartnerTypeEntity, Long>{
+interface IPvocPartnerTypeRepository : HazelcastRepository<PvocPartnerTypeEntity, Long> {
     fun findAllByStatus(status: Int): List<PvocPartnerTypeEntity>
 }
 
@@ -613,6 +634,8 @@ interface IPvocPartnerTypeRepository : HazelcastRepository<PvocPartnerTypeEntity
 interface IIDFDetailsEntityRepository : HazelcastRepository<IDFDetailsEntity, Long> {
     fun findByBaseDocRefNo(baseDocRefNo: String): IDFDetailsEntity?
     fun findFirstByUcrNo(ucrNo: String): IDFDetailsEntity?
+    fun findByStatus(status: Long, page: Pageable): Page<IDFDetailsEntity>
+    fun findByStatusAndCreatedOnBetween(status: Long, startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<IDFDetailsEntity>
 }
 
 @Repository
@@ -633,7 +656,7 @@ interface IDeclarationDetailsEntityRepository : HazelcastRepository<DeclarationD
 @Repository
 interface ICdDocumentModificationHistoryRepository : HazelcastRepository<CdDocumentModificationHistory, Long> {
     fun findAllByCdId(cdId: Long): List<CdDocumentModificationHistory>
-    fun findAllByUcrNumberOrCdId(ucrNumber: String, cdId: Long): List<CdDocumentModificationHistory>
+    fun findAllByUcrNumberOrCdIdOrderByIdDesc(ucrNumber: String, cdId: Long): List<CdDocumentModificationHistory>
 }
 
 @Repository
@@ -645,7 +668,7 @@ interface IDeclarationItemDetailsEntityRepository : HazelcastRepository<Declarat
 @Repository
 interface IManifestDetailsEntityRepository : HazelcastRepository<ManifestDetailsEntity, Long> {
     fun findByManifestNumber(manifestNumber: String): ManifestDetailsEntity?
-
+    fun findByUcrn(ucrNumber: String): ManifestDetailsEntity?
     fun findFirstByTdBillCode(tdBillCode: String): ManifestDetailsEntity?
 }
 

@@ -371,9 +371,26 @@ data class MPesaPushDto(
         @NotEmpty(message = "is required")
         var phoneNumber: String
 )
+data class MigratedPermitDto(
+        @NotEmpty(message = "is required")
+        var id: Long,
+        @NotEmpty(message = "is required")
+        var name: String
+)
 
 data class MPesaMessageDto(
         var message: String? = null,
+)
+
+data class ManufactureEntityDTO(
+    var directorIdNumber: Long? = null,
+    var kraPin:  String? = null,
+    var registrationNumber: String? = null,
+    var postalAddress: String? = null,
+    var companyEmail: String? = null,
+    var companyTelephone: String? = null,
+
+
 )
 
 data class UserCompanyEntityDto(
@@ -443,6 +460,7 @@ data class UserCompanyEntityDto(
     var id: Long? = null
     var status: Boolean = false
 }
+
 
 data class UserEntityDto(
 
@@ -576,6 +594,17 @@ data class UserRequestTypesEntityDto(
         var description: String? = null,
         var status: Boolean? = null
 )
+
+data class  CompanySl1DTO(
+    var NameAndBusinessOfProprietors: String? = null,
+    var AllCommoditiesManufuctured: String? = null,
+    var DateOfManufacture: Date? = null,
+    var totalValueOfManufacture: BigDecimal? = null,
+    var companyProfileID: Int? = null,
+    var nameOfBranch: String? = null,
+    var location: String? = null
+)
+
 
 data class ManufactureSubmitEntityDto(
         var closedCommodityManufactured: Int? = null,
@@ -1127,6 +1156,9 @@ class AuditItemEntityDto {
     @JsonProperty("LOT NUMBER")
     var lotNumber: String? = null
 
+    @JsonProperty("CFS")
+    var cfsCode: String? = null
+
     @JsonProperty("SHIP'S NAME AND DATE")
     var shipName: String? = null
 
@@ -1154,4 +1186,7 @@ class AuditItemEntityDto {
 
     @JsonProperty("B/L NO")
     var blNo: String? = null
+
+    @JsonProperty("COUNTRY")
+    var country: String? = null
 }

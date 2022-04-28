@@ -54,4 +54,12 @@ class AuctionUploadsEntity : Serializable {
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
+    @Column(name = "CREATED_BY", nullable = true)
+    @Basic
+    var createdBy: String? = null
+
+    @Column(name = "CREATED_ON", nullable = true)
+    @Basic
+    var createdOn: Timestamp? = null
 }

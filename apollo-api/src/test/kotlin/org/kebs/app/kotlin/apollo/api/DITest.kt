@@ -1,20 +1,20 @@
 package org.kebs.app.kotlin.apollo.api
 
 import mu.KotlinLogging
+import org.apache.camel.CamelContext
 import org.apache.commons.io.FileUtils
 import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
+import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.service.BillingService
-import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
-import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
@@ -34,21 +34,23 @@ import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeReposit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Lazy
+import org.springframework.core.io.ResourceLoader
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.junit4.SpringRunner
+import org.w3c.dom.Document
+import org.xml.sax.InputSource
 import java.io.File
 import java.io.IOException
+import java.io.StringReader
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import org.w3c.dom.Document
-import org.xml.sax.InputSource
-import java.io.StringReader
-import java.util.concurrent.TimeUnit
 
 
 @SpringBootTest
@@ -58,7 +60,7 @@ class DITest {
     lateinit var destinationInspectionDaoServices: DestinationInspectionDaoServices
 
     @Autowired
-    lateinit var destinationInspectionServices: DestinationInspectionService
+    lateinit var resourceLoader: ResourceLoader
 
     @Autowired
     lateinit var billingService: BillingService
@@ -119,6 +121,9 @@ class DITest {
 
     @Autowired
     lateinit var limsService: LimsServices
+
+    @Autowired
+    lateinit var camelContext: CamelContext
 
     @Autowired
     lateinit var motorVehicleInspectionEntityRepo: ICdInspectionMotorVehicleItemChecklistRepository
@@ -284,6 +289,19 @@ class DITest {
         return cdResult
     }
 
+    @Test
+    fun testDocumentApproval() {
+        val form = ConsignmentUpdateRequest()
+        form.approvalStatus = 1
+        form.remarks = "OKay remarks"
+        val cdStatusType = destinationInspectionDaoServices.findCdStatusCategory("APPROVE")
+        form.cdStatusTypeId = cdStatusType.id
+        val cdUud = "9cd47862-7d84-4664-b1b1-f14a6b950441"
+        SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken("APPROVE", null, null)
+        val response = this.destinationInspectionBpmn.startApprovalConsignment(cdUud, form)
+        Assertions.assertEquals("00", response.responseCode, response.message)
+    }
+
     fun transportDetailsCDResults(): CdTransportDetailsEntity {
         val cdResult = CdTransportDetailsEntity()
         with(cdResult) {
@@ -423,7 +441,7 @@ class DITest {
             invoiceNumber = "invoiceNumber"
             invoiceDate = commonDaoServices.getTimestamp()
             currency = "currency"
-            insurance = 256L
+            insurance = 256.00
             observations = "observations"
             createdBy = commonDaoServices.concatenateName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -511,18 +529,18 @@ class DITest {
             inspectionRemarks = "Test"
             previousRegistrationNumber = "Test"
             previousCountryOfRegistration = "Test"
-            tareWeight = 22
-            loadCapacity = 52
-            grossWeight = 58
+            tareWeight = 22.00
+            loadCapacity = 52.00
+            grossWeight = 58.00
             numberOfAxles = 69
             typeOfVehicle = "Test"
             numberOfPassangers = 89
             typeOfBody = "Test"
             bodyColor = "Test"
             fuelType = "Test"
-            inspectionFee = 85
+            inspectionFee = 85.00
             inspectionFeeCurrency = "Test"
-            inspectionFeeExchangeRate = 852
+            inspectionFeeExchangeRate = 852.00
             inspectionFeePaymentDate = commonDaoServices.getTimestamp()
             createdBy = commonDaoServices.concatenateName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -728,7 +746,7 @@ class DITest {
         this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(0, "PN890230023")?.let { demandNote ->
             KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            billingService.registerBillTransaction(demandNote, map)?.let {
+            billingService.registerBillTransaction(demandNote, null, null, map)?.let {
                 KotlinLogging.logger { }.info("Billing temp ref: ${it.tempReceiptNumber}")
             } ?: throw ExpectedDataNotFound("Expected demand note to be added to billing")
             Thread.sleep(TimeUnit.SECONDS.toMillis(5))
@@ -748,7 +766,7 @@ class DITest {
     fun demandNotePaymentSubmissionByRef() {
         this.demandNoteRepository.findByDemandNoteNumber("KIMSDN202111174A794")?.let { demandNote ->
             KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
-            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote)
+            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote, BigDecimal.valueOf(200))
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         } ?: throw ExpectedDataNotFound("Could not find a single payment")
     }
@@ -757,7 +775,7 @@ class DITest {
     fun demandNotePaymentSubmission() {
         this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNull(1)?.let { demandNote ->
             KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
-            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote)
+            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote, BigDecimal.valueOf(300))
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         } ?: throw ExpectedDataNotFound("Could not find a single payment")
     }
@@ -867,10 +885,22 @@ class DITest {
 
     @Autowired
     lateinit var iCountryTypeCodesRepository: ICountryTypeCodesRepository
+    val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+
+    @Test
+    fun mapCorDonsignmentDocument() {
+        val resource = this.resourceLoader.getResource("classpath:cds/OG_SUB_CD-2022CKEBSKRA0030000041390-1-B-20220125033017.xml")
+        Assertions.assertNotNull(resource, "Expected file to be available")
+        val bytes = resource.file.readBytes()
+        val consignmentDoc: ConsignmentDocument = commonDaoServices.deserializeFromXML(bytes.decodeToString(), stringToExclude)
+        Assertions.assertNotNull(consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandardTwo)
+        consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, consignmentDocument.encodeToByteArray())
+
+    }
 
     @Test
     fun canDecodeConsignmentDocument() {
-        val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+
         val consignmentDoc: ConsignmentDocument =
                 commonDaoServices.deserializeFromXML(consignmentDocument, stringToExclude)
         KotlinLogging.logger { }.info("DDD: " + consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandardTwo?.attachments?.get(0)?.fileName)
@@ -890,6 +920,8 @@ class DITest {
 
         consignmentDoc.documentDetails?.consignmentDocDetails?.cdImporter?.physicalCountryName = country.countryName
         assertEquals("KENYA", consignmentDoc.documentDetails?.consignmentDocDetails?.cdImporter?.physicalCountryName)
+        consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, consignmentDocument.encodeToByteArray())
+
     }
 
     @Test
@@ -1303,12 +1335,11 @@ class DITest {
                     val map = commonDaoServices.serviceMapDetails(appId)
                     val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(941)
                     val localCoc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, consignmentDocumentEntity, map, "", "A")
-                    consignmentDocumentEntity.cdStandard?.let { cdStd ->
-                        destinationInspectionDaoServices.updateCDStatus(
-                                cdStd,
-                                applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
-                        )
-                    }
+                    // Update status
+                    destinationInspectionDaoServices.updateCDStatus(
+                            consignmentDocumentEntity,
+                            applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
+                    )
                     KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
 //                reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
 //            notifications.processEmail("anthonykihagi@gmail.com","Test subject","Test Message",file.path)

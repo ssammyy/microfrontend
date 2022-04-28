@@ -53,7 +53,7 @@ export interface Department {
 
 export class LiaisonOrganization {
     id?: number;
-    name?: string="hahaha";
+    name?: string;
 
 
 }
@@ -250,10 +250,17 @@ export interface HOFFeedback{
 }
 
 export interface StandardDraft {
-    title:string;
-    requestorId:string;
-    standardOfficerId:string;
-    versionNumber:string;
+    ID: number;
+    title: string;
+    requestorId: string;
+    standardOfficerId: string;
+    versionNumber: number;
+    standardOfficerName: string;
+    proofreadStatus: string;
+    editedStatus: string;
+    version: number;
+    draughtingStatus: string;
+
 }
 
 export interface HOPTasks {
@@ -298,10 +305,18 @@ export interface ReviewFeedbackFromSPC {
     taskData: ProposalForTC;
 }
 
-export interface CallForApplication{
-    user_id: string,
+export interface CallForApplication {
+    id: number,
+    tcId: number,
+    expiryDate: string,
     dateOfPublishing: string,
-    tc: string
+    description: string,
+    title: string,
+    status: string,
+    tc: string,
+    createdOn: string,
+    createdBy: number,
+
 }
 
 export interface SubmitApplicationsTask
@@ -311,11 +326,33 @@ export interface SubmitApplicationsTask
     taskData: CallForApplication;
 }
 
-export interface ReviewApplicationTask
-{
-    taskId: string;
-    name: string;
-    taskData: SubmitApplication;
+export interface ReviewApplicationTask {
+
+    id: number,
+    technicalCommittee: string,
+    organization: string,
+    nomineeName: string,
+    position: string,
+    postalAddress: string,
+    mobileNumber: string,
+    email: string,
+    authorizingName: string,
+    authorisingPersonPosition: string,
+    authorisingPersonEmail: string,
+    qualifications: string,
+    commitment: string,
+    tcApplicationId: number,
+    dateOfApplication: string,
+    status: string,
+    comments_by_hof: string,
+    commentsBySpc: string,
+    commentsBySac: string,
+    hofId: string,
+    spcId: string,
+    sacId: string,
+    varField9: string,
+    varField10: string,
+    taskId: string
 }
 
 export interface HOFRecommendationTask
@@ -329,9 +366,15 @@ export interface TCMemberDetails
 {
     taskId: string,
     userId: string,
+    tcId: string,
     tc: string,
     name: string,
-    email: string
+    email: string,
+    postalAddress: string
+    mobileNumber: string
+    dateOfCreation: string
+    status: string
+
 }
 
 export interface SACSummaryTask
@@ -343,11 +386,27 @@ export interface SACSummaryTask
 
 export interface SACSummary
 {
+    id: number,
+    department: string,
+    technicalCommittee: string,
     sl: string,
     ks: string,
+    title: string,
+    edition: string,
     requestedBy: string,
     issuesAddressed: string,
-    backgroundInformation: string
+    referenceMaterial: string,
+    backgroundInformation: string,
+    dateOfApproval: string,
+    approvalStatus: string,
+    feedback: string,
+    eacGazette: string,
+    authenticText: string,
+    technicalCommitteeName: string,
+    departmentName: string,
+    requestedByName: string
+
+
 }
 
 export interface HOFRecommendation
@@ -377,16 +436,17 @@ export interface SubmitApplication
     technicalCommittee: string;
     organization: string;
     nomineeName: string;
-    position:string;
-    postalAddress:string;
-    mobileNumber:string;
-    email:string;
-    authorizingName:string;
-    authorisingPersonPosition:string;
-    authorisingPersonEmail:string;
-    qualifications:string;
-    commitment:string;
-    taskId:string;
+    position: string;
+    postalAddress: string;
+    mobileNumber: string;
+    email: string;
+    authorizingName: string;
+    authorisingPersonPosition: string;
+    authorisingPersonEmail: string;
+    qualifications: string;
+    commitment: string;
+    taskId: string;
+    id: number;
 }
 
 export interface ProposalForTC {
@@ -432,15 +492,27 @@ export interface DraughtsManData {
     title: string;
     draught: string;
     versionNumber: string;
+    ID: number;
+    standardOfficerName: string;
+    proofreadStatus: string;
+    editedStatus: string;
+    version: number;
+    draughtingStatus: string;
 }
 
 export interface ProofReadData {
+    ID: number;
     submission_date: string;
     approved: string;
     requestorId: string;
     standardOfficerId: string;
     title: string;
     versionNumber: string;
+    standardOfficerName: string;
+    proofreadStatus: string;
+    editedStatus: string;
+    version: number;
+    draughtingStatus: string;
 }
 
 export interface DecisionFeedback {
@@ -459,11 +531,6 @@ export interface DecisionFeedback {
 }
 
 
-export interface EditorTask {
-    taskId: string;
-    name: string;
-    taskData: StandardDraft;
-}
 
 export interface StdWorkPlan{
     taskId: string;

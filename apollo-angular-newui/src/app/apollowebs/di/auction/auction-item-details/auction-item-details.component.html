@@ -77,7 +77,7 @@
                                                 Approval Status
                                             </th>
                                             <tr>
-                                                <td>{{auctionDetails.auction_details.approvalStatus == 0 ? "NEW" : auctionDetails.auction_details.approvalStatus == 1 ? "APPROVED" : "REJECTED"}}</td>
+                                                <td>{{auctionDetails.auction_details.approvalStatusDesc}}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -105,25 +105,33 @@
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Amount</div>
-                                                <div class="list-text-accordion">{{auctionDetails.payment.amount}}</div>
+                                                <div class="list-text-accordion">{{auctionDetails.payment.totalAmount | money}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Receipt Number</div>
                                                 <div class="list-text-accordion">{{auctionDetails.payment.receiptNo}}</div>
                                             </li>
                                         </ul>
-                                        <button (click)="viewDemandNote(auctionDetails.payment.demandNoteId)">View
-                                            Details
-                                        </button>
+                                        <div class="btn-group">
+                                            <button class="btn btn-primary btn-sm"
+                                                    (click)="viewDemandNote(auctionDetails.payment.id)">View
+                                                Details
+                                            </button>
+                                            <button class="btn btn-primary btn-sm ml-2"
+                                                    (click)="downloadDemandNote(auctionDetails.payment.id)">Download
+                                                Demand note
+                                            </button>
+                                        </div>
                                     </mat-tab>
                                     <mat-tab tabindex="3" label="Attachments">
                                         <div class="table-striped table-condensed table-responsive">
-                                            <ng2-smart-table class="table table-hover" [settings]="historySettings"
-                                                             [source]="auctionDetails.attachments">
+                                            <ng2-smart-table class="table table-hover" [settings]="attachmentSettings"
+                                                             [source]="auctionDetails.attachments"
+                                                             (custom)="tableActions($event)">
                                             </ng2-smart-table>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab tabindex="4" label="Inspection History Details">
+                                    <mat-tab tabindex="4" label="History Details">
                                         <div class="table-striped table-condensed table-responsive">
                                             <ng2-smart-table class="table table-hover" [settings]="historySettings"
                                                              [source]="auctionDetails.history">
@@ -133,25 +141,43 @@
                                 </mat-tab-group>
                             </div>
                             <div class="col-md-2 col-sm-12">
-                                <h5>Action:</h5>
-                                <br/>
-                                <input type="file" (change)="uploadAuctionReport($event)" [hidden]="true" #auctionReport>
-                                <button *ngIf="auctionDetails.auction_details.approvalStatus!=='0'" class="btn btn-sm btn-primary" (click)="auctionReport.click()">
-                                    <i class="fa fa-upload"></i>Upload Report
-                                </button>
-                                <button *ngIf="auctionDetails.auction_details.consignmentId" class="btn btn-sm btn-primary" (click)="viewConsignmentDocument()">View
-                                    Consignment
-                                </button>
-                                <button *ngIf="!auctionDetails.payment" class="btn btn-sm btn-primary" (click)="generateInvoice()">View
-                                    Generate Demand Note
-                                </button>
-                                <button *ngIf="auctionDetails.auction_details.approvalStatus==='0'"
-                                        class="btn btn-sm btn-primary" (click)="approveRejectConsignment()">
-                                    Approve/Reject Application
-                                </button>
+                                <h5>Actions:</h5>
+                                <div *ngIf="auctionDetails.auction_details.isSupervisor">
+                                    <button *ngIf="auctionDetails.auction_details.assignedOfficer"
+                                            class="btn btn-sm btn-primary" (click)="assignAuctionItem(false)">
+                                        <i class="fa fa-upload"></i>Re-Assign IO
+                                    </button>
+                                    <button *ngIf="!auctionDetails.auction_details.assignedOfficer"
+                                            class="btn btn-sm btn-primary" (click)="assignAuctionItem(false)">
+                                        <i class="fa fa-upload"></i>Assign IO
+                                    </button>
+                                </div>
+                                <div *ngIf="auctionDetails.auction_details.isInspector && auctionDetails.auction_details.myTask">
+                                    <button *ngIf="auctionDetails.auction_details.editable"
+                                            class="btn btn-sm btn-primary" (click)="uploadAuctionAttachment($event)">
+                                        <i class="fa fa-attachment"></i>Upload Attachment
+                                    </button>
+                                    <button *ngIf="auctionDetails.auction_details.consignmentId"
+                                            class="btn btn-sm btn-primary" (click)="viewConsignmentDocument()">View
+                                        Consignment
+                                    </button>
+                                    <!--                                    <button *ngIf="!auctionDetails.payment && auctionDetails.auction_details.approvalStatus!=5 && auctionDetails.auction_details.editable"-->
+                                    <!--                                            class="btn btn-sm btn-primary"-->
+                                    <!--                                            (click)="generateInvoice()">-->
+                                    <!--                                        Generate Demand Note-->
+                                    <!--                                    </button>-->
+                                    <button *ngIf="auctionDetails.auction_details.editable"
+                                            class="btn btn-sm btn-primary" (click)="approveRejectConsignment()">
+                                        Approve/Reject Application
+                                    </button>
+                                </div>
                                 <h5>Documents:</h5>
-                                <button *ngIf="auctionDetails.auction_details.approvalStatus==='0'"
+                                <button *ngIf="auctionDetails.auction_details.reportId"
                                         class="btn btn-sm btn-primary" (click)="downloadISMReport()">Download Report
+                                </button>
+                                <button *ngIf="auctionDetails.payment"
+                                        class="btn btn-sm btn-primary"
+                                        (click)="downloadDemandNote(auctionDetails.payment.id)">Download Demand Note
                                 </button>
                             </div>
                         </div>

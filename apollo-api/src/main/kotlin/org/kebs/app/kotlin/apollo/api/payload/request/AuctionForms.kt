@@ -6,8 +6,6 @@ import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import javax.persistence.Basic
-import javax.persistence.Column
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
@@ -79,6 +77,11 @@ class AuctionForm {
     @NotEmpty(message = "Importer name is required")
     var importerName: String? = null
 
+    @NotEmpty(message = "Importer name is required")
+    var cfsCode: String? = null
+
+    var country: String? = null
+
     @NotEmpty(message = "Auction item location is required")
     var itemLocation: String? = null
     var importerPhone: String? = null
@@ -97,12 +100,15 @@ class AuctionForm {
         request.arrivalDate = this.arrivalDate
         request.importerName = this.importerName
         request.importerPhone = this.importerPhone
-        request.containerSize=this.containerSize
+        request.containerSize = this.containerSize
     }
 
 }
 
 class AuctionAssignForm {
+
+    val reassign: Boolean? = null
+
     @NotNull(message = "Please select inspection officer")
     val officerId: Long? = null
 

@@ -19,17 +19,17 @@ class ApiClientAuthenticationProvider(
 
     @Throws(AuthenticationException::class)
     override fun authenticate(authentication: Authentication): Authentication {
-        KotlinLogging.logger {  }.debug("Client authentication provider: ${authentication.principal}")
+        KotlinLogging.logger { }.debug("Client authentication provider: ${authentication.principal}")
         val username = authentication.name
         val password = authentication.credentials as String
         this.clientService.authenticateClient(username, password)?.let {
-            val user=this.customDetailsService.loadUserByUsername(username)
+            val user = this.customDetailsService.loadUserByUsername(username)
             return UsernamePasswordAuthenticationToken(user, password, user.authorities)
-        }?:throw NullValueNotAllowedException("Invalid client id and/or secret")
+        } ?: throw NullValueNotAllowedException("Invalid client id and/or secret")
     }
 
     override fun supports(arg0: Class<*>?): Boolean {
-        KotlinLogging.logger {  }.info("Client authentication provider: ${arg0?.name}")
-        return arg0?.equals(OauthClientAuthenticationToken::class.java)?:false
+        KotlinLogging.logger { }.info("Client authentication provider: ${arg0?.name}")
+        return arg0?.equals(OauthClientAuthenticationToken::class.java) ?: false
     }
 }

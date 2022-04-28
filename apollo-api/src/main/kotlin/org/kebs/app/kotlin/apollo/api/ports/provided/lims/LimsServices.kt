@@ -6,18 +6,20 @@ import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.FileUtils
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootLabPdfList
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootTestResultsAndParameters
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestParameter
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestResult
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentApprovalStatus
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestParametersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestResultsEntity
-import org.kebs.app.kotlin.apollo.store.repo.IIntegrationConfigurationRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentItemsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestParametersRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestResultsRepository
@@ -38,14 +40,13 @@ import javax.net.ssl.HttpsURLConnection
 class LimsServices(
         private val commonDaoServices: CommonDaoServices,
         private val jasyptStringEncryptor: StringEncryptor,
-        private val daoService: DaoService,
         private val downloaderFile: DownloaderFile,
         private val applicationMapProperties: ApplicationMapProperties,
         private val sampleLabTestResults: IQaSampleLabTestResultsRepository,
         private val sampleLabTestParameters: IQaSampleLabTestParametersRepository,
         private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
         private val permitRepo: IPermitApplicationsRepository,
-        private val configurationRepository: IIntegrationConfigurationRepository
+        private val iCdItemsRepo: IConsignmentItemsRepository
 ) {
 
     @Lazy
@@ -69,8 +70,6 @@ class LimsServices(
         val url: URL
         var response: String? = ""
         try {
-
-            val map = commonDaoServices.serviceMapDetails(appId)
             val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapID)
 
             url = URL(config.url)
@@ -95,17 +94,17 @@ class LimsServices(
             val responseCode: Int = conn.responseCode
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 var line: String?
-                System.out.println("::::::::::::::::::::::::CONNECTION MADE::::::::::::::::")
+                KotlinLogging.logger { }.debug("::::::::::::::::::::::::CONNECTION MADE::::::::::::::::")
                 val br = BufferedReader(InputStreamReader(conn.inputStream))
                 while (br.readLine().also { line = it } != null) {
                     response += line
-                    System.out.println(response.toString())
+                    KotlinLogging.logger { }.debug(response.toString())
                 }
             } else {
                 response = ""
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            KotlinLogging.logger { }.error("Failed to connect", e)
         }
         return response
     }
@@ -178,7 +177,7 @@ class LimsServices(
         var myStatus: Boolean = false
         //Loop
         if (resultsParam.test_parameter?.isNullOrEmpty() == true) {
-            println("List is null or empty")
+            KotlinLogging.logger {}.debug("List is null or empty")
             throw ExpectedDataNotFound("NO RESULTS FOUND")
 //            return myStatus
         } else {
@@ -222,8 +221,8 @@ class LimsServices(
                 if ("OK".equals(resultsParam.status, true)) {
                     results = true
                 }
-            }catch (ex: Exception){
-                KotlinLogging.logger {  }.error("Failed to decode reponse", ex)
+            } catch (ex: Exception) {
+                KotlinLogging.logger { }.error("Failed to decode reponse", ex)
             }
         }
         return results
@@ -400,16 +399,14 @@ class LimsServices(
                                             ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
                                     )
                                             .let { cdItem ->
+                                                // Update Item result
+                                                cdItem.allTestReportStatus = map.activeStatus
+                                                cdItem.varField10 = "LAB RESULT RECEIVED"
+                                                diDaoServices.updateCdItemDetailsInDB(cdItem, null)
+                                                // Update consignment status if all reports have been received
                                                 diDaoServices.findCD(cdItem.cdDocId?.id
                                                         ?: throw Exception("CD ID NOT FOUND"))
-                                                        .let { updatedCDDetails ->
-                                                            updatedCDDetails.cdStandard?.let { cdStd ->
-                                                                diDaoServices.updateCDStatus(
-                                                                        cdStd,
-                                                                        applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
-                                                                )
-                                                            }
-                                                        }
+                                                        .let { updatedCDDetails -> updateConsignmentSampledStatus(updatedCDDetails) }
 
                                             }
                                 }
@@ -422,6 +419,30 @@ class LimsServices(
                     }
 
                 }
+    }
+
+    /**
+     * Check lab result status:
+     * 2. else Check if we added any lab result request during checklist saving
+     */
+    fun updateConsignmentSampledStatus(cdItemDetails: ConsignmentDocumentDetailsEntity): Boolean {
+        var response = false
+        try {
+            val items = iCdItemsRepo.findByCdDocIdAndSampledStatusAndAllTestReportStatusNotIn(cdItemDetails, 1, listOf(1))
+            // All lab results have been received
+            if (items.isEmpty()) {
+                KotlinLogging.logger { }.info("CD ${cdItemDetails.ucrNumber} has all lab results, marking")
+                cdItemDetails.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
+                cdItemDetails.varField10 = "Lab result received"
+                diDaoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.LAB_RESULT_RESULT)
+                response = true
+            } else {
+                KotlinLogging.logger { }.info("CD ${cdItemDetails.ucrNumber} expects ${items.size} Lab results")
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to update lab result")
+        }
+        return response
     }
 
     fun checkPDFFiles(bsNumber: String): List<String>? {

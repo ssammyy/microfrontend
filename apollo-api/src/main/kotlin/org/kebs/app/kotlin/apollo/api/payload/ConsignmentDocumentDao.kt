@@ -1,15 +1,15 @@
 package org.kebs.app.kotlin.apollo.api.payload
 
-import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.TaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CdTypeCodes
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.springframework.security.core.Authentication
+import org.springframework.util.StringUtils
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import javax.persistence.*
 
 fun checkHasAuthority(role: String, auth: Authentication): Boolean {
     return auth.authorities.stream().anyMatch { authority -> authority.authority == role }
@@ -50,8 +50,9 @@ class ConsignmentEnableUI {
     var canInspect: Boolean? = null
     var checklistFilled: Boolean = false
     var hasPort: Boolean? = null
-    var demandNoteRequired: Boolean=false
+    var demandNoteRequired: Boolean = false
     var hasActiveProcess = false
+    var manifestDocument = false
 
     companion object {
         fun fromEntity(cd: ConsignmentDocumentDetailsEntity, map: ServiceMapsEntity, authentication: Authentication): ConsignmentEnableUI {
@@ -61,14 +62,16 @@ class ConsignmentEnableUI {
             val ui = ConsignmentEnableUI().apply {
                 supervisor = modify
                 inspector = change
-                hasActiveProcess = cd.diProcessStatus == map.activeStatus
+                hasActiveProcess = cd.diProcessStatus == map.activeStatus // Check has incomplete process
                 targetDisabled = (cd.targetStatus == map.initStatus || cd.targetStatus == map.invalidStatus)
                 assigned = cd.assignedInspectionOfficer != null
                 targeted = cd.targetStatus == map.activeStatus
                 targetRejected = cd.targetStatus == map.invalidStatus
-                idfAvailable = cd.idfNumber != null
+                idfAvailable = StringUtils.hasLength(cd.idfNumber)
+                manifestDocument = StringUtils.hasLength(cd.manifestNumber) && !"NONE".equals(cd.manifestNumber, true) // Default value for manifest is NONE
+                declarationDocument = StringUtils.hasLength(cd.manifestNumber) && !"NONE".equals(cd.manifestNumber, true) // Default value for manifest is NONE
                 demandNoteRejected = cd.sendDemandNote == map.invalidStatus
-                demandNoteDisabled = (cd.sendDemandNote == map.initStatus || cd.sendDemandNote == map.activeStatus || cd.inspectionChecklist == map.activeStatus)
+                demandNoteDisabled = cd.sendDemandNote == map.initStatus
                 owner = cd.assignedInspectionOfficer?.userName == authentication.name
                 demandNote = cd.sendDemandNote == map.activeStatus
                 sendCoi = modify && cd.localCoi == map.activeStatus
@@ -78,11 +81,11 @@ class ConsignmentEnableUI {
                 ncrAvailable = !cd.ncrNumber.isNullOrEmpty()
                 checklistFilled = cd.inspectionChecklist == map.activeStatus
                 hasPort = (cd.portOfArrival != null && cd.freightStation != null)
-                completed = cd.approveRejectCdStatusType?.let { it.modificationAllowed != map.activeStatus } == true || cd.oldCdStatus != null
-                approveReject = (cd.targetApproveStatus == null || cd.inspectionDateSetStatus == map.activeStatus) && modify
+                completed = cd.approveRejectCdStatusType?.let { it.finalStatus == map.activeStatus } == true || cd.oldCdStatus != null
+                canChange = cd.approveRejectCdStatusType?.let { it.modificationAllowed == map.activeStatus } == true
             }
             cd.cdStandardsTwo?.let {
-                ui.demandNoteRequired="DES_INSP".equals(it.localCocType, true)
+                ui.demandNoteRequired = "DES_INSP".equals(it.localCocType, true)
             }
             ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected
             ui.approveReject = !(ui.targetDisabled && ui.demandNoteDisabled && ui.complianceDisabled)
@@ -115,7 +118,7 @@ class ConsignmentDocumentDao {
     var blacklistRemarks: String? = null
     var assignedStatus: Int? = null
     var docTypeId: Long? = null
-    var docType: Long? = null
+    var docType: String? = null
     var cdType: Long? = null
     var cdTypeCategory: String? = null
     var cdTypeName: String? = null
@@ -130,6 +133,7 @@ class ConsignmentDocumentDao {
     var inspectionDate: Date? = null
     var targetStatus: Int? = null
     var description: String? = null
+    var cocType: String? = null
     var status: Int? = null
     var applicantName: String? = null
     var applicationDate: Timestamp? = null
@@ -140,32 +144,38 @@ class ConsignmentDocumentDao {
     var summaryPageURL: String? = null
     var approvalStatus: String? = null
     var applicationStatus: String? = null
+    var applicationStatusDescription: String? = null
     var assigned: Boolean = false
     var lastModifiedOn: Timestamp? = null
     var lastModifiedBy: String? = null
     var isNcrDocument: Boolean = false
+    var current: String? = null
     var taskDetails: DiTaskDetails? = null
 
     companion object {
-        fun fromEntity(doc: ConsignmentDocumentDetailsEntity, ncrId: String = ""): ConsignmentDocumentDao {
+        fun fromEntity(doc: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDao {
             val dt = ConsignmentDocumentDao()
             dt.id = doc.id
             dt.summaryPageURL = doc.summaryPageURL
             dt.uuid = doc.uuid
             dt.lastModifiedOn = doc.modifiedOn
             dt.lastModifiedBy = doc.modifiedBy
+            dt.current = when {
+                doc.oldCdStatus == 1 -> "OLD"
+                else -> "CURRENT"
+            }
             doc.cdType?.let {
                 dt.cdType = it.id
+                dt.docType = it.documentType
                 dt.cdTypeCategory = it.category
                 dt.cdTypeName = it.typeName
                 dt.cdTypeDescription = it.description
-                dt.isNcrDocument = it.uuid == ncrId
+                dt.isNcrDocument = it.varField1 == CdTypeCodes.NCR.code
             }
             doc.freightStation?.let {
                 dt.freightStation = it.cfsName
                 dt.freightStationId = it.id
             }
-            dt.applicationStatus = doc.varField10
             dt.assigned = doc.assignedInspectionOfficer != null
             dt.localCoi = doc.localCoi
             dt.sendDemandNote = doc.sendDemandNote
@@ -175,6 +185,7 @@ class ConsignmentDocumentDao {
             dt.cdRefNumber = doc.cdRefNumber
             dt.ucrNumber = doc.ucrNumber
             dt.applicantName = doc.createdBy
+            dt.approveRejectCdDate = doc.approveRejectCdDate
             dt.applicationDate = doc.createdOn
             dt.assignedStatus = doc.assignedStatus
             doc.assignedInspectionOfficer?.let {
@@ -186,14 +197,20 @@ class ConsignmentDocumentDao {
                 dt.applicationRefNo = it.applicationRefNo
                 dt.approvalStatus = it.approvalStatus
             }
-            dt.cdType = dt.cdType
+            dt.applicationStatusDescription = doc.varField10
+            doc.approveRejectCdStatusType?.let {
+                dt.applicationStatus = it.description
+            }
+            doc.cdStandardsTwo?.let {
+                dt.cocType = it.cocType
+            }
             return dt
         }
 
-        fun fromList(docs: List<ConsignmentDocumentDetailsEntity>, ncrId: String = ""): List<ConsignmentDocumentDao> {
+        fun fromList(docs: List<ConsignmentDocumentDetailsEntity>): List<ConsignmentDocumentDao> {
             val documents = mutableListOf<ConsignmentDocumentDao>()
             docs.forEach {
-                documents.add(fromEntity(it, ncrId))
+                documents.add(fromEntity(it))
             }
             return documents
         }
@@ -323,6 +340,7 @@ class CdItemDetailsDao {
                 unitPriceNcy = item.unitPriceNcy
                 totalPriceFcy = item.totalPriceFcy
                 unitPriceFcy = item.unitPriceFcy
+                foreignCurrencyCode = item.foreignCurrencyCode
             }
             dt.ministrySubmitted = item.ministrySubmissionStatus == 1
             // Other details
@@ -340,7 +358,6 @@ class CdItemDetailsDao {
                     applicantRemarks = item.applicantRemarks
                     productClassCode = item.productClassCode
                     productClassDescription = item.productClassDescription
-                    foreignCurrencyCode = item.foreignCurrencyCode
                 }
             }
             return dt
@@ -610,6 +627,7 @@ class CdItemNonStandardEntityDto : Serializable {
                     id = upload.id
                     chassisNo = upload.chassisNo
                     usedIndicator = upload.usedIndicator
+                    vehicleModel = upload.vehicleModel
                     vehicleYear = upload.vehicleYear
                     vehicleMake = upload.vehicleMake
                     description = upload.description
@@ -633,6 +651,7 @@ class CdStandardTwoEntityDao : Serializable {
     var localCocType: String? = null
     var description: String? = null
     var status: Int? = null
+    var cocRefNumber: String? = null
     var conditionsOfApproval: String? = null
     var applicantRemarks: String? = null
     var mdaRemarks: String? = null
@@ -645,6 +664,7 @@ class CdStandardTwoEntityDao : Serializable {
             return CdStandardTwoEntityDao()
                     .apply {
                         id = standerd.id
+                        cocRefNumber = standerd.cocRefNumber
                         purposeOfImport = standerd.purposeOfImport
                         cocType = standerd.cocType
                         localCocType = standerd.localCocType

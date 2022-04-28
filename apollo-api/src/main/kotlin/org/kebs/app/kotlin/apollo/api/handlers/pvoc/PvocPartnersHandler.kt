@@ -69,10 +69,32 @@ class PvocPartnersHandler(
         return ServerResponse.ok().body(response)
     }
 
+    fun listPartnerNames(req: ServerRequest): ServerResponse{
+        var response=ApiResponseModel()
+        try {
+            response=partnerService.listPartnerNames()
+        }catch (ex: Exception){
+            KotlinLogging.logger {  }.error("Failed to list partners",ex)
+            response.responseCode=ResponseCodes.EXCEPTION_STATUS
+
+            response.message="Request failed, please try again later"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
     fun listPartners(req: ServerRequest): ServerResponse {
-        val keywords = req.param("keywords")
-        val page = extractPage(req)
-        return ServerResponse.ok().body(partnerService.listPartners(keywords.orElse(null), page))
+        var response=ApiResponseModel()
+        try {
+            val keywords = req.param("keywords")
+            val page = extractPage(req)
+           response=partnerService.listPartners(keywords.orElse(null), page)
+        }catch (ex: Exception){
+            KotlinLogging.logger {  }.error("Failed to list partners",ex)
+            response.responseCode=ResponseCodes.EXCEPTION_STATUS
+
+            response.message="Request failed, please try again later"
+        }
+        return ServerResponse.ok().body(response)
     }
 
     fun getPartnerDetails(req: ServerRequest): ServerResponse {

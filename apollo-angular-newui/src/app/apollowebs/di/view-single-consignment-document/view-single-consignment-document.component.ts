@@ -3,7 +3,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {ApproveRejectConsignmentComponent} from './approve-reject-consignment/approve-reject-consignment.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DestinationInspectionService} from '../../../core/store/data/di/destination-inspection.service';
-import swal from 'sweetalert2';
 import {AttachmentDialogComponent} from './attachment-dialog/attachment-dialog.component';
 import {GenerateLocalCocComponent} from '../forms/generate-local-coc/generate-local-coc.component';
 import {GenerateLocalCorComponent} from '../forms/generate-local-cor/generate-local-cor.component';
@@ -17,10 +16,8 @@ import {TargetItemComponent} from '../forms/target-item/target-item.component';
 import {TargetSupervisorComponent} from '../forms/target-supervisor/target-supervisor.component';
 import {SendDemandNoteTokwsComponent} from '../forms/send-demand-note-tokws/send-demand-note-tokws.component';
 import {BlacklistComponent} from '../forms/blacklist/blacklist.component';
-import {selectUserInfo} from "../../../core/store/data/auth";
-import {Store} from "@ngrx/store";
-import {ViewDemandNoteComponent} from "../demand-note-list/view-demand-note/view-demand-note.component";
-import {ProcessRejectionComponent} from "../forms/process-rejection/process-rejection.component";
+import {ViewDemandNoteComponent} from '../demand-note-list/view-demand-note/view-demand-note.component';
+import {ProcessRejectionComponent} from '../forms/process-rejection/process-rejection.component';
 
 @Component({
     selector: 'app-view-single-consignment-document',
@@ -39,6 +36,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     demandNotes: any[];
     checkLists: any[];
     supervisorTasks: any[]
+
     supervisorCharge: boolean = false
     inspectionOfficer: boolean = false
 
@@ -60,22 +58,24 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
 
 
     }
-    removeTasks(taskId: any){
+
+    removeTasks(taskId: any) {
         this.diService.deleteTask(taskId)
             .subscribe(
-                res=>{
-                    if(res.responseCode=="00") {
-                        this.diService.showSuccess(res.message,()=>{
+                res => {
+                    if (res.responseCode == "00") {
+                        this.diService.showSuccess(res.message, () => {
                             this.loadSupervisorTasks()
                         })
                     } else {
-                        this.diService.showError(res.message,()=>{
+                        this.diService.showError(res.message, () => {
 
                         })
                     }
                 }
             )
     }
+
     viewDemandNote(demandNoteId: any) {
         this.dialog.open(ViewDemandNoteComponent, {
             data: {
@@ -84,8 +84,8 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         })
             .afterClosed()
             .subscribe(
-                res=>{
-                    if(res){
+                res => {
+                    if (res) {
                         this.loadConsignmentDetails()
                     }
                 }
@@ -137,9 +137,11 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
 
-    loadDemandNotes(reload: Boolean = true) {
-        if (!reload) {
-            return
+    loadDemandNotes(reload: any = null, etype: String = 'others') {
+        // Reload consignment
+        if (reload) {
+            console.log("Demand note: " + reload + " -> " + etype)
+            this.loadConsignmentDetails(true);
         }
         this.diService.listDemandNotes(this.consignment.cd_details.id)
             .subscribe(
@@ -149,7 +151,6 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                     }
                 }
             );
-
     }
 
     generateDemandNote() {
@@ -163,8 +164,14 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res) {
-                        this.loadDemandNotes()
                         this.active = 13
+                        this.loadDemandNotes(true, 'generated')
+                        // Open preview page
+                        if (res.id) {
+                            this.viewDemandNote(res.id)
+                        }
+                    } else {
+                        console.log("Response data:" + res)
                     }
                 }
             );
@@ -181,7 +188,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
     viewCoC(docType: string) {
-        this.router.navigate(['/di/certificate',docType,'details', this.consignmentId]);
+        this.router.navigate(['/di/certificate', docType, 'details', this.consignmentId]);
     }
 
     loadUiConfigurations() {
@@ -229,6 +236,10 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
 
     viewDeclarationDocument() {
         this.router.navigate(['/di/declaration/document', this.consignment.cd_details.uuid]);
+    }
+
+    viewManifestDocument() {
+        this.router.navigate(['/di/manifest/document', this.consignment.cd_details.uuid]);
     }
 
     goBackHome() {
@@ -284,7 +295,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         this.router.navigate(['/di']);
     }
 
-    loadConsignmentDetails() {
+    loadConsignmentDetails(demandNoteReload: Boolean = false) {
         this.diService.getConsignmentDetails(this.consignmentId)
             .subscribe(
                 response => {
@@ -300,20 +311,14 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                         }
                         this.listConsignmentAttachments();
                         this.loadComments();
-                        this.loadDemandNotes();
+                        if (!demandNoteReload) {
+                            this.loadDemandNotes(false, 'consignment');
+                        }
                     } else if (response.responseCode === "000") {
                         // Reload consignment details
-                        this.loadConsignmentDetails()
+                        this.loadConsignmentDetails(demandNoteReload)
                     } else {
-                        swal.fire({
-                            title: response.message,
-                            buttonsStyling: false,
-                            customClass: {
-                                confirmButton: 'btn btn-success form-wizard-next-btn ',
-                            },
-                            icon: 'error'
-                        }).then(this.goBackHome);
-                        console.log(response);
+                        this.diService.showError(response.message, this.goBackHome)
                     }
                 }
             );
@@ -514,7 +519,8 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             data: {
                 uuid: this.consignmentId,
                 configurations: this.configurations,
-                complianceStatus: this.consignment.cd_details.complianceStatus
+                complianceStatus: this.consignment.cd_details.complianceStatus,
+                documentType: this.consignment.cd_details.cocType
             }
         });
         ref.afterClosed()

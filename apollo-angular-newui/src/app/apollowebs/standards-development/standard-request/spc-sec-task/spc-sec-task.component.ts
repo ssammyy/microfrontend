@@ -1,12 +1,11 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {
-  StandardTasks,
-  StdJustificationDecision,
-  StdSPCSECTask
-} from "../../../../core/store/data/std/request_std.model";
+import {StdJustificationDecision, StdSPCSECTask} from "../../../../core/store/data/std/request_std.model";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
+import {DataTableDirective} from "angular-datatables";
+import {NgxSpinnerService} from "ngx-spinner";
+import {NotificationService} from "../../../../core/store/data/std/notification.service";
 
 @Component({
   selector: 'app-spc-sec-task',
@@ -21,8 +20,14 @@ export class SpcSecTaskComponent implements OnInit {
   public actionRequest: StdSPCSECTask | undefined;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective;
+  isDtInitialized: boolean = false
+
   constructor(
-      private  standardDevelopmentService: StandardDevelopmentService
+      private  standardDevelopmentService: StandardDevelopmentService,
+      private SpinnerService: NgxSpinnerService,
+      private notifyService: NotificationService,
   ) {
   }
 
@@ -33,10 +38,17 @@ export class SpcSecTaskComponent implements OnInit {
   public getSPCSECTasks(): void {
     this.standardDevelopmentService.getSPCSECTasks().subscribe(
         (response: StdSPCSECTask[]) => {
-          console.log(response);
+          // console.log(response);
           this.tcTasks = response;
-          this.dtTrigger.next();
-
+          if (this.isDtInitialized) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              dtInstance.destroy();
+              this.dtTrigger.next();
+            });
+          } else {
+            this.isDtInitialized = true
+            this.dtTrigger.next();
+          }
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
@@ -67,17 +79,29 @@ export class SpcSecTaskComponent implements OnInit {
 
   }
 
+  showToasterSuccess(title: string, message: string) {
+    this.notifyService.showSuccess(message, title)
+
+  }
+
   public decisionOnJustification(stdJustificationDecision: StdJustificationDecision): void {
     console.log(stdJustificationDecision);
+    this.SpinnerService.show();
+
 
     this.standardDevelopmentService.decisionOnJustification(stdJustificationDecision).subscribe(
-        (response: StandardTasks) => {
+        (response) => {
           console.log(response);
+          this.showToasterSuccess(response.httpStatus, `Your Decision Has Been Submitted. A Work plan now needs to be uploaded`);
+          this.SpinnerService.hide();
           this.hideModel();
           this.getSPCSECTasks();
         },
         (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+
           alert(error.message);
+
         }
     )
   }

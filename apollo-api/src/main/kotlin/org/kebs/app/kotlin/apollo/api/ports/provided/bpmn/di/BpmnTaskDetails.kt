@@ -9,5 +9,6 @@ class DiTaskDetails(var objectId: String,
                     var task: String,
                     var createdOn: Date,
                     var description: String?,
-                    var map: Map<String, Any?>) {
+                    var map: Map<String, Any?>,
+                    var category: String? = null) {
 }

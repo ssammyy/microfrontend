@@ -9,12 +9,15 @@ import javax.persistence.*
 @Entity
 @Table(name = "DAT_KEBS_RFC_COI")
 class RfcCoiEntity : Serializable {
-    @Column(name = "ID", nullable = false, precision = 0)
     @Id
+    @Column(name = "ID", nullable = false)
     @SequenceGenerator(name = "DAT_KEBS_RFC_COI_SEQ_GEN", sequenceName = "DAT_KEBS_RFC_COI_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_RFC_COI_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-
     var id: Long = 0
+
+    @Column(name = "COI_ID", nullable = true, precision = 0)
+    @Basic
+    var coiId: Long? = null
 
     @Column(name = "RFC_NUMBER", nullable = false, length = 50)
     @Basic

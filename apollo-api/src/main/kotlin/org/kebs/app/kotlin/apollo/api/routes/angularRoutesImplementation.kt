@@ -356,6 +356,17 @@ class AngularRoutes {
                     POST("/new", msHandler::saveNewComplaint)
                 }
             }
+            "".nest {
+                "/validateToken".nest {
+                    POST("", handler::handleValidatePhoneNumberAndTokenSecure)
+                    GET("", otherHandler::notSupported)
+                    "/{id}".nest {
+                        GET("", otherHandler::notSupported)
+                        PUT("", otherHandler::notSupported)
+                    }
+
+                }
+            }
         }
 
     }
@@ -450,6 +461,9 @@ class AngularRoutes {
                 GET("/list", handler::permitListMigration)
                 GET("/awarded-list", handler::permitListAwardedMigration)
                 GET("/my-permits-loaded", handler::permitListAwardedMigrationb)
+                GET("/all-my-permits-loaded", handler::loadAllMyPermits)
+                GET("/awarded-list-completely", handler::permitCompletelyListAwardedMigration)
+
                 GET("/awarded-list-fmark-generate", handler::permitListAwardedGenerateFmarkMigration)
                 GET("/firm-list", handler::firmPermitListMigration)
                 GET("/firm-branch-list", handler::firmBranchPermitListMigration)
@@ -464,7 +478,10 @@ class AngularRoutes {
                     POST("/submit-application-ssc-approval-rejection", handler::permitApproveRejectSSCMigration)
                     POST("/re-submit-application", handler::permitResubmitMigration)
                     POST("/sta3", handler::permitApplySTA3Migration)
+                    POST("/updateMigratedPermit", handler::updatePermitMigrated)
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
+
+
 //                    POST(
 //                        "/sta3-update-upload".and(contentType(MediaType.MULTIPART_FORM_DATA)),
 //                        handler::permitUploadSTA3Migration
@@ -491,8 +508,8 @@ class AngularRoutes {
                     }
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
-                        POST("/batch-invoice-add", handler::invoiceBatchAddMigration)
-                        PUT("/batch-invoice-remove", handler::invoiceBatchRemoveMigration)
+                        POST("/batch-invoice-add", handler::notSupported)
+                        PUT("/batch-invoice-remove", handler::notSupported)
                     }
                 }
                 "/view".nest {

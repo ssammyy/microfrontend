@@ -46,6 +46,13 @@
                                                 </td>
                                             </tr>
                                             <th>
+                                                Document Type
+                                            </th>
+                                            <tr>
+                                                <td>{{ consignment.cd_details.docType }}
+                                                </td>
+                                            </tr>
+                                            <th>
                                                 Approval Status
                                             </th>
                                             <tr>
@@ -73,27 +80,27 @@
                                                 <td>{{ consignment.cd_details.ucrNumber ? consignment.cd_details.ucrNumber : 'NA' }}
                                                 </td>
                                             </tr>
-                                            <th>
-                                                Application Type
-                                            </th>
-                                            <tr>
-                                                <td>{{ consignment.cd_standard.applicationTypeDescription ? consignment.cd_standard.applicationTypeDescription : 'NA' }}
-                                                </td>
-                                            </tr>
-                                            <th>
-                                                Document Type
-                                            </th>
-                                            <tr>
-                                                <td>{{consignment.cd_standard.documentTypeDescription ? consignment.cd_standard.documentTypeDescription : 'NA'}}
-                                                </td>
-                                            </tr>
-                                            <th>
-                                                MDA
-                                            </th>
-                                            <tr>
-                                                <td>{{consignment.cd_standard.mdaDescription ? consignment.cd_standard.mdaDescription : 'NA'}}
-                                                </td>
-                                            </tr>
+                                            <!--                                            <th>-->
+                                            <!--                                                Application Type-->
+                                            <!--                                            </th>-->
+                                            <!--                                            <tr>-->
+                                            <!--                                                <td>{{ consignment.cd_standard.applicationTypeDescription ? consignment.cd_standard.applicationTypeDescription : 'NA' }}-->
+                                            <!--                                                </td>-->
+                                            <!--                                            </tr>-->
+                                            <!--                                            <th>-->
+                                            <!--                                                Std Document Type-->
+                                            <!--                                            </th>-->
+                                            <!--                                            <tr>-->
+                                            <!--                                                <td>{{consignment.cd_standard.documentTypeDescription ? consignment.cd_standard.documentTypeDescription : 'NA'}}-->
+                                            <!--                                                </td>-->
+                                            <!--                                            </tr>-->
+                                            <!--                                            <th>-->
+                                            <!--                                                MDA-->
+                                            <!--                                            </th>-->
+                                            <!--                                            <tr>-->
+                                            <!--                                                <td>{{consignment.cd_standard.mdaDescription ? consignment.cd_standard.mdaDescription : 'NA'}}-->
+                                            <!--                                                </td>-->
+                                            <!--                                            </tr>-->
                                             <th>
                                                 Expiry Date
                                             </th>
@@ -317,7 +324,7 @@
                                             </li>
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_exporter?.length" label="4">
+                                    <mat-tab *ngIf="consignment.cd_exporter" label="4">
                                         <ng-template mat-tab-label>
                                             Exporter Details
                                         </ng-template>
@@ -400,7 +407,7 @@
                                             </li>
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_consignor?.length" label="5">
+                                    <mat-tab *ngIf="consignment.cd_consignor" label="5">
                                         <ng-template mat-tab-label>
                                             Consignor Details
                                         </ng-template>
@@ -602,12 +609,12 @@
                                             </ul>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="consignment.cd_standards_two" label="8">
+                                    <mat-tab label="8">
                                         <ng-template mat-tab-label>
-                                            Standards Two
+                                            Standards Details
                                         </ng-template>
-                                        <b class="text-primary">Standards Two</b>
-                                        <ul class="w-list-unstyled">
+                                        <b class="text-primary" *ngIf="consignment.cd_standards">Standards Details</b>
+                                        <ul class="w-list-unstyled" *ngIf="consignment.cd_standards">
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Conditions Of Approval</div>
                                                 <div class="list-text-accordion">
@@ -642,6 +649,62 @@
                                                 <div class="list-title-accordion">Local Coc Type</div>
                                                 <div class="list-text-accordion">
                                                     {{consignment.cd_standards_two.localCocType}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">COC Ref No.</div>
+                                                <div class="list-text-accordion">{{consignment.cd_standards_two.cocRefNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">COC Type Description</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.description}}</div>
+                                            </li>
+                                        </ul>
+                                        <b class="text-primary">Standards Two</b>
+                                        <ul class="w-list-unstyled" *ngIf="consignment.cd_standards_two">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Conditions Of Approval</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.conditionsOfApproval}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Applicant Remarks</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.applicantRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">MDA Remarks</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.mdaRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Customs Remarks</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.customsRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Purpose Of Import</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.purposeOfImport}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Coc Type</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.cocType}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Local Coc Type</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.localCocType}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">COC Ref No.</div>
+                                                <div class="list-text-accordion">{{consignment.cd_standards_two.cocRefNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">COC Type Description</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.description}}</div>
                                             </li>
                                         </ul>
                                     </mat-tab>
@@ -860,9 +923,9 @@
                                             Demand Notes
                                         </ng-template>
 
-                                        <b class="text-primary">Other Version Details</b>
+                                        <b class="text-primary">Consignment Demand notes</b>
                                         <app-demand-note-list [dataSet]="demandNotes"
-                                                              (reloadDemandNotes)="loadDemandNotes($event)"></app-demand-note-list>
+                                                              (reloadDemandNotes)="loadDemandNotes($event,'event')"></app-demand-note-list>
 
                                     </mat-tab>
 
@@ -871,41 +934,19 @@
                             <div class="col-md-2 p-0">
                                 <b>Action:</b>
                                 <div *ngIf="consignment.ui">
-                                    <div *ngIf="consignment.ui.inspector && !consignment.ui.completed">
-                                        <div *ngIf="!consignment.ui.hasActiveProcess">
-                                            <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
-                                                    (click)="uploadAttachment()">UPLOAD
-                                                ATTACHMENT
-                                            </button>
-                                            <button *ngIf="consignment.ui.owner && consignment.ui.targeted && !consignment.ui.demandNoteDisabled"
-                                                    class="btn btn-sm btn-warning" (click)="generateDemandNote()">
-                                                GENERATE
-                                                DEMAND NOTE
-                                            </button>
-                                            <ng-container *ngIf="consignment.ui.demandNoteRequired; then requirePayment else othersLists">
-                                            </ng-container>
-                                            <ng-template #requirePayment>
-                                                <div *ngIf="consignment.ui.demandNotePaid">
-                                                    <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
-                                                            class="btn btn-sm btn-primary"
-                                                            (click)="createInspectionChecklist()">
-                                                        FILL
-                                                        INSPECTION CHECKLIST
-                                                    </button>
-                                                    <button
-                                                            *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled || consignment.ui.targetRejected || !consignment.ui.targeted)"
-                                                            class="btn btn-sm btn-primary"
-                                                            (click)="markAsCompliant()">
-                                                        COMPLIANT
-                                                    </button>
-                                                    <button *ngIf="consignment.ui.owner && consignment.ui.approveReject"
-                                                            class="btn btn-sm btn-warning"
-                                                            (click)="approveRejectConsignment()">Approve / Reject
-                                                        Consignment
-                                                    </button>
-                                                </div>
-                                            </ng-template>
-                                            <ng-template #othersLists>
+                                    <div *ngIf="consignment.ui.inspector && consignment.ui.canChange">
+                                        <button *ngIf="consignment.ui.owner" class="btn btn-sm btn-primary"
+                                                (click)="uploadAttachment()">UPLOAD ATTACHMENT
+                                        </button>
+                                        <button *ngIf="consignment.ui.owner && consignment.ui.targeted && !consignment.ui.demandNoteDisabled"
+                                                class="btn btn-sm btn-warning" (click)="generateDemandNote()">
+                                            GENERATE DEMAND NOTE
+                                        </button>
+                                        <ng-container
+                                                *ngIf="consignment.ui.demandNoteRequired; then requirePayment else othersLists">
+                                        </ng-container>
+                                        <ng-template #requirePayment>
+                                            <div *ngIf="consignment.ui.demandNotePaid">
                                                 <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
                                                         class="btn btn-sm btn-primary"
                                                         (click)="createInspectionChecklist()">
@@ -914,7 +955,8 @@
                                                 </button>
                                                 <button
                                                         *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled || consignment.ui.targetRejected || !consignment.ui.targeted)"
-                                                        class="btn btn-sm btn-primary" (click)="markAsCompliant()">
+                                                        class="btn btn-sm btn-primary"
+                                                        (click)="markAsCompliant()">
                                                     COMPLIANT
                                                 </button>
                                                 <button *ngIf="consignment.ui.owner && consignment.ui.approveReject"
@@ -922,16 +964,34 @@
                                                         (click)="approveRejectConsignment()">Approve / Reject
                                                     Consignment
                                                 </button>
-                                            </ng-template>
-                                            <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
-                                                    class="btn btn-sm btn-warning" (click)="blacklistUser()">BLACKLIST
-                                                USER
+                                            </div>
+                                        </ng-template>
+                                        <ng-template #othersLists>
+                                            <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
+                                                    class="btn btn-sm btn-primary"
+                                                    (click)="createInspectionChecklist()">
+                                                FILL
+                                                INSPECTION CHECKLIST
                                             </button>
+                                            <button
+                                                    *ngIf="consignment.ui.owner && (consignment.ui.cocRequest || consignment.ui.corRequest) && (!consignment.ui.complianceDisabled || consignment.ui.targetRejected || !consignment.ui.targeted)"
+                                                    class="btn btn-sm btn-primary" (click)="markAsCompliant()">
+                                                COMPLIANT
+                                            </button>
+                                            <button *ngIf="consignment.ui.owner && consignment.ui.approveReject"
+                                                    class="btn btn-sm btn-warning"
+                                                    (click)="approveRejectConsignment()">Approve / Reject
+                                                Consignment
+                                            </button>
+                                        </ng-template>
+                                        <button *ngIf="consignment.ui.owner && consignment.ui.blacklistEnabled"
+                                                class="btn btn-sm btn-warning" (click)="blacklistUser()">BLACKLIST
+                                            USER
+                                        </button>
 
-                                            <button *ngIf="consignment.ui.owner && consignment.ui.targetItem && !consignment.ui.targetDisabled"
-                                                    class="btn btn-sm btn-warning" (click)="targetConsignment()">TARGET
-                                            </button>
-                                        </div>
+                                        <button *ngIf="consignment.ui.owner && consignment.ui.targetItem && !consignment.ui.targetDisabled"
+                                                class="btn btn-sm btn-warning" (click)="targetConsignment()">TARGET
+                                        </button>
                                     </div>
                                     <div *ngIf="consignment.ui.supervisor && !consignment.ui.completed">
                                         <button *ngIf="!consignment.ui.assigned " class="btn btn-sm btn-primary"
@@ -1009,11 +1069,17 @@
                                     <button *ngIf="consignment.ui.coiAvailable" class="btn btn-sm btn-primary"
                                             (click)="viewCoC('coi')">CERTIFICATE OF Inspection
                                     </button>
-                                    <button *ngIf="consignment.ui.idfAvailable" class="btn btn-sm btn-primary"
+                                    <button *ngIf="consignment.ui.idfAvailable"
+                                            class="btn btn-sm btn-primary"
                                             (click)="viewIdfDocument()">IDF DOCUMENT
                                     </button>
-                                    <button class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">
+                                    <button *ngIf="consignment.ui.declarationDocument" class="btn btn-sm btn-primary"
+                                            (click)="viewDeclarationDocument()">
                                         DECLARATION DOCUMENT
+                                    </button>
+                                    <button *ngIf="consignment.ui.manifestDocument" class="btn btn-sm btn-primary"
+                                            (click)="viewManifestDocument()">
+                                        MANIFEST DOCUMENT
                                     </button>
                                 </div>
                             </div>

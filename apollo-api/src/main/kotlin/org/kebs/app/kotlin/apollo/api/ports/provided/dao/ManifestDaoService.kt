@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.DeclarationDocumentMessage
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.ManifestDocumentMessage
 import org.kebs.app.kotlin.apollo.store.model.di.ManifestDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.IManifestDetailsEntityRepository
@@ -16,6 +15,9 @@ class ManifestDaoService {
 
     @Autowired
     lateinit var iManifestDetailsEntityRepository: IManifestDetailsEntityRepository
+
+    @Autowired
+    lateinit var destinationInspectionDaoServices: DestinationInspectionDaoServices
 
     private val createdByValue = "SYSTEM"
 
@@ -36,8 +38,11 @@ class ManifestDaoService {
         return false
     }
 
+
     fun manifestMessageToManifestDetailsEntity(manifestDocumentMessage: ManifestDocumentMessage): ManifestDetailsEntity? {
+
         var manifestDetailsEntity = ManifestDetailsEntity()
+
         with(manifestDetailsEntity) {
             messageDate = manifestDocumentMessage.header?.messageDate?.let { commonDaoServices.convertISO8601DateToTimestamp(it) }
             action = manifestDocumentMessage.header?.action
@@ -133,9 +138,14 @@ class ManifestDaoService {
             createdOn = commonDaoServices.getTimestamp()
         }
         manifestDetailsEntity = iManifestDetailsEntityRepository.save(manifestDetailsEntity)
-
         KotlinLogging.logger { }.info { "Manifest Details Entity ID = ${manifestDetailsEntity.id}" }
-
+        // Link with consignment document
+        try {
+            destinationInspectionDaoServices.linkManifestWithConsignment(manifestDetailsEntity.manifestNumber, manifestDetailsEntity.ucrn, true)
+            KotlinLogging.logger { }.info("Linked manifest with consignment: ${manifestDetailsEntity.ucrn}")
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.info("Failed to link manifest with consignment", ex)
+        }
         return manifestDetailsEntity
     }
 }

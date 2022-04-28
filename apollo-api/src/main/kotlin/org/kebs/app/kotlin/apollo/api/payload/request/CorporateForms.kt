@@ -1,6 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.payload.request
 
-import javax.validation.constraints.*
+import javax.validation.constraints.Email
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
 
 class CorporateForm {
     @NotNull(message = "Enter corporate PIN")
@@ -9,6 +12,9 @@ class CorporateForm {
 
     @NotNull(message = "Enter corporate Name")
     var corporateName: String? = null
+
+    @NotNull(message = "Enter corporate Code")
+    var corporateCode: String? = null
 
     @NotNull(message = "Please select corporate Type")
     var corporateType: String? = null // COURIER

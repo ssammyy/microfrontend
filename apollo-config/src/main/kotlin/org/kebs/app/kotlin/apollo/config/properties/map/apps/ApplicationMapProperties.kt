@@ -43,6 +43,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value}")
     val baseUrlValue: String = "https://127.0.0.1:8005/api"
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value.itax}")
+    val itaxBaseUrlValue: String = "https://itax.kra.go.ke/"
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value}")
     val baseUrlValueb: String = "https://127.0.0.1:8005"
 
@@ -483,6 +486,12 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sage.config.integration}")
     val mapSageConfigIntegration: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.sage.config.integration.qa}")
+    val mapSageConfigIntegrationQa: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.kra.config.integration}")
+    val mapKraConfigIntegration: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration}")
     val mapLimsConfigIntegration: Long = 0L
@@ -1053,6 +1062,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.page.records}")
     val pageRecords: Int = 1
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.suspended}")
+    val suspended: Long? = null
 
     /**
      * TODO: Why do we need this

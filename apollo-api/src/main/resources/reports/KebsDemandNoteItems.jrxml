@@ -44,26 +44,27 @@
 	<parameter name="swiftCode2" class="java.lang.String"/>
 	<parameter name="bankName3" class="java.lang.String"/>
 	<parameter name="bank3" class="java.lang.String"/>
-	<parameter name="bankBranch3" class="java.lang.String"/>
-	<parameter name="kesAcNo3" class="java.lang.String"/>
-	<parameter name="usdNo3" class="java.lang.String"/>
-	<parameter name="bankCode3" class="java.lang.String"/>
-	<parameter name="branchCode3" class="java.lang.String"/>
-	<parameter name="swiftCode3" class="java.lang.String"/>
-	<field name="product" class="java.lang.String"/>
-	<field name="cfvalue" class="java.math.BigDecimal"/>
-	<field name="rate" class="java.lang.String"/>
-	<field name="amountPayable" class="java.math.BigDecimal"/>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
-	<title>
-		<band height="209">
-			<frame>
-				<reportElement x="1" y="2" width="552" height="207" uuid="71852249-082e-4ad2-b977-7a2c84103de4">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<staticText>
+    <parameter name="bankBranch3" class="java.lang.String"/>
+    <parameter name="kesAcNo3" class="java.lang.String"/>
+    <parameter name="usdNo3" class="java.lang.String"/>
+    <parameter name="bankCode3" class="java.lang.String"/>
+    <parameter name="branchCode3" class="java.lang.String"/>
+    <parameter name="swiftCode3" class="java.lang.String"/>
+    <field name="product" class="java.lang.String"/>
+    <field name="cfvalue" class="java.math.BigDecimal"/>
+    <field name="rate" class="java.lang.String"/>
+    <field name="amountPayable" class="java.math.BigDecimal"/>
+    <field name="adjustedAmount" class="java.math.BigDecimal"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="209">
+            <frame>
+                <reportElement x="1" y="2" width="552" height="207" uuid="71852249-082e-4ad2-b977-7a2c84103de4">
+                    <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                </reportElement>
+                <staticText>
 					<reportElement x="350" y="66" width="90" height="20" uuid="28d5c763-4aab-47c8-ae61-83a14e592764">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
@@ -234,16 +235,17 @@
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="ScaleFont">
-				<reportElement x="410" y="0" width="141" height="30" uuid="5fb28100-9059-417f-a940-508cc4e6533d">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="65adf488-e475-4233-b57a-8e420c7c7554"/>
-				</reportElement>
-				<box>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</box>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{amountPayable}]]></textFieldExpression>
-			</textField>
+            <textField textAdjust="ScaleFont">
+                <reportElement x="410" y="0" width="141" height="30" uuid="5fb28100-9059-417f-a940-508cc4e6533d">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID"
+                              value="65adf488-e475-4233-b57a-8e420c7c7554"/>
+                </reportElement>
+                <box>
+                    <pen lineWidth="1.0" lineStyle="Solid"/>
+                </box>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{adjustedAmount}]]></textFieldExpression>
+            </textField>
 		</band>
 	</detail>
 	<summary>

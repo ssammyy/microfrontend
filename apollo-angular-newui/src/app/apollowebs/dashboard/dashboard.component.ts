@@ -161,4 +161,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/fmark/application']);
 
     }
+    gotoSL1Application() {
+        this.router.navigate(['/standardsLevy/levyRegistration']);
+
+    }
 }

@@ -34,7 +34,7 @@ export class InvoiceComponent implements OnInit, AfterViewInit {
         (data: any) => {
           this.allInvoiceData = data;
           // tslint:disable-next-line:max-line-length
-          formattedArray = data.map(i => [i.invoiceNumber, i.receiptNo, i.paidDate, i.totalAmount, i.paidStatus, i.id]);
+          formattedArray = data.map(i => [i.sageInvoiceNumber, i.receiptNo, i.paidDate, i.totalAmount, i.paidStatus, i.id]);
 
           this.dataTable = {
             headerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Status', 'Actions'],

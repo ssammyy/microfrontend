@@ -28,6 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.servlet.function.ServerRequest
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -439,6 +440,7 @@ class SystemsAdminDaoService(
                         directorIdNumber = dto.directorIdNumber
                         postalAddress = dto.postalAddress
                         physicalAddress = dto.physicalAddress
+                        branchName =dto.branchName
                         plotNumber = dto.plotNumber
                         companyEmail = dto.companyEmail
                         companyTelephone = dto.companyTelephone
@@ -473,6 +475,7 @@ class SystemsAdminDaoService(
                     registrationNumber = dto.registrationNumber
                     directorIdNumber = dto.directorIdNumber
                     postalAddress = dto.postalAddress
+                    branchName = dto.branchName
                     physicalAddress = dto.physicalAddress
                     plotNumber = dto.plotNumber
                     companyEmail = dto.companyEmail
@@ -574,14 +577,15 @@ class SystemsAdminDaoService(
     fun updateRole(role: RolesEntityDto): RolesEntityDto? {
         when {
             (role.id ?: 0L) < 1L -> {
-                val r = UserRolesEntity()
+                var r = UserRolesEntity()
                 r.roleName = role.roleName
                 r.descriptions = role.descriptions
                 if (role.status == true) r.status = 1 else r.status = 0
                 r.createdBy = loggedInUserDetails().userName
                 r.createdOn = Timestamp.from(Instant.now())
-                rolesRepo.save(r)
-                return role
+                r= rolesRepo.save(r)
+                return RolesEntityDto(r.id,r.roleName,r.descriptions,r.status==1)
+
 
             }
             else -> {
@@ -592,8 +596,8 @@ class SystemsAdminDaoService(
                         r.descriptions = role.descriptions
                         r.modifiedBy = loggedInUserDetails().userName
                         r.modifiedOn = Timestamp.from(Instant.now())
-                        rolesRepo.save(r)
-                        return role
+                        val rr= rolesRepo.save(r)
+                        return RolesEntityDto(rr.id,rr.roleName,rr.descriptions,rr.status==1)
 
                     }
                     ?: throw NullValueNotAllowedException("Record not found, check and try again")
@@ -613,8 +617,9 @@ class SystemsAdminDaoService(
                 if (privilege.status == true) r.status = 1 else r.status = 0
                 r.createdBy = loggedInUserDetails().userName
                 r.createdOn = Timestamp.from(Instant.now())
-                privilegesRepo.save(r)
-                return privilege
+                val p = privilegesRepo.save(r)
+
+                 return AuthoritiesEntityDto(p.id, p.name, p.descriptions, p.status == 1)
 
             }
             else -> {
@@ -625,8 +630,8 @@ class SystemsAdminDaoService(
                         if (privilege.status == true) r.status = 1 else r.status = 0
                         r.modifiedBy = loggedInUserDetails().userName
                         r.modifiedOn = Timestamp.from(Instant.now())
-                        privilegesRepo.save(r)
-                        return privilege
+                        val p = privilegesRepo.save(r)
+                        return AuthoritiesEntityDto(p.id, p.name, p.descriptions, p.status == 1)
                     }
                     ?: throw NullValueNotAllowedException("Record not found, check and try again")
 
@@ -1243,13 +1248,26 @@ class SystemsAdminDaoService(
     }
 
     /**
-     * Receive payload with OTP and Phone number and validate that it is valid
+     * Receive payload with OTP and Phone number and validate that it is valid for anonymous user
      * @param request
      */
-    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto): CustomResponse? =
+    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto, req: ServerRequest): CustomResponse? =
         commonDaoServices.validateOTPToken(
             request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
-            commonDaoServices.makeKenyanMSISDNFormat(request.phone)
+            commonDaoServices.makeKenyanMSISDNFormat(request.phone),
+            req
+        )
+
+    /**
+     * Receive payload with OTP and Phone number and validate that it is valid for verified user
+     * @param request
+     */
+
+    fun validatePhoneNumberAndTokenB(request: ValidatePhoneNumberTokenRequestDto, req: ServerRequest): JwtResponse? =
+        commonDaoServices.validateOTPTokenB(
+            request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
+            commonDaoServices.makeKenyanMSISDNFormat(request.phone),
+            req
         )
 
 
@@ -1349,7 +1367,7 @@ class SystemsAdminDaoService(
                                                 name = dto.company.name
                                                 kraPin = dto.company.kraPin
                                                 userId = user.id
-
+                                                branchName = dto.company.branchName
                                                 registrationNumber = dto.company.registrationNumber
                                                 postalAddress = dto.company.postalAddress
                                                 physicalAddress = dto.company.physicalAddress

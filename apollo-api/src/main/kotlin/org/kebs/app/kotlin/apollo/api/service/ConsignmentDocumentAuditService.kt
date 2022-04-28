@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.service;
 
 import mu.KotlinLogging
-import org.flowable.idm.engine.impl.persistence.entity.UserEntity
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.CdDocumentModificationHistoryDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -53,7 +52,7 @@ class ConsignmentDocumentAuditService(
             val consignmentDocument=daoServices.findCD(cdId)
             // Find by ucrNumber
             consignmentDocument.ucrNumber?.let {
-                val history = cdHistory.findAllByUcrNumberOrCdId(it,cdId)
+                val history = cdHistory.findAllByUcrNumberOrCdIdOrderByIdDesc(it, cdId)
                 response.data = CdDocumentModificationHistoryDao.fromList(history)
             }
             response.responseCode = ResponseCodes.SUCCESS_CODE

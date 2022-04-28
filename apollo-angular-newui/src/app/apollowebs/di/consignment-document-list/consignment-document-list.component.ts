@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {UploadForeignFormComponent} from "./upload-foreign-form/upload-foreign-form.component";
@@ -7,8 +7,9 @@ import {LocalDataSource} from "ng2-smart-table";
 import {DatePipe} from "@angular/common";
 import {selectUserInfo} from "../../../core/store/data/auth";
 import {Store} from "@ngrx/store";
-import {fromEvent, interval, Observable, Subject} from "rxjs";
+import {interval, Subject} from "rxjs";
 import {debounce} from "rxjs/operators";
+import {PVOCService} from "../../../core/store/data/pvoc/pvoc.service";
 
 @Component({
     selector: 'app-consignment-document-list',
@@ -16,6 +17,7 @@ import {debounce} from "rxjs/operators";
     styleUrls: ['./consignment-document-list.component.css']
 })
 export class ConsignmentDocumentListComponent implements OnInit {
+    allowedStatuses = ["my-tasks", "completed", "ongoing", "waiting", "search-result", "not-assigned"]
     activeStatus: string = 'my-tasks';
     previousStatus: string = 'my-tasks'
     searchStatus: any
@@ -72,6 +74,11 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 title: 'Ref No.',
                 type: 'string'
             },
+            docType: {
+                title: 'Document Type',
+                type: 'string',
+                hidden: true
+            },
             applicationDate: {
                 title: 'Application Date',
                 type: 'date',
@@ -84,7 +91,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 filter: false
             },
             approveRejectCdDate: {
-                title: 'Approval Date',
+                title: 'Completion Date',
                 type: 'data',
                 valuePrepareFunction: (date) => {
                     if (date) {
@@ -132,40 +139,62 @@ export class ConsignmentDocumentListComponent implements OnInit {
     documentTypes: any[];
     message: any
     keywords: any;
+    pvocPartners: any[]
+    prevRequest: any
     private documentTypeUuid: string
     private documentTypeId: any
-    supervisorCharge: boolean=false
-    inspectionOfficer: boolean=false
+    supervisorCharge: boolean = false
+    inspectionOfficer: boolean = false
     search: Subject<string>
 
-    constructor(private store$: Store<any>,private dialog: MatDialog, private router: Router, private diService: DestinationInspectionService) {
+    constructor(private store$: Store<any>, private dialog: MatDialog, private  activeRoute: ActivatedRoute, private router: Router, private diService: DestinationInspectionService, private pvocService: PVOCService) {
     }
 
     ngOnInit(): void {
         this.documentTypeUuid = null;
-        this.loadTypes(() => {
-            this.search=new Subject<string>()
-            this.search.pipe(
-                debounce((keyword)=>interval(500))
-            ).subscribe(
-                res=>{
-                    console.log(res)
-                    this.searchDocuments(res)
+        this.activeRoute.queryParamMap.subscribe(res => {
+            if (res.has("tab")) {
+                this.previousStatus = this.activeStatus
+                if (res.get("tab") in this.allowedStatuses) {
+                    this.activeStatus = res.get("tab")
+                }
+            }
+            console.log(this.activeStatus)
+            this.loadTypes(() => {
+                this.search = new Subject<string>()
+                this.search.pipe(
+                    debounce((keyword) => interval(500))
+                ).subscribe(
+                    res => {
+                        console.log(res)
+                        this.searchDocuments(res)
+                    }
+                )
+                this.loadData(this.documentTypeUuid, 0, this.defaultPageSize);
+            })
+            this.loadPartners()
+            this.store$.select(selectUserInfo)
+                .subscribe((u) => {
+                    this.supervisorCharge = this.diService.hasRole(['DI_OFFICER_CHARGE_READ'], u.roles)
+                    this.inspectionOfficer = this.diService.hasRole(['DI_INSPECTION_OFFICER_READ'], u.roles)
+                });
+        })
+    }
+
+    loadPartners() {
+        this.pvocService.loadPartnerNames()
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.pvocPartners = res.data
+                    }
                 }
             )
-            this.loadData(this.documentTypeUuid, 0, this.defaultPageSize);
-        })
-
-        this.store$.select(selectUserInfo)
-            .subscribe((u) => {
-                this.supervisorCharge = this.diService.hasRole(['DI_OFFICER_CHARGE_READ'], u.roles)
-                this.inspectionOfficer = this.diService.hasRole(['DI_INSPECTION_OFFICER_READ'],u.roles)
-            });
     }
 
     onSupervisorChange(event: any) {
 
-        if(this.supervisorCharge) {
+        if (this.supervisorCharge) {
             this.personalTasks = event.target.value
             this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
         }
@@ -179,10 +208,22 @@ export class ConsignmentDocumentListComponent implements OnInit {
         }
     }
 
+    private cancelPrevious() {
+        if (this.prevRequest) {
+            this.prevRequest.unsubscribe();
+        }
+    }
+
     private loadData(documentTypeUuid: string, page: number, size: number): any {
         let params = {
             'personal': this.personalTasks
         }
+        if (this.activeStatus == 'waiting') {
+            params['active'] = 0
+        } else {
+            params['active'] = 1
+        }
+        this.cancelPrevious()
         let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
         console.log(this.activeStatus)
         // Clear list before loading
@@ -195,7 +236,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
         } else if (this.activeStatus === "not-assigned") {
             data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
         }
-        data.subscribe(
+        this.prevRequest = data.subscribe(
             result => {
                 if (result.responseCode === "00") {
                     let listD: any[] = result.data;
@@ -252,7 +293,8 @@ export class ConsignmentDocumentListComponent implements OnInit {
     uploadForeignCoROrCor(event: any, type: string) {
         let ref = this.dialog.open(UploadForeignFormComponent, {
             data: {
-                documentType: type
+                documentType: type,
+                partners: this.pvocPartners
             }
         })
         ref.afterClosed()
@@ -270,6 +312,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     }
 
     searchDocuments(keywords: string) {
+        this.cancelPrevious()
         this.dataSet.load([])
         this.previousStatus = this.activeStatus
         this.searchStatus = 'search-result'
@@ -281,7 +324,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
             'category': this.activeStatus
         }
         console.log(data)
-        this.diService.searchConsignmentDocuments(data)
+        this.prevRequest = this.diService.searchConsignmentDocuments(data)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {
@@ -305,6 +348,11 @@ export class ConsignmentDocumentListComponent implements OnInit {
         this.searchStatus = null
         if (status !== this.activeStatus) {
             this.activeStatus = status;
+            this.router.navigate([], {
+                queryParams: {
+                    tab: status
+                }
+            })
             this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
         }
     }

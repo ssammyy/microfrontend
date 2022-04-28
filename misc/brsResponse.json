@@ -1,63 +1,56 @@
-{
-  "records": [
-    {
-      "verified": true,
-      "status": "registered",
-      "share_capital": [
-        {
-          "number_of_shares": 100,
-          "nominal_value": 1.0e3,
-          "name": "ORDINARY"
-        }
-      ],
-      "registration_number": "CPR/2013/117374",
-      "registration_date": "29 November 2018",
-      "postal_address": "14193-00800",
-      "physical_address": "LR NO. 209/8526/2, HOUSE NO. 14, MUTHAIGA COURT 6TH PARKLANDS AVENUE OFF LIMURU ROAD NAIROBI",
-      "phone_number": "120832",
-      "partners": [
-        {
-          "shares": [
-            {
-              "number_of_shares": 15,
-              "name": "ORDINARY"
-            }
-          ],
-          "name": "LILIAN NZULA MUTUNGA",
-          "id_type": "citizen",
-          "id_number": "23694775"
-        },
-        {
-          "shares": [
-            {
-              "number_of_shares": 47,
-              "name": "ORDINARY"
-            }
-          ],
-          "name": "MESHACK MBUGUA MUHOHO",
-          "id_type": "citizen",
-          "id_number": "22703309"
-        }
-      ],
-      "kra_pin": null,
-      "id": 1264567,
-      "encumberances": [],
-      "email": "100 SHARES OF KSHS.1000",
-      "business_name": "BSK GLOBAL TECHNOLOGIES LIMITED",
-      "branches": null
-    }
-  ],
-  "count": 1
-}
 
+curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendEntryDetails' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"REQUEST": {
+"HEADER": {
+"loginId": "KEBSUSER",
+"password": "password@1",
+"hash": "2479ee38bad5f0f45209cd05cfe0724ba00b20c16a1624d2c6ec53585e1c9e44",
+"noOfRecords": "1",
+"transmissionDate": "25-04-2022T07:40:00"
+},
+"DETAILS": [
 {
-   [{
-    "id": 234,
-    "region":"string",
-    "county": "string",
-    "town":"string",
-    "referenceNumber": "string",
-    "batchFileYear":"string",
-    "remarks": "string",
-    "batchClosed": true}]
+"entryNumber": "20220425125760",
+"kraPin": "P052052559A",
+"manufacturerName": "DAISY WATER",
+"registrationDate": "21-04-2022T14:41:10",
+"status": "Active"
 }
+]
+}
+}'
+
+
+
+
+curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendEntryDetails' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"REQUEST": {
+"HEADER": {
+"loginId": "KEBSUSER",
+"password": "password@1",
+"hash": "469aa954139c9b78dde7488c3f9fb823d865d480c7c14337c15b3512dfa802d5",
+"noOfRecords": "2",
+"transmissionDate": "21-04-2022T00:39:12"
+},
+"DETAILS": [
+{
+"entryNumber": "20220421ABF8F",
+"kraPin": "A006834506V",
+"manufacturerName": "ALL PACK INDUSTRIES",
+"registrationDate": "21-04-2022T00:36:56",
+"status": "Active"
+},
+{
+"entryNumber": "20220421ABF9F",
+"kraPin": "A001100157V",
+"manufacturerName": "QUENCH UP PURE DRINKING WATER",
+"registrationDate": "21-04-2022T00:36:56",
+"status": "Active"
+}
+]
+}
+}'

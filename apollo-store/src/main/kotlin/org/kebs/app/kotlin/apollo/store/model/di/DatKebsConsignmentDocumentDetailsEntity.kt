@@ -4,9 +4,9 @@ import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
-
-@Entity
-@Table(name = "DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS", schema = "APOLLO", catalog = "")
+//
+//@Entity
+//@Table(name = "DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS", schema = "APOLLO", catalog = "")
 class DatKebsConsignmentDocumentDetailsEntity {
     @Column(name = "ID")
     @Id

@@ -1,8 +1,9 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit, Output} from '@angular/core';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ViewDemandNoteComponent} from "./view-demand-note/view-demand-note.component";
 import {CurrencyFormatterComponent} from "../../../core/shared/currency-formatter/currency-formatter.component";
+import {Subject} from "rxjs";
 
 @Component({
     selector: 'app-demand-note-list',
@@ -10,7 +11,7 @@ import {CurrencyFormatterComponent} from "../../../core/shared/currency-formatte
     styleUrls: ['./demand-note-list.component.css']
 })
 export class DemandNoteListComponent implements OnInit {
-    @Output()reloadDemandNotes= new EventEmitter<Boolean>();
+    @Output() reloadDemandNotes = new Subject<Boolean>();
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -33,7 +34,7 @@ export class DemandNoteListComponent implements OnInit {
         noDataMessage: 'No data found',
         columns: {
             demandNoteNumber: {
-                title: 'DEMAND NOTE NUMBER',
+                title: 'REFERENCE NUMBER',
                 type: 'string'
             },
             dateGenerated: {
@@ -45,19 +46,19 @@ export class DemandNoteListComponent implements OnInit {
                 type: 'custom',
                 renderComponent: CurrencyFormatterComponent,
             },
-            amountPayable: {
-                title: 'AMOUNT PAYABLE',
+            totalAmount: {
+                title: 'TOTAL AMOUNT',
                 type: 'custom',
                 renderComponent: CurrencyFormatterComponent,
             },
-            varField10:{
-                title: 'Remarks',
+            paymentStatusDesc: {
+                title: 'PAYMENT STATUS',
                 type: 'string'
             },
-            rate: {
-                title: 'RATE',
+            postingStatusDesc: {
+                title: 'SAGE Status',
                 type: 'string'
-            },
+            }
         },
         pager: {
             display: true,
@@ -73,18 +74,32 @@ export class DemandNoteListComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    viewDemandNote(demandNoteId: any){
-        this.dialog.open(ViewDemandNoteComponent,{
+    paymentStatus(status: number): String {
+        switch (status) {
+            case 1:
+                return "PAYMENT_COMPLETED"
+            case 5:
+                return "PARTIAL PAYMENT"
+            default:
+                return "NOT PAID"
+        }
+    }
+
+    viewDemandNote(demandNoteId: any) {
+        this.dialog.open(ViewDemandNoteComponent, {
             data: {
                 id: demandNoteId
             }
         }).afterClosed()
             .subscribe(
-            res=> {
-                this.reloadDemandNotes.emit(res)
-            }
-        )
+                res => {
+                    if (res) {
+                        this.reloadDemandNotes.next(true)
+                    }
+                }
+            )
     }
+
     onCustomAction(action: any) {
         switch (action.action) {
             case 'download':

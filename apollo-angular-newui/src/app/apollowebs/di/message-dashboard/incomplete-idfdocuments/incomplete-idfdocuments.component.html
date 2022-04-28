@@ -1,0 +1,62 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">money</i>
+                        </div>
+                        <h4 class="card-title">Exchange Rates
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div [formGroup]="form">
+                            <div class="container" role="group" aria-label="Applications Status">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">IDF Status</span>
+                                        <select class="custom-select search-form-select" id="filter-type"
+                                                formControlName="status">
+                                            <option selected>Filter Type</option>
+                                            <option value="1">Complete</option>
+                                            <option value="SINGLE">In-Complete</option>
+                                        </select>
+                                    </div>
+                                    <input class="search-form-input" id="start-date" type="date"
+                                           formControlName="startDate"
+                                           placeholder="dd-mm-yyyy"
+                                           min="2021-01-01" max="2090-12-31">
+                                    <div class="input-group-append">
+                                        <button class="input-group-btn btn-sm btn-primary mr-7"
+                                                [disabled]="form.invalid"
+                                                (click)="filterByCurrency($event)"><i class="fa fa-search"></i>Search
+
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <mat-tab-group [(selectedIndex)]="activeTab">
+                            <mat-tab label="IN-COMPLETE" [tabIndex]="0">
+                                <div class="table-responsive table-striped">
+                                    <ng2-smart-table class="table table-hover" [settings]="settings"
+                                                     [source]="activeDataSet">
+                                    </ng2-smart-table>
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="COMPLETE" [tabIndex]="1">
+                                <div class="table-responsive table-striped">
+                                    <ng2-smart-table class="table table-hover" [settings]="settings"
+                                                     [source]="dataSet">
+                                    </ng2-smart-table>
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

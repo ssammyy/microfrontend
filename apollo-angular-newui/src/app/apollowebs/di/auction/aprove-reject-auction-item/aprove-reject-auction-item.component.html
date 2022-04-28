@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>Approve/Reject Auction Item</h2>
+<mat-dialog-content>
+    <div class="form-group row" [formGroup]="form">
+        <label for="approve" class="waiver-form-label">Select Approval Status</label>
+        <select id="approve" name="approve" class="waiver-form-input-master"
+                formControlName="approve" (change)="formatApprovalStatus($event)">
+            <option value="" disabled selected>Select One</option>
+            <option value="APPROVE">Approve Auction Item</option>
+            <option value="CONDITIONAL">Conditional Aprove</option>
+            <option value="HOLD">Hold auction</option>
+            <option value="REJECT">Reject Auction Item</option>
+        </select>
+        <label for="remarks" class="waiver-form-label">Enter details remarks for
+            <b>{{approvalMessage}}</b></label>
+        <input id="remarks" name="remarks" class="waiver-form-input-master"
+               formControlName="remarks" type="text"/>
+        <label for="select-file" class="col-5 col-form-label">SELECT REPORT DOCUMENT(Required)</label>
+        <div class="col-7">
+            <input id="select-file" type="file" accept="application/pdf" (change)="uploadAuctionItems($event)"
+                   class="display-nothing" #cocFiles>
+            <button type="button" (click)="cocFiles.click()"
+                    class="btn btn-sm btn-primary mr-2">Select File
+            </button>
+        </div>
+        <label class="col-6 col-form-label font-weight-bold" *ngIf="selectedFile">SELECTED: {{selectedFile.name}}</label>
+        <label class="col-6 col-form-label font-weight-bold" *ngIf="selectedFile">SIZE:{{selectedFile.size/1000| number}}KB</label>
+        <mat-error *ngIf="message">
+            {{message}}
+        </mat-error>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="btn-group btn-group pull-right" role="group" aria-label="Foreign COC/COR Buttons">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="!isValid() || loading" name="submit" type="button" class="btn btn-primary"
+                (click)="saveAuctionStatus()">
+            {{approvalMessage.toUpperCase()}}
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

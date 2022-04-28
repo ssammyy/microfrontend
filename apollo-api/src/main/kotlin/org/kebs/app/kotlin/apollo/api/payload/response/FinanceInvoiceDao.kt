@@ -39,6 +39,7 @@ class CorporateCustomerAccountDao {
     var accountSuspended: String? = null
     var paymentDays: Int? = 0
     var accountStatus: String? = null
+    var remarks: String? = null
     var status: Int? = null
 
     companion object {
@@ -46,6 +47,7 @@ class CorporateCustomerAccountDao {
             val dao = CorporateCustomerAccountDao()
             dao.apply {
                 corporatId = account.id
+                remarks = account.varField1
                 corporateIdentifier = account.corporateIdentifier
                 corporateName = account.corporateName
                 corporateType = account.corporateType

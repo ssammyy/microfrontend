@@ -69,7 +69,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.function.paramOrNull
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.time.LocalDate
 import javax.servlet.http.HttpServletResponse
@@ -249,7 +248,13 @@ class RegisterController(
             val brsCheckUp = daoServices.checkBrs(companyProfileEntity)
             if (brsCheckUp.first){
 
-                result = brsCheckUp.second?.let { daoServices.addUserManufactureProfile(map, loggedInUser, companyProfileEntity, it) }?: throw ExpectedDataNotFound("The Company Details Verification details could not be found")
+
+
+                result = brsCheckUp.second?.let {
+                    daoServices.addUserManufactureProfile(map, loggedInUser, companyProfileEntity, it)
+
+
+                }?: throw ExpectedDataNotFound("The Company Details Verification details could not be found")
 
                 val sm = CommonDaoServices.MessageSuccessFailDTO()
                 sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
@@ -329,7 +334,7 @@ class RegisterController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
-        sm.message = "You have successful add details"
+        sm.message = "You have successful added details"
         return returnValues(result, map, sm)
 
 
@@ -397,7 +402,7 @@ class RegisterController(
         val map = commonDaoServices.serviceMapDetails(appId)
         userName
             ?.let {
-                val user = commonDaoServices.findUserByUserName(it)
+                val user = commonDaoServices.findUserByUserName(it.toLowerCase())
                 systemsAdminDaoService.userRegistrationMailSending(
                     user,
                     null,
@@ -516,7 +521,6 @@ class RegisterController(
 //        val userb = commonDaoServices.findUserIdByToken(usersEntity.varField1)
         verificationTokensRepoB.findAllByVarField1(usersEntity.varField1)
             ?.let { b->
-                println("@#@#@#@" + b)
                 daoServices.findUserById(b)
                     ?.let { user ->
 
@@ -532,7 +536,8 @@ class RegisterController(
                                     BCryptPasswordEncoder().encode(confirmCredentials)
                                 val sr = null
                                 try {
-                                    status =daoServices.resetUserPassword(map, user, true, sr)?.let { true }?: throw NullValueNotAllowedException("Unable to reset password try again later")
+                                    status = daoServices.resetUserPasswordb(map, user, true, sr)
+                                        .let { true }
 
                                 } catch (e:Exception){
                                     KotlinLogging.logger {  }.error(e.message)

@@ -28,6 +28,7 @@ export class EngineeringItemChecklistComponent implements OnInit {
             brand: [formData ? formData.brand : '', Validators.maxLength(256)],
             ksEasApplicable: [formData ? formData.ksEasApplicable : '', Validators.maxLength(256)],
             quantityVerified: [formData ? formData.quantityVerified : '', Validators.maxLength(256)],
+            quantityVerifiedUnit: [formData ? formData.quantityVerifiedUnit : '', Validators.maxLength(25)],
             mfgNameAddress: [formData ? formData.mfgNameAddress : '', Validators.maxLength(256)],
             batchNoModelTypeRef: [formData ? formData.batchNoModelTypeRef : '', Validators.maxLength(256)],
             fiberComposition: [formData ? formData.fiberComposition : '', Validators.maxLength(256)],

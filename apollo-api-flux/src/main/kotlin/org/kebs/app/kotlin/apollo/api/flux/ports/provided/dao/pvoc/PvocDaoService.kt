@@ -3,8 +3,6 @@ package org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.pvoc
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.flux.ports.dto.pvoc.*
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.DaoService
-import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.createKesWsFileName
-import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.serializeToXml
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
@@ -14,8 +12,8 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.customdto.*
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocSealIssuesEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocStdMonitoringDataEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -37,7 +35,7 @@ class PvocServiceFlux(
     private val corsBakRepository: ICorsBakRepository,
     private val coisRepository: ICoisRepository,
     private val riskProfileDataRepository: IRiskProfileDataRepository,
-    private val timelinesDataRepository: IPvocTimelinesDataRepository,
+   // private val timelinesDataRepository: IPvocTimelinesDataRepository,
     private val pvocStdMonitoringDataRepository: IPvocStdMonitoringDataRepository,
     private val pvocQueriesDataRepository: IPvocQueriesDataRepository,
     private val idfsRepository: IIdfsRepository,
@@ -108,7 +106,7 @@ class PvocServiceFlux(
             //Check if CoC with same UCR Number has been created before
             var cocExists = false
             cocData.coc?.ucrNumber?.let {
-//                cocsRepository.findByUcrNumber(it)?.let { cocExists = true }
+      //          cocsRepository.findByUcrNumber(it)?.let { cocExists = true }
             }
             if (cocExists) {
                 KotlinLogging.logger {  }.info { "CoC with UCR number already exists" }
@@ -137,7 +135,7 @@ class PvocServiceFlux(
                 }
                 //Send CoC to KeSWS
                 try {
-                    this.submitCocToKeSWS(savedCoc)
+                    // this.submitCocToKeSWS(savedCoc)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     KotlinLogging.logger { }.error(e.message)
@@ -185,7 +183,7 @@ class PvocServiceFlux(
             //Check if CoI with same UCR Number has been created before
             var cocExists = false
             coiData.coi?.ucrNumber?.let {
-//                cocsRepository.findByUcrNumber(it)?.let { cocExists = true }
+                //    cocsRepository.findByUcrNumber(it)?.let { cocExists = true }
             }
             if (cocExists) {
                 KotlinLogging.logger {  }.info { "CoC with UCR number already exists" }
@@ -214,7 +212,7 @@ class PvocServiceFlux(
                 }
                 //Send CoI to KeSWS
                 try {
-                    this.submitCoiToKeSWS(savedCoc)
+                  //  this.submitCoiToKeSWS(savedCoc)
                 } catch (e: Exception) {
 //                    e.printStackTrace()
                     KotlinLogging.logger { }.error(e.message, e)
@@ -246,7 +244,7 @@ class PvocServiceFlux(
         return generalResponse
     }
 
-    fun submitCocToKeSWS(cocData: CocsEntity) {
+//    fun submitCocToKeSWS(cocData: CocsEntity) {
 //        val coc = CustomCocXmlDto(this.cocNumber, this.idfNumber, this.rfiNumber, this.ucrNumber, this.rfcDate, this.cocIssueDate, this.clean, this.cocRemarks, this.issuingOffice, this.importerName, this.importerPin, this.importerAddress1, this.importerAddress2, this.importerCity, this, importerCountry, this.importerZipCode, this.importerTelephoneNumber, this.importerFaxNumber, this.importerEmail, this.exporterName, this.exporterPin, this.exporterAddress1, this.exporterAddress2, this.exporterCity, this.exporterCountry, this.exporterZipCode, this.exporterTelephoneNumber, this.exporterFaxNumber, this.exporterEmail, this.placeOfInspection, this.dateOfInspection, this.portOfDestination, this.shipmentMode, this.countryOfSupply, this.finalInvoiceFobValue, ).apply {
 //            cocNumber = cocData.cocNumber
 //            idfNumber = cocData.idfNumber
@@ -301,21 +299,21 @@ class PvocServiceFlux(
 //            partner = cocData.partner
 //            cocDetals = null
 //        }
-        val cocItem = iCocItemRepository.findByCocId(cocData.id)?.get(0)
-        cocItem?.toCocItemDetailsXmlRecordRefl(cocData.cocNumber?:"").let {
+//        val cocItem = iCocItemRepository.findByCocId(cocData.id)?.get(0)
+//        cocItem?.toCocItemDetailsXmlRecordRefl(cocData.cocNumber?:"").let {
 //            coc.cocDetals = it
-            val cocFinalDto = COCXmlDTO()
+//            val cocFinalDto = COCXmlDTO()
 //            cocFinalDto.coc = coc
-            val fileName = cocFinalDto.coc?.ucrNumber?.let {
-                createKesWsFileName(
-                    applicationMapProperties.mapKeswsCocDoctype,
-                    it
-                )
-            }
-            val xmlFile = fileName?.let { serializeToXml(it, cocFinalDto) }
-            xmlFile.let { it1 -> it1?.let { sftpService.uploadFile(it) } }
-        }
-    }
+//            val fileName = cocFinalDto.coc?.ucrNumber?.let {
+//                createKesWsFileName(
+//                    applicationMapProperties.mapKeswsCocDoctype,
+//                    it
+//                )
+//            }
+//            val xmlFile = fileName?.let { serializeToXml(it, cocFinalDto) }
+//            xmlFile.let { it1 -> it1?.let { sftpService.uploadFile(it) } }
+//        }
+//    }
 
     fun convertTimestampToKeswsValidDate(timestamp: Timestamp): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd")
@@ -323,8 +321,8 @@ class PvocServiceFlux(
         return date
     }
 
-    fun submitCoiToKeSWS(cocData: CocsEntity) {
-        KotlinLogging.logger { }.info { "The COI entity: ${cocData.coiNumber}" }
+//    fun submitCoiToKeSWS(cocData: CocsEntity) {
+//        KotlinLogging.logger { }.info { "The COI entity: ${cocData.coiNumber}" }
 //        val coi = CustomCoiXmlDto().apply {
 //            id = cocData.id
 //            coiNumber = cocData.coiNumber
@@ -375,18 +373,18 @@ class PvocServiceFlux(
 //            productCategory = cocData.productCategory
 //            route = "D"
 //        }
-        val coiFinalDto = COIXmlDTO()
+//        val coiFinalDto = COIXmlDTO()
 //        coiFinalDto.coi = coi
-
-        val fileName = coiFinalDto.coi?.ucrNumber?.let {
-            createKesWsFileName(
-                applicationMapProperties.mapKeswsCoiDoctype,
-                it
-            )
-        }
-        val xmlFile = fileName?.let { serializeToXml(it, coiFinalDto) }
-        xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-    }
+//
+//        val fileName = coiFinalDto.coi?.ucrNumber?.let {
+//            createKesWsFileName(
+//                applicationMapProperties.mapKeswsCoiDoctype,
+//                it
+//            )
+//        }
+//        val xmlFile = fileName?.let { serializeToXml(it, coiFinalDto) }
+//        xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
+//    }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun saveCoiDataWithItems(cocData: CoiWithItemsResponse): GeneralResponse {
@@ -481,21 +479,21 @@ class PvocServiceFlux(
     }
 
 
-    fun saveCorData(corData: CorsBakEntity): GeneralResponse {
-        val generalResponse = GeneralResponse()
-        val log = WorkflowTransactionsEntity()
-        try {
-            with(log) {
-                transactionDate = Date(java.util.Date().time)
-                transactionStartDate = Timestamp.from(Instant.now())
-                retried = 0
-                createdOn = Timestamp.from(Instant.now())
-
-            }
-            val savedCorData = corsBakRepository.save(corData)
-
-            //Send COR data to KeSWS
-            try {
+//    fun saveCorData(corData: CorsBakEntity): GeneralResponse {
+//        val generalResponse = GeneralResponse()
+//        val log = WorkflowTransactionsEntity()
+//        try {
+//            with(log) {
+//                transactionDate = Date(java.util.Date().time)
+//                transactionStartDate = Timestamp.from(Instant.now())
+//                retried = 0
+//                createdOn = Timestamp.from(Instant.now())
+//
+//            }
+//            val savedCorData = corsBakRepository.save(corData)
+//
+//            //Send COR data to KeSWS
+//            try {
 //                val cor = CustomCorXmlDto().apply {
 //                    id = savedCorData.id.toString()
 //                    corNumber = savedCorData.corNumber
@@ -546,68 +544,68 @@ class PvocServiceFlux(
 //                }
 //                val xmlFile = fileName?.let { serializeToXml(it, corDto) }
 //                xmlFile.let { it1 -> it1?.let { sftpService.uploadFile(it) } }
-            } catch (e: Exception) {
-                KotlinLogging.logger { }.error(e.message)
-                KotlinLogging.logger { }.debug(e.message, e)
-            }
+//            } catch (e: Exception) {
+//                KotlinLogging.logger { }.error(e.message)
+//                KotlinLogging.logger { }.debug(e.message, e)
+//            }
+//
+//            generalResponse.responseCode = pvocIntegrationProperties.pvocIntegSuccessResponseCode
+//            generalResponse.responseMessage = pvocIntegrationProperties.pvocIntegSuccessResponseMessage
+//        } catch (e: Exception) {
+//            generalResponse.responseCode = pvocIntegrationProperties.pvocIntegFailureResponseCode
+//            generalResponse.responseMessage = e.message
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            log.responseMessage = e.message
+//        }
+//        log.transactionCompletedDate = Timestamp.from(Instant.now())
+//
+//        try {
+//            workflowTransactionsRepository.save(log)
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//
+//        }
+//
+//        return generalResponse
+//    }
 
-            generalResponse.responseCode = pvocIntegrationProperties.pvocIntegSuccessResponseCode
-            generalResponse.responseMessage = pvocIntegrationProperties.pvocIntegSuccessResponseMessage
-        } catch (e: Exception) {
-            generalResponse.responseCode = pvocIntegrationProperties.pvocIntegFailureResponseCode
-            generalResponse.responseMessage = e.message
-            KotlinLogging.logger { }.error(e.message)
-            KotlinLogging.logger { }.debug(e.message, e)
-            log.responseMessage = e.message
-        }
-        log.transactionCompletedDate = Timestamp.from(Instant.now())
-
-        try {
-            workflowTransactionsRepository.save(log)
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
-            KotlinLogging.logger { }.debug(e.message, e)
-
-        }
-
-        return generalResponse
-    }
-
-    fun saveCoiData(coiData: CoisEntity): GeneralResponse {
-        val generalResponse = GeneralResponse()
-        val log = WorkflowTransactionsEntity()
-        try {
-            with(log) {
-                transactionDate = Date(java.util.Date().time)
-                transactionStartDate = Timestamp.from(Instant.now())
-                retried = 0
-                createdOn = Timestamp.from(Instant.now())
-
-            }
-            coisRepository.save(coiData)
-
-
-            generalResponse.responseCode = pvocIntegrationProperties.pvocIntegSuccessResponseCode
-            generalResponse.responseMessage = pvocIntegrationProperties.pvocIntegSuccessResponseMessage
-        } catch (e: Exception) {
-            generalResponse.responseCode = pvocIntegrationProperties.pvocIntegFailureResponseCode
-            generalResponse.responseMessage = e.message
-            KotlinLogging.logger { }.error(e.message)
-            KotlinLogging.logger { }.debug(e.message, e)
-            log.responseMessage = e.message
-        }
-        log.transactionCompletedDate = Timestamp.from(Instant.now())
-
-        try {
-            workflowTransactionsRepository.save(log)
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
-            KotlinLogging.logger { }.debug(e.message, e)
-
-        }
-
-        return generalResponse
-    }
+//    fun saveCoiData(coiData: CoisEntity): GeneralResponse {
+//        val generalResponse = GeneralResponse()
+//        val log = WorkflowTransactionsEntity()
+//        try {
+//            with(log) {
+//                transactionDate = Date(java.util.Date().time)
+//                transactionStartDate = Timestamp.from(Instant.now())
+//                retried = 0
+//                createdOn = Timestamp.from(Instant.now())
+//
+//            }
+//            coisRepository.save(coiData)
+//
+//
+//            generalResponse.responseCode = pvocIntegrationProperties.pvocIntegSuccessResponseCode
+//            generalResponse.responseMessage = pvocIntegrationProperties.pvocIntegSuccessResponseMessage
+//        } catch (e: Exception) {
+//            generalResponse.responseCode = pvocIntegrationProperties.pvocIntegFailureResponseCode
+//            generalResponse.responseMessage = e.message
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            log.responseMessage = e.message
+//        }
+//        log.transactionCompletedDate = Timestamp.from(Instant.now())
+//
+//        try {
+//            workflowTransactionsRepository.save(log)
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//
+//        }
+//
+//        return generalResponse
+//    }
 
     //coi with items main
 //    fun saveCoiWithItemsData(coiData: CoiWithItemsResponse): GeneralResponse {
@@ -824,7 +822,7 @@ class PvocServiceFlux(
         return generalResponse
     }
 
-    fun saveTimelinesData(monitoringTimelines: PvocTimelinesDataEntity): GeneralResponse {
+    fun saveTimelinesData(monitoringTimelines: PvocSealIssuesEntity): GeneralResponse {
         val generalResponse = GeneralResponse()
         val log = WorkflowTransactionsEntity()
         try {
@@ -835,7 +833,7 @@ class PvocServiceFlux(
                 createdOn = Timestamp.from(Instant.now())
 
             }
-            timelinesDataRepository.save(monitoringTimelines)
+            //timelinesDataRepository.save(monitoringTimelines)
 
 
             generalResponse.responseCode = pvocIntegrationProperties.pvocIntegSuccessResponseCode
@@ -1038,12 +1036,12 @@ class PvocServiceFlux(
                     idfsResponse.invoiceNumber = idf.invoiceNumber
                     idfsResponse.invoiceDate = idf.invoiceDate
                     idfsResponse.currency = idf.currency
-                    idfsResponse.exchangeRate = idf.exchangeRate
-                    idfsResponse.fobValue = idf.fobValue
-                    idfsResponse.freight = idf.freight
-                    idfsResponse.insurance = idf.insurance
-                    idfsResponse.otherCharges = idf.otherCharges
-                    idfsResponse.total = idf.total
+//                    idfsResponse.exchangeRate = idf.exchangeRate
+//                    idfsResponse.fobValue = idf.fobValue
+//                    idfsResponse.freight = idf.freight
+//                    idfsResponse.insurance = idf.insurance
+//                    idfsResponse.otherCharges = idf.otherCharges
+//                    idfsResponse.total = idf.total
                     idfsResponse.observations = idf.observations
                     if (includeItems) {
                         idfsResponse.idfNumber?.let { idfsResponse.items.addAll(getIdfItemsData(idfNumber = it)) }
@@ -1086,12 +1084,12 @@ class PvocServiceFlux(
                 idfsResponse.invoiceNumber = idf.invoiceNumber
                 idfsResponse.invoiceDate = idf.invoiceDate
                 idfsResponse.currency = idf.currency
-                idfsResponse.exchangeRate = idf.exchangeRate
-                idfsResponse.fobValue = idf.fobValue
-                idfsResponse.freight = idf.freight
-                idfsResponse.insurance = idf.insurance
-                idfsResponse.otherCharges = idf.otherCharges
-                idfsResponse.total = idf.total
+//                idfsResponse.exchangeRate = idf.exchangeRate
+//                idfsResponse.fobValue = idf.fobValue
+//                idfsResponse.freight = idf.freight
+//                idfsResponse.insurance = idf.insurance
+//                idfsResponse.otherCharges = idf.otherCharges
+//                idfsResponse.total = idf.total
                 idfsResponse.observations = idf.observations
                 return idfsResponse
             }

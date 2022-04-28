@@ -64,14 +64,16 @@
         <!--          </button>-->
         <!--        </div>-->
       </form>
+
       <ul class="navbar-nav">
-        <li class="nav-item">
+        <li  *ngIf="roles?.includes('PERMIT_APPLICATION')" class="nav-item">
           <a class="nav-link" href="all_my_permits">
             <i class="material-icons">perm_media</i>
 
             <span>My Permits</span>
           </a>
         </li>
+
 
         <li class="nav-item">
           <a class="nav-link" href="dashboard">

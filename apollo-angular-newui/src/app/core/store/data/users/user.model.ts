@@ -6,8 +6,8 @@ export class User {
   email = '';
   credentials = '';
   cellphone = '';
-  companyId = -1;
-  plantId = -1;
+  companyId = null;
+  plantId = null;
 }
 
 export class UserEntityDto {

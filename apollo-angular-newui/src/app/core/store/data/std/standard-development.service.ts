@@ -8,7 +8,9 @@ import {
     DecisionFeedback,
     Department,
     HOFFeedback,
-    LiaisonOrganization, ProductCategory, ProductSubCategory, ProductSubCategoryB,
+    LiaisonOrganization,
+    ProductCategory,
+    ProductSubCategoryB,
     StandardTasks,
     StdJustification,
     StdJustificationDecision,
@@ -18,7 +20,8 @@ import {
     StdTCTask,
     Stdtsectask,
     StdtsecTaskJustification,
-    StdWorkPlan, TechnicalCommittee, TechnicalCommitteeb,DataHolder
+    StdWorkPlan,
+    TechnicalCommitteeb
 } from './request_std.model';
 
 @Injectable({
@@ -105,7 +108,7 @@ export class StandardDevelopmentService {
         return this.http.get<string>(`${this.apiServerUrl}getTechnicalCommitteeName/${id}`)
     }
 
-    public reviewTask(hofFeedback: HOFFeedback): Observable<HOFFeedback> {
+    public reviewTask(hofFeedback: HOFFeedback): Observable<any> {
         return this.http.post<HOFFeedback>(`${this.apiServerUrl}` + 'hof/review', hofFeedback)
     }
 
@@ -113,10 +116,12 @@ export class StandardDevelopmentService {
         return this.http.get<LiaisonOrganization[]>(`${this.apiServerUrl}` + 'getLiaisonOrganizations')
 
     }
+
     public getTCSECTasks(): Observable<Stdtsectask[]> {
         return this.http.get<Stdtsectask[]>(`${this.apiServerUrl}` + 'getTCSECTasks')
     }
-    public uploadNWI(uploadNWI: Stdtsectask): Observable<Stdtsectask> {
+
+    public uploadNWI(uploadNWI: Stdtsectask): Observable<any> {
 
         console.log(uploadNWI);
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadNWI', uploadNWI)
@@ -126,25 +131,25 @@ export class StandardDevelopmentService {
         return this.http.get<StdTCTask[]>(`${this.apiServerUrl}` + 'getTCTasks')
     }
 
-    public decisionOnNWI(reviewTask: StdTCDecision): Observable<StandardTasks> {
+    public decisionOnNWI(reviewTask: StdTCDecision): Observable<any> {
         return this.http.post<StandardTasks>(`${this.apiServerUrl}` + 'decisionOnNWI', reviewTask)
     }
 
-    public uploadJustification(stdJustification: StdJustification): Observable<Stdtsectask> {
+    public uploadJustification(stdJustification: StdJustification): Observable<any> {
 
         console.log(stdJustification);
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadJustification', stdJustification)
     }
 
     public getTCSECTasksJustification(): Observable<StdtsecTaskJustification[]> {
-        return this.http.get<StdtsecTaskJustification[]>(`${this.apiServerUrl}` + 'getTCSECTasks')
+        return this.http.get<StdtsecTaskJustification[]>(`${this.apiServerUrl}` + 'tc-sec/tasks')
     }
 
     public getSPCSECTasks(): Observable<StdSPCSECTask[]> {
         return this.http.get<StdSPCSECTask[]>(`${this.apiServerUrl}` + 'spc-sec/tasks')
     }
 
-    public decisionOnJustification(stdJustificationDecision: StdJustificationDecision): Observable<StandardTasks> {
+    public decisionOnJustification(stdJustificationDecision: StdJustificationDecision): Observable<any> {
         return this.http.post<StandardTasks>(`${this.apiServerUrl}` + 'decisionOnJustification', stdJustificationDecision)
     }
 
@@ -152,7 +157,7 @@ export class StandardDevelopmentService {
         return this.http.get<StdTCSecWorkPlan[]>(`${this.apiServerUrl}` + 'getTCSECTasks')
     }
 
-    public uploadWorkPlan(stdWorkPlan: StdWorkPlan): Observable<StdWorkPlan> {
+    public uploadWorkPlan(stdWorkPlan: StdWorkPlan): Observable<any> {
 
         console.log(stdWorkPlan);
         return this.http.post<StdWorkPlan>(`${this.apiServerUrl}` + 'uploadWorkPlan', stdWorkPlan)

@@ -10,11 +10,11 @@ import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerDto
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerTypeDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.store.model.external.SystemApiClient
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPvocPartnersRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnerTypeRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnersCountriesRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IPvocPartnersRegion
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -26,7 +26,6 @@ class PvocPartnerService(
         private val corporateCustomerService: CorporateCustomerService,
         private val partnersRepository: IPvocPartnersRepository,
         private val commonDaoServices: CommonDaoServices,
-        private val partnerRegionsRepository: IPvocPartnersRegion,
         private val partnerCountryRepo: IPvocPartnersCountriesRepository,
         private val partnerCategoryRepo: IPvocPartnerTypeRepository,
         private val apiClientService: ApiClientService
@@ -54,16 +53,18 @@ class PvocPartnerService(
             val partner = PvocPartnersEntity()
             // Fill with data
             form.addDetails(partner, false)
-            form.partnerRegion?.let {
-                partner.partnerRegion = partnerRegionsRepository.findById(it).orElse(null)
-            }
             form.partnerCountry?.let {
-                partner.partnerCountry = partnerCountryRepo.findById(it).orElse(null)
+                val country = partnerCountryRepo.findById(it)
+                if (country.isPresent) {
+                    partner.partnerCountry = country.get()
+                    partner.partnerRegion = country.get().regionId
+                }
             }
             partner.createdOn = Timestamp.from(Instant.now())
+            partner.status = 1
             partner.createdBy = this.commonDaoServices.getLoggedInUser()?.userName
             val saved = this.partnersRepository.save(partner)
-            addUpdateBilling(form, partner)
+            addUpdateBilling(form, partner, false)
             response.data = PvocPartnerDto.fromEntity(saved)
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Partner added"
@@ -74,7 +75,7 @@ class PvocPartnerService(
         return response
     }
 
-    fun addUpdateBilling(form: PvocPartnersForms, partner: PvocPartnersEntity) {
+    fun addUpdateBilling(form: PvocPartnersForms, partner: PvocPartnersEntity, update: Boolean) {
         val billingForm = CorporateForm()
         billingForm.apply {
             contactEmail = form.billingContactEmail
@@ -90,20 +91,21 @@ class PvocPartnerService(
             mouDays = 2
         }
         // Add billing information on partner
-        partner.billingId?.let {
-            val responseModel = this.corporateCustomerService.updateCorporateCustomer(billingForm, it)
-            if (!"00".equals(responseModel.responseCode)) {
-                throw ExpectedDataNotFound(responseModel.message)
+        if (update) {
+            partner.billingId?.let {
+                val responseModel = this.corporateCustomerService.updateCorporateCustomer(billingForm, it)
+                if ("00" != responseModel.responseCode) {
+                    throw ExpectedDataNotFound(responseModel.message)
+                }
+                responseModel
             }
-            responseModel
-        } ?: run {
+        } else {
             val responseModel = this.corporateCustomerService.addCorporateCustomer(billingForm)
-            if ("00".equals(responseModel.responseCode)) {
+            if ("00" == responseModel.responseCode) {
                 partner.billingId = responseModel.data as Long
             } else {
                 throw ExpectedDataNotFound(responseModel.message)
             }
-            responseModel
         }
 
     }
@@ -117,13 +119,11 @@ class PvocPartnerService(
             // Fill with data
             form.addDetails(partner, true)
             // Add country and region
-            form.partnerRegion?.let {
-                partner.partnerRegion = partnerRegionsRepository.findById(it).orElse(null)
-            }
             form.partnerCountry?.let {
                 partner.partnerCountry = partnerCountryRepo.findById(it).orElse(null)
+                partner.partnerRegion = partner.partnerCountry?.regionId
             }
-            addUpdateBilling(form, partner)
+            addUpdateBilling(form, partner, true)
             partner.modifiedOn = Timestamp.from(Instant.now())
             partner.modifiedBy = this.commonDaoServices.getLoggedInUser()?.userName
             val saved = this.partnersRepository.save(partner)
@@ -135,6 +135,23 @@ class PvocPartnerService(
             response.message = "Partner does not exist"
         }
         return response
+    }
+
+    fun getPartner(partnerId: Long): PvocPartnersEntity? {
+        val partnerOptional = partnersRepository.findById(partnerId)
+        if (partnerOptional.isPresent) {
+            return partnerOptional.get()
+        }
+        return null
+    }
+
+    fun getPartnerApiClient(partnerId: Long): SystemApiClient? {
+        val partnerOptional = partnersRepository.findById(partnerId)
+        if (partnerOptional.isPresent) {
+            val partner = partnerOptional.get()
+            return this.apiClientService.getApiClient(partner.apiClientId!!)
+        }
+        return null
     }
 
     fun getPartnerDetails(partnerId: Long): ApiResponseModel {
@@ -209,6 +226,19 @@ class PvocPartnerService(
             response.totalPages = pg.totalPages
             response
         }
+        return response
+    }
+
+    fun listPartnerNames(): ApiResponseModel {
+        val response = ApiResponseModel()
+        val partners = this.partnersRepository.findAllByStatus(1)
+        val partnerNames = mutableListOf<Any>()
+        partners.forEach { part ->
+            partnerNames.add(mapOf(Pair("partnerId", part.id), Pair("name", part.partnerName)))
+        }
+        response.data = partnerNames
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.message = "Success"
         return response
     }
 }

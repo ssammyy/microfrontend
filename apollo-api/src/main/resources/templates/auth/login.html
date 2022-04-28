@@ -10,11 +10,11 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito Sans">
+
 </head>
-
-
 <body>
 <header>
+
     <div class="header">
         <div class="kebs-image">
             <img th:src="@{/images/kebs_new_logo.png}" class="logo-image" alt="kebs Logo" id="logo">
@@ -67,9 +67,9 @@
                 Welcome Back
             </h2>
             <p class="input-placeholder">
-                Username
+                Email Address
             </p>
-            <input type="text" class="login-form-inputs" placeholder="" id="username" name="username" required>
+            <input type="email" class="login-form-inputs" placeholder="" id="username" name="username" required>
             <p class="input-placeholder">
                 Password
             </p>
@@ -262,20 +262,30 @@
     var wait = 60;
 
     function getOTPCodeBtn(btn) {
+
+
         if ($("#username").val() == "") {
             alert("Please fill in the username first.");
             return;
         }
+        if (!validateEmail()) {
+            return;
+        }
 
         if (wait == 0) {
+
             btn.removeAttribute("disabled");
+            // document.getElementById("verificationCode").style.display = "block";
+
             $(btn).val("Get OTP Code ");
             wait = 60;
         } else {
             $(btn).attr("disabled", true);
+            document.getElementById("verificationCode").style.display = "none";
             $(btn).val(wait + " secs");
             // btn.value = "Obtain again in "+wait +" seconds";
             if (wait == 60) {
+                document.getElementById("verificationCode").style.display = "none";
                 getMobileCode();
             }
             wait--;
@@ -304,9 +314,12 @@
             error: function (request) {
                 // console.log(`${JSON.stringify(request)} Messages:${request.responseJSON.message}`);
                 if (request?.responseJSON?.message) {
+
                     alert(`Message:${request.responseJSON.message}`);
                 } else {
+
                     alert("Connection error");
+
                 }
             },
             success: function (json) {
@@ -320,5 +333,17 @@
         });
     }
 
+</script>
+<script>
+    function validateEmail() {
+        const x = $("#username").val();
+        const atposition = x.indexOf("@");
+        const dotposition = x.lastIndexOf(".");
+        if (atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= x.length) {
+            alert("Please enter a valid email address");
+            return false;
+        }
+        return true;
+    }
 </script>
 </html>

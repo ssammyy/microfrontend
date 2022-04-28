@@ -8,10 +8,13 @@ import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.pvoc.PvocServiceFl
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
+import org.kebs.app.kotlin.apollo.store.model.CoiItemsEntity
+import org.kebs.app.kotlin.apollo.store.model.RiskProfileDataEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocSealIssuesEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocStdMonitoringDataEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
@@ -130,51 +133,51 @@ class PvocHandler(
         }
     }
 
-    suspend fun receiveCOR(req: ServerRequest): ServerResponse {
-        return try {
-            req.awaitBodyOrNull<CorsBakEntity>()
-                ?.let { body ->
-                    val errors: Errors = BeanPropertyBindingResult(body, CorsBakEntity::class.java.name)
-                    validator.validate(body, errors)
-                    if (errors.allErrors.isEmpty()) {
-                        ServerResponse.ok().bodyValueAndAwait(service.saveCorData(body))
-                    } else {
-                        onValidationErrors(errors)
-                    }
-                }
-                ?: throw InvalidValueException("No Body found")
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.debug(e.message, e)
-            KotlinLogging.logger { }.error(e.message)
-            onErrors(e.message)
-        }
-    }
-
-    suspend fun receiveCOI(req: ServerRequest): ServerResponse {
-        return try {
-            req.awaitBodyOrNull<CoisEntity>()
-                ?.let { body ->
-                    val errors: Errors = BeanPropertyBindingResult(body, CoisEntity::class.java.name)
-                    validator.validate(body, errors)
-                    if (errors.allErrors.isEmpty()) {
-                        ServerResponse.ok().bodyValueAndAwait(service.saveCoiData(body))
-
-                    } else {
-                        onValidationErrors(errors)
-                    }
-
-
-                }
-                ?: throw InvalidValueException("No Body found")
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.debug(e.message, e)
-            KotlinLogging.logger { }.error(e.message)
-            onErrors(e.message)
-
-        }
-
-
-    }
+//    suspend fun receiveCOR(req: ServerRequest): ServerResponse {
+//        return try {
+//            req.awaitBodyOrNull<CorsBakEntity>()
+//                ?.let { body ->
+//                    val errors: Errors = BeanPropertyBindingResult(body, CorsBakEntity::class.java.name)
+//                    validator.validate(body, errors)
+//                    if (errors.allErrors.isEmpty()) {
+//                     //   ServerResponse.ok().bodyValueAndAwait(service.saveCorData(body))
+//                    } else {
+//                        onValidationErrors(errors)
+//                    }
+//                }
+//                ?: throw InvalidValueException("No Body found")
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            KotlinLogging.logger { }.error(e.message)
+//            onErrors(e.message)
+//        }
+//    }
+//
+//    suspend fun receiveCOI(req: ServerRequest): ServerResponse {
+//        return try {
+//            req.awaitBodyOrNull<CoisEntity>()
+//                ?.let { body ->
+//                    val errors: Errors = BeanPropertyBindingResult(body, CoisEntity::class.java.name)
+//                    validator.validate(body, errors)
+//                    if (errors.allErrors.isEmpty()) {
+//                     //   ServerResponse.ok().bodyValueAndAwait(service.saveCoiData(body))
+//
+//                    } else {
+//                        onValidationErrors(errors)
+//                    }
+//
+//
+//                }
+//                ?: throw InvalidValueException("No Body found")
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            KotlinLogging.logger { }.error(e.message)
+//            onErrors(e.message)
+//
+//        }
+//
+//
+//    }
 
     // coi with items
     suspend fun receiveCOIWithItems(req: ServerRequest): ServerResponse {
@@ -308,9 +311,9 @@ class PvocHandler(
 
     suspend fun receiveMonitoringTimelines(req: ServerRequest): ServerResponse {
         return try {
-            req.awaitBodyOrNull<PvocTimelinesDataEntity>()
+            req.awaitBodyOrNull<PvocSealIssuesEntity>()
                 ?.let { body ->
-                    val errors: Errors = BeanPropertyBindingResult(body, PvocTimelinesDataEntity::class.java.name)
+                    val errors: Errors = BeanPropertyBindingResult(body, PvocSealIssuesEntity::class.java.name)
                     validator.validate(body, errors)
                     if (errors.allErrors.isEmpty()) {
                         ServerResponse.ok().bodyValueAndAwait(service.saveTimelinesData(body))

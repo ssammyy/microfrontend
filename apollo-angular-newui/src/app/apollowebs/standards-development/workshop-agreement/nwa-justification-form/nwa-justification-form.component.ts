@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NgxSpinnerService} from "ngx-spinner";
-import {KNWCommittee, KNWDepartment, KnwSecTasks} from "../../../../core/store/data/std/std.model";
+import {KNWCommittee, KNWDepartment, KnwSecTasks, UsersEntity} from "../../../../core/store/data/std/std.model";
 import {Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
@@ -15,12 +15,14 @@ declare const $: any;
 @Component({
   selector: 'app-nwa-justification-form',
   templateUrl: './nwa-justification-form.component.html',
-  styleUrls: ['./nwa-justification-form.component.css']
+  styleUrls: ['./nwa-justification-form.component.css','../../../../../../node_modules/@ng-select/ng-select/themes/default.theme.css'],
+    encapsulation: ViewEncapsulation.None
 })
 
 
 export class NwaJustificationFormComponent implements OnInit {
     fullname = '';
+
   public itemId :string="1";
   public justification: string="Justification";
   public nwaDepartments !: KNWDepartment[];
@@ -28,6 +30,7 @@ export class NwaJustificationFormComponent implements OnInit {
   public prepareJustificationFormGroup!: FormGroup;
   public knwsectasks !: KnwSecTasks[];
     public uploadedFiles: FileList;
+    public knwSecretary !: UsersEntity[] ;
 
   title = 'toaster-not';
 
@@ -43,7 +46,8 @@ export class NwaJustificationFormComponent implements OnInit {
   ngOnInit(): void {
     this.getKNWDepartments();
     this.getKNWCommittee();
-    this.knwtasks();
+    this.getKnwSecretary();
+    //this.knwtasks();
 
       this.store$.select(selectUserInfo).pipe().subscribe((u) => {
           return this.fullname = u.fullName;
@@ -60,7 +64,8 @@ export class NwaJustificationFormComponent implements OnInit {
       issuesAddressed: ['', Validators.required],
       knwAcceptanceDate: ['', Validators.required],
         uploadedFiles: [],
-        DocDescription: []
+        DocDescription: [],
+        assignedTo:[]
       // postalAddress: ['', [Validators.required, Validators.pattern('P.O.BOX [0-9]{5}')]]
     });
 
@@ -92,7 +97,7 @@ export class NwaJustificationFormComponent implements OnInit {
     this.stdNwaService.getKNWCommittee().subscribe(
         (response: KNWCommittee[]) => {
           this.nwaCommittees = response;
-          console.log(this.nwaCommittees)
+          //console.log(this.nwaCommittees)
         },
         (error: HttpErrorResponse) => {
           console.log(error.message);
@@ -100,49 +105,49 @@ export class NwaJustificationFormComponent implements OnInit {
     );
   }
 
-  // saveJustification(): void {
-  //   this.SpinnerService.show();
-  //   this.stdNwaService.prepareJustification(this.prepareJustificationFormGroup.value).subscribe(
-  //       (response ) => {
-  //         console.log(response);
-  //         this.SpinnerService.hide();
-  //         this.showToasterSuccess(response.httpStatus, `Request Number is ${response.body.requestNumber}`);
-  //        this.onClickSaveUploads(response.body.savedRowID)
-  //         this.prepareJustificationFormGroup.reset();
-  //       },
-  //       (error: HttpErrorResponse) => {
-  //           this.SpinnerService.hide();
-  //         console.log(error.message);
-  //       }
-  //   );
-  // }
-    saveJustification() {
-        const file = this.uploadedFiles;
-        const formData = new FormData();
-        for (let i = 0; i < file.length; i++) {
-            console.log(file[i]);
-            formData.append('docFile', file[i], file[i].name);
+  saveJustification(): void {
+    this.SpinnerService.show();
+    this.stdNwaService.prepareJustification(this.prepareJustificationFormGroup.value).subscribe(
+        (response ) => {
+          console.log(response);
+          this.SpinnerService.hide();
+          this.showToasterSuccess(response.httpStatus, `Request Number is ${response.body.requestNumber}`);
+         this.onClickSaveUploads(response.body.savedRowID)
+          this.prepareJustificationFormGroup.reset();
+        },
+        (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+          console.log(error.message);
         }
-        this.SpinnerService.show();
-        this.stdNwaService.prepareJustification(this.prepareJustificationFormGroup.value, formData).subscribe(
-            (data: any) => {
-                this.SpinnerService.hide();
-                this.showToasterSuccess(data.httpStatus, `Request Number is ${data.body.requestNumber}`);
-                //console.log(data);
-                this.prepareJustificationFormGroup.reset();
-                swal.fire({
-                    title: 'Justification Prepared.',
-                    buttonsStyling: false,
-                    icon: 'success'
-                });
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                console.log(error.message);
-            }
-        );
-
-    }
+    );
+  }
+  //   saveJustification() {
+  //       const file = this.uploadedFiles;
+  //       const formData = new FormData();
+  //       for (let i = 0; i < file.length; i++) {
+  //           console.log(file[i]);
+  //           formData.append('docFile', file[i], file[i].name);
+  //       }
+  //       this.SpinnerService.show();
+  //       this.stdNwaService.prepareJustification(this.prepareJustificationFormGroup.value, formData).subscribe(
+  //           (data: any) => {
+  //               this.SpinnerService.hide();
+  //               this.showToasterSuccess(data.httpStatus, `Request Number is ${data.body.requestNumber}`);
+  //               //console.log(data);
+  //               this.prepareJustificationFormGroup.reset();
+  //               swal.fire({
+  //                   title: 'Justification Prepared.',
+  //                   buttonsStyling: false,
+  //                   icon: 'success'
+  //               });
+  //           },
+  //           (error: HttpErrorResponse) => {
+  //               this.SpinnerService.hide();
+  //               console.log(error.message);
+  //           }
+  //       );
+  //
+  //   }
 
   public knwtasks(): void {
     this.stdNwaService.knwtasks().subscribe(
@@ -184,6 +189,20 @@ export class NwaJustificationFormComponent implements OnInit {
 
     }
 
+    public getKnwSecretary(): void {
+        this.SpinnerService.show();
+        this.stdNwaService.getKnwSecretary().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.knwSecretary = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
 
   // public saveJustification(saveJustification: NgForm): void{
   //   this.stdDevelopmentNwaService.prepareJustification(saveJustification.value).subscribe(
@@ -202,7 +221,7 @@ export class NwaJustificationFormComponent implements OnInit {
 
         $.notify({
             icon: 'notifications',
-            message: 'Welcome to <b>Material Dashboard</b> - a beautiful dashboard for every web developer.'
+            message: 'KEBS QAIMSS'
         }, {
             type: type[color],
             timer: 3000,

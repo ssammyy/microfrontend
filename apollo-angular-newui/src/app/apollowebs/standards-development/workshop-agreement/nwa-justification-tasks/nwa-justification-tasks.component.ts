@@ -25,6 +25,7 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
   tasks: SPCSECTasks[] = [];
   public actionRequest: SPCSECTasks | undefined;
   public approveFormGroup!: FormGroup;
+    //displayTable: boolean = false;
   blob: Blob;
   constructor(
       private formBuilder: FormBuilder,
@@ -147,9 +148,9 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
         );
     }
 
-    viewPdfFile(pdfId: number,applicationType: string): void {
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
         this.SpinnerService.show();
-        this.stdNwaService.loadFileDetailsPDF(pdfId).subscribe(
+        this.stdNwaService.viewJustificationPDF(pdfId).subscribe(
             (dataPdf: any) => {
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
@@ -158,12 +159,13 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 const link = document.createElement('a');
                 link.href = downloadURL;
-                //link.download = fileName;
+                link.download = fileName;
                 link.click();
                 // this.pdfUploadsView = dataPdf;
             },
         );
     }
+
 
 
 

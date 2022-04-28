@@ -8,6 +8,9 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
+import {DataTableDirective} from "angular-datatables";
+import {NgxSpinnerService} from "ngx-spinner";
+import {NotificationService} from "../../../../core/store/data/std/notification.service";
 
 @Component({
   selector: 'app-std-justification',
@@ -17,6 +20,10 @@ import {Subject} from "rxjs";
 export class StdJustificationComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective;
+  isDtInitialized: boolean = false
+
   p = 1;
   p2 = 1;
   public secTasks: StdtsecTaskJustification[] = [];
@@ -31,7 +38,9 @@ export class StdJustificationComponent implements OnInit {
 
   constructor(
       private formBuilder: FormBuilder,
-      private  standardDevelopmentService: StandardDevelopmentService
+      private  standardDevelopmentService: StandardDevelopmentService,
+      private SpinnerService: NgxSpinnerService,
+      private notifyService: NotificationService,
   ) {
   }
 
@@ -49,8 +58,15 @@ export class StdJustificationComponent implements OnInit {
         (response: StdtsecTaskJustification[]) => {
           console.log(response);
           this.secTasks = response;
-          this.dtTrigger.next();
-
+          if (this.isDtInitialized) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              dtInstance.destroy();
+              this.dtTrigger.next();
+            });
+          } else {
+            this.isDtInitialized = true
+            this.dtTrigger.next();
+          }
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
@@ -81,18 +97,28 @@ export class StdJustificationComponent implements OnInit {
        }
      );
    }*/
+  showToasterSuccess(title: string, message: string) {
+    this.notifyService.showSuccess(message, title)
+
+  }
 
   uploadJustification(stdJustification: StdJustification): void {
 
     console.log(stdJustification);
+    this.SpinnerService.show();
+
 
     this.standardDevelopmentService.uploadJustification(stdJustification).subscribe(
-        (response: Stdtsectask) => {
+        (response) => {
           console.log(response);
+          this.showToasterSuccess(response.httpStatus, `Your Justification Has Been Uploaded`);
+          this.SpinnerService.hide();
           this.getTCSECTasksJustification();
           this.hideModel();
         },
         (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+
           alert(error.message);
         }
     )

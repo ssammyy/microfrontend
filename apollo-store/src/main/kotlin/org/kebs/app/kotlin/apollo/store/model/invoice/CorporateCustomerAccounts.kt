@@ -21,6 +21,9 @@ class CorporateCustomerAccounts : Serializable {
     @Column(name = "CORPORATE_NAME", nullable = false)
     var corporateName: String? = null
 
+    @Column(name = "CORPORATE_CODE", nullable = false)
+    var corporateCode: String? = null
+
     @Column(name = "CORPORATE_TYPE", nullable = false)
     var corporateType: String? = null // COURIER
 
@@ -30,7 +33,7 @@ class CorporateCustomerAccounts : Serializable {
     @Column(name = "CORPORATE_PHONE", nullable = false)
     var corporatePhone: String? = null
 
-    @Column(name = "CORPORATE_BILL_NUMBER", nullable = false)
+    @Column(name = "CORPORATE_BILL_NUMBER", nullable = false, unique = true)
     var corporateBillNumber: String? = null
 
     @Column(name = "LAST_PAYMENT", nullable = false)

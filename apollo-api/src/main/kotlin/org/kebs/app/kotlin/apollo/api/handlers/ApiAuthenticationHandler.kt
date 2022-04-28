@@ -5,10 +5,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.api.security.service.CustomAuthenticationProvider
-import org.kebs.app.kotlin.apollo.common.dto.JwtResponse
-import org.kebs.app.kotlin.apollo.common.dto.LoginRequest
-import org.kebs.app.kotlin.apollo.common.dto.OtpRequestValuesDto
-import org.kebs.app.kotlin.apollo.common.dto.OtpResponseDto
+import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationProperties
@@ -42,19 +39,20 @@ class ApiAuthenticationHandler(
     private val customAuthenticationProvider: CustomAuthenticationProvider
 ) {
 
+
     fun generateOtp(req: ServerRequest): ServerResponse {
         val reqBody = req.body<OtpRequestValuesDto>()
-        KotlinLogging.logger {  }.info { "Username received: ${reqBody.username}" }
+        KotlinLogging.logger {  }.info { "Email received: ${reqBody.username}" }
         return reqBody.username?.let {
-            usersRepo.findByUserName(it)
+            usersRepo.findByEmail(it.toLowerCase())
                 ?.let { user ->
 //                    val otp = generateTransactionReference(8).toUpperCase()
                     val otp = commonDaoServices.randomNumber(6)
                     val token = generateVerificationToken(otp, user)
                     KotlinLogging.logger { }.info { "Token: ${token.token}" }
 
-//                    val response = sendOtpViaSMS(token)
-                    val response = "Success"
+                    val response = sendOtpViaSMS(token)
+//                    val response = "Success"
 
                     req.attributes()["username"] = reqBody.username
                     req.attributes()["password"] = reqBody.password
@@ -63,6 +61,7 @@ class ApiAuthenticationHandler(
                     val otpResponseDto = OtpResponseDto()
                     otpResponseDto.message = response
                     otpResponseDto.otp = token.token
+
 
                     ServerResponse.ok().body(otpResponseDto)
                 }
@@ -101,9 +100,9 @@ class ApiAuthenticationHandler(
     }
 
     fun generateTransactionReference(
-        length: Int = 12,
-        secureRandomAlgorithm: String = "SHA1PRNG",
-        messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false,
+            length: Int = 12,
+            secureRandomAlgorithm: String = "SHA1PRNG",
+            messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false,
     ): String {
         return generateRandomText(length, secureRandomAlgorithm, messageDigestAlgorithm, false)
     }
@@ -118,20 +117,20 @@ class ApiAuthenticationHandler(
 
             SecurityContextHolder.getContext().authentication = auth
 
-            usersRepo.findByUserName(auth.name)
+            usersRepo.findByEmail(auth.name)
                 ?.let { user ->
                     val request = ServletServerHttpRequest(req.servletRequest())
-                    val token = tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
+                    val token =
+                        tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
 
                     val roles = tokenService.extractRolesFromToken(token)?.map { it.authority }
-                    // TODO: Delay this part until correct token is provided
                     val response = JwtResponse(
                         token,
                         user.id,
                         user.userName,
                         user.email,
                         commonDaoServices.concatenateName(user),
-                        roles
+                        roles,
                     ).apply {
                         /**
                          * TODO: Set expiry padding configuration  check this time stamp is false
@@ -139,27 +138,78 @@ class ApiAuthenticationHandler(
 //                        val localDate = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
 //                        val timestamp: Timestamp = Timestamp.valueOf(localDate)
 //                        expiry = timestamp
-                        expiry = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+                        expiry =
+                            LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+                        companyID = user.companyId
+                        branchID = user.plantId
+
                     }
 
                     /**
                      *SEND OTP TO USER LOGIN throw phone number
                      */
-                    user.cellphone?.let {
-                        val otp = commonDaoServices.randomNumber(6)
-                        val tokenValidation = commonDaoServices.generateVerificationToken(
-                                otp,
-                                it
-                        )
-                        commonDaoServices.sendOtpViaSMS(tokenValidation)
-                    }
+                    val otp = commonDaoServices.randomNumber(6)
+                    val tokenValidation = commonDaoServices.generateVerificationToken(
+                        otp,
+                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+                    )
+                    commonDaoServices.sendOtpViaSMS(tokenValidation)
+
                     ServerResponse.ok().body(response)
                 }
                 ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
 
         } catch (e: Exception) {
+            e.printStackTrace()
             KotlinLogging.logger { }.error(e.message, e)
             ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    fun uiLogin2(req: ServerRequest): ServerResponse =
+        try {
+            val loginRequest = req.body<LoginRequest>()
+
+            val usernamePassAuth = UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
+
+            val auth = customAuthenticationProvider.authenticate(usernamePassAuth)
+
+            SecurityContextHolder.getContext().authentication = auth
+
+
+            usersRepo.findByEmail(auth.name)
+                ?.let { user ->
+                    /**
+                     *SEND OTP TO USER LOGIN throw phone number
+                     */
+                    val request = ServletServerHttpRequest(req.servletRequest())
+                    val token =
+                        tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
+                    val otp = commonDaoServices.randomNumber(6)
+                    val tokenValidation = commonDaoServices.generateVerificationToken(
+                        otp,
+                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required"),
+                        user.id
+                    )
+                    commonDaoServices.sendOtpViaSMS(tokenValidation)
+                    val response = CustomResponse().apply {
+                        response = "00"
+                        payload = "$token"
+                        status = 200
+                    }
+                    ServerResponse.ok().header("Authorization","Bearer $token").body(response)
+                }
+                ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val response = CustomResponse().apply {
+                response = "99"
+                payload = "Invalid OTP received " + e.message
+                status = 500
+            }
+            KotlinLogging.logger { }.trace(e.message, e)
+            ServerResponse.badRequest().body(response)
         }
 
 //    fun uiLogin(req: ServerRequest): ServerResponse =

@@ -307,7 +307,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .search-bar .form-group{
     width: available;
 }
-.search-form-input{
+
+.search-form-input {
     border: #1878b3 solid 1px;
     border-radius: 1px;
     width: 300px;
@@ -315,7 +316,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     font-size: 18px;
 }
 
-.search-form-input-master{
+.search-form-select {
+    width: auto;
+    height: auto;
+    padding: 14px;
+    font-size: 18px;
+}
+
+.search-form-input-master {
     border: #1878b3 solid 1px;
     border-radius: 1px;
     font-size: 18px;

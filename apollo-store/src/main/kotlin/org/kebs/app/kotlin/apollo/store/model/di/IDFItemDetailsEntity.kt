@@ -40,9 +40,9 @@ class IDFItemDetailsEntity : Serializable {
     @Basic
     var itemNum: Long? = null
 
-    @Column(name = "NET_MASS", nullable = true, precision = 0)
+    @Column(name = "NET_MASS", nullable = true, precision = 17, scale = 4)
     @Basic
-    var netMass: Long? = null
+    var netMass: Double? = null
 
     @Column(name = "COMMERCIAL_GOODS", nullable = true, length = 200)
     @Basic
@@ -68,9 +68,9 @@ class IDFItemDetailsEntity : Serializable {
     @Basic
     var originCountry: String? = null
 
-    @Column(name = "UNIT_NUM", nullable = true, precision = 0)
+    @Column(name = "UNIT_NUM", nullable = true, precision = 17, scale = 4)
     @Basic
-    var unitNum: Long? = null
+    var unitNum: Double? = null
 
     @Column(name = "UNIT_CODE", nullable = true, length = 200)
     @Basic

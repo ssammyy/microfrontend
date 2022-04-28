@@ -1,9 +1,9 @@
-import {Component, OnInit, Renderer2, ViewChild, ElementRef, Directive} from '@angular/core';
+import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {ROUTES} from '../../sidebar/sidebar.component';
-import {Router, ActivatedRoute, NavigationEnd, NavigationStart} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
-import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
-import {loadLogout} from '../../core/store';
+import {Location} from '@angular/common';
+import {loadLogout, selectUserInfo} from '../../core/store';
 import {Store} from '@ngrx/store';
 
 const misc: any = {
@@ -27,6 +27,7 @@ export class NavbarComponent implements OnInit {
     private toggleButton: any;
     private sidebarVisible: boolean;
     private _router: Subscription;
+    roles: string[];
 
     @ViewChild('app-navbar-cmp', {static: false}) button: any;
 
@@ -97,6 +98,10 @@ export class NavbarComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.roles = u.roles;
+            return this.roles = u.roles;
+        });
         this.listTitles = ROUTES.filter(listTitle => listTitle);
 
         const navbar: HTMLElement = this.element.nativeElement;
@@ -180,9 +185,9 @@ export class NavbarComponent implements OnInit {
             $layer.remove();
         }
 
-        setTimeout(function() {
-            $toggle.classList.remove('toggled');
-        }, 400);
+        // setTimeout(function() {
+        //     $toggle.classList.remove('toggled');
+        // }, 400);
 
         this.mobile_menu_visible = 0;
     }

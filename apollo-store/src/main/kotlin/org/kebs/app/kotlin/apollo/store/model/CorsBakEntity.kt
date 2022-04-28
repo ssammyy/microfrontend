@@ -21,6 +21,20 @@ class CorsBakEntity : Serializable {
     @Basic
     var corNumber: String? = null
 
+    @Column(name = "DOCUMENT_TYPE", length = 2)
+    @Basic
+    var documentsType: String? = "L"
+
+    @Column(name = "ACCEPTABLE_DOC_DATE", nullable = true)
+    @Basic
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var acceptableDocDate: Timestamp? = null
+
+    @Column(name = "FINAL_DOC_DATE", nullable = true)
+    @Basic
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var finalDocDate: Timestamp? = null
+
     @Column(name = "COR_ISSUE_DATE")
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -91,6 +105,7 @@ class CorsBakEntity : Serializable {
     @Column(name = "INSPECTION_MILEAGE")
     @Basic
     var inspectionMileage: String? = null
+
     @Column(name = "CUSTOMS_IE_NO")
     @Basic
     var customsIeNo: String? = null
@@ -103,6 +118,10 @@ class CorsBakEntity : Serializable {
     @Basic
     var inspectionRemarks: String? = null
 
+    @Column(name = "INSPECTION_STATEMENT", length = 4000)
+    @Basic
+    var inspectionStatement: String? = null
+
     @Column(name = "PREVIOUS_REGISTRATION_NUMBER")
     @Basic
     var previousRegistrationNumber: String? = null
@@ -111,17 +130,17 @@ class CorsBakEntity : Serializable {
     @Basic
     var previousCountryOfRegistration: String? = null
 
-    @Column(name = "TARE_WEIGHT")
+    @Column(name = "TARE_WEIGHT", precision = 15, scale = 2)
     @Basic
-    var tareWeight: Long = 0
+    var tareWeight: Double = 0.0
 
-    @Column(name = "LOAD_CAPACITY")
+    @Column(name = "LOAD_CAPACITY", precision = 15, scale = 2)
     @Basic
-    var loadCapacity: Long = 0
+    var loadCapacity: Double = 0.0
 
-    @Column(name = "GROSS_WEIGHT")
+    @Column(name = "GROSS_WEIGHT", scale = 2, precision = 15)
     @Basic
-    var grossWeight: Long = 0
+    var grossWeight: Double = 0.0
 
     @Column(name = "NUMBER_OF_AXLES")
     @Basic
@@ -151,9 +170,13 @@ class CorsBakEntity : Serializable {
     @Basic
     var fuelType: String? = null
 
-    @Column(name = "INSPECTION_FEE")
+    @Column(name = "INSPECTION_FEE", scale = 2, precision = 15)
     @Basic
-    var inspectionFee: Long = 0
+    var inspectionFee: Double? = 0.0
+
+    @Column(name = "INSPECTION_FEE_RECEIPTS")
+    @Basic
+    var inspectionFeeReceipt: String? = null
 
     @Column(name = "APPROVAL_STATUS")
     @Basic
@@ -171,18 +194,21 @@ class CorsBakEntity : Serializable {
     @Basic
     var inspectionFeeCurrency: String? = null
 
-    @Column(name = "PARTNER")
+    @Column(name = "PVOC_PARTNER")
     @Basic
-    var partner: String? = null
+    var partner: Long? = null
 
-    @Column(name = "INSPECTION_FEE_EXCHANGE_RATE")
+    @Column(name = "INSPECTION_FEE_EXCHANGE_RATE", precision = 15, scale = 2)
     @Basic
-    var inspectionFeeExchangeRate: Long = 0
+    var inspectionFeeExchangeRate: Double = 0.0
 
     @Column(name = "INSPECTION_FEE_PAYMENT_DATE")
     @Basic
     var inspectionFeePaymentDate: Timestamp? = null
 
+    @Column(name = "ROUTE")
+    @Basic
+    var route: String? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -315,7 +341,7 @@ class CorsBakEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        var result = Objects.hash(
+        return Objects.hash(
                 id,
                 corNumber,
                 corIssueDate,
@@ -370,6 +396,5 @@ class CorsBakEntity : Serializable {
                 deleteBy,
                 deletedOn
         )
-        return result
     }
 }

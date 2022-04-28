@@ -94,6 +94,11 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var firmCategory: Long? = null
 
+
+    @Column(name = "EDIT_STATUS")
+    @Basic
+    var editStatus: Long? = null
+
     @Column(name = "TOWN")
     @Basic
     var town: Long? = null
@@ -117,6 +122,14 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
+    @Column(name = "SUSPENSION_STATUS")
+    @Basic
+    var suspensionStatus: Int? = null
+
+    @Column(name = "CLOSURE_STATUS")
+    @Basic
+    var closureStatus: Int? = null
 
     @Column(name = "CLOSED_COMMODITY_MANUFACTURED")
     @Basic
@@ -145,26 +158,41 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "VAR_FIELD_5")
     @Basic
     var varField5: String? = null
-
     @Column(name = "VAR_FIELD_6")
     @Basic
     var varField6: String? = null
-
     @Column(name = "VAR_FIELD_7")
     @Basic
     var varField7: String? = null
-
     @Column(name = "VAR_FIELD_8")
     @Basic
     var varField8: String? = null
-
     @Column(name = "VAR_FIELD_9")
     @Basic
     var varField9: String? = null
-
     @Column(name = "VAR_FIELD_10")
     @Basic
     var varField10: String? = null
+
+    @Column(name = "ACCENT_TO")
+    @Basic
+    var accentTo: Boolean? = null
+
+    @Column(name = "TASK_ID")
+    @Basic
+    var taskId: String? = null
+
+    @Column(name = "TASK_TYPE")
+    @Basic
+    var taskType: Long? = null
+
+    @Column(name = "ASSIGN_STATUS")
+    @Basic
+    var assignStatus: Long? = null
+
+    @Column(name = "ASSIGNED_TO")
+    @Basic
+    var assignedTo: Long? = null
 
     @Column(name = "CREATED_BY")
     @Basic
@@ -202,9 +230,41 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var ownership: String? = null
 
+    @Column(name = "SL_BPMN_PROCESS_INSTANCE")
+    @Basic
+    var slBpmnProcessInstance: String? = null
+
+    @Column(name = "BRANCH_NAME")
+    @Basic
+    var branchName: String? = null
+
     @Column(name = "CLOSURE_OF_OPERATIONS")
     @Basic
     var closureOfOperations: Int? = null
+
+    @Column(name = "TYPE_OF_MANUFACTURE")
+    @Basic
+    var typeOfManufacture: Int? = null
+
+    @Column(name = "BUSINESS_LINE_NAME")
+    @Basic
+    var businessLineName: String? = null
+
+    @Column(name = "BUSINESS_NATURE_NAME")
+    @Basic
+    var businessNatureName: String? = null
+
+    @Column(name = "REGION_NAME")
+    @Basic
+    var regionName: String? = null
+
+    @Column(name = "COUNTY_NAME")
+    @Basic
+    var countyName: String? = null
+
+    @Column(name = "TOWN_NAME")
+    @Basic
+    var townName: String? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -249,12 +309,26 @@ class CompanyProfileEntity : Serializable {
                 varField8 == that.varField8 &&
                 varField9 == that.varField9 &&
                 varField10 == that.varField10 &&
+                accentTo == that.accentTo &&
+                taskId == that.taskId &&
+                taskType == that.taskType &&
+                assignStatus == that.assignStatus &&
+                assignedTo == that.assignedTo &&
                 createdBy == that.createdBy &&
                 createdOn == that.createdOn &&
                 modifiedBy == that.modifiedBy &&
                 modifiedOn == that.modifiedOn &&
                 deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
+                deletedOn == that.deletedOn &&
+                branchName == that.branchName &&
+                typeOfManufacture == that.typeOfManufacture &&
+                businessLineName == that.businessLineName &&
+                businessNatureName == that.businessNatureName &&
+                regionName == that.regionName &&
+                countyName == that.countyName &&
+                townName == that.townName &&
+                suspensionStatus == that.suspensionStatus &&
+                closureStatus == that.closureStatus
     }
 
     override fun hashCode(): Int {
@@ -298,12 +372,24 @@ class CompanyProfileEntity : Serializable {
             varField8,
             varField9,
             varField10,
+            accentTo,
+            taskId,
+            taskType,
+            assignStatus,
+            assignedTo,
             createdBy,
             createdOn,
             modifiedBy,
             modifiedOn,
             deleteBy,
-            deletedOn
+            deletedOn,
+            branchName,
+            typeOfManufacture,
+            businessLineName,
+            businessNatureName,
+            regionName,
+            countyName,
+            townName
         )
     }
 }

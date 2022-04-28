@@ -42,7 +42,11 @@
                             <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
                                 <button type="button" (click)="toggleStatus('my-tasks')"
                                         [className]="activeStatus == 'my-tasks' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
-                                    My Tasks
+                                    MY TASKS
+                                </button>
+                                <button type="button" (click)="toggleStatus('waiting')"
+                                        [className]="activeStatus == 'waiting' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    WAITING
                                 </button>
                                 <button type="button" (click)="toggleStatus('ongoing')"
                                         [className]="activeStatus == 'ongoing' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">

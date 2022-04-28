@@ -6,7 +6,7 @@ import {
   ApproveJC, ApproveSACJC,
   ComHodTasks,
   ComJcJustification, ComJcJustificationAction, ComJcJustificationDec,
-  ComJcJustificationList, CompanyStandardRequest, COMPreliminaryDraft,
+  ComJcJustificationList, CompanyStandardRequest, COMPreliminaryDraft, ComStandardJC,
   ComStdAction,
   Department, NWAPreliminaryDraft, NWAWDDecision, NWAWorkShopDraft, Product,
   UsersEntity
@@ -108,10 +108,22 @@ export class StdComStandardService {
         })
     );
   }
-  public getPlTasks(): Observable<ComJcJustification[]> {
+  public formJointCommittee(comStandardJC: ComStandardJC): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_FORM_JOINT_COMMITTEE);
+    const params = new HttpParams();
+    return this.http.post<ComStandardJC>(url, comStandardJC, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+  public getPlTasks(): Observable<ComHodTasks[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_PL_TASKS);
     const params = new HttpParams();
-    return this.http.get<ComJcJustification[]>(url, {params}).pipe();
+    return this.http.get<ComHodTasks[]>(url, {params}).pipe();
   }
 
   public prepareJustification(comJcJustificationAction: ComJcJustificationAction): Observable<any> {
@@ -196,13 +208,14 @@ export class StdComStandardService {
         })
     );
   }
-  public uploadPDFileDetails(comPreID: string, data: FormData): Observable<any> {
+  //upload Draft Document
+  public uploadPDFileDetails(comStdDraftID: string, data: FormData): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_PD);
 
     return this.http.post<any>(url, data, {
       headers: {
         'enctype': 'multipart/form-data'
-      }, params: {'comPreID': comPreID}
+      }, params: {'comStdDraftID': comStdDraftID}
     }).pipe(
         map(function (response: any) {
           return response;
@@ -213,11 +226,29 @@ export class StdComStandardService {
         })
     );
   }
+
   public getJcSecTasks(): Observable<ComJcJustificationDec[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_JC_SEC_TASKS);
     const params = new HttpParams();
     return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
   }
+  public viewCompanyDraft(comStdDraftID: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_DATA_VIEW_PD);
+    const params = new HttpParams()
+        .set('comStdDraftID', comStdDraftID);
+    // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+    return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          // console.warn(`getAllFault( ${fault.message} )`);
+          return throwError(fault);
+        })
+    );
+  }
+
+
 
   public decisionOnDraft(approveDraft: ApproveDraft): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_DECISION_ON_DRAFT);
@@ -236,6 +267,31 @@ export class StdComStandardService {
     const params = new HttpParams();
     return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
   }
+  public viewCompanyStd(comStdDocumentId: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_DATA_VIEW_STD);
+    const params = new HttpParams()
+        .set('comStdDocumentId', comStdDocumentId);
+    return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+  public companyDecisionOnDraft(approveDraft: ApproveDraft): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_DECISION_ON_DRAFT);
+    const params = new HttpParams();
+    return this.http.post<ApproveDraft>(url, approveDraft, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
 
   public prepareCompanyStandard(comJcJustificationDec: ComJcJustificationDec): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_PREPARE_COM_STANDARD);
@@ -249,13 +305,14 @@ export class StdComStandardService {
         })
     );
   }
-  public uploadSDFileDetails(comStdID: string, data: FormData): Observable<any> {
+  //upload justification Document
+  public uploadSDFileDetails(comStandardID: string, data: FormData): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_UPLOAD_SD);
 
     return this.http.post<any>(url, data, {
       headers: {
         'enctype': 'multipart/form-data'
-      }, params: {'comStdID': comStdID}
+      }, params: {'comStandardID': comStandardID}
     }).pipe(
         map(function (response: any) {
           return response;
@@ -266,6 +323,8 @@ export class StdComStandardService {
         })
     );
   }
+
+
   public getHopTasks(): Observable<ComJcJustificationDec[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_HOP_TASKS);
     const params = new HttpParams();

@@ -14,6 +14,8 @@ export class ViewPartnersComponent implements OnInit {
     page: number = 0
     pageSize: number = 20
     partnerListing: any | null = null
+    partnerCountries: any[]
+    partnerRegions: any[]
     displayedColumns=["partnerRefNo","partnerName","partnerEmail","partnerCity","partnerCountry","partnerTelephoneNumber","actions"]
 
 
@@ -22,8 +24,20 @@ export class ViewPartnersComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadData()
+        this.loadPartnerCountries()
     }
 
+    loadPartnerCountries() {
+        this.pvocService.loadPartnerCountries()
+            .subscribe(
+                res=>{
+                    if(res.responseCode==="00"){
+                        this.partnerCountries=res.data
+                    }
+                }
+            )
+
+    }
     loadData() {
         this.pvocService.loadPartners(this.keywords, this.page, this.pageSize)
             .subscribe(
@@ -42,7 +56,10 @@ export class ViewPartnersComponent implements OnInit {
 
     addUpdatePartner(partner: any | null) {
         this.dialog.open(AddUpdatePartnerComponent, {
-            data: partner
+            data: {
+                partner: partner,
+                countries: this.partnerCountries
+            }
         })
             .afterClosed()
             .subscribe(

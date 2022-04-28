@@ -23,6 +23,7 @@ import swal from "sweetalert2";
 })
 export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
     fullname = '';
+    blob: Blob;
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
   public departments !: Department[] ;
@@ -55,16 +56,41 @@ export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
 
     }
   public getTCSECTasks(): void{
+      this.SpinnerService.show();
     this.stdIntStandardService.getTCSECTasks().subscribe(
         (response: ISTcSecTASKS[])=> {
           this.tasks = response;
           this.dtTrigger.next();
+            this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
+            this.SpinnerService.hide();
           alert(error.message);
         }
     );
   }
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.viewProposalPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error opening document`);
+                alert(error.message);
+            }
+        );
+    }
   public getDepartments(): void{
     this.standardDevelopmentService.getDepartments().subscribe(
         (response: Department[])=> {

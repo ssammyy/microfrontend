@@ -108,7 +108,7 @@ class RegistrationManagementHandler(
             val body = req.body<ValidateTokenRequestDto>()
             val errors: Errors = BeanPropertyBindingResult(body, ValidateTokenRequestDto::class.java.name)
             validator.validate(body, errors)
-            service.validateTokenFromThePhone(body)
+            service.validateTokenFromThePhone(body, req)
                 ?.let { ServerResponse.ok().body(it) }
                 ?: onErrors("We could not complete your request try again later")
 

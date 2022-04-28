@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
-import {CommonModule} from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
@@ -27,8 +27,10 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatRadioModule} from '@angular/material/radio';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTableModule} from '@angular/material/table';
@@ -39,6 +41,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {AppComponent} from './app.component';
 
 import {SidebarModule} from './sidebar/sidebar.module';
+import {FooterModule} from './shared/footer/footer.module';
 import {NavbarModule} from './shared/navbar/navbar.module';
 import {AdminLayoutComponent} from './layouts/admin/admin-layout.component';
 import {AuthLayoutComponent} from './layouts/auth/auth-layout.component';
@@ -102,7 +105,7 @@ import {RawMaterialsComponent} from './apollowebs/pvoc/waivers/raw-materials/raw
 import {WaiverProductComponent} from './apollowebs/pvoc/waivers/waiver-product/waiver-product.component';
 import {IndustrialSparesComponent} from './apollowebs/pvoc/waivers/industrial-spares/industrial-spares.component';
 import {ConsignmentDocumentListComponent} from './apollowebs/di/consignment-document-list/consignment-document-list.component';
-// import {Ng2SmartTableModule} from 'ng2-smart-table';
+import {Ng2SmartTableModule} from 'ng2-smart-table';
 import {ViewSingleConsignmentDocumentComponent} from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
 import {ItemDetailsListViewComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details-list-view.component';
 import {OtherVersionDetailsComponent} from './apollowebs/di/view-single-consignment-document/other-version-details/other-version-details.component';
@@ -181,7 +184,6 @@ import {ViewRemarksHistoryComponent} from './apollowebs/di/view-single-consignme
 import {ItemDetailsComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component';
 import {ProcessRejectionComponent} from './apollowebs/di/forms/process-rejection/process-rejection.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
-// tslint:disable-next-line:max-line-length
 import {ChecklistsComponent} from './apollowebs/di/view-single-consignment-document/view-inspection-details/checklists/checklists.component';
 import {MinistryInspectionRequestComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/ministry-inspection-request/ministry-inspection-request.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
@@ -189,7 +191,8 @@ import {DiCorComponent} from './apollowebs/di/view-single-consignment-document/d
 import {DiCocItemDetailsComponent} from './apollowebs/di/view-single-consignment-document/di-coc/di-coc-item-details/di-coc-item-details.component';
 import {DiCocComponent} from './apollowebs/di/view-single-consignment-document/di-coc/di-coc.component';
 import {ViewTasksComponent} from './apollowebs/di/view-tasks/view-tasks.component';
-
+import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from '@angular/material/table';
 import {DemandNoteListComponent} from './apollowebs/di/demand-note-list/demand-note-list.component';
 import {ChecklistDataFormComponent} from './apollowebs/di/view-single-consignment-document/checklist-data-form/checklist-data-form.component';
 import {AgrochemInspectionChecklistComponent} from './apollowebs/di/view-single-consignment-document/checklist-data-form/agrochem-inspection-checklist/agrochem-inspection-checklist.component';
@@ -213,7 +216,6 @@ import {ScfDetailsFormComponent} from './apollowebs/di/view-single-consignment-d
 import {ComplianceUpdateFormComponent} from './apollowebs/di/view-single-consignment-document/view-inspection-details/compliance-update-form/compliance-update-form.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatMultilineTabDirective} from './apollowebs/di/mat-multiline-tab.directive';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {InspectionDashboardComponent} from './apollowebs/di/inspection-dashboard/inspection-dashboard.component';
 import {LabResultsComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component';
@@ -224,6 +226,7 @@ import {ComStdUploadComponent} from './apollowebs/standards-development/company-
 import {ComStdConfirmComponent} from './apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component';
 import {NepSuccessComponent} from './apollowebs/standards-development/nep-success/nep-success.component';
 import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
+
 import {AllpermitsComponent} from './apollowebs/quality-assurance/allpermits/allpermits.component';
 import { EpraListComponent } from './apollowebs/market-surveillance/fuel/epra-list/epra-list.component';
 import { EpraBatchListComponent } from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component';
@@ -247,288 +250,104 @@ import {StandardLevyDashboardComponent} from './apollowebs/standards-levy/standa
 import {StandardLevyPaidComponent} from './apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component';
 import {StandardLevyPenaltiesComponent} from './apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component';
 import {StandardLevyDefaulterComponent} from './apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component';
-// tslint:disable-next-line:max-line-length
 import {StandardLevyPaidHistoryComponent} from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
 import {StandardLevyPenaltyHistoryComponent} from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
 import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
-import {SpcSecTaskComponent} from './apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component';
-import {StdJustificationComponent} from './apollowebs/standards-development/standard-request/std-justification/std-justification.component';
+import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
+import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
+import {PreparePreliminaryDraftComponent} from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
+import {NwaPreliminaryDraftComponent} from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
+import {ComStdPlTaskComponent} from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
+import {ComStdDraftViewComponent} from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
+import {ComStdListComponent} from './apollowebs/standards-development/company-standard/com-std-list/com-std-list.component';
+import {StandardLevySiteVisitComponent} from './apollowebs/standards-levy/standard-levy-site-visit/standard-levy-site-visit.component';
+import {StandardLevySiteVisitApproveOneComponent} from './apollowebs/standards-levy/standard-levy-site-visit-approve-one/standard-levy-site-visit-approve-one.component';
+import {StandardLevySiteVisitApproveTwoComponent} from './apollowebs/standards-levy/standard-levy-site-visit-approve-two/standard-levy-site-visit-approve-two.component';
+import {StandardLevySiteVisitFeedbackComponent} from './apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component';
+import {StandardLevyUploadSiteVisitFeedbackComponent} from './apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component';
+import {StandardLevyManufactureDetailsComponent} from './apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component';
+import {ReviewJustificationOfTCComponent} from './apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component';
+import {ReviewFeedbackSPCComponent} from './apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component';
+import {RequestForFormationOfTCComponent} from "./apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component";
+import {StdPublishingComponent} from './apollowebs/standards-development/publishing/std-publishing/std-publishing.component';
+import {StdHopTasksComponent} from './apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component';
+import {EditorTasksComponent} from './apollowebs/standards-development/publishing/editor-tasks/editor-tasks.component';
+import {StdProofreadComponent} from './apollowebs/standards-development/publishing/std-proofread/std-proofread.component';
+import {StdDraughtsmanComponent} from './apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component';
+import {ApproveDraftStdComponent} from './apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component';
 
-// import {AllpermitsComponent} from './apollowebs/quality-assurance/allpermits/allpermits.component';
+import {AllpermitsComponent} from './apollowebs/quality-assurance/allpermits/allpermits.component';
 import {HttpClientModule} from '@angular/common/http';
-import {FooterModule} from './shared/footer/footer.module';
 import {CurrencyExchangeRatesComponent} from './apollowebs/di/currency-exchange-rates/currency-exchange-rates.component';
 import {MessageDashboardComponent} from './apollowebs/di/message-dashboard/message-dashboard.component';
 import {ViewMessageComponent} from './apollowebs/di/message-dashboard/view-message/view-message.component';
 import {ChartsModule, MDBBootstrapModule, WavesModule} from 'angular-bootstrap-md';
-import {StdTcWorkplanComponent} from './apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component';
-import { TransactionViewComponent } from './apollowebs/di/transaction-view/transaction-view.component';
-import { ViewClientsComponent } from './apollowebs/system/clients/view-clients/view-clients.component';
-import { ViewPartnersComponent } from './apollowebs/pvoc/partners/view-partners/view-partners.component';
-import { AddUpdatePartnerComponent } from './apollowebs/pvoc/partners/add-update-partner/add-update-partner.component';
-import { ViewPartnerDetailsComponent } from './apollowebs/pvoc/partners/view-partner-details/view-partner-details.component';
-import { AddApiClientComponent } from './apollowebs/system/clients/add-api-client/add-api-client.component';
-import { IsmApplicationsComponent } from './apollowebs/di/ism/ism-applications/ism-applications.component';
-import { ViewIsmApplicationComponent } from './apollowebs/di/ism/view-ism-application/view-ism-application.component';
-import { ApproveRejectApplicationComponent } from './apollowebs/di/ism/approve-reject-application/approve-reject-application.component';
-import {ViewClientCredentialsComponent} from './apollowebs/system/clients/view-client-credentials/view-client-credentials.component';
-// tslint:disable-next-line:max-line-length
-import { ViewCorporateCustomersComponent } from './apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component';
-import { AddUpdateCorporateCustomerComponent } from './apollowebs/invoice/corporate/add-update-corporate-customer/add-update-corporate-customer.component';
-import { ViewCorporateComponent } from './apollowebs/invoice/corporate/view-corporate/view-corporate.component';
-import { ViewBillLimitsComponent } from './apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component';
-import { ViewTransactionsComponent } from './apollowebs/invoice/corporate/view-transactions/view-transactions.component';
-import { ViewAuctionItemsComponent } from './apollowebs/di/auction/view-auction-items/view-auction-items.component';
-import { UploadFileComponent } from './apollowebs/di/auction/upload-file/upload-file.component';
-import { AuctionItemDetailsComponent } from './apollowebs/di/auction/auction-item-details/auction-item-details.component';
-import { ComplaintNewComponent } from './apollowebs/market-surveillance/complaint/complaint-new/complaint-new.component';
-import { ComplaintListComponent } from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
-import { ComplaintDetailsComponent } from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
+import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import {TransactionViewComponent} from './apollowebs/di/transaction-view/transaction-view.component';
+import {ViewClientsComponent} from './apollowebs/system/clients/view-clients/view-clients.component';
+import {ViewPartnersComponent} from './apollowebs/pvoc/partners/view-partners/view-partners.component';
+import {AddUpdatePartnerComponent} from './apollowebs/pvoc/partners/add-update-partner/add-update-partner.component';
+import {ViewPartnerDetailsComponent} from './apollowebs/pvoc/partners/view-partner-details/view-partner-details.component';
+import {AddApiClientComponent} from './apollowebs/system/clients/add-api-client/add-api-client.component';
+import {IsmApplicationsComponent} from './apollowebs/di/ism/ism-applications/ism-applications.component';
+import {ViewIsmApplicationComponent} from './apollowebs/di/ism/view-ism-application/view-ism-application.component';
+import {ApproveRejectApplicationComponent} from './apollowebs/di/ism/approve-reject-application/approve-reject-application.component';
+import {ViewClientCredentialsComponent} from "./apollowebs/system/clients/view-client-credentials/view-client-credentials.component";
+import {CreateDepartmentComponent} from "./apollowebs/standards-development/standard-request/create-department/create-department.component";
+import {CreatetechnicalcommitteeComponent} from "./apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component";
+import {CreateproductComponent} from "./apollowebs/standards-development/standard-request/createproduct/createproduct.component";
+import {CreateproductSubCategoryComponent} from "./apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component";
+import {ViewCorporateCustomersComponent} from './apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component';
+import {AddUpdateCorporateCustomerComponent} from './apollowebs/invoice/corporate/add-update-corporate-customer/add-update-corporate-customer.component';
+import {ViewCorporateComponent} from './apollowebs/invoice/corporate/view-corporate/view-corporate.component';
+import {ViewBillLimitsComponent} from './apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component';
+import {ViewTransactionsComponent} from './apollowebs/invoice/corporate/view-transactions/view-transactions.component';
+import {ViewAuctionItemsComponent} from './apollowebs/di/auction/view-auction-items/view-auction-items.component';
+import {UploadFileComponent} from './apollowebs/di/auction/upload-file/upload-file.component';
+import {AuctionItemDetailsComponent} from './apollowebs/di/auction/auction-item-details/auction-item-details.component';
+import {AssignAuctionItemComponent} from './apollowebs/di/auction/assign-auction-item/assign-auction-item.component';
+import {AproveRejectAuctionItemComponent} from './apollowebs/di/auction/aprove-reject-auction-item/aprove-reject-auction-item.component';
+import {GenerateDemandNoteComponent} from './apollowebs/di/auction/generate-demand-note/generate-demand-note.component';
+import {AddAuctionRecordComponent} from './apollowebs/di/auction/add-auction-record/add-auction-record.component';
+import {AddEditAuctionItemComponent} from './apollowebs/di/auction/add-edit-auction-item/add-edit-auction-item.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {CallsForApplicationComponent} from './apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component';
+import {SubmitApplicationComponent} from './apollowebs/standards-development/membershipToTc/submit-application/submit-application.component';
+import {ReviewApplicationComponent} from './apollowebs/standards-development/membershipToTc/review-application/review-application.component';
+import {ReviewRecommendationComponent} from './apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component';
+import {ReviewRecommendationOfSpcComponentComponent} from './apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component';
+import {UploadTcMemberComponentComponent} from './apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component';
+import {ManageCorporateCustomerComponent} from './apollowebs/invoice/corporate/manage-corporate-customer/manage-corporate-customer.component';
+import {ReviewApplicationsAcceptedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component';
+import {ReviewApplicationsRejectedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component';
+import {ApproveApplicationComponent} from "./apollowebs/standards-development/membershipToTc/approve-application/approve-application.component";
+import {ApprovedMembersComponent} from './apollowebs/standards-development/membershipToTc/approved-members/approved-members.component';
+import {MembersToCreateCredentialsComponent} from './apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component';
+import {MembersCreatedCredentialsComponent} from './apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component';
+import {ApproveInductionComponent} from './apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component';
+import {ApproveInductionMembersComponent} from './apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component';
+import {StdLevyApplicationsComponent} from './apollowebs/standards-levy/std-levy-applications/std-levy-applications.component';
+import {StdLevyTasksComponent} from './apollowebs/standards-levy/std-levy-tasks/std-levy-tasks.component';
+import {StdLevyPendingTasksComponent} from './apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component';
+import {StdLevyCompleteTasksComponent} from './apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component';
+import {ViewWaiverApplicationsComponent} from "./apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component";
+import {ViewWaiverDetailsComponent} from "./apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component";
+import {ViewExemptionApplicationsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component";
+import {ViewExemptionDetailsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component";
+import {ViewComplaintsComponent} from "./apollowebs/pvoc/complaints/view-complaints/view-complaints.component";
+import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component";
+import {ManifestDocumentComponent} from './apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component';
+import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component';
+import {UploadSacSummaryComponent} from './apollowebs/standards-development/adoptionOfEaStds/upload-sac-summary/upload-sac-summary.component';
+import {ViewSacSummaryComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component';
+import {ViewSacSummaryApprovedComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component';
+import {AddAttachmentComponent} from './apollowebs/di/auction/add-attachment/add-attachment.component';
+import {NwaTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component';
+import {GenerateAuctionKraReportComponent} from "./apollowebs/di/auction/generate-auction-kra-report/generate-auction-kra-report.component";
+import {UpdateComplaintTaskComponent} from "./apollowebs/pvoc/complaints/update-complaint-task/update-complaint-task.component";
+import {UpdateExemptionTaskComponent} from "./apollowebs/pvoc/exemptions/update-exemption-task/update-exemption-task.component";
+import {AdminBusinessManagementComponent} from './apollowebs/admin/admin-business-management/admin-business-management.component';
 
-
-// @NgModule({
-//     exports: [
-//         MatAutocompleteModule,
-//         MatButtonToggleModule,
-//         MatCardModule,
-//         MatChipsModule,
-//         MatCheckboxModule,
-//         MatStepperModule,
-//         MatDialogModule,
-//         MatExpansionModule,
-//         MatGridListModule,
-//         MatIconModule,
-//         MatInputModule,
-//         MatListModule,
-//         MatMenuModule,
-//         MatPaginatorModule,
-//         MatProgressBarModule,
-//         MatProgressSpinnerModule,
-//         MatRadioModule,
-//         MatSelectModule,
-//         MatDatepickerModule,
-//         MatButtonModule,
-//         MatSidenavModule,
-//         MatSliderModule,
-//         MatSlideToggleModule,
-//         MatSnackBarModule,
-//         MatSortModule,
-//         MatTableModule,
-//         MatTabsModule,
-//         MatToolbarModule,
-//         MatTooltipModule,
-//         MatNativeDateModule
-//
-//     ],
-//     imports: [
-//         ReactiveFormsModule,
-//         PdfViewerModule,
-//         ChartsModule,
-//         WavesModule,
-//         DragDropModule,
-//         MdModule,
-//         BrowserModule,
-//         ModalModule,
-//         // TODO: Discuss as it seems to kill sending of requests to backend
-//         // EffectsModule.forRoot([]),
-//         // EntityDataModule.forRoot(entityConfig),
-//         NgxExtendedPdfViewerModule,
-//         FileUploadModule,
-//         DataTablesModule,
-//         Ng2SmartTableModule,
-//         NgbNavModule,
-//         MatDialogModule,
-//         MatCheckboxModule,
-//         MatSelectModule,
-//         MatIconModule,
-//         MatStepperModule,
-//         MatOptionModule,
-//         MatInputModule,
-//         MatFormFieldModule,
-//         MatButtonModule,
-//         NgbPaginationModule,
-//         MatTableModule,
-//         NgMultiSelectDropDownModule,
-//         NgSelectModule,
-//         NoopAnimationsModule,
-//         MatTabsModule,
-//         MatProgressSpinnerModule,
-//         MDBBootstrapModule.forRoot(),
-//     ],
-//     declarations: [
-//         ImportInspectionComponent,
-//         ExceptionsApplicationComponent,
-//         WaiverApplicationComponent,
-//         GoodsDetailsComponent,
-//         WaiverSubmittedDialogComponent,
-//         ManufacturerDetailsComponent,
-//         ChecklistsComponent,
-//         MinistryInspectionRequestComponent,
-//         DiCorComponent,
-//         DiCocComponent,
-//         CurrencyExchangeRatesComponent,
-//         DiCocItemDetailsComponent,
-//         MessageDashboardComponent,
-//         ViewTasksComponent,
-//         DemandNoteListComponent,
-//         ChecklistDataFormComponent,
-//         AgrochemInspectionChecklistComponent,
-//         EngineeringInspectionChecklistComponent,
-//         OtherInspectionChecklistComponent,
-//         VehicleInspectionChecklistComponent,
-//         SsfDetailsFormComponent,
-//         ApproveRejectItemComponent,
-//         ViewDemandNoteComponent,
-//         ItemSelectionComponent,
-//         ViewInspectionDetailsComponent,
-//         ItemChecklistComponent,
-//         EngineeringItemChecklistComponent,
-//         OtherItemChecklistComponent,
-//         VehicleItemChecklistComponent,
-//         EngineeringDetailsComponent,
-//         AgrochemDetailsComponent,
-//         OtherDetailsComponent,
-//         VehicleDetailsComponent,
-//         ScfDetailsFormComponent,
-//         ComplianceUpdateFormComponent,
-//         MatMultilineTabDirective,
-//         InspectionDashboardComponent,
-//         LabResultsComponent,
-//
-//         ResetCredentialsComponent,
-//         ViewMessageComponent,
-//         SignUpComponent,
-//         RegistrationComponent,
-//         DashboardComponent,
-//         InvoiceComponent,
-//         FmarkComponent,
-//         DmarkComponent,
-//         SmarkComponent,
-//         St10FormComponent,
-//         FmarkallappsComponent,
-//         NewDmarkPermitComponent,
-//         PermitReportComponent,
-//         NewSmarkPermitComponent,
-//         DmarkApplicationsAllComponent,
-//         InvoiceDetailsComponent,
-//         CompaniesList,
-//         CompanyComponent,
-//         BranchComponent,
-//         BranchList,
-//         UserComponent,
-//         UserList,
-//         UserProfileComponent,
-//         SmarkApplicationsAllComponent,
-//         UserProfileMainComponent,
-//         AddBranchComponent,
-//         OtpComponent,
-//         InvoiceConsolidateComponent,
-//         TaskManagerComponent,
-//         PdfViewComponent,
-//         AddUserComponent,
-//         FmarkApplicationComponent,
-//         LoaderComponent,
-//         FormsComponent,
-//         FieldErrorDisplayComponent,
-//         NwaJustificationFormComponent,
-//         StandardsDevelopmentComponent,
-//         InformationcheckComponent,
-//         UsermanagementComponent,
-//         NwaJustificationTasksComponent,
-//         NwaKnwSecTasksComponent,
-//         NwaDiSdtTasksComponent,
-//         NwaHopTasksComponent,
-//         SacSecTasksComponent,
-//         HoSicTasksComponent,
-//         InternationalStandardProposalComponent,
-//         IntStdCommentsComponent,
-//         IntStdJustificationAppComponent,
-//         IntStdJustificationListComponent,
-//         IntStdResponsesListComponent,
-//         IsProposalFormComponent,
-//         RequestStandardReviewComponent,
-//         ReviewStandardsComponent,
-//         SystemicReviewCommentsComponent,
-//         SystemicAnalyseCommentsComponent,
-//         CompanyStandardRequestComponent,
-//         CsRequestFormComponent,
-//         ComStdRequestListComponent,
-//         AllpermitsComponent,
-//         ComStdJcJustificationComponent,
-//         ComStdJcJustificationListComponent,
-//         InformationcheckComponent,
-//         DivisionresponseComponent,
-//         NationalEnquiryPointComponent,
-//         MakeEnquiryComponent,
-//         UserManagementProfileComponent,
-//         NepNotificationComponent,
-//         StandardRequestComponent,
-//         RequestStandardFormComponent,
-//         ReviewApplicationsComponent,
-//         StdJustificationComponent,
-//         StandardTaskComponent,
-//         ProductDetailsComponent,
-//         ImportationWaiverComponent,
-//         MainProductionMachineryComponent,
-//         RawMaterialsComponent,
-//         WaiverProductComponent,
-//         IndustrialSparesComponent,
-//         ConsignmentDocumentListComponent,
-//         ViewSingleConsignmentDocumentComponent,
-//         ItemDetailsListViewComponent,
-//         OtherVersionDetailsComponent,
-//         ApproveRejectConsignmentComponent,
-//         MinistryInspectionHomeComponent,
-//         MotorVehicleInspectionSingleViewComponent,
-//         UploadForeignFormComponent,
-//         ViewDiDeclarationDocumentsComponent,
-//         ViewIdfDocumentDetailsComponent,
-//         ViewDeclarationDocumentsItemDetailsListComponent,
-//         MvInspectionUploadFileReportComponent,
-//         AttachmentListComponent,
-//         AttachmentDialogComponent,
-//         AssignOfficerComponent,
-//         AssignPortComponent,
-//         SendCoiComponent,
-//         GenerateLocalCocComponent,
-//         GenerateLocalCorComponent,
-//         CompliantComponent,
-//         ReAssignOfficerComponent,
-//         BlacklistComponent,
-//         BlacklistApproveComponent,
-//         TargetItemComponent,
-//         TargetSupervisorComponent,
-//         TargetApproveItemComponent,
-//         ManualAssignOfficerComponent,
-//         SendDemandNoteTokwsComponent,
-//         ViewRemarksHistoryComponent,
-//         ItemDetailsComponent,
-//         ProcessRejectionComponent,
-//         SmarkAllAwardedApplicationsComponent,
-//         DmarkAllAwardedApplicationsComponent,
-//         FmarkAllAwardedApplicationsComponent,
-//         QaTaskDetailsComponent,
-//         CompanyViewComponent,
-//         BranchViewComponent,
-//         QrCodeDetailsComponent,
-//         StdTscSecTasksComponentComponent,
-//         StdTcTasksComponent,
-//         ComStdApproveJustificationComponent,
-//         ComStdDraftComponent,
-//         ComStdUploadComponent,
-//         ComStdConfirmComponent,
-//         StdTcTasksComponent,
-//         NepSuccessComponent,
-//         EpraListComponent,
-//         EpraBatchListComponent,
-//         EpraBatchNewComponent,
-//         ViewFuelSheduledDetailsComponent,
-//         MatMultilineTabMsDirective
-//
-//     ]
-//
-// })
-// export class MaterialModule {}
 
 @NgModule({
     exports: [
@@ -566,6 +385,10 @@ import { ComplaintDetailsComponent } from './apollowebs/market-surveillance/comp
     ],
     imports: [
         CommonModule,
+        DataTablesModule,
+        NgxExtendedPdfViewerModule,
+        MatAutocompleteModule,
+        FileUploadModule,
         BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
@@ -577,6 +400,7 @@ import { ComplaintDetailsComponent } from './apollowebs/market-surveillance/comp
         RouterModule,
         AppRoutingModule,
         CoreModule,
+        MatRadioModule,
         ChartsModule,
         NgxSpinnerModule,
         WavesModule,
@@ -601,28 +425,74 @@ import { ComplaintDetailsComponent } from './apollowebs/market-surveillance/comp
         CommonModule,
         BrowserModule,
         ModalModule,
-        // NgbModule,
-        // ModalModule,
-        // TODO: Discuss as it seems to kill sending of requests to backend
-        // EffectsModule.forRoot([]),
-        // EntityDataModule.forRoot(entityConfig),
-        ReactiveFormsModule,
-        RouterModule,
         Ng2SmartTableModule,
-        CoreModule,
-        FormsModule,
-        PdfViewerModule,
-        NgxExtendedPdfViewerModule,
-        FileUploadModule,
-        NgxSpinnerModule,
-        DataTablesModule,
-        NgxPaginationModule,
+        NgbNavModule,
+        MatDialogModule,
+        MatCheckboxModule,
+        MatNativeDateModule,
+        MatSelectModule,
+        MatIconModule,
+        MatStepperModule,
+        MatOptionModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        NgbPaginationModule,
+        MatTableModule,
         NgMultiSelectDropDownModule,
-        // CoreModule
+        NgSelectModule,
+        NoopAnimationsModule,
+        MatTabsModule,
+        MatProgressSpinnerModule,
+        MDBBootstrapModule.forRoot(),
+        // NgxMatSelectSearchModule
     ],
     declarations: [
+        AppComponent,
+        AdminLayoutComponent,
+        AuthLayoutComponent,
+        ImportInspectionComponent,
+        ExceptionsApplicationComponent,
+        WaiverApplicationComponent,
+        GoodsDetailsComponent,
+        WaiverSubmittedDialogComponent,
+        ManufacturerDetailsComponent,
+        ChecklistsComponent,
+        MinistryInspectionRequestComponent,
+        DiCorComponent,
+        DiCocComponent,
+        CurrencyExchangeRatesComponent,
+        DiCocItemDetailsComponent,
+        MessageDashboardComponent,
+        ViewTasksComponent,
+        DemandNoteListComponent,
+        ChecklistDataFormComponent,
+        AgrochemInspectionChecklistComponent,
+        EngineeringInspectionChecklistComponent,
+        OtherInspectionChecklistComponent,
+        VehicleInspectionChecklistComponent,
+        SsfDetailsFormComponent,
+        ApproveRejectItemComponent,
+        ViewDemandNoteComponent,
+        ItemSelectionComponent,
+        GenerateAuctionKraReportComponent,
+        ViewInspectionDetailsComponent,
+        ItemChecklistComponent,
+        EngineeringItemChecklistComponent,
+        OtherItemChecklistComponent,
+        VehicleItemChecklistComponent,
+        EngineeringDetailsComponent,
+        AgrochemDetailsComponent,
+        OtherDetailsComponent,
+        VehicleDetailsComponent,
+        ScfDetailsFormComponent,
+        ComplianceUpdateFormComponent,
+        MatMultilineTabDirective,
+        InspectionDashboardComponent,
+        LabResultsComponent,
         LoginComponent,
         ResetCredentialsComponent,
+        ViewMessageComponent,
         SignUpComponent,
         RegistrationComponent,
         DashboardComponent,
@@ -693,6 +563,44 @@ import { ComplaintDetailsComponent } from './apollowebs/market-surveillance/comp
         RequestStandardFormComponent,
         ReviewApplicationsComponent,
         StandardTaskComponent,
+        ProductDetailsComponent,
+        ImportationWaiverComponent,
+        MainProductionMachineryComponent,
+        RawMaterialsComponent,
+        WaiverProductComponent,
+        IndustrialSparesComponent,
+        ConsignmentDocumentListComponent,
+        ViewSingleConsignmentDocumentComponent,
+        ItemDetailsListViewComponent,
+        OtherVersionDetailsComponent,
+        ApproveRejectConsignmentComponent,
+        MinistryInspectionHomeComponent,
+        MotorVehicleInspectionSingleViewComponent,
+        UploadForeignFormComponent,
+        ViewDiDeclarationDocumentsComponent,
+        ViewIdfDocumentDetailsComponent,
+        ViewDeclarationDocumentsItemDetailsListComponent,
+        MvInspectionUploadFileReportComponent,
+        AttachmentListComponent,
+        AttachmentDialogComponent,
+        AssignOfficerComponent,
+        AssignPortComponent,
+        SendCoiComponent,
+        GenerateLocalCocComponent,
+        GenerateLocalCorComponent,
+        CompliantComponent,
+        ReAssignOfficerComponent,
+        BlacklistComponent,
+        BlacklistApproveComponent,
+        TargetItemComponent,
+        TargetSupervisorComponent,
+        TargetApproveItemComponent,
+        ManualAssignOfficerComponent,
+        SendDemandNoteTokwsComponent,
+        ViewRemarksHistoryComponent,
+        ItemDetailsComponent,
+        ProcessRejectionComponent,
+        StdTcWorkplanComponent,
         SmarkAllAwardedApplicationsComponent,
         DmarkAllAwardedApplicationsComponent,
         FmarkAllAwardedApplicationsComponent,
@@ -761,78 +669,122 @@ export class MaterialModule {}
         AppComponent,
         AdminLayoutComponent,
         AuthLayoutComponent
+        IntStdUploadStandardComponent,
+        IntStdGazzetteComponent,
+        ManagernotificationsComponent,
+        CreateDepartmentComponent,
+        CreatetechnicalcommitteeComponent,
+        CreateproductComponent,
+        CreateproductSubCategoryComponent,
+        RoleSwitcherComponent,
+        CustomerRegistrationComponent,
+        StandardsLevyHomeComponent,
+        ComStandardLevyComponent,
+        ComPaymentHistoryComponent,
+        ComStdLevyFormComponent,
+        StandardLevyDashboardComponent,
+        StandardLevyPaidComponent,
+        StandardLevyPenaltiesComponent,
+        StandardLevyDefaulterComponent,
+        StandardLevyPaidHistoryComponent,
+        StandardLevyPenaltyHistoryComponent,
+        StandardLevyDefaulterHistoryComponent,
+        StdTcWorkplanComponent,
+        TransactionViewComponent,
+        ViewClientsComponent,
+        ViewPartnersComponent,
+        AddUpdatePartnerComponent,
+        ViewPartnerDetailsComponent,
+        IsmApplicationsComponent,
+        ViewIsmApplicationComponent,
+        ApproveRejectApplicationComponent,
+        ViewClientCredentialsComponent,
+        ViewCorporateCustomersComponent,
+        AddUpdateCorporateCustomerComponent,
+        ViewCorporateComponent,
+        ViewBillLimitsComponent,
+        ViewTransactionsComponent,
+        ViewAuctionItemsComponent,
+        UploadFileComponent,
+        AuctionItemDetailsComponent,
+        AssignAuctionItemComponent,
+        AproveRejectAuctionItemComponent,
+        GenerateDemandNoteComponent,
+        AddAuctionRecordComponent,
+        AddEditAuctionItemComponent,
+        StandardLevyDefaulterHistoryComponent,
+        PreparePreliminaryDraftComponent,
+        StandardLevyDefaulterHistoryComponent,
+        NwaPreliminaryDraftComponent,
+        ComStdPlTaskComponent,
+        ComStdDraftViewComponent,
+        ComStdListComponent,
+        StandardLevySiteVisitComponent,
+        StandardLevySiteVisitApproveOneComponent,
+        StandardLevySiteVisitApproveTwoComponent,
+        StandardLevySiteVisitFeedbackComponent,
+        StandardLevyUploadSiteVisitFeedbackComponent,
+        StandardLevyManufactureDetailsComponent,
+        RequestForFormationOfTCComponent,
+        ReviewJustificationOfTCComponent,
+        ReviewFeedbackSPCComponent,
+        StdPublishingComponent,
+        StdHopTasksComponent,
+        EditorTasksComponent,
+        StdProofreadComponent,
+        StdDraughtsmanComponent,
+        ApproveDraftStdComponent,
+        CallsForApplicationComponent,
+        SubmitApplicationComponent,
+        ReviewApplicationComponent,
+        ReviewRecommendationComponent,
+        ReviewRecommendationOfSpcComponentComponent,
+        UploadTcMemberComponentComponent,
+        ApproveDraftStdComponent,
+        ManageCorporateCustomerComponent,
+        ReviewApplicationsAcceptedComponent,
+        ReviewApplicationsRejectedComponent,
+        ApproveApplicationComponent,
+        ApprovedMembersComponent,
+        MembersToCreateCredentialsComponent,
+        MembersCreatedCredentialsComponent,
+        ApproveInductionComponent,
+        ApproveInductionMembersComponent,
+        ApproveApplicationComponent,
+        StdLevyApplicationsComponent,
+        StdLevyTasksComponent,
+        StdLevyPendingTasksComponent,
+        StdLevyCompleteTasksComponent,
+        ViewWaiverApplicationsComponent,
+        ViewWaiverDetailsComponent,
+        ViewExemptionApplicationsComponent,
+        ViewExemptionDetailsComponent,
+        ViewComplaintsComponent,
+        ViewComplaintDetailsComponent,
+        ManageCorporateCustomerComponent,
+        ManifestDocumentComponent,
+        IncompleteIDFDocumentsComponent,
+        AddApiClientComponent,
+        UploadSacSummaryComponent,
+        ViewSacSummaryComponent,
+        ViewSacSummaryApprovedComponent,
+        AddApiClientComponent,
+        AddAttachmentComponent,
+        NwaTasksComponent,
+        UpdateComplaintTaskComponent,
+        UpdateExemptionTaskComponent,
+        AdminBusinessManagementComponent
     ],
     providers : [
         MatNativeDateModule,
         // {provide: APP_BASE_HREF, useValue: '/migration/'}
+    entryComponents: [],
+    providers: [DatePipe,
     ],
     bootstrap:    [ AppComponent ]
+    bootstrap: [
+        AppComponent
+    ]
 })
-export class AppModule { }
-
-// @NgModule({
-//     imports: [
-//         CommonModule,
-//         BrowserAnimationsModule,
-//         FormsModule,
-//         RouterModule,
-//         // RouterModule.forRoot(routes, {
-//         //     useHash: true
-//         // }),
-//         HttpClientModule,
-//         MaterialModule,
-//         SidebarModule,
-//         NavbarModule,
-//         FooterModule,
-//         AppRoutingModule,
-//         CoreModule,
-//         ToastrModule.forRoot({
-//             timeOut: 10000,
-//             enableHtml: true,
-//             newestOnTop: false,
-//             maxOpened: 1,
-//             autoDismiss: false,
-//             positionClass: 'toast-top-right',
-//             preventDuplicates: true,
-//         }),
-//         // NgbModule,
-//         NgxPaginationModule,
-//         FontAwesomeModule,
-//         NgxSpinnerModule,
-//     ],
-//     declarations: [
-//         AppComponent,
-//         AdminLayoutComponent,
-//         LoginComponent,
-//         AuthLayoutComponent,
-//         SpcSecTaskComponent,
-//         IntStdUploadStandardComponent,
-//         IntStdGazzetteComponent,
-//         ManagernotificationsComponent,
-//         CreateDepartmentComponent,
-//         CreatetechnicalcommitteeComponent,
-//         CreateproductComponent,
-//         CreateproductSubCategoryComponent,
-//         RoleSwitcherComponent,
-//         CustomerRegistrationComponent,
-//         StandardsLevyHomeComponent,
-//         ComStandardLevyComponent,
-//         ComPaymentHistoryComponent,
-//         ComStdLevyFormComponent,
-//         StandardLevyDashboardComponent,
-//         StandardLevyPaidComponent,
-//         StandardLevyPenaltiesComponent,
-//         StandardLevyDefaulterComponent,
-//         StandardLevyPaidHistoryComponent,
-//         StandardLevyPenaltyHistoryComponent,
-//         StandardLevyDefaulterHistoryComponent,
-//         StdTcWorkplanComponent,
-//         TransactionViewComponent,
-//     ],
-//     providers: [
-//         MatNativeDateModule,
-//     ],
-//     bootstrap: [AppComponent]
-// })
-// export class AppModule {
-// }
+export class AppModule {
+}

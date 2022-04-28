@@ -691,9 +691,20 @@
                                            onclick="popUpUploadFunction('uploadAttachments');"
                                            style="color: white">UPLOAD ATTACHMENTS</a>
 
+                                        <a th:if="${permitDetails?.permitAwardStatus == 1 and permitDetails?.permitStatus != 59}"
+                                           class="filter-link"
+                                           onclick="openSuspendModal();"
+                                           style="color: white;background-color: orange;">SUSPEND</a>
+
+                                        <a th:if="${permitDetails?.permitAwardStatus == 1 and permitDetails?.permitStatus == 59}"
+                                           class="filter-link"
+                                           onclick="openUnSuspendModal();"
+                                           style="color: white;background-color: #2ea1ee;">UNSUSPEND</a>
+
                                         <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
 
-                                            <a sec:authorize="hasAuthority('MODIFY_COMPANY')" th:if="${permitDetails?.attachedPlantId == null}" style="color: white"
+                                            <a sec:authorize="hasAuthority('MODIFY_COMPANY')"
+                                               th:if="${permitDetails?.attachedPlantId == null}" style="color: white"
                                                onclick="popUpFunction('attachePlant');" class="filter-link">ATTACH
                                                 PLANT</a>
 
@@ -1588,6 +1599,82 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="qaPermitDetails">
+                    <form id="formQaPermitDetails" name="qaPermitDetails"
+                          th:action="@{/api/qa/suspendPermit(permitID = ${permitDetails?.id})}" method="post"
+                          th:object="${SampleSubmissionDetails}">
+                        <div class="modal fade" id="qaPermitDetails" tabindex="-1" role="dialog"
+                             aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+
+                                        <h5 style="font-weight: bold; " class="modal-title">Confirm Permit
+                                            Suspension</h5>
+                                        <button type="button" class="close" data-dismiss="modal" onClick="refreshPage()"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>You are about to suspend this permit.</p>
+                                        <p>Do you want to proceed?</p>
+                                        <input type="hidden" name="id" th:value="${permitDetails?.id}">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel
+                                        </button>
+<!--                                        <button><a-->
+<!--                                                th:href="@{/api/qa/suspendPermit(permitID=${permitDetails?.id})}"-->
+<!--                                                class="btn btn-danger itemViewBtn">Suspend</a>-->
+<!--                                        </button>-->
+                                        <input type="submit" id="suspend" class="btn btn-danger" value="Suspend"/>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="unSuspendqaPermitDetails">
+                    <form id="formunSuspendqaPermitDetails" name="unSuspendqaPermitDetails"
+                          th:action="@{/api/qa/unsuspendPermit(permitID = ${permitDetails?.id})}" method="post"
+                          th:object="${SampleSubmissionDetails}">
+                        <div class="modal fade" id="unSuspendqaPermitDetails" tabindex="-1" role="dialog"
+                             aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+
+                                        <h5 style="font-weight: bold; " class="modal-title">Confirm Permit
+                                            Suspension</h5>
+                                        <button type="button" class="close" data-dismiss="modal" onClick="refreshPage()"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>You are about to unsuspend this permit.</p>
+                                        <p>Do you want to proceed?</p>
+                                        <input type="hidden" name="id" th:value="${permitDetails?.id}">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel
+                                        </button>
+                                        <!--                                        <button><a-->
+                                        <!--                                                th:href="@{/api/qa/suspendPermit(permitID=${permitDetails?.id})}"-->
+                                        <!--                                                class="btn btn-danger itemViewBtn">Suspend</a>-->
+                                        <!--                                        </button>-->
+                                        <input type="submit" id="unsuspend" class="btn btn-info" value="Unsuspend"/>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
 
                 <div class="qaApplicationForm">
@@ -3187,6 +3274,15 @@
     function refreshPage() {
         window.location.reload();
     }
+
+    function openSuspendModal() {
+        $('.qaPermitDetails #qaPermitDetails').modal();
+
+    }
+    function openUnSuspendModal() {
+        $('.unSuspendqaPermitDetails #unSuspendqaPermitDetails').modal();
+
+    }
 </script>
 <script>
     function hello() {
@@ -3204,5 +3300,6 @@
         }, 1000);
     }
 </script>
+
 </body>
 

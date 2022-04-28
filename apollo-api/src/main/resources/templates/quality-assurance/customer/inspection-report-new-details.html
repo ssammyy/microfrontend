@@ -403,6 +403,8 @@
                                             <th>FREQUENCY</th>
                                             <th>RECORDS</th>
                                             <th>FINDINGS</th>
+                                            <th>ACTIONS</th>
+
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -415,6 +417,24 @@
                                             <td th:text="${OPCDetails.frequency}"></td>
                                             <td th:text="${OPCDetails.records}"></td>
                                             <td th:text="${OPCDetails.findings}"></td>
+                                            <td style="display: none" th:text="${OPCDetails.id}"></td>
+
+                                            <td>
+                                                <button class="btn-delete btn btn-primary"
+                                                        name="editRawMaterials"
+                                                        th:data-findings="${OPCDetails.findings}"
+                                                        th:data-frequency="${OPCDetails.frequency}"
+                                                        th:data-id="${OPCDetails.id}"
+                                                        th:data-operations="${OPCDetails.operations}"
+                                                        th:data-processFlow="${OPCDetails.processFlow}"
+                                                        th:data-qualityChecks="${OPCDetails.qualityChecks}"
+                                                        th:data-records="${OPCDetails.records}"
+                                                        type="button">EDIT DETAILS
+                                                </button>
+
+                                                <!--                                                <button class="btn-delete" data-id="${OPCDetails.id}" data-processFlow="${OPCDetails.processFlow}" data-lastname="${row.lastname}">DEL</button>-->
+                                            </td>
+
                                         </tr>
                                         </tbody>
                                     </table>
@@ -828,9 +848,10 @@
 
                         </div>
 
-                        <div class="rawMaterialsForm">
+                        <div class="rawMaterialsForm" id="rawMaterialsForm">
                             <form id="rawMaterialsForm-Form" name="rawMaterialsForm-Form" method="post">
-                                <div class="modal fade" id="rawMaterialsFormModal" tabindex="-1" role="dialog"
+                                <div class="modal fade" id="rawMaterialsFormModal" name="rawMaterialsFormModal"
+                                     role="dialog" tabindex="-1"
                                      aria-labelledby="rawMaterialsFormLable"
                                      aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -875,6 +896,8 @@
                                                                   class="input-field w-input" rows="5"
                                                                   th:field="*{findings}"></textarea>
                                                     </div>
+
+
                                                     <div id="addRecommendationDetails"
                                                          th:object="${QaInspectionReportRecommendationEntity}">
                                                         <input type="hidden" id="idRecommendation" name="id"
@@ -965,9 +988,112 @@
                             </form>
                         </div>
 
+
+                        <div class="rawMaterialsFormb" id="rawMaterialsFormb">
+
+                            <div class="modal fade" id="rawMaterialsFormModalb" name="rawMaterialsFormModal"
+                                 role="dialog" tabindex="-1"
+                                 aria-labelledby="rawMaterialsFormLable"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 style="font-weight: bold; " class="modal-title"
+                                                id="rawMaterialsFormLableb"><span id="spanValueRMb">
+                                                    Edit the duly filled Annexes here below as signed with the firm. Include the findings during inspection (See Annex I& II as appropriate):</span>
+                                            </h5>
+                                            <button aria-label="Close" class="close" data-dismiss="modal"
+                                                    onClick="refreshPage()" type="button"><span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <form id="rawMaterialsForm-Formb" name="rawMaterialsForm-Form"
+                                                      method="post" action="#"
+
+                                                >
+<!--                                                    th:action="@{/api/qa/kebs/add/new-opc-details/update(permitID = ${permit?.id},inspectionReportID = ${QaInspectionReportRecommendationEntity?.id})}"-->
+
+                                                    <div id="editOPCDetails" th:object="${QaInspectionOpcEntity}">
+                                                        <!--                                                        <input type="hidden" id="idOCP" name="id" th:value="${QaInspectionOpcEntity?.id}">-->
+                                                        <label class="col-form-label" for="processFlow">PROCESS
+                                                            FLOW</label>
+                                                        <textarea class="input-field w-input" cols="10"
+                                                                  id="processFlowEdit" name="processFlow"
+                                                                  required="required"
+                                                                  rows="5" th:field="*{processFlow}"
+                                                                  data-value="processFlowEdit"
+                                                        ></textarea>
+                                                        <label class="col-form-label"
+                                                               for="operations">OPERATIONS</label>
+                                                        <textarea class="input-field w-input" id="operationsEdit"
+                                                                  name="operations"
+                                                                  required="required" rows="5"
+                                                                  th:field="*{operations}"
+                                                                  data-th-value="operations"
+                                                                  data-value="operationsEdit"
+
+                                                        ></textarea>
+                                                        <label class="col-form-label" for="qualityChecks">QUALITY
+                                                            CHECKS</label>
+                                                        <textarea class="input-field w-input" id="qualityChecksEdit"
+                                                                  name="qualityChecks" required="required"
+                                                                  rows="5"
+                                                                  th:field="*{qualityChecks}"
+                                                                  data-value="qualityChecksEdit"
+                                                        ></textarea>
+                                                        <label class="col-form-label" for="frequency">FREQUENCY</label>
+                                                        <textarea class="input-field w-input" id="frequencyEdit"
+                                                                  name="frequency"
+                                                                  required="required" rows="5"
+                                                                  data-th-value="frequency"
+                                                                  data-value="frequencyEdit"
+
+                                                                  th:field="*{frequency}"></textarea>
+                                                        <label class="col-form-label" for="records">RECORDS</label>
+                                                        <textarea class="input-field w-input" id="recordsEdit"
+                                                                  name="records"
+                                                                  required="required" rows="5"
+                                                                  data-th-value="records"
+                                                                  data-value="recordsEdit"
+
+                                                                  th:field="*{records}"></textarea>
+                                                        <label class="col-form-label" for="findings">FINDINGS</label>
+                                                        <textarea class="input-field w-input" id="findingsEdit"
+                                                                  name="findings"
+                                                                  required="required" rows="5"
+                                                                  data-th-value="findings"
+                                                                  data-value="findingsEdit"
+
+                                                                  th:field="*{findings}"></textarea>
+                                                        <input id="rowIdEdit"
+                                                               th:field="*{id}"
+                                                               name="id" data-value="rowIdEdit"
+                                                               type="hidden" value="">
+                                                    </div>
+                                                    <br>
+                                                    <input type="submit" id="saveValueRMb" class="btn btn-primary"
+                                                           value="EDIT"/>
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" data-dismiss="modal"
+                                                    type="button">Close
+                                            </button>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <div class="uploadForm">
                             <form id="upload-form" enctype="multipart/form-data" name="upload-form"
-                                  th:action="@{/api/qa/kebs/add/new-upload(permitID = ${permit?.id},inspectionReportID = ${QaInspectionReportRecommendationEntity?.id})}"
+                                  th:action="@{/api/qa/kebs/add/new-opc-details/new-upload/(permitID = ${permit?.id},inspectionReportID = ${QaInspectionReportRecommendationEntity?.id})}"
                                   method="post">
                                 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
                                      aria-labelledby="uploadModalLabel" aria-hidden="true">
@@ -1061,6 +1187,49 @@
         table.buttons().container()
             .appendTo('#example_wrapper .col-sm-6:eq(0)');
     });
+</script>
+<script>
+
+    //edit data
+    $('document').ready(function () {
+        $(document).on('click', '.btn-delete', function () {
+            //clone dialog and remove ids to ensure uniqueness
+            let $modal = $('.rawMaterialsFormb #rawMaterialsFormModalb').clone();
+            //apply custom values where needed
+            let $btn = $(this);
+            let rowId = $btn.attr('data-id');
+            let processFlow = $btn.attr('data-processFlow');
+            let operations = $btn.attr('data-operations');
+            let qualityChecks = $btn.attr('data-qualityChecks');
+            let frequency = $btn.attr('data-frequency');
+            let records = $btn.attr('data-records');
+            let findings = $btn.attr('data-findings');
+            let permitID = $("#permitIDValue").val();
+            let inspectionReportID = $("#inspectionReportIDValue").val();
+
+            $modal.find('[data-value="rowIdEdit"]').text(rowId);
+            $modal.find('[data-value="processFlowEdit"]').text(processFlow);
+            $modal.find('[data-value="operationsEdit"]').text(operations);
+            $modal.find('[data-value="qualityChecksEdit"]').text(qualityChecks);
+            $modal.find('[data-value="frequencyEdit"]').text(frequency);
+            $modal.find('[data-value="recordsEdit"]').text(records);
+            $modal.find('[data-value="findingsEdit"]').text(findings);
+            $modal.find('form').attr('action', `/api/qa/kebs/add/new-opc-details/update?permitID=${permitID}&inspectionReportID=${inspectionReportID}&ID=${rowId}`);
+            // //show dialog
+            // let permitID = $("#permitIDValue").val();
+            // let inspectionReportID = $("#inspectionReportIDValue").val();
+            //
+            //
+            // $('#rawMaterialsForm-Formb').attr('action', `/api/qa/kebs/add/new-opc-details/update?permitID=${permitID}&inspectionReportID=${inspectionReportID}&ID=${rowId}`);
+            // document.getElementById('spanValueRMb').innerHTML =
+            //     "Edit the duly filled Annexes here below as signed with the firm. Include the findings during inspection (See Annex I& II as appropriate):"
+            // ;
+            // document.getElementById("saveValueRMb").value = 'Edit';
+
+            // $('.rawMaterialsForm #rawMaterialsFormModal').modal({backdrop: 'static', keyboard: false});
+            $modal.modal();
+        })
+    })
 </script>
 <script>
 
@@ -1182,6 +1351,7 @@
                 "head": "Attach duly filled Annexes here below as signed with the firm. Include the findings during inspection (See Annex I& II as appropriate):",
                 "action": `/api/qa/kebs/add/new-opc-details/save?permitID=${permitID}&inspectionReportID=${inspectionReportID}`,
             },
+
             {
                 "head": "Please fill the details below",
                 "action": `/api/qa/kebs/add/new-recommendation-details/save?permitID=${permitID}&inspectionReportID=${inspectionReportID}`,
@@ -1189,8 +1359,7 @@
             {
                 "head": "Please fill the details below",
                 "action": `/api/qa/kebs/add/new-recommendation-details/save?permitID=${permitID}&inspectionReportID=${inspectionReportID}`,
-            }
-        ]
+            }]
 
 
         for (let h = 0; h < arrHead.length; h++) {
@@ -1205,8 +1374,9 @@
             }
         }
 
-        $('.rawMaterialsForm #rawMaterialsFormModal').modal();
+        $('.rawMaterialsForm #rawMaterialsFormModal').modal({backdrop: 'static', keyboard: false});
     }
+
 
     function popUpUploadFunction(eventAction) {
         let arrHead = ['uploadAttachments'];
@@ -1252,6 +1422,7 @@
             valueCheck();
         }, 1000);
     }
+
 </script>
 </body>
 </html>

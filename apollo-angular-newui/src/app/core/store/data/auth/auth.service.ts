@@ -44,10 +44,10 @@ export class AuthService {
         );
     }
 
-    public validateTokenForUser(payload: ValidateTokenRequestDto): Observable<ApiResponse> {
+    public validateTokenForUser(payload: ValidateTokenRequestDto): Observable<LoggedInUser> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN_FOR_USER);
-        return this.http.post<ApiResponse>(url, payload).pipe(
-            map((r: ApiResponse): ApiResponse => r),
+        return this.http.post<LoggedInUser>(url, payload).pipe(
+            map((r: LoggedInUser): LoggedInUser => r),
             catchError((fault: HttpErrorResponse) => throwError(fault))
         );
     }
@@ -60,10 +60,10 @@ export class AuthService {
         );
     }
 
-    public login(data: LoginCredentials): Observable<LoggedInUser> {
+    public login(data: LoginCredentials): Observable<ApiResponse> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOGIN_PAGE);
-        return this.http.post<LoggedInUser>(url, data).pipe(
-            map(function (response: LoggedInUser) {
+        return this.http.post<ApiResponse>(url, data).pipe(
+            map(function (response: ApiResponse) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

@@ -3,13 +3,17 @@ package org.kebs.app.kotlin.apollo.api.service
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CdTypeCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.*
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.scheduling.annotation.Scheduled
@@ -28,6 +32,10 @@ enum class BillStatus(val status: Int) {
     OPEN(1), CLOSED(2), PENDING_PAYMENT(3), PAID(4);
 }
 
+enum class BillingPurpose(val code: String) {
+    DESTINATION_INSPECTION("DI"), QUALITY_ASSUARANCE("QA"), MARKET_SURVEILANCE("MS"), STANDARDS_DEVELOPMENT("SD");
+}
+
 @Component
 class BillingService(
         private val corporateCustomerRepository: ICorporateCustomerRepository,
@@ -35,6 +43,7 @@ class BillingService(
         private val billingLimitsRepository: IBillingLimitsRepository,
         private val batchInvoiceRepository: InvoiceBatchDetailsRepo,
         private val invoiceDaoService: InvoiceDaoService,
+        private val diServiceDao: DestinationInspectionDaoServices,
         private val billTransactionRepo: IBillTransactionsEntityRepository,
         private val commonDaoServices: CommonDaoServices,
 
@@ -56,6 +65,7 @@ class BillingService(
                 if (BigDecimal.ZERO <= it.maxBillAmount) {
                     if (bill.billAmount?.compareTo(it.maxBillAmount) ?: 0 >= 0) {
                         bill.billStatus = BillStatus.CLOSED.status
+                        bill.billDate = commonDaoServices.getTimestamp()
                     }
                 }
             }
@@ -65,7 +75,12 @@ class BillingService(
             bill.corporateId = corporate.id
             bill.billNumberSequence = this.billPaymentRepository.countByCorporateIdAndBillNumber(corporate.id, billNumber) + 1
             bill.billNumber = billNumber
-            bill.paymentStatus = 0
+            bill.paymentStatus = BillStatus.OPEN.status
+            bill.customerName = corporate.corporateName
+            bill.customerCode = corporate.corporateCode
+            bill.currencyCode = "KES"
+            bill.billServiceType = BillingPurpose.DESTINATION_INSPECTION.code
+            bill.billType = 1
             bill.billStatusDesc = BillStatus.OPEN.name
             bill.billStatus = BillStatus.OPEN.status
             bill.penaltyAmount = BigDecimal.ZERO
@@ -78,7 +93,11 @@ class BillingService(
                         ?: LocalDate.now().withDayOfMonth(15)
             }
             bill.paymentDate = Date.valueOf(paymentDate)
-            bill.createOn = Timestamp.from(Instant.now())
+            val dt = Timestamp.from(Instant.now())
+            bill.createOn = dt
+            bill.billNumberPrefix = "BN${commonDaoServices.convertDateToString(dt.toLocalDateTime(), "yyMM")}${this.billPaymentRepository.countByCorporateId(corporate.id) + 1}"
+            bill.billRefNumber = "${bill.billNumberPrefix}${bill.billNumber}"
+            bill.billDescription = "Bill payment for the month of " + commonDaoServices.convertDateToString(bill.paymentDate, "MMMM")
             val saved = this.billPaymentRepository.save(bill)
             transaction.billId = saved.id
             this.billTransactionRepo.save(transaction)
@@ -95,37 +114,105 @@ class BillingService(
      * @param demandNote demand node to add for billing
      * @param map application properties
      */
-    fun registerBillTransaction(demandNote: CdDemandNoteEntity, map: ServiceMapsEntity): BillTransactionsEntity? {
-        val corporate = corporateCustomerRepository.findAllByCorporateIdentifier(demandNote.importerPin)
+    fun registerBillTransaction(demandNote: CdDemandNoteEntity, identifier: String?, cdType: String?, map: ServiceMapsEntity): BillTransactionsEntity? {
+        // Find corporate by supplied indentifier(Courier Good) or importer Pin
+        KotlinLogging.logger { }.info("Importer: ${demandNote.importerPin}, Courier: $identifier, CdType: $cdType")
+        if (!CdTypeCodes.COURIER_GOODS.code.equals(cdType, true)) { // Only courier documents allowed
+            KotlinLogging.logger { }.info("Found document of type, bill not applicable: $cdType")
+            return null
+        }
+
+        val corporate = identifier?.let {
+            corporateCustomerRepository.findAllByCorporateIdentifier(it)
+        } ?: corporateCustomerRepository.findAllByCorporateIdentifier(demandNote.importerPin)
+        // Add transaction to billing if corporate billing exists
         if (corporate.isPresent) {
-            val transactionEntity = BillTransactionsEntity()
-            transactionEntity.amount = demandNote.totalAmount
+            // Check if account is suspended or blocked
+            if (!(corporate.get().accountSuspendend == 1 || corporate.get().accountBlocked == 1)) {
+
+                val transactionEntity = BillTransactionsEntity()
+                transactionEntity.amount = demandNote.totalAmount
+                transactionEntity.taxAmount = demandNote.totalAmount?.times(BigDecimal(0.16))
+                transactionEntity.corporateId = corporate.get().id
+                transactionEntity.description = demandNote.descriptionGoods
+                transactionEntity.invoiceNumber = demandNote.demandNoteNumber
+                transactionEntity.transactionType = "DEMAND_NOTE"
+                transactionEntity.paidStatus = 0
+                transactionEntity.tempReceiptNumber = generateRefNoteNumber(corporate.get().accountLimits, map)
+                transactionEntity.revenueLine = demandNote.revenueLine
+                transactionEntity.status = 1
+                transactionEntity.transactionDate = Timestamp.from(Instant.now())
+                transactionEntity.transactionId = demandNote.id.toString()
+                transactionEntity.createdBy = demandNote.createdBy
+                transactionEntity.createdOn = Timestamp.from(Instant.now())
+                val saved = billTransactionRepo.save(transactionEntity)
+                this.addBillTransaction(transactionEntity, corporate.get())
+                return saved
+            }
+        }
+        return null
+
+    }
+
+    fun demandNoteTransactionPaid(demandNoteNumber: String, receiptNumber: String, billId: Long) {
+        this.billTransactionRepo.findByInvoiceNumberAndBillId(demandNoteNumber, billId)?.let { transactionEntity ->
+            transactionEntity.receiptNumber = receiptNumber
+            transactionEntity.paidStatus = 1
+            transactionEntity.receiptDate = Timestamp.from(Instant.now())
+            this.billTransactionRepo.save(transactionEntity)
+        }
+
+    }
+
+    /**
+     * Registers transaction for billing and send assigns a temporally transaction reference/receipt
+     *
+     * @param transactionEntity demand node to add for billing
+     * @param partner application properties
+     */
+    fun registerPvocTransaction(transactionEntity: BillTransactionsEntity, partner: PvocPartnersEntity): BillTransactionsEntity? {
+        // Find corporate by supplied indentifier(Courier Good) or importer Pin
+        val corporate = corporateCustomerRepository.findById(partner.billingId!!)
+        val map = commonDaoServices.serviceMapDetails(properties.mapImportInspection)
+        // Add transaction to billing if corporate billing exists
+        if (corporate.isPresent) {
+            transactionEntity.fobAmount = this.diServiceDao.convertAmount(transactionEntity.fobAmount, transactionEntity.currency
+                    ?: "USD")
+            transactionEntity.amount = this.diServiceDao.convertAmount(transactionEntity.amount, transactionEntity.currency
+                    ?: "USD")
+            transactionEntity.currency = "KES"
             transactionEntity.corporateId = corporate.get().id
-            transactionEntity.description = demandNote.descriptionGoods
-            transactionEntity.invoiceNumber = demandNote.demandNoteNumber
-            transactionEntity.transactionType = "DEMAND_NOTE"
+            transactionEntity.transactionType = "PVOC_CHARGE"
             transactionEntity.paidStatus = 0
             transactionEntity.tempReceiptNumber = generateRefNoteNumber(corporate.get().accountLimits, map)
             transactionEntity.status = 1
             transactionEntity.transactionDate = Timestamp.from(Instant.now())
-            transactionEntity.transactionId = demandNote.id.toString()
-            transactionEntity.createdBy = demandNote.createdBy
+            transactionEntity.createdBy = transactionEntity.createdBy
             transactionEntity.createdOn = Timestamp.from(Instant.now())
             val saved = billTransactionRepo.save(transactionEntity)
             this.addBillTransaction(transactionEntity, corporate.get())
             return saved
+        } else {
+            throw ExpectedDataNotFound("Could not find associated billing account")
         }
-        return null
-
     }
 
     fun billTransactions(billId: Long, corporateId: Long): ApiResponseModel {
         val response = ApiResponseModel()
         val corporate = corporateCustomerRepository.findById(corporateId)
         if (corporate.isPresent) {
-            response.data = billTransactionRepo.findAllByCorporateIdAndBillId(billId, corporateId)
-            response.responseCode = ResponseCodes.SUCCESS_CODE
-            response.message = "Success"
+            val bill = this.billPaymentRepository.findById(billId)
+            if (bill.isPresent) {
+                val map = mutableMapOf<String, Any>()
+                map["transactions"] = billTransactionRepo.findAllByCorporateIdAndBillId(corporateId, billId)
+                map["bill"] = bill.get()
+                response.data = map
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
+            } else {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "Bill not found"
+            }
         } else {
             response.responseCode = ResponseCodes.NOT_FOUND
             response.message = "Corporate not found"
@@ -237,6 +324,7 @@ class BillingService(
             val bills = this.billPaymentRepository.findAllByBillNumberPrefixAndPaymentStatus(billPrefix, BillStatus.CLOSED.status)
             bills.forEach { bill ->
                 bill.billStatus = BillStatus.CLOSED.status
+                bill.billDate = commonDaoServices.getTimestamp()
                 bill.billStatusDesc = BillStatus.CLOSED.name
                 bill.paymentRequestDate = Timestamp.from(Instant.now())
                 bill.nextNoticeDate = Date.valueOf(date.plusDays(2))
@@ -244,6 +332,27 @@ class BillingService(
                 this.billPaymentRepository.save(bill)
             }
         }
+    }
+
+    fun closeAndGenerateBill(billId: Long, remarks: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        val optionalBill = this.billPaymentRepository.findById(billId)
+        if (optionalBill.isPresent) {
+            val bill = optionalBill.get()
+            bill.remarks = remarks
+            if (this.generateBatchInvoice(bill)) {
+                response.message = "Bill sent"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+            } else {
+                response.message = "Bill invoice not generated"
+                response.responseCode = ResponseCodes.FAILED_CODE
+            }
+        } else {
+            response.message = "Bill not found"
+            response.responseCode = ResponseCodes.NOT_FOUND
+        }
+
+        return response
     }
 
     /**
@@ -280,6 +389,10 @@ class BillingService(
         }".toUpperCase()
         batch.status = map.inactiveStatus
         batch.paymentStarted = map.inactiveStatus
+        batch.createdBy = "Billing"
+        batch.createdOn = commonDaoServices.getTimestamp()
+        batch.modifiedBy = "Billing"
+        batch.modifiedOn = commonDaoServices.getTimestamp()
         val bsaved = this.batchInvoiceRepository.save(batch)
         bill.paymentRequestReference = bsaved.id.toString()
         val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
@@ -290,12 +403,8 @@ class BillingService(
                 accountNumber = corporate.get().corporateIdentifier
                 currency = properties.mapInvoiceTransactionsLocalCurrencyPrefix
             }
-            invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                    "billing",
-                    bsaved,
-                    myAccountDetails
-            )
             this.billPaymentRepository.save(bill)
+            this.invoiceDaoService.postBillToSage(bill, "system", map, corporate.get())
         }
         return true
     }

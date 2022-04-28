@@ -38,7 +38,7 @@ class CorporateCustomerService(
         val startOfDay: LocalDateTime = localDateTime.with(LocalTime.MIN)
         val endOfDay: LocalDateTime = localDateTime.with(LocalTime.MAX)
         val cc = corporateCustomersRepository.countByCreatedOnBetween(Timestamp.valueOf(startOfDay), Timestamp.valueOf(endOfDay))
-        return "%05x".format(cc)
+        return "%05x".format(cc + 1)
     }
 
     fun addCorporateCustomer(form: CorporateForm): ApiResponseModel {
@@ -59,6 +59,7 @@ class CorporateCustomerService(
                 customer.corporateBillNumber = "KBN${commonDaoServices.convertDateToString(LocalDateTime.now(), "yyyyMMdd")}${countAccountsToday()}".toUpperCase()
                 customer.corporateEmail = form.corporateEmail
                 customer.corporateName = form.corporateName
+                customer.corporateCode = form.corporateCode
                 customer.corporateType = form.corporateType
                 customer.isCiakMember = form.isCiakMember
                 customer.paymentDays = form.mouDays

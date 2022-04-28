@@ -1,49 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="DiamondMarkPermit" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail"
-              columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
-              uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
-    <property name="background.image.path"
-              value="/app/apps_home/apollo/conf/test/reports/images/kebs_fmark_background_image.png"/>
-    <property name="background.image.x" value="10"/>
-    <property name="background.image.y" value="10"/>
-    <property name="background.image.widht" value="595"/>
-    <property name="background.image.alpha" value="1.0"/>
-    <property name="background.image.height" value="842"/>
-    <parameter name="DmarkLogo" class="java.lang.String"/>
-    <parameter name="imagePath" class="java.lang.String"/>
-    <parameter name="FirmName" class="java.lang.String"/>
-    <parameter name="PermitNo" class="java.lang.String"/>
-    <parameter name="PostalAddress" class="java.lang.String"/>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DiamondMarkPermit" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
+	<property name="background.image.path" value="/app/apps_home/apollo/conf/test/reports/images/kebs_fmark_background_image.png"/>
+	<property name="background.image.x" value="10"/>
+	<property name="background.image.y" value="10"/>
+	<property name="background.image.widht" value="595"/>
+	<property name="background.image.alpha" value="1.0"/>
+	<property name="background.image.height" value="842"/>
+	<parameter name="DmarkLogo" class="java.lang.String"/>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<parameter name="FirmName" class="java.lang.String"/>
+	<parameter name="PermitNo" class="java.lang.String"/>
+	<parameter name="PostalAddress" class="java.lang.String"/>
 	<parameter name="ExpiryDate" class="java.lang.String"/>
-    <parameter name="DateOfIssue" class="java.lang.String"/>
-    <parameter name="PhysicalAddress" class="java.lang.String"/>
-    <parameter name="CommodityDesc" class="java.lang.String"/>
-    <parameter name="TradeMark" class="java.lang.String"/>
-    <parameter name="faxNumber" class="java.lang.String"/>
-    <parameter name="EmailAddress" class="java.lang.String"/>
-    <parameter name="StandardTitle" class="java.lang.String"/>
-    <parameter name="phoneNumber" class="java.lang.String"/>
-    <parameter name="FmarkLogo" class="java.lang.String"/>
-    <parameter name="QrCode" class="java.lang.String"/>
-    <parameter name="EffectiveDate" class="java.lang.String"/>
-    <queryString>
-        <![CDATA[]]>
-    </queryString>
-    <detail>
-        <band height="802">
-            <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-            <image>
-                <reportElement x="-10" y="-2" width="580" height="802" uuid="ba9afad0-e727-41e2-b9d4-4cdb4cdf74cf">
-                    <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-                <imageExpression>
-                    <![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_fmark_background_image.png"]]></imageExpression>
-            </image>
+	<parameter name="DateOfIssue" class="java.lang.String"/>
+	<parameter name="PhysicalAddress" class="java.lang.String"/>
+	<parameter name="CommodityDesc" class="java.lang.String"/>
+	<parameter name="TradeMark" class="java.lang.String"/>
+	<parameter name="faxNumber" class="java.lang.String"/>
+	<parameter name="EmailAddress" class="java.lang.String"/>
+	<parameter name="StandardTitle" class="java.lang.String"/>
+	<parameter name="phoneNumber" class="java.lang.String"/>
+	<parameter name="FmarkLogo" class="java.lang.String"/>
+	<parameter name="QrCode" class="java.lang.String"/>
+	<parameter name="EffectiveDate" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<detail>
+		<band height="802">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<image>
+				<reportElement x="-10" y="-2" width="580" height="802" uuid="ba9afad0-e727-41e2-b9d4-4cdb4cdf74cf">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_fmark_background_image.png"]]></imageExpression>
+			</image>
 			<staticText>
 				<reportElement x="20" y="36" width="440" height="20" uuid="c40346a8-cdb9-447e-b973-5631bee8113f"/>
 				<textElement textAlignment="Center">
@@ -104,20 +97,20 @@
 				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="ScaleFont">
-				<reportElement x="2" y="162" width="329" height="24" uuid="b2b9b831-0701-4e5e-b746-951f658c1b31"/>
+				<reportElement x="96" y="138" width="231" height="24" uuid="b2b9b831-0701-4e5e-b746-951f658c1b31"/>
 				<box>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<textFieldExpression><![CDATA[$P{PostalAddress}]]></textFieldExpression>
 			</textField>
-            <textField>
-                <reportElement x="440" y="129" width="120" height="17" uuid="f5c8b86c-c816-435f-ace9-1ab1a13e5b08"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{EffectiveDate}]]></textFieldExpression>
-            </textField>
+			<textField>
+				<reportElement x="440" y="129" width="120" height="17" uuid="f5c8b86c-c816-435f-ace9-1ab1a13e5b08"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{EffectiveDate}]]></textFieldExpression>
+			</textField>
 			<textField textAdjust="ScaleFont">
 				<reportElement x="45" y="210" width="286" height="18" uuid="a38642ad-ea39-401f-baa1-44b66bc605d2"/>
 				<box>
@@ -127,7 +120,7 @@
 				<textFieldExpression><![CDATA[$P{faxNumber}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="ScaleFont">
-				<reportElement x="2" y="121" width="329" height="19" uuid="830f15a3-47d0-49d3-90be-9c0c7ab5acf3"/>
+				<reportElement x="83" y="100" width="245" height="19" uuid="830f15a3-47d0-49d3-90be-9c0c7ab5acf3"/>
 				<box>
 					<bottomPen lineWidth="1.0"/>
 				</box>
@@ -151,7 +144,9 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif"/>
 				</textElement>
-				<text><![CDATA[EFFECTIVE FROM:]]></text>
+<!--				<text><![CDATA[EFFECTIVE FROM:]]></text>-->
+				<text><![CDATA[DATE OF ISSUE:]]></text>
+
 			</staticText>
 			<staticText>
 				<reportElement x="2" y="212" width="49" height="18" uuid="0a16f290-293b-4152-8813-082e01c8b812"/>
@@ -211,14 +206,14 @@
 				</textElement>
 				<text><![CDATA[NAME OF FIRM:]]></text>
 			</staticText>
-            <staticText>
-                <reportElement x="0" y="267" width="552" height="40" uuid="79c899a0-3b27-4f53-a3e1-d7af1e5d47ac"/>
-                <textElement>
-                    <font fontName="SansSerif" size="10.5"/>
-                </textElement>
-                <text><![CDATA[
+			<staticText>
+				<reportElement x="0" y="267" width="552" height="40" uuid="79c899a0-3b27-4f53-a3e1-d7af1e5d47ac"/>
+				<textElement>
+					<font fontName="SansSerif" size="10.5"/>
+				</textElement>
+				<text><![CDATA[
 					To use the fortification mark of quality specified in the row hereunder and upon and in respect of the commodity and brand specified in the second and third rows there of, which commodity, conform to the standard specification in the fourth row.]]></text>
-            </staticText>
+			</staticText>
 			<staticText>
 				<reportElement x="30" y="325" width="118" height="16" uuid="ec12324e-950e-46e5-b62e-44db3376325f"/>
 				<textElement>
@@ -309,7 +304,6 @@
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[1.EVERY PERMIT HOLDER SHALL PAY AN ANNUAL FEE IN RESPECT OF EACH PERMIT GRANTED OR RENEWED
-
 2. THIS PERMIT IS ISSUED SUBJECT TO THE CONDITIONS SET OUT IN THE  CONTRACT FOR USE OF THE FORTIFICATION MARK]]></text>
 			</staticText>
 			<line>
@@ -342,6 +336,52 @@
     )
 )]]></imageExpression>
 			</image>
+			<image>
+				<reportElement x="350" y="548" width="138" height="50" uuid="757a26ee-d8e2-4529-a01e-bf8332d078d0"/>
+				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMNSignature-transparent.png"]]></imageExpression>
+			</image>
+		</band>
+		<band height="802">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<image>
+				<reportElement x="-7" y="0" width="570" height="802" uuid="01ab6f46-5533-4577-8c63-7ef92b929d42">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_dmark_background_image.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="80" y="30" width="390" height="20" uuid="a5ffe669-cb88-4eec-a0c2-86ba85191ebd"/>
+				<textElement>
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONDITIONS FOR USE OF KEBS STANDARDISATION MARK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="-40" width="551" height="730" uuid="274cbbde-9ec5-49a7-9fcb-8e01d8bd20e4">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="13"/>
+				</textElement>
+				<text><![CDATA[1. This permit is issued subject to the provisions of the Standards Act, Cap 496 Laws of Kenya and Standardization Mark Logo (Permits and Fees) Regulations which include:
+
+           i. The permit-holder shall comply with the general and specific conditions and scheme of supervision and control which the Certification Body may issue from time to time.
+          ii. The permit is not transferable.
+         iii. Costs incurred during inspection to determine whether commodities to which standardization has been applied fulfill applicable requirements set forth by the Certification Body shall be defrayed by the permit-holder.
+          iv. The right to use the mark applies only to the commodities listed in the Permit.
+           v.  Costs incurred in applying the standardization mark shall be defrayed by the permit-holder.
+          vi. The Certification body reserves the right to revise the regulations for marking certified commodities.
+         vii. If the Kenya Standard on which the permit is based is revised, the Permit shall be valid only if the permit-holder agrees to comply with the requirements set forth in the revised Kenya Standard or approved specification.
+        viii. The permit shall be valid for the period shown unless suspended or revoked before expiry.
+          ix.   In the event that for any reason there is stoppage of production with regard to the product described on the permit, the permit-holder shall be obliged to notify the Regional Manager/Managing Director of Kenya Bureau of Standards about the stoppage, for the suspension of the permit. Failure to do so shall be deemed as misuse of the mark and shall lead to demand to pay accrued monies in the period that renewal of same permit had not taken place.
+
+
+2. The breach of any of the conditions contained in this permit constitutes an offence under the provisions of Standards act and the Standards marks (Permits and Fees) Regulations.
+
+3. Any permit-holder aggrieved by a decision of the Certification Body may appeal in writing to the Standards Tribunal.
+]]></text>
+			</staticText>
 		</band>
 	</detail>
 </jasperReport>

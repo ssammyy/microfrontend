@@ -71,6 +71,62 @@ export class ViewDemandNoteComponent implements OnInit {
             perPage: 20
         }
     };
+    public paymentsSettings = {
+        selectMode: 'single',  // single|multi
+        hideHeader: false,
+        hideSubHeader: false,
+        actions: {
+            columnTitle: 'Actions',
+            add: false,
+            edit: false,
+            delete: false,
+            custom: [
+                // {name: 'viewNote', title: '<i class="btn btn-sm btn-primary">View</i>'},
+                // {name: 'download', title: '<i class="btn btn-sm btn-primary">Download</i>'}
+            ],
+            position: 'right' // left|right
+        },
+        delete: {
+            deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+            confirmDelete: true
+        },
+        noDataMessage: 'No payments found',
+        columns: {
+            receiptNumber: {
+                title: 'RECEIPT NO.',
+                type: 'string'
+            },
+            referenceNumber: {
+                title: 'REF. NO',
+                type: 'string'
+            },
+            previousBalance: {
+                title: 'BALANCE BEFORE',
+                type: 'string'
+            },
+            amount: {
+                title: 'AMOUNT PAID',
+                type: 'custom',
+                renderComponent: CurrencyFormatterComponent
+            },
+            balanceAfter: {
+                title: "BALANCE AFTER",
+                type: "string"
+            },
+            receiptDate: {
+                title: 'RECEIPT DATE',
+                type: 'string'
+            },
+            paymentSource: {
+                title: 'SOURCE',
+                type: 'string'
+            }
+        },
+        pager: {
+            display: true,
+            perPage: 20
+        }
+    };
     demandNoteId: any
     demandDetails: any
     message: any
@@ -85,6 +141,17 @@ export class ViewDemandNoteComponent implements OnInit {
     ngOnInit(): void {
         this.demandNoteId = this.data.id
         this.loadDemandNote()
+    }
+
+    paymentStatus(status: number): String {
+        switch (status) {
+            case 1:
+                return "PAYMENT_COMPLETED"
+            case 5:
+                return "PARTIAL PAYMENT"
+            default:
+                return "NOT PAID"
+        }
     }
 
     loadDemandNote() {
@@ -122,22 +189,36 @@ export class ViewDemandNoteComponent implements OnInit {
 
     submitDemandNote() {
         this.saveLoading = true
-        this.diService.submitDemandNote(this.demandNoteId, {})
-            .subscribe(
-                res => {
-                    this.saveLoading = false
-                    if (res.responseCode == "00") {
-                        this.diService.showSuccess(res.message, () => {
-                            this.dialogRef.close(true)
-                        })
-                    } else {
-                        this.message = res.message
-                    }
-                },
-                error => {
-                    this.saveLoading = false
+        let submission = this.diService.submitDemandNote(this.demandNoteId, {})
+        if (this.data.general) {
+            submission = this.diService.submitOtherDemandNote(this.demandNoteId, {})
+        }
+        submission.subscribe(
+            res => {
+                this.saveLoading = false
+                if (res.responseCode == "00") {
+                    this.diService.showSuccess(res.message, () => {
+                        this.dialogRef.close(true)
+                    })
+                } else {
+                    this.message = res.message
                 }
-            )
+            },
+            error => {
+                this.saveLoading = false
+            }
+        )
+    }
+
+    formatPostingStatus(status: number) {
+        switch (status) {
+            case 1:
+                return "POSTED"
+            case -1:
+                return "POSTING FAILED"
+            default:
+                return "PENDING"
+        }
     }
 
     onCustomAction(action) {

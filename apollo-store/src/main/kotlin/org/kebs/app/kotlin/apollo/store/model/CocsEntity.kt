@@ -18,17 +18,14 @@ class CocsEntity : Serializable {
     @Column(name = "ID", nullable = false, precision = 0)
     var id: Long = 0
 
-    //@NotEmpty(message = "Required field")
     @Column(name = "COC_NUMBER", nullable = false, length = 50)
     @Basic
     var cocNumber: String? = null
 
-    //@NotEmpty(message = "Required field")
     @Column(name = "COI_NUMBER", nullable = false, length = 50)
     @Basic
     var coiNumber: String? = null
 
-    //    @NotEmpty(message = "Required field")
     @Column(name = "IDF_NUMBER", nullable = false, length = 50)
     @Basic
     var idfNumber: String? = null
@@ -42,18 +39,26 @@ class CocsEntity : Serializable {
     @Basic
     var ucrNumber: String? = null
 
+    @Column(name = "ACCEPTABLE_DOC_DATE", nullable = true)
+    @Basic
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var acceptableDocDate: Timestamp? = null
+
+    @Column(name = "FINAL_DOC_DATE", nullable = true)
+    @Basic
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    var finalDocDate: Timestamp? = null
+
     @Column(name = "RFC_DATE", nullable = true)
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var rfcDate: Timestamp? = null
 
-    //@NotNull(message = "Required field")
     @Column(name = "COC_ISSUE_DATE", nullable = true)
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var cocIssueDate: Timestamp? = null
 
-    //@NotNull(message = "Required field")
     @Column(name = "COI_ISSUE_DATE", nullable = true)
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -64,12 +69,10 @@ class CocsEntity : Serializable {
     @Basic
     var clean: String? = null
 
-    //@NotEmpty(message = "Required field")
     @Column(name = "COC_REMARKS", nullable = false, length = 4000)
     @Basic
     var cocRemarks: String? = null
 
-    //@NotEmpty(message = "Required field")
     @Column(name = "COI_REMARKS", nullable = false, length = 4000)
     @Basic
     var coiRemarks: String? = null
@@ -270,18 +273,21 @@ class CocsEntity : Serializable {
     @Basic
     var productCategory: String? = null
 
-    //    @NotEmpty(message = "Required field")
     @Column(name = "COC_TYPE", length = 2)
     @Basic
     var cocType: String? = null
 
-//    @Column(name = "LOCAL_COC_FILE")
-//    @Lob
-//    var localCocFile: ByteArray? = null
-//
-//    @Column(name = "LOCAL_COC_FILE_NAME", length = 200)
-//    @Basic
-//    var localCocFileName: String? = null
+    @Column(name = "DOCUMENT_TYPE", length = 10)
+    @Basic
+    var documentsType: String? = "L"
+
+    @Column(name = "CLEARING_AGENT")
+    @Basic
+    var clearingAgent: String? = null
+
+    @Column(name = "CUSTOMS_ENTRY_NUMBER")
+    @Basic
+    var customsEntryNumber: String? = null
 
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
@@ -355,13 +361,9 @@ class CocsEntity : Serializable {
     @Basic
     var version: Long? = null
 
-    @Column(name = "PARTNER", nullable = true, length = 50)
-    @Basic
-    var partner: String? = null
-
     @Column(name = "PVOC_PARTNER", nullable = true, length = 50)
     @Basic
-    var pvocPartner: Long? = null
+    var partner: Long? = null
 
     @JoinColumn(name = "CD_ID", referencedColumnName = "ID")
     @ManyToOne
@@ -442,7 +444,6 @@ class CocsEntity : Serializable {
                 deleteBy == that.deleteBy &&
                 deletedOn == that.deletedOn &&
                 reportGenerationStatus == that.reportGenerationStatus &&
-                pvocPartner == that.pvocPartner &&
                 partner == that.partner
 
     }
@@ -519,7 +520,6 @@ class CocsEntity : Serializable {
                 deleteBy,
                 deletedOn,
                 reportGenerationStatus,
-                pvocPartner,
                 partner
         )
         return result

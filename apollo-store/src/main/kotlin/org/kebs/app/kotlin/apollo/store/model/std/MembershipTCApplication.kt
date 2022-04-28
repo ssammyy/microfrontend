@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
@@ -47,21 +48,66 @@ class MembershipTCApplication {
     @Basic
     var authorisingPersonPosition:String? = null
 
-    @Column(name="AUTHORISING_PERSON_EMAIL")
+    @Column(name = "AUTHORISING_PERSON_EMAIL")
     @Basic
-    var authorisingPersonEmail:String? = null
+    var authorisingPersonEmail: String? = null
 
-    @Column(name="QUALIFICATIONS")
+    @Column(name = "QUALIFICATIONS")
     @Basic
-    var qualifications:String? = null
+    var qualifications: String? = null
 
-    @Column(name="COMMITTMENT")
+    @Column(name = "COMMITTMENT")
     @Basic
-    var commitment:String? = null
+    var commitment: String? = null
+
+
+    @Column(name = "TC_APPLICATION_ID")
+    @Basic
+    var tcApplicationId: Long? = null
+
+    @Column(name = "DATE_OF_APPLICATION")
+    @Basic
+    var dateOfApplication: Timestamp? = null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: String? = null
+
+    @Column(name = "COMMENTS_BY_HOF")
+    @Basic
+    var comments_by_hof: String? = null
+
+    @Column(name = "COMMENTS_BY_SPC")
+    @Basic
+    var commentsBySpc: String? = null
+
+    @Column(name = "COMMENTS_BY_SAC")
+    @Basic
+    var commentsBySac: String? = null
+
+    @Column(name = "HOF_ID")
+    @Basic
+    var hofId: String? = null
+
+    @Column(name = "SPC_ID")
+    @Basic
+    var spcId: String? = null
+
+    @Column(name = "SAC_ID")
+    @Basic
+    var sacId: String? = null
+
+    @Column(name = "VAR_FIELD_9")
+    @Basic
+    var varField9: String? = null
+
+    @Column(name = "VAR_FIELD_10")
+    @Basic
+    var varField10: String? = null
 
     @Transient
     @JsonProperty("taskId")
-    var taskId:String?=null
+    var taskId: String? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -82,6 +128,17 @@ class MembershipTCApplication {
         if (authorisingPersonEmail != other.authorisingPersonEmail) return false
         if (qualifications != other.qualifications) return false
         if (commitment != other.commitment) return false
+        if (tcApplicationId != other.tcApplicationId) return false
+        if (dateOfApplication != other.dateOfApplication) return false
+        if (status != other.status) return false
+        if (comments_by_hof != other.comments_by_hof) return false
+        if (commentsBySpc != other.commentsBySpc) return false
+        if (commentsBySac != other.commentsBySac) return false
+        if (hofId != other.hofId) return false
+        if (spcId != other.spcId) return false
+        if (sacId != other.sacId) return false
+        if (varField9 != other.varField9) return false
+        if (varField10 != other.varField10) return false
 
         return true
     }
@@ -100,11 +157,27 @@ class MembershipTCApplication {
         result = 31 * result + (authorisingPersonEmail?.hashCode() ?: 0)
         result = 31 * result + (qualifications?.hashCode() ?: 0)
         result = 31 * result + (commitment?.hashCode() ?: 0)
+        result = 31 * result + (tcApplicationId?.hashCode() ?: 0)
+        result = 31 * result + (dateOfApplication?.hashCode() ?: 0)
+        result = 31 * result + (status?.hashCode() ?: 0)
+        result = 31 * result + (comments_by_hof?.hashCode() ?: 0)
+        result = 31 * result + (commentsBySpc?.hashCode() ?: 0)
+        result = 31 * result + (commentsBySac?.hashCode() ?: 0)
+        result = 31 * result + (hofId?.hashCode() ?: 0)
+        result = 31 * result + (spcId?.hashCode() ?: 0)
+        result = 31 * result + (sacId?.hashCode() ?: 0)
+        result = 31 * result + (varField9?.hashCode() ?: 0)
+        result = 31 * result + (varField10?.hashCode() ?: 0)
+
+
         return result
     }
 
     override fun toString(): String {
-        return "MembershipTCApplication(id=$id, technicalCommittee=$technicalCommittee, organization=$organization, nomineeName=$nomineeName, position=$position, postalAddress=$postalAddress, mobileNumber=$mobileNumber, email=$email, authorizingName=$authorizingName, authorisingPersonPosition=$authorisingPersonPosition, authorisingPersonEmail=$authorisingPersonEmail, qualifications=$qualifications, commitment=$commitment)"
+        return "MembershipTCApplication(id=$id, technicalCommittee=$technicalCommittee, organization=$organization, nomineeName=$nomineeName, position=$position, postalAddress=$postalAddress, mobileNumber=$mobileNumber, email=$email, authorizingName=$authorizingName, authorisingPersonPosition=$authorisingPersonPosition, authorisingPersonEmail=$authorisingPersonEmail, qualifications=$qualifications, " +
+                "commitment=$commitment,tcApplicationId=$tcApplicationId,dateOfApplication=$dateOfApplication,status=$status" +
+                ",comments_by_hof=$comments_by_hof,commentsBySpc=$commentsBySpc,commentsBySac=$commentsBySac,hofId=$hofId,spcId=$spcId,sacId=$sacId," +
+                "varField9=$varField9,varField10=$varField10)"
     }
 
 

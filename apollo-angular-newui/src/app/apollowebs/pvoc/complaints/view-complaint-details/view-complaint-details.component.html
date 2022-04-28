@@ -1,0 +1,375 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">diamond-stone</i>
+                        </div>
+                        <h4 class="card-title" *ngIf="complaintDetails">
+                            ISM request Details
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+
+                            </button>
+                        </h4>
+
+                    </div>
+                    <div class="card-body" *ngIf="complaintDetails">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-12">
+                                <div widget class=" border-0 box-shadow">
+                                    <div class="text-center pt-2" style="color: green;">
+                                        CD Standard Details
+                                    </div>
+                                    <div class="card-body pt-0 widget-body" *ngIf="complaintDetails.complaint">
+                                        <table class="table-responsive">
+                                            <th>
+                                                Complaint Number
+                                            </th>
+                                            <tr>
+                                                <td>{{complaintDetails.complaint.refNo ? complaintDetails.complaint.refNo : "NA"}}</td>
+                                            </tr>
+                                            <th>
+                                                Complainant Email
+                                            </th>
+                                            <tr>
+                                                <td>{{complaintDetails.complaint.email}}</td>
+                                            </tr>
+                                            <th>
+                                                Applicant Status
+                                            </th>
+                                            <tr>
+                                                <td>{{complaintDetails.complaint.reviewStatus}}</td>
+                                            </tr>
+                                            <th>
+                                                Complainant Name Other Name
+                                            </th>
+                                            <tr>
+                                                <td>{{complaintDetails.complaint.complaintName}}</td>
+                                            </tr>
+                                            <th>
+                                                COC Number
+                                            </th>
+                                            <tr>
+                                                <td>{{complaintDetails.complaint.cocNo}}</td>
+                                            </tr>
+                                            <th>
+                                                Filed On
+                                            </th>
+                                            <tr>
+                                                <td>{{complaintDetails.complaint.complaintDate | date:'mediumDate'}} {{complaintDetails.complaint.complaintDate| date:'shortTime'}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+
+                                <!-- <div class="d-flex"> -->
+                                <mat-tab-group [(selectedIndex)]="activeTab" [disablePagination]="true"
+                                               appMatMultilineTab
+                                               class="tab-wraps">
+                                    <mat-tab tabindex="1" label="Complaint Details">
+                                        <b class="text-primary">Complaint Details</b>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">PVOC Agent Name</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.pvocAgent}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Complaint Filling Date</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.complaintDate| date: 'mediumDate'}} {{complaintDetails.complaint.complaintDate| date: 'shortTime'}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Complaint Category</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.categoryName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Complaint Sub-Category</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.subCategoryName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Complaint Details</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.complaintDescription}}</div>
+                                                </li>
+                                                <li class="list-item-accordion"
+                                                    *ngIf="complaintDetails.complaint.recommendation">
+                                                    <div class="list-title-accordion">Recommendation</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.recommendation}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">PVOC Officer</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.officerName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">MPVOC Officer</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.mpvocOfficer}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">HOD Officer</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.hodOfficer}}</div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab tabindex="2" label="COC Details" *ngIf="complaintDetails.complaint">
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Certificate Type</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.cocType}}</div>
+                                            </li>
+                                            <li class="list-item-accordion"
+                                                *ngIf="complaintDetails.certificate_details.cocType!=='COI'">
+                                                <div class="list-title-accordion">{{complaintDetails.certificate_details.cocType}}
+                                                    NUMBER
+                                                </div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.cocNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion"
+                                                *ngIf="complaintDetails.certificate_details.cocType=='COI'">
+                                                <div class="list-title-accordion">COI NUMBER</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.coiNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">IDF NUMBER</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.idfNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">RFI NUMBER</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.rfiNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">UCR NUMBER</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.ucrNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">RFC DATE</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.rfcDate}}</div>
+                                            </li>
+                                            <li class="list-item-accordion"
+                                                *ngIf="complaintDetails.certificate_details.cocType!=='COI'">
+                                                <div class="list-title-accordion">{{complaintDetails.certificate_details.cocType}}
+                                                    ISSUE DATE
+                                                </div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.cocIssueDate}}</div>
+                                            </li>
+                                            <li class="list-item-accordion"
+                                                *ngIf="complaintDetails.certificate_details.cocType=='COI'">
+                                                <div class="list-title-accordion">COI ISSUE DATE</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.coiIssueDate}}</div>
+                                            </li>
+                                            <li class="list-item-accordion"
+                                                *ngIf="complaintDetails.certificate_details.cocType!=='COI'">
+                                                <div class="list-title-accordion">{{complaintDetails.certificate_details.cocType}}
+                                                    REMARKS
+                                                </div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.cocRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion"
+                                                *ngIf="complaintDetails.certificate_details.cocType=='COI'">
+                                                <div class="list-title-accordion">COI REMARKS</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.coiRemarks}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">ISSUING OFFICE</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.issuingOffice}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab tabindex="3" label="Importer Details" *ngIf="complaintDetails.complaint">
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.importerName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">PIN</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.importerPin}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Address 1</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.importerAddress1}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Address 2</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.importerAddress2}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">City</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.importerCity}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Country</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.importerCountry}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">ZipCode</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.importerZipCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Telephone</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.importerTelephoneNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Fax</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.importerFaxNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.importerEmail}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab tabindex="4" label="Exporter Details" *ngIf="complaintDetails.complaint">
+                                        <b class="text-primary">Exporter Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.exporterName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">PIN</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.exporterPin}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Address 1</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.exporterAddress1}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Address 2</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.exporterAddress2}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">City</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.exporterCity}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Country</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.exporterCountry}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">ZipCode</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.exporterZipCode}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Telephone</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.exporterTelephoneNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Fax</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.exporterFaxNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.exporterEmail}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab tabindex="5" label="Shipment Details" *ngIf="complaintDetails.complaint">
+                                        <b class="text-primary">Shipment Details</b>
+                                        <div class="panel" style="max-height: 487px;">
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Mode</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.certificate_details.shipmentMode}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Partial Number</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.certificate_details.route}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Seal Number</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.certificate_details.shipmentSealNumbers}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Container Number</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.certificate_details.shipmentContainerNumber}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Gross Weight</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.certificate_details.shipmentGrossWeight}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Quantity Delivered</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.certificate_details.shipmentQuantityDelivered}}</div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab tabindex="6" label="Inspection Details" *ngIf="complaintDetails.complaint">
+                                        <b class="text-primary">Inspection Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Place Of Inspection</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.placeOfInspection}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Date Of Inspection</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.dateOfInspection}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Route</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.route}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Port Of Destination</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.portOfDestination}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Country Of Supply</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.route}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Product Category</div>
+                                                <div class="list-text-accordion">{{complaintDetails.certificate_details.productCategory}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <h5>Action:</h5>
+                                <br/>
+                                <button *ngIf="complaintDetails.cd_uuid" class="btn btn-sm btn-primary"
+                                        (click)="viewConsignmentDocument()">View
+                                    Consignment
+                                </button>
+                                <div class="card" *ngFor="let task of complaintDetails.tasks">
+                                    <div class="text-center pt-2" style="color: green;">
+                                        {{task.task}}
+                                    </div>
+                                    <div class="card-body pt-1 pb-0 widget-body">
+                                        <p *ngIf="task.description"><b>DESCRIPTION:</b> {{task.description}}</p>
+                                        <div>
+                                            <b>REMARKS:</b>
+                                            <p>{{task.map.remarks}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-sm btn-primary"
+                                                (click)="approveRejectTasks(task.objectId, task.task)">
+                                            Approve/Reject
+                                        </button>
+                                    </div>
+                                </div>
+                                <h5>Documents:</h5>
+                                <button *ngIf="complaintDetails.complaint.completed==='YES'"
+                                        class="btn btn-sm btn-primary" (click)="downloadISMReport()">Download ISM
+                                    report
+                                </button>
+                            </div>
+                        </div>
+                        <!-- end content-->
+                    </div>
+                    <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+            </div>
+            <!-- end row -->
+        </div>
+    </div>
+</div>

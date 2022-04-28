@@ -63,6 +63,14 @@ class PermitTypesEntity : Serializable {
     @Basic
     var mark: String? = null
 
+    @Column(name = "REVENUE_DESC")
+    @Basic
+    var revenueDesc: String? = null
+
+    @Column(name = "REVENUE_CODE")
+    @Basic
+    var revenueCode: String? = null
+
     @Column(name = "FMARK_AMOUNT")
     @Basic
     var fmarkAmount: BigDecimal? = null

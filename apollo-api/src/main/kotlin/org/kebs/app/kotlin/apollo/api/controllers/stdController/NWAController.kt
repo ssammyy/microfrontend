@@ -5,6 +5,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.request.JustificationTaskDataDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
@@ -68,19 +69,28 @@ class NWAController(val nwaService: NWAService,
         return nwaService.getKNWCommittee()
     }
     //********************************************************** process upload Justification **********************************************************
-    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
     @PostMapping("/prepareJustification")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun prepareJustification(
-        @ModelAttribute nwaJustification: NWAJustification,
-        //@RequestParam("nwaJustificationID") nwaJustificationID: Long,
-        @ModelAttribute("docFile") docFile: List<MultipartFile>,
-        model: Model
-    ): ServerResponse{
-        val response = nwaService.prepareJustification(nwaJustification, docFile)
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
+    fun prepareJustification(@RequestBody nwaJustification: NWAJustification): ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",nwaService.prepareJustification(nwaJustification))
+        //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
     }
+//    @PostMapping("/prepareJustification")
+//    @ResponseBody
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun prepareJustification(
+//        @ModelAttribute nwaJustification: NWAJustification,
+//        //@RequestParam("nwaJustificationID") nwaJustificationID: Long,
+//        @ModelAttribute("docFile") docFile: List<MultipartFile>,
+//        model: Model
+//    ): ServerResponse{
+//        val response = nwaService.prepareJustification(nwaJustification, docFile)
+//        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
+//    }
+
 
 //    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
     @PostMapping("/file-upload")
@@ -115,14 +125,7 @@ class NWAController(val nwaService: NWAService,
         return sm
     }
 
-    //********************************************************** get spc_sec Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ')")
-    @GetMapping("/getSpcSecTasks")
-    fun getSPCSECTasks():List<JustificationTaskDataDto>
-    {
-        return nwaService.getSPCSECTasks()
-    }
-   // ********************************************************** get Justification document **********************************************************
+//    ********************************************************** get Justification document **********************************************************
 //    @GetMapping("/view/justification")
 //    fun downloadJustification(
 //        response: HttpServletResponse,
@@ -134,8 +137,56 @@ class NWAController(val nwaService: NWAService,
 //    }
 
     // ********************************************************** get Justification document **********************************************************
+    @GetMapping("/get/justification/{nwaDocumentId}")
+    fun getJustification(@PathVariable nwaDocumentId: Long): ResponseEntity<ByteArray> {
+        val fileDB: DatKebsSdNwaUploadsEntity? = nwaService.getJustification(nwaDocumentId)
+
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB?.name + "\"")
+                .body(fileDB?.document)
+
+
+    }
+
+//    @GetMapping("/view/justification")
+//    fun downloadJustification(
+//        response: HttpServletResponse,
+//        @RequestParam("nwaDocumentId") nwaDocumentId: Long
+//    ) {
+//        val fileUploaded = nwaService.findUploadedFileBYId(nwaDocumentId)
+//        val fileDoc = fileUploaded?.let { commonDaoServices.mapClass(it) }
+//        response.contentType = fileDoc?.fileType
+////                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+//        response.addHeader("Content-Disposition", "inline; filename=${fileDoc?.name}")
+//        response.outputStream
+//            .let { responseOutputStream ->
+//                responseOutputStream.write(fileDoc?.document as ByteArray)
+//                responseOutputStream.close()
+//            }
+//
+//        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+//
+//    }
+//@GetMapping("/view/justification")
+//@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//fun downloadJustification(
+//    response: HttpServletResponse,
+//    @RequestParam("nwaDocumentId") nwaDocumentId: Long
+//) {
+//    val fileUploaded = nwaService.findUploadedFileBYId(nwaDocumentId)
+//    val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+//    commonDaoServices.downloadFile(response, mappedFileClass)
+//}
+//********************************************************** get KNW Tasks **********************************************************
+//    @PreAuthorize("hasAuthority('KNW_SEC_READ')")
+//    @GetMapping("/knwtasks")
+//    fun getKNWTask():List<TaskDetails>
+//    {
+//        return nwaService.getKNWTasks()
+//    }
+
     @GetMapping("/view/justification")
-    fun downloadJustification(
+    fun viewJustificationFile(
         response: HttpServletResponse,
         @RequestParam("nwaDocumentId") nwaDocumentId: Long
     ) {
@@ -146,29 +197,41 @@ class NWAController(val nwaService: NWAService,
         response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
         response.outputStream
             .let { responseOutputStream ->
-                responseOutputStream.write(fileDoc.document?.let { it } as ByteArray)
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
                 responseOutputStream.close()
             }
 
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
     }
-    //decision
+
+    //KNW decision on Justification
+    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
+    @PostMapping("/decisionOnJustificationKNW")
+    fun decisionOnJustificationKNW(@RequestBody nwaJustificationDecision: NWAJustificationDecision,
+                                   standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
+    {
+        return nwaService.decisionOnJustificationKNW(nwaJustificationDecision,standardNwaRemarks)
+    }
+
+    //********************************************************** get spc_sec Tasks **********************************************************
+//    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ')")
+//    @GetMapping("/getSpcSecTasks")
+//    fun getSPCSECTasks():List<TaskDetails>
+//    {
+//        return nwaService.getSPCSECTasks()
+//    }
+
+
+    //SPC decision on Justification
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody nwaJustificationDecision: NWAJustificationDecision) : List<JustificationTaskDataDto>
+    fun decisionOnJustification(@RequestBody nwaJustificationDecision: NWAJustificationDecision,
+                                standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
     {
-        return nwaService.decisionOnJustification(nwaJustificationDecision)
+        return nwaService.decisionOnJustification(nwaJustificationDecision,standardNwaRemarks)
     }
 
-
-    //********************************************************** get KNW Tasks **********************************************************
-    @PreAuthorize("hasAuthority('KNW_SEC_READ')")
-    @GetMapping("/knwtasks")
-    fun getKNWTask():List<TaskDetails>
-    {
-        return nwaService.getKNWTasks()
-    }
 
     //********************************************************** process prepare justification for DI-SDT Approval **********************************************************
     @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
@@ -182,6 +245,7 @@ class NWAController(val nwaService: NWAService,
         return ServerResponse(HttpStatus.OK,"Successfully uploaded DI-SDT Justification",nwaService.prepareDisDtJustification(nwaDiSdtJustification))
     }
 
+    //Upload document for DI SDT
     @PostMapping("/di-file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadDIFiles(
@@ -191,7 +255,7 @@ class NWAController(val nwaService: NWAService,
     ): CommonDaoServices.MessageSuccessFailDTO {
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val nwaDiSdtJustification = nwadisdtJustificationRepository.findByIdOrNull(nwaDiSdtJustificationID)?: throw Exception("NWA DI-SDT DOCUMENT ID DOES NOT EXIST")
+        val nwaDiSdtJustification = nwadisdtJustificationRepository.findByIdOrNull(nwaDiSdtJustificationID)?: throw Exception("NWA DI SDT DOCUMENT ID DOES NOT EXIST")
 
         docFile.forEach { u ->
             val upload = SDDIJustificationUploads()
@@ -209,27 +273,59 @@ class NWAController(val nwaService: NWAService,
         }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.message = "Document Uploaded successful"
+        sm.message = "Document Uploaded successfully"
 
         return sm
     }
+
     //********************************************************** get di-sdt Tasks **********************************************************
     //@PreAuthorize("hasAuthority('DI_SDT_SD_READ')")
-    @GetMapping("/getDiSdtTasks")
-    fun getDISDTTasks():List<TaskDetails>
-    {
-        return nwaService.getDISDTTasks()
+//    @GetMapping("/getDiSdtTasks")
+//    fun getDISDTTasks():List<TaskDetails>
+//    {
+//        return nwaService.getDISDTTasks()
+//    }
+
+    // View DI SDT Uploaded document
+    @GetMapping("/view/di-justification")
+    fun viewDiJustificationFile(
+        response: HttpServletResponse,
+        @RequestParam("diDocumentId") diDocumentId: Long
+    ) {
+        val fileUploaded = nwaService.findUploadedDIFileBYId(diDocumentId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
     }
+
+    //********************************************************** get Tc Sec Tasks **********************************************************
+//    @PreAuthorize("hasAuthority('TC_SEC_SD_READ')")
+//    @GetMapping("/getTCSeCTasks")
+//    fun getTCSeCTasks():List<TaskDetails>
+//    {
+//        return nwaService.getTCSeCTasks()
+//    }
+
 
     //********************************************************** Decision  on DI-SDT Approval **********************************************************
     //@PreAuthorize("hasAuthority('DI_SDT_SD_MODIFY')")
     @PostMapping("/decisionOnDiSdtJustification")
-    fun decisionOnDiSdtJustification(@RequestBody workshopAgreement: WorkshopAgreement): List<TaskDetails> {
-        return nwaService.decisionOnDiSdtJustification(workshopAgreement)
+    fun decisionOnDiSdtJustification(@RequestBody workshopAgreement: WorkshopAgreement,
+                                     standardNwaRemarks: StandardNwaRemarks): List<WorkShopAgreementTasks> {
+        return nwaService.decisionOnDiSdtJustification(workshopAgreement,standardNwaRemarks)
     }
 
     //********************************************************** process prepare Preliminary Draft **********************************************************
-    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
     @PostMapping("/preparePreliminaryDraft")
     @ResponseBody
     fun preparePreliminaryDraft(@RequestBody nwaPreliminaryDraft: NWAPreliminaryDraft): ServerResponse
@@ -237,7 +333,8 @@ class NWAController(val nwaService: NWAService,
 
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Preliminary Draft",nwaService.preparePreliminaryDraft(nwaPreliminaryDraft))
     }
-// upload preliminary draft
+
+    // upload preliminary draft
     @PostMapping("/pd-file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadPDFiles(
@@ -265,26 +362,48 @@ class NWAController(val nwaService: NWAService,
         }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.message = "Document Uploaded successful"
+        sm.message = "Document Uploaded successfully"
 
         return sm
+    }
+
+    // View PD Uploaded document
+    @GetMapping("/view/preliminaryDraft")
+    fun viewPDFile(
+        response: HttpServletResponse,
+        @RequestParam("nwaPDDocumentId") nwaPDDocumentId: Long
+    ) {
+        val fileUploaded = nwaService.findUploadedPDFileBYId(nwaPDDocumentId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
     }
 
     //********************************************************** Decision  on Preliminary Draft **********************************************************
     @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
     @PostMapping("/decisionOnPd")
-    fun decisionOnPD(@RequestBody nwaPreliminaryDraftDecision: NWAPreliminaryDraftDecision) : List<TaskDetails>
+    fun decisionOnPD(@RequestBody nwaPreliminaryDraftDecision: NWAPreliminaryDraftDecision,
+                     standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
     {
-        return nwaService.decisionOnPD(nwaPreliminaryDraftDecision)
+        return nwaService.decisionOnPD(nwaPreliminaryDraftDecision,standardNwaRemarks)
     }
 
     //********************************************************** get Head of Publishing Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_READ')")
-    @GetMapping("/getHOPTasks")
-    fun getHOPTasks():List<TaskDetails>
-    {
-        return nwaService.getHOPTasks()
-    }
+//    @PreAuthorize("hasAuthority('HOP_SD_READ')")
+//    @GetMapping("/getHOPTasks")
+//    fun getHOPTasks():List<TaskDetails>
+//    {
+//        return nwaService.getHOPTasks()
+//    }
 
     //********************************************************** process prepare Workshop Draft **********************************************************
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY')")
@@ -324,27 +443,50 @@ class NWAController(val nwaService: NWAService,
         }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.message = "Document Uploaded successful"
+        sm.message = "Document Uploaded successfully"
 
         return sm
     }
 
+
     //********************************************************** get Head of SAC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")
-    @GetMapping("/getSacSecTasks")
-    fun getSacSecTasks():List<TaskDetails>
-    {
-        return nwaService.getSacSecTasks()
+//    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")
+//    @GetMapping("/getSacSecTasks")
+//    fun getSacSecTasks():List<TaskDetails>
+//    {
+//        return nwaService.getSacSecTasks()
+//    }
+
+    // View WD Uploaded document
+    @GetMapping("/view/workShopDraft")
+    fun viewWDFile(
+        response: HttpServletResponse,
+        @RequestParam("nwaWDDocumentId") nwaWDDocumentId: Long
+    ) {
+        val fileUploaded = nwaService.findUploadedWDFileBYId(nwaWDDocumentId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+       // response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
     }
 
     //********************************************************** Decision  on Workshop Draft Approval **********************************************************
     @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY')")
     @PostMapping("/decisionOnWd")
-    fun decisionOnWd(@RequestBody nwaWorkshopDraftDecision: NWAWorkshopDraftDecision) : List<TaskDetails>
+    fun decisionOnWd(@RequestBody nwaWorkshopDraftDecision: NWAWorkshopDraftDecision,
+                     standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
     {
         val gson = Gson()
         KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(nwaWorkshopDraftDecision) }
-        return nwaService.decisionOnWD(nwaWorkshopDraftDecision)
+        return nwaService.decisionOnWD(nwaWorkshopDraftDecision,standardNwaRemarks)
     }
 
 
@@ -372,7 +514,7 @@ class NWAController(val nwaService: NWAService,
         docFile.forEach { u ->
             val upload = NWAStandardUploads()
             with(upload) {
-                nwaStdDocumentId = nWAStandard.id
+                nwaSDocumentId = nWAStandard.id
 
             }
             nwaService.uploadSTDFile(
@@ -385,17 +527,39 @@ class NWAController(val nwaService: NWAService,
         }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.message = "Document Uploaded successful"
+        sm.message = "Document Uploaded successfully"
 
         return sm
     }
 
+
     //********************************************************** get Head of HO SIC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_READ')")
-    @GetMapping("/getHoSiCTasks")
-    fun getHoSiCTasks():List<TaskDetails>
-    {
-        return nwaService.getHoSiCTasks()
+//    @PreAuthorize("hasAuthority('HO_SIC_SD_READ')")
+//    @GetMapping("/getHoSiCTasks")
+//    fun getHoSiCTasks():List<TaskDetails>
+//    {
+//        return nwaService.getHoSiCTasks()
+//    }
+
+    // View STD Uploaded document
+    @GetMapping("/view/knwStandard")
+    fun viewKnwStandardFile(
+        response: HttpServletResponse,
+        @RequestParam("nwaSDocumentId") nwaSDocumentId: Long
+    ) {
+        val fileUploaded = nwaService.findUploadedSTDFileBYId(nwaSDocumentId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+        // response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
     }
 
     //********************************************************** process upload Gazette Notice **********************************************************
@@ -500,12 +664,57 @@ class NWAController(val nwaService: NWAService,
             .body(fileDB.data)
     }
 
-
-
-    @GetMapping("/process/{processId}")
-    fun checkState(@PathVariable("processId") processId: String?) {
-        nwaService.checkProcessHistory(processId)
+    @PreAuthorize("hasAuthority('KNW_SEC_READ') or hasAuthority('SPC_SEC_SD_READ')" +
+            " or hasAuthority('DI_SDT_SD_READ') or hasAuthority('HOP_SD_READ') or" +
+            " hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HO_SIC_SD_READ')  ")
+    @GetMapping("/getUserTasks")
+    fun getUserTasks():List<WorkShopAgreementTasks>
+    {
+        return nwaService.getUserTasks()
     }
+
+    @GetMapping("/getKnwSecretary")
+    @ResponseBody
+    fun getKnwSecretary(): List<UserDetailHolder> {
+        return nwaService.getKnwSecretary()
+    }
+
+    @GetMapping("/getDirector")
+    @ResponseBody
+    fun getDirector(): List<UserDetailHolder> {
+        return nwaService.getDirector()
+    }
+
+    @GetMapping("/getHeadOfPublishing")
+    @ResponseBody
+    fun getHeadOfPublishing(): List<UserDetailHolder> {
+        return nwaService.getHeadOfPublishing()
+    }
+
+    @GetMapping("/getSacSecretary")
+    @ResponseBody
+    fun getSacSecretary(): List<UserDetailHolder> {
+        return nwaService.getSacSecretary()
+    }
+
+    @GetMapping("/getHeadOfSic")
+    @ResponseBody
+    fun getHeadOfSic(): List<UserDetailHolder> {
+        return nwaService.getHeadOfSic()
+    }
+
+    @GetMapping("/getSpcSecretary")
+    @ResponseBody
+    fun getSpcSecretary(): List<UserDetailHolder> {
+        return nwaService.getSpcSecretary()
+    }
+
+
+
+//    @GetMapping("/process/{processId}")
+//    fun checkState(@PathVariable("processId") processId: String?) {
+//        nwaService.checkProcessHistory(processId)
+//    }
 
     @GetMapping("/getRQNumber")
     @ResponseBody
@@ -526,5 +735,26 @@ class NWAController(val nwaService: NWAService,
     fun getKSNumber(): String
     {
         return nwaService.getKSNumber();
+    }
+
+    @PostMapping("/anonymous/standard/close")
+    fun clos(@RequestBody responseMessage: ResponseMessage) {
+        return nwaService.closeProcess(responseMessage.message)
+    }
+
+    //Delete A Task
+    @PostMapping("/anonymous/standard/closetask")
+    fun closeTask(@RequestBody responseMessage: ResponseMessage) {
+        return nwaService.closeTask(responseMessage.message)
+    }
+
+    @PostMapping("/workshop/process")
+    @ResponseBody
+    fun checkState(@RequestBody id: ID): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully returned process history",
+            nwaService.checkProcessHistory(id)
+        )
     }
 }

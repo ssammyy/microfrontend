@@ -11,15 +11,41 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
-                            <label for="filter-date">Filter Currency</label>
-                            <input class="search-form-input" id="filter-date"  type="date" (change)="filterByCurrency($event)"
-                                   placeholder="dd-mm-yyyy"
-                                   min="2021-01-01" max="2050-12-31">
+                        <div [formGroup]="form">
+                            <div class="container" role="group" aria-label="Applications Status">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Search Rates</span>
+                                        <select class="custom-select search-form-select" id="filter-type"
+                                                formControlName="rangeType">
+                                            <option selected>Filter Type</option>
+                                            <option value="RANGE">Date Range</option>
+                                            <option value="SINGLE">Single Day</option>
+                                        </select>
+                                    </div>
+                                    <input class="search-form-input" id="start-date" type="date"
+                                           formControlName="startDate"
+                                           placeholder="dd-mm-yyyy"
+                                           min="2021-01-01" max="2090-12-31">
+                                    <input class="search-form-input" id="end-date" type="date"
+                                           formControlName="endDate"
+                                           *ngIf="form.value.rangeType=='RANGE'"
+                                           placeholder="dd-mm-yyyy"
+                                           min="2021-01-01" max="2090-12-31">
+                                    <div class="input-group-append">
+                                        <button class="input-group-btn btn-sm btn-primary mr-7"
+                                                [disabled]="form.invalid"
+                                                (click)="filterByCurrency($event)"><i class="fa fa-search"></i>Search
+
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="btn-group btn-group-sm pull-right" role="group"
                              aria-label="Applications Status">
-                            <input type="file" accept="text/csv"  [hidden]="true"
+                            <input type="file" accept="text/csv" [hidden]="true"
                                    (change)="uploadRates($event)" #uploadFile>
                             <button class="btn btn-sm btn-primary mr-7"
 
@@ -27,11 +53,22 @@
 
                             </button>
                         </div>
-                        <div class="table-responsive table-striped">
-                            <ng2-smart-table class="table table-hover" [settings]="settings"
-                                             [source]="dataSet">
-                            </ng2-smart-table>
-                        </div>
+                        <mat-tab-group [(selectedIndex)]="activeTab">
+                            <mat-tab label="FILTER RATES" [tabIndex]="0">
+                                <div class="table-responsive table-striped">
+                                    <ng2-smart-table class="table table-hover" [settings]="settings"
+                                                     [source]="dataSet">
+                                    </ng2-smart-table>
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="ACTIVE RATES" [tabIndex]="1">
+                                <div class="table-responsive table-striped">
+                                    <ng2-smart-table class="table table-hover" [settings]="settings"
+                                                     [source]="activeDataSet">
+                                    </ng2-smart-table>
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
                     </div>
                 </div>
             </div>

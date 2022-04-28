@@ -19,6 +19,7 @@ export class ComStdUploadComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   tasks: ComJcJustificationDec[] = [];
+  blob: Blob;
   public actionRequest: ComJcJustificationDec | undefined;
   public prepareJustificationFormGroup!: FormGroup;
   public prepareStandardFormGroup!: FormGroup;
@@ -32,7 +33,7 @@ export class ComStdUploadComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    this.getComSecTasks();
+    this.getHopTasks();
     this.prepareStandardFormGroup = this.formBuilder.group({
       title: ['', Validators.required],
       scope: ['', Validators.required],
@@ -57,9 +58,9 @@ export class ComStdUploadComponent implements OnInit {
   get formPrepareSD(): any {
     return this.prepareStandardFormGroup.controls;
   }
-  public getComSecTasks(): void{
+  public getHopTasks(): void{
     this.SpinnerService.show();
-    this.stdComStandardService.getComSecTasks().subscribe(
+    this.stdComStandardService.getHopTasks().subscribe(
         (response: ComJcJustificationDec[])=> {
           this.SpinnerService.hide();
           this.dtTrigger.next();
@@ -106,18 +107,18 @@ export class ComStdUploadComponent implements OnInit {
         (response ) => {
           console.log(response);
           this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Preliminary Draft Preparation Process Started`);
+          this.showToasterSuccess(response.httpStatus, `Company Standard Preparation Process Started`);
           this.onClickSaveUPLOADS(response.body.savedRowID)
           this.prepareStandardFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Preliminary Draft Was Not Prepared`);
+          this.showToasterError('Error', `Company Standard Was Not Prepared`);
           console.log(error.message);
         }
     );
   }
-  onClickSaveUPLOADS(comStdID: string) {
+  onClickSaveUPLOADS(comStandardID: string) {
     if (this.uploadedFiles.length > 0) {
       const file = this.uploadedFiles;
       const formData = new FormData();
@@ -125,28 +126,27 @@ export class ComStdUploadComponent implements OnInit {
         console.log(file[i]);
         formData.append('docFile', file[i], file[i].name);
       }
-
       this.SpinnerService.show();
-      this.stdComStandardService.uploadSDFileDetails(comStdID, formData).subscribe(
+      this.stdComStandardService.uploadSDFileDetails(comStandardID, formData).subscribe(
           (data: any) => {
             this.SpinnerService.hide();
-            this.showToasterSuccess(data.httpStatus, `Company Standard Prepared`);
             this.uploadedFiles = null;
             console.log(data);
             swal.fire({
               title: 'Company Standard Prepared.',
               buttonsStyling: false,
               customClass: {
-                confirmButton: 'btn btn-success ',
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
               },
               icon: 'success'
             });
-            this.router.navigate(['/comStdJustification']);
+            //this.router.navigate(['/nwaJustification']);
           },
       );
     }
 
   }
+
   showNotification(from: any, align: any) {
     const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
 
@@ -173,6 +173,28 @@ export class ComStdUploadComponent implements OnInit {
           '<a href="{3}" target="{4}" data-notify="url"></a>' +
           '</div>'
     });
+  }
+  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Processing Request`);
+          console.log(error.message);
+        }
+    );
   }
 
 }

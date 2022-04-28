@@ -35,7 +35,9 @@ type="ball-scale-multiple"
 <th class="knw">Proposal Document</th>
 <th class="sl">Comment</th>
 <th class="requestNumber">Name </th>
+ <th>Reference Material</th>
 <th class="action">Action</th>
+    <th></th>
 </tr>
 </thead>
 <tbody>
@@ -44,9 +46,17 @@ type="ball-scale-multiple"
 <td>{{task.taskData.proposal_doc_name}}</td>
 <td>{{task.taskData.adoption_proposal_comment}}</td>
 <td>{{task.taskData.user_id}}</td>
-<td *ngIf="task.name ==='Summary of Responses'"><a  (click)="onOpenModal(task,'approve')" class="btn btn-success btn-sm tooltips" data-placement="top"> Adopt Proposal</a>
-<button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject Proposal</button></td>
+    <td ><button mat-raised-button type="button" data-toggle="modal"
+                                                       (click)="viewPdfFile( task.taskData.ID,'Proposal'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+        <i class="material-icons">visibility</i>
+
+    </button>
+    </td>
+<td *ngIf="task.name ==='Summary of Responses'"><a  (click)="onOpenModal(task,'approve')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 166px"> Adopt Proposal</a>
+</td>
+    <td *ngIf="task.name ==='Summary of Responses'"><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject Proposal</button></td>
 <td *ngIf="task.name ==='Prepare Justification'"><a  (click)="onOpenModal(task,'prepareJustification')" class="btn btn-info btn-sm tooltips" data-placement="top" > Prepare Justification</a></td>
+    <td *ngIf="task.name ==='Prepare Justification'"><button  type="submit" class="btn btn-danger btn-sm"  style="width: 136px">NA</button></td>
 </tr>
 </tbody>
 </table>

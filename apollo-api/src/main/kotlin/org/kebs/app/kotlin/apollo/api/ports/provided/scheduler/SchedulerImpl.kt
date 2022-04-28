@@ -7,12 +7,15 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PaymentPurpose
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.SchedulerEntity
+import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
@@ -230,7 +233,9 @@ class SchedulerImpl(
         KotlinLogging.logger { }.info("Found ${paidDemandNotesList.size} demand notes with paid status")
         //If list is not empty
         for (demandNote in paidDemandNotesList) {
-            diBpmn.triggerDemandNotePaidBpmTask(demandNote)
+            if (demandNote.paymentPurpose == PaymentPurpose.CONSIGNMENT.code) {
+                diBpmn.triggerDemandNotePaidBpmTask(demandNote)
+            }
         }
         return true
     }
@@ -257,8 +262,35 @@ class SchedulerImpl(
 
     }
 
-
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateLabResultsWithDetails(ssfFound: QaSampleSubmissionEntity, map: ServiceMapsEntity) {
+        try {
+            val bsNumber = ssfFound.bsNumber ?: throw Exception("DATA NOT FOUND")
+            when {
+                limsServices.mainFunctionLims(bsNumber) == true -> {
+                    with(ssfFound) {
+                        modifiedBy = "SYSTEM SCHEDULER"
+                        modifiedOn = commonDaoServices.getTimestamp()
+                        labResultsStatus = map.activeStatus
+                        resultsDate = commonDaoServices.getCurrentDate()
+                    }
+                    KotlinLogging.logger("Lab result for ${bsNumber} found processing...")
+                    sampleSubmissionRepo.save(ssfFound)
+                    // Update permits
+                    try {
+                        if (ssfFound.permitRefNumber != null) {
+                            qaDaoServices.findPermitWithPermitRefNumberLatest(
+                                    ssfFound.permitRefNumber ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+                            )
+                                    .let { pm ->
+                                        with(pm) {
+                                            userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                                            permitStatus =
+                                                    applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                            modifiedBy = "SYSTEM SCHEDULER"
+                                            modifiedOn = commonDaoServices.getTimestamp()
+                                        }
+                                        permitRepo.save(pm)
     fun updateLabResultsWithDetails() {
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         //Find all Sample with Lab results inactive
@@ -303,6 +335,39 @@ class SchedulerImpl(
                                                 }
                                                 permitRepo.save(pm)
 
+                                        qaDaoServices.sendEmailWithLabResultsFound(
+                                                commonDaoServices.findUserByID(
+                                                        pm.qaoId ?: throw Exception("QAO ID, NOT FOUND")
+                                                ).email ?: throw Exception("EMAIL FOR QAO, NOT FOUND"),
+                                                pm.permitRefNumber
+                                                        ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+                                        )
+                                    }
+                        }
+                    } catch (ex: Exception) {
+                        KotlinLogging.logger { }.debug("Failed to update permit BS number: ${bsNumber}", ex)
+                    }
+                    // Update item details
+                    if (ssfFound.cdItemId != null) {
+                        diDaoServices.findItemWithItemID(ssfFound.cdItemId!!).let { cdItem ->
+                            // Update CD result received
+                            cdItem.allTestReportStatus = 1
+                            cdItem.varField1 = commonDaoServices.getTimestamp().toString()
+                            diDaoServices.updateCdItemDetailsInDB(cdItem, null)
+                            // Clear Lab result status if all results are received
+                            cdItem.cdDocId?.let { updatedCDDetails ->
+                                limsServices.updateConsignmentSampledStatus(updatedCDDetails)
+                            } ?: throw Exception("CD ID NOT FOUND")
+                        }
+                    }
+                }
+            }
+        } catch (e: ExpectedDataNotFound) {
+            KotlinLogging.logger { }.debug("BS number update failed: ${e.message}")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error("Failed to update test result for BS number", e)
+        }
+    }
                                                 qaDaoServices.sendEmailWithLabResultsFound(
                                                         commonDaoServices.findUserByID(
                                                                 pm.qaoId ?: throw Exception("QAO ID, NOT FOUND")
@@ -364,6 +429,14 @@ class SchedulerImpl(
                     continue
                 }
 
+    fun updateLabResultsWithDetails() {
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        //Find all Sample with Lab results inactive
+        KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
+        val ssfFoundList = sampleSubmissionRepo.findByLabResultsStatusAndBsNumberIsNotNull(map.inactiveStatus)
+        if (ssfFoundList.isNotEmpty()) {
+            for (ssfFound in ssfFoundList) {
+                updateLabResultsWithDetails(ssfFound, map)
             }
         }
     }

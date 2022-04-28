@@ -10,8 +10,8 @@ import {
     KNWCommittee, KNWDepartment,
     KnwSecTasks, NWADiSdtJustification,
     NWAJustification, NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft,
-    NWAStandard, NWAWDDecision, NWAWorkShopDraft, SacSecTasks, SPCSECTasks,
-    UpdateNwaGazette, UploadNwaGazette
+    NWAStandard, NwaTasks, NWAWDDecision, NWAWorkShopDraft, PreliminaryDraftTasks, SacSecTasks, SPCSECTasks,
+    UpdateNwaGazette, UploadNwaGazette, UsersEntity
 } from "./std.model";
 
 @Injectable({
@@ -19,6 +19,10 @@ import {
 })
 export class StdNwaService {
   constructor(private http: HttpClient) { }
+
+ // public getPublicUrl(): any{
+ //     const url = ApiEndpointService.getEndpoint();
+ // }
 
   public getKNWDepartments(): any {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DEPARTMENTS);
@@ -38,26 +42,32 @@ export class StdNwaService {
     return this.http.get<KnwSecTasks[]>(url, {params}).pipe();
   }
 
-  // public prepareJustification(nwaJustification: NWAJustification): Observable<any> {
-  //   const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_JUSTIFICATION);
-  //   const params = new HttpParams();
-  //   return this.http.post<NWAJustification>(url, nwaJustification, {params}).pipe(
-  //       map(function (response: any) {
-  //         return response;
-  //       }),
-  //       catchError((fault: HttpErrorResponse) => {
-  //         return throwError(fault);
-  //       })
-  //   );
-  // }
-    public prepareJustification(permitID: string, data: FormData): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_JUSTIFICATION);
-        // const params = new HttpParams()
-        //     .set('permitID', permitID);
+    public getNwaTasks(): Observable<NwaTasks[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_TASKS);
+        const params = new HttpParams();
+        return this.http.get<NwaTasks[]>(url, {params}).pipe();
+    }
+
+  public prepareJustification(nwaJustification: NWAJustification): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_JUSTIFICATION);
+    const params = new HttpParams();
+    return this.http.post<NWAJustification>(url, nwaJustification, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+  //upload justification Document
+    public uploadFileDetails(nwaJustificationID: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA);
+
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'permitID': permitID}
+            }, params: {'nwaJustificationID': nwaJustificationID}
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -68,6 +78,24 @@ export class StdNwaService {
             })
         );
     }
+  //   public prepareJustification(permitID: string, data: FormData): Observable<any> {
+  //       const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_JUSTIFICATION);
+  //       // const params = new HttpParams()
+  //       //     .set('permitID', permitID);
+  //       return this.http.post<any>(url, data, {
+  //           headers: {
+  //               'enctype': 'multipart/form-data'
+  //           }, params: {'permitID': permitID}
+  //       }).pipe(
+  //           map(function (response: any) {
+  //               return response;
+  //           }),
+  //           catchError((fault: HttpErrorResponse) => {
+  //               // console.warn(`getAllFault( ${fault.message} )`);
+  //               return throwError(fault);
+  //           })
+  //       );
+  //   }
     public loadFileDetailsPDF(nwaDocumentId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW);
         const params = new HttpParams()
@@ -89,8 +117,23 @@ export class StdNwaService {
     const params = new HttpParams();
     return this.http.get<SPCSECTasks[]>(url, {params}).pipe();
   }
-  public decisionOnJustification(nwaJustificationDecision: NWAJustificationDecision): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_JUSTIFICATION);
+    public viewJustificationPDF(nwaDocumentId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW);
+        const params = new HttpParams()
+            .set('nwaDocumentId', nwaDocumentId);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+  public decisionOnJustificationKNW(nwaJustificationDecision: NWAJustificationDecision): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_JUSTIFICATION_KNW);
     const params = new HttpParams();
     return this.http.post<NWAJustification>(url, nwaJustificationDecision, {params}).pipe(
         map(function (response: any) {
@@ -101,6 +144,18 @@ export class StdNwaService {
         })
     );
   }
+    public decisionOnJustification(nwaJustificationDecision: NWAJustificationDecision): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.post<NWAJustification>(url, nwaJustificationDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 
   public prepareDisDtJustification(nwaDiSdtJustification: NWADiSdtJustification): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_DISDT_JUSTIFICATION);
@@ -119,6 +174,21 @@ export class StdNwaService {
     const params = new HttpParams();
     return this.http.get<DISDTTasks[]>(url, {params}).pipe();
   }
+    public viewDIJustificationPDF(diDocumentId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW_DI);
+        const params = new HttpParams()
+            .set('diDocumentId', diDocumentId);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
   public decisionOnDiSdtJustification(diSdtDecision: DiSdtDECISION): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_DISDT_JUSTIFICATION);
     const params = new HttpParams();
@@ -131,6 +201,11 @@ export class StdNwaService {
         })
     );
   }
+    public getTCSeCTasks(): Observable<PreliminaryDraftTasks[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_TC_SEC_TASKS);
+        const params = new HttpParams();
+        return this.http.get<PreliminaryDraftTasks[]>(url, {params}).pipe();
+    }
   public preparePreliminaryDraft(nwaPreliminaryDraft: NWAPreliminaryDraft): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_PRELIMINARY_DRAFT);
     const params = new HttpParams();
@@ -143,6 +218,21 @@ export class StdNwaService {
         })
     );
   }
+    public viewPreliminaryDraftPDF(nwaPDDocumentId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW_PD);
+        const params = new HttpParams()
+            .set('nwaPDDocumentId', nwaPDDocumentId);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
   public decisionOnPD(nwaPDDecision: NWAPDDecision): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_PRELIMINARY_DRAFT);
     const params = new HttpParams();
@@ -174,6 +264,21 @@ export class StdNwaService {
         })
     );
   }
+    public viewWorkshopDraftPDF(nwaWDDocumentId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW_WD);
+        const params = new HttpParams()
+            .set('nwaWDDocumentId', nwaWDDocumentId);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
   public getSacSecTasks(): Observable<SacSecTasks[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_SAC_SEC_TASKS);
     const params = new HttpParams();
@@ -209,6 +314,22 @@ export class StdNwaService {
     const params = new HttpParams();
     return this.http.get<HoSicTasks[]>(url, {params}).pipe();
   }
+
+    public viewStandardPDF(nwaSDocumentId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW_STD);
+        const params = new HttpParams()
+            .set('nwaSDocumentId', nwaSDocumentId);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
   public uploadGazetteNotice(uploadNwaGazette: UploadNwaGazette): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_GAZETTE_NOTICE);
     const params = new HttpParams();
@@ -234,23 +355,7 @@ export class StdNwaService {
     );
   }
 
-    public uploadFileDetails(nwaJustificationID: string, data: FormData): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA);
 
-        return this.http.post<any>(url, data, {
-            headers: {
-                'enctype': 'multipart/form-data'
-            }, params: {'nwaJustificationID': nwaJustificationID}
-        }).pipe(
-            map(function (response: any) {
-                return response;
-            }),
-            catchError((fault: HttpErrorResponse) => {
-                // console.warn(`getAllFault( ${fault.message} )`);
-                return throwError(fault);
-            })
-        );
-    }
     //Upload DI SDT Justification
     public uploadDIFileDetails(nwaDiSdtJustificationID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_DI);
@@ -317,6 +422,41 @@ export class StdNwaService {
                 return throwError(fault);
             })
         );
+    }
+    public getKnwSecretary(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_KNW_SECRETARY);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getDirector(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DI_DIRECTOR);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getHeadOfPublishing(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_HEAD_OF_PUBLISHING);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getSacSecretary(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_SAC_SECRETARY);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getHeadOfSic(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_HEAD_OF_SIC);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
+
+    public getSpcSecretary(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_SPC_SECRETARY);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
 

@@ -100,14 +100,54 @@ export class AuthEffects {
                 switchMap((action) => this.service.validateTokenForUser(action.payload)
                     .pipe(
                         mergeMap((data) => {
-                            if (data.status === 200) {
-                                return [
-                                    doValidateTokenForUserSuccess({data: data, validated: true}),
-                                    loadResponsesSuccess({message: data})
-                                ];
+                            if (data.id) {
+                                if (this.hasRole(["PERMIT_APPLICATION"], data.roles)) {
+                                    return [
+                                        loadAuthsSuccess({profile: data, loggedIn: true}),
+                                        loadUserCompanyInfo(),
+                                        doValidateTokenForUserSuccess({
+                                            data: {
+                                                payload: "Success, valid OTP received",
+                                                response: "00",
+                                                status: 200
+                                            }, validated: true
+                                        }),
+                                        loadResponsesSuccess({
+                                            message: {
+                                                payload: "Success, valid OTP received",
+                                                response: "00",
+                                                status: 200
+                                            }
+                                        })
+                                    ];
+                                } else {
+                                    return [
+                                        loadAuthsSuccess({profile: data, loggedIn: true}),
+                                        doValidateTokenForUserSuccess({
+                                            data: {
+                                                payload: "Success, valid OTP received",
+                                                response: "00",
+                                                status: 200
+                                            }, validated: true
+                                        }),
+                                        loadResponsesSuccess({
+                                            message: {
+                                                payload: "Success, valid OTP received",
+                                                response: "00",
+                                                status: 200
+                                            }
+                                        })
+                                    ];
+                                }
                             } else {
                                 return [
-                                    doValidateTokenForUserFailure({data: data, validated: false})
+                                    doValidateTokenForUserFailure({
+                                        data: {
+                                            payload: "Failed, invalid OTP received, try again",
+                                            response: "99",
+                                            status: 500
+                                        }, validated: false
+                                    })
                                 ];
                             }
                         }),
@@ -185,13 +225,15 @@ export class AuthEffects {
                                         expiry: undefined,
                                         email: '',
                                         accessToken: '',
-                                        fullName: ''
+                                        fullName: '',
+                                        companyID: 0,
+                                        redirectUrl:undefined
                                     }
                                 }),
                                 loadUserCompanyInfoSuccess({data: null}),
                                 loadBranchIdSuccess({branchId: null, branch: null}),
                                 loadCompanyIdSuccess({companyId: null, company: null}),
-                                Go({payload: null, link: action.loginUrl, redirectUrl: ''})
+                                Go({payload: null, link: action.loginUrl, redirectUrl: null})
                             ];
                         }),
                         catchError(
@@ -203,7 +245,7 @@ export class AuthEffects {
                                         response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
                                     }, loggedIn: false, profile: null
                                 });
-                                return of(Go({payload: err, link: action.loginUrl, redirectUrl: ''}));
+                                return of(Go({payload: err, link: action.loginUrl, redirectUrl: null}));
                             })
                     )
                 )
@@ -227,26 +269,40 @@ export class AuthEffects {
                 switchMap((action) => this.service.login(action.payload)
                     .pipe(
                         mergeMap((data) => {
-                            if(this.hasRole(["PERMIT_APPLICATION"], data.roles)){
+                            // data.redirectUrl = action.redirectUrl
+                            // if(this.hasRole(["PERMIT_APPLICATION"], data.roles)){
                                 return [
-                                    loadAuthsSuccess({profile: data, loggedIn: true}),
-                                    loadUserCompanyInfo(),
+                                    loadAuthsSuccess({
+                                        loggedIn: false,
+                                        profile: {
+                                            id: 0,
+                                            username: action.payload.username,
+                                            roles: undefined,
+                                            expiry: undefined,
+                                            email: action.payload.username,
+                                            accessToken: data.payload,
+                                            fullName: '',
+                                            companyID: 0,
+                                            redirectUrl: action.redirectUrl
+                                        }
+                                    }),
                                     Go({
                                         payload: action.redirectUrl,
-                                        link: action.redirectUrl,
-                                        redirectUrl: action.redirectUrl
+                                        link: 'login/otp',
+                                        redirectUrl: null
                                     })
                                 ];
-                            }
-                            return [
-                                loadAuthsSuccess({profile: data, loggedIn: true}),
-                                Go({
-                                    payload: action.redirectUrl,
-                                    link: action.redirectUrl,
-                                    redirectUrl: action.redirectUrl
-                                })
-                            ];
+                         //   }
+                         //    return [
+                         //        loadAuthsSuccess({profile: data, loggedIn: true}),
+                         //        Go({
+                         //            payload: action.redirectUrl,
+                         //            link: 'login/otp',
+                         //            redirectUrl: null
+                         //        })
+                         //    ];
                         }),
+
                         catchError(
                             (err: HttpErrorResponse) => of(loadResponsesFailure({
                                 error: {

@@ -36,6 +36,10 @@ class StandardWorkPlan {
     @Basic
     var referenceNo:String?=null
 
+    @Column(name="STATUS")
+    @Basic
+    var status:String?=null
+
 
 
     @Transient

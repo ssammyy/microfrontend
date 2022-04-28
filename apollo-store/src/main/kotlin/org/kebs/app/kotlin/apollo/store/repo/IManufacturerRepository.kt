@@ -23,9 +23,15 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
+import org.kebs.app.kotlin.apollo.store.model.std.BranchNameHolder
+import org.kebs.app.kotlin.apollo.store.model.std.BusinessTypeHolder
+import org.kebs.app.kotlin.apollo.store.model.std.NotificationFormDetailsHolder
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 
@@ -52,6 +58,14 @@ interface IManufacturePlantDetailsRepository : HazelcastRepository<ManufacturePl
     fun findByCompanyProfileId(manufactureId: Long): List<ManufacturePlantDetailsEntity>?
     fun findByCompanyProfileIdAndStatus(manufactureId: Long, status: Int): List<ManufacturePlantDetailsEntity>?
     fun countByCompanyProfileId(companyProfileId: Long): Long?
+    @Query( value = "SELECT max(ID)  FROM DAT_KEBS_MANUFACTURE_PLANT_DETAILS WHERE MANUFACTURE_ID= :id ",
+        nativeQuery = true )
+    fun findTopByManufactureIdOrderByIdDesc(@Param("id") id: Long?): Long?
+
+    @Query( value = "SELECT BRANCH_NAME as branchName  FROM DAT_KEBS_MANUFACTURE_PLANT_DETAILS WHERE ID= :id ",
+        nativeQuery = true )
+    fun findBranchName(@Param("id") id: Long?): BranchNameHolder
+
 
 }
 
@@ -80,6 +94,9 @@ interface IBusinessLinesRepository : HazelcastRepository<BusinessLinesEntity, Lo
     fun findByStatusOrderByName(status: Int): List<BusinessLinesEntity>?
     fun findByStatus(status: Int): List<BusinessLinesEntity>?
     fun findByIdAndStatus(id: Long, status: Int): BusinessLinesEntity?
+
+    @Query("SELECT NAME FROM CFG_KEBS_BUSINESS_LINES  WHERE id=:id", nativeQuery = true)
+    fun findNameById(@Param("id") id: Long?): String
 }
 
 @Repository
@@ -87,6 +104,13 @@ interface IBusinessNatureRepository : HazelcastRepository<BusinessNatureEntity, 
     fun findByStatus(status: Int): List<BusinessNatureEntity>?
     fun findByIdAndStatus(id: Long, status: Int): BusinessNatureEntity?
     fun findByBusinessLinesIdAndStatus(businessLinesId: BusinessLinesEntity, status: Int): List<BusinessNatureEntity>?
+
+    @Query( value = "SELECT BUSINESS_TYPE_ID as businessType  FROM CFG_KEBS_BUSINESS_NATURE WHERE ID= :id",
+        nativeQuery = true )
+    fun getManufacturerStatus(@Param("id") id: Long?): BusinessTypeHolder
+
+    @Query("SELECT NAME FROM CFG_KEBS_BUSINESS_NATURE  WHERE id=:id", nativeQuery = true)
+    fun findNameById(@Param("id") id: Long?): String
 }
 
 @Repository
@@ -106,6 +130,29 @@ interface IManufacturerAddressRepository : HazelcastRepository<ManufacturerAddre
 interface IStdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotificationFormEntity, Long> {
 //    fun findFirstByManufacturerIdAndStatus(manufacturerId: ManufacturersEntity, status: Long): StdLevyNotificationFormEntity?
 //    fun findByManufacturerIdAndStatus(manufacturerId: ManufacturersEntity, status: Long): Collection<StdLevyNotificationFormEntity>?
+
+}
+@Repository
+interface StdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotificationForm, Long> {
+    @Query( value = "SELECT max(ID)  FROM DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL WHERE MANUFACTURER_ID= :id ",
+        nativeQuery = true )
+    fun findTopByManufactureIdOrderByIdDesc(@Param("id") id: Long?): Long?
+  //  fun findFirstByManufactureIdOrderByIdDesc(manufactureId: Long): StdLevyNotificationForm
+
+
+    @Query(
+        value = "SELECT COMMODITIES_MANUFACTURED as commodity,DATE_MANUFACTURE_COMMENCED as dateOfManufacture,TOTAL_VALUE_OF_MANUFACTURE as totalValue,MANUFACTURER_ID as id,NAME_BUSINESS_PROPRIETOR as nameOfBusinessProprietor  FROM  DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL  WHERE ID= :id",
+        nativeQuery = true
+    )
+
+    fun getNotificationFormDetails(@Param("id") id: Long?): NotificationFormDetailsHolder
+
+    @Query(
+        value = "SELECT COMMODITIES_MANUFACTURED as commodity,DATE_MANUFACTURE_COMMENCED as dateOfManufacture,TOTAL_VALUE_OF_MANUFACTURE as totalValue,MANUFACTURER_ID as id,NAME_BUSINESS_PROPRIETOR as nameOfBusinessProprietor   FROM  DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL  WHERE ID= :id",
+        nativeQuery = true
+    )
+
+    fun getSlNotificationFormDetails(@Param("id") id: Long?): NotificationFormDetailsHolder
 }
 
 @Repository

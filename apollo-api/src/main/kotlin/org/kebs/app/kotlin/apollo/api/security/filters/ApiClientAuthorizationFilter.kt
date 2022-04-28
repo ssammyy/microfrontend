@@ -22,14 +22,11 @@
 package org.kebs.app.kotlin.apollo.api.security.filters
 
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.security.bearer.AuthorizationPayloadExtractorService
-import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
-import org.kebs.app.kotlin.apollo.api.service.ApiClientService
-import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationProperties
+import org.kebs.app.kotlin.apollo.api.security.bearer.OauthClientAuthenticationToken
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
@@ -56,8 +53,14 @@ class ApiClientAuthorizationFilter : OncePerRequestFilter() {
             filterChain: FilterChain
     ) {
         extractorService.extractBasic(request)?.let { token ->
-            val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(token.first, token.second, ArrayList()))
-            SecurityContextHolder.getContext().authentication = authentication
+            try {
+                KotlinLogging.logger { }.info("Checking basic authentication: ${token.first}")
+                val authentication = authenticationManager.authenticate(OauthClientAuthenticationToken(token.first, token.second, "password"))
+                KotlinLogging.logger { }.info("Roles for authentication: ${authentication.authorities}")
+                SecurityContextHolder.getContext().authentication = authentication
+            } catch (ex: Exception) {
+                KotlinLogging.logger { }.info("Failed to process basic authentication: ${ex.localizedMessage}")
+            }
         }
 
         filterChain.doFilter(request, response)

@@ -1,8 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
-import org.kebs.app.kotlin.apollo.api.handlers.invoice.CorporateCustomerHandler
-import org.kebs.app.kotlin.apollo.api.handlers.pvoc.PvocHandler
-import org.kebs.app.kotlin.apollo.api.handlers.pvoc.PvocPartnersHandler
+import org.kebs.app.kotlin.apollo.api.handlers.pvoc.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -19,6 +17,7 @@ class PvocRouter {
             GET("/countries", handler::listPartnerCountries)
             GET("/types", handler::listPartnerTypes)
             GET("/list", handler::listPartners)
+            GET("/names", handler::listPartnerNames)
             POST("/add", handler::createPartner)
             GET("/details/{partnerId}", handler::getPartnerDetails)
             PUT("/update/{partnerId}", handler::updatePartnerDetails)
@@ -42,6 +41,54 @@ class PvocRouter {
             GET("/exemption/history", handler::exemptionHistory)
             GET("/exemption/{exemptionId}", handler::viewExemption)
 
+        }
+    }
+
+    @Bean
+    @CrossOrigin
+    fun pvocExemptions(handler: PvocExemptionHandler) = router {
+        "api/v1/pvoc/exemption".nest {
+            GET("/get/{applicationStatus}", handler::exemptionApplications)
+            GET("/details/{exemptionId}", handler::exemptionApplicationDetails)
+            POST("/status/update/{exemptionId}", handler::updateExemptionStatus)
+        }
+    }
+
+    @Bean
+    @CrossOrigin
+    fun pvocAgentMonitoring(handler: PvocMonitoringHandler) = router {
+        "api/v1/pvoc/monitoring".nest {
+            GET("/get/{applicationStatus}", handler::listMonitoringIssues)
+//            GET("/details/{exemptionId}", handler::exemptionApplicationDetails)
+//            POST("/status/update/{exemptionId}", handler::updateExemptionStatus)
+        }
+    }
+
+    @Bean
+    @CrossOrigin
+    fun pvocQueries(handler: PvocQueryHandler) = router {
+        "api/v1/pvoc/kebs/query".nest {
+            POST("/request", handler::pvocPartnerQueryRequest)
+            POST("/conclusion", handler::pvocPartnerQueryConclusion)
+            POST("/response", handler::pvocPartnerQueryResponse)
+        }
+    }
+
+    @Bean
+    fun pvocComplaint(handler: PvocComplaintHandler) = router {
+        "api/v1/pvoc/complaint".nest {
+            GET("/get/{applicationStatus}", handler::complaintApplications)
+            GET("/details/{complaintId}", handler::complaintApplicationDetails)
+            POST("/status/update/{complaintId}", handler::approveCurrentComplaintTask)
+        }
+    }
+
+    @Bean
+    fun pvocWaiverApplications(handler: PvocWaiverHandler) = router {
+        "/api/v1/pvoc/waiver".nest {
+            GET("/get/{applicationStatus}", handler::waiverApplications)
+            GET("/details/{waiverId}", handler::waiverApplicationDetails)
+            POST("/status/update/{waiverId}", handler::waiverTaskUpdate)
         }
     }
 }

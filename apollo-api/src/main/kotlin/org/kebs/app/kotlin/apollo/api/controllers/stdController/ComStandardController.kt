@@ -1,13 +1,14 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import com.google.gson.Gson
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.std.ComJcJustificationRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.ComStdDraftRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.CompanyStandardRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import javax.servlet.http.HttpServletResponse
 
 @RestController
 
@@ -92,6 +94,14 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getPlTasks()
     }
 
+    //********************************************************** process Form Joint Committee **********************************************************
+    @PreAuthorize("hasAuthority('PL_SD_MODIFY')")
+    @PostMapping("/company_standard/formJointCommittee")
+    @ResponseBody
+    fun formJointCommittee(@RequestBody comStandardJC: ComStandardJC,user: UsersEntity): ServerResponse{
+        return ServerResponse(HttpStatus.OK,"Successfully Formed Joint Committee",comStandardService.formJointCommittee(comStandardJC,user))
+    }
+
     //********************************************************** process upload Justification **********************************************************
     @PreAuthorize("hasAuthority('PL_SD_MODIFY')")
     @PostMapping("/company_standard/prepareJustification")
@@ -149,13 +159,7 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.decisionOnJustification(comJustificationDecision)
     }
 
-    //********************************************************** get SAC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")
-    @GetMapping("/company_standard/getSacSecTasks")
-    fun getSacSecTasks():List<TaskDetails>
-    {
-        return comStandardService.getSacSecTasks()
-    }
+
 
     //approve Justification List
     @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY')")
@@ -170,6 +174,9 @@ class ComStandardController (val comStandardService: ComStandardService,
     @PostMapping("/company_standard/uploadDraft")
     @ResponseBody
     fun uploadDraft(@RequestBody comStdDraft: ComStdDraft): ServerResponse{
+
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraft) }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",comStandardService.uploadDraft(comStdDraft))
     }
 
@@ -218,6 +225,60 @@ class ComStandardController (val comStandardService: ComStandardService,
     {
         return comStandardService.getJcSecTasks()
     }
+    @GetMapping("/view/attached")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun downloadFileDocument(
+        response: HttpServletResponse,
+        @RequestParam("comDraftDocumentId") comDraftDocumentId: Long
+    ) {
+        val fileUploaded = comStandardService.findUploadedFileBYId(comDraftDocumentId)
+        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+        commonDaoServices.downloadFile(response, mappedFileClass)
+    }
+    @GetMapping("/view/comDraft")
+    fun viewCompanyDraftFile(
+        response: HttpServletResponse,
+        @RequestParam("comStdDraftID") comStdDraftID: Long
+    ) {
+        val fileUploaded = comStandardService.findUploadedCDRFileBYId(comStdDraftID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
+//    @GetMapping("/view/comDraft")
+//    fun viewComDraftFile(
+//        response: HttpServletResponse,
+//        @RequestParam("comDraftDocumentId") comDraftDocumentId: Long
+//    ) {
+//        val fileUploaded = comStandardService.findUploadedCDRFileBYId(comDraftDocumentId)
+//        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+//        response.contentType = "application/pdf"
+////                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+//        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+//        response.outputStream
+//            .let { responseOutputStream ->
+//                responseOutputStream.write(fileDoc.document?.let {
+//                    org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull(
+//                        it
+//                    )
+//                } as ByteArray)
+//                responseOutputStream.close()
+//            }
+//
+//        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+//
+//    }
+
 
     //Decision on Company Draft
     @PreAuthorize("hasAuthority('JC_SEC_SD_MODIFY')")
@@ -236,8 +297,24 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
     //********************************************************** process Edit Company Standard **********************************************************
 
-    //********************************************************** process Upload Company Standard **********************************************************
+    //Decision on Company Draft COM SEC
     @PreAuthorize("hasAuthority('COM_SEC_SD_MODIFY')")
+    @PostMapping("/company_standard/decisionOnComStdDraft")
+    fun decisionOnComStdDraft(@RequestBody comDraftDecision: ComDraftDecision) : List<TaskDetails>
+    {
+        return comStandardService.decisionOnCompanyStdDraft(comDraftDecision)
+    }
+
+    //********************************************************** get HOP Tasks **********************************************************
+    @PreAuthorize("hasAuthority('HOP_SD_READ')")
+    @GetMapping("/company_standard/getHopTasks")
+    fun getHopTasks():List<TaskDetails>
+    {
+        return comStandardService.getHopTasks()
+    }
+
+    //********************************************************** process Upload Company Standard **********************************************************
+    @PreAuthorize("hasAuthority('HOP_SD_MODIFY')")
     @PostMapping("/company_standard/uploadComStandard")
     @ResponseBody
     fun uploadComStandard(@RequestBody companyStandard: CompanyStandard): ServerResponse
@@ -251,7 +328,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     {
         return comStandardService.getCSNumber();
     }
-
+    // upload Workshop draft
     @PostMapping("/company_standard/std-file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadStandardFiles(
@@ -284,12 +361,34 @@ class ComStandardController (val comStandardService: ComStandardService,
         return sm
     }
 
-    //********************************************************** get HOP Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_READ')")
-    @GetMapping("/company_standard/getHopTasks")
-    fun getHopTasks():List<TaskDetails>
+
+    //********************************************************** get SAC SEC Tasks **********************************************************
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")
+    @GetMapping("/company_standard/getSacSecTasks")
+    fun getSacSecTasks():List<TaskDetails>
     {
-        return comStandardService.getHopTasks()
+        return comStandardService.getSacSecTasks()
+    }
+
+    // View Standard
+    @GetMapping("/view/comStandard")
+    fun viewStandardFile(
+        response: HttpServletResponse,
+        @RequestParam("comStandardID") comStandardID: Long
+    ) {
+        val fileUploaded = comStandardService.findUploadedSTDFileBYId(comStandardID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
     }
 
     //********************************************************** process Upload Company Standard **********************************************************

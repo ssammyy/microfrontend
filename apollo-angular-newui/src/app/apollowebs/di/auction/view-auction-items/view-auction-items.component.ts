@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {DatePipe} from "@angular/common";
-import {ConsignmentStatusComponent} from "../../../../core/shared/customs/consignment-status/consignment-status.component";
 import {LocalDataSource} from "ng2-smart-table";
 import {MatDialog} from "@angular/material/dialog";
 import {UploadFileComponent} from "../upload-file/upload-file.component";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {AddAuctionRecordComponent} from "../add-auction-record/add-auction-record.component";
+import {GenerateAuctionKraReportComponent} from "../generate-auction-kra-report/generate-auction-kra-report.component";
 
 @Component({
     selector: 'app-view-auction-items',
@@ -13,8 +14,10 @@ import {Router} from "@angular/router";
     styleUrls: ['./view-auction-items.component.css']
 })
 export class ViewAuctionItemsComponent implements OnInit {
+    tabs = ['assigned', 'new', 'rejected', 'approved', 'search']
     auctionType = 'assigned'
     searchStatus = null
+    categories: any
     keywords: any
     page = 0
     pageSize = 20
@@ -30,7 +33,7 @@ export class ViewAuctionItemsComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                {name: 'editRecord', title: '<i class="fa fa-pencil-alt">Edit</i>'},
+                // {name: 'editRecord', title: '<i class="fa fa-pencil-alt">Edit</i>'},
                 {name: 'viewRecord', title: '<i class="fa fa-eye">View</i>'}
             ],
             position: 'right' // left|right
@@ -38,6 +41,14 @@ export class ViewAuctionItemsComponent implements OnInit {
         delete: {
             deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
             confirmDelete: true
+        },
+        rowClassFunction: (row) => {
+            // console.log(row)
+            if (row.data.auctionLotNo === row.data.chassisNo && row.data.blNumber === row.data.chassisNo && row.data.containerNumber === row.data.chassisNo) {
+                return 'risky';
+            } else {
+                return ''
+            }
         },
         noDataMessage: 'No data found',
         columns: {
@@ -56,7 +67,11 @@ export class ViewAuctionItemsComponent implements OnInit {
                 type: 'date',
                 valuePrepareFunction: (date) => {
                     if (date) {
-                        return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        try {
+                            return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        } catch (e) {
+                            return date
+                        }
                     }
                     return ""
                 },
@@ -70,35 +85,46 @@ export class ViewAuctionItemsComponent implements OnInit {
                 title: 'Current Location',
                 type: 'string'
             },
-            importerPhone: {
-                title: 'Importer Phone',
+            cfsCode: {
+                title: 'CFS Station',
                 type: 'string'
             },
-            category: {
+            categoryName: {
                 title: 'Category',
-                type: 'any',
-                valuePrepareFunction: (category) => {
-                    if (category) {
-                        return category.categoryCode
-                    }
-                    return "NA"
-                },
+                type: 'string',
             },
             auctionDate: {
                 title: 'Auction Date',
                 type: 'date',
                 valuePrepareFunction: (date) => {
                     if (date) {
-                        return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        try {
+                            return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        } catch (e) {
+                            return date
+                        }
                     }
                     return ""
                 },
             },
-            status: {
+            approvedRejectedOn: {
+                title: 'Approval/Rejection Date',
+                type: 'date',
+                valuePrepareFunction: (date) => {
+                    if (date) {
+                        try {
+                            return new DatePipe('en-US').transform(date, 'dd/MM/yyyy');
+                        } catch (e) {
+                            return date
+                        }
+                    }
+                    return "N/A"
+                },
+            },
+            approvalStatusDesc: {
                 title: 'Status',
-                type: 'custom',
-                renderComponent: ConsignmentStatusComponent
-            }
+                type: 'string'
+            },
         },
         pager: {
             display: true,
@@ -107,11 +133,31 @@ export class ViewAuctionItemsComponent implements OnInit {
     };
     dataSet: LocalDataSource = new LocalDataSource()
 
-    constructor(private router: Router, private diService: DestinationInspectionService, private dialog: MatDialog) {
+    constructor(private router: Router, private activeRouter: ActivatedRoute, private diService: DestinationInspectionService, private dialog: MatDialog) {
     }
 
     ngOnInit(): void {
-        this.loadData()
+        this.loadCategories()
+        this.activeRouter.queryParamMap.subscribe(res => {
+            if (res.has("tab")) {
+                let t = res.get('tab')
+                if (t in this.tabs) {
+                    this.auctionType = t;
+                }
+            }
+            this.loadData()
+        })
+    }
+
+    loadCategories() {
+        this.diService.loadAuctionCategories()
+            .subscribe(
+                res => {
+                    if (res.responseCode == "00") {
+                        this.categories = res.data
+                    }
+                }
+            )
     }
 
     toggleStatus(status: string): void {
@@ -122,6 +168,12 @@ export class ViewAuctionItemsComponent implements OnInit {
             this.searchStatus = null
             this.keywords = null
             this.currentPageInternal = 0
+            // Update URL
+            this.router.navigate([], {
+                queryParams: {
+                    tab: status
+                }
+            })
             this.loadData()
         }
     }
@@ -135,7 +187,23 @@ export class ViewAuctionItemsComponent implements OnInit {
     }
 
     aadAuctionItem(event: any) {
+        console.log("Add: Auction item")
+        this.dialog.open(AddAuctionRecordComponent, {
+            data: {
+                categories: this.categories
+            }
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadData()
+                    }
+                }
+            )
+    }
 
+    downloadReport(event: any) {
+        this.dialog.open(GenerateAuctionKraReportComponent)
     }
 
     uploadAuction(event: any) {
@@ -144,6 +212,7 @@ export class ViewAuctionItemsComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res) {
+                        this.auctionType = 'new'
                         this.loadData()
                     }
                 }
@@ -171,14 +240,19 @@ export class ViewAuctionItemsComponent implements OnInit {
 
     }
 
+    viewAuctionRecord(recordId: any) {
+        this.router.navigate(["/di/auction/details/", recordId])
+    }
+
     auctionEvent(action: any) {
         switch (action.action) {
             case "viewRecord": {
-                this.router.navigate(["/di/auction/details/", action.data.id])
+                this.viewAuctionRecord(action.data.requestId)
                 break
             }
             case "editRecord": {
                 this.addUpdateItem(action.data)
+                break
             }
         }
     }

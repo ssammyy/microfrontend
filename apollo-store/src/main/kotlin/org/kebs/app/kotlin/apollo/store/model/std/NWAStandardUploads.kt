@@ -45,7 +45,7 @@ class NWAStandardUploads : Serializable {
 
     @Column(name = "STD_DOCUMENT_ID")
     @Basic
-    var nwaStdDocumentId: Long? = null
+    var nwaSDocumentId: Long? = null
 
     @Column(name = "DESCRIPTION")
     @Basic
@@ -125,7 +125,7 @@ class NWAStandardUploads : Serializable {
         return id == that.id && filepath == that.filepath && name == that.name && fileType == that.fileType && documentType == that.documentType && Arrays.equals(
             document,
             that.document
-        ) && transactionDate == that.transactionDate && nwaStdDocumentId == that.nwaStdDocumentId && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
+        ) && transactionDate == that.transactionDate && nwaSDocumentId == that.nwaSDocumentId && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
 
     override fun hashCode(): Int {
@@ -136,7 +136,7 @@ class NWAStandardUploads : Serializable {
             fileType,
             documentType,
             transactionDate,
-            nwaStdDocumentId,
+            nwaSDocumentId,
             description,
             status,
             varField1,

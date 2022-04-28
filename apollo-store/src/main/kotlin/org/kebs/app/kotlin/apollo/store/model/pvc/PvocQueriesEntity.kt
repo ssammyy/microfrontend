@@ -14,9 +14,25 @@ class PvocQueriesEntity:Serializable {
     @GeneratedValue(generator = "DAT_KEBS_PVOC_QUERIES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = 0
 
-    @Column(name = "COC_NUMBER", nullable = true, length = 50)
+    @Column(name = "PARTNER_ID", nullable = true, length = 4000)
     @Basic
-    var cocNumber: String? = null
+    var partnerId: Long? = null
+
+    @Column(name = "SERIAL_NUMBER", nullable = true, length = 50)
+    @Basic
+    var serialNumber: String? = null
+
+    @Column(name = "CERT_NUMBER", nullable = true, length = 50)
+    @Basic
+    var certNumber: String? = null
+
+    @Column(name = "CERT_TYPE", nullable = true, length = 50)
+    @Basic
+    var certType: String? = null
+
+    @Column(name = "QUERY_ORIGIN", nullable = true, length = 50)
+    @Basic
+    var queryOrigin: String? = null
 
     @Column(name = "RFC_NUMBER", nullable = true, length = 50)
     @Basic
@@ -30,25 +46,21 @@ class PvocQueriesEntity:Serializable {
     @Basic
     var ucrNumber: String? = null
 
-    @Column(name = "KEBS_QUERY", nullable = true, length = 4000)
+    @Column(name = "QUERY_DETAILS", nullable = true, length = 4000)
     @Basic
-    var kebsQuery: String? = null
+    var queryDetails: String? = null
 
-    @Column(name = "KEBS_RESPONSE", nullable = true, length = 4000)
+    @Column(name = "QUERY_RESPONSE", nullable = true, length = 4000)
     @Basic
-    var kebsResponse: String? = null
-
-    @Column(name = "PARTNER_QUERY", nullable = true, length = 4000)
-    @Basic
-    var partnerQuery: String? = null
+    var queryResponse: String? = null
 
     @Column(name = "PARTNER_RESPONSE", nullable = true, length = 4000)
     @Basic
     var partnerResponse: String? = null
 
-    @Column(name = "PARTNER_RESPONSE_ANALYSIS", nullable = true, length = 4000)
+    @Column(name = "RESPONSE_ANALYSIS", nullable = true, length = 4000)
     @Basic
-    var partnerResponseAnalysis: String? = null
+    var responseAnalysis: String? = null
 
     @Column(name = "CONCLUSION", nullable = true, length = 4000)
     @Basic
@@ -133,9 +145,7 @@ class PvocQueriesEntity:Serializable {
     @Column(name = "KEBS_REPLY_STATUS", nullable = true)
     @Basic
     var kebsReplyReplyStatus: Int? = null
-    @Column(name = "PARTNER_RESPONCE_ANALYSIS_STATUS", nullable = true)
-    @Basic
-    var partnerResponceAnalysisStatus: Int? = null
+
     @Column(name = "CONCLUSION_STATUS", nullable = true)
     @Basic
     var conclusionStatus: Int? = null
@@ -145,15 +155,11 @@ class PvocQueriesEntity:Serializable {
         if (o == null || javaClass != o.javaClass) return false
         val that = o as PvocQueriesEntity
         return id == that.id &&
-                cocNumber == that.cocNumber &&
+                certNumber == that.certNumber &&
                 rfcNumber == that.rfcNumber &&
                 invoiceNumber == that.invoiceNumber &&
                 ucrNumber == that.ucrNumber &&
-                kebsQuery == that.kebsQuery &&
-                kebsResponse == that.kebsResponse &&
-                partnerQuery == that.partnerQuery &&
                 partnerResponse == that.partnerResponse &&
-                partnerResponseAnalysis == that.partnerResponseAnalysis &&
                 conclusion == that.conclusion &&
                 linkToUploads == that.linkToUploads &&
                 status == that.status &&
@@ -174,45 +180,39 @@ class PvocQueriesEntity:Serializable {
                 deleteBy == that.deleteBy &&
                 pvocAgentReplyStatus == that.pvocAgentReplyStatus &&
                 kebsReplyReplyStatus == that.kebsReplyReplyStatus &&
-                partnerResponceAnalysisStatus == that.partnerResponceAnalysisStatus &&
                 conclusionStatus == that.conclusionStatus &&
                 deletedOn == that.deletedOn
     }
 
     override fun hashCode(): Int {
         return Objects.hash(
-            id,
-            cocNumber,
-            rfcNumber,
-            invoiceNumber,
-            ucrNumber,
-            kebsQuery,
-            kebsResponse,
-            partnerQuery,
-            partnerResponse,
-            partnerResponseAnalysis,
-            conclusion,
-            linkToUploads,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn,
-            pvocAgentReplyStatus,
-            kebsReplyReplyStatus,
-            partnerResponceAnalysisStatus
+                id,
+                certNumber,
+                rfcNumber,
+                invoiceNumber,
+                ucrNumber,
+                partnerResponse,
+                conclusion,
+                linkToUploads,
+                status,
+                varField1,
+                varField2,
+                varField3,
+                varField4,
+                varField5,
+                varField6,
+                varField7,
+                varField8,
+                varField9,
+                varField10,
+                createdBy,
+                createdOn,
+                modifiedBy,
+                modifiedOn,
+                deleteBy,
+                deletedOn,
+                pvocAgentReplyStatus,
+                kebsReplyReplyStatus
         )
     }
 }

@@ -38,6 +38,7 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <th class="requestNumber">Normative Reference</th>
 <th class="knw">Symbols Abbreviated Terms</th>
 <th class="sl">Special</th>
+    <th>Reference Material</th>
 <th class="action">Action</th>
 </tr>
 </thead>
@@ -50,8 +51,19 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <td>{{task.taskData.normativeReference}}</td>
 <td>{{task.taskData.symbolsAbbreviatedTerms}}</td>
 <td>{{task.taskData.special}}</td>
+    <td *ngIf="task.name ==='Upload Gazzette notice on the Website'" ><button mat-raised-button type="button" data-toggle="modal"
+                 (click)="viewPdfFile( task.taskData.ID,'Standard'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+        <i class="material-icons">visibility</i>
 
-<td *ngIf="task.name ==='Upload Gazzette notice on the Website'" ><a  (click)="onOpenModal(task,'upload')" class="btn btn-success btn-sm tooltips" data-placement="top">Upload Gazzette Notice</a></td>
+    </button>
+    </td>
+    <td *ngIf="task.name ==='Update Gazzzettement Date'" ><button mat-raised-button type="button" data-toggle="modal"
+                                                                              (click)="viewPdDfFile( task.taskData.ID,'GazettedStandard'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+        <i class="material-icons">visibility</i>
+
+    </button>
+    </td>
+<td *ngIf="task.name ==='Upload Gazzette notice on the Website'" ><a  (click)="onOpenModal(task,'upload')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 217px">Upload Gazzette Notice</a></td>
     <td *ngIf="task.name ==='Update Gazzzettement Date'"><a  (click)="onOpenModal(task,'update')" class="btn btn-info btn-sm tooltips" data-placement="top">Update Gazzettement Date</a></td>
 </tr>
 </tbody>
@@ -83,6 +95,17 @@ class="form-control"  formControlName="description" ngModel="" name="description
 </div>
     <input type="hidden" formControlName="taskId" ngModel="{{actionRequest?.taskId}}" name="taskId" >
 </div>
+    <div class="row col-12">
+        <div class="form-group col-12">
+            <label><b>Upload Standard  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+            <form #demoForm="ngForm">
+                <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+            </form>
+        </div>
+
+
+    </div>
 </div>
 
 <div class="modal-footer">

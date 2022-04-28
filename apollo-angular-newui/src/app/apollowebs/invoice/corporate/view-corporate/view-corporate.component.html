@@ -59,6 +59,10 @@
                                                 <label class="waiver-form-label">Account Suspended</label>
                                                 <p>{{corporateDetails.accountSuspended}}</p>
                                             </div>
+                                            <div class="col-sm-3 col-md-4" *ngIf="corporateDetails.remarks">
+                                                <label class="waiver-form-label">Last Remarks</label>
+                                                <p>{{corporateDetails.remarks}}</p>
+                                            </div>
                                         </div>
                                     </mat-tab>
                                     <mat-tab label="PENDING BILLS" tabIndex="2">
@@ -67,6 +71,11 @@
                                             <ng-container matColumnDef="billNumber">
                                                 <mat-header-cell *matHeaderCellDef>Bill No.</mat-header-cell>
                                                 <mat-cell *matCellDef="let element"> {{element.billNumber}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="billReference">
+                                                <mat-header-cell *matHeaderCellDef>Bill Reference</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.billRefNumber}} </mat-cell>
                                             </ng-container>
                                             <ng-container matColumnDef="invoiceNumber">
                                                 <mat-header-cell *matHeaderCellDef>Invoice Number</mat-header-cell>
@@ -119,6 +128,11 @@
                                             <ng-container matColumnDef="billNumber">
                                                 <mat-header-cell *matHeaderCellDef>Bill No.</mat-header-cell>
                                                 <mat-cell *matCellDef="let element"> {{element.billNumber}} </mat-cell>
+                                            </ng-container>
+                                            <ng-container matColumnDef="billReference">
+                                                <mat-header-cell *matHeaderCellDef>Bill Reference</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.billRefNumber}} </mat-cell>
                                             </ng-container>
                                             <ng-container matColumnDef="invoiceNumber">
                                                 <mat-header-cell *matHeaderCellDef>Invoice Number</mat-header-cell>

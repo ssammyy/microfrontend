@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
-  ManufactureBranchDto,
+  Branch,
+  CompanyModel, DirectorsList,
+  ManufactureBranchDto, ManufactureDetailList,
   ManufactureInfo,
   ManufacturingBranchDto,
-  ManufacturingInfo
+  ManufacturingInfo, ManufacturingStatus, NotificationStatus, SlModel
 } from "../../../../core/store/data/levy/levy.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -13,7 +15,8 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {LevyService} from "../../../../core/store/data/levy/levy.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Store} from "@ngrx/store";
-import {Company, selectCompanyData} from "../../../../core/store";
+import {selectUserInfo} from "../../../../core/store";
+import swal from "sweetalert2";
 
 declare const $: any;
 @Component({
@@ -22,7 +25,16 @@ declare const $: any;
   styleUrls: ['./customer-registration.component.css']
 })
 export class CustomerRegistrationComponent implements OnInit {
-  company: Company;
+  roles: string[];
+  directors: string;
+  companySoFar: Partial<CompanyModel> | undefined;
+  //company: CompanyModel;
+  companyDetails !: CompanyModel[];
+  directorsLists !: DirectorsList[];
+  manufacturingStatus !: ManufacturingStatus;
+  slFormDetails !: SlModel;
+  slBranchName !: Branch;
+  notificationFormStatus !: NotificationStatus;
   manufacturerInfoForm: FormGroup;
   manufacturingInfoForm: FormGroup;
   branchFormA: FormGroup;
@@ -33,6 +45,7 @@ export class CustomerRegistrationComponent implements OnInit {
   manufacturerBranchDetail: ManufactureBranchDto;
   manufacturingBranchDetails: ManufacturingBranchDto[] = [];
   manufacturingBranchDetail: ManufacturingBranchDto;
+  loadingText: string;
   stepSoFar: | undefined;
   step = 1;
   constructor(
@@ -47,27 +60,53 @@ export class CustomerRegistrationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+      this.getCompanyProfile();
+      this.getManufacturerStatus();
+      this.getSLNotificationStatus();
+      this.getCompanySLForm();
+      this.getBranchName();
+      this.getCompanyDirectors();
 
     this.manufacturerInfoForm = this.formBuilder.group({
-      businessCompanyName: ['', Validators.required],
-      comKraPin: ['', Validators.required],
-      lineOfBusiness: ['', Validators.required],
-      certificateOfIncorporation: ['', Validators.required],
-      companyEmail: ['', Validators.required],
-      postalAddress: ['', Validators.required],
-      telephone: ['', Validators.required],
-      mainPhysicalLocation: ['', Validators.required],
+      businessCompanyName: [],
+      plotNumber: [],
+      roadStreet: [],
+      postalAddress: [],
+      telephone: [],
+      mainPhysicalLocation: [],
+      NameAndBusinessOfProprietors: [],
+      AllCommoditiesManufuctured: ['', Validators.required],
+      DateOfManufacture: ['', Validators.required],
+      totalValueOfManufacture: ['', Validators.required],
       location: ['', Validators.required],
-      plotNumber: ['', Validators.required],
-      entryNo: ['', Validators.required]
+      registrationNo: [],
+      nameOfBranch: ['', Validators.required],
+      companyProfileID: [],
+      registrationNumber: [],
+      kraPin: [],
+      manufacture_status: []
+
 
 
     });
     this.manufacturingInfoForm = this.formBuilder.group({
-      NameAndBusinessOfProprietors: ['', Validators.required],
+      businessCompanyName: [],
+      plotNumber: [],
+      roadStreet: [],
+      postalAddress: [],
+      telephone: [],
+      mainPhysicalLocation: [],
+      NameAndBusinessOfProprietors: [],
       AllCommoditiesManufuctured: ['', Validators.required],
       DateOfManufacture: ['', Validators.required],
-      totalValueOfManufacture: ['', Validators.required]
+      totalValueOfManufacture: ['', Validators.required],
+      location: ['', Validators.required],
+      registrationNo: [],
+      nameOfBranch: ['', Validators.required],
+      companyProfileID: [],
+      registrationNumber: [],
+      kraPin: [],
+      manufacture_status: []
 
     });
 
@@ -82,12 +121,73 @@ export class CustomerRegistrationComponent implements OnInit {
       addressOfBranch: []
 
     });
-    this.store$.select(selectCompanyData).subscribe((d) => {
-      //console.log(`The id ${d.id}`);
-      //console.log(this.selectCompanyData);
-      return this.company = d;
+
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      this.roles = u.roles;
+      return this.roles = u.roles;
     });
   }
+
+  public getManufacturerStatus(): void{
+    this.levyService.getManufacturerStatus().subscribe(
+        (response: ManufacturingStatus)=> {
+          this.manufacturingStatus = response;
+          console.log(this.manufacturingStatus);
+        },
+        (error: HttpErrorResponse)=>{
+          console.log(error.message)
+          //alert(error.message);
+        }
+    );
+  }
+  public getCompanySLForm(): void{
+    this.SpinnerService.show();
+    this.levyService.getCompanySLForm().subscribe(
+        (response: SlModel)=> {
+          this.slFormDetails = response;
+          console.log(this.slFormDetails);
+          this.SpinnerService.hide();
+        },
+        (error: HttpErrorResponse)=>{
+          this.SpinnerService.hide();
+          //console.log(error.message)
+          //alert(error.message);
+        }
+    );
+  }
+
+  public getBranchName(): void{
+    this.SpinnerService.show();
+    this.levyService.getBranchName().subscribe(
+        (response: Branch)=> {
+          this.slBranchName = response;
+          console.log(this.slBranchName);
+          this.SpinnerService.hide();
+        },
+        (error: HttpErrorResponse)=>{
+          this.SpinnerService.hide();
+          console.log(error.message)
+          //alert(error.message);
+        }
+    );
+  }
+
+
+  public getCompanyProfile(): void{
+        this.SpinnerService.show();
+        this.levyService.getCompanyProfile().subscribe(
+            (response: CompanyModel[])=> {
+                this.companyDetails = response;
+                console.log(this.companyDetails);
+                this.SpinnerService.hide();
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                console.log(error.message)
+                //alert(error.message);
+            }
+        );
+    }
 
   showToasterSuccess(title:string,message:string){
     this.notifyService.showSuccess(message, title)
@@ -100,80 +200,103 @@ export class CustomerRegistrationComponent implements OnInit {
   get manufacturingInfo(): any {
     return this.manufacturingInfoForm.controls;
   }
+
   get formBranchFormA(): any {
     return this.branchFormA.controls;
   }
+
   get formBranchFormB(): any {
     return this.branchFormB.controls;
   }
-  onClickPrevious() {
-    if (this.step > 1) {
-      this.step = this.step - 1;
-    } else {
-      this.step = 1;
-    }
-  }
 
-  onClickNext(valid: boolean) {
+
+  onClickSaveSL1(valid: boolean): void {
     if (valid) {
-      switch (this.step) {
-        case 1:
-          this.stepSoFar = {...this.manufacturerInfoForm?.value};
-          break;
-        case 2:
-          this.stepSoFar = {...this.manufacturingInfoForm?.value};
-          break;
 
-      }
-      this.step += 1;
-      console.log(`Clicked and step = ${this.step}`);
-    }
-  }
-
-  selectStepOneClass(step: number): string {
-    if (step === 1) {
-      return 'active';
-    } else {
-      return '';
-    }
-  }
-
-  selectStepTwoClass(step: number): string {
-    console.log(`${step}`);
-    if (step === 1) {
-      return 'active';
-    }
-    if (step === 2) {
-      return 'activated';
-    } else {
-      return '';
-    }
-  }
-
-  onClickSaveManufacturer(): void {
 
       this.SpinnerService.show();
-      this.levyService.addManufactureDetails(this.manufacturerInfoForm.value).subscribe(
-          (response ) => {
+      this.levyService.addSL1Details(this.manufacturerInfoForm.value).subscribe(
+          (response) => {
             console.log(response);
             this.SpinnerService.hide();
-            this.showToasterSuccess(response.httpStatus, `Manufacture Details Saved`);
-            this.manufacturerInfoForm.reset();
+            this.showToasterSuccess(response.httpStatus, `SL1 Details Saved..Entry number is ${response.body.entryNumber}`);
+            swal.fire({
+              title:'SLI SAVED;',
+              text: 'Entry number is'+ '\xa0\xa0' + response.body.entryNumber + '\xa0\xa0' +'Check your E-mail for registration details.',
+              buttonsStyling: false,
+              customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+              },
+              icon: 'success'
+            });
+            this.router.navigateByUrl('/dashboard').then(r => {});
           },
           (error: HttpErrorResponse) => {
             this.SpinnerService.hide();
             console.log(error.message);
           }
       );
+    } else {
 
-
-  }
-
-  onClickSaveManufacturing(valid: boolean) {
-    if (valid) {
+      this.notifyService.showError("Please Fill In All The Fields", "Error");
 
     }
+
+
   }
+
+  public getCompanyDirectors(): void{
+    this.loadingText = "Retrieving Directors ...."
+    this.SpinnerService.show();
+    this.levyService.getCompanyDirectors().subscribe(
+        (response: DirectorsList[]) => {
+          this.directors= Array.prototype.map.call(response, function(item) { return item.directorName; }).join(",");
+          this.directors=this.directors.split(',').join(' , ')
+          this.SpinnerService.hide();
+
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          console.log(error.message);
+
+        }
+    );
+  }
+
+  onClickSaveManufacturing(valid: boolean): void {
+    if (valid) {
+      this.SpinnerService.show();
+      this.levyService.addSL1Details(this.manufacturingInfoForm.value).subscribe(
+          (response) => {
+            console.log(response);
+            this.SpinnerService.hide();
+            this.showToasterSuccess(response.httpStatus, `SL1-C Details Saved..Entry number is ${response.body.entryNumber}`);
+            swal.fire({
+              title:'SLI-C SAVED;',
+              text: 'Entry number is'+ '\xa0\xa0' + response.body.entryNumber + '\xa0\xa0' +'Check your E-mail for registration details.',
+              buttonsStyling: false,
+              customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+              },
+              icon: 'success'
+            });
+            this.router.navigateByUrl('/dashboard').then(r => {});
+          },
+          (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+            console.log(error.message);
+          }
+      );
+    } else {
+
+      this.notifyService.showError("Please Fill In All The Fields", "Error");
+
+    }
+
+
+  }
+
+
   onClickAddBranches() {
     this.manufacturerBranchDetail = this.branchFormA.value;
     this.manufacturerBranchDetails.push(this.manufacturerBranchDetail);
@@ -227,6 +350,19 @@ export class CustomerRegistrationComponent implements OnInit {
           '<a href="{3}" target="{4}" data-notify="url"></a>' +
           '</div>'
     });
+  }
+
+  public getSLNotificationStatus(): void{
+    this.levyService.getSLNotificationStatus().subscribe(
+        (response: NotificationStatus)=> {
+          this.notificationFormStatus = response;
+          console.log(this.notificationFormStatus);
+        },
+        (error: HttpErrorResponse)=>{
+          console.log(error.message)
+          //alert(error.message);
+        }
+    );
   }
 
 

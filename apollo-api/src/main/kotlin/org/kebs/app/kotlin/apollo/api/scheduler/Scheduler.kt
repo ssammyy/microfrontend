@@ -4,7 +4,6 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
-import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SftpSchedulerImpl
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -32,23 +31,23 @@ class Scheduler(
 
     private val msMarketSurveillancePrefix = "msMarketSurveillance"
 
-//    @Scheduled(cron = "\${scheduler.cron.daily}")
-//    fun runDailyScheduler() {
-//        //KotlinLogging.logger { }.info("Now running scheduler.......")
-//        //Trigger notifications
-//
-//        val currentDate = DateTime().toDate()
-//
-//        if (runSendNotifications.toInt() == 1) {
-//            schedulerImpl.sendNotifications(currentDate)
-//        }
-//
-//        if (runMsOverdueTaskNotifications.toInt() == 1) {
-//            schedulerImpl.sendOverdueTaskNotifications(currentDate, msMarketSurveillancePrefix)
-//        }
-//    }
-//
-    @Scheduled(fixedDelay = 60_000)//60 Seconds for now
+    @Scheduled(cron = "\${scheduler.cron.daily}")
+    fun runDailyScheduler() {
+        //KotlinLogging.logger { }.info("Now running scheduler.......")
+        //Trigger notifications
+
+        val currentDate = DateTime().toDate()
+
+        if (runSendNotifications.toInt() == 1) {
+            schedulerImpl.sendNotifications(currentDate)
+        }
+
+        if (runMsOverdueTaskNotifications.toInt() == 1) {
+            schedulerImpl.sendOverdueTaskNotifications(currentDate, msMarketSurveillancePrefix)
+        }
+    }
+
+//    @Scheduled(fixedDelay = 60_000)//60 Seconds for now
     fun updateDemandNotes() {
         KotlinLogging.logger { }.debug("UPDATING DEMAND NOTES on SW")
         schedulerImpl.updatePaidDemandNotesStatus()
@@ -76,10 +75,12 @@ class SchedulerDevelopment(
         private val schedulerImpl: SchedulerImpl,
         private val msDaoServices: MarketSurveillanceFuelDaoServices
 ) {
-    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
+    //    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
     fun updateDemandNotes() {
-        KotlinLogging.logger { }.info("DEV: UPDATING DEMAND NOTES on SW")
+//        schedulerImpl.updateLabResultsWithDetails()
+        //    KotlinLogging.logger { }.info("DEV: UPDATING DEMAND NOTES on SW")
         schedulerImpl.updatePaidDemandNotesStatus()
+        //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
 //        msDaoServices.updateRemediationDetailsAfterPaymentDone()
         KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
     }

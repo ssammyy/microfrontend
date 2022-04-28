@@ -51,6 +51,8 @@ export class ConsolidatedInvoiceDto {
     submittedStatus: number;
     receiptNo: string;
     checkedValue: boolean;
+    sageInvoiceNumber: string;
+
 }
 
 export class RemarksAndStatusDto {
@@ -97,6 +99,11 @@ export class SSFComplianceStatusDetailsDto {
 export class MPesaPushDto {
     entityValueID: bigint;
     phoneNumber: string;
+}
+
+export class PermitDto {
+    permitId: string;
+    permitIdBeingMigrated: string;
 }
 
 
@@ -328,6 +335,7 @@ export class InvoiceDto {
     paidStatus: any;
     submittedStatus: boolean;
     plantId: bigint;
+    sageInvoiceNumber: string;
 }
 
 
@@ -340,11 +348,15 @@ export class PermitInvoiceDto {
     paidStatus: boolean;
     permitRefNumber: string;
     batchID: bigint;
+    sageInvoiceNumber: string;
+
 }
 
 export class AllBatchInvoiceDetailsDto {
     batchDetails: InvoiceDto;
     allRelatedBatchInvoices: PermitInvoiceDto[];
+    sageInvoiceNumber: string;
+
 }
 
 export class MPesaMessageDto {

@@ -7,9 +7,11 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "DAT_KEBS_IDF_ITEMS")
-class IdfItemsEntity:Serializable {
+class IdfItemsEntity : Serializable {
     @Column(name = "ID", nullable = false, precision = 0)
     @Id
+    @SequenceGenerator(name = "DAT_KEBS_IDF_ITEMS_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_IDF_ITEMS_SEQ")
+    @GeneratedValue(generator = "DAT_KEBS_IDF_ITEMS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
     @Column(name = "IDF_ID", nullable = false, length = 50)
@@ -144,32 +146,32 @@ class IdfItemsEntity:Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-            id,
-            idfId,
-            itemDescription,
-            hsCode,
-            unitOfMeasure,
-            quantity,
-            newUsed,
-            applicableStandard,
-            itemCost,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
+                id,
+                idfId,
+                itemDescription,
+                hsCode,
+                unitOfMeasure,
+                quantity,
+                newUsed,
+                applicableStandard,
+                itemCost,
+                status,
+                varField1,
+                varField2,
+                varField3,
+                varField4,
+                varField5,
+                varField6,
+                varField7,
+                varField8,
+                varField9,
+                varField10,
+                createdBy,
+                createdOn,
+                modifiedBy,
+                modifiedOn,
+                deleteBy,
+                deletedOn
         )
     }
 }

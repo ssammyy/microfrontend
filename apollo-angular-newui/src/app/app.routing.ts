@@ -74,7 +74,6 @@ import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-det
 import {ComStdApproveJustificationComponent} from "./apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component";
 import {ComStdDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component";
 import {ComStdUploadComponent} from "./apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component";
-import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
 import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
 import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
 import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
@@ -185,6 +184,57 @@ import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/compla
 //         }]
 //     }
 // ];
+import {ViewComplaintsComponent} from "./apollowebs/pvoc/complaints/view-complaints/view-complaints.component";
+import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component";
+import {ViewWaiverApplicationsComponent} from "./apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component";
+import {ViewWaiverDetailsComponent} from "./apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component";
+import {ViewExemptionApplicationsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component";
+import {ViewExemptionDetailsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component";
+import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
+import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
+import {PreparePreliminaryDraftComponent} from "./apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component";
+import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component";
+import {ComStdPlTaskComponent} from "./apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component";
+import {ComStdDraftViewComponent} from "./apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component";
+import {ComStdListComponent} from "./apollowebs/standards-development/company-standard/com-std-list/com-std-list.component";
+import {StandardLevySiteVisitComponent} from "./apollowebs/standards-levy/standard-levy-site-visit/standard-levy-site-visit.component";
+import {StandardLevySiteVisitApproveTwoComponent} from "./apollowebs/standards-levy/standard-levy-site-visit-approve-two/standard-levy-site-visit-approve-two.component";
+import {StandardLevySiteVisitApproveOneComponent} from "./apollowebs/standards-levy/standard-levy-site-visit-approve-one/standard-levy-site-visit-approve-one.component";
+import {StandardLevySiteVisitFeedbackComponent} from "./apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component";
+import {StandardLevyUploadSiteVisitFeedbackComponent} from "./apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component";
+import {StandardLevyManufactureDetailsComponent} from "./apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component";
+import {RequestForFormationOfTCComponent} from "./apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component";
+import {ReviewJustificationOfTCComponent} from "./apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component";
+import {ReviewFeedbackSPCComponent} from "./apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component";
+import {ApproveDraftStdComponent} from "./apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component";
+import {StdDraughtsmanComponent} from "./apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component";
+import {StdProofreadComponent} from "./apollowebs/standards-development/publishing/std-proofread/std-proofread.component";
+import {EditorTasksComponent} from "./apollowebs/standards-development/publishing/editor-tasks/editor-tasks.component";
+import {StdHopTasksComponent} from "./apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component";
+import {StdPublishingComponent} from "./apollowebs/standards-development/publishing/std-publishing/std-publishing.component";
+import {CallsForApplicationComponent} from "./apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component";
+import {ReviewRecommendationComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component";
+import {ReviewRecommendationOfSpcComponentComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component";
+import {SubmitApplicationComponent} from "./apollowebs/standards-development/membershipToTc/submit-application/submit-application.component";
+import {UploadTcMemberComponentComponent} from "./apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component";
+import {ReviewApplicationComponent} from "./apollowebs/standards-development/membershipToTc/review-application/review-application.component";
+import {ManifestDocumentComponent} from "./apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component";
+import {IncompleteIDFDocumentsComponent} from "./apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component";
+import {ReviewApplicationsAcceptedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component";
+import {ReviewApplicationsRejectedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component";
+import {ApproveApplicationComponent} from './apollowebs/standards-development/membershipToTc/approve-application/approve-application.component';
+import {ApprovedMembersComponent} from "./apollowebs/standards-development/membershipToTc/approved-members/approved-members.component";
+import {MembersToCreateCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component";
+import {MembersCreatedCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component";
+import {ApproveInductionComponent} from "./apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component";
+import {StdLevyCompleteTasksComponent} from "./apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component";
+import {StdLevyPendingTasksComponent} from "./apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component";
+import {StdLevyApplicationsComponent} from "./apollowebs/standards-levy/std-levy-applications/std-levy-applications.component";
+import {UploadSacSummaryComponent} from "./apollowebs/standards-development/adoptionOfEaStds/upload-sac-summary/upload-sac-summary.component";
+import {ViewSacSummaryComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component";
+import {ViewSacSummaryApprovedComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component";
+import {NwaTasksComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component";
+import {AdminBusinessManagementComponent} from "./apollowebs/admin/admin-business-management/admin-business-management.component";
 
 export const routes: Routes = [
     {
@@ -248,8 +298,6 @@ export const routes: Routes = [
         ,
         children: [
             {path: '', component: DashboardComponent},
-
-
         ]
 
     },
@@ -340,11 +388,22 @@ export const routes: Routes = [
 
         children: [{path: '', component: InvoiceDetailsComponent}]
     },
-    {
-        path: 'user_management', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
 
-        children: [{path: '', component: UsermanagementComponent}]
+    {
+        path: 'admin',
+        canActivate: [RouteGuard],
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: 'user_management',
+                component: UsermanagementComponent
+            },
+            {
+                path: 'business_management',
+                component: AdminBusinessManagementComponent
+            }
+
+        ]
     },
     {
         path: 'fmark/fMarkAllApp', component: AdminLayoutComponent,
@@ -454,30 +513,82 @@ export const routes: Routes = [
         children: [{path: '', component: SmarkComponent}]
     },
     {
+        path: 'company',
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: 'applications',
+                component: ImportInspectionComponent
+            }
+        ]
+    },
+    {
         path: 'pvoc',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [
             {
-                path: 'applications',
-                component: ImportInspectionComponent,
-                pathMatch: 'full'
+                path: 'waiver',
+                children: [
+                    {
+                        path: 'apply',
+                        component: ImportationWaiverComponent,
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'applications',
+                        component: ViewWaiverApplicationsComponent,
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'application/details/:id',
+                        component: ViewWaiverDetailsComponent
+                    }
+                ]
             },
             {
-                path: 'waivers',
-                component: ImportationWaiverComponent
-            },
-            {
-                path: 'exceptions',
-                component: ExceptionsApplicationComponent
+                path: 'exemption',
+                children: [
+                    {
+                        path: 'apply',
+                        component: ExceptionsApplicationComponent
+                    },
+                    {
+                        path: 'applications',
+                        component: ViewExemptionApplicationsComponent
+                    },
+                    {
+                        path: 'view/:id',
+                        component: ViewExemptionDetailsComponent
+                    }
+                ]
+
             },
             {
                 path: 'partners',
-                component: ViewPartnersComponent
+                children: [
+                    {
+                        path: '',
+                        component: ViewPartnersComponent
+                    },
+                    {
+                        path: 'view/:id',
+                        component: ViewPartnerDetailsComponent
+                    }
+                ]
             },
             {
-                path: 'partners/view/:id',
-                component: ViewPartnerDetailsComponent
+                path: "complaints",
+                children: [
+                    {
+                        path: '',
+                        component: ViewComplaintsComponent
+                    },
+                    {
+                        path: ':id',
+                        component: ViewComplaintDetailsComponent
+                    }
+                ]
             }
         ]
     },
@@ -504,28 +615,22 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'kentrade/exchange/messages',
-        component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [
-            {
-                path: '',
-                component: MessageDashboardComponent
-            }
-        ]
-    },
-    {
         path: 'di',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [
             {
                 path: '',
-                component: ConsignmentDocumentListComponent
+                component: ConsignmentDocumentListComponent,
+                pathMatch: 'full'
             },
             {
                 path: 'declaration/document/:id',
                 component: ViewDiDeclarationDocumentsComponent
+            },
+            {
+                path: 'manifest/document/:id',
+                component: ManifestDocumentComponent
             },
             {
                 path: 'inspection/checklist/:id',
@@ -582,6 +687,31 @@ export const routes: Routes = [
                 canActivate: [RouteGuard],
                 component: AuctionItemDetailsComponent
             },
+            {
+                path: 'kentrade/exchange/messages',
+                canActivate: [RouteGuard],
+                component: MessageDashboardComponent
+            },
+            {
+                path: 'kentrade/idf/documents',
+                canActivate: [RouteGuard],
+                component: IncompleteIDFDocumentsComponent
+            },
+            {
+                path: 'ism',
+                children: [
+                    {
+                        path: 'requests',
+                        canActivate: [RouteGuard],
+                        component: IsmApplicationsComponent
+                    },
+                    {
+                        path: 'request/:id',
+                        // canActivate: [RouteGuard],
+                        component: ViewIsmApplicationComponent
+                    }
+                ]
+            },
         ]
     },
     {
@@ -593,23 +723,6 @@ export const routes: Routes = [
                 path: 'inspection',
                 canActivate: [RouteGuard],
                 component: InspectionDashboardComponent
-            }
-        ]
-    },
-    {
-        path: 'ism',
-        component: AdminLayoutComponent,
-        // canActivate: [RouteGuard],
-        children: [
-            {
-                path: 'requests',
-                canActivate: [RouteGuard],
-                component: IsmApplicationsComponent
-            },
-            {
-                path: 'request/:id',
-                // canActivate: [RouteGuard],
-                component: ViewIsmApplicationComponent
             }
         ]
     },
@@ -635,7 +748,7 @@ export const routes: Routes = [
                 component: CurrencyExchangeRatesComponent
             },
             {
-                path: 'bill/:id/:cid',
+                path: 'bill/:cid/:id',
                 component: ViewTransactionsComponent
             },
             {
@@ -721,6 +834,16 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: HoSicTasksComponent}]
     },
+    {
+        path: 'nwaPreparePD', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaPreliminaryDraftComponent}]
+    },
+    {
+        path: 'nwaTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaTasksComponent}]
+    },
 
     // SD International Standards
     {
@@ -789,6 +912,7 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdRequestListComponent}]
     },
+
     {
         path: 'comStdJustification', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
@@ -810,6 +934,11 @@ export const routes: Routes = [
         children: [{path: '', component: ComStdApproveJustificationComponent}]
     },
     {
+        path: 'comPlTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdPlTaskComponent}]
+    },
+    {
         path: 'comStdDraft', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdDraftComponent}]
@@ -817,14 +946,18 @@ export const routes: Routes = [
     {
         path: 'comStdConfirmation', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdUploadComponent}]
+        children: [{path: '', component: ComStdDraftViewComponent}]
     },
     {
         path: 'comStdUpload', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdConfirmComponent}]
+        children: [{path: '', component: ComStdUploadComponent}]
     },
-
+    {
+        path: 'comStdListed', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdListComponent}]
+    },
     {
         path: 'nep_information_received', component: AdminLayoutComponent,
         children: [{path: '', component: InformationcheckComponent}]
@@ -853,20 +986,35 @@ export const routes: Routes = [
         children: [{path: '', component: RequestStandardFormComponent}]
     },
     {
+        //Review Standard Requests
         path: 'ms-standards', component: AdminLayoutComponent,
         children: [{path: '', component: StandardTaskComponent}]
     },
     {
+        //Prepare New Work Item
         path: 'std-tsc-sec-task', component: AdminLayoutComponent,
         children: [{path: '', component: StdTscSecTasksComponentComponent}]
     },
     {
+        //Vote On New Work Item
         path: 'std-tc-task', component: AdminLayoutComponent,
         children: [{path: '', component: StdTcTasksComponent}]
     },
     {
-        path: 'spc-sec-tc-task', component: AdminLayoutComponent,
+        //Upload Justification
+        path: 'upload-justification', component: AdminLayoutComponent,
+        children: [{path: '', component: StdJustificationComponent}]
+    },
+
+    //Decision On Justification
+    {
+        path: 'decision-justification', component: AdminLayoutComponent,
         children: [{path: '', component: SpcSecTaskComponent}]
+    },
+    //Upload WorkPlan
+    {
+        path: 'upload-workplan', component: AdminLayoutComponent,
+        children: [{path: '', component: StdTcWorkplanComponent}]
     },
     {
         path: 'department', component: AdminLayoutComponent,
@@ -885,13 +1033,213 @@ export const routes: Routes = [
         children: [{path: '', component: CreateproductSubCategoryComponent}]
     },
 
+
+    /****************************************************************
+     * STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+     ***************************************************************/
+
+    {
+        // prepare Preliminary Draft
+        path: 'preparePd', component: AdminLayoutComponent,
+        children: [{path: '', component: PreparePreliminaryDraftComponent}]
+    },
+
+
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+     ***************************************************************/
+    /****************************************************************
+     * PUBLISHING ROUTES
+     ***************************************************************/
+    {
+        path: 'draftStandard',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: StdPublishingComponent}]
+    },
+    {
+        path: 'hopTasks',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: StdHopTasksComponent}]
+    },
+    {
+        path: 'editorTasks',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: EditorTasksComponent}]
+    },
+    {
+        path: 'proofReaderTasks',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: StdProofreadComponent}]
+    },
+    {
+        path: 'draughtsmanTasks',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: StdDraughtsmanComponent}]
+    },
+    {
+        path: 'hopApproval',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ApproveDraftStdComponent}]
+    },
+    /****************************************************************
+     * FORMATION OF TECHNICAL COMMITTEE
+     ***************************************************************/
+    {
+        path: 'requestForFormationOfTC',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: RequestForFormationOfTCComponent}]
+    },
+    {
+        path: 'reviewJustificationOfTC',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewJustificationOfTCComponent}]
+    },
+    {
+        path: 'reviewFeedbackSPC',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewFeedbackSPCComponent}]
+    },
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - FORMATION OF TECHNICAL COMMITTEE ROUTES
+     ***************************************************************/
+    /****************************************************************
+     * MEMBERSHIP OF TECHNICAL COMMITTEE
+     ***************************************************************/
+    {
+        path: 'callsForApplication',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: CallsForApplicationComponent}]
+    },
+    {
+        path: 'submitApplication',
+        component: SubmitApplicationComponent
+    },
+    {
+        path: 'reviewApplication',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationComponent}]
+    },
+    {
+        path: 'reviewRecommendation',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewRecommendationComponent}]
+    },
+    {
+        path: 'reviewRecommendationOfSpc',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewRecommendationOfSpcComponentComponent}]
+    },
+    {
+        path: 'reviewAccepted',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationsAcceptedComponent}]
+    },
+    {
+        path: 'reviewRejected',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationsRejectedComponent}]
+    },
+
+    {
+        path: 'approveApplication',
+        component: StandardRequestComponent,
+        children: [{path: '', component: ApproveApplicationComponent}]
+    },
+    {
+        path: 'approvedMembers',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ApprovedMembersComponent}]
+    },
+    {
+        path: 'createCredentials',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: MembersToCreateCredentialsComponent}]
+    },
+    {
+        path: 'sendInductionEmail',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: MembersCreatedCredentialsComponent}]
+    },
+    {
+        path: 'getInduction',
+        component: StandardRequestComponent,
+        children: [{path: '', component: ApproveInductionComponent}]
+    },
+    {
+        path: 'sendNotice',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: MembersCreatedCredentialsComponent}]
+    },
+
+    {
+        path: 'uploadTcMember',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: UploadTcMemberComponentComponent}]
+    },
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - MEMBERSHIP OF TECHNICAL COMMITTEE
+     ***************************************************************/
+
+    /****************************************************************
+     * ADOPTION OF EA STANDARDS
+     ***************************************************************/
+    {
+        path: 'uploadSacSummary',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: UploadSacSummaryComponent}]
+    },
+    {
+        path: 'viewSacSummary',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ViewSacSummaryComponent}]
+    },
+    {
+        path: 'viewSacSummaryApproved',
+        component: AdminLayoutComponent,
+        //canActivate: [AuthGuard],
+        children: [{path: '', component: ViewSacSummaryApprovedComponent}]
+    },
+
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - ADOPTION OF EA STANDARDS
+     ***************************************************************/
+
+
+
+    {
+        path: 'productSubCategory', component: AdminLayoutComponent,
+        children: [{path: '', component: CreateproductSubCategoryComponent}]
+    },
+
     // STANDARDS LEVY
     {
         path: 'roleSwitcher', component: StandardsLevyHomeComponent,
         children: [{path: '', component: RoleSwitcherComponent}]
     },
     {
-        path: 'levyRegistration', component: StandardsLevyHomeComponent,
+        path: 'standardsLevy/levyRegistration', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: CustomerRegistrationComponent}]
     },
@@ -902,6 +1250,7 @@ export const routes: Routes = [
     {
         path: 'comPaymentHistory', component: AdminLayoutComponent,
         children: [{path: '', component: ComPaymentHistoryComponent}]
+        //No data
     },
     {
         path: 'comStdLevyForm', component: AdminLayoutComponent,
@@ -993,10 +1342,12 @@ export const routes: Routes = [
     {
         path: 'stdLevyDefaulters', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyDefaulterComponent}]
+        //no data
     },
     {
         path: 'stdLevyPaidHistory', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyPaidHistoryComponent}]
+        //no data
     },
     {
         path: 'stdLevyPenaltiesHistory', component: AdminLayoutComponent,
@@ -1005,6 +1356,48 @@ export const routes: Routes = [
     {
         path: 'stdLevyDefaultersHistory', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyDefaulterHistoryComponent}]
+    },
+    {
+        path: 'viewSiteVisits', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevySiteVisitComponent}]
+    },
+    {
+        path: 'viewSiteVisitsReports', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevySiteVisitApproveOneComponent}]
+    },
+    {
+        path: 'viewSiteVisitsReportTwo', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevySiteVisitApproveTwoComponent}]
+    },
+    {
+        path: 'uploadVisitFeedBack', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyUploadSiteVisitFeedbackComponent}]
+    },
+    {
+        path: 'viewSiteVisitsFeedBack', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevySiteVisitFeedbackComponent}]
+    },
+    {
+        path: 'slManufacturers', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyManufactureDetailsComponent}]
+    },
+
+    {
+        path: 'slApplications', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyApplicationsComponent}]
+    },
+    {
+        path: 'slPendingTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyPendingTasksComponent}]
+    },
+    {
+        path: 'slCompleteTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StdLevyCompleteTasksComponent}]
     },
 
     /****************MS COMPONENTS ENDS HERE**********************************/

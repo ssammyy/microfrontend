@@ -4,7 +4,6 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatTableDataSource} from "@angular/material/table";
-import {error} from "@angular/compiler/src/util";
 
 @Component({
     selector: 'app-send-demand-note-tokws',
@@ -12,7 +11,8 @@ import {error} from "@angular/compiler/src/util";
     styleUrls: ['./send-demand-note-tokws.component.css']
 })
 export class SendDemandNoteTokwsComponent implements OnInit {
-    displayedColumns: string[] = ['select', 'hsCode', 'description','quantity','unit_price', 'price', 'pricing'];
+    pricingDisplayedColumns: string[] = ['feeName', 'cfvalue', 'rate', 'amountPayable', 'minimumAmount', 'maximumAmount', 'adjustedAmount'];
+    displayedColumns: string[] = ['select', 'hsCode', 'description', 'quantity', 'unit_price', 'price', 'currency', 'pricing'];
     @Input() items: any[]
     paymentFees: any[]
     presentmentData: any
@@ -20,9 +20,12 @@ export class SendDemandNoteTokwsComponent implements OnInit {
     saveDisabled: Boolean = false
     public form: FormGroup;
     initialSelection: any[]
+    presentmentRequest: any
     selectionDataSource: MatTableDataSource<any>
+    itemPricingDataSource: MatTableDataSource<any>
     selection: SelectionModel<any>
     invalidFeeSelection: Boolean;
+
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
                 private diService: DestinationInspectionService) {
@@ -35,6 +38,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
         })
         this.items = this.data.items
         this.selectionDataSource = new MatTableDataSource<any>(this.items)
+        this.itemPricingDataSource = new MatTableDataSource<any>(this.items)
         this.paymentFees = this.data.paymentFees
         this.initialSelection = this.items
         this.invalidFeeSelection = true
@@ -112,21 +116,37 @@ export class SendDemandNoteTokwsComponent implements OnInit {
         let data = this.form.value
         if (presentment) {
             data["remarks"] = "Presenting"
+            try {
+                if (this.presentmentRequest) {
+                    this.presentmentRequest.unsubscribe();
+                }
+            } catch (e) {
+            }
         }
         data["includeAll"] = false
         data["presentment"] = presentment
         data["amount"] = this.items.length == 0 ? 0.0 : parseFloat(this.form.value.amount)
         data["items"] = selectedItems
-        this.diService.sendDemandNote(data, this.data.uuid)
+        this.presentmentRequest = this.diService.sendDemandNote(data, this.data.uuid)
             .subscribe(
                 res => {
                     this.saveDisabled = false
                     if (res.responseCode == "00") {
                         if (presentment) {
                             this.presentmentData = res.data
+                            let items = this.presentmentData.items
+                            // console.log(items)
+                            if (items) {
+                                items.push({
+                                    feeName: 'Total Amount',
+                                    cfvalue: this.presentmentData.demandNote.cfvalue,
+                                    adjustedAmount: this.presentmentData.demandNote.totalAmount,
+                                })
+                            }
+                            this.itemPricingDataSource.connect().next(items)
                         } else {
-                            this.diService.showSuccess(res.message,()=>{
-                                this.dialogRef.close(true)
+                            this.diService.showSuccess(res.message, () => {
+                                this.dialogRef.close(res.data)
                             })
                         }
                     } else {

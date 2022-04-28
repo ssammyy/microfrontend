@@ -15,6 +15,7 @@
                         <div class="toolbar">
                             <div class="search-bar">
                                 <div class="input-group form-inline" role="group" aria-label="Lot Number">
+                                    <label for="filter-lot-no"></label>
                                     <input class="search-form-input" id="filter-lot-no" type="text"
                                            (change)="searchAuction($event)"
                                            placeholder="Lot Number">
@@ -29,6 +30,10 @@
                                     <button type="button" (click)="toggleStatus('assigned')"
                                             [className]="auctionType == 'assigned' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
                                         MY TASKS
+                                    </button>
+                                    <button type="button" (click)="toggleStatus('hold')"
+                                            [className]="auctionType == 'hold' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                        ON HOLD
                                     </button>
                                     <button type="button" (click)="toggleStatus('new')"
                                             [className]="auctionType == 'new' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
@@ -49,11 +54,15 @@
                                 </div>
                                 <div class="btn-group btn-group-sm float-right" role="group"
                                      aria-label="Applications Status">
-                                    <button class="btn btn-sm btn-primary mr-7"
+                                    <button class="btn btn-sm ml-2"
+                                            (click)="downloadReport($event)"><i class="fa fa-download"></i>KRA Auction
+                                        Report
+                                    </button>
+                                    <button class="btn btn-sm ml-2"
                                             (click)="uploadAuction($event)"><i class="fa fa-upload"></i>Auction Items
                                     </button>
-                                    <button class="btn btn-sm btn-primary ml-5"
-                                            (click)="aadAuctionItem($event)"><i class="fa fa-upload"></i>Add
+                                    <button class="btn btn-sm ml-2"
+                                            (click)="aadAuctionItem($event)"><i class="fa fa-plus"></i>Add
                                     </button>
                                 </div>
                             </div>
@@ -62,8 +71,8 @@
                         <div class="table-responsive table-striped">
                             <ng2-smart-table class="table table-hover" [settings]="settings"
                                              [source]="dataSet"
+                                             (userRowSelect)="viewAuctionRecord($event.data.requestId)"
                                              (custom)="auctionEvent($event)"
-
                             >
                             </ng2-smart-table>
                             <ngb-pagination [(page)]="page" [pageSize]="pageSize"

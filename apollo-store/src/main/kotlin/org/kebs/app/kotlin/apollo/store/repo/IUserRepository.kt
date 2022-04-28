@@ -40,6 +40,10 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.*
+import org.kebs.app.kotlin.apollo.store.model.std.DirectorListHolder
+import org.kebs.app.kotlin.apollo.store.model.std.ManufactureListHolder
+import org.kebs.app.kotlin.apollo.store.model.std.UserRoleHolder
+import org.kebs.app.kotlin.apollo.store.model.std.UserTypeHolder
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
@@ -59,10 +63,18 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
 
     fun findAllByUserTypes(userType: Long): List<UsersEntity>?
 
-    @Query("select DKU.*  from DAT_KEBS_USERS DKU where DKU.ID in(select USER_ID from CFG_USER_ROLES_ASSIGNMENTS where ROLE_ID in (:profileIds)) and DKU.ID in (:cfsUserIds)", nativeQuery = true)
-    fun findUsersInCfsAndProfiles(@Param("profileIds")profileIds:List<Long>, @Param("cfsUserIds") cfsUserIds: List<Long>): List<UsersEntity>
+    @Query(
+        "select DKU.*  from DAT_KEBS_USERS DKU where DKU.ID in(select USER_ID from CFG_USER_ROLES_ASSIGNMENTS where ROLE_ID in (:profileIds)) and DKU.ID in (:cfsUserIds)",
+        nativeQuery = true
+    )
+    fun findUsersInCfsAndProfiles(
+        @Param("profileIds") profileIds: List<Long>,
+        @Param("cfsUserIds") cfsUserIds: List<Long>
+    ): List<UsersEntity>
+
     //    @Query("SELECT u.Id, u.firstName, u.lastName, u.notifs, u.role, u.status from datKebsUsers u where u.notifs=?1")
     fun findByEmail(email: String): UsersEntity?
+
 
     //    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     fun findByUserName(userName: String): UsersEntity?
@@ -90,9 +102,14 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     ): List<UsersEntity>?
 
     @Query(
-        "SELECT distinct u.* from DAT_KEBS_PERMIT_TRANSACTION p, DAT_KEBS_MANUFACTURE_PLANT_DETAILS b, DAT_KEBS_USER_PROFILES pf, CFG_USER_ROLES_ASSIGNMENTS r," +
-                " DAT_KEBS_USERS u where p.ATTACHED_PLANT_ID=b.ID and b.REGION= pf.REGION_ID and p.SECTION_ID = pf.SECTION_ID and pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID " +
-                "and r.ROLE_ID = :roleId and pf.SECTION_ID = :sectionId and pf.REGION_ID = :regionId and pf.STATUS = :status",
+//        "SELECT distinct u.* from DAT_KEBS_PERMIT_TRANSACTION p, DAT_KEBS_MANUFACTURE_PLANT_DETAILS b, DAT_KEBS_USER_PROFILES pf, CFG_USER_ROLES_ASSIGNMENTS r," +
+//                " DAT_KEBS_USERS u where p.ATTACHED_PLANT_ID=b.ID and b.REGION= pf.REGION_ID and p.SECTION_ID = pf.SECTION_ID and pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID " +
+//                "and r.ROLE_ID = :roleId and pf.SECTION_ID = :sectionId and pf.REGION_ID = :regionId and pf.STATUS = :status",
+//        nativeQuery = true
+        "SELECT distinct u.* from APOLLO.DAT_KEBS_PERMIT_TRANSACTION p, APOLLO.DAT_KEBS_MANUFACTURE_PLANT_DETAILS b, APOLLO.DAT_KEBS_USER_PROFILES pf, " +
+                "APOLLO.CFG_USER_SECTION_ASSIGNMENTS q ,APOLLO.CFG_USER_ROLES_ASSIGNMENTS r,APOLLO.DAT_KEBS_USERS u where p.ATTACHED_PLANT_ID=b.ID and b.REGION= pf.REGION_ID" +
+                " and p.SECTION_ID = q.SECTION_ID and pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID and r.ROLE_ID = :roleId and q.SECTION_ID = :sectionId " +
+                "and pf.REGION_ID = :regionId and pf.STATUS = :status",
         nativeQuery = true
     )
     fun findOfficerPermitUsersBySectionAndRegion(
@@ -168,7 +185,10 @@ interface IUserPrivilegesRepository : HazelcastRepository<UserPrivilegesEntity, 
 
     fun findByName(name: String): UserPrivilegesEntity
 
-    @Query(value = "SELECT DISTINCT ROLE_ID FROM CFG_ROLES_PRIVILEGES rp left join CFG_USER_ROLES cur on(rp.ROLES_ID=cur.ID)  left join CFG_USER_PRIVILEGES cup  on(rp.PRIVILEGE_ID=cup.ID) WHERE rp.STATUS = 1 and NAME=:name", nativeQuery = true)
+    @Query(
+        value = "SELECT DISTINCT ROLE_ID FROM CFG_ROLES_PRIVILEGES rp left join CFG_USER_ROLES cur on(rp.ROLES_ID=cur.ID)  left join CFG_USER_PRIVILEGES cup  on(rp.PRIVILEGE_ID=cup.ID) WHERE rp.STATUS = 1 and NAME=:name",
+        nativeQuery = true
+    )
     fun findRoleIdsByRoleName(@Param("name") name: String): List<Long>
 }
 
@@ -221,8 +241,16 @@ interface IUserRoleAssignmentsRepository : HazelcastRepository<UserRoleAssignmen
     fun findByRoleIdAndStatus(roleId: Long, status: Int): List<UserRoleAssignmentsEntity>?
     fun findByRoleId(roleId: Long): List<UserRoleAssignmentsEntity>
     fun findByUserId(userId: Long): UserRoleAssignmentsEntity?
-    @Query("select  count(*)  from DAT_KEBS_USER_PROFILES DKUP left join CFG_USER_ROLES_ASSIGNMENTS CURA on(DKUP.USER_ID=CURA.USER_ID) left join CFG_USER_ROLES CUR on (CURA.ROLE_ID = CUR.ID) where upper(ROLE_NAME)=upper(:roleName) and CURA.STATUS=:assignmentStatus and DKUP.USER_ID=:userId", nativeQuery =true)
-    fun checkUserHasRole(@Param("roleName")roleName: String,@Param("assignmentStatus") status: Int,@Param("userId") userId: Long): Int
+
+    @Query(
+        "select  count(*)  from DAT_KEBS_USER_PROFILES DKUP left join CFG_USER_ROLES_ASSIGNMENTS CURA on(DKUP.USER_ID=CURA.USER_ID) left join CFG_USER_ROLES CUR on (CURA.ROLE_ID = CUR.ID) where upper(ROLE_NAME)=upper(:roleName) and CURA.STATUS=:assignmentStatus and DKUP.USER_ID=:userId",
+        nativeQuery = true
+    )
+    fun checkUserHasRole(
+        @Param("roleName") roleName: String,
+        @Param("assignmentStatus") status: Int,
+        @Param("userId") userId: Long
+    ): Int
 
     @Query(
         "SELECT * FROM CFG_USER_ROLES_ASSIGNMENTS cura WHERE CURA.USER_ID = :userId AND STATUS = :status",
@@ -235,6 +263,12 @@ interface IUserRoleAssignmentsRepository : HazelcastRepository<UserRoleAssignmen
 
     fun findByUserIdAndRoleIdAndStatus(userId: Long, roleId: Long, status: Int): UserRoleAssignmentsEntity?
     fun findByUserIdAndRoleId(userId: Long, roleId: Long): UserRoleAssignmentsEntity?
+
+    @Query(
+        value = "SELECT x.ROLE_ID AS ID FROM CFG_USER_ROLES_ASSIGNMENTS x  WHERE  x.USER_ID = :userId",
+        nativeQuery = true
+    )
+    fun getRoleByUserId(@Param("userId") userId: Long?): List<UserRoleHolder>
 
 }
 
@@ -297,7 +331,71 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findByManufactureStatus(status: Int): List<CompanyProfileEntity>?
     fun findAllByOrderByIdDesc(pageable: Pageable): List<CompanyProfileEntity>?
     fun findAllByUserId(userId: Long): List<CompanyProfileEntity>
+    fun findCompanyByUserId(userId: Long): MutableList<CompanyProfileEntity>
     fun findAllByFirmCategoryAndStatus(firmCategory: Long, status: Int): List<CompanyProfileEntity>?
+
+    @Query(value = "SELECT c.ID as id,c.NAME as name,c.PHYSICAL_ADDRESS as physicalAddress,c.KRA_PIN as kraPin,c.MANUFACTURE_STATUS as manufactureStatus,c.REGISTRATION_NUMBER as registrationNumber,c.POSTAL_ADDRESS as postalAddress,c.PLOT_NUMBER as plotNumber,c.COMPANY_EMAIL as companyEmail," +
+            "c.COMPANY_TELEPHONE as companyTelephone,c.YEARLY_TURNOVER as yearlyTurnover,l.NAME as businessLineName,n.NAME as businessNatureName,c.BUILDING_NAME as buildingName,c.STREET_NAME as streetName,r.REGION as regionName,s.COUNTY as countyName,c.FIRM_CATEGORY as firmCategory,t.TOWN as townName," +
+            "c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.REGION as region,c.TOWN as town,c.COUNTY as county,c.USER_ID as userId," +
+            "c.DIRECTOR_ID_NUMBER as directorIdNumber,c.ENTRY_NUMBER as entryNumber,c.STATUS as status,c.CLOSED_COMMODITY_MANUFACTURED as closedCommodityManufactured,c.CLOSED_CONTRACTS_UNDERTAKEN as closedContractsUndertaken,c.TASK_TYPE as taskType,c.TASK_ID as taskId,c.OWNERSHIP as ownership,c.BRANCH_NAME as branchName," +
+            "c.CLOSURE_OF_OPERATIONS as closureOfOperations,c.TYPE_OF_MANUFACTURE as typeOfManufacture" +
+            " FROM DAT_KEBS_COMPANY_PROFILE c Join CFG_KEBS_BUSINESS_NATURE n ON c.BUSINESS_NATURES = n.ID JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID JOIN CFG_KEBS_REGIONS r ON c.REGION = r.ID JOIN CFG_KEBS_TOWNS t ON c.TOWN = t.ID JOIN CFG_KEBS_COUNTIES s ON c.COUNTY = s.ID   WHERE c.ASSIGN_STATUS='0'", nativeQuery = true)
+    fun getManufacturerList(): MutableList<ManufactureListHolder>
+
+    @Query(
+        value = "SELECT ID  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id AND ASSIGN_STATUS='0'",
+        nativeQuery = true
+    )
+    fun getAssignStatus(@Param("id") id: Long?): Long
+
+    @Query(
+        value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='2' AND ASSIGNED_TO = :assignedTo",
+        nativeQuery = true
+    )
+    fun getMnCompleteTask(@Param("assignedTo") assignedTo: Long?): MutableList<CompanyProfileEntity>
+
+    @Query(
+        value = "SELECT *  FROM DAT_KEBS_COMPANY_PROFILE WHERE ASSIGN_STATUS='1' AND ASSIGNED_TO = :assignedTo ",
+        nativeQuery = true
+    )
+    fun getMnPendingTask(@Param("assignedTo") assignedTo: Long?): MutableList<CompanyProfileEntity>
+
+    @Query(
+        value = "SELECT BUSINESS_NATURES  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",
+        nativeQuery = true
+    )
+    fun getBusinessNature(@Param("id") id: Long?): Long
+
+    @Query(
+        value = "SELECT ID  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",
+        nativeQuery = true
+    )
+    fun getManufactureId(@Param("id") id: Long?): Long?
+
+    @Query(
+        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,c.ID as companyId,c.NAME as companyName,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName  FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID ORDER BY p.ID DESC",
+        nativeQuery = true
+    )
+    fun getLevyPayments(): MutableList<LevyPayments>
+
+
+
+
+
+
+
+
+}
+
+@Repository
+interface UsersEntityRepository : JpaRepository<UsersEntity, Long> {
+
+
+    @Query(value = "SELECT u.USER_TYPE as name  FROM DAT_KEBS_USERS u WHERE  u.ID = :id", nativeQuery = true)
+    fun getSlLoggedById(@Param("id") id: Long?): UserTypeHolder
+
+    @Query(value = "SELECT u.EMAIL as email  FROM DAT_KEBS_USERS u WHERE  u.ID = :id", nativeQuery = true)
+    fun getUserEmailById(@Param("id") id: Long?): String
 
 }
 
@@ -316,6 +414,10 @@ interface ICompanyProfileContractsUndertakenRepository :
 @Repository
 interface ICompanyProfileDirectorsRepository : HazelcastRepository<CompanyProfileDirectorsEntity, Long> {
     fun findByCompanyProfileId(companyProfileId: Long): List<CompanyProfileDirectorsEntity>?
+
+    @Query(value = "SELECT DIRECTOR_NAME as directorName FROM DAT_KEBS_COMPANY_PROFILE_DIRECTORS WHERE COMPANY_PROFILE_ID = :id", nativeQuery = true)
+    fun getCompanyDirectors(@Param("id") id: Long?): List<DirectorListHolder>?
+
 }
 
 @Repository
@@ -333,9 +435,9 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
     ): List<UserProfilesEntity>?
 
     fun findByDesignationIdAndSectionIdAndStatus(
-        designationId: DesignationsEntity,
-        sectionId: SectionsEntity,
-        status: Int
+            designationId: DesignationsEntity,
+            sectionId: SectionsEntity,
+            status: Int
     ): UserProfilesEntity?
 
     fun findByIdAndDesignationId_IdAndStatus(
@@ -344,9 +446,15 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
             status: Int
     ): Optional<UserProfilesEntity>
 
+    fun findByIdInAndDesignationId_IdAndStatus(
+            id: List<Long>,
+            designationId: Long,
+            status: Int
+    ): List<UserProfilesEntity>
+
     fun findByRegionIdAndDesignationId(
-        regionId: RegionsEntity,
-        designationId: DesignationsEntity
+            regionId: RegionsEntity,
+            designationId: DesignationsEntity
     ): List<UserProfilesEntity>?
 
     fun findBySubSectionL1IdAndStatus(subSectionL1Id: SubSectionsLevel1Entity, status: Int): List<UserProfilesEntity>?
@@ -493,5 +601,20 @@ interface IUserVerificationTokensRepositoryB : JpaRepository<UserVerificationTok
         nativeQuery = true
     )
     fun findAllByVarField1(@Param("id") id: String?): String?
+}
+@Repository
+interface CompanyProfileEditEntityRepository : HazelcastRepository<CompanyProfileEditEntity, Long> {
+    fun findAllByManufactureId(manufactureId: Long): CompanyProfileEditEntity
+
+    fun findFirstByManufactureIdOrderByIdDesc(manufactureId: Long): CompanyProfileEditEntity
+
+    @Query(
+        "SELECT SL_BPMN_PROCESS_INSTANCE FROM DAT_KEBS_COMPANY_PROFILE_EDIT  WHERE MANUFACTURE_ID=:manufactureId AND STATUS='1' ",
+        nativeQuery = true
+    )
+    fun findStatusByManufactureId(manufactureId: Long): CompanyProfileEditEntity
+
+
+
 }
 

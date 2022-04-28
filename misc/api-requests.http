@@ -25,8 +25,8 @@ POST https://localhost:8006/api/v1/login
 Content-Type: application/json
 
 {
-  "username": "kzmuhia@gmail.com",
-  "password": "password01"
+  "username": "vmuriuki@email.com",
+  "password": "password"
 }
 
 ####
@@ -36,8 +36,8 @@ Content-Type: application/json
 
 {
   "id": null,
-  "name": "MODIFY_COMPANY",
-  "descriptions": "MODIFY_COMPANY",
+  "name": "VIEW_SL_MANUFACTURER",
+  "descriptions": "VIEW SL MANUFACTURERS",
   "status": true
 }
 

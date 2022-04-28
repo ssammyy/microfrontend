@@ -595,7 +595,9 @@ end;
 
 create index sd_is_justification_uploads_idx on sd_is_justification_uploads (IS_JS_DOCUMENT_ID, status) TABLESPACE qaimssdb_idx;
 /
-create table sd_is_std_uploads
+
+/
+create table sd_is_gazette_notice_uploads
 (
 
     id               NUMBER PRIMARY KEY,
@@ -605,7 +607,7 @@ create table sd_is_std_uploads
     DOCUMENT_TYPE    VARCHAR2(200),
     DOCUMENT         BLOB,
     TRANSACTION_DATE DATE,
-    IS_STD_DOCUMENT_ID      NUMBER REFERENCES SD_IS_STANDARD_TB (ID),
+    IS_GN_DOCUMENT_ID      NUMBER REFERENCES SD_IS_GAZETTE_NOTICE (ID),
 
     DESCRIPTION      VARCHAR2(200),
     status           NUMBER(2),
@@ -626,16 +628,16 @@ create table sd_is_std_uploads
     delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
     deleted_on       TIMESTAMP(6) WITH TIME ZONE
 ) TABLESPACE qaimssdb_data;
-create sequence sd_is_std_uploads_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
-create or replace trigger sd_is_std_uploads_seq_trg
+create sequence sd_is_gazette_notice_uploads_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger sd_is_gazette_notice_uploads_seq_trg
     before
         insert
-    on sd_is_std_uploads
+    on sd_is_gazette_notice_uploads
     for each row
 begin
     if inserting then
         if :new.id is null then
-            select sd_is_std_uploads_seq.nextval
+            select sd_is_gazette_notice_uploads_seq.nextval
             into :new.id
             from dual;
 
@@ -644,5 +646,40 @@ begin
     end if;
 end;
 
-create index sd_is_std_uploads_idx on sd_is_std_uploads (IS_STD_DOCUMENT_ID, status) TABLESPACE qaimssdb_idx;
+create index sd_is_gazette_notice_uploads_idx on sd_is_gazette_notice_uploads (IS_GN_DOCUMENT_ID, status) TABLESPACE qaimssdb_idx;
+/
+alter table SD_NWA_JUSTIFICATION
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_DISDT_JUSTIFICATION
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_DISDT_JUSTIFICATION
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+alter table SD_NWA_PRELIMINARY_DRAFT
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_PRELIMINARY_DRAFT
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+
+alter table SD_NWA_WORKSHOP_DRAFT
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_WORKSHOP_DRAFT
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+alter table SD_NWA_STANDARD_TB
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_STANDARD_TB
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+
+alter table SD_NWA_GAZETTE_NOTICE
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_NWA_GAZETTE_NOTICE
+    add PROCESS_ID VARCHAR(350 char) ;
 /

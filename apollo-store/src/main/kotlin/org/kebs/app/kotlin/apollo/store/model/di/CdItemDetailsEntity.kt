@@ -120,7 +120,7 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var packageQuantity: BigDecimal? = null
 
-    @Column(name = "UNIT_PRICE_NCY")
+    @Column(name = "UNIT_PRICE_NCY", precision = 17, scale = 2)
     @Basic
     var unitPriceNcy: BigDecimal? = null
 
@@ -144,7 +144,7 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var foreignCurrencyCode: String? = null
 
-    @Column(name = "TOTAL_PRICE_NCY")
+    @Column(name = "TOTAL_PRICE_NCY", precision = 17, scale = 2)
     @Basic
     var totalPriceNcy: BigDecimal? = null
 
@@ -156,7 +156,7 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var supplimentaryQuantity: String? = null
 
-    @Column(name = "UNIT_PRICE_FCY")
+    @Column(name = "UNIT_PRICE_FCY", precision = 17, scale = 2)
     @Basic
     var unitPriceFcy: BigDecimal? = null
 
@@ -300,25 +300,6 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var approveReason: String? = null
 
-//    @Column(name = "TARGET_REASON")
-//    @Basic
-//    var targetReason: String? = null
-
-//    @Column(name = "TARGET_DATE")
-//    @Basic
-//    var targetDate: Date? = null
-
-//    @Column(name = "TARGET_STATUS")
-//    @Basic
-//    var targetStatus: Int? = null
-
-//    @Column(name = "TARGET_APPROVED_REMARKS")
-//    @Basic
-//    var targetApproveRemarks: String? = null
-
-//    @Column(name = "TARGET_APPROVED_DATE")
-//    @Basic
-//    var targetApproveDate: Date? = null
 
     @Column(name = "PAYMENT_MADE_STATUS")
     @Basic
@@ -336,33 +317,9 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var paymentNeededDate: Date? = null
 
-//    @Column(name = "INSPECTION_DATE_SET_STATUS")
-//    @Basic
-//    var inspectionDateSetStatus: Int? = null
-//
-//    @Column(name = "INSPECTION_NOTIFICATION_STATUS")
-//    @Basic
-//    var inspectionNotificationStatus: Int? = null
-//
-//    @Column(name = "INSPECTION_REMARKS")
-//    @Basic
-//    var inspectionRemarks: String? = null
-//
-//    @Column(name = "INSPECTION_DATE")
-//    @Basic
-//    var inspectionDate: Date? = null
-//
-//    @Column(name = "INSPECTION_NOTIFICATION_DATE")
-//    @Basic
-//    var inspectionNotificationDate: Date? = null
-
-//    @Column(name = "TARGET_APPROVED_STATUS")
-//    @Basic
-//    var targetApproveStatus: Int? = null
-
     @Column(name = "CHASIS_NUMBER")
     @Basic
-    var chasisNumber: String? = null
+    var chassisNumber: String? = null
 
     @Column(name = "SAMPLED_STATUS")
     @Basic
@@ -502,7 +459,7 @@ class CdItemDetailsEntity : Serializable {
 //                targetApproveRemarks == that.targetApproveRemarks &&
 //                targetApproveDate == that.targetApproveDate &&
 //                targetApproveStatus == that.targetApproveStatus &&
-                chasisNumber == that.chasisNumber &&
+                chassisNumber == that.chassisNumber &&
                 sampledStatus == that.sampledStatus &&
                 sampledCollectedStatus == that.sampledCollectedStatus &&
 //                inspectionDate == that.inspectionDate &&
@@ -610,7 +567,7 @@ class CdItemDetailsEntity : Serializable {
 //            targetReason,
 //            targetDate,
 //            targetStatus,
-            chasisNumber,
+            chassisNumber,
             paymentMadeStatus,
             sampledStatus,
             status,

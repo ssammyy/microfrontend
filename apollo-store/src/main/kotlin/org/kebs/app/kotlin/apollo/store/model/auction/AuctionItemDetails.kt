@@ -1,11 +1,9 @@
 package org.kebs.app.kotlin.apollo.store.model.auction
 
 import org.kebs.app.kotlin.apollo.store.model.CorsBakEntity
-import org.kebs.app.kotlin.apollo.store.model.CorsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DestinationInspectionFeeEntity
 import java.io.Serializable
 import java.math.BigDecimal
-import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -20,9 +18,9 @@ class AuctionItemDetails : Serializable {
     @Id
     var id: Long? = null
 
-    @Column(name = "AUCTION_ID")
-    @Basic
-    var auctionId: Long? = null
+    @JoinColumn(name = "AUCTION_ID", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    var auctionId: AuctionRequests? = null
 
     @Column(name = "SERIAL_NO")
     @Basic

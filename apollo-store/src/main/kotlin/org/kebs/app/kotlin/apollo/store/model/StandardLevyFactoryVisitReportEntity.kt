@@ -12,11 +12,12 @@ import javax.persistence.*
 @Entity
 @Table(name = "DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT")
 class StandardLevyFactoryVisitReportEntity : Serializable {
+    @Column(name = "ID")
     @Id
     @SequenceGenerator(name = "DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT_SEQ_GEN", sequenceName = "DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    @Column(name = "ID")
-    var id: Long? = null
+
+    var id: Long? = 0
 
     @Column(name = "STATUS")
     @Basic
@@ -62,6 +63,10 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Basic
     var officersFeedback: String? = null
 
+    @Column(name = "REPORT_REMARKS")
+    @Basic
+    var makeRemarks: String? = null
+
     @Column(name = "MANUFACTURER_ENTITY")
     @Basic
     var manufacturerEntity: Long? = null
@@ -96,6 +101,10 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Basic
     var slProcessInstanceId: String? = null
 
+    @Column(name = "SL_PROCESS_STATUS")
+    @Basic
+    var slProcessStatus: Int? = null
+
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
@@ -128,13 +137,13 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Basic
     var varField8: String? = null
 
-    @Column(name = "VAR_FIELD_9")
+    @Column(name = "ASSIGNEE_ID")
     @Basic
-    var varField9: String? = null
+    var assigneeId: Long? = null
 
-    @Column(name = "VAR_FIELD_10")
+    @Column(name = "TASK_ID")
     @Basic
-    var varField10: String? = null
+    var taskId: String? = null
 
     @Column(name = "CHEIF_MANAGER_REMARKS")
     @Basic
@@ -143,6 +152,10 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Column(name = "ASSISTANCE_MANAGER_REMARKS")
     @Basic
     var assistantManagerRemarks: String? = null
+
+    @Column(name = "ACCENT_TO")
+    @Basic
+    var accentTo: Boolean? = null
 
     @Column(name = "CREATED_BY")
     @Basic
@@ -167,11 +180,71 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
+
+    @Column(name = "COMPANY_NAME")
+    @Basic
+    var companyName: String? = null
+
+    @Column(name = "ENTRY_NUMBER")
+    @Basic
+    var entryNumber: String? = null
+
+    @Column(name = "KRA_PIN")
+    @Basic
+    var kraPin: String? = null
+
+    @Column(name = "REGISTRATION_NUMBER")
+    @Basic
+    var registrationNumber: String? = null
+
+    @Column(name = "APPROVAL_STATUS")
+    @Basic
+    var approvalStatus: String? = null
+
+    @Column(name = "APPROVAL_STATUS_ID")
+    @Basic
+    var approvalStatusId: Long? = null
+
+    var userType: Long? = null
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as StandardLevyFactoryVisitReportEntity
-        return id == that.id && status == that.status && assistantManagerApproval == that.assistantManagerApproval && managersApproval == that.managersApproval && purpose == that.purpose && personMet == that.personMet && actionTaken == that.actionTaken && remarks == that.remarks && officersFeedback == that.officersFeedback && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
+        return id == that.id &&
+                status == that.status &&
+                assistantManagerApproval == that.assistantManagerApproval &&
+                managersApproval == that.managersApproval &&
+                purpose == that.purpose &&
+                personMet == that.personMet &&
+                actionTaken == that.actionTaken &&
+                remarks == that.remarks &&
+                officersFeedback == that.officersFeedback &&
+                varField1 == that.varField1 &&
+                varField2 == that.varField2 &&
+                varField3 == that.varField3 &&
+                varField4 == that.varField4 &&
+                varField5 == that.varField5 &&
+                varField6 == that.varField6 &&
+                varField7 == that.varField7 &&
+                varField8 == that.varField8 &&
+                assigneeId == that.assigneeId &&
+                taskId == that.taskId &&
+                createdBy == that.createdBy &&
+                createdOn == that.createdOn &&
+                modifiedBy == that.modifiedBy &&
+                modifiedOn == that.modifiedOn &&
+                deleteBy == that.deleteBy &&
+                deletedOn == that.deletedOn &&
+                accentTo == that.accentTo &&
+                makeRemarks ==that.makeRemarks &&
+                slProcessStatus == that.slProcessStatus &&
+                companyName == that.companyName &&
+                entryNumber == that.entryNumber &&
+                kraPin ==that.kraPin &&
+                registrationNumber == that.registrationNumber &&
+                approvalStatus == that.approvalStatus &&
+                approvalStatusId == that.approvalStatusId
     }
 
     override fun hashCode(): Int {
@@ -193,14 +266,25 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
             varField6,
             varField7,
             varField8,
-            varField9,
-            varField10,
+            assigneeId,
+            taskId,
             createdBy,
             createdOn,
             modifiedBy,
             modifiedOn,
             deleteBy,
-            deletedOn
+            deletedOn,
+            accentTo,
+            makeRemarks,
+            slProcessStatus,
+            companyName,
+            entryNumber,
+            kraPin,
+            registrationNumber,
+            approvalStatus,
+            approvalStatusId
+
+
         )
     }
 }

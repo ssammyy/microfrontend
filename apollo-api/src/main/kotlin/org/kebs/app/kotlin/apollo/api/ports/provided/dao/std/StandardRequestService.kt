@@ -339,7 +339,8 @@ class StandardRequestService(
     fun uploadWorkPlan(standardWorkPlan: StandardWorkPlan) {
         val variable: MutableMap<String, Any> = HashMap()
         standardWorkPlan.targetDate?.let { variable.put("targetDate", it) }
-
+        standardWorkPlan.status = "Prepare Preliminary Draft"
+        variable["status"] = standardWorkPlan.status!!
         standardWorkPlanRepository.save(standardWorkPlan)
         taskService.complete(standardWorkPlan.taskId)
         println("TC-SEC has uploaded workplan")

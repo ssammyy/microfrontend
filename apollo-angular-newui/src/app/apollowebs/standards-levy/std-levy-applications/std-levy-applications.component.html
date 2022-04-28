@@ -1,0 +1,1268 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div class="loading-spinner ">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Applications</p>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <a href="" style="color: orangered">Go</a>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a href="" style="color: orangered"><span> <i class="fa fa-arrow-right"></i></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-info card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Tasks</p>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <a href="slPendingTasks" style="color: dodgerblue">Go</a>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a href="slPendingTasks" style="color: dodgerblue"><span> <i class="fa fa-arrow-right"></i></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complete Tasks</p>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <a href="slCompleteTasks" style="color: seagreen">Go</a>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a href="slCompleteTasks" style="color: seagreen"><span> <i class="fa fa-arrow-right"></i></span></a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+
+                            </div>
+
+                            <div class="card-title float-left"><h4 style="color: #0d47a1; font-weight: bold">Manufactures</h4></div>
+                            <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
+                                Companies <span class="badge badge-primary">{{manufactureLists.length}}</span>
+                            </button></div>
+
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="container col-md-12">
+                                <div class="material-datatables table-responsive">
+                                    <table class="table table-striped table-bordered table-hover" datatable
+                                            [dtTrigger]="dtTrigger">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">Company Name</th>
+                                            <th class="sl">Entry Number</th>
+                                            <th class="knw">Kra Pin</th>
+                                            <th class="sl">Registration Number</th>
+                                            <th class="requestNumber">Status</th>
+                                            <th class="requestNumber">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        <tr *ngFor="let manufactureList of manufactureLists let i=index">
+                                            <td>{{i + 1}} </td>
+                                            <td>{{manufactureList.name}}</td>
+                                            <td>{{manufactureList.entryNumber}}</td>
+                                            <td>{{manufactureList.kraPin}}</td>
+                                            <td>{{manufactureList.registrationNumber}}</td>
+                                            <td><span class="badge badge-rose">Not Assigned</span></td>
+                                            <td>
+                                                <button (click)="onOpenModalList(manufactureList,'viewList')"
+                                                        type="submit" class="btn btn-success btn-sm" style="border-radius: 40px;">More
+                                                </button>
+                                            </td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="viewList" tabindex="-1" role="dialog"
+                     aria-labelledby="viewListExampleModalLabel" aria-hidden="true">a
+                    <div class="modal-dialog modal-lg modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" #closeModal class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form #approveForm="ngForm">
+                                <div class="modal-body">
+                                    <div *ngIf="actionRequestList?.typeOfManufacture==1" class="row">
+                                        <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-success btn-sm">Edit Company Details
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
+                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
+                                        </div>
+
+
+                                        <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayAssignTo1Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
+
+
+                                        </div>
+
+                                        <div *ngIf="roles?.includes('SL_IS_MANAGER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayAssignTo2Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
+                                            <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
+                                            <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
+                                            <!--                                        </button>-->
+
+                                        </div>
+                                        <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
+                                            <button (click)=toggleDisplayAssignTo2Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
+                                            <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
+                                            <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
+                                            <!--                                        </button>-->
+
+                                        </div>
+                                    </div>
+                                    <div *ngIf="actionRequestList?.typeOfManufacture==2" class="row">
+                                        <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-success btn-sm">Edit Company Details
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
+                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1-C Form
+                                            </button>
+                                        </div>
+
+
+                                        <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayAssignTo1Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1-C Form
+                                            </button>
+
+
+                                        </div>
+
+                                        <div *ngIf="roles?.includes('SL_IS_MANAGER')">
+                                            <button (click)=toggleDisplayAssignForm() type="button"
+                                                    class="btn btn-primary btn-sm">Assign To Self
+                                            </button>
+                                            <button (click)=toggleDisplayAssignTo2Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1-C Form
+                                            </button>
+                                            <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
+                                            <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
+                                            <!--                                        </button>-->
+
+                                        </div>
+                                        <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
+                                            <button (click)=toggleDisplayAssignTo2Form() type="button"
+                                                    class="btn btn-success btn-sm">Assign To Other
+                                            </button>
+                                            <button (click)=toggleDisplayEditForm() type="button"
+                                                    class="btn btn-info btn-sm">Edit Company Details
+                                            </button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
+                                                    class="btn btn-info btn-sm">View SL1-C Form
+                                            </button>
+                                            <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
+                                            <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
+                                            <!--                                        </button>-->
+
+                                        </div>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowAssignForm">
+                                        <form (ngSubmit)="assignCompanyTask()" [formGroup]="assignCompanyTaskFormGroup"
+                                              class="form">
+                                            <hr style="color: red">
+                                            <p><b>The Selected Task will be assigned to You. Click Assign to
+                                                Proceed.</b></p>
+                                            <hr>
+<!--                                            <input type="hidden"-->
+<!--                                                   formControlName="taskType" name="taskType"-->
+<!--                                                   value="{{taskTypeOne}}">-->
+                                            <input type="hidden" ngModel="1"
+                                                   formControlName="taskType" name="taskType"
+                                                   value="1">
+                                            <input type="hidden" ngModel="{{userId}}" formControlName="assignedTo"
+                                                   name="assignedTo" value="{{userId}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}"
+                                                   formControlName="entryNumber" name="entryNumber"
+                                                   value="{{actionRequestList?.entryNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.name}}"
+                                                   formControlName="companyName" name="companyName"
+                                                   value="{{actionRequestList?.name}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.kraPin}}"
+                                                   formControlName="kraPin" name="kraPin"
+                                                   value="{{actionRequestList?.kraPin}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.registrationNumber}}"
+                                                   formControlName="registrationNumber" name="registrationNumber"
+                                                   value="{{actionRequestList?.registrationNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.status}}"
+                                                   formControlName="status" name="status"
+                                                   value="{{actionRequestList?.status}}">
+
+                                            <input type="hidden" ngModel="{{actionRequestList?.postalAddress}}"
+                                                   formControlName="postalAddress" name="postalAddress"
+                                                   value="{{actionRequestList?.postalAddress}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.physicalAddress}}"
+                                                   formControlName="physicalAddress" name="physicalAddress"
+                                                   value="{{actionRequestList?.physicalAddress}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.plotNumber}}"
+                                                   formControlName="plotNumber" name="plotNumber"
+                                                   value="{{actionRequestList?.plotNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.companyEmail}}"
+                                                   formControlName="companyEmail" name="companyEmail"
+                                                   value="{{actionRequestList?.companyEmail}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.companyTelephone}}"
+                                                   formControlName="companyTelephone" name="companyTelephone"
+                                                   value="{{actionRequestList?.companyTelephone}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.yearlyTurnover}}"
+                                                   formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                   value="{{actionRequestList?.yearlyTurnover}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessLineName}}"
+                                                   formControlName="businessLineName" name="businessLineName"
+                                                   value="{{actionRequestList?.businessLineName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessLines}}"
+                                                   formControlName="businessLines" name="businessLines"
+                                                   value="{{actionRequestList?.businessLines}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatures}}"
+                                                   formControlName="businessNatures" name="businessNatures"
+                                                   value="{{actionRequestList?.businessNatures}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatureName}}"
+                                                   formControlName="businessNatureName" name="businessNatureName"
+                                                   value="{{actionRequestList?.businessNatureName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.regionName}}"
+                                                   formControlName="regionName" name="regionName"
+                                                   value="{{actionRequestList?.regionName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.region}}"
+                                                   formControlName="region" name="region"
+                                                   value="{{actionRequestList?.region}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.countyName}}"
+                                                   formControlName="countyName" name="countyName"
+                                                   value="{{actionRequestList?.countyName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.county}}"
+                                                   formControlName="county" name="county"
+                                                   value="{{actionRequestList?.county}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.town}}"
+                                                   formControlName="town" name="town"
+                                                   value="{{actionRequestList?.town}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.townName}}"
+                                                   formControlName="townName" name="townName"
+                                                   value="{{actionRequestList?.townName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.buildingName}}"
+                                                   formControlName="buildingName" name="buildingName"
+                                                   value="{{actionRequestList?.buildingName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.branchName}}"
+                                                   formControlName="branchName" name="branchName"
+                                                   value="{{actionRequestList?.branchName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.streetName}}"
+                                                   formControlName="streetName" name="streetName"
+                                                   value="{{actionRequestList?.streetName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.directorIdNumber}}"
+                                                   formControlName="directorIdNumber" name="directorIdNumber"
+                                                   value="{{actionRequestList?.directorIdNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.manufactureStatus}}"
+                                                   formControlName="manufactureStatus" name="manufactureStatus"
+                                                   value="{{actionRequestList?.manufactureStatus}}">
+
+                                            <input type="hidden" ngModel="{{actionRequestList?.id}}"
+                                                   formControlName="manufacturerEntity" name="manufacturerEntity"
+                                                   value="{{actionRequestList?.id}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.userId}}"
+                                                   formControlName="contactId" name="contactId"
+                                                   value="{{actionRequestList?.userId}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.typeOfManufacture}}"
+                                                   formControlName="typeOfManufacture" name="typeOfManufacture"
+                                                   value="{{actionRequestList?.typeOfManufacture}}">
+                                            <button class="btn btn-sm btn-primary float-right" type="submit">Assign
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowAssign1Form">
+                                        <form (ngSubmit)="assignCompanyTaskOne()"
+                                              [formGroup]="assignCompanyTask1FormGroup" class="form">
+                                            <hr style="color: red">
+                                            <p><b>Please Select Person to assign task to. Click Assign to Proceed.</b>
+                                            </p>
+                                            <hr>
+                                            <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')"
+                                                 class="form-group col-12">
+                                                <label>Select User</label>
+                                                <ng-select [(ngModel)]="assignedUsersOne" formControlName="assignedTo"
+                                                           class="form-control" ngModel name="assignedTo">
+                                                    <ng-option *ngFor="let user of assignUsersOne"
+                                                               [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
+                                                </ng-select>
+
+                                            </div>
+                                            <div *ngIf="roles?.includes('SL_IS_MANAGER')" class="form-group col-12">
+                                                <label>Select</label>
+                                                <ng-select [(ngModel)]="assignedUsersTwo" formControlName="assignedTo"
+                                                           class="form-control" ngModel name="assignedTo">
+                                                    <ng-option *ngFor="let user of assignUsersTwo"
+                                                               [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
+                                                </ng-select>
+
+                                            </div>
+                                            <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')"
+                                                 class="form-group col-12">
+                                                <label>Select</label>
+                                                <ng-select [(ngModel)]="assignedUsersThree" formControlName="assignedTo"
+                                                           class="form-control" ngModel name="assignedTo">
+                                                    <ng-option *ngFor="let user of assignUsersThree"
+                                                               [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
+                                                </ng-select>
+
+                                            </div>
+                                            <input type="hidden" ngModel="1"
+                                                   formControlName="taskType" name="taskType"
+                                                   value="1">
+                                            <input type="hidden" ngModel="{{actionRequestList?.name}}"
+                                                   formControlName="companyName" name="companyName"
+                                                   value="{{actionRequestList?.name}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.kraPin}}"
+                                                   formControlName="kraPin" name="kraPin"
+                                                   value="{{actionRequestList?.kraPin}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.status}}"
+                                                   formControlName="status" name="status"
+                                                   value="{{actionRequestList?.status}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.registrationNumber}}"
+                                                   formControlName="registrationNumber" name="registrationNumber"
+                                                   value="{{actionRequestList?.registrationNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.postalAddress}}"
+                                                   formControlName="postalAddress" name="postalAddress"
+                                                   value="{{actionRequestList?.postalAddress}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.physicalAddress}}"
+                                                   formControlName="physicalAddress" name="physicalAddress"
+                                                   value="{{actionRequestList?.physicalAddress}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.plotNumber}}"
+                                                   formControlName="plotNumber" name="plotNumber"
+                                                   value="{{actionRequestList?.plotNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.companyEmail}}"
+                                                   formControlName="companyEmail" name="companyEmail"
+                                                   value="{{actionRequestList?.companyEmail}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.companyTelephone}}"
+                                                   formControlName="companyTelephone" name="companyTelephone"
+                                                   value="{{actionRequestList?.companyTelephone}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.yearlyTurnover}}"
+                                                   formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                   value="{{actionRequestList?.yearlyTurnover}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessLineName}}"
+                                                   formControlName="businessLineName" name="businessLineName"
+                                                   value="{{actionRequestList?.businessLineName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessLines}}"
+                                                   formControlName="businessLines" name="businessLines"
+                                                   value="{{actionRequestList?.businessLines}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatures}}"
+                                                   formControlName="businessNatures" name="businessNatures"
+                                                   value="{{actionRequestList?.businessNatures}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatureName}}"
+                                                   formControlName="businessNatureName" name="businessNatureName"
+                                                   value="{{actionRequestList?.businessNatureName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.regionName}}"
+                                                   formControlName="regionName" name="regionName"
+                                                   value="{{actionRequestList?.regionName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.region}}"
+                                                   formControlName="region" name="region"
+                                                   value="{{actionRequestList?.region}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.countyName}}"
+                                                   formControlName="countyName" name="countyName"
+                                                   value="{{actionRequestList?.countyName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.county}}"
+                                                   formControlName="county" name="county"
+                                                   value="{{actionRequestList?.county}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.town}}"
+                                                   formControlName="town" name="town"
+                                                   value="{{actionRequestList?.town}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.townName}}"
+                                                   formControlName="townName" name="townName"
+                                                   value="{{actionRequestList?.townName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.buildingName}}"
+                                                   formControlName="buildingName" name="buildingName"
+                                                   value="{{actionRequestList?.buildingName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.branchName}}"
+                                                   formControlName="branchName" name="branchName"
+                                                   value="{{actionRequestList?.branchName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.streetName}}"
+                                                   formControlName="streetName" name="streetName"
+                                                   value="{{actionRequestList?.streetName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.directorIdNumber}}"
+                                                   formControlName="directorIdNumber" name="directorIdNumber"
+                                                   value="{{actionRequestList?.directorIdNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.manufactureStatus}}"
+                                                   formControlName="manufactureStatus" name="manufactureStatus"
+                                                   value="{{actionRequestList?.manufactureStatus}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}"
+                                                   formControlName="entryNumber" name="entryNumber"
+                                                   value="{{actionRequestList?.entryNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.id}}"
+                                                   formControlName="manufacturerEntity" name="manufacturerEntity"
+                                                   value="{{actionRequestList?.id}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.userId}}"
+                                                   formControlName="contactId" name="contactId"
+                                                   value="{{actionRequestList?.userId}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.typeOfManufacture}}"
+                                                   formControlName="typeOfManufacture" name="typeOfManufacture"
+                                                   value="{{actionRequestList?.typeOfManufacture}}">
+                                            <button class="btn btn-sm btn-primary float-right" type="submit">Assign
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowAssign2Form">
+                                        <form (ngSubmit)="assignCompanyTaskTwo()"
+                                              [formGroup]="assignCompanyTask2FormGroup" class="form">
+                                            <hr style="color: red">
+                                            <p><b>Please Select Person to assign task to. Click Assign to Proceed.</b>
+                                            </p>
+                                            <hr>
+                                            <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')"
+                                                 class="form-group col-12">
+                                                <label>Select User</label>
+                                                <ng-select [(ngModel)]="assignedUsersOne" formControlName="assignedTo"
+                                                           class="form-control" ngModel name="assignedTo">
+                                                    <ng-option *ngFor="let user of assignUsersOne"
+                                                               [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
+                                                </ng-select>
+
+                                            </div>
+                                            <div *ngIf="roles?.includes('SL_IS_MANAGER')" class="form-group col-12">
+                                                <label>Select</label>
+                                                <ng-select [(ngModel)]="assignedUsersTwo" formControlName="assignedTo"
+                                                           class="form-control" ngModel name="assignedTo">
+                                                    <ng-option *ngFor="let user of assignUsersTwo"
+                                                               [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
+                                                </ng-select>
+
+                                            </div>
+                                            <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')"
+                                                 class="form-group col-12">
+                                                <label>Select</label>
+                                                <ng-select [(ngModel)]="assignedUsersThree" formControlName="assignedTo"
+                                                           class="form-control" ngModel name="assignedTo">
+                                                    <ng-option *ngFor="let user of assignUsersThree"
+                                                               [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
+                                                </ng-select>
+
+                                            </div>
+                                            <input type="hidden" ngModel="1"
+                                                   formControlName="taskType" name="taskType"
+                                                   value="1">
+                                            <input type="hidden" ngModel="{{actionRequestList?.name}}"
+                                                   formControlName="companyName" name="companyName"
+                                                   value="{{actionRequestList?.name}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.kraPin}}"
+                                                   formControlName="kraPin" name="kraPin"
+                                                   value="{{actionRequestList?.kraPin}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.status}}"
+                                                   formControlName="status" name="status"
+                                                   value="{{actionRequestList?.status}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.registrationNumber}}"
+                                                   formControlName="registrationNumber" name="registrationNumber"
+                                                   value="{{actionRequestList?.registrationNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.postalAddress}}"
+                                                   formControlName="postalAddress" name="postalAddress"
+                                                   value="{{actionRequestList?.postalAddress}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.physicalAddress}}"
+                                                   formControlName="physicalAddress" name="physicalAddress"
+                                                   value="{{actionRequestList?.physicalAddress}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.plotNumber}}"
+                                                   formControlName="plotNumber" name="plotNumber"
+                                                   value="{{actionRequestList?.plotNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.companyEmail}}"
+                                                   formControlName="companyEmail" name="companyEmail"
+                                                   value="{{actionRequestList?.companyEmail}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.companyTelephone}}"
+                                                   formControlName="companyTelephone" name="companyTelephone"
+                                                   value="{{actionRequestList?.companyTelephone}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.yearlyTurnover}}"
+                                                   formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                   value="{{actionRequestList?.yearlyTurnover}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessLineName}}"
+                                                   formControlName="businessLineName" name="businessLineName"
+                                                   value="{{actionRequestList?.businessLineName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessLines}}"
+                                                   formControlName="businessLines" name="businessLines"
+                                                   value="{{actionRequestList?.businessLines}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatures}}"
+                                                   formControlName="businessNatures" name="businessNatures"
+                                                   value="{{actionRequestList?.businessNatures}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.businessNatureName}}"
+                                                   formControlName="businessNatureName" name="businessNatureName"
+                                                   value="{{actionRequestList?.businessNatureName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.regionName}}"
+                                                   formControlName="regionName" name="regionName"
+                                                   value="{{actionRequestList?.regionName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.region}}"
+                                                   formControlName="region" name="region"
+                                                   value="{{actionRequestList?.region}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.countyName}}"
+                                                   formControlName="countyName" name="countyName"
+                                                   value="{{actionRequestList?.countyName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.county}}"
+                                                   formControlName="county" name="county"
+                                                   value="{{actionRequestList?.county}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.town}}"
+                                                   formControlName="town" name="town"
+                                                   value="{{actionRequestList?.town}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.townName}}"
+                                                   formControlName="townName" name="townName"
+                                                   value="{{actionRequestList?.townName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.buildingName}}"
+                                                   formControlName="buildingName" name="buildingName"
+                                                   value="{{actionRequestList?.buildingName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.branchName}}"
+                                                   formControlName="branchName" name="branchName"
+                                                   value="{{actionRequestList?.branchName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.streetName}}"
+                                                   formControlName="streetName" name="streetName"
+                                                   value="{{actionRequestList?.streetName}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.directorIdNumber}}"
+                                                   formControlName="directorIdNumber" name="directorIdNumber"
+                                                   value="{{actionRequestList?.directorIdNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.manufactureStatus}}"
+                                                   formControlName="manufactureStatus" name="manufactureStatus"
+                                                   value="{{actionRequestList?.manufactureStatus}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}"
+                                                   formControlName="entryNumber" name="entryNumber"
+                                                   value="{{actionRequestList?.entryNumber}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.id}}"
+                                                   formControlName="manufacturerEntity" name="manufacturerEntity"
+                                                   value="{{actionRequestList?.id}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.userId}}"
+                                                   formControlName="contactId" name="contactId"
+                                                   value="{{actionRequestList?.userId}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.typeOfManufacture}}"
+                                                   formControlName="typeOfManufacture" name="typeOfManufacture"
+                                                   value="{{actionRequestList?.typeOfManufacture}}">
+                                            <button class="btn btn-sm btn-primary float-right" type="submit">Assign
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowEditForm">
+                                        <form (ngSubmit)="editCompany()" [formGroup]="editCompanyFormGroup"
+                                              class="form">
+                                            <hr style="color: red">
+                                            <p><b>Edit Company Details.</b></p>
+                                            <hr>
+                                            <div class="form-body">
+                                                <div class="row">
+                                                    <div class="form-group col-12">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.name}}"
+                                                               formControlName="companyName" name="companyName"
+                                                               value="{{actionRequestList?.name}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.kraPin}}"
+                                                               formControlName="kraPin" name="kraPin"
+                                                               value="{{actionRequestList?.kraPin}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.registrationNumber}}"
+                                                               formControlName="registrationNumber" name="registrationNumber"
+                                                               value="{{actionRequestList?.registrationNumber}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}"
+                                                               formControlName="entryNumber" name="entryNumber"
+                                                               value="{{actionRequestList?.entryNumber}}">
+                                                        <label for="physicalAddress">Main Physical Location <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="hidden" ngModel="{{actionRequestList?.id}}"
+                                                               class="form-control"
+                                                               formControlName="companyId" name="companyId"
+                                                        >
+                                                        <textarea type="text"
+                                                                  ngModel="{{actionRequestList?.physicalAddress}}"
+                                                                  class="form-control"
+                                                                  id="physicalAddress" name="physicalAddress"
+                                                                  formControlName="physicalAddress"
+                                                                  placeholder="Main Physical Location"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="postalAddress2">Postal Address <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text"
+                                                               ngModel="{{actionRequestList?.postalAddress}}"
+                                                               class="form-control"
+                                                               id="postalAddress2" name="postalAddress"
+                                                               formControlName="postalAddress"
+                                                               placeholder="Postal Address">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="ownership">Ownership <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <ng-select id="ownership"
+                                                                   ngModel="{{actionRequestList?.ownership}}"
+                                                                   formControlName="ownership" class="form-control"
+                                                                   name="ownership">
+                                                            <ng-option
+                                                                    value="{{actionRequestList?.ownership}}">{{actionRequestList?.ownership}} {{actionRequestList?.ownership}}</ng-option>
+                                                            <ng-option value="Single_Ownership">Single Ownership
+                                                            </ng-option>
+                                                            <ng-option value="Limited_Company">Limited Company
+                                                            </ng-option>
+
+                                                        </ng-select>
+                                                        <input type="hidden"
+                                                               formControlName="taskType" name="taskType"
+                                                               value="{{taskTypeTwo}}">
+                                                        <input type="hidden"
+                                                               formControlName="userType" name="userType"
+                                                               value="{{userType}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.typeOfManufacture}}"
+                                                               formControlName="typeOfManufacture" name="typeOfManufacture"
+                                                               value="{{actionRequestList?.typeOfManufacture}}">
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')" class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="approvedUsersOne" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+                                                            <ng-option *ngFor="let user of approveUsersOne" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                        </ng-select>
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')" class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="approvedUsersTwo" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+                                                            <ng-option *ngFor="let user of approveUsersTwo" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                        </ng-select>
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_MANAGER')" class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="approvedUsersThree" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+                                                            <ng-option *ngFor="let user of approveUsersThree" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                        </ng-select>
+                                                    </div>
+                                                    <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')"
+                                                         class="form-group col-12">
+                                                        <label>Forward To</label>
+                                                        <ng-select [(ngModel)]="assignedUsersThree" formControlName="assignedTo"
+                                                                   class="form-control"  name="assignedTo">
+                                                            <ng-option *ngFor="let user of assignUsersThree"
+                                                                       [value]="user.id">{{user.firstName}} {{user.lastName}}</ng-option>
+                                                        </ng-select>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-primary float-right" type="submit">Save
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowEditedForm">
+                                        <form (ngSubmit)="editedCompany()" [formGroup]="editedCompanyFormGroup"
+                                              class="form">
+                                            <hr style="color: red">
+                                            <p><b>Confirm Edited Company Details.</b></p>
+                                            <hr>
+                                            <div class="form-body">
+                                                <div class="row">
+                                                    <div class="form-group col-12">
+                                                        <label for="physicalAddressx">Main Physical Location <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="hidden"
+                                                               ngModel="{{editedCompanyData?.manufactureId}}"
+                                                               class="form-control"
+                                                               formControlName="companyId" name="companyId"
+                                                        >
+                                                        <textarea type="text"
+                                                                  ngModel="{{editedCompanyData?.physicalAddress}}"
+                                                                  class="form-control"
+                                                                  id="physicalAddressx" name="physicalAddress"
+                                                                  formControlName="physicalAddress"
+                                                                  placeholder="Main Physical Location"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="postalAddresss">Postal Address <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text"
+                                                               ngModel="{{editedCompanyData?.postalAddress}}"
+                                                               class="form-control"
+                                                               id="postalAddresss" name="postalAddress"
+                                                               formControlName="postalAddress"
+                                                               placeholder="Postal Address">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="ownerships">Ownership <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{editedCompanyData?.ownership}}"
+                                                               class="form-control"
+                                                               id="ownerships" name="ownership"
+                                                               formControlName="ownership" placeholder="OwnerShip">
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-primary float-right" type="submit">Save
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowSLForm">
+                                        <div *ngIf="actionRequestList?.typeOfManufacture==1" class="row col-12">
+                                            <div class="col-12" >
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                    <div class="card-body">{{actionRequestList?.name}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                        <div class="card-body">{{actionRequestList?.plotNumber}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                        <div class="card-body">{{actionRequestList?.streetName}}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                        <div class="card-body">{{actionRequestList?.postalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                        <div class="card-body">{{actionRequestList?.companyTelephone}}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                        Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                    <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                        <div class="card-body">{{actionRequestList?.physicalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                        <div class="card-body">{{actionRequestList?.registrationNumber}}</div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                        <div class="card-body">{{actionRequestList?.kraPin}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                        <div class="card-body">{{actionRequestList?.branchName}}</div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                    <div class="card-body">{{actionRequestList?.physicalAddress}}</div>
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
+                                                        Manufactured(Commodities are comma separated)</div>
+                                                    <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                        <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                            KSH</div>
+                                                        <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div *ngIf="actionRequestList?.typeOfManufacture==2" class="row col-12">
+                                            <div class="col-12" >
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                    <div class="card-body">{{actionRequestList?.name}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                        <div class="card-body">{{actionRequestList?.plotNumber}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                        <div class="card-body">{{actionRequestList?.streetName}}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                        <div class="card-body">{{actionRequestList?.postalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                        <div class="card-body">{{actionRequestList?.companyTelephone}}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                        Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                    <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                        <div class="card-body">{{actionRequestList?.physicalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                        <div class="card-body">{{actionRequestList?.registrationNumber}}</div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                        <div class="card-body">{{actionRequestList?.kraPin}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                        <div class="card-body">{{actionRequestList?.branchName}}</div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                    <div class="card-body">{{actionRequestList?.physicalAddress}}</div>
+                                                </div>
+                                                <div class="card col-12">
+                                                    <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)</div>
+                                                    <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                        <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                    </div>
+                                                    <div class="card col-6">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                            KSH</div>
+                                                        <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="list-group list-group-flush">
+                                        <div class="row col-12">
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company
+                                                                    Name</b></h5>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.name}}.</p>
+                                                </a>
+                                            </div>
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>KRA PIN</b>
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.kraPin}}.</p>
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                        <div class="row col-12">
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Registration
+                                                                    Number</b></h5>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.registrationNumber}}
+                                                        .</p>
+                                                </a>
+                                            </div>
+
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Postal
+                                                                    Address</b></h5>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.postalAddress}}.</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row col-12">
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Physical
+                                                                    Address</b></h5>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.physicalAddress}}.</p>
+                                                </a>
+                                            </div>
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Plot
+                                                                    Number</b></h5>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <p class="text-sm mb-0">{{actionRequestList?.plotNumber}}.</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row col-12">
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company
+                                                                    Email</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="text-sm mb-0">{{actionRequestList?.companyEmail}}.</p>
+                                                </a>
+                                            </div>
+
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company
+                                                                    Telephone</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.companyTelephone}}.</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row col-12">
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Yearly
+                                                                    Turn-Over</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--                                <h4 class="mt-3 mb-1"> New order for Argon Dashboard</h4>-->
+                                                    <p class="text-sm mb-0">{{actionRequestList?.yearlyTurnover}}.</p>
+                                                </a>
+                                            </div>
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Business
+                                                                    Lines</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.businessLineName}}.</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row col-12">
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Nature of
+                                                                    Business</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.businessNatureName}}.</p>
+                                                </a>
+                                            </div>
+
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Building
+                                                                    Name</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.buildingName}}.</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row col-12">
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Branch
+                                                                    Name</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.branchName}}.</p>
+                                                </a>
+                                            </div>
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Street
+                                                                    Name</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.streetName}}.</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row col-12">
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Director's ID
+                                                                    Number</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.directorIdNumber}}.</p>
+                                                </a>
+                                            </div>
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Region</b>
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.regionName}}.</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row col-12">
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>County</b>
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.countyName}}.</p>
+                                                </a>
+                                            </div>
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Town</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.townName}}.</p>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                                <input type="hidden" name="companyID" ngModel="{{actionRequestList?.id}}">
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

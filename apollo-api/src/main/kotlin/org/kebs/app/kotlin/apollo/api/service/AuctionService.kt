@@ -5,10 +5,14 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.AuctionForm
 import org.kebs.app.kotlin.apollo.api.payload.request.AuctionItem
+import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestForm
+import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestItem
 import org.kebs.app.kotlin.apollo.api.payload.response.AuctionRequestDto
+import org.kebs.app.kotlin.apollo.api.payload.response.AuctionUploadDao
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PaymentPurpose
 import org.kebs.app.kotlin.apollo.common.dto.AuditItemEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
@@ -17,8 +21,11 @@ import org.kebs.app.kotlin.apollo.store.model.auction.AuctionItemDetails
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequestHistory
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionRequests
 import org.kebs.app.kotlin.apollo.store.model.auction.AuctionUploadsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.DestinationInspectionFeeEntity
 import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.auction.*
+import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -32,9 +39,12 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 enum class AuctionGoodStatus(val status: Int) {
-    NEW(0), APPROVED(1), REJECTED(2), OTHER(3);
+    NEW(0), APPROVED(1), REJECTED(2), OTHER(3), HOLD(4), PAYMENT_COMPLETED(5), PAYMENT_PENDING(7), CONDITIONAL_APPROVAL(8);
 }
 
 @Service
@@ -51,14 +61,39 @@ class AuctionService(
         private val applicationMapProperties: ApplicationMapProperties,
         private val apiClientService: ApiClientService,
         private val roleAssignmentsRepository: IUserRoleAssignmentsRepository,
+        private val feeRepository: IDestinationInspectionFeeRepository,
+        private val invoicePaymentService: InvoicePaymentService
 ) {
-
+    val REPORT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd")
     fun listAuctionCategories(): ApiResponseModel {
         val response = ApiResponseModel()
         response.data = this.categoryRepo.findByStatus(1)
         response.message = "Auction Categories"
         response.responseCode = ResponseCodes.SUCCESS_CODE
         return response
+    }
+
+    fun downloadAuctionAttachment(auctionId: Long, attachmentId: Long): AuctionUploadsEntity? {
+        return this.auctionUploadRepo.findByIdAndAuctionId_Id(attachmentId, auctionId).orElse(null)
+    }
+
+    fun getReportTimestamp(dateStr: String, first: Boolean): Timestamp {
+        val date = REPORT_DATE_FORMAT.parse(dateStr)
+        val dateTime = when (first) {
+            true -> LocalDateTime.of(LocalDate.from(date), LocalTime.MIDNIGHT)
+            else -> LocalDateTime.of(LocalDate.from(date), LocalTime.MAX)
+        }
+        return Timestamp.valueOf(dateTime)
+    }
+
+    fun downloadAuctionReport(stardDate: String, endDate: String): List<AuctionRequestDto> {
+        val startTimestamp = getReportTimestamp(stardDate, true)
+        val endTimestamp = getReportTimestamp(endDate, false)
+        // Get individual items instead
+        val auctionReportDetails = this.auctionItemsRepo.findByAuctionId_ApprovalStatusInAndAuctionId_ApprovedRejectedOnBetween(
+                arrayListOf(AuctionGoodStatus.CONDITIONAL_APPROVAL.status, AuctionGoodStatus.APPROVED.status, AuctionGoodStatus.REJECTED.status, AuctionGoodStatus.HOLD.status),
+                startTimestamp, endTimestamp)
+        return AuctionRequestDto.fromItemList(auctionReportDetails)
     }
 
     fun addReport(multipartFile: MultipartFile?, auction: AuctionRequests, description: String, fileRequired: Boolean): Long? {
@@ -68,8 +103,10 @@ class AuctionService(
             upload.document = multipartFile.bytes
             upload.fileType = multipartFile.contentType
             upload.fileSize = multipartFile.size
-            upload.name = multipartFile.name
+            upload.name = multipartFile.originalFilename
             upload.description = description
+            upload.createdBy = commonDaoServices.loggedInUserDetails().userName
+            upload.createdOn = Timestamp.from(Instant.now())
             val saved = this.auctionUploadRepo.save(upload)
             return saved.id
         } ?: run {
@@ -94,15 +131,63 @@ class AuctionService(
         return saved.id
     }
 
+    fun createPaymentRequest(request: AuctionRequests, fee: DestinationInspectionFeeEntity): DemandNoteRequestForm {
+        val demandNoteReq = DemandNoteRequestForm()
+        demandNoteReq.product = "AUCTION"
+        demandNoteReq.name = request.importerName
+        demandNoteReq.amount = BigDecimal.ZERO.toDouble()
+        demandNoteReq.entryNo = request.auctionLotNo ?: ""
+        // Entry point
+        demandNoteReq.customsOffice = request.location
+        request.cfsId?.let {
+            demandNoteReq.entryPoint = it.altCfsCode ?: it.cfsCode ?: ""
+            if ("JKIA".equals(request.location, true)) {
+                demandNoteReq.courier = it.cfsCode
+                demandNoteReq.customsOffice = "JKA"
+            } else {
+                demandNoteReq.courier = ""
+            }
+        }
+
+        demandNoteReq.ablNumber = request.serialNumber
+        demandNoteReq.invoicePrefix = "AG"
+        demandNoteReq.presentment = false
+        demandNoteReq.importerPin = request.importerPin
+        demandNoteReq.ucrNumber = request.auctionLotNo
+        demandNoteReq.address = request.location
+        demandNoteReq.phoneNumber = request.importerPhone
+        demandNoteReq.referenceNumber = request.auctionLotNo
+        demandNoteReq.referenceId = request.id
+        val itemDetailsList = mutableListOf<DemandNoteRequestItem>()
+        val items = this.auctionItemsRepo.findByAuctionId_Id(request.id!!)
+        for (element in items) {
+            val itm = DemandNoteRequestItem()
+            itm.route = "D"
+            itm.quantity = element.quantity?.toLong() ?: 0
+            itm.currency = element.currency
+            itm.productName = element.itemName
+            itm.itemId = element.id
+            itm.itemValue = element.totalPrice ?: BigDecimal.ZERO
+            itm.fee = fee
+            itemDetailsList.add(itm)
+        }
+        demandNoteReq.items = itemDetailsList
+        return demandNoteReq
+    }
+
     fun requestPayment(auctionId: Long, remarks: String, feeId: Long): ApiResponseModel {
         val response = ApiResponseModel()
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         val optional = this.auctionRequestsRepository.findById(auctionId)
-        if (optional.isPresent) {
+        val fee = feeRepository.findById(feeId)
+        if (optional.isPresent && fee.isPresent) {
             val auctionRequest = optional.get()
             commonDaoServices.getLoggedInUser()?.let {
-                val demandNote = destinationInspectionDaoServices.generateAuctionDemandNoteWithItemList(this.auctionItemsRepo.findByAuctionId(auctionId), map, auctionRequest, false, 0.0, it)
+                val demandNoteReq = createPaymentRequest(auctionRequest, fee.get())
+                val returnList = mutableListOf<CdDemandNoteItemsDetailsEntity>()
+                val demandNote = this.invoicePaymentService.generateDemandNoteWithItemList(demandNoteReq, returnList, map, PaymentPurpose.AUDIT, it)
                 auctionRequest.demandNoteId = demandNote.id
+                auctionRequest.approvalStatus = AuctionGoodStatus.PAYMENT_PENDING.status
                 auctionRequest.varField1 = "PENDING PAYMENT"
                 auctionRequestsRepository.save(auctionRequest)
                 response.data = demandNote.id
@@ -144,23 +229,42 @@ class AuctionService(
         }
     }
 
-    fun approveRejectAuctionGood(auctionId: Long, multipartFile: MultipartFile?, approved: Boolean, remarks: String): ApiResponseModel {
+    fun approveRejectAuctionGood(auctionId: Long, multipartFile: MultipartFile?, approved: String, remarks: String, witnessName: String, witnessDesc: String, witnessEmail: String): ApiResponseModel {
         val response = ApiResponseModel()
         val opttional = this.auctionRequestsRepository.findById(auctionId)
         if (opttional.isPresent) {
             val auction = opttional.get()
             val reportRequired = "VEHICLE".equals(auction.category?.categoryCode)
-            if (approved) {
-                auction.reportId = this.addReport(multipartFile, auction, "Approval Report", reportRequired)
-                auction.approvalStatus = 1
-                addAuctionHistory(auctionId, "APPROVE-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
-                this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, "APPROVED")
-            } else {
-                auction.reportId = this.addReport(multipartFile, auction, "Rejection Report", reportRequired)
-                auction.approvalStatus = 2
-                addAuctionHistory(auctionId, "REJECT-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
-                this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, "REJECTED")
+            when (approved) {
+                "APPROVE" -> {
+                    auction.reportId = this.addReport(multipartFile, auction, "Approval Report", reportRequired)
+                    auction.approvalStatus = AuctionGoodStatus.APPROVED.status
+                    addAuctionHistory(auctionId, "APPROVE-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
+                    this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, approved)
+                }
+                "CONDITIONAL" -> {
+                    auction.reportId = this.addReport(multipartFile, auction, "Rejection Report", reportRequired)
+                    auction.approvalStatus = AuctionGoodStatus.CONDITIONAL_APPROVAL.status
+                    addAuctionHistory(auctionId, "CONDITION-APPROVAL-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
+                    this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request conditionally approved", auction.auctionLotNo, approved)
+                }
+                "REJECT" -> {
+                    auction.reportId = this.addReport(multipartFile, auction, "Rejection Report", reportRequired)
+                    auction.approvalStatus = AuctionGoodStatus.REJECTED.status
+                    addAuctionHistory(auctionId, "REJECT-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
+                    this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approved", auction.auctionLotNo, approved)
+                }
+                "HOLD" -> {
+                    auction.reportId = this.addReport(multipartFile, auction, "Rejection Report", reportRequired)
+                    auction.approvalStatus = AuctionGoodStatus.HOLD.status
+                    addAuctionHistory(auctionId, "HOLD-REQUEST", remarks, commonDaoServices.loggedInUserAuthentication().name)
+                    this.processCallback(auction.createdBy, ResponseCodes.SUCCESS_CODE, "Auction Request approval held", auction.auctionLotNo, approved)
+                }
+                else -> throw ExpectedDataNotFound("Invalid approval status selected: $approved")
             }
+            auction.witnessDesignation = witnessDesc
+            auction.witnessName = witnessName
+            auction.witnessEmail = witnessEmail
             auction.remarks = remarks
             auction.approvedRejectedOn = Timestamp.from(Instant.now())
             this.auctionRequestsRepository.save(auction)
@@ -179,11 +283,12 @@ class AuctionService(
             val pg = when {
                 StringUtils.hasLength(keywords) -> this.auctionRequestsRepository.findByAuctionLotNoContains(keywords!!, page)
                 else -> {
-                    when (status) {
-                        "rejected" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.REJECTED.status, page)
-                        "approved" -> this.auctionRequestsRepository.findByApprovalStatus(AuctionGoodStatus.APPROVED.status, page)
+                    when (status.toLowerCase()) {
+                        "rejected" -> this.auctionRequestsRepository.findByApprovalStatusIn(listOf(AuctionGoodStatus.REJECTED.status), page)
+                        "hold" -> this.auctionRequestsRepository.findByApprovalStatusIn(listOf(AuctionGoodStatus.HOLD.status, AuctionGoodStatus.PAYMENT_PENDING.status), page)
+                        "approved" -> this.auctionRequestsRepository.findByApprovalStatusIn(listOf(AuctionGoodStatus.APPROVED.status, AuctionGoodStatus.CONDITIONAL_APPROVAL.status), page)
                         "new" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficerIsNull(listOf(AuctionGoodStatus.NEW.status), page)
-                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status), this.commonDaoServices.loggedInUserDetails(), page)
+                        "assigned" -> this.auctionRequestsRepository.findByApprovalStatusInAndAssignedOfficer(listOf(AuctionGoodStatus.NEW.status, AuctionGoodStatus.PAYMENT_COMPLETED.status), this.commonDaoServices.loggedInUserDetails(), page)
                         else -> null
                     }
                 }
@@ -191,7 +296,7 @@ class AuctionService(
             if (pg != null) {
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Auction goods"
-                response.data = pg.toList()
+                response.data = AuctionRequestDto.fromList(pg.toList())
                 response.totalCount = pg.totalElements
                 response.totalPages = pg.totalPages
             } else {
@@ -206,26 +311,29 @@ class AuctionService(
         return response
     }
 
-    fun assignAuctionRequest(auctionId: Long, remarks: String, officerId: Long): ApiResponseModel {
+    fun assignAuctionRequest(auctionId: Long, remarks: String, officerId: Long, reassign: Boolean?): ApiResponseModel {
         val response = ApiResponseModel()
         val opttional = this.auctionRequestsRepository.findById(auctionId)
         if (opttional.isPresent) {
             val auction = opttional.get()
             // Assigned
+            response.responseCode = ResponseCodes.SUCCESS_CODE
             if (auction.assignedOfficer == null) {
                 auction.assigner = this.commonDaoServices.getLoggedInUser()
                 auction.assignedOfficer = commonDaoServices.findUserByID(officerId)
                 auction.assignedOn = Date.valueOf(LocalDate.now())
                 addAuctionHistory(auctionId, "IO-ASSIGN", remarks, auction.assignedOfficer?.userName)
                 response.message = "Assigned officer"
-            } else {
+            } else if (reassign == true) {
                 auction.assigner = this.commonDaoServices.getLoggedInUser()
                 auction.assignedOfficer = commonDaoServices.findUserByID(officerId)
                 addAuctionHistory(auctionId, "IO-REASSIGN", remarks, auction.assignedOfficer?.userName)
                 response.message = "Reassigned officer"
+            } else {
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Already assigned"
             }
             this.auctionRequestsRepository.save(auction)
-            response.responseCode = ResponseCodes.SUCCESS_CODE
         } else {
             response.responseCode = ResponseCodes.NOT_FOUND
             response.message = "Request not found"
@@ -254,10 +362,12 @@ class AuctionService(
             val dataMap = mutableMapOf<String, Any>()
             val auctionDto = AuctionRequestDto.fromEntity(auction)
             auctionDto.myTask = userEntity?.userName.equals(auction.assignedOfficer?.userName, true)
+            auctionDto.isSupervisor = this.commonDaoServices.currentUserDiSupervisor()
+            auctionDto.isInspector = this.commonDaoServices.currentUserDiOfficer()
             dataMap["auction_details"] = auctionDto
-            dataMap["attachments"] = auctionUploadRepo.findByAuctionId(auction)
-            dataMap["items"] = auctionItemsRepo.findByAuctionId(auctionId)
-            dataMap["history"] = auctionRequestHistoryRepo.findByAuctionIdAndStatus(auctionId, 1)
+            dataMap["attachments"] = AuctionUploadDao.fromList(auctionUploadRepo.findByAuctionId(auction))
+            dataMap["items"] = auctionItemsRepo.findByAuctionId_Id(auctionId)
+            dataMap["history"] = auctionRequestHistoryRepo.findByAuctionIdAndStatusOrderByCreatedOnDesc(auctionId, 1)
             auction.demandNoteId?.let { demandNoteId ->
                 this.destinationInspectionDaoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
                     dataMap["payment"] = demandNote
@@ -281,10 +391,19 @@ class AuctionService(
             response.message = "Auction with lot no exists: " + form.auctionLotNo
             return response
         }
+        val cfsCode = this.destinationInspectionDaoServices.findCfsCd((form.cfsCode ?: "").trim().toUpperCase())
+        if (cfsCode == null) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "CFS code ${form.cfsCode} does not exists, please enter a valid CFS code "
+            return response
+        }
+        KotlinLogging.logger { }.info("Adding auction with cfs code: ${form.cfsCode}")
         val auctionRequest = AuctionRequests()
         form.fillDetails(auctionRequest)
+        auctionRequest.cfsId = cfsCode
         auctionRequest.approvalStatus = AuctionGoodStatus.NEW.status
-        auctionRequest.status = 1
+        auctionRequest.status = 0
+        auctionRequest.varField4 = form.cfsCode
         auctionRequest.serialNumber = "NA"
         auctionRequest.createdBy = commonDaoServices.loggedInUserAuthentication().name
         auctionRequest.createdOn = Timestamp.from(Instant.now())
@@ -309,7 +428,7 @@ class AuctionService(
                     }
                 }
             }
-            item.auctionId = saved.id
+            item.auctionId = saved
             this.auctionItemsRepo.save(item)
         }
         try {
@@ -330,22 +449,50 @@ class AuctionService(
         request.auctionDate = auctionDate
         request.shipmentPort = item.shipName
         request.arrivalDate = item.dateOfArrival
-        request.categoryCode = categoryCode
+        request.cfsCode = item.cfsCode
+        request.country = item.country
+        // Check chassis number for category
+        if (StringUtils.hasLength(item.containerChassisNumber)) {
+            request.categoryCode = "VEHICLE"
+        } else {
+            request.categoryCode = "GOODS"
+        }
         request.importerName = item.consignee
         request.importerPhone = item.consignee
         request.containerSize = item.containerSize
         val tmpItem = AuctionItem()
+
         tmpItem.chassisNo = item.containerChassisNumber
         tmpItem.itemName = item.description
         tmpItem.itemType = item.manifestNo
         tmpItem.serialNo = item.blNo
+        tmpItem.itemType = request.categoryCode
         tmpItem.unitPrice = BigDecimal.ZERO
         tmpItem.quantity = BigDecimal.valueOf(1)
         request.items = arrayListOf(tmpItem)
         this.addAuctionRequest(request)
     }
 
-    fun uploadAuctionGoods(multipartFile: MultipartFile, fileType: String?, categoryCode: String?, listingDate: Date): ApiResponseModel {
+    fun uploadAttachment(multipartFile: MultipartFile?, remarks: String, auctionId: Long): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val opttional = this.auctionRequestsRepository.findById(auctionId)
+            if (opttional.isPresent) {
+                this.addReport(multipartFile, opttional.get(), remarks, true)
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Attachment received"
+            } else {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "Record not found"
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed, file was not saved"
+        }
+        return response
+    }
+
+    fun uploadAuctionGoods(multipartFile: MultipartFile, fileType: String?, categoryCode: String?, listingDate: Date, cfsCode: String?): ApiResponseModel {
         val response = ApiResponseModel()
         val endsWith = multipartFile.originalFilename?.endsWith(".txt")
         if (!(multipartFile.contentType == "text/csv" || endsWith == true)) {
@@ -362,6 +509,9 @@ class AuctionService(
         val audits = this.daoService.readAuditCsvFile(separator, targetReader)
         val errors = mutableListOf<Any>()
         for (a in audits) {
+            if (!StringUtils.hasLength(a.cfsCode)) {
+                a.cfsCode = cfsCode
+            }
             validatorService.validateInputWithInjectedValidator(a)?.let {
                 errors.add(it)
             } ?: run {

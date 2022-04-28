@@ -13,10 +13,11 @@ enum class PartnerCategory(val description: String) {
 @Entity
 @Table(name = "DAT_KEBS_PVOC_PARTNER_TYPE")
 class PvocPartnerTypeEntity : Serializable {
+
     @Column(name = "ID")
-    @Id
     @SequenceGenerator(name = "DAT_KEBS_PVOC_PARTNER_TYPE_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_PARTNER_TYPE_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_PVOC_PARTNER_TYPE_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @Id
     var id: Long = 0
 
     @Column(name = "PARTNER_TYPE")
@@ -33,19 +34,18 @@ class PvocPartnerTypeEntity : Serializable {
 
     @Column(name = "BILLING_START_DATE")
     @Basic
-    var billingStartDate: Int? = null
+    var billingStartDate: Long? = null
 
-    @Column(name = "END_DATE")
+    @Column(name = "BILLING_END_DATE")
     @Basic
-    var billingEndDate: Int? = null
+    var billingEndDate: Long? = null
 
-    @Column(name = "PENALTY_AMOUNT")
+    @Column(name = "CHARGE_TYPE") // PERCENTAGE/FIXED
     @Basic
-    var penaltyAmount: BigDecimal? = null
+    var chargeType: String? = null
 
-    @Column(name = "PENALTY_TYPE") // PERCENTAGE/FIXED
-    @Basic
-    var penaltyType: String? = null
+    @Column(name = "CHARGE_AMOUNT", precision = 19, scale = 2)
+    var chargeAmount: BigDecimal? = null
 
     @Column(name = "STATUS")
     @Basic

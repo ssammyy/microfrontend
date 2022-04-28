@@ -48,11 +48,19 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Basic
     var rate: String? = null
 
-    @Column(name = "AMOUNT_PAYABLE")
+    @Column(name = "AMOUNT_PAYABLE", precision = 17, scale = 2)
     @Basic
     var amountPayable: BigDecimal? = null
 
-    @Column(name = "ADJUSTED_AMOUNT")
+    @Column(name = "MAX_AMOUNT", precision = 17, scale = 2)
+    @Basic
+    var maximumAmount: BigDecimal? = null
+
+    @Column(name = "MIN_AMOUNT", precision = 17, scale = 2)
+    @Basic
+    var minimumAmount: BigDecimal? = null
+
+    @Column(name = "ADJUSTED_AMOUNT", precision = 17, scale = 2)
     @Basic
     var adjustedAmount: BigDecimal? = null
 
@@ -128,7 +136,7 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @Column(name = "C_F_VALUE")
+    @Column(name = "C_F_VALUE", precision = 17, scale = 2)
     @Basic
     var cfvalue: BigDecimal? = null
 

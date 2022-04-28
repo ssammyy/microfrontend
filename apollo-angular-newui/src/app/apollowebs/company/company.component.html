@@ -1,18 +1,29 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+<div  class="loading-spinner ">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+        <p style="font-size: 20px; color: white">{{loadingText}}</p>
+    </ngx-spinner>
+</div>
 <div class="main-content">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
+                    <div class="col-12 card-header card-header-primary card-header-icon row ">
                         <div class="card-icon">
                             <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title">Review Company Details</h4>
+                        <h4 class="card-title col-6">Review Company Details</h4>
+                        <div class="col-4">
+                            <button class="btn btn-sm btn-warning float-right" data-toggle="modal" data-target="#suspendModal">Suspend Operations</button>
+                            <button class="btn btn-sm btn-primary float-right" style="height: 46px;" data-toggle="modal" data-target="#closeModal">Close Operations</button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="toolbar">
 
                         </div>
+
                         <div class="material-datatables">
                             <section class="wizard-section">
                                 <div class="row no-gutters">
@@ -42,13 +53,13 @@
                                                                     <div class="col">
                                                                         <label class="input-placeholder-required"
                                                                                for="registrationNumber">
-                                                                            Company Registration Number
+                                                                            Company Registration Numbers
                                                                         </label>
                                                                         <br>
                                                                         <input class="form-control two-column-input"
                                                                                formControlName="registrationNumber"
                                                                                id="registrationNumber"
-                                                                               name="registrationNumber"
+                                                                               name="registrationNumber" disabled
                                                                                placeholder="Company registration number"
                                                                                required="required" type="text">
                                                                     </div>
@@ -62,7 +73,7 @@
                                                                         <input class="form-control two-column-input"
                                                                                formControlName="directorIdNumber"
                                                                                id="directorIdNumber"
-                                                                               name="directorIdNumber"
+                                                                               name="directorIdNumber" disabled
                                                                                placeholder="The id number of one director"
                                                                                required="required" type="text">
                                                                     </div>
@@ -79,7 +90,7 @@
                                                                         <br>
                                                                         <input class="form-control two-column-input"
                                                                                formControlName="name" id="name"
-                                                                               name="name"
+                                                                               name="name" disabled
                                                                                placeholder="The company name"
                                                                                required="required" type="text">
                                                                     </div>
@@ -92,7 +103,7 @@
                                                                         <br>
                                                                         <input class="form-control two-column-input"
                                                                                formControlName="kraPin" id="kraPin"
-                                                                               name="kraPin"
+                                                                               name="kraPin" disabled
                                                                                placeholder="Company KRA pin"
                                                                                required="required" type="text">
                                                                     </div>
@@ -107,11 +118,12 @@
                                                                             Yearly Turnover
                                                                         </label>
                                                                         <br>
-                                                                        <input class="form-control two-column-input"
+                                                                        <input class="form-control"
                                                                                formControlName="yearlyTurnover"
                                                                                id="yearlyTurnover"
                                                                                name="yearlyTurnover"
                                                                                placeholder="Company yearly turnover"
+                                                                               style="background-color: transparent"
                                                                                required="required" type="number">
                                                                     </div>
 
@@ -446,4 +458,141 @@
             </div>
         </div>
     </div>
+</div>
+<div class="modal" id="suspendModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Declare Suspension of Operations</h4>
+                <button type="button" class="close" #closeModalSuspension data-dismiss="modal">&times;</button>
+            </div>
+<hr>
+            <!-- Modal body -->
+            <form (ngSubmit)="uploadSuspensionForm()" [formGroup]="suspendOperationsForm">
+                <div class="modal-body">
+                        <input class="form-control two-column-input"
+                               formControlName="id"
+                               name="id" disabled
+                               required="required" type="hidden">
+                        <input class="form-control two-column-input"
+                               formControlName="name"
+                               name="name" disabled
+                               placeholder="The company name"
+                               required="required" type="hidden">
+                        <input class="form-control two-column-input"
+                               formControlName="registrationNumber"
+
+                               name="registrationNumber" disabled
+                               placeholder="Company registration number"
+                               required="required" type="hidden">
+                        <input class="form-control two-column-input"
+                               formControlName="kraPin"
+                               name="kraPin" disabled
+                               placeholder="Company KRA pin"
+                               required="required" type="hidden">
+                        <input class="form-control two-column-input"
+                               formControlName="directorIdNumber"
+
+                               name="directorIdNumber" disabled
+                               placeholder="The id number of one director"
+                               required="required" type="hidden">
+                    <div class="col-12 row">
+                        <label>Reason For Suspension of Operations:</label>
+                        <textarea class="form-control two-column-input" formControlName="reason" name="reason" required="required" ></textarea>
+
+                    </div>
+                    <div class="col-12 row">
+                        <label>Date of Suspension:</label>
+                        <input class="form-control two-column-input"
+                               formControlName="dateOfSuspension"
+                               name="dateOfSuspension"
+                               required="required" type="date">
+                    </div>
+
+                </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary float-right" type="submit" >Save</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal" id="closeModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Declare Closure of Operations</h4>
+                <button type="button" class="close" #closeModalClosure data-dismiss="modal">&times;</button>
+            </div>
+<hr>
+            <!-- Modal body -->
+            <form (ngSubmit)="uploadClosureForm()" [formGroup]="closeOperationsForm">
+            <div class="modal-body">
+                    <input class="form-control two-column-input"
+                           formControlName="id"
+                           name="id" disabled
+                           placeholder="The company ID"
+                           required="required" type="hidden">
+                    <input class="form-control two-column-input"
+                           formControlName="name"
+                           name="name" disabled
+                           placeholder="The company name"
+                           required="required" type="hidden">
+                    <input class="form-control two-column-input"
+                           formControlName="registrationNumber"
+
+                           name="registrationNumber" disabled
+                           placeholder="Company registration number"
+                           required="required" type="hidden">
+                    <input class="form-control two-column-input"
+                           formControlName="kraPin"
+                           name="kraPin" disabled
+                           placeholder="Company KRA pin"
+                           required="required" type="hidden">
+
+                    <input class="form-control two-column-input"
+                           formControlName="directorIdNumber"
+
+                           name="directorIdNumber" disabled
+                           placeholder="The id number of one director"
+                           required="required" type="hidden">
+                <div class="col-12 row">
+                    <label>Reason For Closure of Operations:</label>
+                    <textarea class="form-control two-column-input" formControlName="reason" name="reason" required="required" ></textarea>
+
+                </div>
+                <div class="col-12 row">
+                    <label>Date of Closure:</label>
+                    <input class="form-control two-column-input"
+                           formControlName="dateOfClosure"
+                           name="dateOfClosure"
+                           required="required" type="date">
+                </div>
+
+                <div class="row col-12">
+                    <div class="form-group col-12">
+                        <label><b>Winding Up Report(From BRS)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                        <form #demoForm="ngForm" >
+                            <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+                            <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf" ></file-upload>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary float-right" type="submit" >Save</button>
+            </div>
+            </form>
+
+        </div>
+    </div>
+</div>
 </div>

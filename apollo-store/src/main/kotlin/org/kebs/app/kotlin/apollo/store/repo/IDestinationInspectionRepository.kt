@@ -1,10 +1,11 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.di.CdImporterDetailsEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -104,12 +105,17 @@ interface IRemarksRepository : HazelcastRepository<RemarksEntity, Long>{
 
 @Repository
 interface ICocsRepository : HazelcastRepository<CocsEntity, Long> {
-    fun findByUcrNumberAndCocType(ucrNumber: String,docType: String): CocsEntity?
+    fun findByUcrNumberAndCocType(ucrNumber: String, docType: String): CocsEntity?
+    fun findByUcrNumberAndCocTypeAndVersion(ucrNumber: String, docType: String, version: Long?): CocsEntity?
     fun findFirstByCocNumber(cocNumber: String): CocsEntity?
+    fun findFirstByCocNumberAndCocNumberIsNotNullOrCoiNumberAndCoiNumberIsNotNull(cocNumber: String, coiNumber: String): Optional<CocsEntity>
     fun findFirstByCocNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNull(cocType: String): CocsEntity?
     fun findFirstByCoiNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNullOrderByCreatedOnDesc(cocType: String): CocsEntity?
     fun findAllByRouteAndShipmentSealNumbersIsNull(route: String, pageable: Pageable): Page<CocsEntity>?
     fun findAllByReportGenerationStatus(reportGenerationStatus: Int): List<CocsEntity>
+
+    @Query(value = "select count(*) as cc from DAT_KEBS_COCS where to_char(COC_ISSUE_DATE,'YYYY')=:gYear and COC_TYPE=:cocType", nativeQuery = true)
+    fun countAllByYearGenerate(gYear: Int, cocType: String): Long
 }
 
 

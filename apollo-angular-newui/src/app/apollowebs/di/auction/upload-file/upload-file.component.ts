@@ -15,6 +15,7 @@ export class UploadFileComponent implements OnInit {
     message: String
     form: FormGroup
     categories: any
+    cfsStation: any
     loading = false
 
     constructor(private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<any>, private diService: DestinationInspectionService) {
@@ -23,10 +24,21 @@ export class UploadFileComponent implements OnInit {
     ngOnInit(): void {
         this.form = this.fb.group({
             auctionReportDate: ["", Validators.required],
-            categoryCode: ["", Validators.required],
+            cfsCode: ["", Validators.required],
+            // categoryCode: ["GOODS", Validators.required],
             fileType: ["", Validators.required]
         })
         this.loadCategories()
+        this.loadMyCfs()
+    }
+
+    loadMyCfs() {
+        this.diService.listMyCfs()
+            .subscribe(res => {
+                if (res.responseCode === '00') {
+                    this.cfsStation = res.data
+                }
+            })
     }
 
     loadCategories() {
@@ -59,7 +71,7 @@ export class UploadFileComponent implements OnInit {
             this.message = "Please select file"
             return
         }
-        this.diService.uploadAuctionGoodsAndVehicles(this.selectedFile, this.form.value.fileType, this.form.value.categoryCode, formatDate(this.form.value.auctionReportDate, 'dd-MM-yyyy', 'en-UD'))
+        this.diService.uploadAuctionGoodsAndVehicles(this.selectedFile, this.form.value.cfsCode, this.form.value.fileType, this.form.value.categoryCode, formatDate(this.form.value.auctionReportDate, 'dd-MM-yyyy', 'en-UD'))
             .subscribe(
                 res => {
                     this.loading = false

@@ -1785,6 +1785,41 @@ class QualityAssuranceController(
 
         return commonDaoServices.returnValues(result, map, sm)
     }
+    @PostMapping("/kebs/add/new-opc-details/update")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitUpdateInspectionReportOPCDetails(
+        @ModelAttribute("QaInspectionOpcEntity") QaInspectionOpcEntity: QaInspectionOpcEntity,
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("inspectionReportID") inspectionReportID: Long,
+        @RequestParam("ID") id: String,
+
+        model: Model,
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+        val qaInspectionReportRecommendation =
+            qaDaoServices.findQaInspectionReportRecommendationBYID(inspectionReportID)
+
+        result = qaDaoServices.permitUpdateNewInspectionReportDetailsOPC(
+            map,
+            loggedInUser,
+            permitID,
+            QaInspectionOpcEntity,
+            id,
+            qaInspectionReportRecommendation,
+
+        )
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
+        sm.message = "Inspection Report Details Have Been Updated Successfully"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
 
     @PostMapping("/kebs/invoice/remove-invoice-detail/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -1815,26 +1850,26 @@ class QualityAssuranceController(
     }
 
 
-    @PostMapping("/kebs/invoice/submit-invoice-detail/save")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun permitInvoiceBatchSubmitDetails(
-        @ModelAttribute("NewBatchInvoiceDto") NewBatchInvoiceDto: NewBatchInvoiceDto,
-        model: Model,
-    ): String? {
-
-        val map = commonDaoServices.serviceMapDetails(appId)
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-        val result: ServiceRequestsEntity?
-
-        result = qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, NewBatchInvoiceDto).first
-
-        val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${result.varField1}"
-        sm.message = "Batch Invoice Submitted Successful"
-
-        return commonDaoServices.returnValues(result, map, sm)
-    }
+//    @PostMapping("/kebs/invoice/submit-invoice-detail/save")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun permitInvoiceBatchSubmitDetails(
+//        @ModelAttribute("NewBatchInvoiceDto") NewBatchInvoiceDto: NewBatchInvoiceDto,
+//        model: Model,
+//    ): String? {
+//
+//        val map = commonDaoServices.serviceMapDetails(appId)
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//
+//        val result: ServiceRequestsEntity?
+//
+////        result = qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, NewBatchInvoiceDto).first
+//
+//        val sm = CommonDaoServices.MessageSuccessFailDTO()
+//        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${result.varField1}"
+//        sm.message = "Batch Invoice Submitted Successful"
+//
+//        return commonDaoServices.returnValues(result, map, sm)
+//    }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @GetMapping("/kebs/resubmit/permit-details/save")
@@ -2953,4 +2988,59 @@ class QualityAssuranceController(
 
         return commonDaoServices.returnValues(result, map, sm)
     }
+
+
+    @PostMapping("/suspendPermit")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun suspendpermit(@RequestParam("permitID") permitID: Long, model: Model): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        var result: ServiceRequestsEntity?
+
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+        with(permit) {
+            applicationSuspensionStatus = map.activeStatus
+            permitStatus = applicationMapProperties.suspended
+//            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
+            userTaskId = applicationMapProperties.mapUserTaskNamePCM
+        }
+        val myResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+        result = myResults.first
+
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        sm.message = "Permit Suspended"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+    @PostMapping("/unsuspendPermit")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun unsuspendpermit(@RequestParam("permitID") permitID: Long, model: Model): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        var result: ServiceRequestsEntity?
+
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+        with(permit) {
+            applicationSuspensionStatus = map.activeStatus
+            permitStatus = applicationMapProperties.mapQaStatusPermitAwarded
+//            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
+            userTaskId = applicationMapProperties.mapUserTaskNamePCM
+        }
+        val myResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+        result = myResults.first
+
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        sm.message = "Permit Suspended"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
 }

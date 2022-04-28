@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Generate Auction Good Inspection Report</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="startDate" class="waiver-form-label">Start Date</label>
+            <input type="date" class="waiver-form-input-master" name="startDate"
+                   [max]="maxDate"
+                   [min]="minDate"
+                   data-name="startDate" id="startDate" formControlName="startDate">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="endDate" class="waiver-form-label">End Date</label>
+            <input type="date" class="waiver-form-input-master" name="endDate"
+                   [max]="maxDate"
+                   [min]="minDate"
+                   data-name="endDate" id="endDate" formControlName="endDate">
+        </div>
+        <mat-error *ngIf="message">{{message}}</mat-error>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="generateReport()">Generate Report
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

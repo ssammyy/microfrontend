@@ -32,12 +32,13 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <tr>
 <th>#</th>
 <th class="knw">Title</th>
-<th class="sl">Reference Material</th>
+<th class="sl">Normative Reference</th>
 <th class="requestNumber">Scope</th>
-<th class="department">Normative Reference</th>
 <th class="issuesAddressed">Issues Addressed</th>
 <th class="referenceMaterial">Clause</th>
 <th class="referenceMaterial">Special</th>
+    <th class="department">Reference Material</th>
+    <th class="department">Remarks</th>
 <th class="action">Action</th>
 </tr>
 </thead>
@@ -45,12 +46,18 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <tr  *ngFor="let task of tasks let i=index">
 <td>{{i+1}}</td>
 <td>{{task.taskData.title}}</td>
-<td>{{task.taskData.referenceMaterial}}</td>
+    <td>{{task.taskData.normativeReference}}</td>
 <td>{{task.taskData.scope}}</td>
-<td>{{task.taskData.normativeReference}}</td>
+
 <td>{{task.taskData.issuesAddressed}}</td>
 <td>{{task.taskData.clause}}</td>
 <td>{{task.taskData.special}}</td>
+    <td>{{task.taskData.comments}}</td>
+    <td><button mat-raised-button type="button" data-toggle="modal"
+                (click)="viewSTDFile( task.taskData.ID,'Standard'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+        <i class="material-icons">visibility</i>
+
+    </button></td>
 <td *ngIf="task.name ==='Upload Gazzette notice on the Website'"><a  (click)="onOpenModal(task,'notice')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="Edit">Upload Gazette Notice</a></td>
 <td *ngIf="task.name ==='Update Gazzzettement Date'"><a  (click)="onOpenModal(task,'gazetteDate')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 160px; " data-original-title="Edit">Update Gazette Date</a></td>
 </tr>

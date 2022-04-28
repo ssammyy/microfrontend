@@ -2,7 +2,6 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
-import {file} from "googleapis/build/src/apis/file";
 
 @Component({
     selector: 'app-mv-inspection-upload-file-report',
@@ -23,7 +22,8 @@ export class MvInspectionUploadFileReportComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            comment: ['', Validators.required]
+            comment: ['', Validators.required],
+            referenceNumber: ['', Validators.required]
         })
     }
 
@@ -44,7 +44,7 @@ export class MvInspectionUploadFileReportComponent implements OnInit {
     saveRecord() {
         if (this.selectedFile) {
             this.loading = true
-            this.diService.uploadMinistryChecklist(this.selectedFile, this.form.value.comment, this.data.id)
+            this.diService.uploadMinistryChecklist(this.selectedFile, this.form.value.comment, this.form.value.referenceNumber, this.data.id)
                 .subscribe(
                     res => {
                         this.loading = false

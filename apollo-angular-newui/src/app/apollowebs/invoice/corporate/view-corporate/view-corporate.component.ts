@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FinanceInvoiceService} from "../../../../core/store/data/invoice/finance-invoice.service";
+import {MatDialog} from "@angular/material/dialog";
+import {ManageCorporateCustomerComponent} from "../manage-corporate-customer/manage-corporate-customer.component";
 
 @Component({
     selector: 'app-view-corporate',
@@ -8,7 +10,7 @@ import {FinanceInvoiceService} from "../../../../core/store/data/invoice/finance
     styleUrls: ['./view-corporate.component.css']
 })
 export class ViewCorporateComponent implements OnInit {
-    displayedColumns = ["billNumber", "invoiceNumber", "billAmount", "penaltyAmount", "totalAmount", "paymentDate", "paymentReceipts", "actions"]
+    displayedColumns = ["billNumber", "billReference", "invoiceNumber", "billAmount", "penaltyAmount", "totalAmount", "paymentDate", "paymentReceipts", "actions"]
 
     active: number = 0
     page = 0
@@ -18,7 +20,7 @@ export class ViewCorporateComponent implements OnInit {
     billList: any
     paidBills: any
 
-    constructor(private activatedRoute: ActivatedRoute, private router: Router, private  fiService: FinanceInvoiceService) {
+    constructor(private activatedRoute: ActivatedRoute, private dialog: MatDialog, private router: Router, private  fiService: FinanceInvoiceService) {
     }
 
     ngOnInit(): void {
@@ -48,7 +50,7 @@ export class ViewCorporateComponent implements OnInit {
     }
 
     loadBills(status: any) {
-        this.fiService.loadBillStatus(this.corporateId,status, this.page, this.pageSize)
+        this.fiService.loadBillStatus(this.corporateId, status, this.page, this.pageSize)
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {
@@ -65,11 +67,23 @@ export class ViewCorporateComponent implements OnInit {
     }
 
     manageAccount() {
-
+        this.dialog.open(ManageCorporateCustomerComponent, {
+            data: {
+                corporateId: this.corporateId
+            }
+        })
+            .afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadData()
+                    }
+                }
+            )
     }
 
     viewTransactions(billId: any) {
-        this.router.navigate(["/transaction/bill/",this.corporateId, billId])
+        this.router.navigate(["/transaction/bill/", this.corporateId, billId])
     }
 
 }

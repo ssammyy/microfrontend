@@ -134,19 +134,19 @@
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Unit Price NCY</div>
-                                                <div class="list-text-accordion">{{itemDetails.cd_item.unitPriceNcy | money}}</div>
+                                                <div class="list-text-accordion">{{itemDetails.cd_item.unitPriceNcy | money:itemDetails.cd_item.foreignCurrencyCode}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Total Price NCY</div>
-                                                <div class="list-text-accordion">{{itemDetails.cd_item.totalPriceNcy | money}}</div>
+                                                <div class="list-text-accordion">{{itemDetails.cd_item.totalPriceNcy | money:itemDetails.cd_item.foreignCurrencyCode}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Unit Price FCY</div>
-                                                <div class="list-text-accordion">{{itemDetails.cd_item.unitPriceFcy | money}}</div>
+                                                <div class="list-text-accordion">{{itemDetails.cd_item.unitPriceFcy | money:itemDetails.cd_item.foreignCurrencyCode}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Total Price FCY</div>
-                                                <div class="list-text-accordion">{{itemDetails.cd_item.totalPriceFcy | money}}</div>
+                                                <div class="list-text-accordion">{{itemDetails.cd_item.totalPriceFcy | money:itemDetails.cd_item.foreignCurrencyCode}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Applicant Remarks</div>
@@ -179,20 +179,20 @@
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">VEHICLE YEAR</div>
-                                                <div class="list-text-accordion">{{itemDetails.item_non_standard.vehicleYear}}</div>
+                                                <div class="list-text-accordion">{{itemDetails.item_non_standard.vehicleYear ? itemDetails.item_non_standard.vehicleYear : "N/A"}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">VEHICLE MODEL</div>
-                                                <div class="list-text-accordion">{{itemDetails.item_non_standard.vehicleModel}}</div>
+                                                <div class="list-text-accordion">{{itemDetails.item_non_standard.vehicleModel ? itemDetails.item_non_standard.vehicleModel : "N/A"}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">VEHICLE MAKE</div>
-                                                <div class="list-text-accordion">{{itemDetails.item_non_standard.vehicleMake}}</div>
+                                                <div class="list-text-accordion">{{itemDetails.item_non_standard.vehicleMake ? itemDetails.item_non_standard.vehicleMake : "N/A"}}</div>
                                             </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">DESCRIPTION</div>
-                                                <div class="list-text-accordion">{{itemDetails.item_non_standard.description}}</div>
-                                            </li>
+                                            <!--                                            <li class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">DESCRIPTION</div>-->
+                                            <!--                                                <div class="list-text-accordion">{{itemDetails.item_non_standard.description}}</div>-->
+                                            <!--                                            </li>-->
                                         </ul>
                                     </mat-tab>
                                 </mat-tab-group>

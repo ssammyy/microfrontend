@@ -1,10 +1,11 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {NgxSpinnerService} from "ngx-spinner";
 import {Subject} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ComHodTasks, ComStdAction, UsersEntity} from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {DataTableDirective} from "angular-datatables";
 
 @Component({
   selector: 'app-com-std-request-list',
@@ -19,7 +20,9 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
     selectedUser: number;
   tasks: ComHodTasks[] = [];
   public actionRequest: ComHodTasks | undefined;
-
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective;
+  isDtInitialized: boolean = false
   constructor(
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,

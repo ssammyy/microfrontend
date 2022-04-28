@@ -2,7 +2,7 @@
 <mat-dialog-content>
     <div class="row no_margin" *ngIf="demandDetails">
         <div class="col-sm-3 col-md-4">
-            <label class="waiver-form-label">Demand Note Number</label>
+            <label class="waiver-form-label">Reference Number</label>
             <p>{{demandDetails.note.demandNoteNumber}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
@@ -22,7 +22,7 @@
             <p>{{demandDetails.note.cfvalue | money }}</p>
         </div>
         <div class="col-sm-3 col-md-4">
-            <label class="waiver-form-label">CD CALCULATED AMOUNT</label>
+            <label class="waiver-form-label">TOTAL AMOUNT</label>
             <p>{{demandDetails.note.totalAmount | money}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
@@ -30,7 +30,7 @@
             <p>{{demandDetails.note.varField3}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
-            <label class="waiver-form-label">CD PAYABLE AMOUNT</label>
+            <label class="waiver-form-label">CD CALCULATED AMOUNT</label>
             <p>{{demandDetails.note.amountPayable | money}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
@@ -40,19 +40,59 @@
 
         <div class="col-sm-3 col-md-4">
             <label class="waiver-form-label">PAYMENT STATUS</label>
-            <p>{{demandDetails.note.paymentStatus == 1 ? 'PAID' : 'NOT PAID'}}</p>
+            <p>{{paymentStatus(demandDetails.note.paymentStatus)}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.remarks">
+            <label class="waiver-form-label">REMARKS</label>
+            <p>{{demandDetails.note.remarks}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.entryPoint">
+            <label class="waiver-form-label">SAGE ENTRY POINT & WAREHOUSE</label>
+            <p>{{demandDetails.note.entryPoint + (demandDetails.note.courier ? ', ' + demandDetails.note.courier : "")}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.entryNo">
+            <label class="waiver-form-label">SAGE ENTRY NUMBER</label>
+            <p>{{demandDetails.note.entryNo}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.postingMsgRef">
+            <label class="waiver-form-label">SAGE MSG REFERENCE</label>
+            <p>{{demandDetails.note.postingMsgRef}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
-            <label class="waiver-form-label">REMARKS</label>
-            <p>{{demandDetails.note.varField10}}</p>
+            <label class="waiver-form-label">SAGE STATUS</label>
+            <p>{{formatPostingStatus(demandDetails.note.postingStatus)}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.postingResponseMessage">
+            <label class="waiver-form-label">SAGE RESPONSE</label>
+            <p>{{demandDetails.note.postingResponseCode}}: {{demandDetails.note.postingResponseMessage}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.postingResponseDate">
+            <label class="waiver-form-label">SAGE RESPONSE DATE</label>
+            <p>{{demandDetails.note.postingResponseDate| date:'short'}}</p>
+        </div>
+        <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.postingReference">
+            <label class="waiver-form-label">DEMAND NOTE NUMBER</label>
+            <p>{{demandDetails.note.postingReference}}</p>
         </div>
     </div>
     <div class="row no_margin" *ngIf="demandDetails">
-        <div class=" table-striped">
-            <ng2-smart-table class="table table-hover" [settings]="settings" [source]="demandDetails.items"
-                             (custom)="onCustomAction($event)">
-            </ng2-smart-table>
-        </div>
+        <mat-tab-group>
+            <mat-tab label="Demand Note Items">
+                <div class=" table-striped">
+                    <ng2-smart-table class="table table-hover" [settings]="settings" [source]="demandDetails.items"
+                                     (custom)="onCustomAction($event)">
+                    </ng2-smart-table>
+                </div>
+            </mat-tab>
+            <mat-tab label="Demand Note Payments">
+                <div class=" table-striped">
+                    <ng2-smart-table class="table table-hover" [settings]="paymentsSettings"
+                                     [source]="demandDetails.note.payments"
+                                     (custom)="onCustomAction($event)">
+                    </ng2-smart-table>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
     </div>
     <mat-error *ngIf="message">{{message}}</mat-error>
 </mat-dialog-content>

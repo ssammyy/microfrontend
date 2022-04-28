@@ -133,7 +133,7 @@ class ConsignmentDocDetails {
     @JsonProperty("CDTransport")
     val cdTransport: CdTransportResponse? = null
 
-//    @NotNull
+    //    @NotNull
     @JsonProperty("PGAHeaderFields")
     val cdPGAHeaderFields: PGAHeaderFieldsResponse? = null
 
@@ -305,6 +305,12 @@ class CDStandardTwoResponse {
     @JsonProperty("LocalCOCType")
     var localCocType: String? = null
 
+    @JsonProperty("LocalCOCTypeDesc")
+    var localCocTypeDesc: String? = null
+
+    @JsonProperty("LocalCOCRefNoType")
+    var localCocRefNoType: String? = null
+
     @JsonProperty("ThirdPartyDetails")
     var thirdPartyDetails: ThirdPartyDetails? = null
 
@@ -327,10 +333,13 @@ class CDStandardTwoResponse {
 class CdStandardTwoAttachments {
     @JsonProperty("AttachDocumentCode")
     var attachmentCode: String? = null
+
     @JsonProperty("AttachDocumentCodeDesc")
     var attachmentCodeDesc: String? = null
+
     @JsonProperty("AttachDocumentRefNo")
     var refNo: String? = null
+
     @JsonProperty("AttachDocumentInternalRefNo")
     var fileName: String? = null
 

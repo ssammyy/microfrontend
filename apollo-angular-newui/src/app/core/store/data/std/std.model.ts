@@ -34,6 +34,7 @@ export interface UsersEntity {
     id: number;
     lastName: string;
     firstName: string;
+    userTypes: number;
 
 
 }
@@ -74,7 +75,6 @@ export interface StdTCTask {
 
 }
 
-
 export interface NWAJustification {
     id: number;
     meetingDate: string;
@@ -94,6 +94,7 @@ export interface NWAJustification {
     knwCommittee: string;
     departmentName: string;
     comments: string;
+    assignedTo: number;
 
 
 }
@@ -107,6 +108,53 @@ export interface KNWDepartment {
 export interface KNWCommittee {
     id: number;
     technical_committee_no: string;
+
+}
+
+export interface NwaTasks{
+    taskId: string;
+    name: string;
+    processId: string;
+    taskData: NwaTaskData;
+}
+
+export interface NwaTaskData{
+    ID: number;
+    requestedBy: string;
+    requestNumber: string;
+    referenceMaterial: string;
+    knw: string;
+    knwSecretary: string;
+    meetingDate: string;
+    Yes: string;
+    sl: string;
+    department: string;
+    issuesAddressed: string;
+    knwAcceptanceDate: string;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    diJNumber: bigint;
+    submissionDate: string;
+    knwCommittee: string;
+    departmentName: string;
+    jsUploadDocId: number;
+    comments: string;
+    cost: number;
+    numberOfMeetings: number;
+    identifiedNeed: string;
+    dateOfApproval: string;
+    taskId: string;
+    jstNumber: number;
+    ksNumber: string;
+    description: string;
+    dateUploaded: string;
+    originator: number;
+    diOriginator:number;
+    vpdOriginator: number;
 
 }
 
@@ -140,7 +188,39 @@ export interface KnwSecTaskData {
     comments: string;
     diJNumber: bigint;
 }
+export interface PreliminaryDraftTasks {
+    taskId: string;
+    name: string;
+    taskData: PDTaskData;
+}
 
+export interface PDTaskData {
+    ID: number;
+    requestedBy: string;
+    requestNumber: string;
+    referenceMaterial: string;
+    knw: string;
+    knwSecretary: string;
+    meetingDate: string;
+    Yes: string;
+    sl: string;
+    department: string;
+    issuesAddressed: string;
+    knwAcceptanceDate: string;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    knwCommittee: string;
+    departmentName: string;
+    comments: string;
+    diJNumber: bigint;
+    cost: string;
+    numberOfMeetings: number;
+    identifiedNeed: string;
+}
 
 export interface SPCSECTasks {
     taskId: string;
@@ -259,6 +339,7 @@ export interface SacSeCTaskData {
     clause: string;
     referenceMaterial: string;
     comments: string;
+    ksNumber: string;
 
 }
 
@@ -276,6 +357,8 @@ export interface HOPTaskData {
     clause: string;
     special: string;
     comments: string;
+    ID: number;
+    ksNumber: string;
 }
 export interface NWAStandard {
     id: number;
@@ -305,6 +388,7 @@ export interface HoSicTaskData {
     description: string;
     dateUploaded: string;
     comments: string;
+    ID: number;
 }
 export interface UploadNwaGazette {
     id: number;
@@ -442,6 +526,8 @@ export interface JSListTaskData {
     comment_time: string;
     proposal_doc_name: string;
     ID: number;
+    tcCommittee: string;
+    departmentName: string;
 }
 export interface ISJustificationDecision {
     taskId: string;
@@ -474,6 +560,8 @@ export interface ISSacSecTaskData {
     comment_time: string;
     proposal_doc_name: string;
     ID: number;
+    tcCommittee: string;
+    departmentName: string;
 }
 export interface ISHopTASKS {
     taskId: string;
@@ -500,6 +588,8 @@ export interface ISHopTaskData {
     comment_time: string;
     proposal_doc_name: string;
     ID: number;
+    tcCommittee: string;
+    departmentName: string;
 }
 export interface ISStandard {
     id: number;
@@ -584,6 +674,9 @@ export interface ComHodTaskData {
     productName: string;
     productSubCategoryName: string;
     tcName: string;
+    plAssigned: string;
+    nameOfJc: string;
+
 
 
 }
@@ -593,6 +686,13 @@ export interface ComStdAction {
     requestNumber: string;
     dateAssigned: string;
     assignedTo: string;
+    taskId: string;
+}
+
+export interface ComStandardJC {
+    id: string;
+    requestNumber: string;
+    idOfJc: string;
     taskId: string;
 }
 
@@ -737,6 +837,8 @@ export interface ComJcJustificationDecData {
     clause: string;
     special:string;
     comments: string;
+    symbolsAbbreviatedTerms: string;
+    draftNumber: string;
 }
 export interface ApproveJC{
     taskId: string;

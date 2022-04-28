@@ -52,7 +52,7 @@ placeholder="name" type="text">
         <div class=" col-12">
             <label><b>Upload Proposal</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
     <form #demoForm="ngForm">
-        <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+        <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2" accept=".pdf" ></file-upload>
         <input class="form-control one-column-input" ngModel="IS Proposal"  name="DocDescription" type="hidden">
     </form>
         </div>

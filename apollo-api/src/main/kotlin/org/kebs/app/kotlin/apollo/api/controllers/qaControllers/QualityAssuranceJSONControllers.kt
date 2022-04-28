@@ -1,6 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
-import com.google.gson.Gson
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
@@ -10,14 +10,13 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.springframework.core.io.ResourceLoader
-import org.springframework.http.MediaType
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import java.io.ByteArrayOutputStream
-import java.math.BigDecimal
+import org.springframework.web.servlet.function.ServerResponse
 import javax.servlet.http.HttpServletResponse
 
 
@@ -199,7 +198,7 @@ class QualityAssuranceJSONControllers(
         map["datePrepared"] = commonDaoServices.convertTimestampToKeswsValidDate(
             batchInvoice.createdOn ?: throw ExpectedDataNotFound("MISSING CREATION DATE")
         )
-        map["demandNoteNo"] = batchInvoice.invoiceNumber.toString()
+        map["demandNoteNo"] = batchInvoice.sageInvoiceNumber.toString()
         map["companyName"] = companyProfile.name.toString()
         map["companyAddress"] = companyProfile.postalAddress.toString()
         map["companyTelephone"] = companyProfile.companyTelephone.toString()
@@ -216,20 +215,12 @@ class QualityAssuranceJSONControllers(
 
         map = reportsDaoService.addBankAndMPESADetails(map, batchInvoice.invoiceNumber.toString())
 
-        val pdfReportStream=reportsDaoService.extractReport(
+        reportsDaoService.extractReport(
             map,
+            response,
             applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
             batchInvoiceList
         )
-        response.contentType = "text/html"
-        response.contentType = "application/pdf"
-        response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; PROFOMA-${ID}.pdf;")
-        response.outputStream.let { responseOutputStream ->
-            responseOutputStream.write(pdfReportStream.toByteArray())
-            responseOutputStream.close()
-            pdfReportStream.close()
-        }
     }
 
     @RequestMapping(value = ["/report/braked-down-invoice-with-Item"], method = [RequestMethod.GET])
@@ -273,20 +264,12 @@ class QualityAssuranceJSONControllers(
 
         map = reportsDaoService.addBankAndMPESADetails(map, masterInvoice.invoiceRef.toString())
 
-        val pdfReportStream=reportsDaoService.extractReport(
+        reportsDaoService.extractReport(
             map,
+            response,
             applicationMapProperties.mapReportBreakDownInvoiceWithItemsPath,
             invoiceDetailsList
         )
-        response.contentType = "text/html"
-        response.contentType = "application/pdf"
-        response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; filename=BRAKE_DOWN_INVOICE.pdf;")
-        response.outputStream.let { responseOutputStream ->
-            responseOutputStream.write(pdfReportStream.toByteArray())
-            responseOutputStream.close()
-            pdfReportStream.close()
-        }
     }
 
     /*
@@ -325,42 +308,76 @@ class QualityAssuranceJSONControllers(
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
         map["QrCode"] = foundPermitDetails.permitNumber.toString()
-        var pdfReportStream: ByteArrayOutputStream?=null
+
+
         when (foundPermitDetails.permitTypeID) {
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 map["DmarkLogo"] = dMarkImageFile
-                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
+                reportsDaoService.extractReportEmptyDataSource(
                     map,
+                    response,
                     applicationMapProperties.mapReportDmarkPermitReportPath
                 )
             }
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 map["SmarkLogo"] = sMarkImageFile
-                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
+                reportsDaoService.extractReportEmptyDataSource(
                     map,
+                    response,
                     applicationMapProperties.mapReportSmarkPermitReportPath
                 )
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 map["FmarkLogo"] = fMarkImageFile
-                pdfReportStream=reportsDaoService.extractReportEmptyDataSource(
+                reportsDaoService.extractReportEmptyDataSource(
                     map,
+                    response,
                     applicationMapProperties.mapReportFmarkPermitReportPath
                 )
             }
         }
-        if(pdfReportStream!=null) {
-            response.contentType = "text/html"
-            response.contentType = "application/pdf"
-            response.setHeader("Content-Length", pdfReportStream.size().toString())
-            response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
-            response.outputStream.let { responseOutputStream ->
-                responseOutputStream.write(pdfReportStream.toByteArray())
-                responseOutputStream.close()
-                pdfReportStream.close()
-            }
-        }
     }
+//    @PostMapping("/permit/apply/updateMigratedPermit")
+////    https://localhost:8006/api/v1/migration/qa/permit/apply/updateMigratedPermit
+//    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun updatePermitMigrated(
+//        @RequestParam("permitId") permitId: String,
+//        @RequestParam("permitIdBeingMigrated") permitIdBeingMigrated: String
+//    ): CommonDaoServices.MessageSuccessFailDTO {
+//
+//        val map = commonDaoServices.serviceMapDetails(appId)
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        println(permitId)
+//       // var permitDetails = qaDaoServices.findPermitBYID(permitId)
+////        return try {
+////            val map = commonDaoServices.serviceMapDetails(appId)
+////            val loggedInUser = commonDaoServices.loggedInUserDetails()
+////
+////
+////            println(permitId)
+////            println(permitIdBeingMigrated)
+////
+//////            qaDaoServices.permitInvoiceSTKPush(map, loggedInUser, dto.phoneNumber, invoiceEntity)
+////
+//////            val messageDto = MigratedPermitDto(
+//////                invoiceEntity
+//////            )
+////            ServerResponse.ok().body(permitId)
+////
+////        } catch (e: Exception) {
+////            KotlinLogging.logger { }.error(e.message)
+////            KotlinLogging.logger { }.debug(e.message, e)
+////            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+////        }
+//
+//        val sm = CommonDaoServices.MessageSuccessFailDTO()
+////        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+//        sm.message = "Document Uploaded successful"
+//
+//        return sm
+////        return commonDaoServices.returnValues(result
+//    }
 
 
     @PostMapping("/kebs/add/new-upload")
@@ -564,5 +581,4 @@ class QualityAssuranceJSONControllers(
         return sm
 //        return commonDaoServices.returnValues(result ?: throw Exception("invalid results"), map, sm)
     }
-
 }

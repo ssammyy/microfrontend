@@ -17,15 +17,12 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         LOCAL_DEV: 'localhost:8007'
-        // LOCAL_DEV: 'kimsfluxint.kebs.org:8005'
+        // LOCAL_DEV: 'localhost:8006'
+        // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        // LOCAL_DEV: 'kimsint.kebs.org:8007'
-        // LOCAL_DEV: `kimsint.skebs.org:8006`
-        // LOCAL_DEV: `kimsint.kebs.org:8005`,
-        // LOCAL_DEV: `kims.kebs.org:8006`
+        LOCAL_DEV: `kimsint.kebs.org:8006`
+        // LOCAL_DEV: `kims.kebs.org`
         // LOCAL_DEV: '10.10.0.149:8007'
-
     };
 
     /**
@@ -62,7 +59,7 @@ export class ApiEndpointService {
     /**
      * Map of contexts for API endpoints.
      */
-    public static AUTH_CONTEXT = '/api/v1/login';
+    public static AUTH_CONTEXT = '/api/v1/login/b';
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
     public static ANONYMOUS_CONTEXT_MS = '/api/v1/migration/ms/anonymous';
     public static ANONYMOUS_CONTEXT_NEP = '/api/v1/migration/anonymous/National_enquiry_point';
@@ -110,7 +107,7 @@ export class ApiEndpointService {
         HOME_PAGE: `${ApiEndpointService.ANONYMOUS_CONTEXT}`,
         SEND_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendToken`,
         SEND_TOKEN_FOR_USER: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendTokenForUser`,
-        VALIDATE_TOKEN_FOR_USER: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateTokenFromThePhone`,
+        VALIDATE_TOKEN_FOR_USER: `${ApiEndpointService.MASTERS_CONTEXT}/validateToken`,
         VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
         REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
         COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
@@ -246,6 +243,8 @@ export class ApiEndpointService {
         PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
         PERMIT_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list`,
         PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
+        PERMIT_LIST_ALL: `${ApiEndpointService.QA_CONTEXT}/permit/all-my-permits-loaded`,
+        PERMIT_COMPLETELY_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-completely`,
 
         PERMIT_LIST_TO_GENERATE_FMRK: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-fmark-generate`,
         PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
@@ -271,6 +270,7 @@ export class ApiEndpointService {
         UPLOAD_FILE: `${ApiEndpointService.QA_CONTEXT_APPLY}/ordinary-upload`,
         UPLOAD_FILE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update-upload`,
         UPLOAD_FILE_STA10: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10-update-upload`,
+        UPDATE_PERMIT_MIGRATED: `${ApiEndpointService.QA_CONTEXT_APPLY}/updateMigratedPermit`,
 
 
         INVOICE_CONSOLIDATE_SUBMIT: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-submit`,
@@ -319,13 +319,22 @@ export class ApiEndpointService {
         NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,
         NWA_KNW_COMMITTEE: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWCommittee`,
         NWA_KNW_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/knwtasks`,
+        NWA_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getUserTasks`,
+        NWA_KNW_SECRETARY: `${ApiEndpointService.SD_NWA_CONTEXT}/getKnwSecretary`,
+        NWA_DI_DIRECTOR: `${ApiEndpointService.SD_NWA_CONTEXT}/getDirector`,
+        NWA_HEAD_OF_PUBLISHING: `${ApiEndpointService.SD_NWA_CONTEXT}/getHeadOfPublishing`,
+        NWA_SAC_SECRETARY: `${ApiEndpointService.SD_NWA_CONTEXT}/getSacSecretary`,
+        NWA_HEAD_OF_SIC: `${ApiEndpointService.SD_NWA_CONTEXT}/getHeadOfSic`,
+        NWA_SPC_SECRETARY: `${ApiEndpointService.SD_NWA_CONTEXT}/getSpcSecretary`,
         NWA_SPC_SEC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getSpcSecTasks`,
         NWA_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnJustification`,
+        NWA_DECISION_ON_JUSTIFICATION_KNW: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnJustificationKNW`,
         NWA_PREPARE_DISDT_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareDiSdtJustification`,
         NWA_DISDT_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getDiSdtTasks`,
         NWA_DECISION_ON_DISDT_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnDiSdtJustification`,
         NWA_PREPARE_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/preparePreliminaryDraft`,
         NWA_DECISION_ON_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnPd`,
+        NWA_TC_SEC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getTCSeCTasks`,
         NWA_HOP_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getHOPTasks`,
         NWA_EDIT_WORKSHOP_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/editWorkshopDraft`,
         NWA_SAC_SEC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getSacSecTasks`,
@@ -335,22 +344,28 @@ export class ApiEndpointService {
         NWA_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_NWA_CONTEXT}/uploadGazetteNotice`,
         NWA_UPDATE_GAZETTEMENT_DATE: `${ApiEndpointService.SD_NWA_CONTEXT}/updateGazettementDate`,
         NWA_UPLOAD_DATA: `${ApiEndpointService.SD_NWA_CONTEXT}/file-upload`,
-        NWA_UPLOAD_DATA_VIEW: `${ApiEndpointService.SD_NWA_CONTEXT}/view/justification`,
         NWA_UPLOAD_DATA_DI: `${ApiEndpointService.SD_NWA_CONTEXT}/di-file-upload`,
         NWA_UPLOAD_DATA_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/pd-file-upload`,
         NWA_UPLOAD_DATA_WD: `${ApiEndpointService.SD_NWA_CONTEXT}/wd-file-upload`,
         NWA_UPLOAD_DATA_STD: `${ApiEndpointService.SD_NWA_CONTEXT}/std-file-upload`,
+        NWA_UPLOAD_DATA_VIEW: `${ApiEndpointService.SD_NWA_CONTEXT}/view/justification`,
+        NWA_UPLOAD_DATA_VIEW_DI: `${ApiEndpointService.SD_NWA_CONTEXT}/view/di-justification`,
+        NWA_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/preliminaryDraft`,
+        NWA_UPLOAD_DATA_VIEW_WD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/workShopDraft`,
+        NWA_UPLOAD_DATA_VIEW_STD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/knwStandard`,
 
         // SD INTERNATIONAL STANDARDS
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
         IST_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/file-upload`,
         IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getISProposals`,
+        IST_VIEW_IS_PROPOSALS_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/proposal`,
         IST_SUBMIT_AP_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/SubmitAPComments`,
         IST_TC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getTCSECTasks`,
         IST_DECISION_ON_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnProposal`,
         IST_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/prepareJustification`,
         IST_UPLOAD_JS_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/js-file-upload`,
         IST_SPC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSPCSECTasks`,
+        IST_VIEW_IS_JUSTIFICATION_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/justification`,
         IST_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnJustification`,
         IST_SAC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSACSECTasks`,
         IST_APPROVE_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveStandard`,
@@ -358,7 +373,10 @@ export class ApiEndpointService {
         IS_UPLOAD_STD: `${ApiEndpointService.SD_IST_CONTEXT}/std-file-upload`,
         IS_UPLOAD_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/uploadISStandard`,
         IST_HOS_SIC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getHoSiCTasks`,
+        IST_VIEW_IS_STANDARD_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/iStandard`,
         IS_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_IST_CONTEXT}/uploadGazetteNotice`,
+        IS_UPLOAD_STD_GZT: `${ApiEndpointService.SD_IST_CONTEXT}/gzt-file-upload`,
+        IST_VIEW_IS_STANDARD_GZT_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/gazettement`,
         IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
 
 
@@ -375,17 +393,21 @@ export class ApiEndpointService {
         ICT_ADD_STD_REQUEST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/request`,
         ICT_HOD_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHODTasks`,
         ICT_ASSIGN_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/assignRequest`,
+        ICT_FORM_JOINT_COMMITTEE: `${ApiEndpointService.SD_ICT_CONTEXT}/formJointCommittee`,
         ICT_PL_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getPlTasks`,
         ICT_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/prepareJustification`,
         ICT_UPLOAD_JC: `${ApiEndpointService.SD_ICT_CONTEXT}/file-upload`,
         ICT_SPC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getSpcSecTasks`,
         ICT_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnJustification`,
         ICT_SAC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getSacSecTasks`,
+        ICT_UPLOAD_DATA_VIEW_STD: `${ApiEndpointService.SD_ICT_CONTEXT}/view/comStandard`,
         ICT_DECISION_ON_APP_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnAppJustification`,
         ICT_PREPARE_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadDraft`,
         ICT_UPLOAD_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/draft-file-upload`,
         ICT_JC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getJcSecTasks`,
+        ICT_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/view/comDraft`,
         ICT_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnCompanyStdDraft`,
+        ICT_COM_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnComStdDraft`,
         ICT_COM_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComSecTasks`,
         ICT_PREPARE_COM_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadComStandard`,
         ICT_COM_UPLOAD_SD: `${ApiEndpointService.SD_ICT_CONTEXT}/std-file-upload`,
@@ -429,7 +451,58 @@ export class ApiEndpointService {
         REG_MANUFACTURE_DETAILS: `${ApiEndpointService.SL_CONTEXT}/kebs/add/manufacture-details/save`,
         STD_LEVY_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerPenalty`,
         STD_LEVY_PAID_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getPaidLevies`,
+        STD_LEVY_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getLevyPayments`,
         STD_LEVY_COMPANY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getCompanyProfile`,
+        STD_LEVY_SL_FORM: `${ApiEndpointService.STL_CONTEXT}/getNotificationFormDetails`,
+        STD_LEVY_SL_NT_FORM: `${ApiEndpointService.STL_CONTEXT}/getSlNotificationFormDetails`,
+        STD_LEVY_MANUFACTURE_STATUS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerStatus`,
+        STD_LEVY_SL10_FORM: `${ApiEndpointService.STL_CONTEXT}/save-sl-notification-form`,
+        STD_LEVY_SCHEDULE_SITE_VISIT: `${ApiEndpointService.STL_CONTEXT}/scheduleSiteVisit`,
+        STD_LEVY_SCHEDULED_SITE_VISITS: `${ApiEndpointService.STL_CONTEXT}/getScheduledVisits`,
+        STD_LEVY_ASSIGN_COMPANY_TASK: `${ApiEndpointService.STL_CONTEXT}/assignCompany`,
+        STD_LEVY_SAVE_VISIT_REPORT: `${ApiEndpointService.STL_CONTEXT}/reportOnSiteVisit`,
+        STD_LEVY_SAVE_VISIT_REPORT_DOCUMENT: `${ApiEndpointService.STL_CONTEXT}/site-report-upload`,
+        STD_LEVY_VIEW_VISIT_REPORT_DOCUMENT_LIST: `${ApiEndpointService.STL_CONTEXT}/getVisitDocumentList`,
+        STD_LEVY_VIEW_VISIT_REPORT_DOCUMENT: `${ApiEndpointService.STL_CONTEXT}/view/siteVisitReport`,
+        STD_LEVY_SCHEDULED_SITE_VISITS_REPORT: `${ApiEndpointService.STL_CONTEXT}/getSiteReport`,
+        STD_LEVY_SITE_VISITS_REPORT_APPROVAL_ONE: `${ApiEndpointService.STL_CONTEXT}/decisionOnSiteReport`,
+        STD_LEVY_SITE_VISITS_REPORT_LEVEL_TWO: `${ApiEndpointService.STL_CONTEXT}/getSiteReportLevelTwo`,
+        STD_LEVY_SITE_VISITS_REPORT_APPROVAL_TWO: `${ApiEndpointService.STL_CONTEXT}/decisionOnSiteReportLevelTwo`,
+        STD_LEVY_SAVE_VISIT_REPORT_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/siteVisitReportFeedback`,
+        STD_LEVY_SAVE_VISIT_REPORT_VIEW_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/getSiteFeedback`,
+        STD_LEVY_MANUFACTURE_LIST: `${ApiEndpointService.STL_CONTEXT}/getManufacturerList`,
+        STD_LEVY_DIRECTORS_LIST: `${ApiEndpointService.STL_CONTEXT}/getCompanyDirectors`,
+        STD_LEVY_MANUFACTURE_TASKS: `${ApiEndpointService.STL_CONTEXT}/getUserTasks`,
+        STD_LEVY_VIEW_VISIT_REPORT_FEEDBACK: `${ApiEndpointService.STL_CONTEXT}/viewFeedBack`,
+        STD_LEVY_MANUFACTURE_COMPLETE_TASKS: `${ApiEndpointService.STL_CONTEXT}/getCompleteTasks`,
+        STD_LEVY_LIST_OF_USERS: `${ApiEndpointService.STL_CONTEXT}/getSlUsers`,
+        STD_LEVY_APPROVED_USERS_LEVEL_ONE: `${ApiEndpointService.STL_CONTEXT}/getApproveLevelOne`,
+        STD_LEVY_APPROVED_USERS_LEVEL_TWO: `${ApiEndpointService.STL_CONTEXT}/getApproveLevelTwo`,
+        STD_LEVY_APPROVED_USERS_LEVEL_THREE: `${ApiEndpointService.STL_CONTEXT}/getApproveLevelThree`,
+        STD_LEVY_ASSIGN_USERS_LEVEL_ONE: `${ApiEndpointService.STL_CONTEXT}/getAssignLevelOne`,
+        STD_LEVY_ASSIGN_USERS_LEVEL_TWO: `${ApiEndpointService.STL_CONTEXT}/getAssignLevelTwo`,
+        STD_LEVY_ASSIGN_USERS_LEVEL_THREE: `${ApiEndpointService.STL_CONTEXT}/getAssignLevelThree`,
+        STD_LEVY_MANUFACTURE_USERS: `${ApiEndpointService.STL_CONTEXT}/getSlLoggedIn`,
+        STD_LEVY_LIST_OF_USERS_PL: `${ApiEndpointService.STL_CONTEXT}/getPlList`,
+        STD_LEVY_LIST_OF_USERS_LV: `${ApiEndpointService.STL_CONTEXT}/getSlLvTwoList`,
+        STD_LEVY_MANUFACTURE_ROLES: `${ApiEndpointService.STL_CONTEXT}/getRoleByUserId`,
+        STD_LEVY_EDIT_COMPANY: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetails`,
+        STD_LEVY_EDIT_COMPANY_LEVEL_ONE: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirmLvlOne`,
+        STD_LEVY_EDIT_COMPANY_LEVEL_TWO: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirmLvlTwo`,
+        STD_LEVY_EDITED_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/getCompanyEditedDetails`,
+        STD_LEVY_SITE_VISIT_REMARKS: `${ApiEndpointService.STL_CONTEXT}/getSiteVisitRemarks`,
+        STD_LEVY_COMPANY_EDIT_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirm`,
+        STD_LEVY_NOTIFICATION_FORM_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSLNotificationStatus`,
+        STD_LEVY_BRANCH_NAME: `${ApiEndpointService.STL_CONTEXT}/getBranchName`,
+        STD_LEVY_SUSPEND_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/suspendCompanyOperations`,
+        STD_LEVY_CLOSE_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/closeCompanyOperations`,
+        STD_LEVY_UPLOAD_WINDING_UP_REPORT: `${ApiEndpointService.STL_CONTEXT}/uploadWindingUpReport`,
+        STD_LEVY_GET_WINDING_UP_REPORT_LIST: `${ApiEndpointService.STL_CONTEXT}/getWindingReportDocumentList`,
+        STD_LEVY_VIEW_WINDING_UP_REPORT: `${ApiEndpointService.STL_CONTEXT}/view/windingUpReport`,
+
+
+
+
 
     };
 
@@ -496,7 +569,7 @@ export class ApiEndpointService {
   public static getEndpoint(endpoint: string): string {
     const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
     const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
-    const context: string = ApiEndpointService.CONTEXT;
+    const context: string = ApiEndpointService.CONTEXT
     return `${protocol}${domain}${context}${endpoint}`;
   }
 

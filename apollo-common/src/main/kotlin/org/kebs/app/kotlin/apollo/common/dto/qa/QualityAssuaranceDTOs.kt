@@ -5,7 +5,6 @@ import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import kotlin.reflect.jvm.internal.impl.builtins.StandardNames.FqNames.number
 
 
 data class ST10Dto(
@@ -16,9 +15,9 @@ data class ST10Dto(
     var rejectedRemarks: String? = null,
     var mandateForOga: Int? = 0,
     var advisedWhereToRemarks: String? = null,
-        var assignedIoStatus: Int? = null,
-        var assignedIoRemarks: String? = null,
-        var assignedIo: Long? = null
+    var assignedIoStatus: Int? = null,
+    var assignedIoRemarks: String? = null,
+    var assignedIo: Long? = null
 )
 
 data class CommonPermitDto(
@@ -43,33 +42,35 @@ data class CommonPermitDto(
 )
 
 data class WorkPlanDto(
-        var firmName: String? = null,
-        var refNumber: String? = null,
-        var permitNumber: String? = null,
-        var physicalAddress: String? = null,
-        var town: String? = null,
-        var productBrand: String? = null,
-        var issueDate: Date? = null,
-        var expiryDate: Date? = null,
-        var visitsScheduled: Date? = null,
+    var firmName: String? = null,
+    var refNumber: String? = null,
+    var permitNumber: String? = null,
+    var physicalAddress: String? = null,
+    var town: String? = null,
+    var productBrand: String? = null,
+    var issueDate: Date? = null,
+    var expiryDate: Date? = null,
+    var visitsScheduled: Date? = null,
 )
 
 data class InvoiceDto(
-        var batchID: Long? = null,
-        var firmName: String? = null,
-        var postalAddress: String? = null,
-        var physicalAddress: String? = null,
-        var contactPerson: String? = null,
-        var telephoneNo: String? = null,
-        var email: String? = null,
-        var invoiceNumber: String? = null,
-        var receiptNo: String? = null,
-        var paidDate: Timestamp? = null,
-        var totalAmount: BigDecimal? = null,
-        var paidStatus: Int? = null,
-        var submittedStatus: Int? = null,
-        var plantId: Long? = null,
-)
+    var batchID: Long? = null,
+    var firmName: String? = null,
+    var postalAddress: String? = null,
+    var physicalAddress: String? = null,
+    var contactPerson: String? = null,
+    var telephoneNo: String? = null,
+    var email: String? = null,
+    var invoiceNumber: String? = null,
+    var receiptNo: String? = null,
+    var paidDate: Timestamp? = null,
+    var totalAmount: BigDecimal? = null,
+    var paidStatus: Int? = null,
+    var submittedStatus: Int? = null,
+    var plantId: Long? = null,
+    var sageInvoiceNumber: String?,
+
+    )
 
 data class ConsolidatedInvoiceDto(
     var id: Long? = null,
@@ -155,9 +156,10 @@ data class NewBatchInvoiceDto(
 
 
 data class BatchInvoiceDto(
+    var sageInvoiceNumber: String? = null,
     var batchDetails: InvoiceDto? = null,
     var AllRelatedBatchInvoices: List<PermitInvoiceDto>? = null,
-    )
+)
 
 data class UploadsDtoSTA3(
     var uploadedFiles: List<File>? = null,
@@ -538,8 +540,5 @@ data class PlantsDetailsDto(
     var designation: String? = null,
     var contactPerson: String? = null,
 )
-
-
-
 
 

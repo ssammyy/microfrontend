@@ -1,0 +1,159 @@
+<div class="container-fluid" style="margin-top: 5%">
+    <div class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Saving Please Wait...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title"> Request For Formation Of Technical Committee
+                            </h4>
+
+                        </div>
+                        <div class="card-body">
+                            <form #editForm="ngForm">
+
+                                <p>Proposal for formation of TC</p>
+                                <hr>
+
+                                <div class="form-body">
+
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label><b>Date of Presentation</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel
+                                                    name="dateOfPresentation"
+                                                    placeholder="Date Of Presentation" type="date">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Name of TC</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" value="" name="nameOfTC"
+                                                    placeholder="Name of TC" ngModel type="text">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label><b>Proposer</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel name="proposer"
+                                                    placeholder="Proposer" type="text">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Reference number given by Secretariat</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel name="referenceNumber"
+                                                    placeholder="Reference number" type="text">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label><b>Subject</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel name="subject"
+                                                    placeholder="Subject" type="text">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Scope</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel name="scope"
+                                                    placeholder="Scope" type="text">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label><b>Purpose and Justification</b></label>
+                                            <textarea
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel name="purpose"
+                                                    placeholder="Purpose and Justification" type="text"></textarea>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Proposed TC Representation</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel
+                                                    name="proposedRepresentation"
+                                                    placeholder="Proposed TC Representation" type="text">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label><b>Target Date</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel name="targetDate"
+                                                    placeholder="Target Date" type="date">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Program of work</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel name="programmeOfWork"
+                                                    placeholder="Program of work" type="text">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+<!--                                        <div class="form-group col-6">-->
+<!--                                            <label><b>Relevant Documents</b></label>-->
+<!--                                            <app-upload-files [itemId]="itemId" [type]="type"></app-upload-files>-->
+<!--                                        </div>-->
+                                        <div class="form-group col-6">
+                                            <label><b>Liaison Organization</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel
+                                                    name="liaisonOrganization"
+                                                    placeholder="Liaison Organization" type="text">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label><b>Organization</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" ngModel name="organization"
+                                                    placeholder="Organization" type="text">
+                                        </div>
+
+                                    </div>
+
+
+                                    <button class="btn btn-info" (click)="uploadProposalForTC(editForm.value)">Submit
+                                    </button>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

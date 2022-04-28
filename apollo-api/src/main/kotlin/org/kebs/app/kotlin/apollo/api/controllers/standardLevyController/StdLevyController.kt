@@ -1,17 +1,29 @@
 package org.kebs.app.kotlin.apollo.api.controllers.standardLevyController
 
+import com.google.gson.Gson
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.StandardLevyService
+import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
+import org.kebs.app.kotlin.apollo.common.dto.CompanySl1DTO
+import org.kebs.app.kotlin.apollo.common.dto.ManufactureSubmitEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.std.ResponseMessage
+import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -42,8 +54,26 @@ class StdLevyController(
     private val entityManager: EntityManager,
     private val standardLevyService: StandardLevyService,
     private val daoServices: RegistrationDaoServices,
+    private val standardLevyFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
+    private val standardLevyOperationsClosureRepository: StandardLevyOperationsClosureRepository
 
-) {
+    ) {
+
+    @PostMapping("/deploy")
+    fun deployWorkflow(): ServerResponse {
+        standardLevyService.deployProcessDefinition()
+        return ServerResponse(HttpStatus.OK,"Successfully deployed server", HttpStatus.OK)
+    }
+
+//    @GetMapping("/getManufactureList")
+//    @ResponseBody
+//    fun getManufactureList(): MutableIterable<CompanyProfileEntity>
+//    {
+//        return standardLevyService.getManufactureList()
+//    }
+
+
+
     final val appId = applicationMapProperties.mapPermitApplication
 
     //@PreAuthorize("hasAuthority('USER')")
@@ -448,9 +478,816 @@ class StdLevyController(
     }
 
     @GetMapping("/getCompanyProfile")
-    fun getCompanyProfile(): CompanyProfileEntity {
+    fun getCompanyProfile(): MutableList<CompanyProfileEntity> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        return commonDaoServices.findCompanyProfile(loggedInUser.id?:throw  Exception("INVALID USER ID FOUND"))
+        return commonDaoServices.findCompanyProfileDetail(loggedInUser.id?:throw  Exception("INVALID USER ID FOUND"))
 
     }
+
+    class RegistrationDetails {
+        var stdLevyNotificationFormEntity: StdLevyNotificationFormEntity? = null
+        var manufacturer: ManufacturersEntity? = null
+        var companySl1DTO: CompanySl1DTO? = null
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("/save-sl-notification-form")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveNotificationFormSL(
+        @RequestBody stdLevyNotificationFormDTO: StdLevyNotificationFormDTO,
+        stdLevyNotificationForm: StdLevyNotificationForm,
+        s: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        companyProfileEntity: CompanyProfileEntity,
+    ): ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Form",daoServices.saveNotificationFormSL(stdLevyNotificationFormDTO,stdLevyNotificationForm,s,sr,companyProfileEntity))
+        //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("/submit-registration-manufacture")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun submitRegistrationDetails(
+       // @RequestParam( "companyProfileID") companyProfileID: Long,
+         stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
+        @ModelAttribute("companyProfileEntity") companyProfileEntity: CompanyProfileEntity,
+         companySl1DTO: CompanySl1DTO,
+         manufacturer: ManufacturersEntity,
+        s: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        model: Model
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+
+        val myDetails = ManufactureSubmitEntityDto()
+        with(myDetails) {
+            submittedStatus = 1
+
+        }
+        //println(manufacturer)
+        val gson = Gson()
+       // KotlinLogging.logger { }.info { "Manufacturer" + gson.toJson(manufacturer) }
+        KotlinLogging.logger { }.info { "stdLevyNotificationFormEntity" + gson.toJson(stdLevyNotificationFormEntity) }
+        KotlinLogging.logger { }.info { "companyProfileEntity" + gson.toJson(companyProfileEntity) }
+        KotlinLogging.logger { }.info { "companySl1DTO" + gson.toJson(companySl1DTO) }
+
+
+        //daoServices.manufacturersInit(manufacturer, sr, loggedInUser, s)
+        result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
+        //Generation of Entry Number
+        daoServices.generateEntryNumberDetails(map, loggedInUser)
+       daoServices.manufacturerStdLevyInit(stdLevyNotificationFormEntity,manufacturer, companySl1DTO, s, sr)
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+       sm.message = "You have Successful Register, Email Has been sent with Entry Number "
+
+       return commonDaoServices.returnValues(result, map, sm)
+       // return "Executed"
+    }
+
+    @PreAuthorize("hasAuthority('SL_SCHEDULE_VISIT')")
+  @PostMapping("/scheduleSiteVisit")
+  @ResponseBody
+  @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+  fun scheduleSiteVisit(
+                         @RequestBody stdLevyScheduleSiteVisitDTO: StdLevyScheduleSiteVisitDTO,
+  ): ServerResponse
+  {
+      val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+          manufacturerEntity= stdLevyScheduleSiteVisitDTO.manufacturerEntity
+          scheduledVisitDate= stdLevyScheduleSiteVisitDTO.scheduledVisitDate
+          status= 0
+          createdBy= commonDaoServices.loggedInUserDetails().userName
+          createdOn= Timestamp(System.currentTimeMillis())
+          taskId= stdLevyScheduleSiteVisitDTO.taskId
+          assigneeId= commonDaoServices.loggedInUserDetails().id
+          entryNumber= stdLevyScheduleSiteVisitDTO.entryNumber
+          companyName= stdLevyScheduleSiteVisitDTO.companyName
+          registrationNumber= stdLevyScheduleSiteVisitDTO.registrationNumber
+          kraPin = stdLevyScheduleSiteVisitDTO.kraPin
+      }
+//             val gson = Gson()
+//        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(standardLevyFactoryVisitReportEntity) }
+      return ServerResponse(HttpStatus.OK,"Site Visit Scheduled",standardLevyService.scheduleSiteVisit(standardLevyFactoryVisitReportEntity))
+
+  }
+
+    @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/editCompanyDetails")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun editCompanyDetails(
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+    ): ServerResponse
+    {
+        val companyProfileEditEntity= CompanyProfileEditEntity().apply {
+            manufactureId = editCompanyDTO.companyId
+            postalAddress = editCompanyDTO.postalAddress
+            physicalAddress = editCompanyDTO.physicalAddress
+            ownership = editCompanyDTO.ownership
+            taskType= editCompanyDTO.taskType
+            assignedTo= editCompanyDTO.assignedTo
+            userType= editCompanyDTO.userType
+            name=editCompanyDTO.companyName
+            kraPin=editCompanyDTO.kraPin
+            registrationNumber=editCompanyDTO.registrationNumber
+            entryNumber=editCompanyDTO.entryNumber
+            typeOfManufacture=editCompanyDTO.typeOfManufacture
+
+
+
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetails(companyProfileEditEntity))
+
+    }
+
+    @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/editCompanyDetailsConfirm")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun editCompanyDetailsConfirm(
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+    ): ServerResponse
+    {
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = editCompanyDTO.companyId
+            postalAddress = editCompanyDTO.postalAddress
+            physicalAddress = editCompanyDTO.physicalAddress
+            ownership = editCompanyDTO.ownership
+            taskId = editCompanyDTO.taskId
+            slBpmnProcessInstance = editCompanyDTO.processId
+            assignedTo = editCompanyDTO.assignedTo
+            accentTo = editCompanyDTO.accentTo
+
+
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirm(companyProfileEntity))
+
+    }
+
+    @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/editCompanyDetailsConfirmLvlOne")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun editCompanyDetailsConfirmLvlOne(
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+    ): ServerResponse
+    {
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = editCompanyDTO.companyId
+            postalAddress = editCompanyDTO.postalAddress
+            physicalAddress = editCompanyDTO.physicalAddress
+            ownership = editCompanyDTO.ownership
+            taskId = editCompanyDTO.taskId
+            slBpmnProcessInstance = editCompanyDTO.processId
+            assignedTo = editCompanyDTO.assignedTo
+            accentTo = editCompanyDTO.accentTo
+
+
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlOne(companyProfileEntity))
+
+    }
+
+    @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/editCompanyDetailsConfirmLvlTwo")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun editCompanyDetailsConfirmLvlTwo(
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+    ): ServerResponse
+    {
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = editCompanyDTO.companyId
+            postalAddress = editCompanyDTO.postalAddress
+            physicalAddress = editCompanyDTO.physicalAddress
+            ownership = editCompanyDTO.ownership
+            taskId = editCompanyDTO.taskId
+            slBpmnProcessInstance = editCompanyDTO.processId
+            assignedTo = editCompanyDTO.assignedTo
+            accentTo = editCompanyDTO.accentTo
+
+
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlTwo(companyProfileEntity))
+
+    }
+
+
+    @PreAuthorize("hasAuthority('SL_ASSIGN_COMPANY')")
+    @PostMapping("/assignCompany")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun assignCompany(
+                           @RequestBody assignToDTO: AssignCompanyTaskToDTO
+    ): ServerResponse
+    {
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = assignToDTO.manufacturerEntity
+            assignedTo = assignToDTO.assignedTo
+            name = assignToDTO.companyName
+            kraPin = assignToDTO.kraPin
+            status = assignToDTO.status
+            registrationNumber = assignToDTO.registrationNumber
+            postalAddress = assignToDTO.postalAddress
+            physicalAddress = assignToDTO.physicalAddress
+            plotNumber = assignToDTO.plotNumber
+            companyEmail = assignToDTO.companyEmail
+            companyTelephone = assignToDTO.companyTelephone
+            yearlyTurnover = assignToDTO.yearlyTurnover
+            businessLineName = assignToDTO.businessLineName
+            businessLines = assignToDTO.businessLines
+            businessNatureName = assignToDTO.businessNatureName
+            businessNatures = assignToDTO.businessNatures
+            buildingName = assignToDTO.buildingName
+            directorIdNumber = assignToDTO.directorIdNumber
+            regionName = assignToDTO.regionName
+            region = assignToDTO.region
+            countyName = assignToDTO.countyName
+            county = assignToDTO.county
+            townName = assignToDTO.townName
+            town = assignToDTO.town
+            branchName = assignToDTO.branchName
+            streetName = assignToDTO.streetName
+            manufactureStatus = assignToDTO.manufactureStatus
+            entryNumber = assignToDTO.entryNumber
+            userId= assignToDTO.contactId
+            taskType= assignToDTO.taskType
+            typeOfManufacture= assignToDTO.typeOfManufacture
+        }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Assigned Variables" + gson.toJson(assignToDTO) }
+
+        return ServerResponse(HttpStatus.OK,"Company Task Assigned",standardLevyService.assignCompany(companyProfileEntity))
+
+    }
+
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getUserTasks")
+    fun getUserTasks():List<TaskDetailsBody>
+    {
+        return standardLevyService.getUserTasks()
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @GetMapping("/viewFeedBack")
+    fun viewFeedBack():List<TaskDetailsBody>
+    {
+        return standardLevyService.viewFeedBack()
+    }
+
+    @PreAuthorize("hasAuthority('SL_SITE_VISIT_REPORT_CREATE')")
+    @PostMapping("/reportOnSiteVisit")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun reportOnSiteVisit(@RequestBody reportOnSiteVisitDTO: ReportOnSiteVisitDTO): ServerResponse
+    {
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            visitDate=reportOnSiteVisitDTO.visitDate
+            purpose = reportOnSiteVisitDTO.purpose
+            personMet = reportOnSiteVisitDTO.personMet
+            actionTaken = reportOnSiteVisitDTO.actionTaken
+            id= reportOnSiteVisitDTO.visitID
+            assigneeId=reportOnSiteVisitDTO.assigneeId
+            taskId= reportOnSiteVisitDTO.taskId
+            manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
+            makeRemarks = reportOnSiteVisitDTO.makeRemarks
+            userType=reportOnSiteVisitDTO.userType
+        }
+
+        return ServerResponse(HttpStatus.OK,"Uploaded Report",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity))
+    }
+
+    @PreAuthorize("hasAuthority('SL_SITE_VISIT_REPORT_CREATE')")
+    @PostMapping("/reportOnSiteVisitTest")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun reportOnSiteVisitTest(@RequestBody reportOnSiteVisitDTO: ReportOnSiteVisitDTO): ServerResponse
+    {
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            visitDate=reportOnSiteVisitDTO.visitDate
+            purpose = reportOnSiteVisitDTO.purpose
+            personMet = reportOnSiteVisitDTO.personMet
+            actionTaken = reportOnSiteVisitDTO.actionTaken
+            id= reportOnSiteVisitDTO.visitID
+            assigneeId=reportOnSiteVisitDTO.assigneeId
+            taskId= reportOnSiteVisitDTO.taskId
+            manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
+            makeRemarks = reportOnSiteVisitDTO.makeRemarks
+            userType=reportOnSiteVisitDTO.userType
+        }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "INT TYPE" + gson.toJson(reportOnSiteVisitDTO) }
+        return ServerResponse(HttpStatus.OK,"Uploaded Report",standardLevyService.reportOnSiteVisitTest(standardLevyFactoryVisitReportEntity))
+
+    }
+
+
+
+    @PostMapping("/site-report-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFiles(
+        @RequestParam("reportFileID") reportFileID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val siteVisit = standardLevyFactoryVisitReportRepo.findByIdOrNull(reportFileID)?: throw Exception("VISIT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = SlVisitUploadsEntity()
+            with(upload) {
+                visitId = siteVisit.id
+
+            }
+            standardLevyService.uploadSiteReport(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "Report"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+    @GetMapping("/getSiteReport")
+    fun getSiteReport():List<TaskDetailsBody>
+    {
+        return standardLevyService.getSiteReport()
+    }
+
+    @GetMapping("/getVisitDocumentList")
+    fun getVisitDocumentList(
+        response: HttpServletResponse,
+        @RequestParam("visitId") visitId: Long
+    ): List<SiteVisitListHolder> {
+        return standardLevyService.getVisitDocumentList(visitId)
+    }
+
+
+
+    //View Site Visit Report Document
+    @GetMapping("/view/siteVisitReport")
+    fun viewPDFile(
+        response: HttpServletResponse,
+        @RequestParam("visitID") visitID: Long
+    ) {
+
+        val fileUploaded = standardLevyService.findUploadedReportFileBYId(visitID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
+    @PreAuthorize("hasAuthority('SL_SITE_VISIT_REPORT_FEEDBACK_CREATE')")
+    @PostMapping("/siteVisitReportFeedback")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun siteVisitReportFeedback(@RequestBody  reportOnSiteVisitDTO: ReportOnSiteVisitDTO
+
+
+    ): ServerResponse
+    {
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            officersFeedback = reportOnSiteVisitDTO.officersFeedback
+            id = reportOnSiteVisitDTO.visitID
+            taskId= reportOnSiteVisitDTO.taskId
+            assigneeId = reportOnSiteVisitDTO.assigneeId
+            manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
+            userType= reportOnSiteVisitDTO.userType
+
+        }
+        return ServerResponse(HttpStatus.OK,"Uploaded Feedback",standardLevyService.siteVisitReportFeedback(standardLevyFactoryVisitReportEntity))
+
+    }
+
+//    @PostMapping("/decisionOnSiteReportx")
+//    fun decisionOnSiteReportx(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetailsBody>
+//    {
+//        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+//            assistantManagerRemarks = siteVisitReportDecision.comments
+//            assigneeId = siteVisitReportDecision.assigneeId
+//            taskId= siteVisitReportDecision.taskId
+//            id= siteVisitReportDecision.visitID
+//            manufacturerEntity=siteVisitReportDecision.manufacturerEntity
+//
+//
+//        }
+//
+//        return standardLevyService.decisionOnSiteReport(standardLevyFactoryVisitReportEntity)
+//    }
+
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @PostMapping("/decisionOnSiteReport")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun decisionOnSiteReport(@RequestBody siteVisitReportDecisionDTO: SiteVisitReportDecisionDTO): ServerResponse
+    {
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            taskId=siteVisitReportDecisionDTO.taskId
+            accentTo = siteVisitReportDecisionDTO.accentTo
+            id= siteVisitReportDecisionDTO.visitID
+            assigneeId=siteVisitReportDecisionDTO.assigneeId
+            manufacturerEntity= siteVisitReportDecisionDTO.manufacturerEntity
+            assistantManagerRemarks =siteVisitReportDecisionDTO.comments
+            approvalStatus =siteVisitReportDecisionDTO.approvalStatus
+            approvalStatusId =siteVisitReportDecisionDTO.approvalStatusId
+
+        }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            siteVisitId=siteVisitReportDecisionDTO.visitID
+            remarks=siteVisitReportDecisionDTO.comments
+            status=siteVisitReportDecisionDTO.status
+            role=siteVisitReportDecisionDTO.role
+
+        }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Report Decision" + gson.toJson(siteVisitReportDecisionDTO) }
+        return ServerResponse(HttpStatus.OK,"Decision Saved",standardLevyService.decisionOnSiteReport(standardLevyFactoryVisitReportEntity,standardLevySiteVisitRemarks))
+
+    }
+
+    @GetMapping("/getSiteReportLevelTwo")
+    fun getSiteReportLevelTwo():List<TaskDetailsBody>
+    {
+        return standardLevyService.getSiteReportLevelTwo()
+    }
+
+//    @PostMapping("/decisionOnSiteReportLevelTwox")
+//    fun decisionOnSiteReportLevelTwox(@RequestBody siteVisitReportDecision: SiteVisitReportDecision) : List<TaskDetails>
+//    {
+//        return standardLevyService.decisionOnSiteReportLevelTwo(siteVisitReportDecision)
+//    }
+
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @PostMapping("/decisionOnSiteReportLevelTwo")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun decisionOnSiteReportLevelTwo(@RequestBody siteVisitReportDecisionDTO: SiteVisitReportDecisionDTO): ServerResponse
+    {
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            taskId=siteVisitReportDecisionDTO.taskId
+            accentTo = siteVisitReportDecisionDTO.accentTo
+            id= siteVisitReportDecisionDTO.visitID
+            manufacturerEntity= siteVisitReportDecisionDTO.manufacturerEntity
+            cheifManagerRemarks= siteVisitReportDecisionDTO.comments
+            assigneeId = siteVisitReportDecisionDTO.assigneeId
+            userType= siteVisitReportDecisionDTO.userType
+
+        }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            siteVisitId=siteVisitReportDecisionDTO.visitID
+            remarks=siteVisitReportDecisionDTO.comments
+            status=siteVisitReportDecisionDTO.status
+            role=siteVisitReportDecisionDTO.role
+
+        }
+        return ServerResponse(HttpStatus.OK,"Decision Saved",standardLevyService.decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity,standardLevySiteVisitRemarks))
+
+    }
+
+
+
+    @GetMapping("/getSiteFeedback")
+    fun getSiteFeedback():List<TaskDetailsBody>
+    {
+        return standardLevyService.getSiteFeedback()
+    }
+
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getManufacturerList")
+    @ResponseBody
+    fun getManufacturerList(): MutableList<ManufactureListHolder>
+    {
+        return standardLevyService.getManufacturerList()
+    }
+
+    //Get List of Manufactures Complete Tasks
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getMnCompleteTask")
+    @ResponseBody
+    fun getMnCompleteTask(): MutableList<CompanyProfileEntity>
+    {
+
+        commonDaoServices.loggedInUserDetails().id?.let { id ->
+            return standardLevyService.getMnCompleteTask(id)
+
+        }
+            ?:return mutableListOf()
+
+
+    }
+
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getMnPendingTask")
+    @ResponseBody
+    fun getMnPendingTask(): MutableList<CompanyProfileEntity>
+    {
+        commonDaoServices.loggedInUserDetails().id?.let { id ->
+            return standardLevyService.getMnPendingTask(id)
+
+        }
+            ?:return mutableListOf()
+
+    }
+
+    @GetMapping("/getSlUsers")
+    @ResponseBody
+    fun getSlUsers(): List<UserDetailHolder> {
+        return standardLevyService.getSlUsers()
+    }
+
+    @GetMapping("/getPlList")
+    @ResponseBody
+    fun getPlList(): List<UserDetailHolder> {
+        return standardLevyService.getPlList()
+    }
+
+    @GetMapping("/getSlLvTwoList")
+    @ResponseBody
+    fun getSlLvTwoList(): List<UserDetailHolder> {
+        return standardLevyService.getSlLvTwoList()
+    }
+
+    @GetMapping("/getSlLoggedIn")
+    @ResponseBody
+    fun getSlLoggedIn(): UserTypeHolder
+    {
+
+            return standardLevyService.getSlLoggedIn()
+
+    }
+
+    @GetMapping("/getRoleByUserId")
+    @ResponseBody
+    fun getRoleByUserId(): List<UserRoleHolder>?
+    {
+
+        return standardLevyService.getRoles()
+
+    }
+
+    @GetMapping("/getManufacturerStatus")
+    @ResponseBody
+    fun getManufacturerStatus(): BusinessTypeHolder {
+        return standardLevyService.getManufacturerStatus()
+    }
+
+
+    @GetMapping("/getCompanyEditedDetails")
+    fun getCompanyEditedDetails(
+        response: HttpServletResponse,
+        @RequestParam("manufactureId") manufactureId: Long
+    ): CompanyProfileEditEntity {
+        return standardLevyService.getCompanyEditedDetails(manufactureId)
+    }
+
+    @GetMapping("/getSiteVisitRemarks")
+    fun getSiteVisitRemarks(
+        response: HttpServletResponse,
+        @RequestParam("siteVisitId") siteVisitId: Long
+    ): List<StandardLevySiteVisitRemarks> {
+        return standardLevyService.getSiteVisitRemarks(siteVisitId)
+    }
+
+    @GetMapping("/getCompanyProcessId")
+    fun getCompanyProcessId(
+        response: HttpServletResponse,
+        @RequestParam("manufactureId") manufactureId: Long
+    ): CompanyProfileEditEntity {
+        return standardLevyService.getCompanyProcessId(manufactureId)
+    }
+
+
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getCompleteTasks")
+    @ResponseBody
+    fun getCompleteTasks(): List<CompleteTasksDetailHolder>
+    {
+
+            return standardLevyService.getCompleteTasks()
+
+
+    }
+
+    @GetMapping("/getApproveLevelOne")
+    @ResponseBody
+    fun getApproveLevelOne(): List<UserDetailHolder> {
+        return standardLevyService.getApproveLevelOne()
+    }
+
+    @GetMapping("/getApproveLevelTwo")
+    @ResponseBody
+    fun getApproveLevelTwo(): List<UserDetailHolder> {
+        return standardLevyService.getApproveLevelTwo()
+    }
+
+    @GetMapping("/getApproveLevelThree")
+    @ResponseBody
+    fun getApproveLevelThree(): List<UserDetailHolder> {
+        return standardLevyService.getApproveLevelThree()
+    }
+
+    @GetMapping("/getAssignLevelOne")
+    @ResponseBody
+    fun getAssignLevelOne(): List<UserDetailHolder> {
+        return standardLevyService.getAssignLevelOne()
+    }
+
+    @GetMapping("/getAssignLevelTwo")
+    @ResponseBody
+    fun getAssignLevelTwo(): List<UserDetailHolder> {
+        return standardLevyService.getAssignLevelTwo()
+    }
+
+    @GetMapping("/getAssignLevelThree")
+    @ResponseBody
+    fun getAssignLevelThree(): List<UserDetailHolder> {
+        return standardLevyService.getAssignLevelThree()
+    }
+
+    @GetMapping("/getSLNotificationStatus")
+    @ResponseBody
+    fun getSLNotificationStatus(): Boolean
+    {
+
+        return standardLevyService.getSLNotificationStatus()
+
+    }
+
+    @GetMapping("/getUserEmail")
+    @ResponseBody
+    fun getUserEmail(): String {
+        return commonDaoServices.getUserEmail(3082)
+    }
+
+    @GetMapping("/getSlNotificationFormDetails")
+    fun getSlNotificationFormDetails(
+        response: HttpServletResponse,
+        @RequestParam("manufactureId") manufactureId: Long
+    ): NotificationFormDetailsHolder {
+        return standardLevyService.getSlNotificationFormDetails(manufactureId)
+    }
+
+    @GetMapping("/getNotificationFormDetails")
+    @ResponseBody
+    fun getNotificationFormDetails(): NotificationFormDetailsHolder {
+        return standardLevyService.getNotificationFormDetails()
+    }
+
+    @GetMapping("/getCompanyDirectors")
+    @ResponseBody
+    fun getCompanyDirectors():List<DirectorListHolder>? {
+        return standardLevyService.getCompanyDirectors()
+    }
+
+    @GetMapping("/getBranchName")
+    @ResponseBody
+    fun getBranchName(): BranchNameHolder {
+        return standardLevyService.getBranchName()
+    }
+
+    @GetMapping("/getLevyPayments")
+    @ResponseBody
+    fun getLevyPayments(): MutableList<LevyPayments>
+    {
+        return standardLevyService.getLevyPayments()
+    }
+
+   // @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/suspendCompanyOperations")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun suspendCompanyOperations(
+        @RequestBody suspendCompanyDto: SuspendCompanyDto
+    ): ServerResponse
+    {
+        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+            companyId = suspendCompanyDto.id
+            reason = suspendCompanyDto.reason
+            dateOfSuspension = suspendCompanyDto.dateOfSuspension
+        }
+
+        return ServerResponse(HttpStatus.OK,"Details Submitted for Verification",standardLevyService.suspendCompanyOperations(standardLevyOperationsSuspension))
+
+    }
+
+    @PostMapping("/closeCompanyOperations")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun closeCompanyOperations(
+        @RequestBody closeCompanyDto: CloseCompanyDto
+    ): ServerResponse
+    {
+        val standardLevyOperationsClosure= StandardLevyOperationsClosure().apply {
+            companyId = closeCompanyDto.id
+            reason = closeCompanyDto.reason
+            dateOfClosure = closeCompanyDto.dateOfClosure
+        }
+
+        return ServerResponse(HttpStatus.OK,"Details Submitted for Verification",standardLevyService.closeCompanyOperations(standardLevyOperationsClosure))
+
+    }
+
+    @PostMapping("/uploadWindingUpReport")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadWindingUpReport(
+        @RequestParam("operationClosureId") operationClosureId: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val windingUpReport = standardLevyOperationsClosureRepository.findByIdOrNull(operationClosureId)?: throw Exception("Record Does Not Exist")
+
+        docFile.forEach { u ->
+            val upload = SlWindingUpReportUploadsEntity()
+            upload.closureID = windingUpReport.id
+            standardLevyService.uploadWindingUpReport(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "Report"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+    @GetMapping("/getWindingReportDocumentList")
+    fun getWindingReportDocumentList(
+        response: HttpServletResponse,
+        @RequestParam("closureID") closureID: Long
+    ): List<WindingUpReportListHolder> {
+        return standardLevyService.getWindingReportDocumentList(closureID)
+    }
+
+    //View Winding Up Report Document
+    @GetMapping("/view/windingUpReport")
+    fun viewWindingUpReport(
+        response: HttpServletResponse,
+        @RequestParam("closureID") closureID: Long
+    ) {
+
+        val fileUploaded = standardLevyService.findWindingReportFileBYId(closureID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
+
+
+
+    @PostMapping("/anonymous/standard/close")
+    fun clos(@RequestBody responseMessage: ResponseMessage) {
+        return standardLevyService.closeProcess(responseMessage.message)
+    }
+
+    //Delete A Task
+    @PostMapping("/anonymous/standard/closetask")
+    fun closeTask(@RequestBody responseMessage: ResponseMessage) {
+        return standardLevyService.closeTask(responseMessage.message)
+    }
+
+
 }

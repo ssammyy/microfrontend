@@ -3,6 +3,8 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentApprovalStatus
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.*
@@ -19,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
 import java.io.StringReader
-import java.nio.file.Files
-
 
 @Service
 class ConsignmentDocumentDaoService(
@@ -58,11 +58,6 @@ class ConsignmentDocumentDaoService(
         private val iCdExporterRepo: ICdExporterEntityRepository,
         private val upAndDownLoad: UpAndDownLoad
 ) {
-
-    fun cdUpload() {
-        upAndDownLoad.upload(applicationMapProperties.mapKeswsConfigIntegration)
-    }
-
     fun cdDownload() {
         val download = upAndDownLoad.download(applicationMapProperties.mapKeswsConfigIntegration)
 
@@ -84,6 +79,15 @@ class ConsignmentDocumentDaoService(
                 val docSummary =
                         consignmentDoc.documentSummaryResponse
                                 ?: throw ExpectedDataNotFound("Document Summary, does not exist")
+                var version = consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.versionNo?.toLongOrNull()
+                if (version == null) {
+                    version = daoServices.getVersionCount(ucr)
+                }
+                // Reject document with similar version
+                if (daoServices.countCdWithUcrNumberAndVersion(ucr, version) > 0) {
+                    throw ExpectedDataNotFound("Duplicate: Found document with the same version and ucr number")
+                }
+
                 daoServices.findCdWithUcrNumberLatest(ucr).let { CDDocumentDetails ->
 
                     when (CDDocumentDetails) {
@@ -91,7 +95,7 @@ class ConsignmentDocumentDaoService(
                             KotlinLogging.logger { }
                                     .info { ":::::::::::::::::::::CD With UCR = $ucr, Does Not exist::::::::::::::::::::::::::: " }
                             consignmentDoc.documentDetails?.consignmentDocDetails?.let { consignmentDocDetails ->
-                                mainCDFunction(
+                                val cdDoc = mainCDFunction(
                                         consignmentDocDetails,
                                         docSummary,
                                         byteArray,
@@ -100,11 +104,13 @@ class ConsignmentDocumentDaoService(
                                         commonDaoServices.findProcesses(appId),
                                         1
                                 )
+                                daoServices.updateCDStatus(cdDoc, ConsignmentDocumentStatus.NEW_CD)
                             }
                         }
                         else -> {
                             var cdDetails = CDDocumentDetails
                             KotlinLogging.logger { }.info { "::::::::::::::::::CD With UCR = $ucr, Exists::::::::::::::::::::: " }
+
                             consignmentDoc.documentDetails?.consignmentDocDetails?.let { consignmentDocDetails ->
                                 val cdCreated = mainCDFunction(
                                         consignmentDocDetails,
@@ -113,50 +119,44 @@ class ConsignmentDocumentDaoService(
                                         loggedInUser,
                                         map,
                                         commonDaoServices.findProcesses(appId),
-                                        this.daoServices.getVersionCount(ucr) + 1
+                                        version
                                 )
                                 //Update Old CD with Status 1
                                 with(cdDetails) {
                                     this?.oldCdStatus = map.activeStatus
-                                }
-                                cdDetails = daoServices.updateCdDetailsInDB(cdDetails!!, loggedInUser)
-
-                                //Remove Unnecessary data that wont be used
-                                with(cdDetails) {
-                                    //Todo: Check if the Importer or foregin details to pe checked
-                                    this?.portOfArrival = null
-                                    this?.clusterId = null
-                                    this?.freightStation = null
-                                    this?.cdStandard = null
-                                    this?.cdType = null
-                                    this?.uuid = null
-                                    this?.idfNumber = null
-                                    this?.cdImporter = null
-                                    this?.cdConsignee = null
-                                    this?.cdExporter = null
-                                    this?.cdConsignor = null
-                                    this?.cdTransport = null
-                                    this?.cdHeaderOne = null
-                                    this?.cdStandardsTwo = null
-                                    this?.cdPgaHeader = null
-                                    this?.cdHeaderTwo = null
-                                    this?.oldCdStatus = null
-                                    this?.version = null
-                                    this?.createdBy = null
-                                    this?.createdOn = null
-                                    this?.modifiedOn = null
-                                    this?.modifiedBy = null
                                     this?.approveRejectCdStatusType = null
-                                    this?.issuedDateTime = null
-                                    this?.summaryPageURL = null
                                 }
-
-                                val updatedCDDetails = daoServices.updateCdDetailsInDB(
-                                        commonDaoServices.updateDetails(
-                                                cdCreated,
-                                                cdDetails!!
-                                        ) as ConsignmentDocumentDetailsEntity, loggedInUser
-                                )
+                                cdDetails = daoServices.updateCDStatus(cdDetails!!, ConsignmentDocumentStatus.OLD_CD)
+                                // Clear process data on new CD
+                                cdCreated.diProcessStatus = 0
+                                cdCreated.diProcessStartedOn = null
+                                cdCreated.diProcessCompletedOn = null
+                                // Return consignment to original supervisor
+                                // Check if inspection officer is in the CFS did not change
+                                try {
+                                    cdCreated.assignedStatus = map.inactiveStatus
+                                    cdCreated.assigner = null
+                                    cdCreated.assignedRemarks = null
+                                    cdCreated.assignedInspectionOfficer = null
+                                    // Try reassign
+                                    CDDocumentDetails.assignedInspectionOfficer?.let {
+                                        val profile = commonDaoServices.findUserProfileByUserID(it, 1)
+                                        val cnt = daoServices.countCFSUserCodes(profile.id!!, cdCreated.freightStation?.id
+                                                ?: 0)
+                                        if (cnt > 0) {
+                                            cdCreated.assignedStatus = map.activeStatus
+                                            cdCreated.assigner = CDDocumentDetails.assigner
+                                            cdCreated.assignedRemarks = "Auto Re-assigned on amendment"
+                                            cdCreated.assignedInspectionOfficer = CDDocumentDetails.assignedInspectionOfficer
+                                        } else {
+                                            KotlinLogging.logger { }.info("Could not assign consignment to current officer, officer ${CDDocumentDetails.assignedInspectionOfficer?.userName} not in CFS ${CDDocumentDetails.freightStation?.cfsName}")
+                                        }
+                                    }
+                                } catch (ex: Exception) {
+                                    KotlinLogging.logger { }.info("Could not reasign consignment after amendment", ex)
+                                }
+                                // Update details
+                                daoServices.updateCDStatus(cdCreated, ConsignmentDocumentStatus.REVISED_CD)
                             }
                         }
                     }
@@ -260,7 +260,7 @@ class ConsignmentDocumentDaoService(
         var consignmentDocumentDetails = ConsignmentDocumentDetailsEntity()
         with(consignmentDocumentDetails) {
             uuid = commonDaoServices.generateUUIDString()
-            status = map.initStatus
+            status = ConsignmentApprovalStatus.NEW.code
             version = versionNumber
             createdBy = commonDaoServices.concatenateName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -283,7 +283,6 @@ class ConsignmentDocumentDaoService(
             map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         with(consignmentDocumentDetails) {
-            status = map.initStatus
             modifiedBy = commonDaoServices.concatenateName(user)
             modifiedOn = commonDaoServices.getTimestamp()
         }
@@ -304,7 +303,11 @@ class ConsignmentDocumentDaoService(
         if (consignmentDocumentDetails == null) {
             consignmentDocumentDetails = cdDetails
         }
-
+        // Update CFS station, reject if CFS is not known
+        val cdCfsEntity = consignmentDocDetails.cdTransport?.freightStation?.let { daoServices.findCfsCd(it) }
+                ?: throw ExpectedDataNotFound("Invalid CFS code found on the consignment: ${consignmentDocDetails.cdTransport?.freightStation}")
+        consignmentDocumentDetails.freightStation = cdCfsEntity
+        consignmentDocumentDetails = daoServices.updateCdDetailsInDB(consignmentDocumentDetails, null)
         //Add CD STANDARDS DETAILS
         consignmentDocDetails.cdStandard?.let {
             processesStages.process2?.let { it1 ->
@@ -425,7 +428,6 @@ class ConsignmentDocumentDaoService(
         consignmentDocDetails.cdProductDetails?.itemDetails
                 ?.forEach { itemDetails ->
                     val itemCountDetails = itemDetails.itemCount
-                    val chassisNumber: String?
                     //Add CD ITEMS DETAILS DETAILS
                     val cdProduct1Details = itemDetails.cdProduct1
                     val itemDetail = consignmentDocumentDetails?.let {
@@ -473,10 +475,6 @@ class ConsignmentDocumentDaoService(
                             )
                         }
                     }
-                    chassisNumber = nonStandards?.chassisNo
-
-                    //Add CD UPDATE DETAILS IF HAS COR OR NO COR DETAILS PROVIDED CHASSIS NUMBER IS NOT NULL DETAILS
-                    consignmentDocumentDetails?.let { daoServices.updateCdDetailsWIthCor(it, chassisNumber) }
 
                     //Add CD STANDARDS DETAILS
                     val cdItemNonCommodity = itemDetails.cdItemCommodity
@@ -495,6 +493,17 @@ class ConsignmentDocumentDaoService(
                     }
                     itemCurrier(itemCurrierDetails, map, user)
                 }
+
+        // Update Document Type Details and processing document
+        consignmentDocumentDetails?.let {
+            daoServices.updateCDDetailsWithCdType(consignmentDocDetails.cdStandardTwo?.localCocType ?: "L", it)
+        }
+        // Update consignment with foreign document reports or certificates
+        if ("F".equals(consignmentDocumentDetails?.cdStandardsTwo?.cocType ?: "L", true)) {
+            consignmentDocumentDetails?.let { cd ->
+                consignmentDocumentDetails = daoServices.updateCDDetailsWithForeignDocuments(cd)
+            }
+        }
 
         //Add CD APPROVAL HISTORY DETAILS DETAILS
         consignmentDocDetails.approvalDetails?.approvalHistory
@@ -539,20 +548,10 @@ class ConsignmentDocumentDaoService(
                             idfNumber = ucrNumber?.let { daoServices.findIdf(it)?.baseDocRefNo }
                             issuedDateTime = documentSummary.issuedDateTime
                             summaryPageURL = documentSummary.summaryPageURL
-
-                            val transportDetails =
-                                    fetchedCdDetails.cdTransport?.let { daoServices.findCdTransportDetails(it) }
-                            val cdCfsEntity = transportDetails?.freightStation?.let { daoServices.findCfsCd(it) }
-//                        val cdCfsAndUserCfs = cdCfsEntity?.id?.let { daoServices.findCfsUserFromCdCfs(it) }
-//            val sectionL3 = cdCfsAndUserCfs?.userCfs?.let { daoServices.findFreightStation(it) }
-//                        freightStation = cdCfsAndUserCfs?.userCfs
-                            freightStation = cdCfsEntity
-//                        val sectionsLevel2 = freightStation?.let { commonDaoServices.findSectionLevel2WIthId(it) }
-//                        clusterId = sectionsLevel2?.subSectionLevel1Id?.id
-//                        portOfArrival = sectionsLevel2?.sectionId?.id
                         }
 
-                        val updatedConsignmentDocumentDetails = updateConsignmentDocumentDetails(fetchedCdDetails, user, map)
+                        val updatedConsignmentDocumentDetails =
+                                updateConsignmentDocumentDetails(fetchedCdDetails, user, map)
                         commonDaoServices.convertClassToJson(updatedConsignmentDocumentDetails)?.let {
                             updatedConsignmentDocumentDetails.id?.let { it1 ->
                                 processesStages.process11?.let { it2 ->
@@ -756,6 +755,8 @@ class ConsignmentDocumentDaoService(
             purposeOfImport = cdStandardsTwoResponse.purposeOfImport
             cocType = cdStandardsTwoResponse.cocType
             localCocType = cdStandardsTwoResponse.localCocType
+            description = cdStandardsTwoResponse.localCocTypeDesc
+            cocRefNumber = cdStandardsTwoResponse.localCocRefNoType
             cdProcessingFeeId = cdStandardsTwoResponse.processingFeeResponse?.let {
                 processStage.process18?.let { it1 ->
                     standards2ProcessingFee(
@@ -781,29 +782,9 @@ class ConsignmentDocumentDaoService(
             createdOn = commonDaoServices.getTimestamp()
         }
         standardsTwoDetails = iCdStandardsTwoRepo.save(standardsTwoDetails)
-
+        //  Set standard two
+        consignmentDocumentDetailsEntity.cdStandardsTwo = standardsTwoDetails
         KotlinLogging.logger { }.info { "Standards Two Details saved ID = ${standardsTwoDetails.id}" }
-        with(consignmentDocumentDetailsEntity) {
-            cdStandardsTwo = standardsTwoDetails
-            val cocTypeDetails = standardsTwoDetails.cocType?.let { daoServices.findCocTypeWithTypeName(it) }
-            if (applicationMapProperties.mapDICocTypeForeignID == cocTypeDetails?.id) {
-                consignmentDocumentDetailsEntity.cdStandard?.ucrNumber?.let {
-                    daoServices.findCocByUcrNumber(it)?.let { cocsBakEntity ->
-                        daoServices.updateCDDetailsWithCOCData(cocsBakEntity, consignmentDocumentDetailsEntity)
-                    }
-                }
-            }
-            else if (applicationMapProperties.mapDICocTypeLocalID == cocTypeDetails?.id) {
-                val cocLocalDetails =
-                    standardsTwoDetails.localCocType?.let { daoServices.findLocalCocTypeWithCocTypeCode(it) }
-                cdCocLocalTypeId = cocLocalDetails?.id
-                cdType = cocLocalDetails?.cdType?.let { daoServices.findCdTypeDetails(it) }
-            }
-            else {
-                //Todo: If there is no value for for either local or Foregin (L/F)
-            }
-        }
-
 
         val consignmentDocumentDetails = updateConsignmentDocumentDetails(consignmentDocumentDetailsEntity, user, map)
         commonDaoServices.convertClassToJson(consignmentDocumentDetails)?.let {
@@ -811,7 +792,7 @@ class ConsignmentDocumentDaoService(
                 processStage.process9?.let { it2 -> daoServices.createCDTransactionLog(map, user, it1, it, it2) }
             }
         }
-
+        // Update extra details
         cdStandardsTwoResponse.thirdPartyDetails?.thirdPartyResponses
                 ?.forEach { thirdParties ->
                     val containerDetails = thirdPartyDetails(thirdParties, user, map, standardsTwoDetails)
@@ -1500,7 +1481,10 @@ class ConsignmentDocumentDaoService(
             createdOn = commonDaoServices.getTimestamp()
         }
         nonStandardEntity = iCdItemNonStandardEntityRepository.save(nonStandardEntity)
-
+        // Update chassis number
+        cdItemDetails.chassisNumber = cdItemNonStandardResponse.chassisNo
+        this.iCdItemsRepo.save(cdItemDetails)
+        //
         KotlinLogging.logger { }.info { "Non standard Item Details saved ID = ${nonStandardEntity.id}" }
 
         return nonStandardEntity

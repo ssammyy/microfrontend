@@ -1,13 +1,12 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.std.ISAdoptionJustificationRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.ISAdoptionProposalRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.ISStandardUploadsRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.ISUploadStandardRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -16,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import javax.servlet.http.HttpServletResponse
 
 @RestController
 //@CrossOrigin(origins = ["http://localhost:4200"])
@@ -26,7 +26,9 @@ class InternationalStandardController(
     private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
     private val isAdoptionJustificationRepository: ISAdoptionJustificationRepository,
     private val isStandardUploadsRepository: ISStandardUploadsRepository,
-    private val isUploadStandardRepository: ISUploadStandardRepository
+    private val isUploadStandardRepository: ISUploadStandardRepository,
+    private val sdisGazetteNoticeUploadsRepository: SDISGazetteNoticeUploadsRepository,
+    private val isGazetteNoticeRepository: ISGazetteNoticeRepository
     ) {
     //********************************************************** deployment endpoints **********************************************************
     @PostMapping("/deploy")
@@ -50,7 +52,6 @@ class InternationalStandardController(
     fun prepareAdoptionProposal(@RequestBody iSAdoptionProposal: ISAdoptionProposal): ServerResponse{
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposal))
     }
-
 
     @PostMapping("/file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -86,6 +87,8 @@ class InternationalStandardController(
 
 
 
+
+
     //********************************************************** get Stakeholders Tasks **********************************************************
     //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_READ')")
     @GetMapping("/getISProposals")
@@ -94,6 +97,27 @@ class InternationalStandardController(
         return internationalStandardService.getISProposals()
     }
     //********************************************************** Submit Comments **********************************************************
+   //view Proposal Document
+    @GetMapping("/view/proposal")
+    fun viewProposalFile(
+        response: HttpServletResponse,
+        @RequestParam("isDocumentId") isDocumentId: Long
+    ) {
+        val fileUploaded = internationalStandardService.findUploadedFileBYId(isDocumentId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
     //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY')")
     @PostMapping("/SubmitAPComments")
     @ResponseBody
@@ -130,6 +154,7 @@ class InternationalStandardController(
     fun prepareJustification(@RequestBody iSAdoptionJustification: ISAdoptionJustification): ServerResponse{
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",internationalStandardService.prepareJustification(iSAdoptionJustification))
     }
+    //
     @PostMapping("/js-file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadIJSFiles(
@@ -170,6 +195,26 @@ class InternationalStandardController(
         return internationalStandardService.getSPCSECTasks()
     }
 
+    //view IS Justification Document
+    @GetMapping("/view/justification")
+    fun viewJustificationFile(
+        response: HttpServletResponse,
+        @RequestParam("isJSDocumentId") isJSDocumentId: Long
+    ) {
+        val fileUploaded = internationalStandardService.findUploadedJSFileBYId(isJSDocumentId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
 
     //decision
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
@@ -211,6 +256,7 @@ class InternationalStandardController(
     {
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",internationalStandardService.uploadISStandard(iSUploadStandard))
     }
+
     @PostMapping("/std-file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadISFiles(
@@ -243,12 +289,35 @@ class InternationalStandardController(
         return sm
     }
 
+
+
     //********************************************************** get Head of HO SIC Tasks **********************************************************
     @PreAuthorize("hasAuthority('HO_SIC_SD_READ')")
     @GetMapping("/getHoSiCTasks")
     fun getHoSiCTasks():List<TaskDetails>
     {
         return internationalStandardService.getHoSiCTasks()
+    }
+
+    //view IS Justification Document
+    @GetMapping("/view/iStandard")
+    fun viewStandardFile(
+        response: HttpServletResponse,
+        @RequestParam("isStdDocumentId") isStdDocumentId: Long
+    ) {
+        val fileUploaded = internationalStandardService.findUploadedSTFileBYId(isStdDocumentId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
     }
 
     //********************************************************** process upload Gazette Notice **********************************************************
@@ -258,6 +327,60 @@ class InternationalStandardController(
     fun uploadGazetteNotice(@RequestBody iSGazetteNotice: ISGazetteNotice): ServerResponse
     {
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Gazette Notice",internationalStandardService.uploadGazetteNotice(iSGazetteNotice))
+    }
+
+    //upload gazzette notice document
+    @PostMapping("/gzt-file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadISGFiles(
+        @RequestParam("isStandardID") isStandardID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val isGazette = isGazetteNoticeRepository.findByIdOrNull(isStandardID)?: throw Exception("IS GAZETTE DOCUMENT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = SDISGazetteNoticeUploads()
+            with(upload) {
+                isGnDocumentId = isGazette.id
+
+            }
+            internationalStandardService.uploadISGFile(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "IS STANDARD"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+    //view IS Gazettement Document
+    @GetMapping("/view/gazettement")
+    fun viewStandardGZFile(
+        response: HttpServletResponse,
+        @RequestParam("isStandardID") isStandardID: Long
+    ) {
+        val fileUploaded = internationalStandardService.findUploadedSTGFileBYId(isStandardID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
     }
 
     //********************************************************** process upload Gazettement Date **********************************************************

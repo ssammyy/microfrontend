@@ -3,6 +3,7 @@ import {LocalDataSource} from "ng2-smart-table";
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import {ConsignmentStatusComponent} from "../../../core/shared/customs/consignment-status/consignment-status.component";
 import {DatePipe} from "@angular/common";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 
 @Component({
@@ -11,6 +12,7 @@ import {DatePipe} from "@angular/common";
     styleUrls: ['./currency-exchange-rates.component.css']
 })
 export class CurrencyExchangeRatesComponent implements OnInit {
+    activeTab = 0
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -47,7 +49,7 @@ export class CurrencyExchangeRatesComponent implements OnInit {
                 type: 'string'
             },
             applicableDate: {
-                title: 'Exchange Date',
+                title: 'Upload Date',
                 type: 'date',
                 valuePrepareFunction: (date) => {
                     if (date) {
@@ -67,18 +69,32 @@ export class CurrencyExchangeRatesComponent implements OnInit {
             perPage: 20
         }
     };
-    dataSet: LocalDataSource = new LocalDataSource();
 
-    constructor(private diService: DestinationInspectionService) {
+    dataSet: LocalDataSource = new LocalDataSource();
+    activeDataSet: LocalDataSource = new LocalDataSource();
+    form: FormGroup
+
+    constructor(private diService: DestinationInspectionService, private fb: FormBuilder) {
     }
 
     ngOnInit(): void {
-        this.loadConversionRates(null)
+        this.loadConversionRates(null, null, "OTHER")
+        this.form = this.fb.group({
+            rangeType: [null, Validators.required],
+            startDate: [],
+            endDate: []
+        })
     }
 
     filterByCurrency(event: any) {
-        const date = new DatePipe('en-US').transform(event.target.value, 'dd-MM-yyyy');
-        this.loadConversionRates(date)
+        const startDate = new DatePipe('en-US').transform(this.form.value.startDate, 'dd-MM-yyyy');
+        if (this.form.value.endDate) {
+            const endDate = new DatePipe('en-US').transform(this.form.value.endDate, 'dd-MM-yyyy');
+            this.loadConversionRates(startDate, endDate, this.form.value.rangeType)
+        } else {
+            this.loadConversionRates(startDate, null, this.form.value.rangeType)
+        }
+
     }
 
     uploadRates(event: any) {
@@ -89,7 +105,7 @@ export class CurrencyExchangeRatesComponent implements OnInit {
                     res => {
                         if (res.responseCode == "00") {
                             this.diService.showSuccess(res.message, () => {
-                                this.loadConversionRates(null)
+                                this.loadConversionRates(null, null, "OTHER")
                             })
                         } else {
                             this.diService.showError(res.message, null)
@@ -102,12 +118,31 @@ export class CurrencyExchangeRatesComponent implements OnInit {
         }
     }
 
-    loadConversionRates(date: string) {
-        this.diService.loadConversionRates(date ? date : "")
+    loadConversionRates(startDate: string, endDate: string, rangeType: string) {
+        let params = {
+            rangeType: rangeType,
+        }
+        switch (rangeType) {
+            case "RANGE":
+                params["endDate"] = endDate ? endDate : ""
+                params["date"] = startDate ? startDate : ""
+                break
+            case "SINGLE":
+                params["date"] = startDate ? startDate : ""
+                break
+            default:
+                params["date"] = startDate ? startDate : ""
+        }
+        this.diService.loadConversionRates(params)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {
-                        this.dataSet.load(res.data)
+                        if (res.data.today) {
+                            this.dataSet.load(res.data.today)
+                        }
+                        if (res.data.active) {
+                            this.activeDataSet.load(res.data.active)
+                        }
                     } else {
                         this.diService.showError(res.message, null)
                     }

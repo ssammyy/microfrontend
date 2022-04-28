@@ -1,8 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model
 
-import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.DestinationInspectionFeeEntity
-import org.kebs.app.kotlin.apollo.store.model.invoice.CurrencyMasterEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNotePaymentEntity
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
@@ -26,6 +24,26 @@ class CdDemandNoteEntity : Serializable {
     @Column(name = "IMPORTER_PIN")
     @Basic
     var importerPin: String? = null
+
+    @Column(name = "COURIER_PIN")
+    @Basic
+    var courierPin: String? = null
+
+    @Column(name = "SHIPPING_AGENT")
+    @Basic
+    var shippingAgent: String? = null
+
+    @Column(name = "ENTRY_NO")
+    @Basic
+    var entryNo: String? = null
+
+    @Column(name = "ENTRY_POINT")
+    @Basic
+    var entryPoint: String? = null
+
+    @Column(name = "COURIER")
+    @Basic
+    var courier: String? = null
 
     @Column(name = "SW_STATUS")
     @Basic
@@ -59,13 +77,25 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var rate: String? = null
 
-    @Column(name = "TOTAL_AMOUNT")
+    @Column(name = "CURRENCY")
+    @Basic
+    var currency: String? = null
+
+    @Column(name = "TOTAL_AMOUNT", precision = 17, scale = 2)
     @Basic
     var totalAmount: BigDecimal? = null
 
-    @Column(name = "AMOUNT_PAYABLE")
+    @Column(name = "AMOUNT_PAYABLE", precision = 17, scale = 2)
     @Basic
     var amountPayable: BigDecimal? = null
+
+    @Column(name = "AMOUNT_PAID", precision = 17, scale = 2)
+    @Basic
+    var amountPaid: BigDecimal? = null
+
+    @Column(name = "CURRENT_BALANCE", precision = 17, scale = 2)
+    @Basic
+    var currentBalance: BigDecimal? = null
 
     @Column(name = "ENTRY_ABL_NUMBER")
     @Basic
@@ -74,6 +104,10 @@ class CdDemandNoteEntity : Serializable {
     @Column(name = "PRO_IDE_NUMBER")
     @Basic
     var proIdeNumber: String? = null
+
+    @Column(name = "PAYMENT_DATE")
+    @Basic
+    var paymentDate: Timestamp? = null
 
     @Column(name = "DATE_GENERATED")
     @Basic
@@ -90,6 +124,55 @@ class CdDemandNoteEntity : Serializable {
     @Column(name = "CD_REF_NUMBER")
     @Basic
     var cdRefNo: String? = null
+
+    @Column(name = "DEMAND_NOTE_NUMBER")
+    @Basic
+    var demandNoteNumber: String? = null
+
+    @Column(name = "RECEIPT_NO")
+    @Basic
+    var receiptNo: String? = null
+
+    @Column(name = "PAYMENT_SOURCE")
+    @Basic
+    var paymentSource: String? = null
+
+
+    @Column(name = "RECEIPT_DATE")
+    @Basic
+    var receiptDate: Timestamp? = null
+
+    @Column(name = "GENERATED_BY")
+    @Basic
+    var generatedBy: String? = null
+
+    @Column(name = "PAYMENT_STATUS")
+    @Basic
+    var paymentStatus: Int? = 0
+
+    @Column(name = "PAYMENT_PURPOSE")
+    @Basic
+    var paymentPurpose: String? = null
+
+    @Column(name = "REVENUE_LINE")
+    @Basic
+    var revenueLine: String? = null
+
+    @Column(name = "BILL_ID")
+    @Basic
+    var billId: Long? = 0
+
+    @Column(name = "CD_ID")
+    @Basic
+    var cdId: Long? = 0
+
+    @Column(name = "POSTING_STATUS")
+    @Basic
+    var postingStatus: Int? = 0
+
+    @Column(name = "POSTING_REFERENCE")
+    @Basic
+    var postingReference: String? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -159,34 +242,9 @@ class CdDemandNoteEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @Column(name = "DEMAND_NOTE_NUMBER")
-    @Basic
-    var demandNoteNumber: String? = null
-
-    @Column(name = "RECEIPT_NO")
-    @Basic
-    var receiptNo: String? = null
-
-    @Column(name = "GENERATED_BY")
-    @Basic
-    var generatedBy: String? = null
-
-    @Column(name = "PAYMENT_STATUS")
-    @Basic
-    var paymentStatus: Int? = 0
-
-    @Column(name = "PAYMENT_PURPOSE")
-    @Basic
-    var paymentPurpose: String? = null
-
-    @Column(name = "BILL_ID")
-    @Basic
-    var billId: Long? = 0
-
-    @Column(name = "CD_ID")
-    @Basic
-    var cdId: Long? = 0
-
+    @OneToMany(mappedBy = "demandNoteId", fetch = FetchType.LAZY)
+    @OrderBy("id")
+    var payments: List<CdDemandNotePaymentEntity>? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -235,17 +293,17 @@ class CdDemandNoteEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-            id,
-            cdId,
-            generatedBy,
-            invoiceBatchNumberId,
-            paymentStatus,
-            receiptNo,
-            destinationFeeValue,
-            nameImporter,
-            address,
-            telephone,
-            product,
+                id,
+                cdId,
+                generatedBy,
+                invoiceBatchNumberId,
+                paymentStatus,
+                receiptNo,
+                destinationFeeValue,
+                nameImporter,
+                address,
+                telephone,
+                product,
                 cfvalue,
                 rate,
                 totalAmount,

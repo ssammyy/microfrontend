@@ -35,7 +35,7 @@
             <label for="category" class="waiver-form-label">Partner Country</label>
             <select id="category" class="waiver-form-input-master" formControlName="partnerCountry">
                 <option value="" disabled selected>Select Country</option>
-                <option *ngFor="let d of countries" [value]="d.name">{{d.name}}</option>
+                <option *ngFor="let d of countries" [value]="d.countryId">{{d.countryName}}</option>
             </select>
             <span class="error" *ngIf="(form.get('partnerCountry').touched && !form.get('partnerCountry').value) ||  form.get('partnerCountry').invalid">Please select country</span>
         </div>
@@ -65,13 +65,36 @@
             <input type="text" class="waiver-form-input-master" name="partnerFaxNumber"
                    data-name="partnerFaxNumber" id="partnerFaxNumber" formControlName="partnerFaxNumber">
         </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="billingContactName" class="waiver-form-label">Billing Contact Name</label>
+            <input type="text" class="waiver-form-input-master" name="billingContactName"
+                   data-name="billingContactName" id="billingContactName" formControlName="billingContactName">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="billingContactPhone" class="waiver-form-label">Billing Contact Phone</label>
+            <input type="tel" class="waiver-form-input-master" name="billingContactPhone"
+                   data-name="billingContactPhone" id="billingContactPhone" formControlName="billingContactPhone">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="billingContactEmail" class="waiver-form-label">Billing Contact Email</label>
+            <input type="email" class="waiver-form-input-master" name="billingContactName"
+                   data-name="billingContactEmail" id="billingContactEmail" formControlName="billingContactEmail">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="billingLimitId" class="waiver-form-label">Billing Limit Type</label>
+            <select id="billingLimitId" class="waiver-form-input-master" formControlName="billingLimitId">
+                <option value="" disabled selected>Select Billing Type</option>
+                <option *ngFor="let d of billingTypes" [value]="d.id">{{d.billType}}</option>
+            </select>
+            <span class="error" *ngIf="(form.get('billingLimitId').touched && !form.get('billingLimitId').value) ||  form.get('billingLimitId').invalid">Please select billing type</span>
+        </div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
         <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="addPartner()">
-            {{this.data ? "UPDATE" : "SAVE"}}
+            {{this.data.partner ? "UPDATE" : "SAVE"}}
             <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
         </button>
     </div>

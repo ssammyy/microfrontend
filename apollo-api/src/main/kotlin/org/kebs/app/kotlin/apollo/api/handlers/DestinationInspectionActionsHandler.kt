@@ -9,7 +9,9 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
+import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.function.ServerRequest
@@ -173,13 +175,11 @@ class DestinationInspectionActionsHandler(
                             //updating of Details in DB
                             val updatedCDDetails = daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
                             //Send Coi message To Single Window
-                            val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it,"coi") }
+                            val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it, "coi") }
                             if (localCoi != null) {
                                 daoServices.localCocCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
                                 daoServices.sendLocalCoi(localCoi)
-                                updatedCDDetails.cdStandard?.let { cdStd ->
-                                    daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDICdStatusTypeCOIGeneratedAndSendID)
-                                }
+                                daoServices.updateCDStatus(updatedCDDetails, ConsignmentDocumentStatus.COI_ISSUED)
                             }
                             consignmentAuditService.addHistoryRecord(updatedCDDetails.id, updatedCDDetails.ucrNumber, form.remarks, "KEBS_COI", "Send Certificate of Inspection")
                             response.data = ConsignmentDocumentDao.fromEntity(consignmentDocument)
@@ -202,14 +202,16 @@ class DestinationInspectionActionsHandler(
                 val form = req.body(ConsignmentUpdateRequest::class.java)
                 response = this.diBpmn.startApprovalConsignment(cdUuid, form)
             }
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.INVALID_CODE
+            response.message = ex.localizedMessage
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("PROCESS ERROR", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
-            response.message = ex.localizedMessage
+            response.message = "Request failed,please try again later"
         }
         return ServerResponse.ok().body(response)
     }
-
 
 
     fun assignPort(req: ServerRequest): ServerResponse {
@@ -298,9 +300,11 @@ class DestinationInspectionActionsHandler(
         }
         return ServerResponse.ok().body(response)
     }
+
     fun deleteSupervisorTasks(req: ServerRequest): ServerResponse {
         return ServerResponse.ok().body(this.diBpmn.deleteTask(req.pathVariable("taskId")))
     }
+
     fun supervisorTasks(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
                 .body(this.diBpmn.listUserTasks())
@@ -328,6 +332,9 @@ class DestinationInspectionActionsHandler(
                             .body(this.diBpmn.consignmentDocumentProcessUpdate(it, data, consignmentDocument))
                 }
             }
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = ex.localizedMessage
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("PROCESS UPDATE FAILED", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
@@ -375,12 +382,14 @@ class DestinationInspectionActionsHandler(
                         val data = mutableMapOf<String, Any?>()
                         data["remarks"] = form.remarks
                         data["reassign"] = form.reassign
+                        data["selfAssign"] = false
                         data["officerId"] = form.officerId
                         data["owner"] = officer.get().userName
                         data["supervisor"] = loggedInUser.userName
                         data["cdUuid"] = cdUuid
                         // Start BPM process
-                        this.diBpmn.startAssignmentProcesses(data, consignmentDocument);
+                        this.diBpmn.startAssignmentProcesses(data, consignmentDocument)
+                        Thread.sleep(1000)
                         // Prepare response
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Inspection officer assigned"

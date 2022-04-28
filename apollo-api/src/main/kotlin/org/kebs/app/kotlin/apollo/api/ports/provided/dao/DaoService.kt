@@ -32,6 +32,8 @@ import io.ktor.http.*
 import mu.KotlinLogging
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.jasypt.encryption.StringEncryptor
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraDetails
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.common.dto.AuditItemEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.CocsItemsEntityDto
@@ -223,6 +225,8 @@ class DaoService(
 
                 }?.call?.response?.call?.response
     }
+
+
 
     suspend fun getHttpResponseFromGetCall(
         auth: Boolean,

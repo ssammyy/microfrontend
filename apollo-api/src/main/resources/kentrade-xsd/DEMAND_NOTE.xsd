@@ -66,6 +66,14 @@
 								 xdb:SQLTYPE="DATE"></xsd:element>
 					<xsd:element name="TOTAL_AMOUNT" type="xsd:double" minOccurs="0" xdb:SQLName="TOTAL_AMOUNT"
 								 xdb:SQLTYPE="NUMBER"></xsd:element>
+					<xsd:element name="CURRENCY" minOccurs="0" xdb:SQLName="CURRENCY"
+								 xdb:SQLTYPE="VARCHAR2">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="20"></xsd:maxLength>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
 					<xsd:element name="DEMAND_NOTE_NUMBER" minOccurs="0" xdb:SQLName="DEMAND_NOTE_NUMBER"
 								 xdb:SQLTYPE="VARCHAR2">
 						<xsd:simpleType>

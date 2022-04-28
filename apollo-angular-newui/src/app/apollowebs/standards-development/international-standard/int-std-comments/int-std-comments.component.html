@@ -35,6 +35,7 @@
                                     <th class="knw">Link</th>
                                     <th class="knw">Action Name</th>
                                         <th>Comment</th>
+                                        <th class="referenceMaterial">Reference Material</th>
                                     <th class="action">Action</th>
                                     </tr>
                                     </thead>
@@ -45,6 +46,12 @@
                                         <td></td>
                                         <td>{{task.name}}</td>
                                         <td>{{task.taskData.comments}}</td>
+                                        <td *ngIf="task.name ==='Submit comments'"><button mat-raised-button type="button" data-toggle="modal"
+                                                                                                (click)="viewPdfFile( task.taskData.ID,'Proposal'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                            <i class="material-icons">visibility</i>
+
+                                        </button>
+                                        </td>
                                         <td><a  (click)="onOpenModal(task,'comment')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Make Comment</a></td>
                                     </tr>
                                     </tbody>

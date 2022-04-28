@@ -6,6 +6,7 @@ import {StdIntStandardService} from "../../../../core/store/data/std/std-int-sta
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-int-std-gazzette',
@@ -16,6 +17,7 @@ export class IntStdGazzetteComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   tasks: ISHosSicTASKS[] = [];
+  blob: Blob;
   public uploadedFiles:  FileList;
   public actionRequest: ISHosSicTASKS | undefined;
   public prepareGazetteNotice!: FormGroup;
@@ -63,6 +65,50 @@ export class IntStdGazzetteComponent implements OnInit {
         }
     );
   }
+  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.stdIntStandardService.viewStandardPDF(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error opening document`);
+          alert(error.message);
+        }
+    );
+  }
+    viewPdDfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.viewStandardDPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error opening document`);
+                alert(error.message);
+            }
+        );
+    }
   public onOpenModal(task: ISHosSicTASKS,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
@@ -91,6 +137,7 @@ export class IntStdGazzetteComponent implements OnInit {
           console.log(response);
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Gazette Notice Uploaded`);
+            this.onClickSaveSTD(response.body.savedRowID)
           this.prepareGazetteNotice.reset();
         },
         (error: HttpErrorResponse) => {
@@ -100,6 +147,37 @@ export class IntStdGazzetteComponent implements OnInit {
         }
     );
   }
+    onClickSaveSTD(isStandardID: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+
+            this.SpinnerService.show();
+            this.stdIntStandardService.uploadSDGZFile(isStandardID, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.showToasterSuccess(data.httpStatus, `Standard Uploaded`);
+                    this.uploadedFiles = null;
+                    console.log(data);
+                    this.dtTrigger.next();
+                    swal.fire({
+                        title: 'Standard Uploaded.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success ',
+                        },
+                        icon: 'success'
+                    });
+
+                },
+            );
+        }
+
+    }
   onUpdate(): void {
     this.SpinnerService.show();
     //console.log(this.prepareStandardFormGroup.value);

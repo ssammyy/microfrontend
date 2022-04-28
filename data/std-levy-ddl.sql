@@ -541,7 +541,7 @@ alter table CFG_BATCH_JOB_DETAILS
 alter table CFG_BATCH_JOB_DETAILS
     add JOB_URI varchar2(50 char) default '127.0.0.1' NOT NULL;
 
--- alter table APOLLO.STG_STANDARDS_LEVY_MANUFACTURER_ENTRY_NUMBER drop CONSTRAINT SYS_C0053165;
+-- alter table APOLLO.LOG_STG_PAYMENT_RECONCILIATION_DETAILS_TO_SAGE drop CONSTRAINT SYS_C0017229;
 
 
 create INDEX STG_STANDARDS_LEVY_MANUFACTURER_ENTRY_NUMBER_manufacturer_id_status_idx ON STG_STANDARDS_LEVY_MANUFACTURER_ENTRY_NUMBER (manufacturer_id, status);
@@ -1507,4 +1507,478 @@ where request_header_entry_No = 13091
 select *
 from log_sl2_payments_details
 where header_ID = 6;
+/
+
+create table DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL
+(
+    id               NUMBER PRIMARY KEY,
+    NAME_BUSINESS_PROPRIETOR         VARCHAR2(200),
+    COMMODITIES_MANUFACTURED             VARCHAR2(50),
+    CHIEF_EXECUTIVE_DIRECTORS        VARCHAR2(200),
+    CHIEF_EXECUTIVE_DIRECTORS_STATUS    VARCHAR2(200),
+    DATE_MANUFACTURE_COMMENCED         DATE,
+    TOTAL_VALUE_OF_MANUFACTURE DECIMAL,
+    DESCRIPTION      VARCHAR2(200),
+
+    STATUS      NUMBER(2),
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    ENTRY_NUMBER      VARCHAR2(350 CHAR),
+    MANUFACTURER_ID     NUMBER,
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+create sequence DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL_SEQ_trg
+    before
+        insert
+    on DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+/
+create  table DAT_KEBS_COMPANY_PROFILE_EDIT
+(
+    id                   number                                      not null primary key,
+    PHYSICAL_ADDRESS            varchar2(350 char)                          ,
+    POSTAL_ADDRESS           varchar2(350 char)                          ,
+    OWNERSHIP           varchar2(350 char)                          ,
+    CLOSURE_OF_OPERATIONS            varchar(350)            ,
+    var_field_1          VARCHAR2(350 CHAR),
+    var_field_2          VARCHAR2(350 CHAR),
+    var_field_3          VARCHAR2(350 CHAR),
+    var_field_4          VARCHAR2(350 CHAR),
+    var_field_5          VARCHAR2(350 CHAR),
+    var_field_6          VARCHAR2(350 CHAR),
+    var_field_7          VARCHAR2(350 CHAR),
+    var_field_8          VARCHAR2(350 CHAR),
+    var_field_9          VARCHAR2(350 CHAR),
+    var_field_10         VARCHAR2(350 CHAR),
+    created_by           VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on           TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by          VARCHAR2(100 CHAR),
+    modified_on          TIMESTAMP(6) WITH TIME ZONE,
+    update_by            VARCHAR2(100 CHAR),
+    updated_on           TIMESTAMP(6) WITH TIME ZONE,
+    delete_by            VARCHAR2(100 CHAR),
+    deleted_on           TIMESTAMP(6) WITH TIME ZONE,
+    VERSION              NUMBER
+)
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add MANUFACTURER_ID NUMBER;
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add EDIT_STATUS NUMBER;
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    modify EDIT_STATUS NUMBER DEFAULT '0' ;
+
+
+/
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    add REPORT_REMARKS VARCHAR2(350 CHAR);
+/
+drop table DAT_KEBS_COMPANY_PROFILE_EDIT
+
+/
+create sequence DAT_KEBS_COMPANY_PROFILE_EDIT_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_COMPANY_PROFILE_EDIT_trg
+    before
+        insert
+    on DAT_KEBS_COMPANY_PROFILE_EDIT
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_COMPANY_PROFILE_EDIT_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+    /
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    modify MANUFACTURER_ENTITY NUMBER(2);
+
+drop  index DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT_MANUFACTURER_ENTITY_STATUS_IDX;
+
+/
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    add REGISTRATION_NUMBER VARCHAR(350 char) ;
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add SL_PROCESS_STATUS NUMBER(2) DEFAULT '0' ;
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    modify ASSIGN_STATUS NUMBER DEFAULT '0' ;
+
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add SL_BPMN_PROCESS_INSTANCE VARCHAR(350 char) ;
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+add USER_TYPE NUMBER(2) ;
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+add ASSIGNED_TO NUMBER(2) DEFAULT  '0';
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+add TASK_TYPE NUMBER(2) DEFAULT '0';
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add ACCENT_TO NUMBER;
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add TASK_ID VARCHAR(350 char);
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add TASK_TYPE NUMBER(2);
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add NAME VARCHAR(350 char) ;
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add KRA_PIN VARCHAR(350 char) ;
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add REGISTRATION_NUMBER VARCHAR(350 char) ;
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add ENTRY_NUMBER VARCHAR(350 char) ;
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add STATUS NUMBER ;
+/
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    add APPROVAL_STATUS VARCHAR(350 char) ;
+/
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    add APPROVAL_STATUS_ID NUMBER ;
+/
+create  table DAT_KEBS_SITE_VISIT_REMARKS
+(
+    id                   number   not null primary key,
+    SITE_VISIT_ID            NUMBER,
+    REMARKS           varchar(350 char),
+    STATUS           varchar(350 char),
+    REMARK_BY            varchar(350),
+    ROLE          VARCHAR2(350 CHAR),
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_REMARK          VARCHAR2(350 CHAR)
+)
+/
+create sequence DAT_KEBS_SITE_VISIT_REMARKS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_SITE_VISIT_REMARKS_trg
+    before
+        insert
+    on DAT_KEBS_SITE_VISIT_REMARKS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_SITE_VISIT_REMARKS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+
+create TABLE LOG_KRA_ENTRY_NUMBER_REQUEST
+(
+    id               NUMBER                                      NOT NULL PRIMARY KEY,
+    request_hash             varchar2(350 char)                          NOT NULL UNIQUE,
+    request_transmission_date   varchar2(350 char)                          NOT NULL UNIQUE,
+    request_no_of_records      VARCHAR2(300),
+    request_entry_number         VARCHAR2(300),
+    request_kra_pin     VARCHAR2(300),
+    request_manufacturer_name     VARCHAR2(300),
+    request_registration_date     VARCHAR2(300),
+    request_manufacture_status     VARCHAR2(300),
+    response_status           VARCHAR2(300),
+    response_response_code      VARCHAR2(300),
+    response_message           VARCHAR2(300),
+    status           NUMBER(2, 0),
+    descriptions     VARCHAR2(3800 CHAR),
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    last_modified_by VARCHAR2(100 CHAR),
+    last_modified_on TIMESTAMP(6) WITH TIME ZONE,
+    update_by        VARCHAR2(100 CHAR),
+    updated_on       TIMESTAMP(6) WITH TIME ZONE,
+    delete_by        VARCHAR2(100 CHAR),
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE,
+    VERSION          NUMBER
+) TABLESPACE qaimssdb_data
+;
+
+
+create sequence LOG_KRA_ENTRY_NUMBER_REQUEST_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger LOG_KRA_ENTRY_NUMBER_REQUEST_SEQ_TRG
+    before
+        insert
+    on LOG_KRA_ENTRY_NUMBER_REQUEST
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select LOG_KRA_ENTRY_NUMBER_REQUEST_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+create TABLE DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST
+(
+    id               NUMBER       NOT NULL PRIMARY KEY,
+    request_hash             varchar2(350 char),
+    request_transmission_date   varchar2(350 char),
+    request_no_of_records      VARCHAR2(300),
+    request_entry_number         VARCHAR2(300),
+    request_kra_pin     VARCHAR2(300),
+    request_manufacturer_name     VARCHAR2(300),
+    request_registration_date     VARCHAR2(300),
+    request_manufacture_status     VARCHAR2(300),
+    response_status           VARCHAR2(300),
+    response_response_code      VARCHAR2(300),
+    response_message           VARCHAR2(300),
+    status           NUMBER(2, 0),
+    descriptions     VARCHAR2(3800 CHAR),
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    last_modified_by VARCHAR2(100 CHAR),
+    last_modified_on TIMESTAMP(6) WITH TIME ZONE,
+    update_by        VARCHAR2(100 CHAR),
+    updated_on       TIMESTAMP(6) WITH TIME ZONE,
+    delete_by        VARCHAR2(100 CHAR),
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE,
+    VERSION          NUMBER
+) TABLESPACE qaimssdb_data
+;
+
+
+create sequence DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST_SEQ_TRG
+    before
+        insert
+    on DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+create  table DAT_KEBS_NWA_REMARKS
+(
+    id                   number   not null primary key,
+    PROCESS_ID            VARCHAR2(350 CHAR),
+    REMARKS           varchar(350 char),
+    STATUS           varchar(350 char),
+    REMARK_BY            varchar(350),
+    ROLE          VARCHAR2(350 CHAR),
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_REMARK          VARCHAR2(350 CHAR)
+)
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add TYPE_OF_MANUFACTURE int default 0
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add TYPE_OF_MANUFACTURE int default 0
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add BUSINESS_LINE_NAME VARCHAR(350 CHAR);
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+add BUSINESS_NATURE_NAME VARCHAR(350 CHAR);
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+add REGION_NAME VARCHAR(350 CHAR);
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+add COUNTY_NAME VARCHAR(350 CHAR);
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+add TOWN_NAME VARCHAR(350 CHAR);
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add SUSPENSION_STATUS int default 0
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add CLOSURE_STATUS int default 0
+
+/
+create  table DAT_KEBS_SUSPENSION_OF_OPERATIONS
+(
+    id                   number   not null primary key,
+    COMPANY_ID            int,
+    REASON           varchar(350 char),
+    STATUS           int default 0,
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_SUSPENSION          VARCHAR2(350 CHAR)
+)
+/
+create sequence DAT_KEBS_SUSPENSION_OF_OPERATIONS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_SUSPENSION_OF_OPERATIONS_trg
+    before
+        insert
+    on DAT_KEBS_SUSPENSION_OF_OPERATIONS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_SUSPENSION_OF_OPERATIONS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+create  table DAT_KEBS_CLOSURE_OF_OPERATIONS
+(
+    id                   number   not null primary key,
+    COMPANY_ID            int,
+    REASON           varchar(350 char),
+    STATUS           int default 0,
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_CLOSURE          VARCHAR2(350 CHAR)
+)
+/
+create sequence DAT_KEBS_CLOSURE_OF_OPERATIONS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_CLOSURE_OF_OPERATIONS_trg
+    before
+        insert
+    on DAT_KEBS_CLOSURE_OF_OPERATIONS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_CLOSURE_OF_OPERATIONS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+create table DAT_KEBS_WU_REPORT_UPLOADS
+(
+    id               NUMBER                                      not null PRIMARY KEY,
+    FILEPATH         VARCHAR2(200),
+    DESCRIPTION      VARCHAR2(200),
+    NAME             VARCHAR2(350),
+    FILE_TYPE        VARCHAR2(200),
+    DOCUMENT_TYPE    VARCHAR2(200),
+    DOCUMENT         BLOB,
+    TRANSACTION_DATE DATE                                        not null,
+    CLOSURE_ID         NUMBER                                      not null REFERENCES DAT_KEBS_CLOSURE_OF_OPERATIONS (ID),
+    status           NUMBER(2)                   default 0       not null,
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_KEBS_WU_REPORT_UPLOADS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger DAT_KEBS_WU_REPORT_UPLOADS_trg
+    before
+        insert
+    on DAT_KEBS_WU_REPORT_UPLOADS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_WU_REPORT_UPLOADS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+
+
 

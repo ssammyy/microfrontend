@@ -27,6 +27,7 @@ class CommitteeService(
     private val committeePDRepository: CommitteePDRepository,
     private val committeePdDraftsRepository: CommitteePdDraftsRepository,
     private val committeeCDRepository: CommitteeCDRepository,
+    private val standardWorkPlanRepository: StandardWorkPlanRepository,
 
 
     ) {
@@ -92,6 +93,13 @@ class CommitteeService(
         println("TC-SEC has uploaded draft document")
 
     }
+
+    // get all work items that have been approved and have a workPlan attached
+
+    fun getApprovedNwis(): List<ApprovedNwi> {
+        return standardWorkPlanRepository.findAllApproved()
+    }
+
 
     fun preparePD(committeePD: CommitteePD): ProcessInstanceResponse {
         committeePD.nwiID?.let { variable.put("nwiID", it) }

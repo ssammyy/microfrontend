@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model.di
 
-import org.kebs.app.kotlin.apollo.store.model.di.CdStatusTypesEntity
 import java.io.Serializable
 import java.sql.Timestamp
 import java.util.*
@@ -19,7 +18,7 @@ class CdStatusTypesEntity : Serializable {
     @Basic
     var typeName: String? = null
 
-    @Column(name = "CATEGORY")
+    @Column(name = "CATEGORY", unique = true, nullable = false)
     @Basic
     var category: String? = null
 
@@ -34,6 +33,14 @@ class CdStatusTypesEntity : Serializable {
     @Column(name = "MODIFICATION_ALLOWED")
     @Basic
     var modificationAllowed: Int? = 1
+
+    @Column(name = "FINAL_STATUS", nullable = true)
+    @Basic
+    var finalStatus: Int? = 1
+
+    @Column(name = "APPLICATION_STATUS", nullable = false)
+    @Basic
+    var applicationStatus: Int? = 1
 
     @Column(name = "STATUS")
     @Basic
@@ -138,6 +145,7 @@ class CdStatusTypesEntity : Serializable {
                 description,
                 category,
                 status,
+                applicationStatus,
                 varField1,
                 varField2,
                 varField3,
