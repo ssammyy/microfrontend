@@ -460,6 +460,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sage.config.integration}")
     val mapSageConfigIntegration: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.sage.config.integration.qa}")
+    val mapSageConfigIntegrationQa: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kra.config.integration}")
     val mapKraConfigIntegration: Long = 0L
 
@@ -990,6 +993,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.page.records}")
     val pageRecords: Int = 1
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.suspended}")
+    val suspended: Long? = null
 
     /**
      * TODO: Why do we need this

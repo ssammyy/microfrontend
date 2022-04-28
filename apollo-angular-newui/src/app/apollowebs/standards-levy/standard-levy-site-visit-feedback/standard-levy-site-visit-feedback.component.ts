@@ -1,10 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Subject} from "rxjs";
-import {
-    ManufactureCompletedTask,
-    ManufacturePendingTask,
-    SiteVisitRemarks
-} from "../../../core/store/data/levy/levy.model";
+import {DocumentDTO, ManufacturePendingTask, SiteVisitRemarks} from "../../../core/store/data/levy/levy.model";
 import {LevyService} from "../../../core/store/data/levy/levy.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
@@ -27,7 +23,9 @@ export class StandardLevySiteVisitFeedbackComponent implements OnInit {
   manufacturePendingTasks: ManufacturePendingTask[] = [];
   public actionRequestPending: ManufacturePendingTask | undefined;
   blob: Blob;
-  isShowRemarksTab= true;
+    isShowRemarksTab= true;
+    isShowDocumentsTab= true;
+    documentDTOs: DocumentDTO[] = [];
    siteVisitRemarks: SiteVisitRemarks[] = [];
     loadingText: string;
   constructor(
@@ -63,6 +61,24 @@ export class StandardLevySiteVisitFeedbackComponent implements OnInit {
                 console.log(error.message);
             }
         );
+    }
+    toggleDisplayDocuments(visitId: number) {
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.levyService.getVisitDocumentList(visitId).subscribe(
+            (response: DocumentDTO[]) => {
+                this.documentDTOs = response;
+                this.SpinnerService.hide();
+                console.log(this.documentDTOs)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.isShowDocumentsTab = !this.isShowDocumentsTab;
+        this.isShowRemarksTab = true;
+
     }
 
 
@@ -114,6 +130,7 @@ export class StandardLevySiteVisitFeedbackComponent implements OnInit {
             }
         );
         this.isShowRemarksTab = !this.isShowRemarksTab;
+        this.isShowDocumentsTab= true;
     }
 
 }

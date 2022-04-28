@@ -1,5 +1,4 @@
 import {Timestamp} from "rxjs";
-import {KnwSecTaskData} from "../std/std.model";
 
 
 export class Levy {
@@ -144,6 +143,10 @@ export interface StdLevyScheduleSiteVisitDTO {
     createdBy: string;
     taskId: string;
 
+}
+
+export interface DocumentDTO{
+    id: number;
 }
 export interface EditCompanyDTO {
     postalAddress: string;

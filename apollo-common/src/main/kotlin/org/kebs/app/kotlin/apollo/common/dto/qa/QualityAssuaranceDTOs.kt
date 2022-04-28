@@ -5,7 +5,6 @@ import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import kotlin.reflect.jvm.internal.impl.builtins.StandardNames.FqNames.number
 
 
 data class ST10Dto(
@@ -155,6 +154,7 @@ data class NewBatchInvoiceDto(
 
 
 data class BatchInvoiceDto(
+    var sageInvoiceNumber: String? = null,
     var batchDetails: InvoiceDto? = null,
     var AllRelatedBatchInvoices: List<PermitInvoiceDto>? = null,
 )

@@ -4,7 +4,6 @@ import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -24,9 +23,17 @@ class QaBatchInvoiceEntity : Serializable {
     @Basic
     var invoiceNumber: String? = null
 
+    @Column(name = "SAGE_INVOICE_NUMBER")
+    @Basic
+    var sageInvoiceNumber: String? = null
+
     @Column(name = "TOTAL_AMOUNT")
     @Basic
     var totalAmount: BigDecimal? = null
+
+    @Column(name = "TOTAL_TAX_AMOUNT")
+    @Basic
+    var totalTaxAmount: BigDecimal? = null
 
     @Column(name = "CREATION_DATE")
     @Basic
@@ -132,52 +139,4 @@ class QaBatchInvoiceEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as QaBatchInvoiceEntity
-        return id == that.id && totalAmount == that.totalAmount
-                && userId == that.userId
-                && invoiceBatchNumberId == that.invoiceBatchNumberId
-                && plantId == that.plantId
-                && creationDate == that.creationDate
-                && paidDate == that.paidDate
-                && submittedStatus == that.submittedStatus
-                && paidStatus == that.paidStatus
-                && receiptNo == that.receiptNo && invoiceNumber == that.invoiceNumber && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(
-            id,
-            paidDate,
-            invoiceBatchNumberId,
-            creationDate,
-            plantId,
-            invoiceNumber,
-            submittedStatus,
-            userId,
-            paidStatus,
-            receiptNo,
-            totalAmount,
-            description,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
-        )
-    }
 }

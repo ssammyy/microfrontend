@@ -2895,4 +2895,59 @@ class QualityAssuranceController(
 
         return commonDaoServices.returnValues(result, map, sm)
     }
+
+
+    @PostMapping("/suspendPermit")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun suspendpermit(@RequestParam("permitID") permitID: Long, model: Model): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        var result: ServiceRequestsEntity?
+
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+        with(permit) {
+            applicationSuspensionStatus = map.activeStatus
+            permitStatus = applicationMapProperties.suspended
+//            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
+            userTaskId = applicationMapProperties.mapUserTaskNamePCM
+        }
+        val myResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+        result = myResults.first
+
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        sm.message = "Permit Suspended"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+    @PostMapping("/unsuspendPermit")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun unsuspendpermit(@RequestParam("permitID") permitID: Long, model: Model): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        var result: ServiceRequestsEntity?
+
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+        with(permit) {
+            applicationSuspensionStatus = map.activeStatus
+            permitStatus = applicationMapProperties.mapQaStatusPermitAwarded
+//            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
+            userTaskId = applicationMapProperties.mapUserTaskNamePCM
+        }
+        val myResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+        result = myResults.first
+
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        sm.message = "Permit Suspended"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
 }

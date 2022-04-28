@@ -5,7 +5,6 @@ import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDate
-import java.util.*
 
 data class StdLevyNotificationFormDTO(
     var NameAndBusinessOfProprietors: String? = null,
@@ -169,5 +168,44 @@ class SiteVisitReportDecision(
 
 ) {
 }
+
+data class SiteVisitDocDTO(
+    var siteVisitDocList: List<SLFilesListDto>? = null
+)
+
+data class SLFilesListDto(
+    var id: Long? = null,
+    var name: String? = null,
+    var fileType: String? = null,
+    var documentType: String? = null,
+    var document: ByteArray? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SLFilesListDto
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (fileType != other.fileType) return false
+        if (documentType != other.documentType) return false
+        if (document != null) {
+            if (other.document == null) return false
+            if (!document.contentEquals(other.document)) return false
+        } else if (other.document != null) return false
+
+        return true
+    }
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (fileType?.hashCode() ?: 0)
+        result = 31 * result + (documentType?.hashCode() ?: 0)
+        result = 31 * result + (document?.contentHashCode() ?: 0)
+        return result
+    }
+}
+
 
 

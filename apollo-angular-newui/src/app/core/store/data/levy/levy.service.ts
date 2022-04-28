@@ -1,27 +1,31 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {
     ApproveVisitTask,
-    AssignCompanyTaskDTO, Branch,
+    AssignCompanyTaskDTO,
+    Branch,
     CompanyModel,
-    ConfirmEditCompanyDTO, DirectorsList,
+    ConfirmEditCompanyDTO,
+    DirectorsList,
+    DocumentDTO,
     EditCompanyDTO,
     ManufactureCompletedTask,
-    ManufactureCompleteTask,
     ManufactureDetailList,
-    ManufactureInfo,
     ManufacturePenalty,
     ManufacturePendingTask,
-    ManufacturingStatus, NotificationStatus,
+    ManufacturingStatus,
+    NotificationStatus,
     PaidLevy,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo,
-    SiteVisitFeedBack, SiteVisitRemarks,
+    SiteVisitFeedBack,
+    SiteVisitRemarks,
     SiteVisitReport,
-    SLevySL1, SlModel,
+    SLevySL1,
+    SlModel,
     StdLevyScheduleSiteVisitDTO,
     UserEntityRoles,
     UsersEntityList,
@@ -108,6 +112,9 @@ export class LevyService {
             })
         );
     }
+
+
+
     public editCompany(editCompanyDTO: EditCompanyDTO): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDIT_COMPANY);
         const params = new HttpParams();
@@ -287,6 +294,12 @@ export class LevyService {
     //     const params = new HttpParams();
     //     return this.http.get<EditCompanyDTO>(url, {params}).pipe();
     // }
+
+    public getVisitDocumentList(visitId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_VISIT_REPORT_DOCUMENT_LIST);
+        const params = new HttpParams().set('visitId', visitId);
+        return this.http.get<DocumentDTO[]>(url, {params}).pipe();
+    }
 
     public getCompanyEditedDetails(manufactureId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_EDITED_COMPANY_DATA);

@@ -504,8 +504,8 @@ class AngularRoutes {
                     }
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
-                        POST("/batch-invoice-add", handler::invoiceBatchAddMigration)
-                        PUT("/batch-invoice-remove", handler::invoiceBatchRemoveMigration)
+                        POST("/batch-invoice-add", handler::notSupported)
+                        PUT("/batch-invoice-remove", handler::notSupported)
                     }
                 }
                 "/view".nest {

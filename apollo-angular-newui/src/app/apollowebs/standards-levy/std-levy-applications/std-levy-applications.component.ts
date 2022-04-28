@@ -92,6 +92,7 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowSLForm= true;
   }
 
+
   toggleDisplayEditedForm(manufactureId: number) {
     this.loadingText = "Loading ...."
     this.SpinnerService.show();

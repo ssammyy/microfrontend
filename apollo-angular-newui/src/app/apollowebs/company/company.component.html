@@ -3,16 +3,21 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header card-header-primary card-header-icon">
+                    <div class="col-12 card-header card-header-primary card-header-icon row ">
                         <div class="card-icon">
                             <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title">Review Company Details</h4>
+                        <h4 class="card-title col-6">Review Company Details</h4>
+                        <div class="col-4">
+                            <button class="btn btn-sm btn-warning float-right" data-toggle="modal" data-target="#suspendModal">Suspend Operations</button>
+                            <button class="btn btn-sm btn-primary float-right" style="height: 46px;" data-toggle="modal" data-target="#closeModal">Close Operations</button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="toolbar">
 
                         </div>
+
                         <div class="material-datatables">
                             <section class="wizard-section">
                                 <div class="row no-gutters">
@@ -445,6 +450,85 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="suspendModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Declare Suspension of Operations</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+<hr>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="col-12 row">
+                    <label>Name of Company:</label><span></span>
+                </div>
+                <div class="col-12 row">
+                    <label>Registration Number:</label><span></span>
+                </div>
+                <div class="col-12 row">
+                    <label>KRA Pin:</label><span></span>
+                </div>
+                <div class="col-12 row">
+                    <label>Director's ID Number:</label><span></span>
+                </div>
+                <input class="form-control two-column-input"
+                       formControlName="companyId"
+                       name="companyId"
+                       placeholder="Company ID"
+                        type="text">
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal" id="closeModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Declare Closure of Operations</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+<hr>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="col-12 row">
+                    <label>Name of Company:</label><span></span>
+                </div>
+                <div class="col-12 row">
+                    <label>Registration Number:</label><span></span>
+                </div>
+                <div class="col-12 row">
+                    <label>KRA Pin:</label><span></span>
+                </div>
+                <div class="col-12 row">
+                    <label>Director's ID Number:</label><span></span>
+                </div>
+                <input class="form-control two-column-input"
+                       formControlName="companyId"
+                       name="companyId"
+                       placeholder="Company ID"
+                       type="text">
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
         </div>
     </div>
 </div>

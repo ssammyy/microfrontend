@@ -1299,7 +1299,7 @@
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="reportNotification1ExampleModalLabel">Approve / Reject Report</h5>
+                                    <h3 class="modal-title" id="reportNotification1ExampleModalLabel">Approve / Reject Report</h3>
                                     <button type="button" class="close" #closeModalReportOne data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -1582,6 +1582,7 @@
                                                 <button (click)=toggleDisplayApprovalForm1()  class="btn btn-success btn-sm">Approve</button>
                                                 <button (click)=toggleDisplayRejectForm1()  class="btn btn-danger btn-sm">Reject</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
+                                                <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
 
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowRemarksTab">
@@ -1687,6 +1688,24 @@
 
 
                                             </div>
+                                            <div class="container col-md-12" [hidden]="isShowDocumentsTab">
+                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>View Attached Document(s)</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <div class="col-12" *ngFor="let documentDTO of documentDTOs">
+                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                            (click)="viewPdfFile( documentDTO.id,'VisitReport'+documentDTO.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                                        <i class="material-icons">visibility</i>
+
+                                                    </button>
+                                                </div>
+                                            </div>
                                             <div class="list-group list-group-flush">
                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                     <div class="d-flex w-100 justify-content-between">
@@ -1750,22 +1769,7 @@
 
                                                     <p class="text-sm mb-0">{{actionRequestPending?.taskData?.actionTaken}}.</p>
                                                 </a>
-                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                    <div class="d-flex w-100 justify-content-between">
-                                                        <div>
-                                                            <div class="d-flex w-100 align-items-center">
-                                                                <h5 class="mb-1" style="color: #0d0505"><b>View Attached Document</b></h5>
-                                                            </div>
-                                                        </div>
 
-                                                    </div>
-
-                                                    <button mat-raised-button type="button" data-toggle="modal"
-                                                            (click)="viewPdfFile( actionRequestPending?.taskData?.visitID,'VisitReport'+actionRequestPending?.taskData?.visitID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
-                                                        <i class="material-icons">visibility</i>
-
-                                                    </button>
-                                                </a>
 
                                             </div>
 
@@ -2068,6 +2072,7 @@
                                                 <button (click)=toggleDisplayApprovalForm1()  class="btn btn-success btn-sm">Approve</button>
                                                 <button (click)=toggleDisplayRejectForm1()  class="btn btn-danger btn-sm">Reject</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
+                                                <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
 
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowRemarksTab">
@@ -2156,6 +2161,24 @@
 
 
                                             </div>
+                                            <div class="container col-md-12" [hidden]="isShowDocumentsTab">
+                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>View Attached Document(s)</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <div class="col-12" *ngFor="let documentDTO of documentDTOs">
+                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                            (click)="viewPdfFile( documentDTO.id,'VisitReport'+documentDTO.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                                        <i class="material-icons">visibility</i>
+
+                                                    </button>
+                                                </div>
+                                            </div>
                                             <div class="list-group list-group-flush">
                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                     <div class="d-flex w-100 justify-content-between">
@@ -2219,22 +2242,7 @@
 
                                                     <p class="text-sm mb-0">{{actionRequestPending?.taskData?.actionTaken}}.</p>
                                                 </a>
-                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                    <div class="d-flex w-100 justify-content-between">
-                                                        <div>
-                                                            <div class="d-flex w-100 align-items-center">
-                                                                <h5 class="mb-1" style="color: #0d0505"><b>View Attached Document</b></h5>
-                                                            </div>
-                                                        </div>
 
-                                                    </div>
-
-                                                    <button mat-raised-button type="button" data-toggle="modal"
-                                                            (click)="viewPdfFile( actionRequestPending?.taskData?.visitID,'VisitReport'+actionRequestPending?.taskData?.visitID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
-                                                        <i class="material-icons">visibility</i>
-
-                                                    </button>
-                                                </a>
 
                                             </div>
 
@@ -2532,6 +2540,7 @@
                                                 <button (click)=toggleDisplayApprovalForm2()  class="btn btn-success btn-sm">Approve</button>
                                                 <button (click)=toggleDisplayRejectForm2()  class="btn btn-danger btn-sm">Reject</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
+                                                <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
 
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowRemarksTab">
@@ -2618,6 +2627,24 @@
                                                 </form>
 
                                             </div>
+                                            <div class="container col-md-12" [hidden]="isShowDocumentsTab">
+                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>View Attached Document(s)</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <div class="col-12" *ngFor="let documentDTO of documentDTOs">
+                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                            (click)="viewPdfFile( documentDTO.id,'VisitReport'+documentDTO.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                                        <i class="material-icons">visibility</i>
+
+                                                    </button>
+                                                </div>
+                                            </div>
                                             <div class="list-group list-group-flush">
                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                     <div class="d-flex w-100 justify-content-between">
@@ -2681,22 +2708,7 @@
 
                                                     <p class="text-sm mb-0">{{actionRequestPending?.taskData?.actionTaken}}.</p>
                                                 </a>
-                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                    <div class="d-flex w-100 justify-content-between">
-                                                        <div>
-                                                            <div class="d-flex w-100 align-items-center">
-                                                                <h5 class="mb-1" style="color: #0d0505"><b>View Attached Document</b></h5>
-                                                            </div>
-                                                        </div>
 
-                                                    </div>
-
-                                                    <button mat-raised-button type="button" data-toggle="modal"
-                                                            (click)="viewPdfFile( actionRequestPending?.taskData?.visitID,'VisitReport'+actionRequestPending?.taskData?.visitID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
-                                                        <i class="material-icons">visibility</i>
-
-                                                    </button>
-                                                </a>
 
                                             </div>
 
@@ -3001,6 +3013,7 @@
                                             <div>
                                                 <button (click)=toggleDisplaySaveFeedBackForm()  class="btn btn-success btn-sm">Draft Report</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
+                                                <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
 
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowRemarksTab">
@@ -3047,6 +3060,24 @@
                                                         </div>
                                                     </div>
                                                 </form>
+                                            </div>
+                                            <div class="container col-md-12" [hidden]="isShowDocumentsTab">
+                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>View Attached Document(s)</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <div class="col-12" *ngFor="let documentDTO of documentDTOs">
+                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                            (click)="viewPdfFile( documentDTO.id,'VisitReport'+documentDTO.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                                        <i class="material-icons">visibility</i>
+
+                                                    </button>
+                                                </div>
                                             </div>
                                             <div class="row col-12">
                                                 <div class="list-group list-group-flush">
@@ -3112,22 +3143,7 @@
                                                         <p class="text-sm mb-0">{{actionRequestPending?.taskData?.makeRemarks}}.</p>
                                                     </a>
 
-                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                        <div class="d-flex w-100 justify-content-between">
-                                                            <div>
-                                                                <div class="d-flex w-100 align-items-center">
-                                                                    <h5 class="mb-1" style="color: #0d0505"><b>View Attached Document</b></h5>
-                                                                </div>
-                                                            </div>
 
-                                                        </div>
-
-                                                        <button mat-raised-button type="button" data-toggle="modal"
-                                                                (click)="viewPdfFile( actionRequestPending?.taskData?.visitID,'VisitReport'+actionRequestPending?.taskData?.visitID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
-                                                            <i class="material-icons">visibility</i>
-
-                                                        </button>
-                                                    </a>
 
                                                 </div>
                                             </div>

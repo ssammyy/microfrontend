@@ -9,15 +9,15 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.StandardLevyService
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.CompanySl1DTO
 import org.kebs.app.kotlin.apollo.common.dto.ManufactureSubmitEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.common.dto.std.ResponseMessage
+import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
-import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -28,18 +28,13 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.context.SecurityContext
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.servlet.function.ServerRequest
-import org.springframework.web.servlet.function.paramOrNull
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
-import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
@@ -839,12 +834,23 @@ class StdLevyController(
         return standardLevyService.getSiteReport()
     }
 
+    @GetMapping("/getVisitDocumentList")
+    fun getVisitDocumentList(
+        response: HttpServletResponse,
+        @RequestParam("visitId") visitId: Long
+    ): List<SiteVisitListHolder> {
+        return standardLevyService.getVisitDocumentList(visitId)
+    }
+
+
+
     //View Site Visit Report Document
     @GetMapping("/view/siteVisitReport")
     fun viewPDFile(
         response: HttpServletResponse,
         @RequestParam("visitID") visitID: Long
     ) {
+
         val fileUploaded = standardLevyService.findUploadedReportFileBYId(visitID)
         val fileDoc = commonDaoServices.mapClass(fileUploaded)
         response.contentType = "application/pdf"

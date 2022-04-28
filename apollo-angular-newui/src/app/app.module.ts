@@ -311,8 +311,7 @@ import {NwaTasksComponent} from './apollowebs/standards-development/workshop-agr
 import {GenerateAuctionKraReportComponent} from "./apollowebs/di/auction/generate-auction-kra-report/generate-auction-kra-report.component";
 import {UpdateComplaintTaskComponent} from "./apollowebs/pvoc/complaints/update-complaint-task/update-complaint-task.component";
 import {UpdateExemptionTaskComponent} from "./apollowebs/pvoc/exemptions/update-exemption-task/update-exemption-task.component";
-
-// import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
+import {AdminBusinessManagementComponent} from './apollowebs/admin/admin-business-management/admin-business-management.component';
 
 
 @NgModule({
@@ -655,7 +654,8 @@ import {UpdateExemptionTaskComponent} from "./apollowebs/pvoc/exemptions/update-
         AddAttachmentComponent,
         NwaTasksComponent,
         UpdateComplaintTaskComponent,
-        UpdateExemptionTaskComponent
+        UpdateExemptionTaskComponent,
+        AdminBusinessManagementComponent
     ],
     entryComponents: [],
     providers: [DatePipe,

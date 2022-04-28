@@ -40,7 +40,10 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.*
-import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.model.std.DirectorListHolder
+import org.kebs.app.kotlin.apollo.store.model.std.ManufactureListHolder
+import org.kebs.app.kotlin.apollo.store.model.std.UserRoleHolder
+import org.kebs.app.kotlin.apollo.store.model.std.UserTypeHolder
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
@@ -342,6 +345,13 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getManufactureId(@Param("id") id: Long?): Long?
+
+    @Query(
+        value = "SELECT p.ID as id,p.ENTRY_NUMBER as EntryNumber,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,c.ID as companyId,c.NAME as companyName,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName  FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID ORDER BY p.ID DESC",
+        nativeQuery = true
+    )
+    fun getLevyPayments(): MutableList<ManufactureListHolder>
+
 
 
 

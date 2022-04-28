@@ -20,9 +20,17 @@ class InvoiceBatchDetailsEntity : Serializable {
     @Basic
     var batchNumber: String? = null
 
+    @Column(name = "SAGE_INVOICE_NUMBER")
+    @Basic
+    var sageInvoiceNumber: String? = null
+
     @Column(name = "TOTAL_AMOUNT")
     @Basic
     var totalAmount: BigDecimal? = null
+
+    @Column(name = "TOTAL_TAX_AMOUNT")
+    @Basic
+    var totalTaxAmount: BigDecimal? = null
 
     @Column(name = "DESCRIPTION")
     @Basic
