@@ -43,13 +43,14 @@ class SendEntryNumberToKraServices(
     private val daoService: DaoService
 ) {
     fun postEntryNumberTransactionToKra(companyProfileID: Long, user: String, map: ServiceMapsEntity) {
-        val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapKraConfigIntegration)
+        val config =
+            commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapKraConfigIntegration)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL FOR KRA")
         val companyProfile = commonDaoServices.findCompanyProfileWithID(companyProfileID)
         runBlocking {
 
             val numberRecords = "1"
-            val recordNumber= 1
+            val recordNumber = 1
 
             var transDate = commonDaoServices.getTimestamp()
             val headerBody = KraHeader().apply {
@@ -58,7 +59,7 @@ class SendEntryNumberToKraServices(
                 loginId = jasyptStringEncryptor.decrypt(config.username)
                 password = jasyptStringEncryptor.decrypt(config.password)
                 noOfRecords = numberRecords
-                val join = numberRecords+globalVar
+                val join = numberRecords + globalVar
                 hash = kraDataEncryption(join)
                 //   KotlinLogging.logger { }.info { "Input :  = $join" }
             }
@@ -71,7 +72,7 @@ class SendEntryNumberToKraServices(
                 status = if (companyProfile.manufactureStatus == 1) "Active" else "Inactive"
             }
 
-            val list= mutableListOf<KraDetails>()
+            val list = mutableListOf<KraDetails>()
             list.add(detailBody)
 
             val rootRequest = KraRequest().apply {
@@ -82,7 +83,7 @@ class SendEntryNumberToKraServices(
             val requestBody = JSONObject()
             requestBody["REQUEST"] = rootRequest
 
-            var transactionsRequest = KraEntryNumberRequestLogEntity().apply  {
+            var transactionsRequest = KraEntryNumberRequestLogEntity().apply {
                 requestHash = headerBody.hash
                 requestTransmissionDate = globalVar
                 requestNoOfRecords = headerBody.noOfRecords
@@ -113,22 +114,22 @@ class SendEntryNumberToKraServices(
             val gson = Gson()
             val response: Triple<WorkflowTransactionsEntity, KraEntryNumberResponse?, HttpResponse?> =
                 daoService.processResponses(resp, log, configUrl, config)
-           // KotlinLogging.logger { }.trace { "Response ${response.second?.message}" }
-            KotlinLogging.logger {  }.info { "Request response: ${gson.toJson(response.second)}" }
-             if (response.second?.response?.responseCode=="90000"){
+            // KotlinLogging.logger { }.trace { "Response ${response.second?.message}" }
+            KotlinLogging.logger { }.info { "Request response: ${gson.toJson(response.second)}" }
+            if (response.second?.response?.responseCode == "90000") {
 
-            transactionsRequest.apply {
-                responseStatus = response.second?.response?.status
-                responseResponseCode = response.second?.response?.responseCode
-                responseMessage = response.second?.response?.message
-                status = 1
-                updateBy = user
-                updatedOn = commonDaoServices.getTimestamp()
-            }
-            iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+                transactionsRequest.apply {
+                    responseStatus = response.second?.response?.status
+                    responseResponseCode = response.second?.response?.responseCode
+                    responseMessage = response.second?.response?.message
+                    status = 1
+                    updateBy = user
+                    updatedOn = commonDaoServices.getTimestamp()
+                }
+                iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
 
 
-                       }else{
+            } else {
                 transactionsRequest.apply {
                     responseStatus = response.second?.response?.status
                     responseResponseCode = response.second?.response?.responseCode
@@ -140,21 +141,16 @@ class SendEntryNumberToKraServices(
             }
 
 
-
-
             // KotlinLogging.logger {  }.info { "Response received: $response" }
         }
     }
-
-
-
 
 
     fun kraDataEncryption(hashedData: String): String {
         fun encryptThisString(input: String): String {
             return try {
                 val md = MessageDigest.getInstance("SHA-256")
-                val  messageDigest = md.digest(input.toByteArray(StandardCharsets.UTF_8))
+                val messageDigest = md.digest(input.toByteArray(StandardCharsets.UTF_8))
                 //val messageDigest = md.digest(input.toByteArray())
                 val no = BigInteger(1, messageDigest)
                 var hashtext = no.toString(16)
@@ -175,13 +171,13 @@ class SendEntryNumberToKraServices(
         val config =
             commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapSageConfigIntegrationQa)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL FOR SAGE")
-        KotlinLogging.logger {  }.info { "Request Body url: ${configUrl}" }
-      //  val companyProfile = commonDaoServices.findCompanyProfileWithID(companyProfileID)
+        KotlinLogging.logger { }.info { "Request Body url: ${configUrl}" }
+        //  val companyProfile = commonDaoServices.findCompanyProfileWithID(companyProfileID)
         runBlocking {
 
             val numberRecords = "BSKAccount"
             val recordNumber = 1
-            val invoiceAmnt =11160
+            val invoiceAmnt = 11160
 
 
             var transDate = commonDaoServices.getTimestamp()
@@ -224,17 +220,14 @@ class SendEntryNumberToKraServices(
             }
 
 
-            var requestBd= JSONObject()
+            var requestBd = JSONObject()
             requestBd["header"] = headerBody
             requestBd["request"] = requestBody
 
 
 
 
-            requestBd["details"]=list
-
-
-
+            requestBd["details"] = list
 
 
             // val requestBody = JSONObject()
@@ -261,7 +254,6 @@ class SendEntryNumberToKraServices(
             val log = daoService.createTransactionLog(0, "${rootRequest.request?.TaxPINNo}_1")
 
 
-
             //val log = daoService.createTransactionLog(0, "${companyProfile.entryNumber}_1")
             val resp = daoService.getHttpResponseFromPostCall(
                 false,
@@ -285,8 +277,7 @@ class SendEntryNumberToKraServices(
             val response: Triple<WorkflowTransactionsEntity, SageQaPostingResponseResult?, HttpResponse?> =
                 daoService.processResponses(resp, log, configUrl, config)
 
-            KotlinLogging.logger {  }.info { "Request respones: ${gson.toJson(response.second)}" }
-
+            KotlinLogging.logger { }.info { "Request respones: ${gson.toJson(response.second)}" }
 
 
 //            val response: Triple<WorkflowTransactionsEntity, KraResponse?, HttpResponse?> = daoService.processResponses(resp, log, configUrl, config)
@@ -303,10 +294,10 @@ class SendEntryNumberToKraServices(
 //            }
 //            iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
 //
-          //  KotlinLogging.logger { }.trace { "Response ${response.second?.message}" }
+            //  KotlinLogging.logger { }.trace { "Response ${response.second?.message}" }
 //            val gson = Gson()Gson
 
-            KotlinLogging.logger {  }.info { "Request Body: ${gson.toJson(rootRequest)}" }
+            KotlinLogging.logger { }.info { "Request Body: ${gson.toJson(rootRequest)}" }
 //            //           }else{
 //                transactionsRequest.apply {
 //                    responseStatus = response.second?.status
@@ -321,10 +312,8 @@ class SendEntryNumberToKraServices(
 //            }
 
 
-           //  KotlinLogging.logger {  }.info { "Response received: $response" }
+            //  KotlinLogging.logger {  }.info { "Response received: $response" }
         }
     }
-
-
 }
 

@@ -14,7 +14,10 @@ class CallbackRouter {
     fun paymentCallbacks(handler: InvoiceHandlers) = router {
         "/api/v1/callback".nest {
             POST("/payment/completed", handler::paymentCallback)
-            POST("/payment-qa/completed", handler::processPaymentSageNotification)
+//            POST("/payment-qa/completed", handler::processPaymentSageNotification)
+        }
+        "/api/v1/callback/qa".nest {
+            POST("/payment/completed", handler::processPaymentSageNotification)
         }
     }
 }

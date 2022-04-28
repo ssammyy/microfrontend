@@ -214,7 +214,7 @@ class PostInvoiceToSageServices(
     }
 
     fun postInvoiceTransactionToSage(billPayment: BillPayments, user: String, corporate: CorporateCustomerAccounts, map: ServiceMapsEntity) {
-        val config = commonDaoServices.findIntegrationConfiguration("SAGE_API_CLIENT")
+        val config = commonDaoServices.findIntegrationConfiguration("SAGE_INVOICE_API_CLIENT")
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
         runBlocking {
 
@@ -439,7 +439,7 @@ class PostInvoiceToSageServices(
 
     fun processPaymentSageNotification(value: SageNotificationResponse): NotificationResponseValue {
         val result = NotificationResponseValue()
-        val loggedInUSer = commonDaoServices.loggedInUserDetails()
+//        val loggedInUSer = commonDaoServices.loggedInUserDetails()
         val log = daoService.createTransactionLog(0, daoService.generateTransactionReference())
         try {
             log.integrationRequest = daoService.mapper().writeValueAsString(value)
@@ -478,7 +478,7 @@ class PostInvoiceToSageServices(
                                         record.extras = record.extras?.let { "${value.request?.additionalInfo}" }
                                             ?: "${record.extras}|${value.request?.additionalInfo}"
                                         record.paymentTablesUpdatedStatus = 1
-                                        record.modifiedBy = commonDaoServices.concatenateName(loggedInUSer)
+                                        record.modifiedBy = "commonDaoServices.concatenateName(loggedInUSer)"
                                         record.modifiedOn = commonDaoServices.getTimestamp()
                                         stagingRepo.save(record)
                                         /**
@@ -491,7 +491,7 @@ class PostInvoiceToSageServices(
                                             ?.let { sage ->
                                                 sage.status = 10
                                                 sage.description = daoService.mapper().writeValueAsString(value)
-                                                sage.modifiedBy = commonDaoServices.concatenateName(loggedInUSer)
+                                                sage.modifiedBy = "commonDaoServices.concatenateName(loggedInUSer)"
                                                 sage.modifiedOn = commonDaoServices.getTimestamp()
                                                 sageRepo.save(sage)
                                             }

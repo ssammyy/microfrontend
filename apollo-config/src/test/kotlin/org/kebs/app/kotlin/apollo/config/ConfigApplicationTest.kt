@@ -21,7 +21,10 @@ class ConfigApplicationTest {
     @Test
     fun contextLoads() {
         KotlinLogging.logger { }.info("USER: " + jasyptStringEncryptor.encrypt("BskAccount"))
-        KotlinLogging.logger { }.info("PWD: " + jasyptStringEncryptor.encrypt("P@\$\$word2021"))
+        KotlinLogging.logger { }.info("PWD 1: " + jasyptStringEncryptor.encrypt("P@\$\$word2021"))
+
+        KotlinLogging.logger { }.info("USER: " + jasyptStringEncryptor.encrypt("BskAccount"))
+        KotlinLogging.logger { }.info("PWD 2: " + jasyptStringEncryptor.encrypt("P@\$\$w0rd@kebs"))
     }
 
     @Test
