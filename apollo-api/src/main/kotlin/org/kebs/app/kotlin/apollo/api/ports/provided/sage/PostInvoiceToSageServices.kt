@@ -214,7 +214,7 @@ class PostInvoiceToSageServices(
     }
 
     fun postInvoiceTransactionToSage(billPayment: BillPayments, user: String, corporate: CorporateCustomerAccounts, map: ServiceMapsEntity) {
-        val config = commonDaoServices.findIntegrationConfiguration("SAGE_API_CLIENT")
+        val config = commonDaoServices.findIntegrationConfiguration("SAGE_INVOICE_API_CLIENT")
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
         runBlocking {
 
