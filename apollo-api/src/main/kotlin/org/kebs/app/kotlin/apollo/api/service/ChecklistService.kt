@@ -805,6 +805,10 @@ class ChecklistService(
         itemDetails.cdDocId?.let { cdDetails ->
             map["cocNum"] = cdDetails.cocNumber.orEmpty()
             map["IdfNumber"] = cdDetails.idfNumber.orEmpty()
+            map["contentDeclared"] = when {
+                cdDetails.idfNumber.isNullOrEmpty() -> "NO"
+                else -> "YES"
+            }
             map["ucrNumber"] = cdDetails.ucrNumber.orEmpty()
             map["dutyStation"] = cdDetails.freightStation?.cfsName.orEmpty()
             map["officerName"] = "${cdDetails.assignedInspectionOfficer?.firstName} ${cdDetails.assignedInspectionOfficer?.lastName}"
@@ -882,7 +886,8 @@ class ChecklistService(
             map["ssfNum"] = inspectionGeneral.ssfNo.orEmpty()
             map["ssfRefNo"] = inspectionGeneral.bsNumber.orEmpty()
             map["product"] = inspectionGeneral.productDescription.orEmpty()
-            map["genDate"] = inspectionGeneral.createdOn.toString()
+            map["genDate"] = commonDaoServices.convertDateToString(inspectionGeneral.createdOn?.toLocalDateTime()
+                    ?: LocalDateTime.now(), "dd/MM/yyy")
             map["disposalMode"] = inspectionGeneral.returnOrDispose.orEmpty()
             map["testParameters"] = inspectionGeneral.testParameters.orEmpty()
             map["laboratoryName"] = inspectionGeneral.laboratoryName.orEmpty()
@@ -900,24 +905,24 @@ class ChecklistService(
             this.daoServices.findDemandNoteItemByID(itemId)?.let { itemNote ->
                 map["amount"] = itemNote.amountPayable.toString()
                 this.daoServices.findDemandNoteWithID(itemNote.demandNoteId ?: -2)?.let { demandNote ->
-                    map["receiptNo"] = demandNote.receiptNo.orEmpty()
-                    map["invoiceNo"] = demandNote.demandNoteNumber.orEmpty()
+                    map["receiptNo"] = demandNote.receiptNo ?: "N/A"
+                    map["invoiceNo"] = demandNote.demandNoteNumber ?: "N/A"
                     map["paid"] = when (demandNote.paymentStatus) {
                         1 -> "YES"
                         else -> "NO"
                     }
                     map
                 } ?: run {
-                    map["receiptNo"] = ""
-                    map["invoiceNo"] = ""
-                    map["paid"] = "NA"
+                    map["receiptNo"] = "N/A"
+                    map["invoiceNo"] = "N/A"
+                    map["paid"] = "N/A"
                     map
                 }
             } ?: run {
                 map["amount"] = "0.00"
-                map["receiptNo"] = ""
-                map["invoiceNo"] = ""
-                map["paid"] = "NA"
+                map["receiptNo"] = "N/A"
+                map["invoiceNo"] = "N/A"
+                map["paid"] = "N/A"
                 map
             }
             this.qaISampleCollectRepository.findByItemId(itemId)?.let { scf ->

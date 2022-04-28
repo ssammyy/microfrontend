@@ -529,6 +529,12 @@ class InvoicePaymentService(
                 }
                 response.status = ResponseCodes.SUCCESS_CODE
                 response.message = "Full Payment received"
+                // Complete any bill payment with Demand Note
+                if (demandNoteUpdated.billId != null) {
+                    billingService.demandNoteTransactionPaid(demandNoteUpdated.demandNoteNumber
+                            ?: "", demandNoteUpdated.receiptNo
+                            ?: "", demandNoteUpdated.billId!!)
+                }
             } else {
                 response.data = mutableMapOf(
                         Pair("amountPaid", demandNoteUpdated.amountPaid),
@@ -537,12 +543,6 @@ class InvoicePaymentService(
                 response.message = "Partial Payment received"
             }
             iDemandNoteRepo.save(demandNoteUpdated)
-            // Complete any bill payment
-            if (demandNoteUpdated.billId != null) {
-                billingService.demandNoteTransactionPaid(demandNoteUpdated.demandNoteNumber
-                        ?: "", demandNoteUpdated.receiptNo
-                        ?: "", demandNoteUpdated.billId!!)
-            }
             // Completion event
             GlobalScope.launch(Dispatchers.IO) {
                 delay(100L)
