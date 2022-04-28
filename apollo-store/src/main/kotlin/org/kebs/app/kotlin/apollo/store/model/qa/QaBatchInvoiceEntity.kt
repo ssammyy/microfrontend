@@ -4,21 +4,27 @@ import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
+import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_QA_BATCH_INVOICE_NEW")
+@Table(name = "DAT_KEBS_QA_BATCH_INVOICE")
 class QaBatchInvoiceEntity : Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    var id: Long = 0
+    @Id
+    @SequenceGenerator(
+        name = "DAT_KEBS_QA_BATCH_INVOICE_SEQ_GEN",
+        sequenceName = "DAT_KEBS_QA_BATCH_INVOICE_SEQ",
+        allocationSize = 1
+    )
+    @GeneratedValue(generator = "DAT_KEBS_QA_BATCH_INVOICE_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    var id: Long? = 0
 
     @Column(name = "INVOICE_NUMBER")
     @Basic
     var invoiceNumber: String? = null
 
-    @Column(name = "SAGE_INVOICE_NUMBER_QA")
+    @Column(name = "SAGE_INVOICE_NUMBER")
     @Basic
     var sageInvoiceNumber: String? = null
 
