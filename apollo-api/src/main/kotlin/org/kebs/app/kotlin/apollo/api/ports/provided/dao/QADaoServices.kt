@@ -1809,22 +1809,24 @@ class QADaoServices(
     ): InvoiceDto {
 
         return InvoiceDto(
-                invoice.id,
-                cp.name,
-                cp.postalAddress,
-                cp.physicalAddress,
-                null,
-                cp.companyTelephone,
-                cp.companyEmail,
-                invoice.invoiceNumber,
-                invoice.receiptNo,
-                invoice.paidDate,
-                invoice.totalAmount,
-                invoice.paidStatus,
-                invoice.submittedStatus,
-                null
+            invoice.id,
+            cp.name,
+            cp.postalAddress,
+            cp.physicalAddress,
+            null,
+            cp.companyTelephone,
+            cp.companyEmail,
+            invoice.invoiceNumber,
+            invoice.receiptNo,
+            invoice.paidDate,
+            invoice.totalAmount,
+            invoice.paidStatus,
+            invoice.submittedStatus,
+            null,
+            invoice.sageInvoiceNumber,
 
-        )
+
+            )
     }
 
     fun listBranchList(
@@ -2014,14 +2016,15 @@ class QADaoServices(
                 if (permitDetails.attachedPlantId == plantID) {
                     permitsInvoiceList.add(
                             PermitInvoiceDto(
-                                    pi.permitId,
-                                    pi.invoiceRef,
-                                    permitDetails.commodityDescription,
-                                    permitDetails.tradeMark,
-                                    pi.totalAmount,
-                                    pi.paymentStatus,
-                                    pi.permitRefNumber,
-                                    pi.batchInvoiceNo
+                                pi.permitId,
+                                pi.invoiceRef,
+                                permitDetails.commodityDescription,
+                                permitDetails.tradeMark,
+                                pi.totalAmount,
+                                pi.paymentStatus,
+                                pi.permitRefNumber,
+                                pi.batchInvoiceNo
+
                             )
                     )
                 } else {

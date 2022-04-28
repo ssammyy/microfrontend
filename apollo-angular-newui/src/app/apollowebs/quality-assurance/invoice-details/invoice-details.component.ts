@@ -63,14 +63,15 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
                 (data: AllBatchInvoiceDetailsDto) => {
                     this.allBatchInvoiceDetails = data;
                     console.log(this.allBatchInvoiceDetails);
+                    console.log(data)
 
                     this.allPermitData = data.allRelatedBatchInvoices;
                     // tslint:disable-next-line:max-line-length
-                    formattedArray = data.allRelatedBatchInvoices.map(i => [i.sageInvoiceNumber, i.commodityDescription, i.brandName, i.totalAmount, i.paidStatus]);
+                    formattedArray = data.allRelatedBatchInvoices.map(i => [i.commodityDescription, i.brandName, i.totalAmount, i.paidStatus]);
 
                     this.dataTable = {
-                        headerRow: ['INVOICE REF NO', 'COMMODITY DESCRIPTION', 'BRAND NAME', 'TOTAL AMOUNT', 'PAID STATUS', 'Actions'],
-                        footerRow: ['INVOICE REF NO', 'COMMODITY DESCRIPTION', 'BRAND NAME', 'TOTAL AMOUNT', 'PAID STATUS', 'Actions'],
+                        headerRow: ['COMMODITY DESCRIPTION', 'BRAND NAME', 'TOTAL AMOUNT', 'PAID STATUS', 'Actions'],
+                        footerRow: ['COMMODITY DESCRIPTION', 'BRAND NAME', 'TOTAL AMOUNT', 'PAID STATUS', 'Actions'],
 
                         dataRows: formattedArray
                         // dataRows: [['KIMSDM#202106290C9', 'Wine', 'Wine', '191400', 'PAID', '']

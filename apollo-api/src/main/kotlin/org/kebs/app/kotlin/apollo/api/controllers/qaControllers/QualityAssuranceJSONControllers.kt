@@ -198,7 +198,7 @@ class QualityAssuranceJSONControllers(
         map["datePrepared"] = commonDaoServices.convertTimestampToKeswsValidDate(
             batchInvoice.createdOn ?: throw ExpectedDataNotFound("MISSING CREATION DATE")
         )
-        map["demandNoteNo"] = batchInvoice.invoiceNumber.toString()
+        map["demandNoteNo"] = batchInvoice.sageInvoiceNumber.toString()
         map["companyName"] = companyProfile.name.toString()
         map["companyAddress"] = companyProfile.postalAddress.toString()
         map["companyTelephone"] = companyProfile.companyTelephone.toString()
