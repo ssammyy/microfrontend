@@ -4,13 +4,20 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 import java.sql.Timestamp
 import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
 
 class RequestHeader {
-    var serviceName: String? = null
+    @JsonProperty("messageID")
     var messageID: String? = null
-    var connectionID: String? = null
-    var connectionPassword: String? = null
+
+    @JsonProperty("statusCode")
+    @NotNull(message = "Status code is required")
+    var statusCode: String? = null
+
+    @JsonProperty("statusDescription")
+    @NotNull(message = "Status description is required")
+    var statusDescription: String? = null
 }
 
 class RequestBody {

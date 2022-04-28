@@ -33,7 +33,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaMessageDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaPushDto
-import org.kebs.app.kotlin.apollo.common.dto.MigratedPermitDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -49,7 +48,6 @@ import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.badRequest
@@ -112,6 +110,8 @@ class QualityAssuranceHandler(
     private val cdSampleSubmitPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-submit.html"
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
+
+    fun notSupported(req: ServerRequest): ServerResponse = badRequest().body("Invalid Request: Not supported")
 
     @PreAuthorize(
         "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') " +
@@ -3244,16 +3244,22 @@ class QualityAssuranceHandler(
             val dto = req.body<NewBatchInvoiceDto>()
             //Create invoice consolidation list
             var batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
+
+//            find Permit Id
+            val permit = dto.permitRefNumber?.let { qaDaoServices.findPermitWithPermitRefNumberLatest(it) }
+
+            //Pass invoice Dto to Sage
+            val permitType =  qaDaoServices.findPermitType(permit?.permitType?: throw ExpectedDataNotFound("Missing Permit Type ID"))
+
+
             //Add created invoice consolidated id to my batch id to be submitted
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             with(newBatchInvoiceDto) {
-                batchID =
-                    batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID = batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
             //submit to staging invoices
-            batchInvoiceDetails =
-                qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, newBatchInvoiceDto).second
+            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceSubmitInvoice(permitType,map, loggedInUser, newBatchInvoiceDto).second
 
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
@@ -3274,17 +3280,16 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             val dto = req.body<NewBatchInvoiceDto>()
 
             var batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceRemoveInvoice(map, loggedInUser, dto).second
 
-            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceUpdateStagingInvoice(
-                map,
-                loggedInUser,
-                batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID")
-            ).second
+//            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceUpdateStagingInvoice(
+//                map,
+//                loggedInUser,
+//                batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID")
+//            ).second
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)
@@ -3317,12 +3322,12 @@ class QualityAssuranceHandler(
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
 
 
-
-            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceUpdateStagingInvoice(
-                map,
-                loggedInUser,
-                batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID")
-            ).second
+//
+//            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceUpdateStagingInvoice(
+//                map,
+//                loggedInUser,
+//                batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID")
+//            ).second
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)

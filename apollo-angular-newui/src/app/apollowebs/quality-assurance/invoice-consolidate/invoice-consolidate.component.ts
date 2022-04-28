@@ -1,17 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {Router} from '@angular/router';
-import {
-  AllPermitDetailsDto,
-  ConsolidatedInvoiceDto,
-  GenerateInvoiceDto,
-  PermitEntityDto, PermitInvoiceDto
-} from '../../../core/store/data/qa/qa.model';
-import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {Subscription} from 'rxjs';
+import {GenerateInvoiceDto, PermitInvoiceDto} from '../../../core/store/data/qa/qa.model';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {Subject} from 'rxjs';
 import swal from 'sweetalert2';
 import Swal from 'sweetalert2';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {DataTableDirective} from "angular-datatables";
+import {HttpErrorResponse} from "@angular/common/http";
 
 declare interface DataTable {
   headerRow: string[];
@@ -29,46 +26,37 @@ declare const $: any;
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
   public allInvoiceData: PermitInvoiceDto[];
+  tasks: PermitInvoiceDto[] = [];
+
   // consolidatedInvoice: GenerateInvoiceDto;
   name: string;
   checkboxGroup: FormGroup;
   submittedValue: any;
   final_array = [];
   selected = [];
-  messages=[]
-    // permitInvoicesIDS = [];
-
+  messages = []
+  // permitInvoicesIDS = [];
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective;
+  isDtInitialized: boolean = false
+  loadingText: string;
 
   constructor(
       private qaService: QaService,
       private router: Router,
       private fb: FormBuilder,
       private SpinnerService: NgxSpinnerService,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.checkboxGroup = this.fb.group({
      });
     const checkboxControl = (this.checkboxGroup.controls.checkboxes as FormArray);
+    this.getSPCTasks()
 
-    let formattedArray = [];
-    this.qaService.loadInvoiceListWithNoBatchID().subscribe(
-        (data: any) => {
-          this.allInvoiceData = data;
-          // tslint:disable-next-line:max-line-length
-
-          // tslint:disable-next-line:max-line-length
-          formattedArray = data.map(i => [i.permitRefNumber, i.commodityDescription, i.brandName, i.totalAmount, i.invoiceNumber, i.permitID]);
-
-          this.dataTable = {
-            headerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', 'Reference Number', 'Action', 'Select'],
-            footerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', 'Reference Number', 'Action', 'Select'],
-            dataRows: formattedArray
-
-          };
-
-        }
-    );
 
   }
 
@@ -76,52 +64,6 @@ export class InvoiceConsolidateComponent implements OnInit {
     this.router.navigate(['/invoiceDetails'], {fragment: rowElement});
   }
 
-  ngAfterViewInit() {
-    $('#datatables').DataTable({
-      'pagingType': 'full_numbers',
-      'lengthMenu': [
-        [10, 25, 50, -1],
-        [10, 25, 50, 'All']
-      ],
-      responsive: true,
-      language: {
-        search: '_INPUT_',
-        searchPlaceholder: 'Search records',
-      }
-
-    });
-
-    let table: any;
-    table = $(`#datatables`).DataTable();
-
-    // Edit record
-    table.on('click', '.edit', function (e) {
-      let $tr = $(this).closest('tr');
-      if ($($tr).hasClass('child')) {
-        $tr = $tr.prev('.parent');
-      }
-
-      let data: any;
-      data = table.row($tr).data();
-      alert('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
-      e.preventDefault();
-    });
-
-    // Delete a record
-    table.on('click', '.remove', function (e) {
-      const $tr = $(this).closest('tr');
-      table.row($tr).remove().draw();
-      e.preventDefault();
-    });
-
-    // Like record
-    table.on('click', '.like', function (e) {
-      alert('You clicked on Like button');
-      e.preventDefault();
-    });
-
-    $('.card .material-datatables label').addClass('form-group');
-  }
 
 
   // check if the item are selected
@@ -136,11 +78,12 @@ export class InvoiceConsolidateComponent implements OnInit {
     if (checked) {
       this.selected.push(item);
     } else {
-      this.selected.splice(this.selected.indexOf(item), 1);
+      this.selected.splice(item, 1);
+      // console.log(      this.selected.splice(item, 1))
     }
   }
 
-  payNowForOneInvoice(invoicesID: any) {
+  payNowForOneInvoice(invoicesID: any, permitRefNumber: any) {
 
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -166,7 +109,7 @@ export class InvoiceConsolidateComponent implements OnInit {
         const consolidatedInvoice = new GenerateInvoiceDto;
         consolidatedInvoice.batchID = null;
         consolidatedInvoice.plantID = null;
-        consolidatedInvoice.permitRefNumber = null;
+        consolidatedInvoice.permitRefNumber = permitRefNumber;
         consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
         this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
             (data) => {
@@ -218,14 +161,14 @@ export class InvoiceConsolidateComponent implements OnInit {
         this.SpinnerService.show();
         this.final_array.push(this.selected.sort());
         console.log(this.final_array);
-        const selectedRows = this.final_array;
+        // const permitInvoicesIDS:number[] = this.final_array;
         const permitInvoicesIDS: number[] = [];
-        selectedRows.forEach(function (dataValue) {
+        this.final_array.forEach(function (dataValue) {
           for (let i = 0; i <= dataValue.length - 1; i++) {
             const pickedI = dataValue[i];
             const idIndex = dataValue[i].length;
-            console.log(`VALUE OF I =${dataValue[i][5]}`);
-            const myData = dataValue[i][5];
+            console.log(`VALUE OF I =${dataValue[i]}`);
+            const myData = dataValue[i];
             console.log(`DATA ADDED ${myData}`);
             permitInvoicesIDS.push(myData);
           }
@@ -262,9 +205,37 @@ export class InvoiceConsolidateComponent implements OnInit {
             'error'
         );
       }
-    });
+        }
+    );
 
 
+  }
+
+
+  public getSPCTasks(): void {
+    this.loadingText = "Retrieving Invoices Please Wait ...."
+
+    this.SpinnerService.show();
+    this.qaService.loadInvoiceListWithNoBatchID().subscribe(
+        (response: PermitInvoiceDto[]) => {
+          this.SpinnerService.hide();
+          this.tasks = response;
+
+          if (this.isDtInitialized) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              dtInstance.destroy();
+              this.dtTrigger.next();
+            });
+          } else {
+            this.isDtInitialized = true
+            this.dtTrigger.next();
+          }
+        },
+        (error: HttpErrorResponse) => {
+          alert(error.message);
+          this.SpinnerService.hide();
+        }
+    );
   }
 
 }

@@ -1,5 +1,4 @@
 import {Timestamp} from "rxjs";
-import {KnwSecTaskData} from "../std/std.model";
 
 
 export class Levy {

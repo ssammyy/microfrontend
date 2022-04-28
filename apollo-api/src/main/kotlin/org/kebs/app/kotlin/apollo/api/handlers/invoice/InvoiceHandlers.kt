@@ -15,10 +15,14 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PaymentPurpose
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.PaymentStatusResult
+import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
+import org.kebs.app.kotlin.apollo.common.dto.sage.response.SageNotificationResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
@@ -26,25 +30,31 @@ import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.Errors
+import org.springframework.validation.Validator
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.body
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.format.DateTimeParseException
 
 @Component
 class InvoiceHandlers(
-        private val demandNoteRepository: IDemandNoteRepository,
-        private val commonDaoServices: CommonDaoServices,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val daoServices: DestinationInspectionDaoServices,
-        private val diBpmn: DestinationInspectionBpmn,
-        private val objectMapper: ObjectMapper,
-        private val invoicePaymentService: InvoicePaymentService,
-        private val daoValidatorService: DaoValidatorService,
-) {
+    private val demandNoteRepository: IDemandNoteRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val daoServices: DestinationInspectionDaoServices,
+    private val diBpmn: DestinationInspectionBpmn,
+    private val objectMapper: ObjectMapper,
+    private val invoicePaymentService: InvoicePaymentService,
+    private val sageServices: PostInvoiceToSageServices,
+    private val daoValidatorService: DaoValidatorService,
+    private val validator: Validator
+): AbstractValidationHandler() {
     final val errors = mutableMapOf<String, String>()
 
     fun applicationUploadExchangeRates(req: ServerRequest): ServerResponse {
@@ -498,5 +508,32 @@ class InvoiceHandlers(
         }
         return ServerResponse.ok().body(result)
     }
+
+    @PreAuthorize("hasAuthority('PAYMENT')")
+    fun processPaymentSageNotification(req: ServerRequest): ServerResponse {
+        return try {
+            req.body<SageNotificationResponse>()
+                .let { body ->
+                    val errors: Errors = BeanPropertyBindingResult(body, SageNotificationResponse::class.java.name)
+                    validator.validate(body, errors)
+                    if (errors.allErrors.isEmpty()) {
+                        val response = sageServices.processPaymentSageNotification(body)
+                        ServerResponse.ok().body(response)
+
+                    } else {
+                        onValidationErrors(errors)
+                    }
+
+
+                }
+                ?: throw InvalidValueException("No Body found")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+    }
+
 }
 

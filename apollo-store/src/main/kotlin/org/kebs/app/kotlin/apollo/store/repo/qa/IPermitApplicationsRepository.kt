@@ -431,6 +431,9 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitRefNumber: String
     ): List<PermitApplicationsEntity>?
 
+
+
+
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): PermitApplicationsEntity?
     fun findByIdAndAttachedPlantId(id: Long, attachedPlantId: Long): PermitApplicationsEntity?
 }
@@ -812,6 +815,7 @@ interface IQaWorkplanRepository : HazelcastRepository<QaWorkplanEntity, Long> {
 @Repository
 interface IQaBatchInvoiceRepository : HazelcastRepository<QaBatchInvoiceEntity, Long> {
     fun findByUserIdAndInvoiceNumber(userId: Long, refNumber: String): QaBatchInvoiceEntity?
+    fun findByInvoiceNumber( refNumber: String): QaBatchInvoiceEntity?
     fun findByUserIdAndInvoiceNumberAndPlantId(
         userId: Long,
         invoiceNumber: String,

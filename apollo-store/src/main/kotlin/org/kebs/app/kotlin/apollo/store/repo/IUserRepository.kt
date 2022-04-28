@@ -40,7 +40,10 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.*
-import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.model.std.DirectorListHolder
+import org.kebs.app.kotlin.apollo.store.model.std.ManufactureListHolder
+import org.kebs.app.kotlin.apollo.store.model.std.UserRoleHolder
+import org.kebs.app.kotlin.apollo.store.model.std.UserTypeHolder
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository

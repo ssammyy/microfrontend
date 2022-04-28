@@ -499,7 +499,7 @@ class ConsignmentDocumentDaoService(
             daoServices.updateCDDetailsWithCdType(consignmentDocDetails.cdStandardTwo?.localCocType ?: "L", it)
         }
         // Update consignment with foreign document reports or certificates
-        if ("F".equals(consignmentDocDetails.cdStandardTwo?.localCocType ?: "L", true)) {
+        if ("F".equals(consignmentDocumentDetails?.cdStandardsTwo?.cocType ?: "L", true)) {
             consignmentDocumentDetails?.let { cd ->
                 consignmentDocumentDetails = daoServices.updateCDDetailsWithForeignDocuments(cd)
             }

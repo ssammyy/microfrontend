@@ -345,6 +345,7 @@ export class PermitInvoiceDto {
     paidStatus: boolean;
     permitRefNumber: string;
     batchID: bigint;
+    sageInvoiceNumber: string;
 }
 
 export class AllBatchInvoiceDetailsDto {

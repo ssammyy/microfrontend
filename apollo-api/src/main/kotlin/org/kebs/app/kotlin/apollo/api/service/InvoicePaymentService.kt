@@ -489,12 +489,14 @@ class InvoicePaymentService(
         demandNote.varField7 = responseStatus.response?.paymentDescription
         demandNote.receiptNo = responseStatus.response?.paymentReferenceNo
         // Update demand note
-        paymentRepository.sumByDemandNoteIdAndStatus(demandNote.id!!, 1)?.let {
-            demandNote.amountPaid = it
-            demandNote.currentBalance = demandNote.totalAmount?.minus(demandNote.amountPaid ?: BigDecimal.ZERO)
-            updatedPayment.balanceAfter = demandNote.currentBalance
-            paymentRepository.save(updatedPayment)
-        } ?: throw ExpectedDataNotFound("Could not calculate the total")
+        if (payment.status == 1) {
+            paymentRepository.sumByDemandNoteIdAndStatus(demandNote.id!!, 1)?.let {
+                demandNote.amountPaid = it
+                demandNote.currentBalance = demandNote.totalAmount?.minus(demandNote.amountPaid ?: BigDecimal.ZERO)
+                updatedPayment.balanceAfter = demandNote.currentBalance
+                paymentRepository.save(updatedPayment)
+            } ?: throw ExpectedDataNotFound("Could not calculate the total")
+        }
         // Payment
         return iDemandNoteRepo.save(demandNote)
     }
@@ -510,7 +512,7 @@ class InvoicePaymentService(
             // Check duplicate receipts
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val demandNoteUpdated = receivePayment(demandNote, responseStatus)
-            if (demandNote.currentBalance!! <= BigDecimal.ZERO) {
+            if (demandNoteUpdated.currentBalance!! <= BigDecimal.ZERO) {
                 demandNoteUpdated.paymentStatus = map.activeStatus
             } else {
                 demandNoteUpdated.paymentStatus = PaymentStatus.PARTIAL_PAYMENT.code
@@ -519,7 +521,7 @@ class InvoicePaymentService(
             if (demandNoteUpdated.paymentStatus == map.activeStatus) {
                 demandNoteUpdated.paymentDate = Timestamp.from(Instant.now())
                 demandNoteUpdated.receiptDate = responseStatus.response?.paymentDate
-                invoiceBatchDetailsRepo.findByBatchNumber(demandNote.demandNoteNumber!!)?.let { batch ->
+                invoiceBatchDetailsRepo.findByBatchNumber(demandNoteUpdated.demandNoteNumber!!)?.let { batch ->
                     batch.receiptNumber = responseStatus.response?.paymentReferenceNo?.trim()?.toUpperCase() ?: ""
                     batch.paymentStarted = map.activeStatus
                     batch.receiptDate = responseStatus.response?.paymentDate?.time?.let { java.sql.Date(it) }
@@ -529,20 +531,22 @@ class InvoicePaymentService(
                 response.message = "Full Payment received"
             } else {
                 response.data = mutableMapOf(
-                        Pair("amountPaid", demandNote.amountPaid),
-                        Pair("totalAmount", demandNote.totalAmount))
+                        Pair("amountPaid", demandNoteUpdated.amountPaid),
+                        Pair("totalAmount", demandNoteUpdated.totalAmount))
                 response.status = ResponseCodes.SUCCESS_CODE
                 response.message = "Partial Payment received"
             }
             iDemandNoteRepo.save(demandNoteUpdated)
-            if (demandNote.billId != null) {
-                billingService.demandNoteTransactionPaid(demandNote.demandNoteNumber ?: "", demandNote.receiptNo
-                        ?: "", demandNote.billId!!)
+            // Complete any bill payment
+            if (demandNoteUpdated.billId != null) {
+                billingService.demandNoteTransactionPaid(demandNoteUpdated.demandNoteNumber
+                        ?: "", demandNoteUpdated.receiptNo
+                        ?: "", demandNoteUpdated.billId!!)
             }
             // Completion event
             GlobalScope.launch(Dispatchers.IO) {
                 delay(100L)
-                when (demandNote.paymentPurpose) {
+                when (demandNoteUpdated.paymentPurpose) {
                     PaymentPurpose.CONSIGNMENT.code -> {
                         if (demandNote.billId == null) {
                             invoicePaymentCompleted(demandNoteUpdated.cdId!!, demandNoteUpdated.id!!, responseStatus.response?.paymentAmount)

@@ -3,6 +3,10 @@ package org.kebs.app.kotlin.apollo.store.repo
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.NWAPreliminaryDraftUploads
+import org.kebs.app.kotlin.apollo.store.model.Sl2PaymentsDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.Sl2PaymentsHeaderEntity
+import org.kebs.app.kotlin.apollo.store.model.SlVisitUploadsEntity
+import org.kebs.app.kotlin.apollo.store.model.StandardLevySiteVisitRemarks
 import org.kebs.app.kotlin.apollo.store.model.std.SiteVisitListHolder
 import org.kebs.app.kotlin.apollo.store.model.std.WindingUpReportListHolder
 import org.springframework.data.hazelcast.repository.HazelcastRepository

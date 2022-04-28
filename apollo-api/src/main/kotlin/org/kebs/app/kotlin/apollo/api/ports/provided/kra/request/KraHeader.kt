@@ -288,7 +288,7 @@ class KraEntryNumberResponse{
     @JsonProperty("RESULT")
     @NotNull(message = "Response details are required")
     val response: KraResponse? = null
-    
+
 }
 
 class KraResponse {
@@ -303,3 +303,4 @@ class KraResponse {
     var message: String? = null
 
 }
+
