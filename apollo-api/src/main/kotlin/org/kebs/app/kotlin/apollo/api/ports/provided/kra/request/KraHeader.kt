@@ -2,11 +2,6 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.kra.request
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.OptBoolean
-import org.json.simple.JSONArray
-import java.math.BigDecimal
-import java.sql.Timestamp
-import java.time.Instant
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull

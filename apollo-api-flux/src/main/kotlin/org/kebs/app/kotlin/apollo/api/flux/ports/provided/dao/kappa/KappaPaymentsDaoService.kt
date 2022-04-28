@@ -1,7 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.kappa
 
-import kotlinx.coroutines.reactive.awaitFirstOrNull
-import kotlinx.coroutines.reactive.awaitSingleOrNull
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.common.dto.kappa.requests.NotificationRequestValue
@@ -18,7 +16,6 @@ import org.kebs.app.kotlin.apollo.store.repo.IWorkflowTransactionsRepository
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.ReactiveAuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
 import java.time.Instant

@@ -33,16 +33,16 @@
 	<parameter name="NoOfPassengers" class="java.lang.String"/>
 	<parameter name="VehicleType" class="java.lang.String"/>
 	<parameter name="PrevRegNo" class="java.lang.String"/>
-	<parameter name="ExporterName" class="java.lang.String"/>
-	<parameter name="ExporterAddress" class="java.lang.String"/>
-	<parameter name="ExporterEmail" class="java.lang.String"/>
-	<parameter name="PrevCountryOfReg" class="java.lang.String"/>
-	<queryString>
-		<![CDATA[]]>
-	</queryString>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
+    <parameter name="ExporterName" class="java.lang.String"/>
+    <parameter name="ExporterAddress" class="java.lang.String"/>
+    <parameter name="ExporterEmail" class="java.lang.String"/>
+    <parameter name="PrevCountryOfReg" class="java.lang.String"/>
+    <queryString>
+        <![CDATA[]]>
+    </queryString>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
     <title>
         <band height="85" splitType="Stretch">
             <image>
@@ -52,15 +52,15 @@
             <staticText>
                 <reportElement x="182" y="0" width="303" height="26" forecolor="#000000"
                                uuid="99aee567-910a-45cf-905a-d749caf8a5dd"/>
-                <textElement textAlignment="Center">
-                    <font fontName="SansSerif" size="19" isBold="true"/>
+                <textElement textAlignment="Left">
+                    <font fontName="SansSerif" size="18" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Kenya Bureau of Standards]]></text>
             </staticText>
             <staticText>
                 <reportElement x="180" y="26" width="200" height="50" uuid="abf23cdc-bf6d-409a-971d-2a9313a3c9d2"/>
                 <textElement textAlignment="Left">
-                    <font size="9"/>
+                    <font size="10"/>
                 </textElement>
                 <text><![CDATA[Popo Road, off Mombasa Road
 P.O. Box 54974 - 00200, Nairobi
@@ -76,7 +76,7 @@ Email:info@kebs.org
                 <reportElement mode="Opaque" x="1" y="1" width="553" height="36" backcolor="#CAE3FA"
                                uuid="46dcdf05-d345-41a7-9cfd-d5c6c2518238"/>
                 <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
+                    <font size="14" isBold="true"/>
                 </textElement>
                 <text><![CDATA[MOTOR VEHICLE CERTIFICATE OF ROADWORTHINESS (COR)
 (KS 1515:2000)]]></text>
@@ -84,19 +84,19 @@ Email:info@kebs.org
             <staticText>
                 <reportElement x="1" y="38" width="238" height="20" uuid="bb6e53c5-c188-48ab-88ac-2002012304ea"/>
                 <textElement>
-                    <font size="11" isBold="true"/>
+                    <font size="12" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Name  and Address of Importer:
 ]]></text>
             </staticText>
             <frame>
-                <reportElement x="0" y="60" width="553" height="80" uuid="1cdfd09e-da9a-4745-8bc4-3ac516c4cda2">
+                <reportElement x="0" y="59" width="553" height="72" uuid="1cdfd09e-da9a-4745-8bc4-3ac516c4cda2">
                     <property name="com.jaspersoft.studio.layout"
                               value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
                 </reportElement>
                 <box padding="8"/>
                 <textField>
-                    <reportElement x="0" y="0" width="231" height="22" uuid="20d96a40-6e69-42c1-b3d4-b548d14e3d5b">
+                    <reportElement x="0" y="0" width="231" height="19" uuid="20d96a40-6e69-42c1-b3d4-b548d14e3d5b">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.weight.x" value="1.5"/>
@@ -111,7 +111,7 @@ Email:info@kebs.org
                     <textFieldExpression><![CDATA[$P{ImporterName}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement x="231" y="0" width="153" height="22" uuid="a57de7e3-4e6d-4e15-8bbb-06502cfa1cbe"/>
+                    <reportElement x="231" y="0" width="153" height="19" uuid="a57de7e3-4e6d-4e15-8bbb-06502cfa1cbe"/>
                     <box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0">
                         <leftPen lineWidth="1.0"/>
                     </box>
@@ -121,14 +121,14 @@ Email:info@kebs.org
                     <text><![CDATA[COR Serial No.:]]></text>
                 </staticText>
                 <textField>
-                    <reportElement x="384" y="0" width="153" height="22" uuid="3f3fa5fa-7fd8-4248-89e1-5c37263ac5ee"/>
+                    <reportElement x="384" y="0" width="153" height="19" uuid="3f3fa5fa-7fd8-4248-89e1-5c37263ac5ee"/>
                     <textElement>
                         <font size="10"/>
                     </textElement>
                     <textFieldExpression><![CDATA[$P{corNumber}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement x="0" y="22" width="231" height="21" uuid="cc568076-9a2e-4283-92b3-2b559493b51c">
+                    <reportElement x="0" y="19" width="231" height="19" uuid="cc568076-9a2e-4283-92b3-2b559493b51c">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="1"/>
                         <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
@@ -143,7 +143,7 @@ Email:info@kebs.org
                     <textFieldExpression><![CDATA[$P{ImporterAddress}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement x="231" y="22" width="153" height="21" uuid="2afff86e-f34f-409e-b971-b458e716edfc"/>
+                    <reportElement x="231" y="19" width="153" height="19" uuid="2afff86e-f34f-409e-b971-b458e716edfc"/>
                     <box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0">
                         <leftPen lineWidth="1.0"/>
                     </box>
@@ -153,14 +153,14 @@ Email:info@kebs.org
                     <text><![CDATA[COR Issue Date:]]></text>
                 </staticText>
                 <textField>
-                    <reportElement x="384" y="22" width="153" height="21" uuid="860bf5a3-81a1-4f86-85b6-9fd9b340e75a"/>
+                    <reportElement x="384" y="19" width="153" height="19" uuid="860bf5a3-81a1-4f86-85b6-9fd9b340e75a"/>
                     <textElement>
                         <font size="11"/>
                     </textElement>
                     <textFieldExpression><![CDATA[$P{CorIssueDate}]]></textFieldExpression>
                 </textField>
                 <textField>
-                    <reportElement x="0" y="43" width="231" height="21" uuid="d6a8c6c1-8bb5-43ac-a245-5ea930dcb74d">
+                    <reportElement x="0" y="38" width="231" height="18" uuid="d6a8c6c1-8bb5-43ac-a245-5ea930dcb74d">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="2"/>
                         <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
@@ -175,7 +175,7 @@ Email:info@kebs.org
                     <textFieldExpression><![CDATA[$P{ImporterPhone}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement x="231" y="43" width="153" height="21" uuid="f2b41e30-eb1f-4182-b536-10251569d37a"/>
+                    <reportElement x="231" y="38" width="153" height="18" uuid="f2b41e30-eb1f-4182-b536-10251569d37a"/>
                     <box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0">
                         <leftPen lineWidth="1.0"/>
                     </box>
@@ -185,7 +185,7 @@ Email:info@kebs.org
                     <text><![CDATA[COR Expiry Date:]]></text>
                 </staticText>
                 <textField>
-                    <reportElement x="384" y="43" width="153" height="21" uuid="71c4d082-070b-42dd-a443-99c1f4386db5"/>
+                    <reportElement x="384" y="38" width="153" height="18" uuid="71c4d082-070b-42dd-a443-99c1f4386db5"/>
                     <textElement>
                         <font size="11"/>
                     </textElement>
@@ -195,15 +195,15 @@ Email:info@kebs.org
         </band>
         <band height="286">
             <staticText>
-                <reportElement mode="Opaque" x="-1" y="4" width="552" height="19" backcolor="#CAE3FA"
+                <reportElement mode="Opaque" x="0" y="-6" width="554" height="19" backcolor="#CAE3FA"
                                uuid="ead64cb6-5bac-41a7-ae81-c774d0c0af8d"/>
                 <textElement textAlignment="Left">
-                    <font size="16" isBold="true"/>
+                    <font size="14" isBold="true"/>
                 </textElement>
                 <text><![CDATA[MOTOR VEHICLE DETAILS]]></text>
             </staticText>
             <frame>
-                <reportElement x="-2" y="26" width="553" height="259" uuid="6fd5c8d6-99cf-4756-9b7f-c8d01c8b0f5b">
+                <reportElement x="1" y="15" width="553" height="259" uuid="6fd5c8d6-99cf-4756-9b7f-c8d01c8b0f5b">
                     <property name="com.jaspersoft.studio.layout"
                               value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
                 </reportElement>
@@ -669,57 +669,61 @@ Email:info@kebs.org
         </band>
         <band height="90">
             <staticText>
-                <reportElement mode="Opaque" x="1" y="3" width="552" height="20" backcolor="#CAE3FA"
+                <reportElement mode="Opaque" x="1" y="-10" width="553" height="20" backcolor="#CAE3FA"
                                uuid="311b9f8b-97d7-4ff7-8e60-5b6ced409baf"/>
                 <textElement textAlignment="Left">
-                    <font size="17" isBold="true"/>
+                    <font size="14" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Inspection Details and Findings]]></text>
             </staticText>
             <textField>
-                <reportElement x="1" y="25" width="553" height="61" uuid="81fdb00a-ade3-4595-b14d-84c2b6d7798c"/>
+                <reportElement x="1" y="12" width="553" height="63" uuid="81fdb00a-ade3-4595-b14d-84c2b6d7798c"/>
                 <textFieldExpression><![CDATA[$P{InspectionDetails}]]></textFieldExpression>
             </textField>
         </band>
         <band height="168">
             <staticText>
-                <reportElement mode="Opaque" x="0" y="0" width="554" height="24" backcolor="#CAE3FA"
+                <reportElement mode="Opaque" x="0" y="-13" width="554" height="22" backcolor="#CAE3FA"
                                uuid="32f813c9-9e48-4a16-a78b-d67e6e12bd03"/>
                 <textElement textAlignment="Left">
-                    <font size="20" isBold="true"/>
+                    <font size="14" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Endorsement]]></text>
             </staticText>
             <staticText>
-                <reportElement x="1" y="25" width="546" height="21" uuid="f3a8d7f4-c05f-494b-a394-2957a7481e79"/>
+                <reportElement x="2" y="11" width="552" height="39" uuid="f3a8d7f4-c05f-494b-a394-2957a7481e79">
+                    <property name="com.jaspersoft.studio.unit.tabStopWidth" value="px"/>
+                </reportElement>
                 <textElement>
-                    <font size="9" isBold="true" isItalic="true"/>
+                    <font size="12" isBold="true" isItalic="true"/>
+                    <paragraph lineSpacingSize="1.0" tabStopWidth="40"/>
                 </textElement>
-                <text>
-                    <![CDATA[I certify that the vehicle whose details are given above is roadworthy and safe to run on Kenyan roads]]></text>
+                <text><![CDATA[
+   I certify that the vehicle whose details are given above is roadworthy and safe to run on Kenyan roads]]></text>
             </staticText>
             <staticText>
-                <reportElement x="-1" y="45" width="546" height="20" uuid="43927f95-0be6-48f4-86b7-73dbc4b88c79"/>
+                <reportElement x="-1" y="54" width="554" height="20" uuid="43927f95-0be6-48f4-86b7-73dbc4b88c79"/>
+                <box leftPadding="10"/>
                 <textElement textAlignment="Left">
-                    <font size="14" isBold="false" isItalic="false"/>
+                    <font size="12" isBold="false" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[NOTE: This certificate is valid for three (3) months from the date of issue]]></text>
             </staticText>
             <frame>
-                <reportElement x="0" y="65" width="450" height="95" uuid="6673da6a-e309-419a-a785-4496a69bcf1b">
+                <reportElement x="1" y="71" width="552" height="95" uuid="6673da6a-e309-419a-a785-4496a69bcf1b">
                     <property name="com.jaspersoft.studio.layout"
                               value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
                 </reportElement>
                 <box padding="8"/>
                 <staticText>
-                    <reportElement x="0" y="0" width="174" height="27" uuid="451d55e7-95f2-4fe8-b3d3-1f250da0f7dc"/>
+                    <reportElement x="0" y="0" width="215" height="27" uuid="451d55e7-95f2-4fe8-b3d3-1f250da0f7dc"/>
                     <textElement verticalAlignment="Bottom">
                         <font size="11"/>
                     </textElement>
                     <text><![CDATA[Name of Authorized Officer:]]></text>
                 </staticText>
                 <textField>
-                    <reportElement x="174" y="0" width="260" height="27" uuid="127e8c46-8c07-4a4c-a23e-be9629d63d18">
+                    <reportElement x="215" y="0" width="321" height="27" uuid="127e8c46-8c07-4a4c-a23e-be9629d63d18">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.weight.x" value="1.5"/>
@@ -729,13 +733,13 @@ Email:info@kebs.org
                         <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
                     </reportElement>
                     <box>
-                        <bottomPen lineWidth="1.0"/>
+                        <bottomPen lineWidth="1.0" lineStyle="Dashed"/>
                     </box>
                     <textElement verticalAlignment="Bottom"/>
                     <textFieldExpression><![CDATA[$P{OfficerName}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement x="0" y="27" width="174" height="26" uuid="21f95725-6876-42a9-a45c-4db93922ab96">
+                    <reportElement x="0" y="27" width="215" height="26" uuid="21f95725-6876-42a9-a45c-4db93922ab96">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="1"/>
                         <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
@@ -750,9 +754,9 @@ Email:info@kebs.org
                     <text><![CDATA[Signature:]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement x="174" y="27" width="260" height="26" uuid="da260328-1712-488c-b5fa-6c76038147df"/>
+                    <reportElement x="215" y="27" width="321" height="26" uuid="da260328-1712-488c-b5fa-6c76038147df"/>
                     <box>
-                        <bottomPen lineWidth="1.0"/>
+                        <bottomPen lineWidth="1.0" lineStyle="Dashed"/>
                     </box>
                     <textElement>
                         <font size="11" isBold="true" isItalic="true"/>
@@ -760,7 +764,7 @@ Email:info@kebs.org
                     <text><![CDATA[]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement x="0" y="53" width="174" height="26" uuid="998173a6-a071-4c46-b889-9a27ace2b841">
+                    <reportElement x="0" y="53" width="215" height="26" uuid="998173a6-a071-4c46-b889-9a27ace2b841">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="2"/>
                         <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
@@ -774,16 +778,16 @@ Email:info@kebs.org
                     </textElement>
                     <text><![CDATA[Date and Stamp:]]></text>
                 </staticText>
-                <staticText>
-                    <reportElement x="174" y="53" width="260" height="26" uuid="d0569725-92bb-4227-a918-46e911eaf1e5"/>
+                <textField>
+                    <reportElement x="215" y="53" width="321" height="26" uuid="d3babcff-b809-497f-92d4-d3373974cc1f"/>
                     <box>
-                        <bottomPen lineWidth="1.0"/>
+                        <bottomPen lineWidth="1.0" lineStyle="Dashed"/>
                     </box>
-                    <textElement>
-                        <font size="11" isBold="true" isItalic="true"/>
+                    <textElement verticalAlignment="Bottom">
+                        <font size="11" isBold="false" isItalic="false"/>
                     </textElement>
-                    <text><![CDATA[]]></text>
-                </staticText>
+                    <textFieldExpression><![CDATA[$P{CorIssueDate}]]></textFieldExpression>
+                </textField>
             </frame>
         </band>
     </detail>

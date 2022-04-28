@@ -66,7 +66,7 @@ interface IBillTransactionsEntityRepository : HazelcastRepository<BillTransactio
     fun findAllByCorporateIdAndBillId(corporateId: Long, billId: Long): List<BillTransactionsEntity>
     fun findByBillId(billId: Long): List<BillTransactionsEntity>
 
-    @Query(value = "select sum(CASE WHEN bt.AMOUNT>0 then bt.AMOUNT else 0.0 END) TOTAL_AMOUNT,sum(CASE WHEN bt.TAX_AMOUNT>0 then bt.TAX_AMOUNT else 0.0 END) TOTAL_TAX, bt.REVENUE_LINE from DAT_KEBS_BILL_TRANSACTIONS bt  where BILL_ID=:billId and bt.PAID_STATUS=:billStatus group by bt.REVENUE_LINE", nativeQuery = true)
+    @Query(value = "select sum(CASE WHEN bt.AMOUNT>0 then bt.AMOUNT else 0.0 END) totalAmount,sum(CASE WHEN bt.TAX_AMOUNT>0 then bt.TAX_AMOUNT else 0.0 END) totalTax, bt.REVENUE_LINE as revenueLine from DAT_KEBS_BILL_TRANSACTIONS bt  where BILL_ID=:billId and bt.PAID_STATUS=:billStatus group by bt.REVENUE_LINE", nativeQuery = true)
     fun sumTotalAmountByRevenueLineAndBillId(@Param("billId") billId: Long?, @Param("billStatus") status: Int): List<BillSummary>
     fun findByInvoiceNumberAndBillId(demandNoteNumber: String, billId: Long): BillTransactionsEntity?
 }

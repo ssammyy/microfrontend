@@ -1,11 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 import {UsersEntity} from "../../../core/store/data/std/std.model";
-import {
-    ConfirmEditCompanyDTO, DocumentDTO, ManufactureDetailList,
-    ManufacturePendingTask,
-    SiteVisitRemarks
-} from "../../../core/store/data/levy/levy.model";
+import {DocumentDTO, ManufacturePendingTask, SiteVisitRemarks} from "../../../core/store/data/levy/levy.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {Store} from "@ngrx/store";

@@ -1,12 +1,10 @@
 package org.kebs.app.kotlin.apollo.common.dto.stdLevy
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import org.kebs.app.kotlin.apollo.common.dto.qa.FilesListDto
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDate
-import java.util.*
 
 data class StdLevyNotificationFormDTO(
     var NameAndBusinessOfProprietors: String? = null,

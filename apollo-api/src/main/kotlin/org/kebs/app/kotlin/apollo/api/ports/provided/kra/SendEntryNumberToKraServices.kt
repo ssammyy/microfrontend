@@ -8,8 +8,10 @@ import org.jasypt.encryption.StringEncryptor
 import org.json.simple.JSONObject
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraDetails
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader.Companion.globalVar
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.response.KraResponse
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties

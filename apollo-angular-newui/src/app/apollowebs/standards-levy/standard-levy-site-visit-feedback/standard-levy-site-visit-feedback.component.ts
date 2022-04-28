@@ -1,11 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Subject} from "rxjs";
-import {
-    DocumentDTO,
-    ManufactureCompletedTask,
-    ManufacturePendingTask,
-    SiteVisitRemarks
-} from "../../../core/store/data/levy/levy.model";
+import {DocumentDTO, ManufacturePendingTask, SiteVisitRemarks} from "../../../core/store/data/levy/levy.model";
 import {LevyService} from "../../../core/store/data/levy/levy.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";

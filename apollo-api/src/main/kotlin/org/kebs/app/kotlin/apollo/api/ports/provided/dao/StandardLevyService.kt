@@ -15,8 +15,6 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -29,9 +27,6 @@ import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.stream.Collectors
-
-
 
 
 @Service

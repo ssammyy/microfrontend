@@ -1,27 +1,31 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {
     ApproveVisitTask,
-    AssignCompanyTaskDTO, Branch,
+    AssignCompanyTaskDTO,
+    Branch,
     CompanyModel,
-    ConfirmEditCompanyDTO, DirectorsList, DocumentDTO,
+    ConfirmEditCompanyDTO,
+    DirectorsList,
+    DocumentDTO,
     EditCompanyDTO,
     ManufactureCompletedTask,
-    ManufactureCompleteTask,
     ManufactureDetailList,
-    ManufactureInfo,
     ManufacturePenalty,
     ManufacturePendingTask,
-    ManufacturingStatus, NotificationStatus,
+    ManufacturingStatus,
+    NotificationStatus,
     PaidLevy,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo,
-    SiteVisitFeedBack, SiteVisitRemarks,
+    SiteVisitFeedBack,
+    SiteVisitRemarks,
     SiteVisitReport,
-    SLevySL1, SlModel,
+    SLevySL1,
+    SlModel,
     StdLevyScheduleSiteVisitDTO,
     UserEntityRoles,
     UsersEntityList,

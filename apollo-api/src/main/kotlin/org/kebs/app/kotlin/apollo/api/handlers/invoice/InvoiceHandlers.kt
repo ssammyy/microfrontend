@@ -20,8 +20,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.PaymentStatus
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.InvoicePaymentService
-import org.kebs.app.kotlin.apollo.common.dto.ValidatePhoneNumberTokenRequestDto
-import org.kebs.app.kotlin.apollo.common.dto.ValidateTokenRequestDto
 import org.kebs.app.kotlin.apollo.common.dto.sage.response.SageNotificationResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException

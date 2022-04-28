@@ -33,7 +33,7 @@ export class ViewAuctionItemsComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                {name: 'editRecord', title: '<i class="fa fa-pencil-alt">Edit</i>'},
+                // {name: 'editRecord', title: '<i class="fa fa-pencil-alt">Edit</i>'},
                 {name: 'viewRecord', title: '<i class="fa fa-eye">View</i>'}
             ],
             position: 'right' // left|right

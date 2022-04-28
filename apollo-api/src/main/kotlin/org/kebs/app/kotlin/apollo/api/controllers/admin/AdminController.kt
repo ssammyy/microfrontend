@@ -1,12 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.controllers.admin
 
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.admin.AdminDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
 import org.kebs.app.kotlin.apollo.store.model.BusinessLinesEntity
 import org.kebs.app.kotlin.apollo.store.model.BusinessNatureEntity
-import org.kebs.app.kotlin.apollo.store.model.std.Department
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import org.kebs.app.kotlin.apollo.common.dto.std.*
 
 @RestController
 @RequestMapping("api/v1/migration/")
