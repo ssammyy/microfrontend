@@ -1225,11 +1225,11 @@ class StdLevyController(
     ): CommonDaoServices.MessageSuccessFailDTO {
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val windingUpReport = standardLevyOperationsClosureRepository.findByIdOrNull(operationClosureId)?: throw Exception("Record Does Not Exist")
+        //val windingUpReport = standardLevyOperationsClosureRepository.findByIdOrNull(operationClosureId)?: throw Exception("Record Does Not Exist")
 
         docFile.forEach { u ->
             val upload = SlWindingUpReportUploadsEntity()
-            upload.closureID = windingUpReport.id
+            upload.closureID = operationClosureId
             standardLevyService.uploadWindingUpReport(
                 upload,
                 u,
