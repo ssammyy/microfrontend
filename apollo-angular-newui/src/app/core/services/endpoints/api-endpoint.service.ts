@@ -439,6 +439,7 @@ export class ApiEndpointService {
         REG_MANUFACTURE_DETAILS: `${ApiEndpointService.SL_CONTEXT}/kebs/add/manufacture-details/save`,
         STD_LEVY_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerPenalty`,
         STD_LEVY_PAID_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getPaidLevies`,
+        STD_LEVY_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getLevyPayments`,
         STD_LEVY_COMPANY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getCompanyProfile`,
         STD_LEVY_SL_FORM: `${ApiEndpointService.STL_CONTEXT}/getNotificationFormDetails`,
         STD_LEVY_SL_NT_FORM: `${ApiEndpointService.STL_CONTEXT}/getSlNotificationFormDetails`,
@@ -481,6 +482,11 @@ export class ApiEndpointService {
         STD_LEVY_COMPANY_EDIT_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirm`,
         STD_LEVY_NOTIFICATION_FORM_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSLNotificationStatus`,
         STD_LEVY_BRANCH_NAME: `${ApiEndpointService.STL_CONTEXT}/getBranchName`,
+        STD_LEVY_SUSPEND_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/suspendCompanyOperations`,
+        STD_LEVY_CLOSE_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/closeCompanyOperations`,
+        STD_LEVY_UPLOAD_WINDING_UP_REPORT: `${ApiEndpointService.STL_CONTEXT}/uploadWindingUpReport`,
+        STD_LEVY_GET_WINDING_UP_REPORT_LIST: `${ApiEndpointService.STL_CONTEXT}/getWindingReportDocumentList`,
+        STD_LEVY_VIEW_WINDING_UP_REPORT: `${ApiEndpointService.STL_CONTEXT}/view/windingUpReport`,
 
 
 

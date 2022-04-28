@@ -5,7 +5,7 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {
     ApproveVisitTask,
-    AssignCompanyTaskDTO, Branch,
+    AssignCompanyTaskDTO, Branch, CloseCompanyDto,
     CompanyModel,
     ConfirmEditCompanyDTO, DirectorsList, DocumentDTO,
     EditCompanyDTO,
@@ -16,13 +16,13 @@ import {
     ManufacturePenalty,
     ManufacturePendingTask,
     ManufacturingStatus, NotificationStatus,
-    PaidLevy,
+    PaidLevy, PaymentDetails,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo,
     SiteVisitFeedBack, SiteVisitRemarks,
     SiteVisitReport,
     SLevySL1, SlModel,
-    StdLevyScheduleSiteVisitDTO,
+    StdLevyScheduleSiteVisitDTO, SuspendCompanyDto,
     UserEntityRoles,
     UsersEntityList,
     VisitTask
@@ -391,6 +391,55 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_BRANCH_NAME);
         const params = new HttpParams();
         return this.http.get<Branch>(url, {params}).pipe();
+    }
+
+    public suspendCompanyOperations(suspendCompanyDto: SuspendCompanyDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SUSPEND_OPERATIONS);
+        const params = new HttpParams();
+        return this.http.post<SuspendCompanyDto>(url, suspendCompanyDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public closeCompanyOperations(closeCompanyDto: CloseCompanyDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_CLOSE_OPERATIONS);
+        const params = new HttpParams();
+        return this.http.post<CloseCompanyDto>(url, closeCompanyDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public uploadWindingUpReport(operationClosureId: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_UPLOAD_WINDING_UP_REPORT);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'operationClosureId': operationClosureId}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getLevyPayments(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PAYMENT_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
     }
 
 

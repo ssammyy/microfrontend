@@ -8,6 +8,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.LevyClosureValue
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ProcessInstanceResponseSite
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ProcessInstanceResponseValueSite
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ProcessInstanceSiteResponse
@@ -15,8 +16,6 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -29,9 +28,6 @@ import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.stream.Collectors
-
-
 
 
 @Service
@@ -65,7 +61,10 @@ class StandardLevyService(
     private val iCountiesRepository: ICountiesRepository,
     private val businessLinesRepo: IBusinessLinesRepository,
     private val businessNatureRepo: IBusinessNatureRepository,
-    private val iCompanyProfileDirectorsRepository: ICompanyProfileDirectorsRepository
+    private val iCompanyProfileDirectorsRepository: ICompanyProfileDirectorsRepository,
+    private val standardLevyOperationsClosureRepository: StandardLevyOperationsClosureRepository,
+    private val standardLevyOperationsSuspensionRepository: StandardLevyOperationsSuspensionRepository,
+    private val slWindingUpReportUploadsEntityRepository: SlWindingUpReportUploadsEntityRepository
 
 
     ) {
@@ -569,6 +568,8 @@ return getUserTasks();
                     )
                     return ProcessInstanceSiteResponse(processInstance.id, processInstance.isEnded)
     }
+
+
 
     fun scheduleSiteVisit(
         standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
@@ -1491,6 +1492,69 @@ return getUserTasks();
 
     fun closeProcess(taskId: String) {
         runtimeService.deleteProcessInstance(taskId, "cleaning")
+    }
+
+    fun getLevyPayments(): MutableList<LevyPayments> {
+        return companyProfileRepo.getLevyPayments()
+    }
+
+    fun suspendCompanyOperations(
+        standardLevyOperationsSuspension: StandardLevyOperationsSuspension
+    ): StandardLevyOperationsSuspension {
+        standardLevyOperationsSuspension.companyId= standardLevyOperationsSuspension.companyId
+        standardLevyOperationsSuspension.reason = standardLevyOperationsSuspension.reason
+        standardLevyOperationsSuspension.dateOfSuspension= standardLevyOperationsSuspension.dateOfSuspension
+        standardLevyOperationsSuspension.status= 0
+
+        return standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
+    }
+
+    fun closeCompanyOperations(
+        standardLevyOperationsClosure: StandardLevyOperationsClosure
+    ): LevyClosureValue {
+        standardLevyOperationsClosure.companyId = standardLevyOperationsClosure.companyId
+        standardLevyOperationsClosure.reason = standardLevyOperationsClosure.reason
+        standardLevyOperationsClosure.dateOfClosure = standardLevyOperationsClosure.dateOfClosure
+        standardLevyOperationsClosure.status = 0
+
+        standardLevyOperationsClosureRepository.save(standardLevyOperationsClosure)
+
+        return LevyClosureValue(standardLevyOperationsClosure.id)
+    }
+
+    // Upload Winding Up Report
+    fun uploadWindingUpReport(
+        uploads: SlWindingUpReportUploadsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): SlWindingUpReportUploadsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return slWindingUpReportUploadsEntityRepository.save(uploads)
+    }
+
+    // View Report Document
+    fun findWindingReportFileBYId(closureID: Long): SlWindingUpReportUploadsEntity {
+        return slWindingUpReportUploadsEntityRepository.findAllById(closureID)
+            ?: throw ExpectedDataNotFound("No File found with the following [ id=$closureID]")
+    }
+
+    fun getWindingReportDocumentList(closureID: Long): List<WindingUpReportListHolder> {
+        return slWindingUpReportUploadsEntityRepository.findAllDocumentId(closureID)
     }
 
 

@@ -22,10 +22,7 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirecto
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
-import org.kebs.app.kotlin.apollo.store.repo.ISlVisitUploadsRepository
-import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyFactoryVisitReportRepository
-import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
+import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -64,8 +61,9 @@ class StdLevyController(
     private val standardLevyService: StandardLevyService,
     private val daoServices: RegistrationDaoServices,
     private val standardLevyFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
+    private val standardLevyOperationsClosureRepository: StandardLevyOperationsClosureRepository
 
-) {
+    ) {
 
     @PostMapping("/deploy")
     fun deployWorkflow(): ServerResponse {
@@ -1182,21 +1180,105 @@ class StdLevyController(
         return standardLevyService.getBranchName()
     }
 
-    @PostMapping("/sendEntryNumber")
+    @GetMapping("/getLevyPayments")
+    @ResponseBody
+    fun getLevyPayments(): MutableList<LevyPayments>
+    {
+        return standardLevyService.getLevyPayments()
+    }
+
+   // @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/suspendCompanyOperations")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun sendEntryNumber(
-        @RequestParam("transmissionDate") transmissionDate: Timestamp,
-        @RequestParam("loginId") loginId: String,
-        @RequestParam("password") password: String,
-        @RequestParam("hash") hash: String,
-        @RequestParam("noOfRecords") noOfRecords: Long
+    fun suspendCompanyOperations(
+        @RequestBody suspendCompanyDto: SuspendCompanyDto
     ): ServerResponse
     {
-       // String url = "https://196.61.52.30/KEBS/kebs/sendEntryDetails"
+        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+            companyId = suspendCompanyDto.id
+            reason = suspendCompanyDto.reason
+            dateOfSuspension = suspendCompanyDto.dateOfSuspension
+        }
 
+        return ServerResponse(HttpStatus.OK,"Details Submitted for Verification",standardLevyService.suspendCompanyOperations(standardLevyOperationsSuspension))
 
-        return ServerResponse(HttpStatus.OK,"Sent", HttpStatus.OK)
+    }
+
+    @PostMapping("/closeCompanyOperations")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun closeCompanyOperations(
+        @RequestBody closeCompanyDto: CloseCompanyDto
+    ): ServerResponse
+    {
+        val standardLevyOperationsClosure= StandardLevyOperationsClosure().apply {
+            companyId = closeCompanyDto.id
+            reason = closeCompanyDto.reason
+            dateOfClosure = closeCompanyDto.dateOfClosure
+        }
+
+        return ServerResponse(HttpStatus.OK,"Details Submitted for Verification",standardLevyService.closeCompanyOperations(standardLevyOperationsClosure))
+
+    }
+
+    @PostMapping("/uploadWindingUpReport")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadWindingUpReport(
+        @RequestParam("operationClosureId") operationClosureId: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val windingUpReport = standardLevyOperationsClosureRepository.findByIdOrNull(operationClosureId)?: throw Exception("Record Does Not Exist")
+
+        docFile.forEach { u ->
+            val upload = SlWindingUpReportUploadsEntity()
+            upload.closureID = windingUpReport.id
+            standardLevyService.uploadWindingUpReport(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "Report"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+    @GetMapping("/getWindingReportDocumentList")
+    fun getWindingReportDocumentList(
+        response: HttpServletResponse,
+        @RequestParam("closureID") closureID: Long
+    ): List<WindingUpReportListHolder> {
+        return standardLevyService.getWindingReportDocumentList(closureID)
+    }
+
+    //View Winding Up Report Document
+    @GetMapping("/view/windingUpReport")
+    fun viewWindingUpReport(
+        response: HttpServletResponse,
+        @RequestParam("closureID") closureID: Long
+    ) {
+
+        val fileUploaded = standardLevyService.findWindingReportFileBYId(closureID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
     }
 
 

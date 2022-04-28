@@ -1866,6 +1866,118 @@ alter table DAT_KEBS_COMPANY_PROFILE
 add TOWN_NAME VARCHAR(350 CHAR);
 
 /
+alter table DAT_KEBS_COMPANY_PROFILE
+    add SUSPENSION_STATUS int default 0
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add CLOSURE_STATUS int default 0
+
+/
+create  table DAT_KEBS_SUSPENSION_OF_OPERATIONS
+(
+    id                   number   not null primary key,
+    COMPANY_ID            int,
+    REASON           varchar(350 char),
+    STATUS           int default 0,
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_SUSPENSION          VARCHAR2(350 CHAR)
+)
+/
+create sequence DAT_KEBS_SUSPENSION_OF_OPERATIONS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_SUSPENSION_OF_OPERATIONS_trg
+    before
+        insert
+    on DAT_KEBS_SUSPENSION_OF_OPERATIONS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_SUSPENSION_OF_OPERATIONS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+create  table DAT_KEBS_CLOSURE_OF_OPERATIONS
+(
+    id                   number   not null primary key,
+    COMPANY_ID            int,
+    REASON           varchar(350 char),
+    STATUS           int default 0,
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_CLOSURE          VARCHAR2(350 CHAR)
+)
+/
+create sequence DAT_KEBS_CLOSURE_OF_OPERATIONS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_CLOSURE_OF_OPERATIONS_trg
+    before
+        insert
+    on DAT_KEBS_CLOSURE_OF_OPERATIONS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_CLOSURE_OF_OPERATIONS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+create table DAT_KEBS_WU_REPORT_UPLOADS
+(
+    id               NUMBER                                      not null PRIMARY KEY,
+    FILEPATH         VARCHAR2(200),
+    DESCRIPTION      VARCHAR2(200),
+    NAME             VARCHAR2(350),
+    FILE_TYPE        VARCHAR2(200),
+    DOCUMENT_TYPE    VARCHAR2(200),
+    DOCUMENT         BLOB,
+    TRANSACTION_DATE DATE                                        not null,
+    CLOSURE_ID         NUMBER                                      not null REFERENCES DAT_KEBS_CLOSURE_OF_OPERATIONS (ID),
+    status           NUMBER(2)                   default 0       not null,
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_KEBS_WU_REPORT_UPLOADS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger DAT_KEBS_WU_REPORT_UPLOADS_trg
+    before
+        insert
+    on DAT_KEBS_WU_REPORT_UPLOADS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_WU_REPORT_UPLOADS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
 
 
 

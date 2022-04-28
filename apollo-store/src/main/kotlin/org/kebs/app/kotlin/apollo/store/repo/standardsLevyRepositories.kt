@@ -1,12 +1,10 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
-import org.kebs.app.kotlin.apollo.store.model.Sl2PaymentsDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.Sl2PaymentsHeaderEntity
-import org.kebs.app.kotlin.apollo.store.model.SlVisitUploadsEntity
-import org.kebs.app.kotlin.apollo.store.model.StandardLevySiteVisitRemarks
+import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.NWAPreliminaryDraftUploads
 import org.kebs.app.kotlin.apollo.store.model.std.SiteVisitListHolder
+import org.kebs.app.kotlin.apollo.store.model.std.WindingUpReportListHolder
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
@@ -29,4 +27,22 @@ interface ISlVisitUploadsRepository : HazelcastRepository<SlVisitUploadsEntity, 
 }
 interface StandardLevySiteVisitRemarksRepository : HazelcastRepository<StandardLevySiteVisitRemarks, Long>, JpaSpecificationExecutor<StandardLevySiteVisitRemarks> {
   fun findAllBySiteVisitIdOrderByIdDesc(id: Long): List<StandardLevySiteVisitRemarks>?
+}
+
+interface StandardLevyOperationsClosureRepository : HazelcastRepository<StandardLevyOperationsClosure, Long>, JpaSpecificationExecutor<StandardLevySiteVisitRemarks> {
+
+}
+
+interface StandardLevyOperationsSuspensionRepository : HazelcastRepository<StandardLevyOperationsSuspension, Long>, JpaSpecificationExecutor<StandardLevySiteVisitRemarks> {
+
+}
+
+interface SlWindingUpReportUploadsEntityRepository : HazelcastRepository<SlWindingUpReportUploadsEntity, Long>, JpaSpecificationExecutor<StandardLevySiteVisitRemarks> {
+    fun findAllById(id: Long): SlWindingUpReportUploadsEntity
+
+    @Query(
+        value = "SELECT w.ID as id  FROM DAT_KEBS_WU_REPORT_UPLOADS w WHERE w.CLOSURE_ID= :id ",
+        nativeQuery = true
+    )
+    fun findAllDocumentId(@Param("id") id: Long?): List<WindingUpReportListHolder>
 }

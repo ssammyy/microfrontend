@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {
     BusinessLines,
@@ -14,7 +14,12 @@ import {Observable, of, throwError} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
+import {NgxSpinnerService} from "ngx-spinner";
+import {NotificationService} from "../../core/store/data/std/notification.service";
+import {LevyService} from "../../core/store/data/levy/levy.service";
+import swal from "sweetalert2";
 
+declare const $: any;
 @Component({
     selector: 'app-company',
     templateUrl: './company.component.html',
@@ -25,6 +30,8 @@ export class CompanyComponent implements OnInit {
     stepOneForm: FormGroup = new FormGroup({});
     stepTwoForm: FormGroup = new FormGroup({});
     stepThreeForm: FormGroup = new FormGroup({});
+    suspendOperationsForm: FormGroup = new FormGroup({});
+    closeOperationsForm: FormGroup = new FormGroup({});
     companySoFar: Partial<Company> | undefined;
     // @ts-ignore
     company: Company;
@@ -39,6 +46,9 @@ export class CompanyComponent implements OnInit {
     selectedCounty = 0;
     selectedTown = 0;
     step = 1;
+    loadingText: string;
+    blob: Blob;
+    public uploadedFiles:  FileList;
 
     constructor(
         private service: CompanyService,
@@ -48,6 +58,9 @@ export class CompanyComponent implements OnInit {
         private countyService: CountyService,
         private townService: TownService,
         private store$: Store<any>,
+        private SpinnerService: NgxSpinnerService,
+        private notifyService: NotificationService,
+        private levyService: LevyService,
     ) {
         this.businessNatures$ = naturesService.entities$;
         this.businessLines$ = linesService.entities$;
@@ -87,9 +100,32 @@ export class CompanyComponent implements OnInit {
             return this.company = d;
         });
 
+        console.log(this.company)
+
+        this.suspendOperationsForm = new FormGroup({
+            name: new FormControl('', [Validators.required]),
+            registrationNumber: new FormControl('', [Validators.required]),
+            kraPin: new FormControl('', [Validators.required]),
+            directorIdNumber: new FormControl('', [Validators.required]),
+            id: new FormControl('', [Validators.required]),
+            reason: new FormControl('', [Validators.required]),
+            dateOfSuspension: new FormControl('', [Validators.required]),
+        });
+        this.closeOperationsForm = new FormGroup({
+            name: new FormControl('', [Validators.required]),
+            registrationNumber: new FormControl('', [Validators.required]),
+            kraPin: new FormControl('', [Validators.required]),
+            directorIdNumber: new FormControl('', [Validators.required]),
+            id: new FormControl('', [Validators.required]),
+            reason: new FormControl('', [Validators.required]),
+            dateOfClosure: new FormControl('', [Validators.required]),
+        });
+
         this.stepOneForm.patchValue(this.company);
         this.stepTwoForm.patchValue(this.company);
         this.stepThreeForm.patchValue(this.company);
+        this.suspendOperationsForm.patchValue(this.company);
+        this.closeOperationsForm.patchValue(this.company);
         console.log(`Select town ID inside is ${this.company.town}`);
         this.companySoFar = this.company;
 
@@ -112,6 +148,15 @@ export class CompanyComponent implements OnInit {
             }
         );
         console.log(`Select town ID inside is ${this.company.town}`);
+    }
+
+    showToasterSuccess(title:string,message:string){
+        this.notifyService.showSuccess(message, title)
+
+    }
+    showToasterError(title:string,message:string){
+        this.notifyService.showError(message, title)
+
     }
 
     updateSelectedRegion() {
@@ -255,5 +300,113 @@ export class CompanyComponent implements OnInit {
         } else {
             return '';
         }
+    }
+
+    uploadSuspensionForm(): void {
+            this.loadingText = "Saving";
+            this.SpinnerService.show();
+            this.levyService.suspendCompanyOperations(this.suspendOperationsForm.value).subscribe(
+                (response) => {
+                    console.log(response);
+                    this.SpinnerService.hide();
+                    this.showToasterSuccess(response.httpStatus, `Record Saved`);
+                    this.suspendOperationsForm.reset();
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    this.showToasterError('Error', `Error Saving Record`);
+                    console.log(error.message);
+                }
+            );
+            this.hideModelSuspension();
+
+    }
+    uploadClosureForm(): void {
+        this.loadingText = "Saving...";
+        this.SpinnerService.show();
+        this.levyService.closeCompanyOperations(this.closeOperationsForm.value).subscribe(
+            (response) => {
+                this.onClickSaveUploads(response.body.savedRowID)
+                console.log(response.body.savedRowID)
+                this.closeOperationsForm.reset();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.hideModelClosure()
+    }
+    onClickSaveUploads(operationClosureId: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.loadingText = "Saving...";
+            this.SpinnerService.show();
+            this.levyService.uploadWindingUpReport(operationClosureId, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFiles = null;
+                    console.log(data);
+                    swal.fire({
+                        title: 'Uploaded Successfully',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    console.log(error.message);
+                }
+            );
+        }
+
+    }
+
+    @ViewChild('closeModalSuspension') private closeModalSuspension: ElementRef | undefined;
+
+    public hideModelSuspension() {
+        this.closeModalSuspension?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalClosure') private closeModalClosure: ElementRef | undefined;
+
+    public hideModelClosure() {
+        this.closeModalClosure?.nativeElement.click();
+    }
+
+    showNotification(from: any, align: any) {
+        const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
+
+        const color = Math.floor((Math.random() * 6) + 1);
+
+        $.notify({
+            icon: 'notifications',
+            message: 'Welcome to <b>Material Dashboard</b> - a beautiful dashboard for every web developer.'
+        }, {
+            type: type[color],
+            timer: 3000,
+            placement: {
+                from: from,
+                align: align
+            },
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0} alert-with-icon" role="alert">' +
+                '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
+                '<i class="material-icons" data-notify="icon">notifications</i> ' +
+                '<span data-notify="title"></span> ' +
+                '<span data-notify="message">Ensure all required fields and items have been filled</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
     }
 }

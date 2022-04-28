@@ -306,6 +306,17 @@ export interface SiteVisitFeedBack {
 export interface DirectorsList {
     directorName: string;
 }
+export interface PaymentDetails{
+    id: number;
+    entryNumber: number;
+    paymentDate: string;
+    paymentAmount: bigint;
+    lastName: string;
+    firstName: string;
+    companyName: string;
+    companyId: number;
+    assignStatus: number;
+}
 export interface ManufactureDetailList {
     id: number;
     name: string;
@@ -491,5 +502,18 @@ export interface NotificationStatus {
 
 export interface Branch {
     branchName: string;
+}
+export interface SuspendCompanyDto{
+    id: number;
+    name: string;
+    reason: string;
+    dateOfSuspension: Timestamp<number>;
+}
+
+export interface CloseCompanyDto{
+    id: number;
+    name: string;
+    reason: string;
+    dateOfClosure: Timestamp<number>;
 }
 
