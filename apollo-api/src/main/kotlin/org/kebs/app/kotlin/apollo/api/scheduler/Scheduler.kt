@@ -70,12 +70,18 @@ class Scheduler(
 @EnableScheduling
 @Profile("default")
 class SchedulerDevelopment(
-        private val schedulerImpl: SchedulerImpl
+        private val schedulerImpl: SchedulerImpl,
+        private val qaDaoServices: QADaoServices,
+        private val invoiceDaoService: InvoiceDaoService
 ) {
-    //    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
+    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
     fun updateDemandNotes() {
+        invoiceDaoService.updateOfInvoiceTables()
+        qaDaoServices.assignPermitApplicationAfterPayment()
+        qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()
-        //    KotlinLogging.logger { }.info("DEV: UPDATING DEMAND NOTES on SW")
+        schedulerImpl.updateFirmTypeStatus()
+        schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updatePaidDemandNotesStatus()
         //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
     }

@@ -300,8 +300,7 @@ class InvoiceDaoService(
 
 
     fun findAllInvoicesPaid(): List<StagingPaymentReconciliation>? {
-        val map = commonDaoServices.serviceMapDetails(appId)
-        return invoicePaymentRepo.findByPaymentTablesUpdatedStatus(map.activeStatus)
+        return invoicePaymentRepo.findByPaymentTablesUpdatedStatus(1)
     }
 
     fun findDemandNoteCdId(cdId: Long): CdDemandNoteEntity? {
@@ -346,6 +345,8 @@ class InvoiceDaoService(
                             sageInvoiceNumber = stgPayment.sageInvoiceNumber
                             invoiceTaxAmount = stgPayment.invoiceTaxAmount
                             paymentTransactionDate = stgPayment.paymentTransactionDate
+                            createdBy = "SYSTEM SCHEDULER"
+                            createdOn = commonDaoServices.getTimestamp()
                         }
 
                         logPaymentMade = invoiceLogPaymentRepo.save(logPaymentMade)
