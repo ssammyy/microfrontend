@@ -1,9 +1,8 @@
 package org.kebs.app.kotlin.apollo.store.model.invoice
 
 import java.io.Serializable
-import java.sql.Time
+import java.sql.Date
 import java.sql.Timestamp
-import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -15,204 +14,183 @@ class LogStgPaymentReconciliationEntity : Serializable {
     @Id
     var id: Long = 0
 
+    @Basic
+    @Column(name = "PAYMENT_RECONCILIATION_ID")
+    var paymentReconciliationId: Long? = null
+
+    @Basic
     @Column(name = "INVOICE_ID")
-    @Basic
-    var invoiceId: Long = 0
+    var invoiceId: Long? = null
 
-    @Column(name = "REFERENCE_CODE")
     @Basic
-    var referenceCode: String? = null
-
     @Column(name = "ACCOUNT_NAME")
-    @Basic
     var accountName: String? = null
 
-    @Column(name = "ACCOUNT_NUMBER")
     @Basic
+    @Column(name = "ACCOUNT_NUMBER")
     var accountNumber: String? = null
 
-    @Column(name = "CURRENCY")
     @Basic
+    @Column(name = "CURRENCY")
     var currency: String? = null
 
-    @Column(name = "STATUS_CODE")
     @Basic
+    @Column(name = "STATUS_CODE")
     var statusCode: String? = null
 
-    @Column(name = "STATUS_DESCRIPTION")
     @Basic
+    @Column(name = "STATUS_DESCRIPTION")
     var statusDescription: String? = null
 
-    @Column(name = "ADDITIONAL_INFORMATION")
     @Basic
+    @Column(name = "ADDITIONAL_INFORMATION")
     var additionalInformation: String? = null
 
+    @Basic
     @Column(name = "INVOICE_AMOUNT")
-    @Basic
-    var invoiceAmount: Long = 0
+    var invoiceAmount: java.math.BigDecimal? = null
 
+    @Basic
     @Column(name = "PAID_AMOUNT")
-    @Basic
-    var paidAmount: Long = 0
+    var paidAmount: java.math.BigDecimal? = null
 
+    @Basic
     @Column(name = "OUTSTANDING_AMOUNT")
-    @Basic
-    var outstandingAmount: Long = 0
+    var outstandingAmount: java.math.BigDecimal? = null
 
-    @Column(name = "TRANSACTION_ID")
     @Basic
+    @Column(name = "TRANSACTION_ID")
     var transactionId: String? = null
 
+    @Basic
     @Column(name = "TRANSACTION_DATE")
-    @Basic
-    var transactionDate: Time? = null
+    var transactionDate: Date? = null
 
-    @Column(name = "CUSTOMER_NAME")
     @Basic
+    @Column(name = "CUSTOMER_NAME")
     var customerName: String? = null
 
-    @Column(name = "PAYMENT_SOURCE")
     @Basic
+    @Column(name = "PAYMENT_SOURCE")
     var paymentSource: String? = null
 
-    @Column(name = "EXTRAS")
     @Basic
+    @Column(name = "EXTRAS")
     var extras: String? = null
 
+    @Basic
     @Column(name = "INVOICE_DATE")
-    @Basic
-    var invoiceDate: Time? = null
+    var invoiceDate: Date? = null
 
-    @Column(name = "DESCRIPTION")
     @Basic
+    @Column(name = "DESCRIPTION")
     var description: String? = null
 
+    @Basic
     @Column(name = "STATUS")
-    @Basic
-    var status: Long = 0
+    var status: Int? = null
 
-    @Column(name = "DESCRIPTIONS")
     @Basic
+    @Column(name = "DESCRIPTIONS")
     var descriptions: String? = null
 
-    @Column(name = "VAR_FIELD_1")
     @Basic
+    @Column(name = "VAR_FIELD_1")
     var varField1: String? = null
 
-    @Column(name = "VAR_FIELD_2")
     @Basic
+    @Column(name = "VAR_FIELD_2")
     var varField2: String? = null
 
-    @Column(name = "VAR_FIELD_3")
     @Basic
+    @Column(name = "VAR_FIELD_3")
     var varField3: String? = null
 
-    @Column(name = "VAR_FIELD_4")
     @Basic
+    @Column(name = "VAR_FIELD_4")
     var varField4: String? = null
 
-    @Column(name = "VAR_FIELD_5")
     @Basic
+    @Column(name = "VAR_FIELD_5")
     var varField5: String? = null
 
-    @Column(name = "VAR_FIELD_6")
     @Basic
+    @Column(name = "VAR_FIELD_6")
     var varField6: String? = null
 
-    @Column(name = "VAR_FIELD_7")
     @Basic
+    @Column(name = "VAR_FIELD_7")
     var varField7: String? = null
 
-    @Column(name = "VAR_FIELD_8")
     @Basic
+    @Column(name = "VAR_FIELD_8")
     var varField8: String? = null
 
-    @Column(name = "VAR_FIELD_9")
     @Basic
+    @Column(name = "VAR_FIELD_9")
     var varField9: String? = null
 
-    @Column(name = "VAR_FIELD_10")
     @Basic
+    @Column(name = "VAR_FIELD_10")
     var varField10: String? = null
 
-    @Column(name = "CREATED_BY")
     @Basic
+    @Column(name = "CREATED_BY")
     var createdBy: String? = null
 
-    @Column(name = "CREATED_ON")
     @Basic
+    @Column(name = "CREATED_ON")
     var createdOn: Timestamp? = null
 
-    @Column(name = "MODIFIED_BY")
     @Basic
+    @Column(name = "MODIFIED_BY")
     var modifiedBy: String? = null
 
-    @Column(name = "MODIFIED_ON")
     @Basic
+    @Column(name = "MODIFIED_ON")
     var modifiedOn: Timestamp? = null
 
-    @Column(name = "UPDATE_BY")
     @Basic
+    @Column(name = "UPDATE_BY")
     var updateBy: String? = null
 
-    @Column(name = "UPDATED_ON")
     @Basic
+    @Column(name = "UPDATED_ON")
     var updatedOn: Timestamp? = null
 
-    @Column(name = "DELETE_BY")
     @Basic
+    @Column(name = "DELETE_BY")
     var deleteBy: String? = null
 
-    @Column(name = "DELETED_ON")
     @Basic
+    @Column(name = "DELETED_ON")
     var deletedOn: Timestamp? = null
 
-    @Column(name = "VERSION")
     @Basic
+    @Column(name = "VERSION")
     var version: Long? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as LogStgPaymentReconciliationEntity
-        return id == that.id && invoiceId == that.invoiceId && invoiceAmount == that.invoiceAmount && paidAmount == that.paidAmount && outstandingAmount == that.outstandingAmount && status == that.status &&
-                referenceCode == that.referenceCode &&
-                accountName == that.accountName &&
-                accountNumber == that.accountNumber &&
-                currency == that.currency &&
-                statusCode == that.statusCode &&
-                statusDescription == that.statusDescription &&
-                additionalInformation == that.additionalInformation &&
-                transactionId == that.transactionId &&
-                transactionDate == that.transactionDate &&
-                customerName == that.customerName &&
-                paymentSource == that.paymentSource &&
-                extras == that.extras &&
-                invoiceDate == that.invoiceDate &&
-                description == that.description &&
-                descriptions == that.descriptions &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                updateBy == that.updateBy &&
-                updatedOn == that.updatedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn &&
-                version == that.version
-    }
+    @Basic
+    @Column(name = "REFERENCE_CODE")
+    var referenceCode: String? = null
 
-    override fun hashCode(): Int {
-        return Objects.hash(id, invoiceId, referenceCode, accountName, accountNumber, currency, statusCode, statusDescription, additionalInformation, invoiceAmount, paidAmount, outstandingAmount, transactionId, transactionDate, customerName, paymentSource, extras, invoiceDate, description, status, descriptions, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, updateBy, updatedOn, deleteBy, deletedOn, version)
-    }
+    @Basic
+    @Column(name = "ACTUAL_AMOUNT")
+    var actualAmount: java.math.BigDecimal? = null
+
+    @Basic
+    @Column(name = "PAYMENT_STARTED")
+    var paymentStarted: Int? = null
+
+    @Basic
+    @Column(name = "SAGE_INVOICE_NUMBER")
+    var sageInvoiceNumber: String? = null
+
+    @Basic
+    @Column(name = "INVOICE_TAX_AMOUNT")
+    var invoiceTaxAmount: java.math.BigDecimal? = null
+
+    @Basic
+    @Column(name = "PAYMENT_TRANSACTION_DATE")
+    var paymentTransactionDate: Timestamp? = null
 }

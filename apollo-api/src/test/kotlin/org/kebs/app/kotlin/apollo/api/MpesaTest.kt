@@ -90,7 +90,7 @@ class MpesaTest {
 
     @Test
     fun unHashString() {
-        val hashed = listOf("zZrP5Z1jcqPmu07FgSCQSifcF+mTZxk8", "MNKM14oLBnjT8NZMXZHdsQ==")
+        val hashed = listOf("YEFT/SnXFIDDHy2jA//6Vm1LrcinWHqg", "MNKM14oLBnjT8NZMXZHdsQ==")
         hashed.forEach {
             val plainText = jasyptStringEncryptor.decrypt(it)
             KotlinLogging.logger { }.info { "my hashed value =$it =  $plainText" }

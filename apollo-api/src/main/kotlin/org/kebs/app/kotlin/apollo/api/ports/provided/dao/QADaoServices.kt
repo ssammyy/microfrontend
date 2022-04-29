@@ -197,6 +197,14 @@ class QADaoServices(
                 ?: throw ExpectedDataNotFound("Invoice list With [BATCH ID = ${batchID}], do not Exist")
     }
 
+    fun findInvoicesPermitWithBatchID(batchID: Long): QaInvoiceMasterDetailsEntity{
+        invoiceMasterDetailsRepo.findByBatchInvoiceNo(batchID)
+                ?.let { it ->
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("Invoice With [BATCH ID = ${batchID}], do not Exist")
+    }
+
     fun findALlInvoicesPermitWithMasterInvoiceID(masterInvoiceID: Long, status: Int): List<QaInvoiceDetailsEntity> {
         invoiceDetailsRepo.findByStatusAndInvoiceMasterId(status, masterInvoiceID)
                 ?.let { it ->
@@ -243,6 +251,14 @@ class QADaoServices(
                     return it
                 }
                 ?: throw ExpectedDataNotFound("Invoices With [batch ID = ${batchID}], does not Exist")
+    }
+
+    fun findBatchInvoicesWithInvoiceBatchIDMapped(invoiceBatchMappedID: Long): QaBatchInvoiceEntity {
+        invoiceQaBatchRepo.findByInvoiceBatchNumberId(invoiceBatchMappedID)
+                ?.let { it ->
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("Invoices With [invoice Batch Mapped ID = ${invoiceBatchMappedID}], does not Exist")
     }
 
     fun findBatchInvoicesWithRefNO(refNumber: String): QaBatchInvoiceEntity {
@@ -494,6 +510,17 @@ class QADaoServices(
             modifiedOn = commonDaoServices.getTimestamp()
         }
         return invoiceQaBatchRepo.save(invoiceBatchDetails)
+    }
+
+    fun updateQAMasterInvoiceDetails(
+        permitInvoiceFound: QaInvoiceMasterDetailsEntity,
+        user: String
+    ): QaInvoiceMasterDetailsEntity {
+        with(permitInvoiceFound) {
+            modifiedBy = user
+            modifiedOn = commonDaoServices.getTimestamp()
+        }
+        return invoiceMasterDetailsRepo.save(permitInvoiceFound)
     }
 
 
@@ -1530,8 +1557,7 @@ class QADaoServices(
                 ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT REF NO =${permitRefNumber}")
     }
 
-    fun findPermitInvoiceByPermitID(
-            permitID: Long
+    fun findPermitInvoiceByPermitID(permitID: Long
     ): QaInvoiceMasterDetailsEntity {
         invoiceMasterDetailsRepo.findByPermitId(permitID)?.let {
             return it
@@ -2525,6 +2551,17 @@ class QADaoServices(
         with(permit) {
             permitStatus = statusID
             modifiedBy = commonDaoServices.concatenateName(user)
+            modifiedOn = commonDaoServices.getTimestamp()
+        }
+        return permitRepo.save(permit)
+    }
+
+    fun permitUpdate(
+            permit: PermitApplicationsEntity,
+            user: String
+    ): PermitApplicationsEntity {
+        with(permit) {
+            modifiedBy = user
             modifiedOn = commonDaoServices.getTimestamp()
         }
         return permitRepo.save(permit)
