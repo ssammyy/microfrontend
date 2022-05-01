@@ -94,10 +94,6 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var plotNo: String? = null
 
-    @Column(name = "EFFECTIVE_DATE")
-    @Basic
-    var effectiveDate: Date? = null
-
 
     @Column(name = "DESIGNATION")
     @Basic
@@ -185,14 +181,6 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var resubmitRemarks: String? = null
 
-    @Column(name = "SUSPENSION_STATUS")
-    @Basic
-    var suspensionStatus: Int? = null
-
-    @Column(name = "SUSPENSION_REMARKS")
-    @Basic
-    var suspensionRemarks: String? = null
-
 
 //    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
 //    @ManyToOne
@@ -245,9 +233,9 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var dateOfExpiry: Date? = null
 
-//    @Column(name = "SUSPENSION_STATUS")
-//    @Basic
-//    var applicationSuspensionStatus: Int? = null
+    @Column(name = "SUSPENSION_STATUS")
+    @Basic
+    var applicationSuspensionStatus: Int? = null
 
     @Column(name = "PRODUCT_NAME")
     @Basic
@@ -840,10 +828,7 @@ class PermitApplicationsEntity : Serializable {
         if (other == null || javaClass != other.javaClass) return false
         val that = other as PermitApplicationsEntity
         return id == that.id && cocId == that.cocId
-                && suspensionStatus == that.suspensionStatus
-                && suspensionRemarks == that.suspensionRemarks
                 && factoryVisit == that.factoryVisit
-                && effectiveDate == that.effectiveDate
                 && processStep == that.processStep
                 && hodQamApproveRejectStatus == that.hodQamApproveRejectStatus
                 && hodQamApproveRejectRemarks == that.hodQamApproveRejectRemarks
@@ -867,10 +852,7 @@ class PermitApplicationsEntity : Serializable {
     override fun hashCode(): Int {
         return Objects.hash(
             id,
-            suspensionStatus,
-            suspensionRemarks,
             hodQamApproveRejectStatus,
-            effectiveDate,
             hodQamApproveRejectRemarks,
             companyId,
             applicationStatus,

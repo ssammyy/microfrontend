@@ -558,5 +558,3 @@ class PostInvoiceToSageServices(
         }
     }
 }
-
-}

@@ -4,7 +4,7 @@ import {ToastrService} from 'ngx-toastr';
 import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class HandleErrorService {
 
@@ -24,15 +24,15 @@ export class HandleErrorService {
         } else if (err.error instanceof Blob) {
             // Error handled during download
             err.error.text().then((txt) => {
-                let res = JSON.parse(txt)
+                const res = JSON.parse(txt);
                 this.toastrService.warning(res.message);
-            })
+            });
         } else {
             // The backend returned an unsuccessful response code.
             // errorMessage = `Error Code: ${err.status},  Message: ${err.error}`;
             errorMessage = `Message: ${err.error}`;
 
-            console.log(`Message: ${err.error}`)
+            console.log(`Message: ${err.error}`);
             this.toastrService.warning(errorMessage);
         }
 
@@ -54,22 +54,6 @@ export class HandleErrorService {
                 } else {
                     this.toastrService.warning(JSON.stringify(message));
                 }
-  public handleMessaging(message: string, code: number) {
-    if (
-      message
-    ) {
-      if (
-        message === 'null' ||
-        message.trim().length < 1 ||
-        message === ''
-      ) {
-        console.warn('No toaster for empty messages');
-      } else {
-        if (code === 200) {
-          this.toastrService.info(message);
-        } else {
-          this.toastrService.warning(JSON.stringify(message));
-        }
 
             }
 

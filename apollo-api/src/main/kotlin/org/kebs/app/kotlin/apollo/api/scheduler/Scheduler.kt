@@ -19,7 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled
 class Scheduler(
 //        private val schedulerImpl: SchedulerImpl,
 //        private val qaDaoServices: QADaoServices
-        private val msDaoServices: MarketSurveillanceFuelDaoServices
+        private val msDaoServices: MarketSurveillanceFuelDaoServices,
         private val schedulerImpl: SchedulerImpl,
         private val qaDaoServices: QADaoServices,
         private val invoiceDaoService: InvoiceDaoService
@@ -75,7 +75,7 @@ class Scheduler(
 @EnableScheduling
 @Profile("default")
 class SchedulerDevelopment(
-        private val msDaoServices: MarketSurveillanceFuelDaoServices
+        private val msDaoServices: MarketSurveillanceFuelDaoServices,
         private val schedulerImpl: SchedulerImpl,
         private val qaDaoServices: QADaoServices,
         private val invoiceDaoService: InvoiceDaoService
@@ -87,7 +87,6 @@ class SchedulerDevelopment(
         qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updateFirmTypeStatus()
-        schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updatePaidDemandNotesStatus()
         //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
 //        msDaoServices.updateRemediationDetailsAfterPaymentDone()

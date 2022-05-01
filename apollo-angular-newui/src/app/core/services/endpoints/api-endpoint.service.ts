@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ApiEndpointService {
 
@@ -10,17 +10,17 @@ export class ApiEndpointService {
      */
     public static PROTOCOL = {
         HTTP: `http://`,
-        HTTPS: `https://`
+        HTTPS: `https://`,
     };
 
     /**
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        LOCAL_DEV: 'localhost:8006'
+        LOCAL_DEV: 'localhost:8006',
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        //  LOCAL_DEV: `kimsint.kebs.org:8006`
+        //  LOCAL_DEV: `kimsint.kebs.org:8006`,
         // LOCAL_DEV: `kims.kebs.org`
         // LOCAL_DEV: '10.10.0.149:8007'
     };
@@ -53,13 +53,13 @@ export class ApiEndpointService {
     public static MS_APPLICATION_MAP_PROPERTIES = {
         epraRoles: ['EPRA'],
         msManagerRoles: ['MS_MP_MODIFY', 'MS_MP_READ'],
-        msOfficerRoles: ['MS_IO_MODIFY', 'MS_IO_READ']
+        msOfficerRoles: ['MS_IO_MODIFY', 'MS_IO_READ'],
     };
 
     /**
      * Map of contexts for API endpoints.
      */
-    public static AUTH_CONTEXT = '/api/v1/login/b';
+    public static AUTH_CONTEXT = '/api/v1/login';
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
     public static ANONYMOUS_CONTEXT_MS = '/api/v1/migration/ms/anonymous';
     public static ANONYMOUS_CONTEXT_NEP = '/api/v1/migration/anonymous/National_enquiry_point';
@@ -540,7 +540,7 @@ export class ApiEndpointService {
         MS_PRODUCT_CATEGORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/productCategories`,
         MS_BROAD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/broadProductCategory`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
-        MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`
+        MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
       };
 
     public static MARKET_SURVEILLANCE_COMPLAINT = {
@@ -569,7 +569,7 @@ export class ApiEndpointService {
   public static getEndpoint(endpoint: string): string {
     const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
     const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
-    const context: string = ApiEndpointService.CONTEXT
+    const context: string = ApiEndpointService.CONTEXT;
     return `${protocol}${domain}${context}${endpoint}`;
   }
 

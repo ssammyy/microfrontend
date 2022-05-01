@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
 import org.apache.commons.lang3.SerializationUtils
-import org.kebs.app.kotlin.apollo.api.controllers.msControllers.MSReportsControllers
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
@@ -89,7 +88,6 @@ class QADaoServices(
         private val processStatusRepo: IQaProcessStatusRepository,
         private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
         private val mpesaServices: MPesaService,
-        private val msReportsControllers: MSReportsControllers,
         private val reportsDaoService: ReportsDaoService,
 //    private val reportsControllers: ReportsController,
         private val notifications: Notifications,

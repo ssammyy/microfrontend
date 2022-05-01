@@ -81,6 +81,8 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirecto
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
+import org.kebs.app.kotlin.apollo.store.repo.external.ApiClientRepo
+import org.kebs.app.kotlin.apollo.store.repo.ms.IWorkplanYearsCodesRepository
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
@@ -752,14 +754,6 @@ class CommonDaoServices(
                     ?: throw ExpectedDataNotFound("No userName with the following userName=$username, Exist in the users table")
             }
             ?: throw ExpectedDataNotFound("No user has logged in")
-                ?.let { username ->
-                    usersRepo.findByEmail(username)
-                            ?.let { loggedInUser ->
-                                return loggedInUser
-                            }
-                            ?: throw ExpectedDataNotFound("No userName with the following userName=$username, Exist in the users table")
-                }
-                ?: throw ExpectedDataNotFound("No user has logged in")
     }
 
     fun checkLoggedInUser(): String? {
@@ -2040,15 +2034,6 @@ class CommonDaoServices(
                                         payload = "Success, valid OTP received"
                                         status = 200
                                     }
-                                    verificationToken.status = 30
-                                    verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
-                                    verificationToken.lastModifiedBy = "Verification Token Received"
-                                    emailVerificationTokenEntityRepo.save(verificationToken)
-                                    return CustomResponse().apply {
-                                        response = "00"
-                                        payload = "Success, valid OTP received"
-                                        status = 200
-                                    }
 
                                 }
                                 else -> {
@@ -2059,15 +2044,6 @@ class CommonDaoServices(
                                     throw InvalidValueException("Token Verification failed")
                                 }
                             }
-                                }
-                                        else -> {
-                                            verificationToken.status = 25
-                                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
-                                            verificationToken.lastModifiedBy = "Expired Verification Token Received"
-                                            emailVerificationTokenEntityRepo.save(verificationToken)
-                                            throw InvalidValueException("Token Verification failed")
-                                        }
-                                    }
 
                         }
                         ?: throw InvalidValueException("Verification Token without a valid expiry found")
@@ -2085,6 +2061,8 @@ class CommonDaoServices(
 
         }
     }
+
+
 
 
 
