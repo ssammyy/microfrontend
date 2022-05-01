@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -9,6 +10,7 @@ import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.LogStgPaymentReconciliationEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository
@@ -27,11 +29,12 @@ class InvoiceDaoService(
         private val billTransactionRepo: IBillTransactionsEntityRepository,
         private val billsRepo: IBillPaymentsRepository,
         private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
+        private val invoiceLogPaymentRepo: ILogStgPaymentReconciliationRepo,
         private val iPaymentMethodsRepo: IPaymentMethodsRepository,
         private val applicationMapProperties: ApplicationMapProperties,
         private val iDemandNoteRepository: IDemandNoteRepository,
         private val iDemandNoteItemsRepository: IDemandNoteItemsDetailsRepository,
-        private val commonDaoServices: CommonDaoServices
+        private val commonDaoServices: CommonDaoServices,
 ) {
 
     @Lazy
@@ -235,9 +238,7 @@ class InvoiceDaoService(
     }
 
     fun updateInvoiceBatchDetailsAfterPaymentDone(invoiceBatchDetails: InvoiceBatchDetailsEntity): InvoiceBatchDetailsEntity {
-        val map = commonDaoServices.serviceMapDetails(appId)
         with(invoiceBatchDetails) {
-            status = map.activeStatus
             modifiedBy = "SYSTEM"
             modifiedOn = commonDaoServices.getTimestamp()
         }
@@ -265,28 +266,54 @@ class InvoiceDaoService(
         return invoicePaymentRepo.save(stagingPaymentReconciliation)
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun updatePaymentDetailsToSpecificTable(updatedBatchInvoiceDetail: InvoiceBatchDetailsEntity, invoiceDetail: StagingPaymentReconciliation) {
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePaymentDetailsToSpecificTable(updatedBatchInvoiceDetail: InvoiceBatchDetailsEntity) {
         when (updatedBatchInvoiceDetail.tableSource) {
             applicationMapProperties.mapInvoiceTransactionsForDemandNote -> {
-                updateDemandNoteDetailsAfterPaymentDone(invoiceDetail)
-                updateStagingPaymentReconciliation(invoiceDetail)
+//                updateDemandNoteDetailsAfterPaymentDone(invoiceDetail)
+//                updateStagingPaymentReconciliation(invoiceDetail)
             }
             applicationMapProperties.mapInvoiceTransactionsForMSFuelReconciliation -> {
                 // Todo: add for fuel update details function
-                updateStagingPaymentReconciliation(invoiceDetail)
+//                updateStagingPaymentReconciliation(invoiceDetail)
             }
             applicationMapProperties.mapInvoiceTransactionsForPermit -> {
-                // Todo: add for Permit update details function
-                updateStagingPaymentReconciliation(invoiceDetail)
+              var permitBatchedDetails =  qaDaoServices.findBatchInvoicesWithInvoiceBatchIDMapped(updatedBatchInvoiceDetail.id)
+                with(permitBatchedDetails){
+                    paidStatus = 10
+                    receiptNo = updatedBatchInvoiceDetail.receiptNumber
+                    paidDate = updatedBatchInvoiceDetail.receiptDate
+                }
+                permitBatchedDetails = qaDaoServices.updateQAInvoiceBatchDetails(permitBatchedDetails, "SYSTEM")
+
+                var permitMasterInvoice = qaDaoServices.findInvoicesPermitWithBatchID(permitBatchedDetails.id?: throw  ExpectedDataNotFound("Missing Batch ID QA For invoice"))
+
+                with(permitMasterInvoice){
+                    paymentStatus =10
+                    receiptNo = permitBatchedDetails.receiptNo
+                }
+                permitMasterInvoice = qaDaoServices.updateQAMasterInvoiceDetails(permitMasterInvoice,"SYSTEM")
+
+                var permitDetails = qaDaoServices.findPermitBYID(permitMasterInvoice.permitId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Payment Status"))
+
+                with(permitDetails){
+                   paidStatus = 1
+                    permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+                }
+                permitDetails = qaDaoServices.permitUpdate(permitDetails, "SYSTEM")
+
+                with(updatedBatchInvoiceDetail){
+                   status = 10
+                }
+                updateInvoiceBatchDetailsAfterPaymentDone(updatedBatchInvoiceDetail)
+
             }
         }
     }
 
 
     fun findAllInvoicesPaid(): List<StagingPaymentReconciliation>? {
-        val map = commonDaoServices.serviceMapDetails(appId)
-        return invoicePaymentRepo.findByPaymentTablesUpdatedStatus(map.activeStatus)
+        return invoicePaymentRepo.findByPaymentTablesUpdatedStatus(1)
     }
 
     fun findDemandNoteCdId(cdId: Long): CdDemandNoteEntity? {
@@ -297,12 +324,91 @@ class InvoiceDaoService(
         return iDemandNoteItemsRepository.findByDemandNoteId(dnId)
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateOfInvoiceTables() {
         findAllInvoicesPaid()
                 ?.forEach { invoice ->
-                    val batchInvoiceDetail = invoice.invoiceId?.let { findInvoiceBatchDetails(it) }
-                    val updatedBatchInvoiceDetail = batchInvoiceDetail?.let { updateInvoiceBatchDetailsAfterPaymentDone(it) }
-                    updatedBatchInvoiceDetail?.let { updatePaymentDetailsToSpecificTable(it, invoice) }
+                    try {
+                        var stgPayment = invoice
+                        var logPaymentMade = LogStgPaymentReconciliationEntity()
+                        with(logPaymentMade){
+                            paymentReconciliationId = stgPayment.id
+                            invoiceId = stgPayment.invoiceId
+                            accountName = stgPayment.accountName
+                            accountNumber = stgPayment.accountNumber
+                            currency = stgPayment.currency
+                            statusCode = stgPayment.statusCode
+                            statusDescription = stgPayment.statusDescription
+                            additionalInformation = stgPayment.additionalInformation
+                            invoiceAmount = stgPayment.invoiceAmount
+                            paidAmount = stgPayment.paidAmount
+                            outstandingAmount = stgPayment.outstandingAmount
+                            transactionId = stgPayment.transactionId
+                            transactionDate = stgPayment.transactionDate
+                            customerName = stgPayment.customerName
+                            paymentSource = stgPayment.paymentSource
+                            extras = stgPayment.extras
+                            invoiceDate = stgPayment.invoiceDate
+                            description = stgPayment.description
+                            status = stgPayment.status
+                            version = stgPayment.version
+                            referenceCode = stgPayment.referenceCode
+                            actualAmount = stgPayment.actualAmount
+                            paymentStarted = stgPayment.paymentStarted
+                            sageInvoiceNumber = stgPayment.sageInvoiceNumber
+                            invoiceTaxAmount = stgPayment.invoiceTaxAmount
+                            paymentTransactionDate = stgPayment.paymentTransactionDate
+                            createdBy = "SYSTEM SCHEDULER"
+                            createdOn = commonDaoServices.getTimestamp()
+                        }
+
+                        logPaymentMade = invoiceLogPaymentRepo.save(logPaymentMade)
+
+                        var batchInvoiceDetail = findInvoiceBatchDetails(stgPayment.invoiceId?:throw  ExpectedDataNotFound("MISSING INVOICE ID FOR MAPPING BACK AMOUNT PAID"))
+                        when {
+                            stgPayment.paidAmount == stgPayment.invoiceAmount -> {
+                                with(batchInvoiceDetail){
+                                    status =1
+                                    paymentStarted =1
+                                    receiptNumber = stgPayment.transactionId
+                                    receiptDate = stgPayment.paymentTransactionDate
+                                    paidAmount = stgPayment.paidAmount
+                                }
+
+                                batchInvoiceDetail = updateInvoiceBatchDetailsAfterPaymentDone(batchInvoiceDetail)
+
+                                updatePaymentDetailsToSpecificTable(batchInvoiceDetail)
+
+                                with(stgPayment){
+                                    transactionId = null
+                                    invoiceAmount = BigDecimal.ZERO
+                                    paymentTablesUpdatedStatus = null
+                                    paymentTransactionDate = null
+                                    paidAmount = BigDecimal.ZERO
+                                    paymentStarted = 1
+                                }
+                                stgPayment = updateStagingPaymentReconciliation(stgPayment)
+                            }
+
+                            stgPayment.paidAmount!! < stgPayment.invoiceAmount -> {
+                                with(stgPayment){
+                                    transactionId = null
+                                    invoiceAmount = (invoiceAmount?.minus(paidAmount!!))
+                                    paymentTablesUpdatedStatus = null
+                                    paymentTransactionDate = null
+                                    paymentSource = null
+                                    paidAmount = BigDecimal.ZERO
+                                    paymentStarted = 1
+                                }
+                                stgPayment = updateStagingPaymentReconciliation(stgPayment)
+
+                            }
+                        }
+                    } catch (e: ExpectedDataNotFound) {
+                        KotlinLogging.logger { }.debug("Payment update failed: ${e.message}")
+                    } catch (e: Exception) {
+                        KotlinLogging.logger { }.error("Failed to update Payment Status for Invoice reference Code", e)
+                    }
                 }
     }
 

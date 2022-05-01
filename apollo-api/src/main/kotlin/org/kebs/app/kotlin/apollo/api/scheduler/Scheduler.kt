@@ -1,6 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.scheduler
 
 import mu.KotlinLogging
+import org.joda.time.DateTime
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
@@ -13,14 +15,14 @@ import org.springframework.scheduling.annotation.Scheduled
 
 @Configuration
 @EnableScheduling
-@Profile("PROD")
+@Profile("prod")
 class Scheduler(
 //        private val schedulerImpl: SchedulerImpl,
 //        private val qaDaoServices: QADaoServices
-    private val schedulerImpl: SchedulerImpl,
-    private val sftpSchedulerImpl: SftpSchedulerImpl,
-    private val qaDaoServices: QADaoServices,
-    private val msDaoServices: MarketSurveillanceFuelDaoServices
+        private val msDaoServices: MarketSurveillanceFuelDaoServices
+        private val schedulerImpl: SchedulerImpl,
+        private val qaDaoServices: QADaoServices,
+        private val invoiceDaoService: InvoiceDaoService
 ) {
     @Value("\${scheduler.run.send.notifications}")
     lateinit var runSendNotifications: String
@@ -55,8 +57,9 @@ class Scheduler(
         KotlinLogging.logger { }.debug("UPDATED DEMAND NOTES on SW")
     }
 
-    @Scheduled(fixedDelay = 120_000) //2 Minutes for now
+    @Scheduled(fixedDelay = 60_000) //1 Minutes for now
     fun runSchedulerAfterEveryFiveMin() {
+        invoiceDaoService.updateOfInvoiceTables()
         qaDaoServices.assignPermitApplicationAfterPayment()
         qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()
@@ -72,13 +75,19 @@ class Scheduler(
 @EnableScheduling
 @Profile("default")
 class SchedulerDevelopment(
-        private val schedulerImpl: SchedulerImpl,
         private val msDaoServices: MarketSurveillanceFuelDaoServices
+        private val schedulerImpl: SchedulerImpl,
+        private val qaDaoServices: QADaoServices,
+        private val invoiceDaoService: InvoiceDaoService
 ) {
-    //    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
+    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
     fun updateDemandNotes() {
-//        schedulerImpl.updateLabResultsWithDetails()
-        //    KotlinLogging.logger { }.info("DEV: UPDATING DEMAND NOTES on SW")
+        invoiceDaoService.updateOfInvoiceTables()
+        qaDaoServices.assignPermitApplicationAfterPayment()
+        qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
+        schedulerImpl.updateLabResultsWithDetails()
+        schedulerImpl.updateFirmTypeStatus()
+        schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updatePaidDemandNotesStatus()
         //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
 //        msDaoServices.updateRemediationDetailsAfterPaymentDone()
