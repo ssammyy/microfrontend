@@ -78,7 +78,7 @@ class SlWindingUpReportUploadsEntity : Serializable {
     var createdBy: String? = null
 
     @Column(name = "CREATED_ON", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     var createdOn: Timestamp? = null
 
     @Column(name = "MODIFIED_BY")

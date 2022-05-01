@@ -524,7 +524,7 @@ class InvoicePaymentService(
                 invoiceBatchDetailsRepo.findByBatchNumber(demandNoteUpdated.demandNoteNumber!!)?.let { batch ->
                     batch.receiptNumber = responseStatus.response?.paymentReferenceNo?.trim()?.toUpperCase() ?: ""
                     batch.paymentStarted = map.activeStatus
-                    batch.receiptDate = responseStatus.response?.paymentDate?.time?.let { java.sql.Date(it) }
+                    batch.receiptDate = responseStatus.response?.paymentDate
                     invoiceBatchDetailsRepo.save(batch)
                 }
                 response.status = ResponseCodes.SUCCESS_CODE

@@ -477,6 +477,10 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
         batchInvoiceNo: Long
     ): List<QaInvoiceMasterDetailsEntity>?
 
+    fun findByBatchInvoiceNo(
+        batchInvoiceNo: Long
+    ): QaInvoiceMasterDetailsEntity?
+
     fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNull(
         userId: Long,
         paymentStatus: Int
@@ -816,6 +820,7 @@ interface IQaWorkplanRepository : HazelcastRepository<QaWorkplanEntity, Long> {
 interface IQaBatchInvoiceRepository : HazelcastRepository<QaBatchInvoiceEntity, Long> {
     fun findByUserIdAndInvoiceNumber(userId: Long, refNumber: String): QaBatchInvoiceEntity?
     fun findByInvoiceNumber( refNumber: String): QaBatchInvoiceEntity?
+    fun findByInvoiceBatchNumberId(invoiceBatchNumberId: Long): QaBatchInvoiceEntity?
     fun findByUserIdAndInvoiceNumberAndPlantId(
         userId: Long,
         invoiceNumber: String,
