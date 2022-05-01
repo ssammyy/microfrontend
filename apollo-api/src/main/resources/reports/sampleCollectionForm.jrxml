@@ -54,17 +54,17 @@
     <parameter name="importerName" class="java.lang.String"/>
     <parameter name="contactName" class="java.lang.String"/>
     <parameter name="contactPhone" class="java.lang.String"/>
-	<parameter name="contactFullAddress" class="java.lang.String"/>
-	<parameter name="importerAddress" class="java.lang.String"/>
-	<parameter name="importerTelNo" class="java.lang.String"/>
-	<parameter name="importerFaxNo" class="java.lang.String"/>
-	<parameter name="importerPhysicalLocation" class="java.lang.String"/>
-	<parameter name="supplierName" class="java.lang.String"/>
-	<parameter name="supplierAddress" class="java.lang.String"/>
-	<parameter name="labelDetails" class="java.lang.String"/>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
+    <parameter name="contactFullAddress" class="java.lang.String"/>
+    <parameter name="importerAddress" class="java.lang.String"/>
+    <parameter name="importerTelNo" class="java.lang.String"/>
+    <parameter name="importerFaxNo" class="java.lang.String"/>
+    <parameter name="importerPhysicalLocation" class="java.lang.String"/>
+    <parameter name="supplierName" class="java.lang.String"/>
+    <parameter name="supplierAddress" class="java.lang.String"/>
+    <parameter name="labelDetails" class="java.lang.String"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
     <title>
         <band height="108">
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -89,7 +89,8 @@
                 <text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
             </staticText>
             <staticText>
-                <reportElement x="50" y="82" width="415" height="20" uuid="b1a99762-1f6b-45cc-9b0c-7c918dedfff8">
+                <reportElement mode="Opaque" x="2" y="82" width="551" height="20" backcolor="#D9E1F2"
+                               uuid="b1a99762-1f6b-45cc-9b0c-7c918dedfff8">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <textElement textAlignment="Center">
@@ -125,7 +126,7 @@ Tel: (+254 20) 6948000
 Email:info@kebs.org]]></text>
             </staticText>
         </band>
-	</title>
+    </title>
     <detail>
         <band height="698" splitType="Prevent">
             <staticText>
@@ -346,7 +347,7 @@ Email:info@kebs.org]]></text>
                     <property name="com.jaspersoft.studio.layout"
                               value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
                 </reportElement>
-                <box padding="8"/>
+                <box topPadding="8" leftPadding="0" bottomPadding="8" rightPadding="0"/>
                 <staticText>
                     <reportElement style="ColunmHeader" x="0" y="0" width="108" height="27" forecolor="#000000"
                                    uuid="959fbb37-07f1-4679-873a-2bd45cdd31f1">
@@ -364,7 +365,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Point of Inspection : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="0" width="431" height="27" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="0" width="447" height="27" forecolor="#000000"
                                    uuid="23f0a168-ca4c-49b5-ad6c-161824a38f6e">
                         <property name="com.jaspersoft.studio.unit.y" value="px"/>
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
@@ -395,7 +396,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Name of Product : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="27" width="431" height="27" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="27" width="447" height="27" forecolor="#000000"
                                    uuid="d161187d-0fe9-45c9-bf02-c38e7811fe63">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -427,7 +428,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Labeling Details :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="54" width="431" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="54" width="447" height="26" forecolor="#000000"
                                    uuid="c13a5789-a7ed-45c8-a89b-4f19c4633511">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -457,7 +458,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Name of Importer : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="80" width="431" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="80" width="447" height="26" forecolor="#000000"
                                    uuid="be16ef5a-d6e5-413c-b2c3-776c1e292eb3">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -484,10 +485,10 @@ Email:info@kebs.org]]></text>
                     <textElement verticalAlignment="Middle">
                         <font size="12" isBold="true"/>
                     </textElement>
-                    <text><![CDATA[Full Address of Importer : ]]></text>
+                    <text><![CDATA[Importer Address: ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="106" width="431" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="106" width="447" height="26" forecolor="#000000"
                                    uuid="8aa787d4-7ebe-4451-88cd-d073413da5fd">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -517,7 +518,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Telephone : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="132" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="132" width="170" height="26" forecolor="#000000"
                                    uuid="8bb113c6-d8a3-4975-be5c-00b51e24c373">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -531,7 +532,7 @@ Email:info@kebs.org]]></text>
                     <textFieldExpression><![CDATA[$P{importerTelNo}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="270" y="132" width="107" height="26" forecolor="#000000"
+                    <reportElement style="ColunmHeader" x="278" y="132" width="107" height="26" forecolor="#000000"
                                    uuid="942ddb22-1293-4176-bcd4-8ef4b31d262f">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -547,7 +548,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Fax  :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="377" y="132" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="385" y="132" width="170" height="26" forecolor="#000000"
                                    uuid="57f0cd0d-94db-42ca-be28-8a90b36aa1cd">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -577,7 +578,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Physical Location : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="158" width="431" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="158" width="447" height="26" forecolor="#000000"
                                    uuid="c9ae1a6a-caa7-40a5-90ba-0a0d896347e6">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -604,16 +605,16 @@ Email:info@kebs.org]]></text>
                     <textElement verticalAlignment="Middle">
                         <font size="12" isBold="true"/>
                     </textElement>
-                    <text><![CDATA[Name of Contact Person : ]]></text>
+                    <text><![CDATA[Contact Person Name: ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="184" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="184" width="170" height="26" forecolor="#000000"
                                    uuid="f267cabf-5623-4dc1-b682-bace6fd77487"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{contactName}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="270" y="184" width="107" height="26" forecolor="#000000"
+                    <reportElement style="ColunmHeader" x="278" y="184" width="107" height="26" forecolor="#000000"
                                    uuid="9e77b37e-4c8a-4cdf-92ee-98bc4200b854"/>
                     <textElement verticalAlignment="Middle">
                         <font size="12" isBold="true"/>
@@ -621,7 +622,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Telephone : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="377" y="184" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="385" y="184" width="170" height="26" forecolor="#000000"
                                    uuid="44182967-d9c0-4570-bd9e-bf5be3d2f183"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{contactPhone}]]></textFieldExpression>
@@ -643,7 +644,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Name of Supplier :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="210" width="431" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="210" width="447" height="26" forecolor="#000000"
                                    uuid="d6d41705-7f1b-48a7-9146-c4e52daec356">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -670,10 +671,10 @@ Email:info@kebs.org]]></text>
                     <textElement verticalAlignment="Middle">
                         <font size="12" isBold="true"/>
                     </textElement>
-                    <text><![CDATA[Full Address of Supplier :]]></text>
+                    <text><![CDATA[Supplier Address:]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="236" width="431" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="236" width="447" height="26" forecolor="#000000"
                                    uuid="e238e756-0d78-481d-9c7e-bd8b4f585fd3">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -703,13 +704,13 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Country of Origin :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="262" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="262" width="170" height="26" forecolor="#000000"
                                    uuid="624c2767-376f-4d58-88c2-38bfeb1b4ba1"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{countryOfOrigin}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="270" y="262" width="107" height="26" forecolor="#000000"
+                    <reportElement style="ColunmHeader" x="278" y="262" width="107" height="26" forecolor="#000000"
                                    uuid="123822a8-c7f2-41f0-87af-c9dde82beb07"/>
                     <textElement verticalAlignment="Middle">
                         <font size="12" isBold="true"/>
@@ -717,7 +718,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Quantity :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="377" y="262" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="385" y="262" width="170" height="26" forecolor="#000000"
                                    uuid="5f107ea1-d819-4b58-aa20-5156d6a1ecca"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{quantityDeclared}]]></textFieldExpression>
@@ -739,13 +740,13 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Customs I.E. No :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="288" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="288" width="170" height="26" forecolor="#000000"
                                    uuid="7e41329c-8ce5-43ca-bf6a-c6fc953c5500"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{customsIENo}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="270" y="288" width="107" height="26" forecolor="#000000"
+                    <reportElement style="ColunmHeader" x="278" y="288" width="107" height="26" forecolor="#000000"
                                    uuid="372c7d5f-68af-4d44-8047-1e62a305224b"/>
                     <textElement verticalAlignment="Middle">
                         <font size="12" isBold="true"/>
@@ -753,7 +754,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[UCR No :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="377" y="288" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="385" y="288" width="170" height="26" forecolor="#000000"
                                    uuid="d8d09a1c-dced-448a-a46f-1ed939d93bdf"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{ucrNumber}]]></textFieldExpression>
@@ -775,13 +776,13 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Container Nos :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="314" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="314" width="170" height="26" forecolor="#000000"
                                    uuid="cf190515-3506-499d-a191-dcd131f2c655"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{containerNos}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="270" y="314" width="107" height="26" forecolor="#000000"
+                    <reportElement style="ColunmHeader" x="278" y="314" width="107" height="26" forecolor="#000000"
                                    uuid="1fdf41e6-fd02-4870-b4e4-1b4c4fbc6235"/>
                     <textElement verticalAlignment="Middle">
                         <font size="12" isBold="true"/>
@@ -789,7 +790,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[CoC No :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="377" y="314" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="385" y="314" width="170" height="26" forecolor="#000000"
                                    uuid="9c4fc4f0-9037-494f-b3d6-e839d9f10728"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{cocNum}]]></textFieldExpression>
@@ -811,7 +812,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Condition of Products :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="340" width="431" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="340" width="447" height="26" forecolor="#000000"
                                    uuid="493098ce-660c-4c70-b5bb-7b0914dbee91">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -841,13 +842,13 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Manufacturing date: ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="366" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="366" width="170" height="26" forecolor="#000000"
                                    uuid="7159ed95-9566-4ec8-b51b-9aa52c46b32d"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{manufactureDate}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="270" y="366" width="107" height="26" forecolor="#000000"
+                    <reportElement style="ColunmHeader" x="278" y="366" width="107" height="26" forecolor="#000000"
                                    uuid="d81edc89-69ec-4223-8786-08b65da6b853"/>
                     <textElement verticalAlignment="Middle">
                         <font size="12" isBold="true"/>
@@ -855,7 +856,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Expiry date :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="377" y="366" width="162" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="385" y="366" width="170" height="26" forecolor="#000000"
                                    uuid="fcb8ffbe-3e1c-41ea-8051-e8987e5c2e91"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{expiryDate}]]></textFieldExpression>
@@ -877,7 +878,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Sampling Methods : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="392" width="162" height="24" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="392" width="170" height="24" forecolor="#000000"
                                    uuid="3b95a2b6-0ab4-4e52-9305-ff92628c70c5">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -891,7 +892,7 @@ Email:info@kebs.org]]></text>
                     <textFieldExpression><![CDATA[$P{samplingMethod}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="270" y="392" width="107" height="24" forecolor="#000000"
+                    <reportElement style="ColunmHeader" x="278" y="392" width="107" height="24" forecolor="#000000"
                                    uuid="df32abb9-012a-464a-8b87-838c43dd41d7">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -907,7 +908,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Sample Size : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="377" y="392" width="162" height="24" forecolor="#000000"
+                    <reportElement style="ColunmText" x="385" y="392" width="170" height="24" forecolor="#000000"
                                    uuid="913fcdb7-412e-47df-beb9-a1d299784d7c"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{sampleSize}]]></textFieldExpression>
@@ -929,7 +930,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Reasons for collecting sample :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="416" width="431" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="416" width="447" height="26" forecolor="#000000"
                                    uuid="e480e232-a950-4644-8aea-7430a0d1e66a">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -959,13 +960,13 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Kenya Standards Referenced :]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="442" width="162" height="22" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="442" width="170" height="22" forecolor="#000000"
                                    uuid="89a23148-9d44-4515-9de9-031929744ab7"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{referenceStandard}]]></textFieldExpression>
                 </textField>
                 <staticText>
-                    <reportElement style="ColunmHeader" x="270" y="442" width="107" height="22" forecolor="#000000"
+                    <reportElement style="ColunmHeader" x="278" y="442" width="107" height="22" forecolor="#000000"
                                    uuid="cedea500-fb76-4895-bfc0-a043cbf2624c"/>
                     <textElement verticalAlignment="Middle">
                         <font size="12" isBold="true"/>
@@ -973,7 +974,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Mode of release : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="377" y="442" width="162" height="22" forecolor="#000000"
+                    <reportElement style="ColunmText" x="385" y="442" width="170" height="22" forecolor="#000000"
                                    uuid="2a594fd4-a394-4892-9e12-c6bfa42edb08"/>
                     <textElement verticalAlignment="Middle"/>
                     <textFieldExpression><![CDATA[$P{modeOfRelease}]]></textFieldExpression>
@@ -995,7 +996,7 @@ Email:info@kebs.org]]></text>
                     <text><![CDATA[Details of Non-Compliance Remarks : ]]></text>
                 </staticText>
                 <textField>
-                    <reportElement style="ColunmText" x="108" y="464" width="431" height="26" forecolor="#000000"
+                    <reportElement style="ColunmText" x="108" y="464" width="447" height="26" forecolor="#000000"
                                    uuid="a75867a4-d262-4edb-9971-5a9764107fb1">
                         <property name="com.jaspersoft.layout.grid.x" value="-1"/>
                         <property name="com.jaspersoft.layout.grid.y" value="-1"/>
@@ -1010,5 +1011,5 @@ Email:info@kebs.org]]></text>
                 </textField>
             </frame>
         </band>
-	</detail>
+    </detail>
 </jasperReport>
