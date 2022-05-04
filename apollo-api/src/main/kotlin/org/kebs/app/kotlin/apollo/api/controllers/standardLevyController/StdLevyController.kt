@@ -1181,6 +1181,15 @@ class StdLevyController(
         return standardLevyService.getLevyPayments()
     }
 
+    @GetMapping("/getManufacturesLevyPayments")
+    @ResponseBody
+    fun getManufacturesLevyPayments(): MutableList<LevyPayments>
+    {
+        return standardLevyService.getManufacturesLevyPayments()
+    }
+
+
+
    // @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
     @PostMapping("/suspendCompanyOperations")
     @ResponseBody
