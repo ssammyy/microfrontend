@@ -82,7 +82,7 @@ class SchedulerDevelopment(
         schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updateFirmTypeStatus()
         schedulerImpl.updateLabResultsWithDetails()
-        schedulerImpl.updatePaidDemandNotesStatus()
+//        schedulerImpl.updatePaidDemandNotesStatus()
         //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
     }
 }

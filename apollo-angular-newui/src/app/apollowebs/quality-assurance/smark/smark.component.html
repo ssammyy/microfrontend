@@ -223,43 +223,50 @@
                                                         <tbody>
                                                         <tr>
                                                             <td><strong>
-                                                                Division</strong></td>
-                                                            <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
-text-justify: inter-word;">{{allPermitDetails?.permitDetails?.divisionValue}}</td>
+                                                                Division:</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="word-wrap: break-word;">{{allPermitDetails?.permitDetails?.divisionValue}}</td>
+
                                                         </tr>
                                                         <tr>
                                                             <td><strong>
-                                                                Section</strong></td>
-                                                            <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+                                                                Section:</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;
 text-justify: inter-word;">{{allPermitDetails?.permitDetails?.sectionValue}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td><strong>
-                                                                Status</strong></td>
+                                                                Status:</strong></td>
 
+
+                                                        </tr>
+                                                        <tr>
                                                             <ng-template
                                                                     [ngIf]="allPermitDetails?.permitDetails?.processStatusID ==59"
                                                                     [ngIfElse]="elseBlock">
-                                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+                                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;
 text-justify: inter-word;">
                                                                     <mark style="  background-color: #fd0b0b;
 color: #ffffff;"><strong>{{allPermitDetails?.permitDetails?.processStatusName}}</strong></mark>
                                                                 </td>
                                                             </ng-template>
                                                             <ng-template #elseBlock>
-                                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+                                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;
 text-justify: inter-word;">
                                                                     <mark style="  background-color: #0066b5;
 color: #ffffff;"><strong>{{allPermitDetails?.permitDetails?.processStatusName}}</strong></mark>
                                                                 </td>
                                                             </ng-template>
-
-
                                                         </tr>
                                                         <tr>
                                                             <td><strong>
-                                                                Version Number</strong></td>
-                                                            <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+                                                                Version Number:</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;
 text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</td>
                                                         </tr>
                                                         </tbody>

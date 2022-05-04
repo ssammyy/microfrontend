@@ -548,8 +548,9 @@ class InvoicePaymentService(
                 delay(100L)
                 when (demandNoteUpdated.paymentPurpose) {
                     PaymentPurpose.CONSIGNMENT.code -> {
-                        if (demandNote.billId == null) {
-                            invoicePaymentCompleted(demandNoteUpdated.cdId!!, demandNoteUpdated.id!!, responseStatus.response?.paymentAmount)
+                        // Complete billed
+                        when (demandNote.billId) {
+                            0.toLong(), null -> invoicePaymentCompleted(demandNoteUpdated.cdId!!, demandNoteUpdated.id!!, responseStatus.response?.paymentAmount)
                         }
                     }
                     PaymentPurpose.AUDIT.code -> {
