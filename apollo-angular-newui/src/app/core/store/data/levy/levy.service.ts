@@ -443,6 +443,12 @@ export class LevyService {
         return this.http.get<PaymentDetails>(url, {params}).pipe();
     }
 
+    public getManufacturesLevyPayments(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_PAYMENT_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
+    }
+
 
 
 
