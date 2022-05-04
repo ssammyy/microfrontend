@@ -1448,6 +1448,8 @@ return getUserTasks();
             ?: throw ExpectedDataNotFound("No Data Found")
     }
 
+
+
     fun getCompanyDirectors(): List<DirectorListHolder>? {
         commonDaoServices.loggedInUserDetails().id
             ?.let { id ->
@@ -1496,6 +1498,18 @@ return getUserTasks();
 
     fun getLevyPayments(): MutableList<LevyPayments> {
         return companyProfileRepo.getLevyPayments()
+    }
+
+    fun getManufacturesLevyPayments(): MutableList<LevyPayments>{
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureEntryNo(id)
+                    .let {
+                        return companyProfileRepo.getManufacturesLevyPayments(it)
+                    }
+
+            }
+            ?: throw ExpectedDataNotFound("No Data Found")
     }
 
     fun suspendCompanyOperations(
