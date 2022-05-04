@@ -790,7 +790,7 @@ class RegistrationDaoServices(
     fun generateEntryNumber(
         s: ServiceMapsEntity,
         u: UsersEntity
-    ) : String? {
+    ) : CompanyProfileEntity {
 
 
             var cp = commonDaoServices.findCompanyProfile(u.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
@@ -804,17 +804,8 @@ class RegistrationDaoServices(
 
             cp = companyProfileRepo.save(cp)
 
-            val payload = "${cp.name} ${cp.registrationNumber}"
-            val emailEntity = commonDaoServices.userRegisteredEntryNumberSuccessfullEmailCompose(cp, s, null)
-            commonDaoServices.sendEmailAfterCompose(
-                u,
-                applicationMapProperties.mapUserEntryNumberNotification,
-                emailEntity,
-                appId,
-                payload
-            )
 
-            return cp.entryNumber
+            return cp
 
 
     }
@@ -1069,94 +1060,118 @@ class RegistrationDaoServices(
 //        val gson = Gson()
 //        KotlinLogging.logger { }.info { "EDITED" + gson.toJson(stdLevyNotificationFormDTO) }
       //  with(add) {
-        stdLevyNotificationForm.nameBusinessProprietor= stdLevyNotificationFormDTO.NameAndBusinessOfProprietors
-        stdLevyNotificationForm.commoditiesManufactured= stdLevyNotificationFormDTO.AllCommoditiesManufuctured
-            stdLevyNotificationForm.chiefExecutiveDirectors= stdLevyNotificationFormDTO.chiefExecutiveDirectors
-            stdLevyNotificationForm.chiefExecutiveDirectorsStatus= stdLevyNotificationFormDTO.chiefExecutiveDirectorsStatus
-            stdLevyNotificationForm.dateManufactureCommenced= stdLevyNotificationFormDTO.DateOfManufacture
-            stdLevyNotificationForm.totalValueOfManufacture= stdLevyNotificationFormDTO.totalValueOfManufacture
-            stdLevyNotificationForm.description= stdLevyNotificationFormDTO.description
-            stdLevyNotificationForm.status=1
-            stdLevyNotificationForm.entryNumber= eNumber
-            stdLevyNotificationForm.manufacturerId= stdLevyNotificationFormDTO.companyProfileID
-            stdLevyNotificationForm.createdOn = Timestamp.from(Instant.now())
-            stdLevyNotificationForm.createdBy = loggedInUser.firstName + " " + loggedInUser.lastName
 
        // }
 
-        stdLevyNotificationFormDTO.companyProfileID?.let { sendEntryNumberToKraServices.postEntryNumberTransactionToKra(it, commonDaoServices.getUserName(loggedInUser), map) }
+      val resultFound = eNumber.id?.let { sendEntryNumberToKraServices.postEntryNumberTransactionToKra(it, commonDaoServices.getUserName(loggedInUser), map) }
 
-       val kraResponseCode = stdLevyNotificationForm.entryNumber?.let { iKraEntryNumberRequestLogEntityRepository.findKraResponseCode(it) }
-        var slFormResponse=""
-        when (kraResponseCode) {
-            "90000" -> {
-                stdLevyNotificationFormRepository.save(stdLevyNotificationForm)
-                companyProfileRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
-                    ?.let { companyProfileEntity->
+        if (resultFound!=null){
+            val kraResponseCode = resultFound
+            var slFormResponse=""
+            val gson = Gson()
+            KotlinLogging.logger { }.info { "Response from API" + gson.toJson(kraResponseCode) }
+            when (kraResponseCode.responseResponseCode) {
+                "90000" -> {
 
-                        with(companyProfileEntity){
-                            entryNumber=eNumber
-                            branchName=stdLevyNotificationFormDTO.nameOfBranch
-                            assignStatus=0
-                            assignedTo=0
-                            typeOfManufacture=stdLevyNotificationFormDTO.manufacture_status
+                    stdLevyNotificationForm.nameBusinessProprietor= stdLevyNotificationFormDTO.NameAndBusinessOfProprietors
+                    stdLevyNotificationForm.commoditiesManufactured= stdLevyNotificationFormDTO.AllCommoditiesManufuctured
+                    stdLevyNotificationForm.chiefExecutiveDirectors= stdLevyNotificationFormDTO.chiefExecutiveDirectors
+                    stdLevyNotificationForm.chiefExecutiveDirectorsStatus= stdLevyNotificationFormDTO.chiefExecutiveDirectorsStatus
+                    stdLevyNotificationForm.dateManufactureCommenced= stdLevyNotificationFormDTO.DateOfManufacture
+                    stdLevyNotificationForm.totalValueOfManufacture= stdLevyNotificationFormDTO.totalValueOfManufacture
+                    stdLevyNotificationForm.description= stdLevyNotificationFormDTO.description
+                    stdLevyNotificationForm.status=1
+                    stdLevyNotificationForm.entryNumber= eNumber.entryNumber
+                    stdLevyNotificationForm.manufacturerId= stdLevyNotificationFormDTO.companyProfileID
+                    stdLevyNotificationForm.createdOn = Timestamp.from(Instant.now())
+                    stdLevyNotificationForm.createdBy = commonDaoServices.concatenateName(loggedInUser)
 
-                        }
 
-                        companyProfileRepo.save(companyProfileEntity)
-                        stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
-                            ?.let {stgLevyEntryNumber->
-                                with(stgLevyEntryNumber){
-                                    manufacturerId = eNumber
-                                }
+                    stdLevyNotificationFormRepository.save(stdLevyNotificationForm)
+                    companyProfileRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
+                        ?.let { companyProfileEntity->
+
+                            with(companyProfileEntity){
+                                entryNumber=eNumber.entryNumber
+                                branchName=stdLevyNotificationFormDTO.nameOfBranch
+                                assignStatus=0
+                                assignedTo=0
+                                typeOfManufacture=stdLevyNotificationFormDTO.manufacture_status
 
                             }
-                            ?: throw Exception("Company ID Was not Found")
-    //                stdLevyNotificationFormDTO.companyProfileID?.let {
-    //                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
-    //                        it, commonDaoServices.getUserName(loggedInUser), map)
-    //                }
+
+                            companyProfileRepo.save(companyProfileEntity)
+                            stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
+                                ?.let {stgLevyEntryNumber->
+                                    with(stgLevyEntryNumber){
+                                        manufacturerId = eNumber.entryNumber
+                                    }
+
+                                    stagingStandardsLevyManufacturerEntryNumberRepo.save(stgLevyEntryNumber)
+
+                                    val payload = "${eNumber.name} ${eNumber.registrationNumber}"
+                                    val emailEntity = commonDaoServices.userRegisteredEntryNumberSuccessfullEmailCompose(eNumber, s, null)
+                                    commonDaoServices.sendEmailAfterCompose(
+                                        loggedInUser,
+                                        applicationMapProperties.mapUserEntryNumberNotification,
+                                        emailEntity,
+                                        appId,
+                                        payload
+                                    )
+
+                                }
+                                ?: throw Exception("Company ID Was not Found")
+                            //                stdLevyNotificationFormDTO.companyProfileID?.let {
+                            //                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
+                            //                        it, commonDaoServices.getUserName(loggedInUser), map)
+                            //                }
 
 
 
-                    } ?: throw Exception("Company ID Was not Found")
+                        } ?: throw Exception("Company ID Was not Found")
 
 
 
-                val sm = CommonDaoServices.MessageSuccessFailDTO()
-                sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
-                sm.message = "You have Successful Register, Email Has been sent with Entry Number "
+                    val sm = CommonDaoServices.MessageSuccessFailDTO()
+                    sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+                    sm.message = "You have Successful Register, Email Has been sent with Entry Number "
 
-                slFormResponse="Entry number is $eNumber, Check your E-mail for registration details"
+                    slFormResponse="Entry number is ${eNumber.entryNumber}, Check your E-mail for registration details"
 
+                }
+                "90001" -> {
+                    slFormResponse="Form not saved..Syntax Error"
+
+
+                }
+                "90002" -> {
+                    slFormResponse="Form not saved..Data validation Error"
+
+
+                }
+                "90003" -> {
+                    slFormResponse="Form not saved..Hash Code Validation Failed"
+
+
+                }
+                "90004" -> {
+                    slFormResponse="Form not saved..Invalid User ID and Password"
+
+
+                }
+                else -> {
+                    slFormResponse="Form not saved..Kindly try again"
+                }
             }
-            "90001" -> {
-                slFormResponse="Form not saved..Syntax Error"
+            return NotificationForm(stdLevyNotificationForm.id,stdLevyNotificationForm.entryNumber?: throw NullValueNotAllowedException("Request Number is required"),slFormResponse)
 
 
-            }
-            "90002" -> {
-                slFormResponse="Form not saved..Data validation Error"
-
-
-            }
-            "90003" -> {
-                slFormResponse="Form not saved..Hash Code Validation Failed"
-
-
-            }
-            "90004" -> {
-                slFormResponse="Form not saved..Invalid User ID and Password"
-
-
-            }
-            else -> {
-                slFormResponse="Form not saved..Kindly try again"
-            }
+        }else{
+            throw ExpectedDataNotFound("Error has occurred, Try again")
         }
 
 
-        return NotificationForm(stdLevyNotificationForm.id,stdLevyNotificationForm.entryNumber?: throw NullValueNotAllowedException("Request Number is required"),slFormResponse)
+
 
     }
 

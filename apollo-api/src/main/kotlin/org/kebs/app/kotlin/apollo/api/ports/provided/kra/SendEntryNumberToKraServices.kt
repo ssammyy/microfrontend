@@ -42,7 +42,8 @@ class SendEntryNumberToKraServices(
     private val commonDaoServices: CommonDaoServices,
     private val daoService: DaoService
 ) {
-    fun postEntryNumberTransactionToKra(companyProfileID: Long, user: String, map: ServiceMapsEntity) {
+    fun postEntryNumberTransactionToKra(companyProfileID: Long, user: String, map: ServiceMapsEntity): KraEntryNumberRequestLogEntity? {
+        var resultSaved: KraEntryNumberRequestLogEntity? =null
         val config =
             commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapKraConfigIntegration)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL FOR KRA")
@@ -126,7 +127,7 @@ class SendEntryNumberToKraServices(
                     updateBy = user
                     updatedOn = commonDaoServices.getTimestamp()
                 }
-                iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+                resultSaved=   iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
 
 
             } else {
@@ -137,12 +138,14 @@ class SendEntryNumberToKraServices(
                     updateBy = user
                     updatedOn = commonDaoServices.getTimestamp()
                 }
-                iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
+                resultSaved =   iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
             }
 
 
             // KotlinLogging.logger {  }.info { "Response received: $response" }
         }
+
+        return resultSaved
     }
 
 
