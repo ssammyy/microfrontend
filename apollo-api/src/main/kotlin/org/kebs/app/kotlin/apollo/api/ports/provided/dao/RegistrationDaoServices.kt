@@ -145,7 +145,8 @@ class RegistrationDaoServices(
     private val configurationRepository: IIntegrationConfigurationRepository,
     private val daoService: DaoService,
     private val logsRepo: IWorkflowTransactionsRepository,
-    private val stdLevyNotificationFormRepository: StdLevyNotificationFormRepository
+    private val stdLevyNotificationFormRepository: StdLevyNotificationFormRepository,
+    private val iKraEntryNumberRequestLogEntityRepository: IKraEntryNumberRequestLogEntityRepository
 ) {
 
 
@@ -1059,8 +1060,7 @@ class RegistrationDaoServices(
         s: ServiceMapsEntity,
         sr: ServiceRequestsEntity,
         companyProfileEntity: CompanyProfileEntity,
-       ) : NotificationForm
-    {
+       ): NotificationForm {
         val map = commonDaoServices.serviceMapDetails(appId)
         var add = stdLevyNotificationForm
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -1084,51 +1084,79 @@ class RegistrationDaoServices(
 
        // }
 
-
-
-        stdLevyNotificationFormRepository.save(stdLevyNotificationForm)
-
-
-        companyProfileRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
-            ?.let { companyProfileEntity->
-
-            with(companyProfileEntity){
-                entryNumber=eNumber
-                branchName=stdLevyNotificationFormDTO.nameOfBranch
-                assignStatus=0
-                assignedTo=0
-                typeOfManufacture=stdLevyNotificationFormDTO.manufacture_status
-
-            }
-
-            companyProfileRepo.save(companyProfileEntity)
-                stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
-                    ?.let {stgLevyEntryNumber->
-                        with(stgLevyEntryNumber){
-                            manufacturerId = eNumber
-                        }
-
-                    }
-                    ?: throw Exception("Company ID Was not Found")
-//                stdLevyNotificationFormDTO.companyProfileID?.let {
-//                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
-//                        it, commonDaoServices.getUserName(loggedInUser), map)
-//                }
-
-
-
-            } ?: throw Exception("Company ID Was not Found")
-
         stdLevyNotificationFormDTO.companyProfileID?.let { sendEntryNumberToKraServices.postEntryNumberTransactionToKra(it, commonDaoServices.getUserName(loggedInUser), map) }
 
+       val kraResponseCode = stdLevyNotificationForm.entryNumber?.let { iKraEntryNumberRequestLogEntityRepository.findKraResponseCode(it) }
+        var slFormResponse=""
+        when (kraResponseCode) {
+            "90000" -> {
+                stdLevyNotificationFormRepository.save(stdLevyNotificationForm)
+                companyProfileRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
+                    ?.let { companyProfileEntity->
 
-        val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
-        sm.message = "You have Successful Register, Email Has been sent with Entry Number "
+                        with(companyProfileEntity){
+                            entryNumber=eNumber
+                            branchName=stdLevyNotificationFormDTO.nameOfBranch
+                            assignStatus=0
+                            assignedTo=0
+                            typeOfManufacture=stdLevyNotificationFormDTO.manufacture_status
 
-        return NotificationForm(stdLevyNotificationForm.id,stdLevyNotificationForm.entryNumber?: throw NullValueNotAllowedException("Request Number is required"))
+                        }
+
+                        companyProfileRepo.save(companyProfileEntity)
+                        stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
+                            ?.let {stgLevyEntryNumber->
+                                with(stgLevyEntryNumber){
+                                    manufacturerId = eNumber
+                                }
+
+                            }
+                            ?: throw Exception("Company ID Was not Found")
+    //                stdLevyNotificationFormDTO.companyProfileID?.let {
+    //                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
+    //                        it, commonDaoServices.getUserName(loggedInUser), map)
+    //                }
 
 
+
+                    } ?: throw Exception("Company ID Was not Found")
+
+
+
+                val sm = CommonDaoServices.MessageSuccessFailDTO()
+                sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+                sm.message = "You have Successful Register, Email Has been sent with Entry Number "
+
+                slFormResponse="Entry number is $eNumber, Check your E-mail for registration details"
+
+            }
+            "90001" -> {
+                slFormResponse="Form not saved..Syntax Error"
+
+
+            }
+            "90002" -> {
+                slFormResponse="Form not saved..Data validation Error"
+
+
+            }
+            "90003" -> {
+                slFormResponse="Form not saved..Hash Code Validation Failed"
+
+
+            }
+            "90004" -> {
+                slFormResponse="Form not saved..Invalid User ID and Password"
+
+
+            }
+            else -> {
+                slFormResponse="Form not saved..Kindly try again"
+            }
+        }
+
+
+        return NotificationForm(stdLevyNotificationForm.id,stdLevyNotificationForm.entryNumber?: throw NullValueNotAllowedException("Request Number is required"),slFormResponse)
 
     }
 

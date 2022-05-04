@@ -22,7 +22,7 @@ data class StdLevyNotificationFormDTO(
 
 )
 
-class NotificationForm (val savedRowID: Long?, val entryNumber: String) {
+class NotificationForm (val savedRowID: Long?, val entryNumber: String,val responseMessage: String) {
 }
 
 data class StdLevyScheduleSiteVisitDTO(

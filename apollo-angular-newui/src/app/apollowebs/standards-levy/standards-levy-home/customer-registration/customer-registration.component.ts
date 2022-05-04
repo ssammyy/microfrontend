@@ -219,10 +219,10 @@ export class CustomerRegistrationComponent implements OnInit {
           (response) => {
             console.log(response);
             this.SpinnerService.hide();
-            this.showToasterSuccess(response.httpStatus, `SL1 Details Saved..Entry number is ${response.body.entryNumber}`);
+            this.showToasterSuccess(response.httpStatus, response.body.responseMessage);
             swal.fire({
               title:'SLI SAVED;',
-              text: 'Entry number is'+ '\xa0\xa0' + response.body.entryNumber + '\xa0\xa0' +'Check your E-mail for registration details.',
+              text: response.body.responseMessage,
               buttonsStyling: false,
               customClass: {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',
