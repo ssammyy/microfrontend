@@ -419,7 +419,7 @@ class PostInvoiceToSageServices(
                     }
                     batchInvoiceDetails =invoiceDaoService.updateInvoiceBatchDetails(batchInvoiceDetails,user)
 
-                    var qaBatchInvoice = qaDaoServices.findBatchInvoicesWithRefNO(batchInvoiceDetails.batchNumber?:throw  ExpectedDataNotFound("Missing Invoice QA Ref No"))
+                    val qaBatchInvoice = qaDaoServices.findBatchInvoicesWithRefNO(batchInvoiceDetails.batchNumber?:throw  ExpectedDataNotFound("Missing Invoice QA Ref No"))
                     with(qaBatchInvoice){
                         sageInvoiceNumber = response.second?.response?.documentNo
                     }
