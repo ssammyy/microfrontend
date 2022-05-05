@@ -191,7 +191,11 @@ class ApiAuthenticationHandler(
                         user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required"),
                         user.id
                     )
+                    val userEmail = user.email
                     commonDaoServices.sendOtpViaSMS(tokenValidation)
+                    commonDaoServices.sendOtpViaEmail(tokenValidation,userEmail)
+
+
                     val response = CustomResponse().apply {
                         response = "00"
                         payload = "$token"
