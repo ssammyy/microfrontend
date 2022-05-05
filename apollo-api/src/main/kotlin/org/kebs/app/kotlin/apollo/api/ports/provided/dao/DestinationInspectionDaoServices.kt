@@ -1924,7 +1924,8 @@ class DestinationInspectionDaoServices(
             user: UsersEntity,
             CDID: Long,
             transRemarks: String,
-            transProcess: String
+            transProcess: String,
+            saveLog: Boolean = false,
     ): CdTransactionsEntity {
         var cdTransactionLog = CdTransactionsEntity()
         with(cdTransactionLog) {
@@ -1936,9 +1937,10 @@ class DestinationInspectionDaoServices(
             createdBy = commonDaoServices.concatenateName(user)
             createdOn = commonDaoServices.getTimestamp()
         }
-
-        cdTransactionLog = iCdTransactionRepo.save(cdTransactionLog)
-
+        // Skip saving transaction log, its not necessary
+        if (saveLog) {
+            cdTransactionLog = iCdTransactionRepo.save(cdTransactionLog)
+        }
         return cdTransactionLog
     }
 
@@ -2366,36 +2368,58 @@ class DestinationInspectionDaoServices(
         return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
     }
 
+    fun timeStampToJavaSql(ts: Timestamp?): java.sql.Date {
+        if (ts != null) {
+            return java.sql.Date.valueOf(ts.toLocalDateTime().toLocalDate())
+        }
+        return java.sql.Date.valueOf(LocalDate.now())
+    }
+
+
     fun updateCDDetailsWithForeignDocuments(cdDetailsEntity: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDetailsEntity {
         KotlinLogging.logger { }.info("Map Foreign Documents to consignment: ${cdDetailsEntity.ucrNumber}")
         // Attach COC
         this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
                 ?: "", ConsignmentCertificatesIssues.COC.nameDesc)?.let { coc ->
+            KotlinLogging.logger { }.info("Map Foreign COC Documents to consignment: ${cdDetailsEntity.ucrNumber}")
             cdDetailsEntity.cocNumber = coc.cocNumber
             cdDetailsEntity.localCocOrCorStatus = 1
+            cdDetailsEntity.localCocOrCorDate = timeStampToJavaSql(coc.cocIssueDate)
+            cdDetailsEntity.localCocOrCorRemarks = "Foreign COC document"
             coc.consignmentDocId = cdDetailsEntity
             cocRepo.save(coc)
         }
         // Attach NCR
         this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
                 ?: "", ConsignmentCertificatesIssues.NCR.nameDesc)?.let { ncr ->
+            KotlinLogging.logger { }.info("Map Foreign NCR Documents to consignment: ${cdDetailsEntity.ucrNumber}")
             cdDetailsEntity.ncrNumber = ncr.cocNumber
+            cdDetailsEntity.localCocOrCorStatus = 1
+            cdDetailsEntity.localCocOrCorDate = timeStampToJavaSql(ncr.cocIssueDate)
+            cdDetailsEntity.localCocOrCorRemarks = "Foreign COC/NCR document"
             ncr.consignmentDocId = cdDetailsEntity
             cocRepo.save(ncr)
         }
         // Attach COI
         this.cocRepo.findByUcrNumberAndCocType(cdDetailsEntity.ucrNumber
                 ?: "", ConsignmentCertificatesIssues.COI.nameDesc)?.let { coi ->
+            KotlinLogging.logger { }.info("Map Foreign COI Documents to consignment: ${cdDetailsEntity.ucrNumber}")
             cdDetailsEntity.localCoi = 1
+            cdDetailsEntity.localCocOrCorStatus = 0
             cdDetailsEntity.cocNumber = coi.coiNumber
+            cdDetailsEntity.localCocOrCorDate = timeStampToJavaSql(coi.cocIssueDate)
+            cdDetailsEntity.localCoiRemarks = "Foreign COC document"
             coi.consignmentDocId = cdDetailsEntity
             cocRepo.save(coi)
         }
         // Attach COR
         findVehicleFromCd(cdDetailsEntity)?.let { vehicle ->
             this.corsBakRepository.findByChasisNumber(vehicle.chassisNumber ?: "")?.let { cor ->
+                KotlinLogging.logger { }.info("Map Foreign COR Documents to consignment: ${cdDetailsEntity.ucrNumber}")
                 cdDetailsEntity.localCocOrCorStatus = 1
                 cdDetailsEntity.corNumber = cor.corNumber
+                cdDetailsEntity.localCocOrCorDate = timeStampToJavaSql(cor.corIssueDate)
+                cdDetailsEntity.localCocOrCorRemarks = "Foreign COR document"
                 // Update COR link
                 cor.consignmentDocId = cdDetailsEntity
                 corsBakRepository.save(cor)
