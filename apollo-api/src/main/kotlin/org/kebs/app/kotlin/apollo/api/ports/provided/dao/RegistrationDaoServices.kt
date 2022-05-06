@@ -1088,6 +1088,7 @@ class RegistrationDaoServices(
 
 
                     stdLevyNotificationFormRepository.save(stdLevyNotificationForm)
+
                     companyProfileRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
                         ?.let { companyProfileEntity->
 
@@ -1163,7 +1164,8 @@ class RegistrationDaoServices(
                     slFormResponse="Form not saved..Kindly try again"
                 }
             }
-            return NotificationForm(stdLevyNotificationForm.id,stdLevyNotificationForm.entryNumber?: throw NullValueNotAllowedException("Request Number is required"),slFormResponse)
+            //return NotificationForm(stdLevyNotificationForm.id,eNumber.entryNumber?: throw NullValueNotAllowedException("Request Number is required"),slFormResponse)
+            return NotificationForm(slFormResponse)
 
 
         }else{
