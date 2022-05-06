@@ -160,7 +160,7 @@ class CdDemandNoteEntity : Serializable {
 
     @Column(name = "BILL_ID")
     @Basic
-    var billId: Long? = 0
+    var billId: Long? = null
 
     @Column(name = "CD_ID")
     @Basic

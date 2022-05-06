@@ -17,9 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled
 @EnableScheduling
 @Profile("prod")
 class Scheduler(
-//        private val schedulerImpl: SchedulerImpl,
-//        private val qaDaoServices: QADaoServices
-        private val msDaoServices: MarketSurveillanceFuelDaoServices,
+    private val msDaoServices: MarketSurveillanceFuelDaoServices,
         private val schedulerImpl: SchedulerImpl,
         private val qaDaoServices: QADaoServices,
         private val invoiceDaoService: InvoiceDaoService

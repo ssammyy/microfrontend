@@ -443,7 +443,7 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link active" data-toggle="tab" href="#link18"
                                                            role="tablist">
-                                                            <i class="material-icons">book_online</i> Direct to M-pesa
+                                                            <i class="material-icons">book_online</i> Pay Via M-pesa Paybill
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -493,45 +493,97 @@
                                                     <div class="tab-pane active" id="link18">
                                                         <div class="card"
                                                              style="padding-left: 20px; padding-bottom: 20px;">
-                                                            <form [formGroup]="stkPushForm"
-                                                                  action="" enctype="multipart/form-data"
-                                                                  class="form" method="post">
-                                                                <br>
-                                                                <h4>
-                                                                    Fill the details below to make payment
-                                                                </h4>
-                                                                <div class="form-body">
+<!--                                                            <form [formGroup]="stkPushForm"-->
+<!--                                                                  action="" enctype="multipart/form-data"-->
+<!--                                                                  class="form" method="post">-->
+<!--                                                                <br>-->
+<!--                                                                <h4>-->
+<!--                                                                    Pay Via Paybill </h4>-->
+<!--                                                                <div class="form-body">-->
 
-                                                                    <div style="margin-top: 3%" class="form-group">
-                                                                        <label for="phoneNumber"
-                                                                               class="input-placeholder"><b>Enter Phone
-                                                                            Number</b></label>
-                                                                        <input [ngClass]="{ 'is-invalid': submitted && formStkPushForm.phoneNumber.errors }"
-                                                                               aria-describedby="inputGroup-sizing-sm"
-                                                                               aria-label="Small"
-                                                                               class="form-control two-column-input"
-                                                                               formControlName="phoneNumber"
-                                                                               id="phoneNumber" type="text"
-                                                                               name="phoneNumber"
-                                                                               placeholder="Phone Number"
-                                                                               style="width: 60%">
-                                                                    </div>
-                                                                    <div style="margin-top: 3%" class="form-group">
-                                                                        <input aria-describedby="inputGroup-sizing-sm"
-                                                                               aria-label="Small"
-                                                                               class="form-control two-column-input"
-                                                                               formControlName="entityValueID"
-                                                                               id="entityValueID" type="hidden"
-                                                                               value="{{batchID}}"
-                                                                               name="entityValueID">
-                                                                    </div>
-                                                                    <div>
-                                                                        <button class="btn btn-primary" (click)="stkPush()"
-                                                                               >PAY NOW
-                                                                        </button>
-                                                                    </div>
+<!--                                                                    <div style="margin-top: 3%" class="form-group">-->
+<!--                                                                        <label-->
+<!--                                                                                class="input-placeholder"><b>Paybill-->
+<!--                                                                            Number:804700</b></label>-->
+<!--                                                                        &lt;!&ndash;                                                                        <input [ngClass]="{ 'is-invalid': submitted && formStkPushForm.phoneNumber.errors }"&ndash;&gt;-->
+<!--                                                                        &lt;!&ndash;                                                                               aria-describedby="inputGroup-sizing-sm"&ndash;&gt;-->
+<!--                                                                        &lt;!&ndash;                                                                               aria-label="Small"&ndash;&gt;-->
+<!--                                                                        &lt;!&ndash;                                                                               class="form-control two-column-input"&ndash;&gt;-->
+<!--                                                                        &lt;!&ndash;                                                                               formControlName="phoneNumber"&ndash;&gt;-->
+<!--                                                                        &lt;!&ndash;                                                                               id="phoneNumber" type="text"&ndash;&gt;-->
+<!--                                                                        &lt;!&ndash;                                                                               name="phoneNumber"&ndash;&gt;-->
+<!--                                                                        &lt;!&ndash;                                                                               placeholder="Phone Number"&ndash;&gt;-->
+<!--                                                                        &lt;!&ndash;                                                                               style="width: 60%">&ndash;&gt;-->
+
+
+<!--                                                                    </div>-->
+<!--                                                                    <div style="margin-top: 3%" class="form-group">-->
+
+<!--                                                                        <label-->
+<!--                                                                                class="input-placeholder"><b>Account-->
+<!--                                                                            Number:{{allBatchInvoiceDetails.sageInvoiceNumber}}</b></label>-->
+<!--                                                                    </div>-->
+<!--                                                                    <div style="margin-top: 3%" class="form-group">-->
+
+<!--                                                                        <label-->
+<!--                                                                                class="input-placeholder"><b>Amount To-->
+<!--                                                                            Be-->
+<!--                                                                            Paid:{{allBatchInvoiceDetails.batchDetails.totalAmount}}</b></label>-->
+<!--                                                                    </div>-->
+<!--                                                                    <div style="margin-top: 3%" class="form-group">-->
+<!--                                                                        <input aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                               aria-label="Small"-->
+<!--                                                                               class="form-control two-column-input"-->
+<!--                                                                               formControlName="entityValueID"-->
+<!--                                                                               id="entityValueID" type="hidden"-->
+<!--                                                                               value="{{batchID}}"-->
+<!--                                                                               name="entityValueID">-->
+<!--                                                                    </div>-->
+<!--                                                                    <div>-->
+<!--                                                                        <button class="btn btn-primary"-->
+<!--                                                                                style="width: fit-content;"-->
+<!--                                                                                (click)="reloadPage()">CONFIRM PAYMENT-->
+<!--                                                                        </button>-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </form>-->
+                                                            <table class="table">
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <i class="material-icons">toc</i>
+                                                                    </td>
+                                                                    <td><strong>Paybill Number
+                                                                    </strong></td>
+                                                                    <td>804700</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <i class="material-icons">credit_card</i>
+                                                                    </td>
+                                                                    <td><strong>Account Number</strong></td>
+                                                                    <td>{{allBatchInvoiceDetails.sageInvoiceNumber}}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <i class="material-icons">payments</i>
+                                                                    </td>
+                                                                    <td><strong>Total Amount</strong></td>
+                                                                    <td>{{allBatchInvoiceDetails.batchDetails.totalAmount}}
+                                                                    </td>
+                                                                </tr>
+
+                                                                </tbody>
+                                                            </table>
+                                                            <div class="row">
+                                                                <div class="w-50 mx-auto">
+                                                            <button class="btn btn-primary"
+                                                                    style="width: fit-content;"
+                                                                    (click)="reloadPage()">CONFIRM PAYMENT
+                                                            </button>
                                                                 </div>
-                                                            </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -20,7 +20,7 @@ export class ApiEndpointService {
         LOCAL_DEV: 'localhost:8006',
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        //  LOCAL_DEV: `kimsint.kebs.org:8006`,
+        // LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org`
         // LOCAL_DEV: '10.10.0.149:8007'
     };
@@ -59,7 +59,7 @@ export class ApiEndpointService {
     /**
      * Map of contexts for API endpoints.
      */
-    public static AUTH_CONTEXT = '/api/v1/login';
+    public static AUTH_CONTEXT = '/api/v1/login/b';
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
     public static ANONYMOUS_CONTEXT_MS = '/api/v1/migration/ms/anonymous';
     public static ANONYMOUS_CONTEXT_NEP = '/api/v1/migration/anonymous/National_enquiry_point';
@@ -452,6 +452,7 @@ export class ApiEndpointService {
         STD_LEVY_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerPenalty`,
         STD_LEVY_PAID_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getPaidLevies`,
         STD_LEVY_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getLevyPayments`,
+        STD_LEVY_MANUFACTURE_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPayments`,
         STD_LEVY_COMPANY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getCompanyProfile`,
         STD_LEVY_SL_FORM: `${ApiEndpointService.STL_CONTEXT}/getNotificationFormDetails`,
         STD_LEVY_SL_NT_FORM: `${ApiEndpointService.STL_CONTEXT}/getSlNotificationFormDetails`,
