@@ -95,7 +95,6 @@ import org.springframework.web.servlet.function.ServerRequest
 import java.io.*
 import java.math.BigDecimal
 import java.net.URLConnection
-import java.security.MessageDigest
 import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
@@ -2065,6 +2064,30 @@ class CommonDaoServices(
             } else {
                 throw ExpectedDataNotFound("An error occurred, please try again later")
             }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            return CustomResponse().apply {
+                payload = e.message
+                status = 500
+                response = "99"
+            }
+        }
+
+    }
+    fun sendOtpViaEmail(token: EmailVerificationTokenEntity, userEmail: String?): CustomResponse {
+        try {
+
+            val messageBody = " Hello  \n Your verification code is ${token.token} \n\n\n\n\n\n"
+            userEmail?.let { notifications.sendEmail(it, "OTP", messageBody) }
+            return CustomResponse().apply {
+                    payload = "OTP successfully sent to email"
+                    status = 200
+                    response = "00"
+                }
+
+
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.debug(e.message, e)
