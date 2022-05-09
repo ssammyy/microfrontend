@@ -515,4 +515,31 @@ export interface CloseCompanyDto{
     reason: string;
     dateOfClosure: Timestamp<number>;
 }
+export interface SuspendedCompanyDTO{
+    id: number;
+    companyId: number;
+    reason: string;
+    status: number;
+    description: string;
+    dateOfSuspension: string;
+    entryNumber: string;
+    kraPin: string;
+    registrationNumber: string;
+    companyName: string;
+
+}
+
+export interface ClosedCompanyDTO{
+    id: number;
+    companyId: number;
+    reason: string;
+    status: number;
+    description: string;
+    dateOfClosure: string;
+    entryNumber: number;
+    kraPin: string;
+    registrationNumber: string;
+    companyName: string;
+
+}
 

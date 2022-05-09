@@ -2,13 +2,11 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
-import org.kebs.app.kotlin.apollo.store.model.std.NWAPreliminaryDraftUploads
 import org.kebs.app.kotlin.apollo.store.model.Sl2PaymentsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.Sl2PaymentsHeaderEntity
 import org.kebs.app.kotlin.apollo.store.model.SlVisitUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevySiteVisitRemarks
-import org.kebs.app.kotlin.apollo.store.model.std.SiteVisitListHolder
-import org.kebs.app.kotlin.apollo.store.model.std.WindingUpReportListHolder
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
@@ -29,19 +27,22 @@ interface ISlVisitUploadsRepository : HazelcastRepository<SlVisitUploadsEntity, 
     fun findAllDocumentId(@Param("id") id: Long?): List<SiteVisitListHolder>
 
 }
-interface StandardLevySiteVisitRemarksRepository : HazelcastRepository<StandardLevySiteVisitRemarks, Long>, JpaSpecificationExecutor<StandardLevySiteVisitRemarks> {
+interface StandardLevySiteVisitRemarksRepository : HazelcastRepository<StandardLevySiteVisitRemarks, Long> {
   fun findAllBySiteVisitIdOrderByIdDesc(id: Long): List<StandardLevySiteVisitRemarks>?
 }
 
-interface StandardLevyOperationsClosureRepository : HazelcastRepository<StandardLevyOperationsClosure, Long>, JpaSpecificationExecutor<StandardLevySiteVisitRemarks> {
-
+interface StandardLevyOperationsClosureRepository : HazelcastRepository<StandardLevyOperationsClosure, Long> {
+    @Query(value = "SELECT c.NAME as companyName,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,o.ID as id,o.COMPANY_ID as companyId,o.REASON as reason,o.STATUS as status,o.DESCRIPTION as description,o.DATE_OF_CLOSURE as dateOfClosure FROM DAT_KEBS_CLOSURE_OF_OPERATIONS o JOIN DAT_KEBS_COMPANY_PROFILE c ON o.COMPANY_ID=c.ID WHERE  o.STATUS='0'", nativeQuery = true)
+    fun getCompanyClosureRequest(): MutableList<CompanyClosureList>
 }
 
-interface StandardLevyOperationsSuspensionRepository : HazelcastRepository<StandardLevyOperationsSuspension, Long>, JpaSpecificationExecutor<StandardLevySiteVisitRemarks> {
+interface StandardLevyOperationsSuspensionRepository : HazelcastRepository<StandardLevyOperationsSuspension, Long> {
 
+    @Query(value = "SELECT  c.NAME as companyName,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,s.ID as id,s.COMPANY_ID as companyId,s.REASON as reason,s.STATUS as status,s.DESCRIPTION as description,s.DATE_OF_SUSPENSION as dateOfSuspension FROM DAT_KEBS_SUSPENSION_OF_OPERATIONS s JOIN DAT_KEBS_COMPANY_PROFILE c ON s.COMPANY_ID=c.ID WHERE  s.STATUS='0'", nativeQuery = true)
+    fun getCompanySuspensionRequest(): MutableList<CompanySuspensionList>
 }
 
-interface SlWindingUpReportUploadsEntityRepository : HazelcastRepository<SlWindingUpReportUploadsEntity, Long>, JpaSpecificationExecutor<StandardLevySiteVisitRemarks> {
+interface SlWindingUpReportUploadsEntityRepository : HazelcastRepository<SlWindingUpReportUploadsEntity, Long> {
     fun findAllById(id: Long): SlWindingUpReportUploadsEntity
 
     @Query(

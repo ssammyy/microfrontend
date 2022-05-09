@@ -221,7 +221,6 @@ export class CustomerRegistrationComponent implements OnInit {
             this.SpinnerService.hide();
             this.showToasterSuccess(response.httpStatus, response.body.responseMessage);
             swal.fire({
-              title:'SLI SAVED;',
               text: response.body.responseMessage,
               buttonsStyling: false,
               customClass: {

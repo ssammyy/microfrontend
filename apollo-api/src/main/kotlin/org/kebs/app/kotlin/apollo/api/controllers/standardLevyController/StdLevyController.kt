@@ -1208,6 +1208,17 @@ class StdLevyController(
 
     }
 
+    @GetMapping("/getCompanySuspensionRequest")
+    @ResponseBody
+    fun getCompanySuspensionRequest(): MutableList<CompanySuspensionList>
+    {
+        return standardLevyService.getCompanySuspensionRequest()
+    }
+
+
+
+
+
     @PostMapping("/closeCompanyOperations")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -1282,6 +1293,15 @@ class StdLevyController(
 
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
+    }
+
+
+
+    @GetMapping("/getCompanyClosureRequest")
+    @ResponseBody
+    fun getCompanyClosureRequest(): MutableList<CompanyClosureList>
+    {
+        return standardLevyService.getCompanyClosureRequest()
     }
 
 

@@ -1523,6 +1523,12 @@ return getUserTasks();
         return standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
     }
 
+    fun getCompanySuspensionRequest(): MutableList<CompanySuspensionList> {
+        return standardLevyOperationsSuspensionRepository.getCompanySuspensionRequest()
+    }
+
+
+
     fun closeCompanyOperations(
         standardLevyOperationsClosure: StandardLevyOperationsClosure
     ): LevyClosureValue {
@@ -1569,6 +1575,12 @@ return getUserTasks();
 
     fun getWindingReportDocumentList(closureID: Long): List<WindingUpReportListHolder> {
         return slWindingUpReportUploadsEntityRepository.findAllDocumentId(closureID)
+    }
+
+
+
+    fun getCompanyClosureRequest(): MutableList<CompanyClosureList> {
+        return standardLevyOperationsClosureRepository.getCompanyClosureRequest()
     }
 
 

@@ -312,6 +312,8 @@ import {GenerateAuctionKraReportComponent} from "./apollowebs/di/auction/generat
 import {UpdateComplaintTaskComponent} from "./apollowebs/pvoc/complaints/update-complaint-task/update-complaint-task.component";
 import {UpdateExemptionTaskComponent} from "./apollowebs/pvoc/exemptions/update-exemption-task/update-exemption-task.component";
 import {AdminBusinessManagementComponent} from './apollowebs/admin/admin-business-management/admin-business-management.component';
+import { StandardLevyClosureComponent } from './apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component';
+import { StandardLevySuspensionComponent } from './apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component';
 
 
 @NgModule({
@@ -655,7 +657,9 @@ import {AdminBusinessManagementComponent} from './apollowebs/admin/admin-busines
         NwaTasksComponent,
         UpdateComplaintTaskComponent,
         UpdateExemptionTaskComponent,
-        AdminBusinessManagementComponent
+        AdminBusinessManagementComponent,
+        StandardLevyClosureComponent,
+        StandardLevySuspensionComponent
     ],
     entryComponents: [],
     providers: [DatePipe,
