@@ -139,6 +139,7 @@ dependencies {
      * Joda Time
      */
     implementation("joda-time:joda-time:2.10.6")
+    implementation("com.googlecode.json-simple:json-simple:1.1.1")
 
     ///XNIO DEPENDENCY
 //    implementation("org.jboss.xnio:xnio-nio:3.4.6.Final")
@@ -161,10 +162,7 @@ dependencies {
      * KRA Integrations
      */
 //    implementation("org.springframework.boot:spring-boot-devtools")
-    implementation("org.springframework.boot:spring-boot-starter-web-services")
-    implementation("javax.xml.bind:jaxb-api:2.3.0")
-    implementation("javax.activation:activation:1.1")
-    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0")
+
 //    implementation("javax.xml.bind:jaxb-api:2.3.0-b170201.1204")
 //    implementation("javax.activation:activation:1.1")
 //    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0-b170127.1453")
@@ -174,6 +172,14 @@ dependencies {
     implementation("com.sun.xml.messaging.saaj:saaj-impl")
     implementation("com.googlecode.json-simple:json-simple:1.1.1")
 
+
+    implementation("org.springframework.boot:spring-boot-starter-web-services")
+    implementation("javax.xml.bind:jaxb-api:2.3.0")
+    implementation("javax.activation:activation:1.1")
+    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0")
+
+    // https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator
+    implementation("com.fasterxml.uuid:java-uuid-generator:4.0.1")
 
 
     /**

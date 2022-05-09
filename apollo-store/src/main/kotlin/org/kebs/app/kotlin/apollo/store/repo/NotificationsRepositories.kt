@@ -31,6 +31,7 @@ interface INotificationsRepository : HazelcastRepository<NotificationsEntity, In
     fun findFirstByRequestTopicAndEventStatusAndNotificationTypeOrderByNotificationType(requestTopic: String?, eventStatus: String?, notificationType: NotificationTypesEntity?): NotificationsEntity?
     fun findByServiceRequestStatusAndStatus(serviceRequestStatus: Int?, status: Int?): Collection<NotificationsEntity>?
     fun findByUuidAndStatus(uuid: String, status: Int): Collection<NotificationsEntity>?
+    fun findByServiceMapIdAndUuidAndStatus(serviceMapId: ServiceMapsEntity, uuid: String, status: Int): Collection<NotificationsEntity>?
     fun findFirstByNotificationTypeAndReferenceNameOrderByNotificationType(notificationType: NotificationTypesEntity?, templateCode: String): Optional<NotificationsEntity>
 
 }

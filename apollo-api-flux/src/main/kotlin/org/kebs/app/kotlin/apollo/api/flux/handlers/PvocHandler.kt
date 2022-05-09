@@ -91,7 +91,7 @@ class PvocHandler(
                         body.coc?.coiRemarks = "NA"
                         body.items?.let {
                             for (item in it) {
-                                item.coiNumber = "NA"
+//                                item.coiNumber = "NA"
                                 item.ownerName = "NA"
                                 item.ownerPin = "NA"
                             }
@@ -193,7 +193,7 @@ class PvocHandler(
                         body.coi?.cocRemarks = "NA"
                         body.items?.let {
                             for (item in it) {
-                                item.cocNumber = "NA"
+//                                item.cocNumber = "NA"
                             }
                         }
                         val response = service.saveCoiDataWithItems(body)

@@ -1,6 +1,299 @@
 package org.kebs.app.kotlin.apollo.common.dto.ms
 
+import java.math.BigDecimal
 import java.sql.Date
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
+
+data class BatchFileFuelSaveDto(
+        @NotNull(message = "Required field")
+        var county: Long,
+        @NotNull(message = "Required field")
+        var town: Long,
+
+        var remarks: String? = null,
+)
+
+data class FuelBatchDetailsDto(
+        var id: Long? = null,
+        var region: String? = null,
+        var county: String? = null,
+        var town: String? = null,
+        var referenceNumber: String? = null,
+        var batchFileYear: String? = null,
+        var remarks: String? = null,
+        var batchClosed: Boolean? = null,
+)
+
+data class FuelInspectionScheduleListDetailsDto(
+        var fuelInspectionDto: List<FuelInspectionDto>? = null,
+        var fuelBatchDetailsDto: FuelBatchDetailsDto? = null
+)
+
+
+
+data class FuelInspectionDto(
+        var id: Long? = null,
+        var referenceNumber: String? = null,
+        var company: String? = null,
+        var petroleumProduct: String? = null,
+        var physicalLocation: String? = null,
+        var inspectionDateFrom: Date? = null,
+        var inspectionDateTo: Date? = null,
+        var processStage: String? = null,
+        var assignedOfficerStatus: Boolean? = null,
+        var endInspectionStatus: Boolean? = null,
+        var rapidTestDone: Boolean? = null,
+        var sampleCollectionStatus: Boolean? = null,
+        var sampleSubmittedStatus: Boolean? = null,
+        var bsNumberStatus: Boolean? = null,
+        var compliantStatusAdded: Boolean? = null,
+        var remediationScheduledStatus: Boolean? = null,
+        var remendiationCompleteStatus: Boolean? = null,
+        var proFormaInvoiceStatus: Boolean? = null,
+        var batchDetails: FuelBatchDetailsDto?= null,
+        var officersList: List<MsUsersDto>? = null,
+        var remarksDetails: List<MSRemarksDto>? = null,
+        var officersAssigned: MsUsersDto? = null,
+        var rapidTest: FuelEntityRapidTestDto? = null,
+        var sampleCollected: SampleCollectionDto? = null,
+        var sampleSubmitted: SampleSubmissionDto? = null,
+        var sampleLabResults: MSSSFLabResultsDto? = null,
+        var fuelRemediation: FuelRemediationDto? = null,
+)
+
+data class FuelEntityDto(
+        @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
+        var company: String,
+
+        @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
+        var petroleumProduct: String,
+
+        @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
+        var physicalLocation: String,
+
+        @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
+        var inspectionDateFrom: Date,
+
+        @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
+        var inspectionDateTo: Date,
+
+        @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
+        var stationOwnerEmail: String,
+
+        var remarks: String? = null,
+)
+
+data class FuelEntityAssignOfficerDto(
+        @NotNull(message = "Required field")
+        var assignedUserID: Long,
+        var remarks: String? = null,
+)
+
+data class FuelEntityRapidTestDto(
+        @NotNull(message = "Required field")
+        var rapidTestRemarks: String? = null,
+        @NotNull(message = "Required field")
+        var rapidTestStatus: Boolean,
+)
+
+data class FuelEntityCompliantStatusDto(
+        @NotNull(message = "Required field")
+        var compliantRemarks: String? = null,
+        @NotNull(message = "Required field")
+        var compliantStatus: Boolean,
+)
+
+data class SampleCollectionDto(
+        var id: Long?= null,
+        var nameManufacturerTrader: String?= null,
+        var addressManufacturerTrader: String?= null,
+        var samplingMethod: String?= null,
+        var reasonsCollectingSamples: String?= null,
+        var anyRemarks: String?= null,
+        var designationOfficerCollectingSample: String?= null,
+        var nameOfficerCollectingSample: String?= null,
+        var dateOfficerCollectingSample: Date?= null,
+        var nameWitness: String?= null,
+        var designationWitness: String?= null,
+        var dateWitness: Date?= null,
+        var productsList: List<SampleCollectionItemsDto>? = null,
+)
+
+data class SampleCollectionItemsDto(
+        var id: Long? = null,
+        var productBrandName: String? = null,
+        var batchNo: String? = null,
+        var batchSize: String? = null,
+        var sampleSize: String? = null,
+)
+
+data class RemarksToAddDto(
+        var remarksDescription: String? = null,
+        var remarksStatus: Int? = null,
+        var processBy: String? = null,
+        var processName: String? = null,
+        var userId: Long? = null,
+)
+
+data class SampleSubmissionDto(
+        var id: Long? = null,
+        var nameProduct : String? = null,
+        var packaging : String? = null,
+        var labellingIdentification : String? = null,
+        var fileRefNumber : String? = null,
+        var referencesStandards : String? = null,
+        var sizeTestSample : Long? = null,
+        var sizeRefSample : Long? = null,
+        var condition : String? = null,
+        var sampleReferences : String? = null,
+        var sendersName : String? = null,
+        var designation : String? = null,
+        var address : String? = null,
+        var sendersDate : Date? = null,
+        var receiversName : String? = null,
+        var testChargesKsh : BigDecimal? = null,
+        var receiptLpoNumber : String? = null,
+        var invoiceNumber : String? = null,
+        var disposal : String? = null,
+        var remarks : String? = null,
+        var sampleCollectionNumber : Long? = null,
+        var bsNumber : String? = null,
+        var parametersList: List<SampleSubmissionItemsDto>? = null,
+)
+
+data class SampleSubmissionItemsDto(
+        var parameters : String? = null,
+        var laboratoryName : String? = null,
+)
+
+data class BSNumberSaveDto(
+        @NotNull(message = "Required field")
+        var bsNumber: String,
+        @NotNull(message = "Required field")
+        var submittedDate: Date,
+
+        var remarks: String? = null,
+)
+
+data class LabResultsDto(
+        var parametersListTested: List<LabResultsParamDto>? = null,
+        var savedPDFFiles: List<LabResultsParamDto>? = null,
+        var result : String? = null,
+        var method : String? = null,
+)
+
+data class LabResultsParamDto(
+        var param : String? = null,
+        var result : String? = null,
+        var method : String? = null,
+)
+
+data class FuelRemediationDto(
+        var productType: String? = null,
+        var applicableKenyaStandard: String? = null,
+        var remediationProcedure: String? = null,
+        var volumeOfProductContaminated: String? = null,
+        var contaminatedFuelType: String? = null,
+        var quantityOfFuel: String? = null,
+        var volumeAdded: String? = null,
+        var totalVolume: String? = null,
+        var proFormaInvoiceStatus: Boolean? = null,
+        var proFormaInvoiceNo: String? = null,
+        var invoiceAmount: BigDecimal? = null,
+        var feePaidReceiptNo: String? = null,
+        var dateOfRemediation: Date? = null,
+        var dateOfPayment: Date? = null,
+        var invoiceCreated: Boolean? = null,
+)
+
+data class MSSSFLabResultsDto(
+        var ssfResultsList: MSSSFComplianceStatusDetailsDto? = null,
+        var savedPDFFiles:  List<MSSSFPDFListDetailsDto>? = null,
+        var limsPDFFiles:  List<LIMSFilesFoundDto>? = null,
+        var parametersListTested: List<LabResultsParamDto>? = null,
+)
+
+data class MSSSFComplianceStatusDetailsDto(
+        var sffId: Long? = null,
+        var bsNumber: String? = null,
+        var complianceRemarks: String? = null,
+        var complianceStatus: Boolean? = null,
+)
+
+data class LIMSFilesFoundDto(
+        var fileSavedStatus: Boolean? = null,
+        var fileName: String? = null,
+)
+
+data class ComplaintsFilesFoundDto(
+        var id: Long? = null,
+        var fileName: String? = null,
+        var documentType: String? = null,
+        var fileContentType: String? = null,
+)
+
+data class PDFSaveComplianceStatusDto(
+        @NotNull(message = "Required field")
+        var ssfID: Long,
+        @NotNull(message = "Required field")
+        var bsNumber: String,
+        @NotNull(message = "Required field")
+        var PDFFileName: String,
+        @NotNull(message = "Required field")
+        var complianceStatus: Boolean,
+        @NotNull(message = "Required field")
+        var complianceRemarks: String,
+)
+
+data class SSFSaveComplianceStatusDto(
+        @NotNull(message = "Required field")
+        var ssfID: Long,
+        @NotNull(message = "Required field")
+        var bsNumber: String,
+        @NotNull(message = "Required field")
+        var complianceStatus: Boolean,
+        @NotNull(message = "Required field")
+        var complianceRemarks: String,
+)
+
+data class CompliantRemediationDto(
+        var remarks: String? = null,
+        var proFormaInvoiceStatus: Boolean? = null,
+        var dateOfRemediation: Date? = null,
+        var volumeFuelRemediated: Long?= null,
+        var subsistenceTotalNights: Long?= null,
+        var transportAirTicket: Long?= null,
+        var transportInkm: Long?= null,
+)
+
+data class RemediationDto(
+        var productType: String? = null,
+        var quantityOfFuel: String? = null,
+        var contaminatedFuelType: String? = null,
+        var applicableKenyaStandard: String? = null,
+        var remediationProcedure: String? = null,
+        var volumeOfProductContaminated: String? = null,
+        var volumeAdded: String? = null,
+        var totalVolume: String? = null,
+)
+
+
+data class MSSSFPDFListDetailsDto(
+        var pdfSavedId: Long? = null,
+        var pdfName: String? = null,
+        var sffId: Long? = null,
+        var complianceRemarks: String? = null,
+        var complianceStatus: Boolean? = null,
+)
+
+
 
 data class ComplaintApproveRejectAssignDto(
         var division: Long? = null,
@@ -16,6 +309,7 @@ data class ComplaintApproveRejectAssignDto(
 )
 
 data class ComplaintApproveDto(
+        var department: Long? = null,
         var division: Long? = null,
         var approved: Int? = null,
         var approvedRemarks: String? = null
@@ -50,6 +344,24 @@ data class ComplaintAssignDto(
         var assignedIo: Long? = null
 )
 
+data class MSRemarksDto(
+        var id: Long? = null,
+        var remarksDescription: String? = null,
+        var processBy: String? = null,
+        var processName: String? = null
+)
+
+data class AllComplaintsDetailsDto(
+        var complaintsDetails: ComplaintsDetailsDto? = null,
+        var officersList: List<MsUsersDto>? = null,
+        var officersAssigned: MsUsersDto? = null,
+        var remarksDetails: List<MSRemarksDto>? = null,
+        var sampleCollected: SampleCollectionDto? = null,
+        var sampleSubmitted: SampleSubmissionDto? = null,
+        var sampleLabResults: MSSSFLabResultsDto? = null,
+//        var fuelRemediation: FuelRemediationDto? = null,
+)
+
 data class ComplaintsDetailsDto(
         var id: Long? = null,
         var refNumber: String? = null,
@@ -71,21 +383,22 @@ data class ComplaintsDetailsDto(
         var buildingName: String? = null,
         var date: Date? = null,
         var status: String? = null,
-        var officersList: List<MsUsersDto>? = null,
-        var divisionList: List<MsDivisionDto>? = null,
+//        var officersList: List<MsUsersDto>? = null,
+//        var divisionList: List<MsDivisionDto>? = null,
         var approvedStatus: Int? = null,
         var assignedIOStatus: Int? = null,
-        var rejectedStatusStatus: Int? = null
+        var rejectedStatusStatus: Int? = null,
+        var complaintFiles: List<ComplaintsFilesFoundDto>? = null
 
 )
 
-data class ComplaintsDto(
-        var refNumber: String? = null,
-        var complainantName: String? = null,
-        var complaintCategory: String? = null,
+data class ComplaintsListDto(
+        var referenceNumber: String? = null,
         var complaintTitle: String? = null,
-        var date: Date? = null,
-        var status: String? = null
+        var targetedProducts: String? = null,
+//        var complaintCategory: String? = null,
+        var transactionDate: Date? = null,
+        var progressStep: String? = null
 )
 
 data class MsDepartmentDto(
@@ -103,6 +416,13 @@ data class MsUsersDto(
         var userName: String? = null,
         var email: String? = null,
         val status: Boolean? = null
+)
+
+data class LaboratoryDto(
+        var id: Long?= null,
+        var labName: String?= null,
+        var description: String?= null,
+        var status: Boolean?= null,
 )
 
 
@@ -191,6 +511,62 @@ data class MSTypeDto(
 )
 
 data class MSComplaintSubmittedSuccessful(
-        var message: String? = null
+        var refNumber: String? = null,
+        var savedStatus: Boolean? = null,
+        var successMessage: String? = null,
+        var errorMessage: String? = null
+)
+
+
+data class FuelRemediationDetailsDTO(
+        var id: String? = null,
+        var invoiceNumber: String? = null,
+        var receiptNo: String? = null,
+        var invoiceBatchNumberId: String? = null,
+        var paymentStatus: String? = null,
+        var amount: String? = null,
+        var invoiceDate: String? = null,
+        var paymentDate: String? = null,
+        var transactionDate: String? = null,
+        var status: String? = null,
+        var remarks: String? = null,
+        var varField1: String? = null,
+        var varField2: String? = null,
+        var varField3: String? = null,
+        var varField4: String? = null,
+        var varField5: String? = null,
+        var varField6: String? = null,
+        var varField7: String? = null,
+        var varField8: String? = null,
+        var varField9: String? = null,
+        var varField10: String? = null,
+        var createdBy: String? = null,
+        var createdOn: String? = null,
+        var lastModifiedBy: String? = null,
+        var lastModifiedOn: String? = null,
+        var updateBy: String? = null,
+        var updatedOn: String? = null,
+        var deleteBy: String? = null,
+        var deletedOn: String? = null,
+        var version: String? = null,
+        var remunerationRateLiter: String? = null,
+        var remunerationSubTotal: String? = null,
+        var remunerationVat: String? = null,
+        var remunerationTotal: String? = null,
+        var volumeFuelRemediated: String? = null,
+        var subsistenceTotalNights: String? = null,
+        var subsistenceRate: String? = null,
+        var subsistenceRateNightTotal: String? = null,
+        var subsistenceVat: String? = null,
+        var subsistenceTotal: String? = null,
+        var transportAirTicket: String? = null,
+        var transportInkm: String? = null,
+        var transportRate: String? = null,
+        var transportTotalKmrate: String? = null,
+        var transportVat: String? = null,
+        var transportTotal: String? = null,
+        var transportGrandTotal: String? = null,
+        var fuelInspectionId: String? = null,
+        var fuelInspectionRefNumber: String? = null,
 )
 

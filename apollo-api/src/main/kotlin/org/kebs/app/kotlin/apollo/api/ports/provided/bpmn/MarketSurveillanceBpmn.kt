@@ -9,7 +9,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
-import org.kebs.app.kotlin.apollo.store.model.MsFuelInspectionEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
 import org.kebs.app.kotlin.apollo.store.model.MsWorkPlanGeneratedEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
@@ -389,7 +389,7 @@ class MarketSurveillanceBpmn(
         try {
             //Remember to start by setting email and assignee to manufacturer
             checkStartProcessInputs(objectId, assigneeId, msFuelMonitoringProcessDefinitionKey)?.let{ checkVariables->
-                val fuelInspection:MsFuelInspectionEntity = checkVariables["fuelInspection"] as MsFuelInspectionEntity
+                val fuelInspection: MsFuelInspectionEntity = checkVariables["fuelInspection"] as MsFuelInspectionEntity
                 variables["objectId"] = fuelInspection.id.toString()
                 variables["labReportCompliant"] = 0
                 variables["customerEmail"] = customerEmail

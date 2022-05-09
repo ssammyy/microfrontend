@@ -1,6 +1,9 @@
 package org.kebs.app.kotlin.apollo.store.model
 
+import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.MsSampleCollectionEntity
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
@@ -14,6 +17,10 @@ class MsSampleSubmissionEntity : Serializable{
     @GeneratedValue(generator = "DAT_KEBS_MS_SAMPLE_SUBMISSION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = 0
+
+    @Column(name = "LAB_RESULTS_STATUS")
+    @Basic
+    var labResultsStatus: Int? = null
 
     @Column(name = "NAME_PRODUCT")
     @Basic
@@ -85,7 +92,7 @@ class MsSampleSubmissionEntity : Serializable{
 
     @Column(name = "SENDERS_DATE")
     @Basic
-    var sendersDate: String? = null
+    var sendersDate: Date? = null
 
     @Column(name = "RECEIVERS_NAME")
     @Basic
@@ -97,7 +104,7 @@ class MsSampleSubmissionEntity : Serializable{
 
     @Column(name = "TEST_CHARGES_KSH")
     @Basic
-    var testChargesKsh: Long? = null
+    var testChargesKsh: BigDecimal? = null
 
     @Column(name = "RECEIPT_LPO_NUMBER")
     @Basic
@@ -114,87 +121,6 @@ class MsSampleSubmissionEntity : Serializable{
     @Column(name = "REMARKS")
     @Basic
     var remarks: String? = null
-
-    @Column(name = "LABORATORY_NAME1")
-    @Basic
-    var laboratoryName1: String? = null
-
-    @Column(name = "LABORATORY_NAME2")
-    @Basic
-    var laboratoryName2: String? = null
-
-    @Column(name = "LABORATORY_NAME3")
-    @Basic
-    var laboratoryName3: String? = null
-
-    @Column(name = "LABORATORY_NAME4")
-    @Basic
-    var laboratoryName4: String? = null
-
-    @Column(name = "LABORATORY_NAME5")
-    @Basic
-    var laboratoryName5: String? = null
-
-    @Column(name = "LABORATORY_NAME6")
-    @Basic
-    var laboratoryName6: String? = null
-
-    @Column(name = "LABORATORY_NAME7")
-    @Basic
-    var laboratoryName7: String? = null
-
-    @Column(name = "LABORATORY_NAME8")
-    @Basic
-    var laboratoryName8: String? = null
-
-    @Column(name = "LABORATORY_NAME9")
-    @Basic
-    var laboratoryName9: String? = null
-
-    @Column(name = "LABORATORY_NAME10")
-    @Basic
-    var laboratoryName10: String? = null
-
-
-    @Column(name = "PARAMETER_1")
-    @Basic
-    var parameter1: String? = null
-
-    @Column(name = "PARAMETER_2")
-    @Basic
-    var parameter2: String? = null
-
-    @Column(name = "PARAMETER_3")
-    @Basic
-    var parameter3: String? = null
-
-    @Column(name = "PARAMETER_4")
-    @Basic
-    var parameter4: String? = null
-
-    @Column(name = "PARAMETER_5")
-    @Basic
-    var parameter5: String? = null
-
-    @Column(name = "PARAMETER_6")
-    @Basic
-    var parameter6: String? = null
-
-    @Column(name = "PARAMETER_7")
-    @Basic
-    var parameter7: String? = null
-
-    @Column(name = "PARAMETER_8")
-    @Basic
-    var parameter8: String? = null
-
-    @Column(name = "PARAMETER_9")
-    @Basic
-    var parameter9: String? = null
-
-    @Column(name = "PARAMETER_10")
-    @Basic
-    var parameter10: String? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -264,118 +190,23 @@ class MsSampleSubmissionEntity : Serializable{
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "MS_WORKPLAN_GENERATED_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var workPlanGeneratedID: MsWorkPlanGeneratedEntity? = null
+    @Column(name = "MS_WORKPLAN_GENERATED_ID")
+    @Basic
+    var workPlanGeneratedID: Long? = null
 
-    @JoinColumn(name = "MS_FUEL_INSPECTION_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var msFuelInspectionId: MsFuelInspectionEntity? = null
+    @Column(name = "MS_FUEL_INSPECTION_ID")
+    @Basic
+    var msFuelInspectionId: Long? = null
 
-//    @OneToMany(mappedBy = "datKebsMsSampleSubmissionBySampleSubmissionId")
-//    var datKebsMsLaboratoryParametersById: Collection<MsLaboratoryParametersEntity>? = null
+    @Column(name = "SAMPLE_COLLECTION_NUMBER")
+    @Basic
+    var sampleCollectionNumber: Long? = null
 
-    @JoinColumn(name = "SAMPLE_COLLECTION_NUMBER", referencedColumnName = "ID")
-    @ManyToOne
-    var sampleCollectionNumber: MsSampleCollectionEntity? = null
+    @Column(name = "SAMPLE_BS_NUMBER_DATE")
+    @Basic
+    var sampleBsNumberDate: Date? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as MsSampleSubmissionEntity
-        return id == that.id &&
-
-                parameter1 ==  that.parameter1 &&
-                parameter2 ==  that.parameter2 &&
-                parameter3 ==  that.parameter3 &&
-                parameter4 ==  that.parameter4 &&
-                parameter5 ==  that.parameter5 &&
-                parameter6 ==  that.parameter6 &&
-                parameter7 ==  that.parameter7 &&
-                parameter8 ==  that.parameter8 &&
-                parameter9 ==  that.parameter9 &&
-                parameter10 ==  that.parameter10 &&
-
-                laboratoryName1 ==  that.laboratoryName1 &&
-                laboratoryName2 ==  that.laboratoryName2 &&
-                laboratoryName3 ==  that.laboratoryName3 &&
-                laboratoryName4 ==  that.laboratoryName4 &&
-                laboratoryName5 ==  that.laboratoryName5 &&
-                laboratoryName6 ==  that.laboratoryName6 &&
-                laboratoryName7 ==  that.laboratoryName7 &&
-                laboratoryName8 ==  that.laboratoryName8 &&
-                laboratoryName9 ==  that.laboratoryName9 &&
-
-                labRef == that.labRef &&
-                dateOfReceipt == that.dateOfReceipt &&
-                dateAnalsyisStarted == that.dateAnalsyisStarted &&
-                additionalInfProvidedCustomer == that.additionalInfProvidedCustomer &&
-                nameProduct == that.nameProduct &&
-                bsNumber == that.bsNumber &&
-                sizeTestSample == that.sizeTestSample &&
-                sizeRefSample == that.sizeRefSample &&
-                fileRefNumber == that.fileRefNumber &&
-                packaging == that.packaging &&
-                labellingIdentification == that.labellingIdentification &&
-                condition == that.condition &&
-                referencesStandards == that.referencesStandards &&
-                sendersName == that.sendersName &&
-                designation == that.designation &&
-                signature == that.signature &&
-                address == that.address &&
-                sendersDate == that.sendersDate &&
-                receiversName == that.receiversName &&
-                sampleReferences == that.sampleReferences &&
-                testChargesKsh == that.testChargesKsh &&
-                receiptLpoNumber == that.receiptLpoNumber &&
-                invoiceNumber == that.invoiceNumber &&
-                disposal == that.disposal &&
-                remarks == that.remarks &&
-                status == that.status &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(id, nameProduct, bsNumber,
-                labRef ,
-                        dateOfReceipt ,
-                        dateAnalsyisStarted ,
-                        additionalInfProvidedCustomer ,
-                parameter1,
-                parameter2,
-                parameter3,
-                parameter4,
-                parameter5,
-                parameter6,
-                parameter7,
-                parameter8,
-                parameter9,
-                parameter10,
-                laboratoryName1,
-                laboratoryName2,
-                laboratoryName3,
-                laboratoryName4,
-                laboratoryName5,
-                laboratoryName6,
-                laboratoryName7,
-                laboratoryName8,
-                laboratoryName9,
-                laboratoryName10,sizeTestSample, sizeRefSample, fileRefNumber, packaging, labellingIdentification, condition, referencesStandards, sendersName, designation, signature, address, sendersDate, receiversName, sampleReferences, testChargesKsh, receiptLpoNumber, invoiceNumber, disposal, remarks, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
-    }
-
+    @Column(name = "SAMPLE_BS_NUMBER_REMARKS")
+    @Basic
+    var sampleBsNumberRemarks: String? = null
 }

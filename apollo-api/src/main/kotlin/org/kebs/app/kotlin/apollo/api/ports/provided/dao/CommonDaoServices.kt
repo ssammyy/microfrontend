@@ -55,9 +55,11 @@ import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
+import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationEmailDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEntryNumberEmailDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
+import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.*
@@ -72,6 +74,7 @@ import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintsEmailVerificationEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
@@ -79,8 +82,11 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.external.ApiClientRepo
+import org.kebs.app.kotlin.apollo.store.repo.ms.IWorkplanYearsCodesRepository
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.core.io.ResourceLoader
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.server.ServletServerHttpRequest
@@ -454,6 +460,20 @@ class CommonDaoServices(
         return String.format("%0${digitSize}d", num)
     }
 
+    fun failedStatusDetails(sr: ServiceRequestsEntity): String {
+        return "ERROR STATUS CODE= ${sr.responseStatus} AND MESSAGE = ${sr.responseMessage}"
+    }
+
+    fun findOfficersListBasedOnRegionCountyAndRole(
+        roleId: Long,
+        countyId: Long,
+        regionId: Long
+    ): List<UsersEntity>? {
+
+        return usersRepo.findOfficerUsersByRegionAndCountyAndRoleFromUserDetails(roleId, countyId, regionId, 1)
+    }
+
+
     fun serviceMapDetails(appId: Int): ServiceMapsEntity {
         serviceMapsRepository.findByIdAndStatus(appId, activeStatus.toInt())
                 ?.let { s ->
@@ -465,6 +485,37 @@ class CommonDaoServices(
 
     fun makeAnyNotBeNull(anyValue: Any): Any {
         return anyValue
+    }
+
+    fun extractPageRequest(req: ServerRequest, field: String = "id"): PageRequest {
+        var page = 0
+        var records = 20
+        // get page
+        req.param("page").ifPresent { p ->
+            p.toIntOrNull()?.let {
+                page = it
+            }
+        }
+        // Get page size
+        req.param("records").ifPresent { p ->
+            p.toIntOrNull()?.let {
+                records = if (it in 1..100) {
+                    it
+                } else {
+                    20
+                }
+            }
+        }
+        var sortOrder = "desc"
+        req.param("sortOrder").ifPresent {
+            if ("asc".equals(it)) {
+                sortOrder = it
+            }
+        }
+        if ("asc".equals(sortOrder)) {
+            return PageRequest.of(page, records, Sort.by(Sort.Order.asc(field)))
+        }
+        return PageRequest.of(page, records, Sort.by(Sort.Order.desc(field)))
     }
 
 
@@ -533,6 +584,11 @@ class CommonDaoServices(
 
     fun concatenateName(user: UsersEntity): String {
         return "${user.firstName} ${user.lastName}"
+    }
+
+    fun createJsonBodyFromEntity(entitySaved: Any): String? {
+        val gson = Gson()
+        return gson.toJson(entitySaved)
     }
 
     fun concatenateName(firstName: String, lastName: String): String {
@@ -638,11 +694,11 @@ class CommonDaoServices(
 
 
     fun sendEmailAfterCompose(
-            user: UsersEntity,
-            emailTemplateUuid: String,
-            emailEntity: Any,
-            appID: Int,
-            payload: String
+        user: UsersEntity,
+        emailTemplateUuid: String,
+        emailEntity: Any,
+        appID: Int,
+        payload: String
     ) {
         val map = serviceMapDetails(appID)
         val sr = mapServiceRequestForSuccess(map, payload, user)
@@ -655,10 +711,10 @@ class CommonDaoServices(
 //                    response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Disposition", "inline; filename=${doc.name};")
         response.outputStream
-                .let { responseOutputStream ->
-                    responseOutputStream.write(doc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
-                    responseOutputStream.close()
-                }
+            .let { responseOutputStream ->
+                responseOutputStream.write(doc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
 
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
     }
@@ -682,16 +738,21 @@ class CommonDaoServices(
                 } ?: throw ExpectedDataNotFound("No user has logged in")
     }
 
+    fun getCurrentYear(): String {
+        val year = Calendar.getInstance()[Calendar.YEAR]
+        return year.toString()
+    }
+
     fun loggedInUserDetails(): UsersEntity {
         SecurityContextHolder.getContext().authentication?.name
-                ?.let { username ->
-                    usersRepo.findByEmail(username)
-                            ?.let { loggedInUser ->
-                                return loggedInUser
-                            }
-                            ?: throw ExpectedDataNotFound("No userName with the following userName=$username, Exist in the users table")
-                }
-                ?: throw ExpectedDataNotFound("No user has logged in")
+            ?.let { username ->
+                usersRepo.findByUserName(username)
+                    ?.let { loggedInUser ->
+                        return loggedInUser
+                    }
+                    ?: throw ExpectedDataNotFound("No userName with the following userName=$username, Exist in the users table")
+            }
+            ?: throw ExpectedDataNotFound("No user has logged in")
     }
 
     fun checkLoggedInUser(): String? {
@@ -701,252 +762,299 @@ class CommonDaoServices(
 
     fun loggedInUserAuthentication(): Authentication {
         SecurityContextHolder.getContext().authentication
-                ?.let { auths ->
-                    return auths
-                }
-                ?: throw ExpectedDataNotFound("No user has logged in")
+            ?.let { auths ->
+                return auths
+            }
+            ?: throw ExpectedDataNotFound("No user has logged in")
     }
 
     fun findAllSectionsListWithDivision(division: DivisionsEntity, status: Int): List<SectionsEntity> {
         iSectionsRepo.findByDivisionIdAndStatus(division, status)
-                ?.let { entryPointDetails ->
-                    return entryPointDetails
-                }
-                ?: throw Exception("Entry Point Details with division id = ${division.id} and Status = ${status}, do not Exist")
+            ?.let { entryPointDetails ->
+                return entryPointDetails
+            }
+            ?: throw Exception("Entry Point Details with division id = ${division.id} and Status = ${status}, do not Exist")
     }
 
 
     fun findDivisionWIthId(divisionId: Long): DivisionsEntity {
         iDivisionsRepo.findByIdOrNull(divisionId)
-                ?.let { division ->
-                    return division
-                }
-                ?: throw ExpectedDataNotFound("Division with id = ${divisionId}, does not Exist")
+            ?.let { division ->
+                return division
+            }
+            ?: throw ExpectedDataNotFound("Division with id = ${divisionId}, does not Exist")
     }
 
     fun findSectionWIthId(sectionId: Long): SectionsEntity {
         iSectionsRepo.findByIdOrNull(sectionId)
-                ?.let { section ->
-                    return section
-                }
-                ?: throw ExpectedDataNotFound("Section with id = ${sectionId}, does not Exist")
+            ?.let { section ->
+                return section
+            }
+            ?: throw ExpectedDataNotFound("Section with id = ${sectionId}, does not Exist")
+    }
+
+    fun setSuccessResponse(dataList: Any?, dataPgNumber: Int?,dataTotalPages: Int?, dataTotalElements: Long? ): ApiResponseModel {
+        val response = ApiResponseModel()
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.message = "Success"
+        response.pageNo = dataPgNumber
+        response.data = dataList
+        response.totalPages = dataTotalPages
+        response.totalCount = dataTotalElements
+
+        return response
+    }
+
+    fun setErrorResponse(errorMessage: String): ApiResponseModel {
+        val response = ApiResponseModel()
+        response.responseCode = ResponseCodes.FAILED_CODE
+        response.message = errorMessage
+        return response
+    }
+
+    fun setExceptionResponse(errorMessage: String , ex: Exception): ApiResponseModel {
+        val response = ApiResponseModel()
+        response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        response.message = errorMessage
+        response.errors = ex.toString()
+    // response.data = dataList
+    // response.totalPages = dataTotalPages
+    // response.totalCount = dataTotalElements
+
+        return response
     }
 
     fun findSectionLevel1WIthId(sectionL1Id: Long): SubSectionsLevel1Entity {
         iSubSectionsLevel1Repo.findByIdOrNull(sectionL1Id)
-                ?.let { sectionL1 ->
-                    return sectionL1
-                }
-                ?: throw ExpectedDataNotFound("Section Level 1 with id = ${sectionL1Id}, does not Exist")
+            ?.let { sectionL1 ->
+                return sectionL1
+            }
+            ?: throw ExpectedDataNotFound("Section Level 1 with id = ${sectionL1Id}, does not Exist")
     }
 
     fun findSectionLevel2WIthId(sectionL2Id: Long): SubSectionsLevel2Entity {
         iSubSectionsLevel2Repo.findByIdOrNull(sectionL2Id)
-                ?.let { sectionL2 ->
-                    return sectionL2
-                }
-                ?: throw ExpectedDataNotFound("Section Level 2 with id = ${sectionL2Id}, does not Exist")
+            ?.let { sectionL2 ->
+                return sectionL2
+            }
+            ?: throw ExpectedDataNotFound("Section Level 2 with id = ${sectionL2Id}, does not Exist")
     }
 
     fun findCountryList(): List<CountriesEntity> {
         countriesRepository.findByStatus(activeStatus.toInt())
-                ?.let { CountriesList ->
-                    return CountriesList
-                }
-                ?: throw ExpectedDataNotFound("Country List with status = ${activeStatus.toInt()}, do not Exist")
+            ?.let { CountriesList ->
+                return CountriesList
+            }
+            ?: throw ExpectedDataNotFound("Country List with status = ${activeStatus.toInt()}, do not Exist")
     }
 
 
     fun findUserProfileWithDesignationRegionDepartmentAndStatus(
-            designationsEntity: DesignationsEntity,
-            regionsEntity: RegionsEntity,
-            departmentsEntity: DepartmentsEntity,
-            status: Int
+        designationsEntity: DesignationsEntity,
+        regionsEntity: RegionsEntity,
+        departmentsEntity: DepartmentsEntity,
+        status: Int
     ): UserProfilesEntity {
         iUserProfilesRepo.findByDesignationIdAndRegionIdAndDepartmentIdAndStatus(
-                designationsEntity,
-                regionsEntity,
-                departmentsEntity,
-                status
+            designationsEntity,
+            regionsEntity,
+            departmentsEntity,
+            status
         )
-                ?.let { userProfile ->
-                    return userProfile
-                }
-                ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
+    }
+
+    fun findUserProfileWithDesignationRegionDepartmentAndStatus(
+        designationsEntity: DesignationsEntity,
+        regionsEntity: RegionsEntity,
+        status: Int
+    ): UserProfilesEntity {
+        iUserProfilesRepo.findByDesignationIdAndRegionIdAndStatus(
+            designationsEntity,
+            regionsEntity,
+            status
+        )
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}] and [status = $status]")
     }
 
     fun findUserProfileWithDesignationRegionDepartmentAndStatusAndSection(
-            designationsEntity: DesignationsEntity,
-            sectionsEntity: SectionsEntity,
-            regionsEntity: RegionsEntity,
-            departmentsEntity: DepartmentsEntity,
-            status: Int
+        designationsEntity: DesignationsEntity,
+        sectionsEntity: SectionsEntity,
+        regionsEntity: RegionsEntity,
+        departmentsEntity: DepartmentsEntity,
+        status: Int
     ): UserProfilesEntity {
         iUserProfilesRepo.findByRegionIdAndDepartmentIdAndStatusAndSectionIdAndDesignationId(
-                regionsEntity,
-                departmentsEntity,
-                status,
-                sectionsEntity,
-                designationsEntity
+            regionsEntity,
+            departmentsEntity,
+            status,
+            sectionsEntity,
+            designationsEntity
         )?.let { userProfile ->
             return userProfile
         }
-                ?: throw ExpectedDataNotFound("No user Profile Matched the following details [sections name = ${sectionsEntity.section}] and [region name = ${regionsEntity.region}]and [department id = ${departmentsEntity.department}] and [status = $status]")
+            ?: throw ExpectedDataNotFound("No user Profile Matched the following details [sections name = ${sectionsEntity.section}] and [region name = ${regionsEntity.region}]and [department id = ${departmentsEntity.department}] and [status = $status]")
     }
 
     fun findUserProfileWithDesignationAndStatus(
-            designationsEntity: DesignationsEntity,
-            status: Int
+        designationsEntity: DesignationsEntity,
+        status: Int
     ): UserProfilesEntity {
         iUserProfilesRepo.findByDesignationIdAndStatus(designationsEntity, status)
-                ?.let { userProfile ->
-                    return userProfile
-                }
-                ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [status = $status]")
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [status = $status]")
     }
 
     fun findAllUsersProfileWithDesignationAndStatus(
-            designationsEntity: DesignationsEntity,
-            status: Int
+        designationsEntity: DesignationsEntity,
+        status: Int
     ): List<UserProfilesEntity> {
         iUserProfilesRepo.findAllByDesignationIdAndStatus(designationsEntity, status)
-                ?.let { users ->
-                    return users
-                }
-                ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [status = $status]")
+            ?.let { users ->
+                return users
+            }
+            ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [status = $status]")
     }
 
     fun findAllUsersWithDesignationRegionDepartmentAndStatus(
-            designationsEntity: DesignationsEntity,
-            regionsEntity: RegionsEntity,
-            departmentsEntity: DepartmentsEntity,
-            status: Int
+        designationsEntity: DesignationsEntity,
+        regionsEntity: RegionsEntity,
+        departmentsEntity: DepartmentsEntity,
+        status: Int
     ): List<UserProfilesEntity> {
         iUserProfilesRepo.findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatus(
-                designationsEntity,
-                regionsEntity,
-                departmentsEntity,
-                status
+            designationsEntity,
+            regionsEntity,
+            departmentsEntity,
+            status
         )
-                ?.let { users ->
-                    return users
-                }
-                ?: throw ExpectedDataNotFound("No users Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
+            ?.let { users ->
+                return users
+            }
+            ?: throw ExpectedDataNotFound("No users Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
     }
 
     fun findAllUsersWithDesignationRegionDepartmentSectionAndStatus(
-            designationsEntity: DesignationsEntity,
-            regionsEntity: RegionsEntity,
-            sectionsEntity: SectionsEntity,
-            departmentsEntity: DepartmentsEntity,
-            status: Int
+        designationsEntity: DesignationsEntity,
+        regionsEntity: RegionsEntity,
+        sectionsEntity: SectionsEntity,
+        departmentsEntity: DepartmentsEntity,
+        status: Int
     ): List<UserProfilesEntity> {
         iUserProfilesRepo.findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatusAndSectionId(
-                designationsEntity,
-                regionsEntity,
-                departmentsEntity,
-                status,
-                sectionsEntity
+            designationsEntity,
+            regionsEntity,
+            departmentsEntity,
+            status,
+            sectionsEntity
         )
-                ?.let { users ->
-                    return users
-                }
-                ?: throw ExpectedDataNotFound("No users Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
+            ?.let { users ->
+                return users
+            }
+            ?: throw ExpectedDataNotFound("No users Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
     }
 
 
     fun findRegionEntityByRegionID(regionsId: Long, status: Int): RegionsEntity {
         regionsRepo.findByIdAndStatus(regionsId, status)
-                ?.let { regionEntity ->
-                    return regionEntity
-                }
-                ?: throw ExpectedDataNotFound("The following Region with ID  = $regionsId and status = $status, does not Exist")
+            ?.let { regionEntity ->
+                return regionEntity
+            }
+            ?: throw ExpectedDataNotFound("The following Region with ID  = $regionsId and status = $status, does not Exist")
     }
 
     fun findCountiesEntityByCountyId(countyId: Long, status: Int): CountiesEntity {
         countiesRepo.findByIdAndStatus(countyId, status)
-                ?.let { countyEntity ->
-                    return countyEntity
-                }
-                ?: throw ExpectedDataNotFound("The following County with ID  = $countyId and status = $status, does not Exist")
+            ?.let { countyEntity ->
+                return countyEntity
+            }
+            ?: throw ExpectedDataNotFound("The following County with ID  = $countyId and status = $status, does not Exist")
     }
 
     fun findTownEntityByTownId(townId: Long): TownsEntity {
         townsRepo.findByIdOrNull(townId)
-                ?.let { townEntity ->
-                    return townEntity
-                }
-                ?: throw ExpectedDataNotFound("The following Town with ID  = $townId, does not Exist")
+            ?.let { townEntity ->
+                return townEntity
+            }
+            ?: throw ExpectedDataNotFound("The following Town with ID  = $townId, does not Exist")
     }
 
 
     fun findRegionListByStatus(status: Int): List<RegionsEntity> {
 
         regionsRepo.findByStatusOrderByRegion(status)
-                ?.let {
-                    return it
-                }
-                ?: throw ExpectedDataNotFound("No Region List with status = $status, does not Exist")
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Region List with status = $status, does not Exist")
     }
 
     fun findCountyListByStatus(status: Int): List<CountiesEntity> {
         countiesRepo.findByStatusOrderByCounty(status)
 
-                ?.let {
-                    return it
-                }
-                ?: throw ExpectedDataNotFound("No county List with status = $status, does not Exist")
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No county List with status = $status, does not Exist")
     }
 
     fun findCountyListByRegion(regionsId: Long, status: Int): List<CountiesEntity> {
         countiesRepo.findByRegionIdAndStatus(regionsId, status)
-                ?.let {
-                    return it
-                }
-                ?: throw ExpectedDataNotFound("No County List with Region ID  = $regionsId and status = $status, does not Exist")
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No County List with Region ID  = $regionsId and status = $status, does not Exist")
     }
 
     fun findTownListByCountyID(countiesEntity: CountiesEntity, status: Int): List<TownsEntity> {
         townsRepo.findByCountiesAndStatus(countiesEntity, status)
-                ?.let {
-                    return it
-                }
-                ?: throw ExpectedDataNotFound("No Town List with ID county ID = ${countiesEntity.id} and status = $status, does not Exist")
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Town List with ID county ID = ${countiesEntity.id} and status = $status, does not Exist")
     }
 
     fun findBusinessLineEntityByID(businessLineId: Long, status: Int): BusinessLinesEntity {
         businessLinesRepo.findByIdAndStatus(businessLineId, status)
-                ?.let { businessLineEntity ->
-                    return businessLineEntity
-                }
-                ?: throw ExpectedDataNotFound("No BusinessLinesEntity with ID  = $businessLineId and status = $status, does not Exist")
+            ?.let { businessLineEntity ->
+                return businessLineEntity
+            }
+            ?: throw ExpectedDataNotFound("No BusinessLinesEntity with ID  = $businessLineId and status = $status, does not Exist")
     }
 
     fun findBusinessNatureEntityByID(businessNatureId: Long, status: Int): BusinessNatureEntity {
         businessNatureRepo.findByIdAndStatus(businessNatureId, status)
-                ?.let { businessNatureEntity ->
-                    return businessNatureEntity
-                }
-                ?: throw ExpectedDataNotFound("No BusinessNatureEntity with ID  = $businessNatureId and status = $status, does not Exist")
+            ?.let { businessNatureEntity ->
+                return businessNatureEntity
+            }
+            ?: throw ExpectedDataNotFound("No BusinessNatureEntity with ID  = $businessNatureId and status = $status, does not Exist")
     }
 
     fun findBusinessLineListByStatus(businessLineId: Long, status: Int): List<BusinessLinesEntity> {
         businessLinesRepo.findByStatusOrderByName(status)
-                ?.let {
-                    return it
-                }
-                ?: throw ExpectedDataNotFound("No Business Line List with status = $status, does not Exist")
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Business Line List with status = $status, does not Exist")
     }
 
     fun findBusinessNatureListByBusinessNatureLine(
-            businessLineEntity: BusinessLinesEntity,
-            status: Int
+        businessLineEntity: BusinessLinesEntity,
+        status: Int
     ): List<BusinessNatureEntity> {
         businessNatureRepo.findByBusinessLinesIdAndStatus(businessLineEntity, status)
-                ?.let {
-                    return it
-                }
-                ?: throw ExpectedDataNotFound("No Business Nature with Business Line of ID  = ${businessLineEntity.id} and status = $status, Existing")
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Business Nature with Business Line of ID  = ${businessLineEntity.id} and status = $status, Existing")
     }
 
     fun currentUserHasRole(roleName: String): Boolean {
@@ -1017,10 +1125,10 @@ class CommonDaoServices(
 
     fun findCompanyProfile(userID: Long): CompanyProfileEntity {
         companyProfileRepo.findByUserId(userID)
-                ?.let { userCompanyDetails ->
-                    return userCompanyDetails
-                }
-                ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
+            ?.let { userCompanyDetails ->
+                return userCompanyDetails
+            }
+            ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
     }
 
     fun findCompanyProfileDetail(userID: Long): MutableList<CompanyProfileEntity> {
@@ -1044,26 +1152,26 @@ class CommonDaoServices(
 
     fun findCompanyProfileWhoAreManufactures(status: Int): List<CompanyProfileEntity> {
         companyProfileRepo.findByManufactureStatus(status)
-                ?.let { userCompanyDetails ->
-                    return userCompanyDetails
-                }
-                ?: throw ExpectedDataNotFound("Company Profile list with [user ID= ${status}], does not Exist")
+            ?.let { userCompanyDetails ->
+                return userCompanyDetails
+            }
+            ?: throw ExpectedDataNotFound("Company Profile list with [user ID= ${status}], does not Exist")
     }
 
     fun findCompanyProfileWithID(id: Long): CompanyProfileEntity {
         companyProfileRepo.findByIdOrNull(id)
-                ?.let { userCompanyDetails ->
-                    return userCompanyDetails
-                }
-                ?: throw ExpectedDataNotFound("Company Profile with ID= ${id}, does not Exist")
+            ?.let { userCompanyDetails ->
+                return userCompanyDetails
+            }
+            ?: throw ExpectedDataNotFound("Company Profile with ID= ${id}, does not Exist")
     }
 
 
     fun findAllUsers(): List<UsersEntity> {
         usersRepo.findAllByOrderByIdAsc()
-                .let { usersEntity ->
-                    return usersEntity
-                }
+            .let { usersEntity ->
+                return usersEntity
+            }
 
     }
 
@@ -1079,35 +1187,35 @@ class CommonDaoServices(
 //        updatedDetails.id = updateId
         // Getting an Object with fields that user Has Updated that are needed to be updated to the database
         JSONObject(ObjectMapper().writeValueAsString(updatedDetails))
-                .let { addValues ->
-                    // Creating of a json object that can be user to map the details from Database with the updated fields from user
-                    JSONObject(ObjectMapper().writeValueAsString(detailToUpdate))
-                            .let { JCD ->
-                                // Looping each field of the updated Entity to be updated
-                                for (key in addValues.keys()) {
-                                    key.let { keyStr ->
-                                        // Checks if the field with the following Key is null or not Null (meaning it is the field that is updated)
-                                        when {
-                                            addValues.isNull(keyStr) -> {
-                                                //Todo remove the logger
+            .let { addValues ->
+                // Creating of a json object that can be user to map the details from Database with the updated fields from user
+                JSONObject(ObjectMapper().writeValueAsString(detailToUpdate))
+                    .let { JCD ->
+                        // Looping each field of the updated Entity to be updated
+                        for (key in addValues.keys()) {
+                            key.let { keyStr ->
+                                // Checks if the field with the following Key is null or not Null (meaning it is the field that is updated)
+                                when {
+                                    addValues.isNull(keyStr) -> {
+                                        //Todo remove the logger
 //                                        KotlinLogging.logger { }.info { "MY null values key: $keyStr value: ${addValues.get(keyStr)}" }
-                                            }
-                                            else -> {
-                                                removeKeyAndUpdateValueJsonObject(JCD, keyStr, addValues.get(keyStr))
-                                                KotlinLogging.logger { }
-                                                        .info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
-                                            }
-                                        }
+                                    }
+                                    else -> {
+                                        removeKeyAndUpdateValueJsonObject(JCD, keyStr, addValues.get(keyStr))
+                                        KotlinLogging.logger { }
+                                            .info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
                                     }
                                 }
-                                // Change the JCD to an Entity to be saved
-                                ObjectMapper().readValue(JCD.toString(), detailToUpdate::class.java)
-                                        .let { updateDetail ->
-                                            return updateDetail
-                                        }
-
                             }
-                }
+                        }
+                        // Change the JCD to an Entity to be saved
+                        ObjectMapper().readValue(JCD.toString(), detailToUpdate::class.java)
+                            .let { updateDetail ->
+                                return updateDetail
+                            }
+
+                    }
+            }
     }
 
     fun getCurrentDate(): Date {
@@ -1122,6 +1230,15 @@ class CommonDaoServices(
         return Date.valueOf(LocalDate.now().plusYears(noOfYears))
     }
 
+    fun addYearsToDate(dateValue: Date, noOfYears: Long): Date {
+        return Date.valueOf(dateValue.toLocalDate().plusYears(noOfYears))
+    }
+
+    fun addYDayToDate(dateValue: Date, noOfDays: Long): Date {
+        return Date.valueOf(dateValue.toLocalDate().plusDays(noOfDays))
+    }
+
+
     fun generateUUIDString(): String {
         // Creating a random UUID (Universally unique identifier).
         val uuid = UUID.randomUUID()
@@ -1130,7 +1247,7 @@ class CommonDaoServices(
 
     //    generating token
     private fun generateTransactionReference(map: ServiceMapsEntity): String =
-            generateRandomText(map.transactionRefLength, map.secureRandom, map.messageDigestAlgorithm, false).toUpperCase()
+        generateRandomText(map.transactionRefLength, map.secureRandom, map.messageDigestAlgorithm, false).toUpperCase()
 
     fun createServiceRequest(s: ServiceMapsEntity): ServiceRequestsEntity {
         var serviceRequests = ServiceRequestsEntity()
@@ -1176,19 +1293,19 @@ class CommonDaoServices(
         var log: WorkflowTransactionsEntity? = null
         try {
             sr.serviceMapsId
-                    ?.let { map ->
-                        sr.payload = token.toString()
+                ?.let { map ->
+                    sr.payload = token.toString()
 
-                        log = createTransactionLog(sr, map)
+                    log = createTransactionLog(sr, map)
 
 
-                        verificationTokensRepo.findByTokenAndStatus(token, map.initStatus)
-                                ?.let { verificationToken ->
-                                    log?.integrationResponse = "${verificationToken.id}"
-                                    verificationToken.tokenExpiryDate
-                                            ?.let { expiry ->
-                                                when {
-                                                    expiry.after(Timestamp.from(Instant.now())) -> {
+                    verificationTokensRepo.findByTokenAndStatus(token, map.initStatus)
+                        ?.let { verificationToken ->
+                            log?.integrationResponse = "${verificationToken.id}"
+                            verificationToken.tokenExpiryDate
+                                ?.let { expiry ->
+                                    when {
+                                        expiry.after(Timestamp.from(Instant.now())) -> {
 //                                                        /**
 //                                                         * If user exists activate and enable
 //                                                         */
@@ -1199,40 +1316,40 @@ class CommonDaoServices(
 //
 //                                                                }
 
-                                                        verificationToken.status = map.successStatus
-                                                        verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
-                                                        verificationToken.lastModifiedBy = "Verification Token Received"
-                                                        verificationTokensRepo.save(verificationToken)
+                                            verificationToken.status = map.successStatus
+                                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                                            verificationToken.lastModifiedBy = "Verification Token Received"
+                                            verificationTokensRepo.save(verificationToken)
 
-                                                    }
-                                                    else -> {
-                                                        verificationToken.status = map.failedStatus
-                                                        verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
-                                                        verificationToken.lastModifiedBy = "Expired Verification Token Received"
-                                                        verificationTokensRepo.save(verificationToken)
-                                                        throw Exception("Expired Verification Token Received")
-                                                    }
-                                                }
+                                        }
+                                        else -> {
+                                            verificationToken.status = map.failedStatus
+                                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                                            verificationToken.lastModifiedBy = "Expired Verification Token Received"
+                                            verificationTokensRepo.save(verificationToken)
+                                            throw Exception("Expired Verification Token Received")
+                                        }
+                                    }
 
-                                            }
-                                            ?: throw Exception("Verification Token without a valid expiry found")
-
-
-                                } ?: throw Exception("Verification Token not found")
+                                }
+                                ?: throw Exception("Verification Token without a valid expiry found")
 
 
+                        } ?: throw Exception("Verification Token not found")
 
 
-                        sr.responseStatus = sr.serviceMapsId?.successStatusCode
-                        sr.responseMessage = "Success ${sr.payload}"
-                        sr.status = map.successStatus
-                        sr.processingEndDate = Timestamp.from(Instant.now())
 
-                        log?.responseMessage = "Token generation successful"
-                        log?.responseStatus = map.successStatusCode
-                        log?.transactionStatus = map.successStatus
 
-                    }
+                    sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                    sr.responseMessage = "Success ${sr.payload}"
+                    sr.status = map.successStatus
+                    sr.processingEndDate = Timestamp.from(Instant.now())
+
+                    log?.responseMessage = "Token generation successful"
+                    log?.responseStatus = map.successStatusCode
+                    log?.transactionStatus = map.successStatus
+
+                }
 //                        taskService.complete(task.id, variables)
 
 
@@ -1262,9 +1379,9 @@ class CommonDaoServices(
     }
 
     fun mapServiceRequestForSuccess(
-            map: ServiceMapsEntity,
-            payloadValues: String,
-            user: UsersEntity?
+        map: ServiceMapsEntity,
+        payloadValues: String,
+        user: UsersEntity?
     ): ServiceRequestsEntity {
         var sr = createServiceRequest(map)
         with(sr) {
@@ -1280,9 +1397,9 @@ class CommonDaoServices(
     }
 
     fun mapServiceRequestForSuccessUserNotRegistered(
-            map: ServiceMapsEntity,
-            payloadValues: String,
-            userName: String
+        map: ServiceMapsEntity,
+        payloadValues: String,
+        userName: String
     ): ServiceRequestsEntity {
         var sr = createServiceRequest(map)
         with(sr) {
@@ -1298,88 +1415,101 @@ class CommonDaoServices(
     }
 
     fun sendEmailWithUserEntity(
-            user: UsersEntity,
-            uuid: String,
-            valuesMapped: Any,
-            map: ServiceMapsEntity,
-            sr: ServiceRequestsEntity
+        user: UsersEntity,
+        uuid: String,
+        valuesMapped: Any,
+        map: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        attachmentFilePath: String? = null
     ): Boolean {
 
         KotlinLogging.logger { }.info { "Started Mail process" }
         notificationsUseCase(map, mutableListOf(user.email), uuid, valuesMapped, sr)
-                ?.let { list ->
-                    list.forEach { buffer ->
-                        /**
-                         * TODO: Make topic a field on the Buffer table
-                         */
-                        buffer.recipient?.let { recipient ->
-                            KotlinLogging.logger { }.info { "Started recipient $recipient" }
-                            buffer.subject?.let { subject ->
-                                KotlinLogging.logger { }.info { "Started subject $subject" }
-                                buffer.messageBody?.let { messageBody ->
-                                    KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+            ?.let { list ->
+                list.forEach { buffer ->
+                    /**
+                     * TODO: Make topic a field on the Buffer table
+                     */
+                    buffer.recipient?.let { recipient ->
+                        KotlinLogging.logger { }.info { "Started recipient $recipient" }
+                        buffer.subject?.let { subject ->
+                            KotlinLogging.logger { }.info { "Started subject $subject" }
+                            buffer.messageBody?.let { messageBody ->
+                                KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+                                if (attachmentFilePath!=null){
+                                    KotlinLogging.logger { }.info { "Started attached body $attachmentFilePath" }
+                                    notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
+                                }else{
                                     notifications.sendEmail(recipient, subject, messageBody)
-//                                    notifications.processEmail(recipient, subject, messageBody)
-                                    KotlinLogging.logger { }.info { "Email sent" }
                                 }
+
+//                                    notifications.processEmail(recipient, subject, messageBody)
+                                KotlinLogging.logger { }.info { "Email sent" }
                             }
                         }
                     }
-                    sr.processingEndDate = getTimestamp()
-                    serviceRequestsRepository.save(sr)
                 }
+                sr.processingEndDate = getTimestamp()
+                serviceRequestsRepository.save(sr)
+            }
 
         return true
     }
 
     fun sendEmailWithUserEmail(
-            userEmail: String,
-            uuid: String,
-            valuesMapped: Any,
-            map: ServiceMapsEntity,
-            sr: ServiceRequestsEntity
+        userEmail: String,
+        uuid: String,
+        valuesMapped: Any,
+        map: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        attachmentFilePath: String? = null
     ): Boolean {
 
         KotlinLogging.logger { }.info { "Started Mail process" }
         notificationsUseCase(map, mutableListOf(userEmail), uuid, valuesMapped, sr)
-                ?.let { list ->
-                    list.forEach { buffer ->
-                        /**
-                         * TODO: Make topic a field on the Buffer table
-                         */
-                        buffer.recipient?.let { recipient ->
-                            KotlinLogging.logger { }.info { "Started recipient $recipient" }
-                            buffer.subject?.let { subject ->
-                                KotlinLogging.logger { }.info { "Started subject $subject" }
-                                buffer.messageBody?.let { messageBody ->
-                                    KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+            ?.let { list ->
+                list.forEach { buffer ->
+                    /**
+                     * TODO: Make topic a field on the Buffer table
+                     */
+                    buffer.recipient?.let { recipient ->
+                        KotlinLogging.logger { }.info { "Started recipient $recipient" }
+                        buffer.subject?.let { subject ->
+                            KotlinLogging.logger { }.info { "Started subject $subject" }
+                            buffer.messageBody?.let { messageBody ->
+                                KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+                                if (attachmentFilePath!=null){
+                                    KotlinLogging.logger { }.info { "Started attached body $attachmentFilePath" }
+                                    notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
+                                }else{
                                     notifications.sendEmail(recipient, subject, messageBody)
-//                                    notifications.processEmail(recipient, subject, messageBody)
-                                    KotlinLogging.logger { }.info { "Email sent" }
                                 }
+//                                    notifications.processEmail(recipient, subject, messageBody)
+                                KotlinLogging.logger { }.info { "Email sent" }
                             }
                         }
                     }
-                    sr.processingEndDate = getTimestamp()
-                    serviceRequestsRepository.save(sr)
                 }
+                sr.processingEndDate = getTimestamp()
+                serviceRequestsRepository.save(sr)
+            }
 
         return true
     }
 
 
     fun notificationsUseCase(
-            map: ServiceMapsEntity,
-            email: MutableList<String?>,
-            uuid: String,
-            data: Any?,
-            sr: ServiceRequestsEntity? = null
+        map: ServiceMapsEntity,
+        email: MutableList<String?>,
+        uuid: String,
+        data: Any?,
+        sr: ServiceRequestsEntity? = null
     ): List<NotificationsBufferEntity>? {
-        notificationsRepo.findByUuidAndStatus(uuid, map.activeStatus)
-                ?.let { notifications ->
-                    return generateBufferedNotification(notifications, map, email, data, sr)
-                }
-                ?: throw MissingConfigurationException("Notification for current Scenario is missing, review setup and try again later")
+        notificationsRepo.findByServiceMapIdAndUuidAndStatus(map, uuid, map.activeStatus)
+            ?.let { notifications ->
+                return generateBufferedNotification(notifications, map, email, data, sr)
+            }
+            ?: throw MissingConfigurationException("Notification for current Scenario is missing, review setup and try again later")
 
     }
 
@@ -1387,9 +1517,9 @@ class CommonDaoServices(
         val p = notification.notificationType?.let { notifier ->
             notifier.delimiter?.let {
                 notification.spelProcessor?.split(it)?.replacePrefixedItemsWithObjectValues(
-                        data,
-                        notifier.beanprefix,
-                        notifier.beanprefixreplacement
+                    data,
+                    notifier.beanprefix,
+                    notifier.beanprefixreplacement
                 ) { d, p ->
                     composeUsingSpel(d, p)
 //                    val finalMessageBody = composeUsingSpel(d, p)
@@ -1435,9 +1565,9 @@ class CommonDaoServices(
     }
 
     fun generateEmailVerificationToken(
-            sr: ServiceRequestsEntity,
-            user: PvocComplaintsEmailVerificationEntity?,
-            map: ServiceMapsEntity
+        sr: ServiceRequestsEntity,
+        user: PvocComplaintsEmailVerificationEntity?,
+        map: ServiceMapsEntity
     ): EmailVerificationTokenEntity {
         var tokensEntity = EmailVerificationTokenEntity()
         with(tokensEntity) {
@@ -1447,7 +1577,7 @@ class CommonDaoServices(
             createdBy = sr.transactionReference
             createdOn = Timestamp.from(Instant.now())
             map.tokenExpiryHours?.let { h -> tokenExpiryDate = Timestamp.from(Instant.now().plus(h, ChronoUnit.HOURS)) }
-                    ?: throw Exception("Missing Configuration: Hours to Token Expiry")
+                ?: throw Exception("Missing Configuration: Hours to Token Expiry")
             transactionDate = Date(Date().time)
         }
 
@@ -1456,11 +1586,11 @@ class CommonDaoServices(
     }
 
     fun generateBufferedNotification(
-            notifications: Collection<NotificationsEntity>,
-            map: ServiceMapsEntity,
-            emails: MutableList<String?>,
-            data: Any?,
-            sr: ServiceRequestsEntity? = null
+        notifications: Collection<NotificationsEntity>,
+        map: ServiceMapsEntity,
+        emails: MutableList<String?>,
+        data: Any?,
+        sr: ServiceRequestsEntity? = null
     ): List<NotificationsBufferEntity>? {
         val buffers = mutableListOf<NotificationsBufferEntity>()
 
@@ -1507,18 +1637,18 @@ class CommonDaoServices(
 
     fun findUserByID(id: Long): UsersEntity {
         usersRepo.findByIdOrNull(id)
-                ?.let { userEntity ->
-                    return userEntity
-                }
-                ?: throw ExpectedDataNotFound("User with ID  = ${id}, does not Exist")
+            ?.let { userEntity ->
+                return userEntity
+            }
+            ?: throw ExpectedDataNotFound("User with ID  = ${id}, does not Exist")
     }
 
     fun findDesignationByID(id: Long): DesignationsEntity {
         designationRepo.findByIdOrNull(id)
-                ?.let { designation ->
-                    return designation
-                }
-                ?: throw ExpectedDataNotFound("Designation with ID  = ${id}, does not Exist")
+            ?.let { designation ->
+                return designation
+            }
+            ?: throw ExpectedDataNotFound("Designation with ID  = ${id}, does not Exist")
     }
 
     fun mapAllSectionsTogether(sections: List<SectionsEntity>): List<SectionsDto> {
@@ -1530,219 +1660,227 @@ class CommonDaoServices(
     fun userListDto(userList: List<UsersEntity>): List<UserEntityDto> {
         return userList.map { u ->
             UserEntityDto(
-                    u.id,
-                    u.firstName,
-                    u.lastName,
-                    u.userName,
-                    u.userPinIdNumber,
-                    u.personalContactNumber,
-                    u.typeOfUser,
-                    u.email,
-                    u.userRegNo,
-                    u.enabled == 1,
-                    u.accountExpired == 1,
-                    u.accountLocked == 1,
-                    u.credentialsExpired == 1,
-                    u.status == 1,
-                    u.registrationDate,
-                    u.userTypes,
-                    u.title,
+                u.id,
+                u.firstName,
+                u.lastName,
+                u.userName,
+                u.userPinIdNumber,
+                u.personalContactNumber,
+                u.typeOfUser,
+                u.email,
+                u.userRegNo,
+                u.enabled == 1,
+                u.accountExpired == 1,
+                u.accountLocked == 1,
+                u.credentialsExpired == 1,
+                u.status == 1,
+                u.registrationDate,
+                u.userTypes,
+                u.title,
             )
         }
     }
 
     fun findDepartmentByID(departmentId: Long): DepartmentsEntity {
         departmentRepo.findByIdOrNull(departmentId)
-                ?.let { department ->
-                    return department
-                }
-                ?: throw ExpectedDataNotFound("Department with ID  = ${departmentId}, does not Exist")
+            ?.let { department ->
+                return department
+            }
+            ?: throw ExpectedDataNotFound("Department with ID  = ${departmentId}, does not Exist")
     }
 
     fun findBroadCategoryByID(broadCategoryId: Long): BroadProductCategoryEntity {
         broadProductCategoryRepository.findByIdOrNull(broadCategoryId)
-                ?.let { broadCategory ->
-                    return broadCategory
-                }
-                ?: throw ExpectedDataNotFound("Broad Category with ID  = ${broadCategoryId}, does not Exist")
+            ?.let { broadCategory ->
+                return broadCategory
+            }
+            ?: throw ExpectedDataNotFound("Broad Category with ID  = ${broadCategoryId}, does not Exist")
     }
 
     fun findProductCategoryByID(productCategoryId: Long): KebsProductCategoriesEntity {
         productCategoriesRepository.findByIdOrNull(productCategoryId)
-                ?.let { productCategory ->
-                    return productCategory
-                }
-                ?: throw ExpectedDataNotFound("Product Category with ID  = ${productCategoryId}, does not Exist")
+            ?.let { productCategory ->
+                return productCategory
+            }
+            ?: throw ExpectedDataNotFound("Product Category with ID  = ${productCategoryId}, does not Exist")
     }
 
     fun findProductSubCategoryByID(productSubCategoryId: Long): ProductSubcategoryEntity {
         productSubCategoryRepo.findByIdOrNull(productSubCategoryId)
-                ?.let { productSubCategory ->
-                    return productSubCategory
-                }
-                ?: throw ExpectedDataNotFound("Product Sub Category with ID  = ${productSubCategoryId}, does not Exist")
+            ?.let { productSubCategory ->
+                return productSubCategory
+            }
+            ?: throw ExpectedDataNotFound("Product Sub Category with ID  = ${productSubCategoryId}, does not Exist")
     }
 
     fun findProductByID(productId: Long): ProductsEntity {
         productsRepo.findByIdOrNull(productId)
-                ?.let { product ->
-                    return product
-                }
-                ?: throw ExpectedDataNotFound("Product with ID  = ${productId}, does not Exist")
+            ?.let { product ->
+                return product
+            }
+            ?: throw ExpectedDataNotFound("Product with ID  = ${productId}, does not Exist")
     }
 
     fun findDivisionByDepartmentId(departmentsEntity: DepartmentsEntity, status: Int): List<DivisionsEntity> {
         iDivisionsRepo.findByDepartmentIdAndStatus(departmentsEntity, status)
-                ?.let { division ->
-                    return division
-                }
-                ?: throw ExpectedDataNotFound("Division with [Department ID = ${departmentsEntity.id}] and [status=${status}], does not Exist")
+            ?.let { division ->
+                return division
+            }
+            ?: throw ExpectedDataNotFound("Division with [Department ID = ${departmentsEntity.id}] and [status=${status}], does not Exist")
     }
 
     fun findUserProfileByUserID(user: UsersEntity, status: Int): UserProfilesEntity {
         iUserProfilesRepo.findByUserIdAndStatus(user, status)
-                ?.let { userProfile ->
-                    return userProfile
-                }
-                ?: throw ExpectedDataNotFound("User Profile with user ID  = ${user.id} and status = $status, does not Exist")
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("User Profile with user ID  = ${user.id} and status = $status, does not Exist")
+    }
+
+    fun findUserProfileByUserID(user: UsersEntity): UserProfilesEntity {
+        iUserProfilesRepo.findByUserId(user)
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("User Profile with the following user ID  = ${user.id}, does not Exist")
     }
 
     fun findDirectorateByID(directorateID: Long): DirectoratesEntity {
         directorateRepo.findByIdOrNull(directorateID)
-                ?.let { directoratesEntity ->
-                    return directoratesEntity
-                }
-                ?: throw ExpectedDataNotFound("Directorate with [ID  = ${directorateID}], does not Exist")
+            ?.let { directoratesEntity ->
+                return directoratesEntity
+            }
+            ?: throw ExpectedDataNotFound("Directorate with [ID  = ${directorateID}], does not Exist")
     }
 
     fun findDepartmentByDirectorate(directorate: DirectoratesEntity, status: Int): List<DepartmentsEntity> {
         departmentRepo.findByDirectorateIdAndStatus(directorate, status)
-                ?.let {
-                    return it
-                }
-                ?: throw ExpectedDataNotFound("Department Lists with [directorate ID = ${directorate.id}], doe not Exist")
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Department Lists with [directorate ID = ${directorate.id}], doe not Exist")
     }
 
     fun findUserProfileWithSectionIdAndDesignationId(
-            sectionsEntity: SectionsEntity,
-            designationsEntity: DesignationsEntity,
-            status: Int
+        sectionsEntity: SectionsEntity,
+        designationsEntity: DesignationsEntity,
+        status: Int
     ): UserProfilesEntity {
         iUserProfilesRepo.findByDesignationIdAndSectionIdAndStatus(designationsEntity, sectionsEntity, status)
-                ?.let { userProfile ->
-                    return userProfile
-                }
-                ?: throw ExpectedDataNotFound("User Profile with section ID  = ${sectionsEntity.id} and Designation ID  = ${designationsEntity.id} and status = $status, does not Exist")
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("User Profile with section ID  = ${sectionsEntity.id} and Designation ID  = ${designationsEntity.id} and status = $status, does not Exist")
     }
 
     fun findUserProfileListWithRegionDesignationDepartmentAndStatus(
-            region: RegionsEntity,
-            designation: DesignationsEntity,
-            department: DepartmentsEntity,
-            status: Int
+        region: RegionsEntity,
+        designation: DesignationsEntity,
+        department: DepartmentsEntity,
+        status: Int
     ): List<UserProfilesEntity> {
         iUserProfilesRepo.findByRegionIdAndDesignationIdAndDepartmentIdAndStatus(
-                region,
-                designation,
-                department,
-                status
+            region,
+            designation,
+            department,
+            status
         )
-                ?.let { userProfile ->
-                    return userProfile
-                }
-                ?: throw ExpectedDataNotFound("UserProfile List with region ID  = ${region.id} and Designation ID  = ${designation.id} and Department ID  = ${department.id} and status = $status, do not Exist")
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("UserProfile List with region ID  = ${region.id} and Designation ID  = ${designation.id} and Department ID  = ${department.id} and status = $status, do not Exist")
     }
 
     fun findAllUsersWithSectionId(sectionsEntity: SectionsEntity, status: Int): List<UserProfilesEntity> {
         iUserProfilesRepo.findBySectionIdAndStatus(sectionsEntity, status)
-                ?.let { users ->
-                    return users
-                }
-                ?: throw ExpectedDataNotFound("Users with section ID  = ${sectionsEntity.id} and status = $status, does not Exist")
+            ?.let { users ->
+                return users
+            }
+            ?: throw ExpectedDataNotFound("Users with section ID  = ${sectionsEntity.id} and status = $status, does not Exist")
     }
 
     fun findAllUsersWithSectionIdAndDesignation(
-            sectionsEntity: SectionsEntity,
-            designationsEntity: DesignationsEntity,
-            status: Int
+        sectionsEntity: SectionsEntity,
+        designationsEntity: DesignationsEntity,
+        status: Int
     ): List<UserProfilesEntity> {
         iUserProfilesRepo.findBySectionIdAndDesignationIdAndStatus(sectionsEntity, designationsEntity, status)
-                ?.let { users ->
-                    return users
-                }
-                ?: throw ExpectedDataNotFound("Users with section ID  = ${sectionsEntity.id} and status = $status, does not Exist")
+            ?.let { users ->
+                return users
+            }
+            ?: throw ExpectedDataNotFound("Users with section ID  = ${sectionsEntity.id} and status = $status, does not Exist")
     }
 
     fun findAllUsersWithinRegionDepartmentDivisionSectionId(
-            region: RegionsEntity,
-            department: DepartmentsEntity,
-            division: DivisionsEntity,
-            section: SectionsEntity,
-            status: Int
+        region: RegionsEntity,
+        department: DepartmentsEntity,
+        division: DivisionsEntity,
+        section: SectionsEntity,
+        status: Int
     ): List<UserProfilesEntity> {
         iUserProfilesRepo.findByRegionIdAndDepartmentIdAndDivisionIdAndSectionIdAndStatus(
-                region,
-                department,
-                division,
-                section,
-                status
+            region,
+            department,
+            division,
+            section,
+            status
         )
-                ?.let { users ->
-                    return users
-                }
-                ?: throw ExpectedDataNotFound("Users List with section ID  = ${section.id} and status = $status, does not Exist")
+            ?.let { users ->
+                return users
+            }
+            ?: throw ExpectedDataNotFound("Users List with section ID  = ${section.id} and status = $status, does not Exist")
     }
 
 
     fun findManufacturerProfileByUserID(userId: UsersEntity, status: Int): ManufacturersEntity {
         manufacturersRepo.findByUserIdAndStatus(userId, status)
-                ?.let { manufacturerProfile ->
-                    return manufacturerProfile
-                }
-                ?: throw ExpectedDataNotFound("Manufacturer Profile with user ID  = ${userId.id} and status = $status, does not Exist")
+            ?.let { manufacturerProfile ->
+                return manufacturerProfile
+            }
+            ?: throw ExpectedDataNotFound("Manufacturer Profile with user ID  = ${userId.id} and status = $status, does not Exist")
     }
 
 
     fun findAllUserNotification(userEmail: String): List<NotificationsBufferEntity> {
         notificationsBufferRepo.findByRecipient(userEmail)
-                ?.let { notifications ->
-                    return notifications
-                }
-                ?: throw ExpectedDataNotFound("Notifications for the user with email = $userEmail, do not Exist")
+            ?.let { notifications ->
+                return notifications
+            }
+            ?: throw ExpectedDataNotFound("Notifications for the user with email = $userEmail, do not Exist")
     }
 
     fun updateNotification(notificationsBufferEntity: List<NotificationsBufferEntity>, user: UsersEntity): Boolean {
         notificationsBufferEntity
-                .forEach { notifications ->
-                    with(notifications) {
-                        readStatus = activeStatus.toInt()
-                        modifiedBy = concatenateName(user)
-                        modifiedOn = getTimestamp()
-                    }
-                    notificationsBufferRepo.save(notifications)
+            .forEach { notifications ->
+                with(notifications) {
+                    readStatus = activeStatus.toInt()
+                    modifiedBy = concatenateName(user)
+                    modifiedOn = getTimestamp()
                 }
+                notificationsBufferRepo.save(notifications)
+            }
 
         return true
     }
 
     fun findNotification(notificationId: Long, userEmail: String): List<NotificationsBufferEntity> {
         notificationsBufferRepo.findByIdAndRecipient(notificationId, userEmail)
-                ?.let { notification ->
-                    return notification
-                }
-                ?: throw ExpectedDataNotFound("Notification with the following ID = $notificationId, does not Exist")
+            ?.let { notification ->
+                return notification
+            }
+            ?: throw ExpectedDataNotFound("Notification with the following ID = $notificationId, does not Exist")
     }
 
 
     fun findManufacturerContactDetailsByManufacturerProfile(
-            userId: UsersEntity,
-            status: Int
+        userId: UsersEntity,
+        status: Int
     ): ManufacturerContactsEntity {
         manufacturerContactDetailsRepository.findByManufacturerId(findManufacturerProfileByUserID(userId, status))
-                ?.let { manufacturerContactDetails ->
-                    return manufacturerContactDetails
-                }
-                ?: throw ExpectedDataNotFound("Manufacturer Contact Details with user ID  = ${userId.id} and status = $status, does not Exist")
+            ?.let { manufacturerContactDetails ->
+                return manufacturerContactDetails
+            }
+            ?: throw ExpectedDataNotFound("Manufacturer Contact Details with user ID  = ${userId.id} and status = $status, does not Exist")
     }
 
 //    fun findManufacturerAddressDetailsByManufacturerProfile(userId: UsersEntity, status: Int): ManufacturerContactsEntity {
@@ -1755,20 +1893,20 @@ class CommonDaoServices(
 
     fun findImporterProfileByUserID(userId: UsersEntity, status: Int): ImporterContactDetailsEntity {
         iImporterRepo.findByUserIdAndStatus(userId, status)
-                ?.let { importerProfile ->
-                    return importerProfile
-                }
-                ?: throw ExpectedDataNotFound("Importer Profile with user ID  = ${userId.id} and status = $status, does not Exist")
+            ?.let { importerProfile ->
+                return importerProfile
+            }
+            ?: throw ExpectedDataNotFound("Importer Profile with user ID  = ${userId.id} and status = $status, does not Exist")
     }
 
     fun checkUserType(userId: UsersEntity, status: Int): UserProfilesEntity {
         iUserProfilesRepo.findByUserIdAndStatus(userId, status)
 
 
-                ?.let { userProfile ->
-                    return userProfile
-                }
-                ?: throw ExpectedDataNotFound("User Profile with user ID  = ${userId.id} and status = $status, does not Exist")
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("User Profile with user ID  = ${userId.id} and status = $status, does not Exist")
     }
 
 
@@ -1794,10 +1932,10 @@ class CommonDaoServices(
 
     fun findLaboratoryWIthId(laboratoryId: Long): CdLaboratoryEntity {
         iLaboratoryRepo.findByIdOrNull(laboratoryId)
-                ?.let { laboratoryEntity ->
-                    return laboratoryEntity
-                }
-                ?: throw ExpectedDataNotFound("Laboratory with this ID  = ${laboratoryId}, does not Exist")
+            ?.let { laboratoryEntity ->
+                return laboratoryEntity
+            }
+            ?: throw ExpectedDataNotFound("Laboratory with this ID  = ${laboratoryId}, does not Exist")
     }
 
     fun findAllUsersWithMinistryUserType(): List<UsersEntity>? {
@@ -1897,19 +2035,19 @@ class CommonDaoServices(
                                     }
 
                                 }
-                                        else -> {
-                                            verificationToken.status = 25
-                                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
-                                            verificationToken.lastModifiedBy = "Expired Verification Token Received"
-                                            emailVerificationTokenEntityRepo.save(verificationToken)
-                                            throw InvalidValueException("Token Verification failed")
-                                        }
-                                    }
-
+                                else -> {
+                                    verificationToken.status = 25
+                                    verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                                    verificationToken.lastModifiedBy = "Expired Verification Token Received"
+                                    emailVerificationTokenEntityRepo.save(verificationToken)
+                                    throw InvalidValueException("Token Verification failed")
                                 }
-                                ?: throw InvalidValueException("Verification Token without a valid expiry found")
-                    }
-                    ?: throw NullValueNotAllowedException("Invalid Token, validation failed")
+                            }
+
+                        }
+                        ?: throw InvalidValueException("Verification Token without a valid expiry found")
+                }
+                ?: throw NullValueNotAllowedException("Invalid Token, validation failed")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.debug(e.message, e)
@@ -1922,6 +2060,8 @@ class CommonDaoServices(
 
         }
     }
+
+
 
 
 

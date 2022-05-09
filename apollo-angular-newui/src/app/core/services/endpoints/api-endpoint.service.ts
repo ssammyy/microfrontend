@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ApiEndpointService {
 
@@ -10,17 +10,17 @@ export class ApiEndpointService {
      */
     public static PROTOCOL = {
         HTTP: `http://`,
-        HTTPS: `https://`
+        HTTPS: `https://`,
     };
 
     /**
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        //LOCAL_DEV: 'localhost:8006'
+        LOCAL_DEV: 'localhost:8006',
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        LOCAL_DEV: `kimsint.kebs.org:8006`
+        // LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org`
         // LOCAL_DEV: '10.10.0.149:8007'
     };
@@ -49,11 +49,19 @@ export class ApiEndpointService {
         DI_DEPARTMENT_ID: 2,
     };
 
+
+    public static MS_APPLICATION_MAP_PROPERTIES = {
+        epraRoles: ['EPRA'],
+        msManagerRoles: ['MS_MP_MODIFY', 'MS_MP_READ'],
+        msOfficerRoles: ['MS_IO_MODIFY', 'MS_IO_READ'],
+    };
+
     /**
      * Map of contexts for API endpoints.
      */
     public static AUTH_CONTEXT = '/api/v1/login/b';
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
+    public static ANONYMOUS_CONTEXT_MS = '/api/v1/migration/ms/anonymous';
     public static ANONYMOUS_CONTEXT_NEP = '/api/v1/migration/anonymous/National_enquiry_point';
 
 
@@ -78,6 +86,10 @@ export class ApiEndpointService {
     public static SD_PB_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/publishing`;
     public static SD_NEP_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Domestic_notification`;
     public static REQUEST_STANDARD = `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard/dropdown`;
+    public static MS_CONTEXT = '/api/v1/migration/ms';
+    public static MS_FUEL_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/fuel`;
+    public static MS_COMPLAINT_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/complaint`;
+    public static MS_COMMON_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/common`;
 
     /**
      * Map of API endpoints.
@@ -497,6 +509,51 @@ export class ApiEndpointService {
 
     };
 
+    public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
+        VIEW_PDF_LAB_RESULT: `${ApiEndpointService.MS_CONTEXT}/view/attached-lab-pdf`,
+        VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
+        VIEW_PDF_SAMPLE_COLLECTION: `${ApiEndpointService.MS_CONTEXT}/report/sample-collection`,
+        VIEW_PDF_REMEDIATION_INVOICE: `${ApiEndpointService.MS_CONTEXT}/report/remediation-invoice`,
+        LAB_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/fetch/laboratory-list`,
+        ALL_BATCH_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/all-batch-list`,
+        ADD_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/add`,
+        CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
+        INSPECTION_SCHEDULED_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/list`,
+        INSPECTION_SCHEDULED_ADD_NEW: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/add`,
+        INSPECTION_SCHEDULED_DETAILS: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/details`,
+        INSPECTION_SCHEDULED_DETAILS_ASSIGN_OFFICER: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/assign`,
+        INSPECTION_SCHEDULED_DETAILS_RAPID_TEST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/rapid-test`,
+        INSPECTION_SCHEDULED_DETAILS_SAMPLE_COLLECT: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-collect`,
+        INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-submission`,
+        INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION_BS_NUMBER: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-submission-bs-number`,
+        INSPECTION_SCHEDULED_DETAILS_LAB_RESULTS_SAVE_PDF: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/lab-results-pdf-save`,
+        INSPECTION_SCHEDULED_DETAILS_SSF_COMPLIANCE_STATUS: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/ssf-compliance-status-save`,
+        INSPECTION_SCHEDULED_REMEDIATION_DATE: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation-schedule`,
+        INSPECTION_SCHEDULED_REMEDIATION_INVOICE: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation-invoice`,
+        INSPECTION_SCHEDULED_ADD_REMEDIATION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation`,
+        END_INSPECTION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/end-inspection`,
+        // COUNTRY_DASHBOARD_DETAILS: `${ApiEndpointService.VERSION_THREE_CONTEXT}/country-dashboard-details`,
+        // CLIENT_LIST: `${ApiEndpointService.VERSION_THREE_CONTEXT}/client-list`,
+    };
+
+    public static MARKET_SURVEILLANCE_COMMON = {
+        MS_DEPARTMENTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/departments`,
+        MS_DIVISIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/divisions`,
+        MS_STANDARD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/standardProductCategory`,
+        MS_PRODUCT_CATEGORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/productCategories`,
+        MS_BROAD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/broadProductCategory`,
+        MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
+        MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
+      };
+
+    public static MARKET_SURVEILLANCE_COMPLAINT = {
+        CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
+        UPLOAD_COMPLIANT_FILE: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/file/save`,
+        ALL_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list`,
+        COMPLAINT_DETAILS: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/details`,
+        VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
+        CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
+      };
     /**
      * Constructor.
      */
@@ -515,7 +572,7 @@ export class ApiEndpointService {
   public static getEndpoint(endpoint: string): string {
     const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
     const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
-      const context: string = ApiEndpointService.CONTEXT;
+    const context: string = ApiEndpointService.CONTEXT;
     return `${protocol}${domain}${context}${endpoint}`;
   }
 

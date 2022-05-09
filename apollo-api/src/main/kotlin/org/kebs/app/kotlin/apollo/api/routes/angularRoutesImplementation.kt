@@ -312,7 +312,7 @@ class AngularRoutes {
     }
 
     @Bean
-    fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler) = router {
+    fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler,msHandler: NewMarketSurveillanceHandler) = router {
         "/api/v1/migration/".nest {
             "anonymous".nest {
                 "/validateBrs".nest {
@@ -350,6 +350,10 @@ class AngularRoutes {
                         PUT("", otherHandler::notSupported)
                     }
 
+                }
+                "/complaint".nest {
+//                    GET("/list", handler::getAllFuelInspectionList)
+                    POST("/new", msHandler::saveNewComplaint)
                 }
             }
             "".nest {
@@ -551,5 +555,63 @@ class AngularRoutes {
         }
     }
 
+    @Bean
+    fun migrationMarketSurveillanceRoutes(handler: NewMarketSurveillanceHandler) = router {
+        "/api/v1/migration/ms".nest {
+            "/common".nest {
+                GET("/departments", handler::msDepartments)
+                GET("/divisions", handler::msDivisions)
+                GET("/standardProductCategory", handler::msStandardsCategory)
+                GET("/productCategories", handler::msProductCategories)
+                GET("/broadProductCategory", handler::msBroadProductCategory)
+                GET("/products", handler::msProducts)
+                GET("/productSubcategory", handler::msProductSubcategory)
+            }
+            "/complaint".nest {
+                GET("/list", handler::getAllComplaintList)
+                GET("/details", handler::getComplaintDetails)
+                PUT("/accept", handler::updateComplaintByAccepting)
+//                POST("/new", handler::saveNewComplaint)
+            }
+//            "/workPlan".nest {
+//
+//            }
+            "/fuel".nest {
+                GET("/all-batch-list", handler::getAllFuelBatchList)
+                POST("/add", handler::saveNewFuelScheduleBatch)
+                PUT("/close", handler::closeFuelBatchEntry)
+                "/inspection".nest {
+                    GET("/list", handler::getAllFuelInspectionList)
+                    POST("/add", handler::saveNewFuelSchedule)
+                    GET("/details", handler::getFuelInspectionDetails)
+                    "/update".nest {
+                        PUT("/assign", handler::updateFuelScheduleAssignOfficer)
+                        PUT("/rapid-test", handler::setFuelScheduleRapidTest)
+                        POST("/sample-collect", handler::setFuelScheduleSampleCollection)
+                        POST("/sample-submission", handler::setFuelScheduleSampleSubmission)
+                        PUT("/sample-submission-bs-number", handler::setFuelScheduleSampleSubmissionBsNumber)
+                        PUT("/lab-results-pdf-save", handler::saveFuelScheduleLabResultsPDFSelected)
+                        PUT("/ssf-compliance-status-save", handler::saveFuelScheduleSSFComplianceStatusAdd)
+                        POST("/fuel-remediation-schedule", handler::saveFuelScheduleRemediationAfterPayment)
+                        POST("/fuel-remediation-invoice", handler::saveFuelScheduledRemediationInvoice)
+                        PUT("/fuel-remediation", handler::saveFuelScheduleUpdateRemediation)
+                        PUT("/end-inspection", handler::endFuelInspection)
+                    }
+                    "/fetch".nest {
+                        GET("/assign", handler::updateFuelScheduleAssignOfficer)
+                        GET("/laboratory-list", handler::getAllLaboratoryList)
+//                        POST("/rapid-test", handler::setFuelScheduleRapidTest)
+//                        POST("/sample-collect", handler::setFuelScheduleSampleCollection)
+//                        POST("/sample-submission", handler::setFuelScheduleSampleSubmission)
+//                        POST("/sample-submission-bs-number", handler::setFuelScheduleSampleSubmissionBsNumber)
+                    }
+
+                }
+
+
+            }
+//            GET("/background/smark/image", handler::smarkBackGroundImage)
+        }
+    }
 
 }

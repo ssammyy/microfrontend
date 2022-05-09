@@ -151,23 +151,23 @@ class DaoService(
                         when {
                             r.status.value >= config.okLower && r.status.value <= config.okUpper -> {
 
-                                val responseText = r.readText()
+                            val responseText = r.readText()
 
-                                KotlinLogging.logger { }.error(responseText)
+                            KotlinLogging.logger { }.error(responseText)
 
-                                log.integrationResponse = responseText
-                                val message =
-                                        "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
-                                KotlinLogging.logger { }.info(message)
-                                res = mapper().readValue<T>(responseText)
+                            log.integrationResponse = responseText
+                            val message =
+                                "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
+                            KotlinLogging.logger { }.info(message)
+                            res = mapper().readValue<T>(responseText)
 
-                                log.responseMessage = log.responseMessage?.let { "${it}||$message" } ?: message
-                                log.responseStatus = config.successCode
+                            log.responseMessage = log.responseMessage?.let { "${it}||$message" } ?: message
+                            log.responseStatus = config.successCode
 
 
-                                log.transactionCompletedDate = Timestamp.from(Instant.now())
+                            log.transactionCompletedDate = Timestamp.from(Instant.now())
 
-                            }
+                        }
                             else -> {
                                 log.integrationResponse = r.readText()
                                 val message =
@@ -229,12 +229,12 @@ class DaoService(
 
 
     suspend fun getHttpResponseFromGetCall(
-            auth: Boolean,
-            url: String,
-            config: IntegrationConfigurationEntity,
-            payload: Any? = null,
-            bodyParams: Map<String, String?>? = null,
-            headerParams: Map<String, String>? = null,
+        auth: Boolean,
+        url: String,
+        config: IntegrationConfigurationEntity,
+        payload: Any? = null,
+        bodyParams: Map<String, String?>? = null,
+        headerParams: Map<String, String>? = null,
     ): HttpResponse? {
         return buildClient(auth, config)?.get<HttpResponse>(url) {
             method = HttpMethod.Get

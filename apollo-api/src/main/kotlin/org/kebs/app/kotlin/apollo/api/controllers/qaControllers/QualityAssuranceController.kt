@@ -1718,7 +1718,7 @@ class QualityAssuranceController(
             id,
             qaInspectionReportRecommendation,
 
-        )
+            )
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
@@ -2077,7 +2077,7 @@ class QualityAssuranceController(
                 qaDaoServices.sta10Update(commonDaoServices.updateDetails(QaSta10Entity, sta10) as QaSta10Entity, map, loggedInUser)
             }
             applicationMapProperties.mapPermitNewMessage -> {
-              qaDaoServices.sta10NewSave(permit, QaSta10Entity, loggedInUser, map)
+                qaDaoServices.sta10NewSave(permit, QaSta10Entity, loggedInUser, map)
             }
         }
 

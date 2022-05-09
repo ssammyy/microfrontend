@@ -313,12 +313,12 @@ end;
 
 
 
-create or replace procedure proc_update_permit_invoice_when_payment_done(PAID_STATUS number, TABLE_SOURCE_NAME varchar2)
+create or replace procedure proc_update_remediation_invoice_when_payment_done(PAID_STATUS number, TABLE_SOURCE_NAME varchar2)
 as
 begin
     FOR X IN (SELECT * FROM DAT_KEBS_INVOICE_BATCH_DETAILS s  where s.STATUS in (PAID_STATUS) and s.TABLE_SOURCE in (TABLE_SOURCE_NAME))
         LOOP
-            update DAT_KEBS_INVOICE d
+            update DAT_KEBS_MS_FUEL_REMEDY_INVOICES d
             set d.PAYMENT_STATUS = 1,
                 d.RECEIPT_NO     = x.RECEIPT_NUMBER
             where d.INVOICE_BATCH_NUMBER_ID = x.id
@@ -353,12 +353,12 @@ end;
 /
 
 
-create or replace procedure proc_update_permit_invoice_when_permit_batch_invoice_payment_done(PAID_STATUS number)
+create or replace procedure proc_update_remediation_invoice_when_payment_done(PAID_STATUS number)
 as
 begin
     FOR X IN (SELECT * FROM DAT_KEBS_QA_BATCH_INVOICE s where s.PAID_STATUS in (PAID_STATUS))
         LOOP
-            update DAT_KEBS_INVOICE d
+            update DAT_KEBS_MS_FUEL_REMEDY_INVOICES d
             set d.PAYMENT_STATUS = 1,
                 d.RECEIPT_NO     = x.RECEIPT_NO
             where d.INVOICE_BATCH_NUMBER_ID = x.ID
@@ -378,6 +378,25 @@ end;
 
 
 ****************old working************************
+
+create or replace procedure proc_update_remediation_invoice_when_payment_done(PAID_STATUS number, TABLE_SOURCE_NAME varchar2)
+as
+begin
+FOR X IN (SELECT * FROM DAT_KEBS_INVOICE_BATCH_DETAILS s  where s.STATUS in (PAID_STATUS) and s.TABLE_SOURCE in (TABLE_SOURCE_NAME))
+        LOOP
+update DAT_KEBS_MS_FUEL_REMEDY_INVOICES d
+set d.PAYMENT_STATUS = 1,
+    d.RECEIPT_NO   = x.RECEIPT_NUMBER
+where d.INVOICE_BATCH_NUMBER_ID = x.id
+--               and d.TOTAL_AMOUNT = x.PAID_AMOUNT
+  and d.PAYMENT_STATUS != 1;
+--         update STG_PAYMENT_RECONCILIATION ss set ss.PAYMENT_TABLES_UPDATED_STATUS = 10 where ss.INVOICE_ID = x.INVOICE_ID;
+update DAT_KEBS_INVOICE_BATCH_DETAILS ss set ss.STATUS = 10 where ss.id = x.ID;
+commit;
+end loop;
+
+--     update DAT_KEBS_INVOICE_BATCH_DETAILS ss set ss.STATUS = 10 where ss.id in (SELECT s.id FROM DAT_KEBS_INVOICE_BATCH_DETAILS s where s.STATUS in (PAID_STATUS));
+end;
 
 create or replace procedure proc_update_demand_note_when_payment_done(PAID_STATUS number, TABLE_SOURCE_NAME varchar2)
 as

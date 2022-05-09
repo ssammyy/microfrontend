@@ -116,6 +116,32 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
         @Param("status") status: Int
     ): List<UsersEntity>?
 
+    @Query(
+        "SELECT DISTINCT u.* FROM CFG_USER_SECTION_ASSIGNMENTS s, CFG_USER_ROLES_ASSIGNMENTS r, DAT_KEBS_USER_PROFILES pf,  DAT_KEBS_USERS u" +
+                " WHERE  pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID and pf.REGION_ID = :regionId  and pf.STATUS = :status" +
+                " AND u.ENABLED = :status and r.ROLE_ID = :roleId and s.SECTION_ID = :sectionId",
+        nativeQuery = true
+    )
+    fun findOfficerPermitUsersBySectionAndRegionFromSectionUserDetails(
+        @Param("roleId") roleId: Long,
+        @Param("sectionId") sectionId: Long,
+        @Param("regionId") regionId: Long,
+        @Param("status") status: Int
+    ): List<UsersEntity>?
+
+    @Query(
+        "SELECT DISTINCT u.* FROM CFG_USER_ROLES_ASSIGNMENTS r, DAT_KEBS_USER_PROFILES pf,  DAT_KEBS_USERS u" +
+                " WHERE  pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID and pf.REGION_ID =:regionId and pf.COUNTY_ID =:countyId  and pf.STATUS =:status" +
+                " AND u.ENABLED =:status and r.ROLE_ID =:roleId",
+        nativeQuery = true
+    )
+    fun findOfficerUsersByRegionAndCountyAndRoleFromUserDetails(
+        @Param("roleId") roleId: Long,
+        @Param("countyId") countyId: Long,
+        @Param("regionId") regionId: Long,
+        @Param("status") status: Int
+    ): List<UsersEntity>?
+
     fun findAllByUserNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
         userName: String?,
         email: String?,
@@ -373,7 +399,6 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
 
 
-
 }
 
 @Repository
@@ -465,6 +490,12 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
         designationId: DesignationsEntity,
         regionId: RegionsEntity,
         departmentId: DepartmentsEntity,
+        status: Int
+    ): UserProfilesEntity?
+
+    fun findByDesignationIdAndRegionIdAndStatus(
+        designationId: DesignationsEntity,
+        regionId: RegionsEntity,
         status: Int
     ): UserProfilesEntity?
 

@@ -22,9 +22,7 @@
 package org.kebs.app.kotlin.apollo.store.repo.ms
 
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintCustomersEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintLocationEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -37,8 +35,11 @@ interface IComplaintRepository : HazelcastRepository<ComplaintEntity, Long>, Jpa
     override fun findAll(): List<ComplaintEntity>
     fun findAllByOrderByIdDesc(pageable: Pageable): Page<ComplaintEntity>
     fun findByHodAssigned(hodAssigned: Long): List<ComplaintEntity>
+    fun findByHodAssigned(hodAssigned: Long,pageable: Pageable): Page<ComplaintEntity>
     fun findByHofAssigned(hofAssigned: Long): List<ComplaintEntity>
+    fun findByHofAssigned(hofAssigned: Long,pageable: Pageable): Page<ComplaintEntity>
     fun findByAssignedIo(assignedIo: Long): List<ComplaintEntity>
+    fun findByAssignedIo(assignedIo: Long,pageable: Pageable): Page<ComplaintEntity>
 
     //    fun findByIdAndMsProcessStatus(id: Long, msProcessStatus: Int, pageable: Pageable):  Page<ComplaintEntity>?
     fun findByIdAndMsProcessStatus(id: Long, msProcessStatus: Int): ComplaintEntity?
@@ -87,4 +88,18 @@ interface IComplaintWitnessRepository : HazelcastRepository<ComplaintWitnessEnti
 @Repository
 interface IComplaintLocationRepository : HazelcastRepository<ComplaintLocationEntity, Long>{
     fun findByComplaintId(complaintId: Long): ComplaintLocationEntity?
+}
+
+@Repository
+interface IMsRemarksComplaintRepository : HazelcastRepository<MsRemarksEntity, Long>{
+    fun findAllByComplaintId(complaintId: Long): List<MsRemarksEntity>?
+    fun findAllByFuelInspectionId(fuelInspectionId: Long): List<MsRemarksEntity>?
+}
+
+@Repository
+interface IMsProcessNamesComplaintRepository : HazelcastRepository<MsProcessNamesEntity, Long>{
+    fun findAllByComplaintStatus(complaintStatus: Int): List<MsProcessNamesEntity>?
+    fun findAllByFuelStatus(fuelStatus: Int): List<MsProcessNamesEntity>?
+    fun findByComplaintStatusAndId(complaintStatus: Int, id: Long): MsProcessNamesEntity?
+    fun findByFuelStatusAndId(complaintStatus: Int, id: Long): MsProcessNamesEntity?
 }

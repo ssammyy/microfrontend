@@ -45,6 +45,10 @@ class NotificationsEntity : Serializable {
     @ManyToOne
     var notificationType: NotificationTypesEntity? = null
 
+    @JoinColumn(name = "SERVICE_MAP_ID", referencedColumnName = "ID")
+    @ManyToOne
+    var serviceMapId: ServiceMapsEntity? = null
+
     @Basic
     @Column(name = "SENDER")
     var sender: String? = null
