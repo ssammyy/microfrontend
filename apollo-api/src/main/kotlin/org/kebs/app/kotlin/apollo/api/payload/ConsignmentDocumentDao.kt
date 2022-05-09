@@ -43,6 +43,7 @@ class ConsignmentEnableUI {
     var ncrAvailable: Boolean = false
     var coiAvailable: Boolean = false
     var complianceDisabled: Boolean = false
+    var complianceRejected: Boolean = false
     var declarationDocument: Boolean = false
     var riskProfileImporter: Boolean = false
     var riskProfileConsignor: Boolean = false
@@ -89,6 +90,7 @@ class ConsignmentEnableUI {
             }
             ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected
             ui.approveReject = !(ui.targetDisabled && ui.demandNoteDisabled && ui.complianceDisabled)
+            ui.complianceRejected = !ui.complianceDisabled && !(cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus)
             cd.cdType?.let {
                 ui.cocAvailable = it.localCocStatus == map.activeStatus && (cd.localCocOrCorStatus == map.activeStatus || cd.localCoi == map.activeStatus)
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus

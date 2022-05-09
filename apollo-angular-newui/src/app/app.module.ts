@@ -312,6 +312,7 @@ import {GenerateAuctionKraReportComponent} from "./apollowebs/di/auction/generat
 import {UpdateComplaintTaskComponent} from "./apollowebs/pvoc/complaints/update-complaint-task/update-complaint-task.component";
 import {UpdateExemptionTaskComponent} from "./apollowebs/pvoc/exemptions/update-exemption-task/update-exemption-task.component";
 import {AdminBusinessManagementComponent} from './apollowebs/admin/admin-business-management/admin-business-management.component';
+import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignment-document/cd-general-checklist/cd-general-checklist.component';
 
 
 @NgModule({
@@ -655,7 +656,8 @@ import {AdminBusinessManagementComponent} from './apollowebs/admin/admin-busines
         NwaTasksComponent,
         UpdateComplaintTaskComponent,
         UpdateExemptionTaskComponent,
-        AdminBusinessManagementComponent
+        AdminBusinessManagementComponent,
+        CdGeneralChecklistComponent
     ],
     entryComponents: [],
     providers: [DatePipe,

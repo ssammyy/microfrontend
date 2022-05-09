@@ -19,6 +19,7 @@ class InspectionGeneralDetailsDto {
     var ucrNumber: String? = null
     var cocNumber: String? = null
     var idfNumber: String? = null
+    var currentStatus: String? = null
     var overallRemarks: String? = null
     var complianceStatus: Int? = null
     var complianceRecommendations: String? = null
@@ -28,6 +29,7 @@ class InspectionGeneralDetailsDto {
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
     var inspectionOfficer: String? = null
+    var version: Long? = null
     var status: Int? = null
 
     companion object {
@@ -37,6 +39,7 @@ class InspectionGeneralDetailsDto {
                 confirmItemType = entity.confirmItemType
                 inspection = entity.inspection
                 customsEntryNumber = entity.customsEntryNumber
+                clearingAgent = entity.clearingAgent
                 ucrNumber = entity.ucrNumber
                 overallRemarks = entity.overallRemarks
                 overallRemarks = entity.overallRemarks
@@ -46,6 +49,11 @@ class InspectionGeneralDetailsDto {
                 inspectionDate = entity.inspectionDate
                 complianceStatus = entity.complianceStatus
                 description = entity.description
+                currentStatus = when (entity.currentChecklist) {
+                    1 -> "CURRENT CHECKLIST"
+                    else -> "OLD CHECKLIST"
+                }
+                version = entity.checklistVersion ?: 1
                 status = entity.status
             }
             entity.cdDetails?.let {
@@ -453,10 +461,10 @@ class InspectionMotorVehicleItemDto {
     var overallAppearance: String? = null
     var remarks: String? = null
     var description: String? = null
-    var itemType: String?=null
-    var productDescription: String?=null
+    var itemType: String? = null
+    var productDescription: String? = null
     var status: Int? = null
-    var itemNumber: String?=null
+    var itemNumber: String? = null
     var sampleUpdated: Int? = null
     var serialNumber: String? = null
     var ministryStation: String? = null
@@ -471,13 +479,13 @@ class InspectionMotorVehicleItemDto {
     var csDate: String? = null
     var oicName: String? = null
     var oicDate: String? = null
-    var createdOn: String?=null
+    var createdOn: String? = null
 
     companion object {
         fun fromEntity(entity: CdInspectionMotorVehicleItemChecklistEntity): InspectionMotorVehicleItemDto {
             val dto = InspectionMotorVehicleItemDto().apply {
                 id = entity.id
-                hasMinistryInspection = entity.ministryReportFile !=null
+                hasMinistryInspection = entity.ministryReportFile != null
                 ministryInspectionActive = "YES".equals(entity.sampled)
                 remarks = entity.remarks
                 makeVehicle = entity.makeVehicle
@@ -487,25 +495,25 @@ class InspectionMotorVehicleItemDto {
                 compliant = entity.compliant
                 category = entity.category
                 color = entity.colour
-                chassisNo=entity.chassisNo
+                chassisNo = entity.chassisNo
                 overallAppearance = entity.overallAppearance
                 driveRhdLhd = entity.driveRhdLhd
                 odemetreReading = entity.odemetreReading
                 transmissionAutoManual = entity.transmissionAutoManual
                 engineNoCapacity = entity.engineNoCapacity
-                registrationDate = entity.registrationDate?.toString()?:""
-                manufactureDate = entity.manufactureDate?.toString()?:""
+                registrationDate = entity.registrationDate?.toString() ?: ""
+                manufactureDate = entity.manufactureDate?.toString() ?: ""
                 inspectionDate = entity.createdOn
                 ssfId = entity.ssfId
                 sampleUpdated = entity.sampleUpdated
                 description = entity.description
                 status = entity.status
-                createdOn=entity.createdOn?.toString()
+                createdOn = entity.createdOn?.toString()
             }
             entity.itemId?.let {
-                dto.productDescription=it.itemDescription
-                dto.itemType=it.checkListTypeId?.typeName
-                dto.itemNumber=it.itemNo.toString()
+                dto.productDescription = it.itemDescription
+                dto.itemType = it.checkListTypeId?.typeName
+                dto.itemNumber = it.itemNo.toString()
             }
             entity.ministryStationId?.let {
                 dto.ministryStation = it.stationName

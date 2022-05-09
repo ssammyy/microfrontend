@@ -8,9 +8,10 @@ import {DestinationInspectionService} from "../../../../core/store/data/di/desti
     styleUrls: ['./view-inspection-details.component.css']
 })
 export class ViewInspectionDetailsComponent implements OnInit {
-    activeTab=1
+    activeTab = 1
     inspectionDetails: any
     documentId: any
+    checklidId: any
     sampledItems: any
 
     constructor(private diService: DestinationInspectionService, private  activatedRoute: ActivatedRoute, private router: Router) {
@@ -21,8 +22,12 @@ export class ViewInspectionDetailsComponent implements OnInit {
         this.activatedRoute.paramMap.subscribe(
             res => {
                 this.documentId = res.get("id")
-                this.loadInspectionDetails()
-
+                this.activatedRoute.queryParamMap.subscribe(
+                    params => {
+                        this.checklidId = params.get("ci")
+                        this.loadInspectionDetails()
+                    }
+                )
             }
         )
     }
@@ -36,21 +41,24 @@ export class ViewInspectionDetailsComponent implements OnInit {
     }
 
     loadInspectionDetails() {
-        this.diService.getDetails("/api/v1/di/consignment/document/checklist/" + this.documentId)
-            .subscribe(
-                res => {
-                    if (res.responseCode == "00") {
-                        this.inspectionDetails = res.data
-                        this.loadSampledItems()
-                    } else {
-                        this.diService.showError(res.message)
-                    }
+        let params = {}
+        if (this.checklidId) {
+            params['ci'] = this.checklidId
+        }
+        this.diService.getDetails("/api/v1/di/consignment/document/checklist/" + this.documentId, params).subscribe(
+            res => {
+                if (res.responseCode == "00") {
+                    this.inspectionDetails = res.data
+                    this.loadSampledItems()
+                } else {
+                    this.diService.showError(res.message)
                 }
-            )
+            }
+        )
     }
 
     loadSampledItems() {
-        this.diService.getDetails("/api/v1/di/consignment/document/sampled-items/" + this.documentId)
+        this.diService.getDetails("/api/v1/di/consignment/document/sampled-items/" + this.documentId, {})
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {
@@ -62,7 +70,7 @@ export class ViewInspectionDetailsComponent implements OnInit {
             )
     }
 
-    reloadChecklist(){
+    reloadChecklist() {
         this.loadInspectionDetails()
         this.loadSampledItems()
     }

@@ -50,9 +50,10 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         this.activatedRoute.paramMap.subscribe(
             rs => {
                 this.consignmentId = rs.get('id');
-                this.loadConsignmentDetails();
-                this.loadFees();
-                this.loadUiConfigurations();
+                this.loadConsignmentDetails()
+                this.loadFees()
+                this.loadChecklists()
+                this.loadUiConfigurations()
             }
         );
 
@@ -123,7 +124,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
     loadChecklists() {
-        this.diService.loadChecklists(this.consignment.cd_details.uuid)
+        this.diService.loadChecklists(this.consignmentId)
             .subscribe(
                 res => {
                     if (res.responseCode === '00') {
@@ -180,6 +181,12 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     reloadAttachments(v: boolean) {
         if (v) {
             this.listConsignmentAttachments();
+        }
+    }
+
+    reloadChecklists(v: boolean) {
+        if (v) {
+            this.loadChecklists();
         }
     }
 
