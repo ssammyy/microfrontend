@@ -6,7 +6,7 @@ import {catchError, map} from "rxjs/operators";
 import {
     ApproveVisitTask,
     AssignCompanyTaskDTO, Branch, CloseCompanyDto, ClosedCompanyDTO,
-    CompanyModel,
+    CompanyModel, CompanyOperationsDto,
     ConfirmEditCompanyDTO,
     DirectorsList,
     DocumentDTO,
@@ -398,6 +398,58 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SUSPEND_OPERATIONS);
         const params = new HttpParams();
         return this.http.post<SuspendCompanyDto>(url, suspendCompanyDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public confirmCompanySuspension(companyOperationsDto: CompanyOperationsDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVE_SUSPENSION);
+        const params = new HttpParams();
+        return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public rejectCompanySuspension(companyOperationsDto: CompanyOperationsDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REJECT_SUSPENSION);
+        const params = new HttpParams();
+        return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public confirmCompanyClosure(companyOperationsDto: CompanyOperationsDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVE_CLOSURE);
+        const params = new HttpParams();
+        return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public rejectCompanyClosure(companyOperationsDto: CompanyOperationsDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REJECT_CLOSURE);
+        const params = new HttpParams();
+        return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

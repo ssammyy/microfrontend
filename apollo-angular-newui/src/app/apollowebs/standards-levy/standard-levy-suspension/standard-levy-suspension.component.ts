@@ -52,6 +52,15 @@ export class StandardLevySuspensionComponent implements OnInit {
     this.dtTrigger.unsubscribe();
   }
 
+  showToasterSuccess(title:string,message:string){
+    this.notifyService.showSuccess(message, title)
+
+  }
+  showToasterError(title:string,message:string){
+    this.notifyService.showError(message, title)
+
+  }
+
   public getCompanySuspensionRequest(): void{
     this.loadingText = "Retrieving List ...."
     this.SpinnerService.show();
@@ -77,6 +86,45 @@ export class StandardLevySuspensionComponent implements OnInit {
         }
     );
   }
+
+  confirmCompanySuspension(): void {
+    this.loadingText = "Approving";
+    this.SpinnerService.show();
+    this.levyService.confirmCompanySuspension(this.approveRequestFormGroup.value).subscribe(
+        (response) => {
+          console.log(response);
+          this.SpinnerService.hide();
+          this.showToasterSuccess(response.httpStatus, `Request for Suspension Approved`);
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Approving Request`);
+          console.log(error.message);
+        }
+    );
+    this.hideModel();
+
+  }
+
+  rejectCompanySuspension(): void {
+    this.loadingText = "Approving";
+    this.SpinnerService.show();
+    this.levyService.rejectCompanySuspension(this.approveRequestFormGroup.value).subscribe(
+        (response) => {
+          console.log(response);
+          this.SpinnerService.hide();
+          this.showToasterSuccess(response.httpStatus, `Request for Suspension Rejected`);
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Rejecting Request`);
+          console.log(error.message);
+        }
+    );
+    this.hideModel();
+
+  }
+
   public openModal(suspendedCompanyDTOs: SuspendedCompanyDTO,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');

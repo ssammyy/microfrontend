@@ -509,6 +509,11 @@ export interface SuspendCompanyDto{
     dateOfSuspension: Timestamp<number>;
 }
 
+export interface CompanyOperationsDto{
+    id: number;
+    companyId: number;
+}
+
 export interface CloseCompanyDto{
     id: number;
     name: string;

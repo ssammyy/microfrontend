@@ -1527,6 +1527,47 @@ return getUserTasks();
         return standardLevyOperationsSuspensionRepository.getCompanySuspensionRequest()
     }
 
+    fun confirmCompanySuspension(
+        companyProfileEntity: CompanyProfileEntity,
+        standardLevyOperationsSuspension: StandardLevyOperationsSuspension
+    ): String {
+        companyProfileEntity.id = companyProfileEntity.id
+        standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
+        companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
+            ?.let { companyProfileEntity ->
+
+                with(companyProfileEntity) {
+                   status=2
+                }
+                companyProfileRepo.save(companyProfileEntity)
+
+            }?: throw Exception("COMPANY NOT FOUND")
+        standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
+            ?.let { standardLevyOperationsSuspension ->
+                with(standardLevyOperationsSuspension){
+                    status=1
+                }
+                standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
+            }
+
+        return "Company Suspended"
+    }
+
+    fun rejectCompanySuspension(
+        standardLevyOperationsSuspension: StandardLevyOperationsSuspension
+    ): String {
+        standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
+        standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
+            ?.let { standardLevyOperationsSuspension ->
+                with(standardLevyOperationsSuspension){
+                    status=1
+                }
+                standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
+            }
+
+        return "Company Suspension Rejected"
+    }
+
 
 
     fun closeCompanyOperations(
@@ -1577,13 +1618,67 @@ return getUserTasks();
         return slWindingUpReportUploadsEntityRepository.findAllDocumentId(closureID)
     }
 
+    fun confirmCompanyClosure(
+        companyProfileEntity: CompanyProfileEntity,
+        standardLevyOperationsSuspension: StandardLevyOperationsSuspension
+    ): String {
+        companyProfileEntity.id = companyProfileEntity.id
+        standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
+        companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
+            ?.let { companyProfileEntity ->
+
+                with(companyProfileEntity) {
+                    status=0
+                }
+                companyProfileRepo.save(companyProfileEntity)
+
+            }?: throw Exception("COMPANY NOT FOUND")
+        standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
+            ?.let { standardLevyOperationsSuspension ->
+                with(standardLevyOperationsSuspension){
+                    status=1
+                }
+                standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
+            }
+
+        return "Company Closed"
+    }
+
+    fun rejectCompanyClosure(
+        standardLevyOperationsSuspension: StandardLevyOperationsSuspension
+    ): String {
+        standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
+        standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
+            ?.let { standardLevyOperationsSuspension ->
+                with(standardLevyOperationsSuspension){
+                    status=1
+                }
+                standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
+            }
+
+        return "Company Closure Rejected"
+    }
+
 
 
     fun getCompanyClosureRequest(): MutableList<CompanyClosureList> {
         return standardLevyOperationsClosureRepository.getCompanyClosureRequest()
     }
 
+    fun sendLevyPaymentReminders(): String {
+        var companylist= companyProfileRepo.getManufactureEmailAddressList()
 
+        companylist.forEach { item->
+           val recipient= item.getCompanyEmail()
+            val subject = "Levy Payment"
+            val messageBody= "Dear ${item.getCompanyName()},You are reminded to Remit your levy for month ended. Ignore if paid"
+            if (recipient != null) {
+                notifications.sendEmail(recipient, subject, messageBody)
+            }
+        }
+
+        return "Email Sent"
+    }
 
 
 }

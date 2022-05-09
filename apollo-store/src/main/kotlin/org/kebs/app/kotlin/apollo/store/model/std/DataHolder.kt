@@ -235,4 +235,9 @@ interface CompanyClosureList{
 
 }
 
+interface EmailListHolder{
+    fun getCompanyEmail(): String?;
+    fun getCompanyName(): String?;
+}
+
 

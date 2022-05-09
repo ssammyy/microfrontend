@@ -52,6 +52,16 @@ export class StandardLevyClosureComponent implements OnInit {
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
+
+    showToasterSuccess(title:string,message:string){
+        this.notifyService.showSuccess(message, title)
+
+    }
+    showToasterError(title:string,message:string){
+        this.notifyService.showError(message, title)
+
+    }
+
   public getCompanyClosureRequest(): void{
     this.loadingText = "Retrieving List ...."
     this.SpinnerService.show();
@@ -129,7 +139,41 @@ export class StandardLevyClosureComponent implements OnInit {
         this.isShowDocumentsTab = !this.isShowDocumentsTab;
 
     }
-    confirmRequest(): void {
+    confirmCompanyClosure(): void {
+        this.loadingText = "Approving";
+        this.SpinnerService.show();
+        this.levyService.confirmCompanyClosure(this.approveRequestFormGroup.value).subscribe(
+            (response) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Request for Closure Approved`);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Approving Request`);
+                console.log(error.message);
+            }
+        );
+        this.hideModel();
+
+    }
+
+    rejectCompanyClosure(): void {
+        this.loadingText = "Approving";
+        this.SpinnerService.show();
+        this.levyService.rejectCompanyClosure(this.approveRequestFormGroup.value).subscribe(
+            (response) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Request for Closure Rejected`);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Rejecting Request`);
+                console.log(error.message);
+            }
+        );
+        this.hideModel();
 
     }
 

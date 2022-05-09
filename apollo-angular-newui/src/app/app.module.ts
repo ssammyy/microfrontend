@@ -661,6 +661,7 @@ export class MaterialModule {}
         NgxPaginationModule,
         FontAwesomeModule,
         NgxSpinnerModule,
+        DataTablesModule,
     ],
     declarations: [
         AppComponent,

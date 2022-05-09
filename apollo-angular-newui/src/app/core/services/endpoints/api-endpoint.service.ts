@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        LOCAL_DEV: 'localhost:8006',
+        //LOCAL_DEV: 'localhost:8006',
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        // LOCAL_DEV: `kimsint.kebs.org:8006`
+         LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org`
         // LOCAL_DEV: '10.10.0.149:8007'
     };
@@ -502,6 +502,10 @@ export class ApiEndpointService {
         STD_LEVY_UPLOAD_WINDING_UP_REPORT: `${ApiEndpointService.STL_CONTEXT}/uploadWindingUpReport`,
         STD_LEVY_GET_WINDING_UP_REPORT_LIST: `${ApiEndpointService.STL_CONTEXT}/getWindingReportDocumentList`,
         STD_LEVY_VIEW_WINDING_UP_REPORT: `${ApiEndpointService.STL_CONTEXT}/view/windingUpReport`,
+        STD_LEVY_APPROVE_SUSPENSION: `${ApiEndpointService.STL_CONTEXT}/confirmCompanySuspension`,
+        STD_LEVY_REJECT_SUSPENSION: `${ApiEndpointService.STL_CONTEXT}/rejectCompanySuspension`,
+        STD_LEVY_APPROVE_CLOSURE: `${ApiEndpointService.STL_CONTEXT}/confirmCompanyClosure`,
+        STD_LEVY_REJECT_CLOSURE: `${ApiEndpointService.STL_CONTEXT}/rejectCompanyClosure`,
 
 
 
