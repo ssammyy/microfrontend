@@ -97,6 +97,21 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.HOD}")
     val mapUserTaskNameHOD: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.epra}")
+    val mapMSUserTaskNameEPRA: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.manager.petroleum}")
+    val mapMSUserTaskNameMANAGERPETROLEUM: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.officer}")
+    val mapMSUserTaskNameOFFICER: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.lab}")
+    val mapMSUserTaskNameLAB: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.station.owner}")
+    val mapMSUserTaskNameSTATIONOWNER: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.HOF}")
     val mapUserTaskNameHOF: Long = 0L
 
@@ -111,6 +126,12 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.PAC_SECRETARY}")
     val mapUserTaskNamePACSECRETARY: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.suspended}")
+    val mapQaStatusSuspended: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.unsuspended}")
+    val mapQaStatusUnSuspended: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.RM}")
     val mapUserTaskNameRM: Long = 0L
@@ -129,6 +150,12 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.QAO}")
     val mapQADesignationIDForQAOId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.officer.roleID}")
+    val mapMSMappedOfficerROLEID: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.manager.petroleum.roleID}")
+    val mapMSMappedManagerPetroliumROLEID: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.Assessor}")
     val mapQADesignationIDForAssessorId: Long = 0L
@@ -571,6 +598,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.fmark.permit.report.path}")
     val mapReportFmarkPermitReportPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.remediation.invoice.path}")
+    val mapMSFuelInvoiceRemediationPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.sample.collection.path}")
+    val mapMSSampleCollectionPath: String = ""
+
     @Value("\${destination.inspection.cd.status.type.coc.generated.and.send}")
     val mapDICdStatusTypeCOCGeneratedAndSendID: Long = 0L
 
@@ -673,6 +706,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.oga.mandate.notification.compliant}")
     val mapMsComplaintAcknowledgementRejectionWIthOGANotification: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.scheduled.notification}")
+    val mapMsFuelScheduleMPNotification: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.approved.notification.hof}")
     val mapMsComplaintApprovedHofNotification: String = ""
 
@@ -681,6 +717,24 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.assigned.notification.io}")
     val mapMsComplaintAssignedIONotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.assigned.notification.io}")
+    val mapMsFuelAssignedIONotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.remediation.invoice.notification}")
+    val mapMsFuelInspectionRemediationInvoiceNotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.remediation.schedule.notification}")
+    val mapMsFuelInspectionRemediationScheduleNotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.schedule.end.notification}")
+    val mapMsFuelInspectionScheduleEndedNotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.lab.results.notification}")
+    val mapMsFuelInspectionLabResultsNotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.lab.results.notification.io}")
+    val mapMsLabResultsIONotification: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.market.surveillance.complaint.type.uuid}")
     val mapMsComplaintTypeUuid: String = ""
@@ -987,6 +1041,21 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.transaction.exception.status}")
     val transactionExceptionStatus: Int = 99
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.onLine}")
+    val msComplaintProcessOnlineSubmitted: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.letter}")
+    val msComplaintProcessLetterSubmitted: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.mandate}")
+    val msComplaintProcessMandate: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.not.mandate}")
+    val msComplaintProcessNotMandate: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.assign.officer}")
+    val msComplaintProcessAssignOfficer: Long? = null
 
     @Value("\${org.kebs.app.kotlin.apollo.application.page.start}")
     val pageStart: Int = 1

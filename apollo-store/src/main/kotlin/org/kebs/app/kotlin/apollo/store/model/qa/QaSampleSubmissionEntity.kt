@@ -20,6 +20,10 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "FUEL_INSPECTION_ID")
+    @Basic
+    var fuelInspectionId: Long? = null
+
     @Column(name = "PERMIT_REF_NUMBER")
     @Basic
     var permitRefNumber: String? = null

@@ -126,6 +126,64 @@ import {ViewBillLimitsComponent} from "./apollowebs/invoice/limits/view-bill-lim
 import {ViewTransactionsComponent} from "./apollowebs/invoice/corporate/view-transactions/view-transactions.component";
 import {ViewAuctionItemsComponent} from "./apollowebs/di/auction/view-auction-items/view-auction-items.component";
 import {AuctionItemDetailsComponent} from "./apollowebs/di/auction/auction-item-details/auction-item-details.component";
+
+import {EpraBatchListComponent} from "./apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component";
+import {EpraListComponent} from "./apollowebs/market-surveillance/fuel/epra-list/epra-list.component";
+import {ViewFuelSheduledDetailsComponent} from "./apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component";
+import {ComplaintNewComponent} from './apollowebs/market-surveillance/complaint/complaint-new/complaint-new.component';
+import {ComplaintListComponent} from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
+import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
+// import {HoSicTasksComponent} from "./apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component";
+// export const AppRoutes: Routes = [
+//     {
+//         path: '',
+//         redirectTo: 'dashboard',
+//         pathMatch: 'full',
+//     }, {
+//         path: '',
+//         component: AdminLayoutComponent,
+//         children: [
+//             {
+//                 path: '',
+//                 loadChildren: './dashboard/dashboard.module#DashboardModule'
+//             }, {
+//                 path: 'components',
+//                 loadChildren: './components/components.module#ComponentsModule'
+//             }, {
+//                 path: 'forms',
+//                 loadChildren: './forms/forms.module#Forms'
+//             }, {
+//                 path: 'tables',
+//                 loadChildren: './tables/tables.module#TablesModule'
+//             }, {
+//                 path: 'maps',
+//                 loadChildren: './maps/maps.module#MapsModule'
+//             }, {
+//                 path: 'widgets',
+//                 loadChildren: './widgets/widgets.module#WidgetsModule'
+//             }, {
+//                 path: 'charts',
+//                 loadChildren: './charts/charts.module#ChartsModule'
+//             }, {
+//                 path: 'calendar',
+//                 loadChildren: './calendar/calendar.module#CalendarModule'
+//             }, {
+//                 path: '',
+//                 loadChildren: './userpage/user.module#UserModule'
+//             }, {
+//                 path: '',
+//                 loadChildren: './timeline/timeline.module#TimelineModule'
+//             }
+//         ]
+//     }, {
+//         path: '',
+//         component: AuthLayoutComponent,
+//         children: [{
+//             path: 'pages',
+//             loadChildren: './pages/pages.module#PagesModule'
+//         }]
+//     }
+// ];
 import {ViewComplaintsComponent} from "./apollowebs/pvoc/complaints/view-complaints/view-complaints.component";
 import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component";
 import {ViewWaiverApplicationsComponent} from "./apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component";
@@ -177,6 +235,8 @@ import {ViewSacSummaryComponent} from "./apollowebs/standards-development/adopti
 import {ViewSacSummaryApprovedComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component";
 import {NwaTasksComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component";
 import {AdminBusinessManagementComponent} from "./apollowebs/admin/admin-business-management/admin-business-management.component";
+import {StandardLevyClosureComponent} from "./apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component";
+import {StandardLevySuspensionComponent} from "./apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component";
 
 export const routes: Routes = [
     {
@@ -1202,13 +1262,84 @@ export const routes: Routes = [
         path: 'stdLevyHome', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyDashboardComponent}]
     },
+
     {
-        path: 'stdLevyPaid', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevyPaidComponent}]
+        path: 'epra', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: EpraBatchListComponent}]
+    },
+    {
+        path: 'epra/:referenceNumber', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: EpraListComponent}]
+    },
+    {
+        path: 'epra/fuelInspection/details/:referenceNumber/:batchReferenceNumber', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ViewFuelSheduledDetailsComponent}]
+    },
+    // {
+    //     path: 'epra',
+    //     component: AdminLayoutComponent,
+    //     canActivate: [RouteGuard],
+    //     children: [
+    //         {
+    //             path: '',
+    //             component: EpraBatchListComponent},
+    //         {
+    //             path: ':referenceNumber',
+    //             component: EpraListComponent
+    //         },
+    //         {
+    //             path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
+    //             component: ViewFuelSheduledDetailsComponent
+    //         }
+    //     ]
+    // },
+    {
+        path: 'complaint',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: '',
+                component: ComplaintListComponent},
+            {
+                path: 'details/:referenceNumber',
+                component: ComplaintDetailsComponent
+            }
+            // ,
+            // {
+            //     path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
+            //     component: ViewFuelSheduledDetailsComponent
+            // }
+        ]
+    },
+    {
+        path: 'complain',
+        component: RegistrationComponent,
+        children: [
+            {
+                path: '',
+                component: ComplaintNewComponent
+            }
+            // ,
+            // {
+            //     path: 'complain',
+            //     component: ComplaintNewComponent
+            // }
+
+        ],
+        data: {
+            title: 'KEBS'
+        }
     },
     {
         path: 'stdLevyPenalties', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyPenaltiesComponent}]
+    },
+    {path: 'stdLevyPaid', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyPaidComponent}]
     },
     {
         path: 'stdLevyDefaulters', component: AdminLayoutComponent,
@@ -1270,7 +1401,18 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: StdLevyCompleteTasksComponent}]
     },
+    {
+        path: 'slCompanySuspension', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevySuspensionComponent}]
+    },
+    {
+        path: 'slCompanyClosure', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyClosureComponent}]
+    },
 
+    /****************MS COMPONENTS ENDS HERE**********************************/
 
 ];
 

@@ -185,6 +185,7 @@ interface DirectorListHolder {
     fun getDirectorName(): String?
 }
 
+
 interface SACSummaryHolder {
 
     fun getId(): Long?
@@ -204,6 +205,39 @@ interface SACSummaryHolder {
     fun getRequestedByName(): String?
 
 
+}
+
+interface CompanySuspensionList{
+    fun getId(): Long?
+    fun getCompanyId(): Long?
+    fun getReason(): String?
+    fun getStatus(): Long?
+    fun getDescription(): String?
+    fun getDateOfSuspension(): String?
+    fun getEntryNumber(): String?
+    fun getKraPin(): String?
+    fun getRegistrationNumber(): String?
+    fun getCompanyName(): String?
+
+}
+
+interface CompanyClosureList{
+    fun getId(): Long?
+    fun getCompanyId(): Long?
+    fun getReason(): String?
+    fun getStatus(): Long?
+    fun getDescription(): String?
+    fun getDateOfClosure(): String?
+    fun getEntryNumber(): String?
+    fun getKraPin(): String?
+    fun getRegistrationNumber(): String?
+    fun getCompanyName(): String?
+
+}
+
+interface EmailListHolder{
+    fun getCompanyEmail(): String?;
+    fun getCompanyName(): String?;
 }
 
 

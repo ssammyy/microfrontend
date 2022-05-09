@@ -227,9 +227,7 @@ class Notifications(
         props.put("mail.smtp.ssl.trust", applicationMapProperties.mapApplicationEmailSmtpHost)
         props.put("mail.smtp.auth", applicationMapProperties.mapApplicationEmailSmtpAuth)
         props.put("mail.smtp.user", applicationMapProperties.mapApplicationEmailUsername)
-        props.put(
-            "mail.smtp.password", applicationMapProperties.mapApplicationEmailPassword
-        )
+        props.put("mail.smtp.password", applicationMapProperties.mapApplicationEmailPassword)
 
         //Establishing a session with required user details
         val session: Session = Session.getInstance(props, object : Authenticator() {

@@ -61,13 +61,11 @@ class ComplaintEntity : Serializable {
     var id: Long? = 0
 
     @NotNull(message = "This field is required")
-    @Size(min = 5, max = 3000)
     @Column(name = "COMPLAINT_DETAILS")
     @Basic
     var complaintDetails: String? = null
 
     @NotNull(message = "This field is required")
-    @Size(min = 5, max = 3000)
     @Column(name = "COMPLAINT_TITLE")
     @Basic
     var complaintTitle: String? = null
@@ -159,6 +157,10 @@ class ComplaintEntity : Serializable {
     @Column(name = "DIVISION")
     @Basic
     var division: Long? = null
+
+    @Column(name = "MS_PROCESS_ID")
+    @Basic
+    var msProcessId: Long? = null
 
     @Column(name = "PROGRESS_STEP")
     @Basic
@@ -457,174 +459,5 @@ class ComplaintEntity : Serializable {
     @Basic
     var msMarketSurveillanceProcessInstanceId: String? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as ComplaintEntity
-        return id == that.id &&
-                assignedIoStatus == that.assignedIoStatus &&
-                referenceNumber == that.referenceNumber &&
-                uuid == that.uuid &&
-                assignedIo == that.assignedIo &&
-                hodAssigned == that.hodAssigned &&
-                hofAssigned == that.hofAssigned &&
-                complaintDepartment == that.complaintDepartment &&
-                msTypeId == that.msTypeId &&
-                standardCategory == that.standardCategory &&
-                productSubCategory == that.productSubCategory &&
-                product == that.product &&
-                productCategory == that.productCategory &&
-                broadProductCategory == that.broadProductCategory &&
-                msMarketSurveillanceProcessInstanceId == that.msMarketSurveillanceProcessInstanceId &&
-                msMarketSurveillanceCompletedOn == that.msMarketSurveillanceCompletedOn &&
-                msMarketSurveillanceStartedOn == that.msMarketSurveillanceStartedOn &&
-                msMarketSurveillanceStatus == that.msMarketSurveillanceStatus &&
-                msFuelMonitoringProcessInstanceId == that.msFuelMonitoringProcessInstanceId &&
-                msFuelMonitoringCompletedOn == that.msFuelMonitoringCompletedOn &&
-                msFuelMonitoringStartedOn == that.msFuelMonitoringStartedOn &&
-                msFuelMonitoringStatus == that.msFuelMonitoringStatus &&
-                msComplaintProcessInstanceId == that.msComplaintProcessInstanceId &&
-                msComplaintCompletedOn == that.msComplaintCompletedOn &&
-                msComplaintStartedOn == that.msComplaintStartedOn &&
-                msComplaintStatus == that.msComplaintStatus &&
-                msAssignedIoDate == that.msAssignedIoDate &&
-                msHofAssignedDate == that.msHofAssignedDate &&
-                approvedDate == that.approvedDate &&
-                rejectedDate == that.rejectedDate &&
-                department == that.department &&
-                serviceMapsId == that.serviceMapsId &&
-                division == that.division &&
-                targetedProducts == that.targetedProducts &&
-                msProcessStatus == that.msProcessStatus &&
-                progressValue == that.progressValue &&
-                progressStep == that.progressStep &&
-                approvedBy == that.approvedBy &&
-                rejectedBy == that.rejectedBy &&
-                rejectedRemarks == that.rejectedRemarks &&
-                approvedRemarks == that.approvedRemarks &&
-                assignedDate == that.assignedDate &&
-                assignedRemarks == that.assignedRemarks &&
-                assignedBy == that.assignedBy &&
-                msProcessStartedBy == that.msProcessStartedBy &&
-                msProcessStartedOn == that.msProcessStartedOn &&
-                msProcessEndedOn == that.msProcessEndedOn &&
-                msProcessEndedBy == that.msProcessEndedBy &&
-                advisedWhereto == that.advisedWhereto &&
-//                confirmDepartmentId == that.confirmDepartmentId &&
-                processValue == that.processValue &&
-                advisedWheretoBy == that.advisedWheretoBy &&
-                advisedWheretoOn == that.advisedWheretoOn &&
-                mandateForOga == that.mandateForOga &&
-//                confirmDivisionId == that.confirmDivisionId &&
-//                assignedUser == that.assignedUser &&
-                approved == that.approved &&
-                rejected == that.rejected &&
-                complaintDetails == that.complaintDetails &&
-                complaintTitle == that.complaintTitle &&
-                revision == that.revision &&
-                status == that.status &&
-                submissionDate == that.submissionDate &&
-                revisionDate == that.revisionDate &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
-    }
 
-    override fun hashCode(): Int {
-        return Objects.hash(
-                id,
-                uuid,
-                referenceNumber,
-                assignedIo,
-                msTypeId,
-                complaintDepartment,
-                hodAssigned,
-                standardCategory,
-                hofAssigned,
-                productSubCategory,
-                product,
-                serviceMapsId,
-                productCategory,
-                assignedIoStatus,
-                broadProductCategory,
-//                confirmDepartmentId,
-//                confirmDivisionId,
-                department,
-                progressValue,
-                rejectedBy,
-                rejectedRemarks,
-                assignedBy,
-                assignedRemarks,
-                approvedRemarks,
-                assignedDate,
-                approvedBy,
-                progressStep,
-                advisedWheretoBy,
-                advisedWheretoOn,
-                mandateForOga,
-                msProcessStartedBy,
-                msProcessStartedOn,
-                msProcessEndedBy,
-                advisedWhereto,
-                msProcessEndedOn,
-                division,
-                processValue,
-                msProcessStatus,
-                targetedProducts,
-                msMarketSurveillanceProcessInstanceId,
-                msMarketSurveillanceCompletedOn,
-                msMarketSurveillanceStartedOn,
-                msMarketSurveillanceStatus,
-                msFuelMonitoringProcessInstanceId,
-                msFuelMonitoringCompletedOn,
-                msFuelMonitoringStartedOn,
-                msFuelMonitoringStatus,
-                msComplaintProcessInstanceId,
-                msComplaintCompletedOn,
-                msComplaintStartedOn,
-                msComplaintStatus,
-                msAssignedIoDate,
-                msHofAssignedDate,
-//                assignedUser,
-                complaintDetails,
-                complaintTitle,
-                approved,
-                approvedDate,
-                rejectedDate,
-                rejected,
-                revision,
-                status,
-                submissionDate,
-                revisionDate,
-                varField1,
-                varField2,
-                varField3,
-                varField4,
-                varField5,
-                varField6,
-                varField7,
-                varField8,
-                varField9,
-                varField10,
-                createdBy,
-                createdOn,
-                modifiedBy,
-                modifiedOn,
-                deleteBy,
-                deletedOn
-        )
-    }
 }

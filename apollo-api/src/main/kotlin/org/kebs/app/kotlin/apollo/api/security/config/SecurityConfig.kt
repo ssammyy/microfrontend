@@ -97,6 +97,7 @@ class WebSecurityConfig(private val customUserDetailsService: CustomUserDetailsS
             configuration.allowedHeaders =
                     Arrays.asList(
                             "Origin",
+                            "enctype",
                             "Access-Control-Allow-Origin",
                             "Content-Type",
                             "Accept",
@@ -108,7 +109,7 @@ class WebSecurityConfig(private val customUserDetailsService: CustomUserDetailsS
                             "enctype"
                     )
             configuration.exposedHeaders = Arrays.asList(
-                    "Origin", "Content-Type", "Accept", "Authorization",
+                    "Origin", "Content-Type", "Accept", "Authorization","enctype",
                     "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"
             )
             configuration.allowedMethods = Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")

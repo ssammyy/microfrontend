@@ -150,6 +150,16 @@ data class SuspendCompanyDto(
 
 }
 
+data class CompanySuspendDto(
+    var id: Long? = null,
+    var companyId: Long? = null,
+){}
+
+data class CompanyCloseDto(
+    var id: Long? = null,
+    var companyId: Long? = null,
+){}
+
 data class CloseCompanyDto(
     var id: Long? = null,
     var name: String? = null,

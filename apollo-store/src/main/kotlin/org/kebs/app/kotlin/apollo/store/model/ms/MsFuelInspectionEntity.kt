@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.store.model
+package org.kebs.app.kotlin.apollo.store.model.ms
 
 import java.io.Serializable
 import java.sql.Date
@@ -22,6 +22,14 @@ class MsFuelInspectionEntity : Serializable{
     @Column(name = "REFERENCE_NUMBER")
     @Basic
     var referenceNumber: String? = null
+
+    @Column(name = "BATCH_ID")
+    @Basic
+    var batchId: Long? = null
+
+    @Column(name = "USER_TASK_ID")
+    @Basic
+    var userTaskId: Long? = null
 
     @Column(name = "RAPID_TEST_FAILED_REMARKS")
     @Basic
@@ -102,6 +110,10 @@ class MsFuelInspectionEntity : Serializable{
     @Column(name = "REMEDIATION_COMPLETE_STATUS")
     @Basic
     var remendiationCompleteStatus: Int? = null
+
+    @Column(name = "INSPECTION_COMPLETE_STATUS")
+    @Basic
+    var inspectionCompleteStatus: Int? = null
 
     @Column(name = "ASSIGNED_OFFICER_STATUS")
     @Basic
@@ -275,136 +287,4 @@ class MsFuelInspectionEntity : Serializable{
     @Basic
     var msFuelProcessInstanceId: String? = null
 
-    @JoinColumn(name = "COUNTY_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var countyId: CountiesEntity? = null
-
-    @JoinColumn(name = "TOWN_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var townsId: TownsEntity? = null
-
-    @Transient
-    var confirmTownsId: Long? = 0
-
-    @Transient
-    var confirmCountyId: Long? = 0
-
-    @Transient
-    var confirmRegionId: Long? = 0
-
-    @JoinColumn(name = "REGION_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var regionId: RegionsEntity? = null
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as MsFuelInspectionEntity
-        return id == that.id &&
-                inspectionDate == that.inspectionDate &&
-                company == that.company &&
-                referenceNumber == that.referenceNumber &&
-                petroleumProduct == that.petroleumProduct &&
-                physicalLocation == that.physicalLocation &&
-                inspectionRequestSource == that.inspectionRequestSource &&
-                transactionDate == that.transactionDate &&
-                rapidTestPassed == that.rapidTestPassed &&
-                rapidTestFailed == that.rapidTestFailed &&
-                rapidTestFailedOn == that.rapidTestFailedOn &&
-                rapidTestPassedOn == that.rapidTestPassedOn &&
-                rapidTestPassedBy == that.rapidTestPassedBy &&
-                rapidTestFailedBy == that.rapidTestFailedBy &&
-                rapidTestFailedRemarks == that.rapidTestFailedRemarks &&
-                rapidTestPassedRemarks == that.rapidTestPassedRemarks &&
-                compliantStatus == that.compliantStatus &&
-                compliantStatusBy == that.compliantStatusBy &&
-                compliantStatusRemarks == that.compliantStatusRemarks &&
-                compliantStatusDate == that.compliantStatusDate &&
-                notCompliantStatus == that.notCompliantStatus &&
-                notCompliantStatusBy == that.notCompliantStatusBy &&
-                notCompliantStatusRemarks == that.notCompliantStatusRemarks &&
-                notCompliantStatusDate == that.notCompliantStatusDate &&
-
-                inspectionDateTo == that.inspectionDateTo &&
-                inspectionDateFrom == that.inspectionDateFrom &&
-                stationOwnerEmail == that.stationOwnerEmail &&
-                assignedOfficerStatus == that.assignedOfficerStatus &&
-
-                sampleCollectionStatus == that.sampleCollectionStatus &&
-                sampleSubmittedStatus == that.sampleSubmittedStatus &&
-                sendSffStatus == that.sendSffStatus &&
-                sendSffDate == that.sendSffDate &&
-                bsNumberStatus == that.bsNumberStatus &&
-                ssfLabparamsStatus == that.ssfLabparamsStatus &&
-                scfLabparamsStatus == that.scfLabparamsStatus &&
-                ownerAllLabResultsStatus == that.ownerAllLabResultsStatus &&
-                remendiationCompleteStatus == that.remendiationCompleteStatus &&
-                remediationCompleteRemarks == that.remediationCompleteRemarks &&
-
-                confirmCountyId == that.confirmCountyId &&
-                confirmRegionId == that.confirmRegionId &&
-                confirmTownsId == that.confirmTownsId &&
-
-                processStage == that.processStage &&
-                remediationStatus == that.remediationStatus &&
-                remediationPaymentStatus == that.remediationPaymentStatus &&
-
-                status == that.status &&
-                remarks == that.remarks &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                lastModifiedBy == that.lastModifiedBy &&
-                lastModifiedOn == that.lastModifiedOn &&
-                updateBy == that.updateBy &&
-                updatedOn == that.updatedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn &&
-                version == that.version
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(id, inspectionDate, company,
-                transactionDate ,
-                remediationPaymentStatus,
-                remediationStatus,
-                inspectionDateFrom,
-                stationOwnerEmail,
-                inspectionDateTo,
-                confirmCountyId,
-                confirmRegionId,
-                confirmTownsId,
-                ownerAllLabResultsStatus,
-                assignedOfficerStatus,
-                processStage,
-                compliantStatus,
-                compliantStatusBy,
-                compliantStatusDate,
-                notCompliantStatus,
-                notCompliantStatusBy,
-                notCompliantStatusDate,
-                compliantStatusRemarks,
-                notCompliantStatusRemarks,
-                remendiationCompleteStatus,
-                referenceNumber,
-                        rapidTestPassed ,
-                        rapidTestFailed ,
-                        rapidTestFailedOn ,
-                        rapidTestPassedOn ,
-                        rapidTestPassedBy ,
-                        rapidTestFailedBy ,
-                        rapidTestFailedRemarks ,
-                        rapidTestPassedRemarks ,
-                sendSffDate, sendSffStatus, bsNumberStatus, scfLabparamsStatus,ssfLabparamsStatus,sampleSubmittedStatus,sampleCollectionStatus,
-                        petroleumProduct, physicalLocation, inspectionRequestSource, transactionDate, status, remarks, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, lastModifiedBy, lastModifiedOn, updateBy, updatedOn, deleteBy, deletedOn, version)
-    }
 }

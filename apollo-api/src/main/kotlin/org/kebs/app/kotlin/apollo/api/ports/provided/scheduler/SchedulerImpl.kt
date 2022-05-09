@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PaymentPurpose
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -19,6 +20,7 @@ import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelInspectionRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -57,7 +59,17 @@ class SchedulerImpl(
     lateinit var qaDaoServices: QADaoServices
 
     @Autowired
+    lateinit var marketSurveillanceDaoServices: MarketSurveillanceFuelDaoServices
+
+    @Autowired
     lateinit var permitRepo: IPermitApplicationsRepository
+
+    @Autowired
+    lateinit var fuelInspectionRepo: IFuelInspectionRepository
+
+    final val diAppId = applicationMapProperties.mapImportInspection
+
+    final val qaAppId = applicationMapProperties.mapQualityAssurance
 
     @Value("\${scheduler.ms.director.id}")
     lateinit var msDirectorId: String
@@ -86,7 +98,7 @@ class SchedulerImpl(
                 var schedDate = DateTime.now().toDate()
                 while (i < count) {
                     schedDate = DateTime(schedDate).plusDays(interval).toDate()
-                    val sched = SchedulerEntity()
+                     val sched = SchedulerEntity()
                     sched.taskType = defaultTaskType
                     taskType?.let {
                         sched.taskType = taskType
@@ -250,6 +262,115 @@ class SchedulerImpl(
 
 
     }
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun updateLabResultsWithDetails() {
+//        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+//        //Find all Sample with Lab results inactive
+//        KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
+//        var samples = 1
+//        val ssfFoundList = sampleSubmissionRepo.findByLabResultsStatus(map.inactiveStatus)
+//        if (ssfFoundList != null) {
+//            for (ssfFound in ssfFoundList) {
+//                try {
+//                    KotlinLogging.logger { }
+//                        .info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
+//                    val bsNumber = ssfFound.bsNumber ?: throw Exception("DATA NOT FOUND")
+//                    when {
+//                        limsServices.mainFunctionLims(bsNumber) == true -> {
+//                            with(ssfFound) {
+//                                modifiedBy = "SYSTEM SCHEDULER"
+//                                modifiedOn = commonDaoServices.getTimestamp()
+//                                labResultsStatus = map.activeStatus
+//                                resultsDate = commonDaoServices.getCurrentDate()
+//                            }
+//                            sampleSubmissionRepo.save(ssfFound)
+//                            when {
+//                                ssfFound.permitRefNumber != null -> {
+//                                    qaDaoServices.findPermitWithPermitRefNumberLatest(
+//                                        ssfFound.permitRefNumber ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+//                                    )
+//                                        .let { pm ->
+//                                            with(pm) {
+//                                                userTaskId = applicationMapProperties.mapUserTaskNameQAO
+//                                                permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
+//                                                modifiedBy = "SYSTEM SCHEDULER"
+//                                                modifiedOn = commonDaoServices.getTimestamp()
+//                                            }
+//                                            permitRepo.save(pm)
+//                                                .let { pm ->
+//                                                    with(pm) {
+//                                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+//                                                        permitStatus =
+//                                                            applicationMapProperties.mapQaStatusPLABResultsCompletness
+//                                                        modifiedBy = "SYSTEM SCHEDULER"
+//                                                        modifiedOn = commonDaoServices.getTimestamp()
+//                                                    }
+//                                                    permitRepo.save(pm)
+//
+//                                                    qaDaoServices.sendEmailWithLabResultsFound(
+//                                                        commonDaoServices.findUserByID(
+//                                                            pm.qaoId ?: throw Exception("QAO ID, NOT FOUND")
+//                                                        ).email ?: throw Exception("EMAIL FOR QAO, NOT FOUND"),
+//                                                        pm.permitRefNumber
+//                                                            ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+//                                                    )
+//                                                }
+//                                        }
+//                                }
+//                                ssfFound.cdItemId != null -> {
+//                                    diDaoServices.findItemWithItemID(
+//                                        ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
+//                                    )
+//                                        .let { cdItem ->
+//                                            diDaoServices.findCD(
+//                                                cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND")
+//                                            )
+//                                                .let { updatedCDDetails ->
+//                                                    updatedCDDetails.cdStandard?.let { cdStd ->
+////                                                        diDaoServices.updateCDStatus(
+////                                                            cdStd,
+////                                                            applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
+////                                                        )
+//                                                    }
+//                                                }
+//
+//                                        }
+//                                }
+//                                ssfFound.fuelInspectionId != null -> {
+//                                    marketSurveillanceDaoServices.findFuelInspectionDetailByID(ssfFound.fuelInspectionId?: throw Exception("FUEL INSPECTION ID NOT FOUND"))
+//                                        .let {  fuelInspection->
+//                                            var sr = commonDaoServices.createServiceRequest(map)
+//                                            with(fuelInspection){
+//                                                userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER
+//                                                lastModifiedBy = "SYSTEM SCHEDULER"
+//                                                lastModifiedOn = commonDaoServices.getTimestamp()
+//                                            }
+//                                            fuelInspectionRepo.save(fuelInspection).let {fileInspectionDetail->
+//                                                sr = commonDaoServices.mapServiceRequestForSuccessUserNotRegistered(map, "${commonDaoServices.createJsonBodyFromEntity(fileInspectionDetail)}", "LAB RESULTS")
+//                                                val fuelInspectionOfficer = marketSurveillanceDaoServices.findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
+//                                                fuelInspectionOfficer?.assignedIo?.let {
+//                                                    commonDaoServices.sendEmailWithUserEntity(
+//                                                        commonDaoServices.findUserByID(it), applicationMapProperties.mapMsLabResultsIONotification, fileInspectionDetail, map, sr)
+//                                                }
+//                                            }
+//                                        }
+//                                }
+//                            }
+//                        }
+//
+//
+//                    }
+//
+//                } catch (e: Exception) {
+//                    KotlinLogging.logger { }.error(e.message)
+//                    KotlinLogging.logger { }.debug(e.message, e)
+//
+//                    continue
+//                }
+//
+//            }
+//        }
+//    }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateLabResultsWithDetails(ssfFound: QaSampleSubmissionEntity, map: ServiceMapsEntity) {
@@ -267,28 +388,49 @@ class SchedulerImpl(
                     sampleSubmissionRepo.save(ssfFound)
                     // Update permits
                     try {
-                        if (ssfFound.permitRefNumber != null) {
-                            qaDaoServices.findPermitWithPermitRefNumberLatest(
+                        when {
+                            ssfFound.permitRefNumber != null -> {
+                                qaDaoServices.findPermitWithPermitRefNumberLatest(
                                     ssfFound.permitRefNumber ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
-                            )
+                                )
                                     .let { pm ->
                                         with(pm) {
                                             userTaskId = applicationMapProperties.mapUserTaskNameQAO
                                             permitStatus =
-                                                    applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                                applicationMapProperties.mapQaStatusPLABResultsCompletness
                                             modifiedBy = "SYSTEM SCHEDULER"
                                             modifiedOn = commonDaoServices.getTimestamp()
                                         }
                                         permitRepo.save(pm)
 
                                         qaDaoServices.sendEmailWithLabResultsFound(
-                                                commonDaoServices.findUserByID(
-                                                        pm.qaoId ?: throw Exception("QAO ID, NOT FOUND")
-                                                ).email ?: throw Exception("EMAIL FOR QAO, NOT FOUND"),
-                                                pm.permitRefNumber
-                                                        ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+                                            commonDaoServices.findUserByID(
+                                                pm.qaoId ?: throw Exception("QAO ID, NOT FOUND")
+                                            ).email ?: throw Exception("EMAIL FOR QAO, NOT FOUND"),
+                                            pm.permitRefNumber
+                                                ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
                                         )
                                     }
+                            }
+                            ssfFound.fuelInspectionId != null -> {
+                                marketSurveillanceDaoServices.findFuelInspectionDetailByID(ssfFound.fuelInspectionId?: throw Exception("FUEL INSPECTION ID NOT FOUND"))
+                                    .let {  fuelInspection->
+                                        var sr = commonDaoServices.createServiceRequest(map)
+                                        with(fuelInspection){
+                                            userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER
+                                            lastModifiedBy = "SYSTEM SCHEDULER"
+                                            lastModifiedOn = commonDaoServices.getTimestamp()
+                                        }
+                                        fuelInspectionRepo.save(fuelInspection).let {fileInspectionDetail->
+                                            sr = commonDaoServices.mapServiceRequestForSuccessUserNotRegistered(map, "${commonDaoServices.createJsonBodyFromEntity(fileInspectionDetail)}", "LAB RESULTS")
+                                            val fuelInspectionOfficer = marketSurveillanceDaoServices.findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
+                                            fuelInspectionOfficer?.assignedIo?.let {
+                                                commonDaoServices.sendEmailWithUserEntity(
+                                                    commonDaoServices.findUserByID(it), applicationMapProperties.mapMsLabResultsIONotification, fileInspectionDetail, map, sr)
+                                            }
+                                        }
+                                    }
+                            }
                         }
                     } catch (ex: Exception) {
                         KotlinLogging.logger { }.debug("Failed to update permit BS number: ${bsNumber}", ex)

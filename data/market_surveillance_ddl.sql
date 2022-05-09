@@ -77,6 +77,21 @@
  *
  */
 ***************************Table USED IN DI*****************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 select *
 from DAT_KEBS_MS_COMPLAINT
 -- where  UUID = '0c06289c-d7cc-4cd0-a74e-9f9f4528222b'
@@ -175,6 +190,109 @@ where USER_NAME = 'paul.kalenda@bskglobaltech.com';
 select * from DAT_KEBS_USERS where USER_NAME = 'testUpdate2@gmail.com';
 
 ****************************Created Tables USED IN DI********************************
+create table CFG_KEBS_MS_PROCESS_NAMES
+(
+    ID                  NUMBER primary key,
+    PROCESS_BY          VARCHAR2(200),
+    PROCESS_NAME        VARCHAR2(200),
+    DESCRIPTION         VARCHAR2(200),
+    COMPLAINT_STATUS              NUMBER(2),
+    WORK_PLAN_STATUS              NUMBER(2),
+    FUEL_STATUS              NUMBER(2),
+    STATUS              NUMBER(2),
+    VAR_FIELD_1         VARCHAR2(350 char),
+    VAR_FIELD_2         VARCHAR2(350 char),
+    VAR_FIELD_3         VARCHAR2(350 char),
+    VAR_FIELD_4         VARCHAR2(350 char),
+    VAR_FIELD_5         VARCHAR2(350 char),
+    VAR_FIELD_6         VARCHAR2(350 char),
+    VAR_FIELD_7         VARCHAR2(350 char),
+    VAR_FIELD_8         VARCHAR2(350 char),
+    VAR_FIELD_9         VARCHAR2(350 char),
+    VAR_FIELD_10        VARCHAR2(350 char),
+    CREATED_BY          VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON          TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY         VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON         TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY           VARCHAR2(100 char)          default 'admin',
+    DELETED_ON          TIMESTAMP(6) WITH TIME ZONE
+)TABLESPACE qaimssdb_data;
+
+create sequence CFG_KEBS_MS_PROCESS_NAMES_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger CFG_KEBS_MS_PROCESS_NAMES_seq_trg
+    before
+        insert
+    on CFG_KEBS_MS_PROCESS_NAMES
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select CFG_KEBS_MS_PROCESS_NAMES_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index CFG_KEBS_MS_PROCESS_NAMES_idx on CFG_KEBS_MS_PROCESS_NAMES (COMPLAINT_STATUS,WORK_PLAN_STATUS,FUEL_STATUS,STATUS) TABLESPACE qaimssdb_idx;
+/
+
+create table DAT_KEBS_MS_REMARKS
+(
+    ID                  NUMBER                                      not null
+        primary key,
+    REMARKS_DESCRIPTION VARCHAR2(500),
+    REMARKS_STATUS      NUMBER(2),
+    PROCESS_BY          VARCHAR2(200),
+    PROCESS_NAME        VARCHAR2(200),
+    DESCRIPTION         VARCHAR2(200),
+    USER_ID             NUMBER references DAT_KEBS_USERS(ID),
+    COMPLAINT_ID        NUMBER references DAT_KEBS_MS_COMPLAINT(ID),
+    FUEL_INSPECTION_ID  NUMBER references DAT_KEBS_MS_COMPLAINT(ID),
+    STATUS              NUMBER(2),
+    VAR_FIELD_1         VARCHAR2(350 char),
+    VAR_FIELD_2         VARCHAR2(350 char),
+    VAR_FIELD_3         VARCHAR2(350 char),
+    VAR_FIELD_4         VARCHAR2(350 char),
+    VAR_FIELD_5         VARCHAR2(350 char),
+    VAR_FIELD_6         VARCHAR2(350 char),
+    VAR_FIELD_7         VARCHAR2(350 char),
+    VAR_FIELD_8         VARCHAR2(350 char),
+    VAR_FIELD_9         VARCHAR2(350 char),
+    VAR_FIELD_10        VARCHAR2(350 char),
+    CREATED_BY          VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON          TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY         VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON         TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY           VARCHAR2(100 char)          default 'admin',
+    DELETED_ON          TIMESTAMP(6) WITH TIME ZONE
+)TABLESPACE qaimssdb_data;
+
+create sequence DAT_KEBS_MS_REMARKS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_KEBS_MS_REMARKS_seq_trg
+    before
+        insert
+    on DAT_KEBS_MS_REMARKS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+    select DAT_KEBS_MS_REMARKS_seq.nextval
+    into :new.id
+    from dual;
+
+end if;
+
+end if;
+end;
+
+create index DAT_KEBS_MS_REMARKS_idx on DAT_KEBS_MS_REMARKS (USER_ID,COMPLAINT_ID,FUEL_INSPECTION_ID,STATUS) TABLESPACE qaimssdb_idx;
+/
+
 
 create table CFG_KEBS_MS_TYPES
 (

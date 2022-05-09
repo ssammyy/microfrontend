@@ -1,0 +1,273 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div class="loading-spinner ">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-info card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Suspension of Operations</p>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <a href="slCompanySuspension" style="color: dodgerblue">Go</a>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a href="slCompanySuspension" style="color: dodgerblue"><span> <i class="fa fa-arrow-right"></i></span></a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Closure of Operations</p>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <span style="color: seagreen">Go</span>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <span style="color: seagreen"> <i class="fa fa-arrow-right"></i></span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+
+                            </div>
+
+                            <div class="card-title float-left"><h4 style="color: #0d47a1; font-weight: bold">Manufactures</h4></div>
+                            <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
+                                Companies <span class="badge badge-primary">{{closedCompanyDTOs.length}}</span>
+                            </button></div>
+
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="container col-md-12">
+                                <div class="material-datatables table-responsive">
+                                    <table class="table table-striped table-bordered table-hover" datatable
+                                           [dtTrigger]="dtTrigger">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">Company Name</th>
+                                            <th class="sl">Entry Number</th>
+                                            <th class="knw">Kra Pin</th>
+                                            <th class="sl">Registration Number</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let closedCompanyDTO of closedCompanyDTOs let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{closedCompanyDTO.companyName}}</td>
+                                            <td>{{closedCompanyDTO.entryNumber}}</td>
+                                            <td>{{closedCompanyDTO.kraPin}}</td>
+                                            <td>{{closedCompanyDTO.registrationNumber}}</td>
+                                            <td ><button (click)="openModal(closedCompanyDTO,'viewDetails',closedCompanyDTO.id)" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> Action</button></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal fade" id="viewDetails" tabindex="-1" role="dialog" aria-labelledby="viewDetailsExampleModalLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2 class="modal-title" id="viewDetailsExampleModalLabel"><b>Confirm Company Closure</b></h2>
+                                                <button type="button" class="close" #closeModal data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form (ngSubmit)="confirmCompanyClosure()" [formGroup]="approveRequestFormGroup"
+                                                  class="form">
+                                                <div class="modal-body">
+
+                                                    <div class="form-body">
+                                                        <div class="row">
+                                                            <input type="hidden"
+                                                                   formControlName="companyId" name="companyId"
+                                                                   value="{{actionRequest?.companyId}}">
+                                                            <input type="hidden"
+                                                                   formControlName="id" name="id"
+                                                                   value="{{actionRequest?.id}}">
+
+                                                        </div>
+                                                        <div class="list-group list-group-flush">
+                                                            <div class="row col-12">
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Company
+                                                                                        Name</b></h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <p class="text-sm mb-0">{{actionRequest?.companyName}}.</p>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>KRA PIN</b>
+                                                                                    </h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <p class="text-sm mb-0">{{actionRequest?.kraPin}}.</p>
+                                                                    </a>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="row col-12">
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Registration
+                                                                                        Number</b></h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <p class="text-sm mb-0">{{actionRequest?.registrationNumber}}
+                                                                            .</p>
+                                                                    </a>
+                                                                </div>
+
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Entry
+                                                                                        Number</b></h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <p class="text-sm mb-0">{{actionRequest?.entryNumber}}.</p>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row col-12">
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Reason for
+                                                                                        Suspension</b></h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <p class="text-sm mb-0">{{actionRequest?.reason}}.</p>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Date of
+                                                                                        Suspension</b></h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <p class="text-sm mb-0">{{actionRequest?.dateOfClosure }}.</p>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="container col-md-12" >
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Click to View Attached Document(s)</b></h5>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                                <div class="col-12" *ngFor="let documentDTO of documentDTOs">
+                                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                                            (click)="viewPdfFile( documentDTO.id,'Report'+documentDTO.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                                                        <i class="material-icons">visibility</i>
+
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-sm btn-primary">Confirm</button>
+                                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

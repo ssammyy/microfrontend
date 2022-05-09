@@ -435,90 +435,90 @@ class ControllerRoutes {
 //    }
 
 
-    @Bean
-//    @PreAuthorize("hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_IO_READ')")
-    fun marketSurveillanceRoutes(handler: MarketSurveillanceHandler) = router {
-        "/api/v1/ms".nest {
-            GET("/home", handler::home)
-            GET("/complaints/new", handler::complaintsNew)
-            GET("/ms-list", handler::msList)
-            GET("/complaint-detail", handler::viewComplaints)
-
-            "/ui".nest {
-                GET("/types", handler::msType)
-                GET("/towns", handler::msTowns)
-                GET("/counties", handler::msCounties)
-                GET("/departments", handler::msDepartments)
-                GET("/divisions", handler::msDivisions)
-                GET("/standardProductCategory", handler::msStandardsCategory)
-                GET("/productCategories", handler::msProductCategories)
-                GET("/broadProductCategory", handler::msBroadProductCategory)
-                GET("/products", handler::msProducts)
-                GET("/productSubcategory", handler::msProductSubcategory)
-
-                "/complaint".nest {
-                    GET("/list", handler::msComplaintLists)
-                    POST("/search", handler::complaintsSearchListing)
-
-                    "/detail".nest {
-                        GET("/view", handler::msComplaintDetails)
-                        POST("/new/save", handler::msSaveNewComplaint)
-
-                        "/update".nest {
-                            PUT("/approve", handler::msComplaintUpdateApproveDetails)
-                            PUT("/reject", handler::msComplaintUpdateRejectDetails)
-                            PUT("/advice", handler::msComplaintUpdateAdviceRejectDetails)
-                            PUT("/assign", handler::msComplaintUpdateAssignIODetails)
-                        }
-
-                    }
-                }
-
-
-            }
-
-            GET("/create-workPlan/new", handler::workPlanCreationNew)
-            GET("/ms-list-workPlans", handler::allWorkPlanCreatedList)
-            GET("/work-plan-generate", handler::loadWorkPlanForm)
-            GET("/workPlan-detail", handler::viewWorkPlans)
-            GET("/finished/generating-workPlan", handler::workPlansAddingFinished)
-            GET("/approve-all-workPlans", handler::allWorkPlansApprove)
-            GET("/reject-all-workPlans", handler::allWorkPlansReject)
-
-
+//    @Bean
+////    @PreAuthorize("hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_IO_READ')")
+//    fun marketSurveillanceRoutes(handler: MarketSurveillanceHandler) = router {
+//        "/api/v1/ms".nest {
+//            GET("/home", handler::home)
+//            GET("/complaints/new", handler::complaintsNew)
+//            GET("/ms-list", handler::msList)
+//            GET("/complaint-detail", handler::viewComplaints)
+//
+//            "/ui".nest {
+//                GET("/types", handler::msType)
+//                GET("/towns", handler::msTowns)
+//                GET("/counties", handler::msCounties)
+//                GET("/departments", handler::msDepartments)
+//                GET("/divisions", handler::msDivisions)
+//                GET("/standardProductCategory", handler::msStandardsCategory)
+//                GET("/productCategories", handler::msProductCategories)
+//                GET("/broadProductCategory", handler::msBroadProductCategory)
+//                GET("/products", handler::msProducts)
+//                GET("/productSubcategory", handler::msProductSubcategory)
+//
+//                "/complaint".nest {
+//                    GET("/list", handler::msComplaintLists)
+//                    POST("/search", handler::complaintsSearchListing)
+//
+//                    "/detail".nest {
+//                        GET("/view", handler::msComplaintDetails)
+//                        POST("/new/save", handler::msSaveNewComplaint)
+//
+//                        "/update".nest {
+//                            PUT("/approve", handler::msComplaintUpdateApproveDetails)
+//                            PUT("/reject", handler::msComplaintUpdateRejectDetails)
+//                            PUT("/advice", handler::msComplaintUpdateAdviceRejectDetails)
+//                            PUT("/assign", handler::msComplaintUpdateAssignIODetails)
+//                        }
+//
+//                    }
+//                }
+//
+//
+//            }
+//
+//            GET("/create-workPlan/new", handler::workPlanCreationNew)
+//            GET("/ms-list-workPlans", handler::allWorkPlanCreatedList)
+//            GET("/work-plan-generate", handler::loadWorkPlanForm)
+//            GET("/workPlan-detail", handler::viewWorkPlans)
+//            GET("/finished/generating-workPlan", handler::workPlansAddingFinished)
+//            GET("/approve-all-workPlans", handler::allWorkPlansApprove)
+//            GET("/reject-all-workPlans", handler::allWorkPlansReject)
+//
+//
+////            GET("/onsite-start-end", handler::viewOnsiteButtons)
+//
+//
 //            GET("/onsite-start-end", handler::viewOnsiteButtons)
-
-
-            GET("/onsite-start-end", handler::viewOnsiteButtons)
-            GET("/workPlan-uploads", handler::uploadsView)
-            GET("/data-report-seized-goods", handler::viewDataReportSeizedGoods)
-
-            GET("/preliminary", handler::viewPreliminary)
-            GET("/appealed", handler::viewPreliminary)
-            GET("/appeal-not-successful", handler::viewPreliminary)
-            GET("/final", handler::viewFinal)
-            GET("/charge-sheet", handler::viewChargeSheet)
-            GET("/data-report", handler::viewDataReport)
-            GET("/preliminary-report", handler::viewPreliminaryReport)
-            GET("/final-report", handler::viewFinalReport)
-            GET("/sample-collection", handler::viewSampleCollection)
-            GET("/sample-collect", handler::viewSampleCollect)
-            GET("/sample-submission", handler::viewSampleSubmission)
-            GET("/sample-submit", handler::viewSampleSubmit)
-            GET("/sample-submit-lab", handler::viewLabParams)
-            GET("/seizure-declaration", handler::viewSeizureDeclaration)
-            GET("/notes-taking", handler::viewNotesTaking)
-            GET("/invest-inspect-report", handler::viewInvestigationInspection)
-
-            GET("/fuel-inspection/new", handler::fuelInspectionNew)
-            GET("/all-fuels", handler::allFuels)
-            GET("/fuel-detail", handler::viewFuelDetails)
-//            GET("/fuel/sample-collection", handler::viewSampleCollection)
-//            GET("/fuel/sample-submission", handler::viewSampleSubmittion)
+//            GET("/workPlan-uploads", handler::uploadsView)
+//            GET("/data-report-seized-goods", handler::viewDataReportSeizedGoods)
+//
+//            GET("/preliminary", handler::viewPreliminary)
+//            GET("/appealed", handler::viewPreliminary)
+//            GET("/appeal-not-successful", handler::viewPreliminary)
+//            GET("/final", handler::viewFinal)
+//            GET("/charge-sheet", handler::viewChargeSheet)
+//            GET("/data-report", handler::viewDataReport)
+//            GET("/preliminary-report", handler::viewPreliminaryReport)
+//            GET("/final-report", handler::viewFinalReport)
+//            GET("/sample-collection", handler::viewSampleCollection)
 //            GET("/sample-collect", handler::viewSampleCollect)
+//            GET("/sample-submission", handler::viewSampleSubmission)
 //            GET("/sample-submit", handler::viewSampleSubmit)
-        }
-    }
+//            GET("/sample-submit-lab", handler::viewLabParams)
+//            GET("/seizure-declaration", handler::viewSeizureDeclaration)
+//            GET("/notes-taking", handler::viewNotesTaking)
+//            GET("/invest-inspect-report", handler::viewInvestigationInspection)
+//
+//            GET("/fuel-inspection/new", handler::fuelInspectionNew)
+//            GET("/all-fuels", handler::allFuels)
+////            GET("/fuel-detail", handler::viewFuelDetails)
+////            GET("/fuel/sample-collection", handler::viewSampleCollection)
+////            GET("/fuel/sample-submission", handler::viewSampleSubmittion)
+////            GET("/sample-collect", handler::viewSampleCollect)
+////            GET("/sample-submit", handler::viewSampleSubmit)
+//        }
+//    }
 
 
     @Bean

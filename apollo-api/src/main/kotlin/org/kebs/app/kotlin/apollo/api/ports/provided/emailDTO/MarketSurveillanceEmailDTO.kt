@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO
 
+import org.kebs.app.kotlin.apollo.common.dto.ms.FuelEntityCompliantStatusDto
 import java.sql.Date
 
 
@@ -69,3 +70,74 @@ class ComplaintAssignedDTO {
     var dateSubmitted: Date? = null
 }
 
+
+class FuelScheduledDTO {
+
+    var baseUrl: String? = null
+
+    var fullName: String? = null
+
+    var refNumber: String? = null
+
+    var yearCodeName: String? = null
+
+    var dateSubmitted: Date? = null
+}
+
+class FuelScheduledAssignedDTO {
+
+    var baseUrl: String? = null
+
+    var fullName: String? = null
+
+    var refNumber: String? = null
+
+    var yearCodeName: String? = null
+
+    var commentRemarks: String? = null
+
+    var dateSubmitted: Date? = null
+}
+
+class FuelScheduledLabResultsDTO {
+
+    var baseUrl: String? = null
+
+    var fullName: String? = null
+
+    var refNumber: String? = null
+
+    var yearCodeName: String? = null
+
+    var commentRemarks: String? = null
+
+    var compliantDetails: FuelEntityCompliantStatusDto? = null
+
+    var dateSubmitted: Date? = null
+}
+
+class FuelScheduledRemediationDateDTO {
+
+    var baseUrl: String? = null
+
+    var fullName: String? = null
+
+    var refNumber: String? = null
+
+    var yearCodeName: String? = null
+
+    var remediationDate: Date? = null
+}
+
+class FuelScheduledRemediationEndedDTO {
+
+    var baseUrl: String? = null
+
+    var fullName: String? = null
+
+    var refNumber: String? = null
+
+    var yearCodeName: String? = null
+
+    var remediationDate: Date? = null
+}

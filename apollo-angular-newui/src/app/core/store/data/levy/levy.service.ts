@@ -5,8 +5,8 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {
     ApproveVisitTask,
-    AssignCompanyTaskDTO, Branch, CloseCompanyDto,
-    CompanyModel,
+    AssignCompanyTaskDTO, Branch, CloseCompanyDto, ClosedCompanyDTO,
+    CompanyModel, CompanyOperationsDto,
     ConfirmEditCompanyDTO,
     DirectorsList,
     DocumentDTO,
@@ -23,7 +23,7 @@ import {
     SiteVisitRemarks,
     SiteVisitReport,
     SLevySL1, SlModel,
-    StdLevyScheduleSiteVisitDTO, SuspendCompanyDto,
+    StdLevyScheduleSiteVisitDTO, SuspendCompanyDto, SuspendedCompanyDTO,
     UserEntityRoles,
     UsersEntityList,
     VisitTask
@@ -407,6 +407,65 @@ export class LevyService {
         );
     }
 
+    public confirmCompanySuspension(companyOperationsDto: CompanyOperationsDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVE_SUSPENSION);
+        const params = new HttpParams();
+        return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public rejectCompanySuspension(companyOperationsDto: CompanyOperationsDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REJECT_SUSPENSION);
+        const params = new HttpParams();
+        return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public confirmCompanyClosure(companyOperationsDto: CompanyOperationsDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVE_CLOSURE);
+        const params = new HttpParams();
+        return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public rejectCompanyClosure(companyOperationsDto: CompanyOperationsDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REJECT_CLOSURE);
+        const params = new HttpParams();
+        return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+
+    public getCompanySuspensionRequest(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_SUSPENDED_OPERATIONS);
+        const params = new HttpParams();
+        return this.http.get<SuspendedCompanyDTO>(url, {params}).pipe();
+    }
+
     public closeCompanyOperations(closeCompanyDto: CloseCompanyDto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_CLOSE_OPERATIONS);
         const params = new HttpParams();
@@ -420,6 +479,13 @@ export class LevyService {
         );
     }
 
+
+    public getCompanyClosureRequest(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_CLOSED_OPERATIONS);
+        const params = new HttpParams();
+        return this.http.get<ClosedCompanyDTO>(url, {params}).pipe();
+    }
+
     public uploadWindingUpReport(operationClosureId: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_UPLOAD_WINDING_UP_REPORT);
 
@@ -428,6 +494,24 @@ export class LevyService {
                 'enctype': 'multipart/form-data'
             }, params: {'operationClosureId': operationClosureId}
         }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public getWindingUpReportDocumentList(closureID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_GET_WINDING_UP_REPORT_LIST);
+        const params = new HttpParams().set('closureID', closureID);
+        return this.http.get<DocumentDTO[]>(url, {params}).pipe();
+    }
+
+    public windingUpReport(closureID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_WINDING_UP_REPORT);
+        const params = new HttpParams().set('closureID', closureID);
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
                 return response;
             }),
