@@ -908,6 +908,15 @@
                                                              [dataSet]="attachments"></app-attachment-list>
 
                                     </mat-tab>
+                                    <mat-tab *ngIf="checkLists" label="12">
+                                        <ng-template mat-tab-label>
+                                            General Checklists
+                                        </ng-template>
+                                        <b class="text-primary">General Checklists</b>
+                                        <app-cd-general-checklist (reloadHandler)="reloadChecklists($event)"
+                                                                  [documentId]="consignmentId"
+                                                                  [dataSet]="checkLists"></app-cd-general-checklist>
+                                    </mat-tab>
                                     <mat-tab [hidden]="!consignment.old_versions" *ngIf="consignment.old_versions"
                                              label="13">
                                         <ng-template mat-tab-label>
@@ -947,7 +956,7 @@
                                         </ng-container>
                                         <ng-template #requirePayment>
                                             <div *ngIf="consignment.ui.demandNotePaid">
-                                                <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
+                                                <button *ngIf="consignment.ui.owner && ((!consignment.ui.checklistFilled  && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted)||consignment.ui.complianceRejected)"
                                                         class="btn btn-sm btn-primary"
                                                         (click)="createInspectionChecklist()">
                                                     FILL
@@ -967,7 +976,7 @@
                                             </div>
                                         </ng-template>
                                         <ng-template #othersLists>
-                                            <button *ngIf="consignment.ui.owner && !consignment.ui.checklistFilled && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted"
+                                            <button *ngIf="consignment.ui.owner && ((!consignment.ui.checklistFilled  && (consignment.ui.demandNotePaid || consignment.ui.demandNoteRejected) && consignment.ui.targeted)||consignment.ui.complianceRejected)"
                                                     class="btn btn-sm btn-primary"
                                                     (click)="createInspectionChecklist()">
                                                 FILL

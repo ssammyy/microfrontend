@@ -113,7 +113,8 @@ class ChecklistHandler(
 
     fun consignmentDocumentChecklist(req: ServerRequest): ServerResponse {
         req.pathVariable("cdUuid").let {
-            return ServerResponse.ok().body(this.checlistService.inspectionChecklistReportDetails(it))
+            val ci = req.param("ci")
+            return ServerResponse.ok().body(this.checlistService.inspectionChecklistReportDetails(it, ci.orElse(null)))
         }
     }
 
