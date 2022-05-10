@@ -323,7 +323,6 @@ import {ApproveInductionComponent} from './apollowebs/standards-development/memb
 import {ApproveInductionMembersComponent} from './apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component';
 import {StdLevyApplicationsComponent} from './apollowebs/standards-levy/std-levy-applications/std-levy-applications.component';
 import {StdLevyTasksComponent} from './apollowebs/standards-levy/std-levy-tasks/std-levy-tasks.component';
-import {StdLevyPendingTasksComponent} from './apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component';
 import {StdLevyCompleteTasksComponent} from './apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component';
 import {ViewWaiverApplicationsComponent} from './apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component';
 import {ViewWaiverDetailsComponent} from './apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component';
@@ -347,6 +346,7 @@ import { StandardLevySuspensionComponent } from './apollowebs/standards-levy/sta
 import {ComplaintNewComponent} from './apollowebs/market-surveillance/complaint/complaint-new/complaint-new.component';
 import {ComplaintListComponent} from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
 import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
+import {StdLevyPendingTasksComponent} from "./apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component";
 
 
 @NgModule({
@@ -662,6 +662,8 @@ export class MaterialModule {}
         FontAwesomeModule,
         NgxSpinnerModule,
         DataTablesModule,
+        NgSelectModule,
+        FileUploadModule,
     ],
     declarations: [
         AppComponent,

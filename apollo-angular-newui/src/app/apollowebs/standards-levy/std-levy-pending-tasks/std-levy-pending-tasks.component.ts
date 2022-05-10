@@ -799,11 +799,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
     this.levyService.saveSiteVisitReport(this.prepareReportFormGroup.value).subscribe(
         (response) => {
           //console.log(response);
-          this.getMnPendingTask();
-          // this.SpinnerService.hide();
-
+          this.SpinnerService.hide();
           this.onClickSaveUploads(response.body.savedRowID)
-          this.prepareReportFormGroup.reset();
+          //this.prepareReportFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -824,9 +822,10 @@ export class StdLevyPendingTasksComponent implements OnInit {
       this.SpinnerService.show();
       this.levyService.uploadFileDetails(reportFileID, formData).subscribe(
           (data: any) => {
+              this.getMnPendingTask();
             this.SpinnerService.hide();
             this.uploadedFiles = null;
-            console.log(data);
+            //console.log(data);
             swal.fire({
               title: 'Report Prepared.',
               buttonsStyling: false,
