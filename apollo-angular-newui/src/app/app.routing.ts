@@ -235,6 +235,9 @@ import {ViewSacSummaryComponent} from "./apollowebs/standards-development/adopti
 import {ViewSacSummaryApprovedComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component";
 import {NwaTasksComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component";
 import {AdminBusinessManagementComponent} from "./apollowebs/admin/admin-business-management/admin-business-management.component";
+import {StandardLevyClosureComponent} from "./apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component";
+import {StandardLevySuspensionComponent} from "./apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component";
+import {PaymentsComponent} from "./apollowebs/quality-assurance/payments/payments.component";
 
 export const routes: Routes = [
     {
@@ -511,6 +514,12 @@ export const routes: Routes = [
     {
         path: 'smarkpermitdetails', component: AdminLayoutComponent,
         children: [{path: '', component: SmarkComponent}]
+    },
+    {
+        path: 'payments', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: PaymentsComponent}]
     },
     {
         path: 'company',
@@ -1398,6 +1407,16 @@ export const routes: Routes = [
         path: 'slCompleteTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: StdLevyCompleteTasksComponent}]
+    },
+    {
+        path: 'slCompanySuspension', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevySuspensionComponent}]
+    },
+    {
+        path: 'slCompanyClosure', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyClosureComponent}]
     },
 
     /****************MS COMPONENTS ENDS HERE**********************************/

@@ -72,6 +72,12 @@
                                             <tr>
                                                 <td>{{inspectionDetails.cd_standards.mdaDescription}}</td>
                                             </tr>
+                                            <th *ngIf="inspectionDetails">
+                                                Version
+                                            </th>
+                                            <tr *ngIf="inspectionDetails">
+                                                <td>{{inspectionDetails.details.version}}</td>
+                                            </tr>
                                         </table>
                                     </div>
                                 </div>

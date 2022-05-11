@@ -393,6 +393,12 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     )
     fun getManufacturesLevyPayments(@Param("entryNumber") entryNumber: Long?): MutableList<LevyPayments>
 
+    @Query(
+        value = "SELECT COMPANY_EMAIL as companyEmail,NAME as companyName  FROM DAT_KEBS_COMPANY_PROFILE WHERE STATUS='4'",
+        nativeQuery = true
+    )
+    fun getManufactureEmailAddressList(): MutableList<EmailListHolder>
+
 
 
 

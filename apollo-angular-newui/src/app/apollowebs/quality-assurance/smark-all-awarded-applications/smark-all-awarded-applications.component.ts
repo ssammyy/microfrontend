@@ -34,6 +34,7 @@ export class SmarkAllAwardedApplicationsComponent implements OnInit {
     ngOnInit() {
         let formattedArray = [];
         this.dataTable;
+        console.log(this.smarkID)
 
         this.qaService.loadPermitAwardedList(this.smarkID).subscribe(
             (data: any) => {

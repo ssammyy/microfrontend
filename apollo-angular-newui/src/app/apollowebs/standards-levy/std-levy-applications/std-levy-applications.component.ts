@@ -1,6 +1,12 @@
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {UsersEntity} from "../../../core/store/data/std/std.model";
-import {ConfirmEditCompanyDTO, ManufactureDetailList, SlModel} from "../../../core/store/data/levy/levy.model";
+import {
+  ClosedCompanyDTO,
+  ConfirmEditCompanyDTO,
+  ManufactureDetailList,
+  SlModel,
+  SuspendedCompanyDTO
+} from "../../../core/store/data/levy/levy.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {Store} from "@ngrx/store";
@@ -138,6 +144,10 @@ export class StdLevyApplicationsComponent implements OnInit {
     this.isShowEditedForm = true;
 
   }
+
+
+
+
 
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;

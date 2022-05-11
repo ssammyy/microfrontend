@@ -21,6 +21,10 @@ class MsFuelRemedyInvoicesEntity : Serializable {
     @Basic
     var invoiceNumber: String? = null
 
+    @Column(name = "SAGE_INVOICE_NUMBER")
+    @Basic
+    var sageInvoiceNumber: String? = null
+
     @Column(name = "RECEIPT_NO")
     @Basic
     var receiptNo: String? = null
@@ -37,13 +41,17 @@ class MsFuelRemedyInvoicesEntity : Serializable {
     @Basic
     var amount: BigDecimal? = null
 
+    @Column(name = "TOTAL_TAX_AMOUNT")
+    @Basic
+    var totalTaxAmount: BigDecimal? = null
+
     @Column(name = "INVOICE_DATE")
     @Basic
     var invoiceDate: Date? = null
 
     @Column(name = "PAYMENT_DATE")
     @Basic
-    var paymentDate: Date? = null
+    var paymentDate: Timestamp? = null
 
     @Column(name = "TRANSACTION_DATE")
     @Basic
@@ -143,7 +151,7 @@ class MsFuelRemedyInvoicesEntity : Serializable {
 
     @Column(name = "REMUNERATION_VAT")
     @Basic
-    var remunerationVat: Long? = null
+    var remunerationVat: BigDecimal? = null
 
     @Column(name = "REMUNERATION_TOTAL")
     @Basic
@@ -167,7 +175,7 @@ class MsFuelRemedyInvoicesEntity : Serializable {
 
     @Column(name = "SUBSISTENCE_VAT")
     @Basic
-    var subsistenceVat: Long? = null
+    var subsistenceVat: BigDecimal? = null
 
     @Column(name = "SUBSISTENCE_TOTAL")
     @Basic
@@ -191,7 +199,7 @@ class MsFuelRemedyInvoicesEntity : Serializable {
 
     @Column(name = "TRANSPORT_VAT")
     @Basic
-    var transportVat: Long? = null
+    var transportVat: BigDecimal? = null
 
     @Column(name = "TRANSPORT_TOTAL")
     @Basic

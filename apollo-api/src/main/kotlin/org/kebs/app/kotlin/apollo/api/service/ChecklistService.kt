@@ -583,11 +583,15 @@ class ChecklistService(
         return response
     }
 
-    fun inspectionChecklistReportDetails(cdItemUuid: String): ApiResponseModel {
+    fun inspectionChecklistReportDetails(cdItemUuid: String, checklistId: String?): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val cdItemDetails = daoServices.findCDWithUuid(cdItemUuid)
-            inspectionGeneralRepo.findFirstByCdDetailsAndCurrentChecklist(cdItemDetails, 1)?.let { generalChecklist ->
+            val checklistDetails = when (checklistId) {
+                null -> inspectionGeneralRepo.findFirstByCdDetailsAndCurrentChecklist(cdItemDetails, 1)
+                else -> inspectionGeneralRepo.findFirstByIdAndCdDetails(checklistId.toLong(), cdItemDetails)
+            }
+            checklistDetails?.let { generalChecklist ->
                 //Get checklist type details
                 val dataMap = mutableMapOf<String, Any?>()
                 // Agrochem checklist details

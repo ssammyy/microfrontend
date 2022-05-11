@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.*
+import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestResultsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmittedPdfListDetailsEntity
@@ -1724,14 +1725,14 @@ class MarketSurveillanceFuelDaoServices(
                 volumeFuelRemediated = fuelRemediationInvoiceEntity.volumeFuelRemediated
                 remunerationRateLiter = remuneration?.get(rateValue)
                 remunerationSubTotal = remuneration?.get(subTotal)
-                remunerationVat = remuneration?.get(vatTotal)
+                remunerationVat = remuneration?.get(vatTotal)?.toBigDecimal()
                 remunerationTotal = remuneration?.get(totalValue)?.toBigDecimal()
 
                 //Part of Subsistence calculation
                 subsistenceTotalNights = fuelRemediationInvoiceEntity.subsistenceTotalNights
                 subsistenceRate = subsistence?.get(rateValue)
                 subsistenceRateNightTotal = subsistence?.get(subTotal)
-                subsistenceVat = subsistence?.get(vatTotal)
+                subsistenceVat = subsistence?.get(vatTotal)?.toBigDecimal()
                 subsistenceTotal = subsistence?.get(totalValue)?.toBigDecimal()
 
                 //Part of Subsistence calculation
@@ -1739,11 +1740,12 @@ class MarketSurveillanceFuelDaoServices(
                 transportInkm = fuelRemediationInvoiceEntity.transportInkm
                 transportRate = transportAirTickets[rateValue]
                 transportTotalKmrate = transportAirTickets[subTotal]
-                transportVat = transportAirTickets[vatTotal]
+                transportVat = transportAirTickets[vatTotal]?.toBigDecimal()
                 transportTotal = transportAirTickets[totalValue]?.toBigDecimal()
 
                 //All calculated Grand total Value
                 transportGrandTotal = remunerationTotal?.let { subsistenceTotal?.let { it1 -> transportTotal?.let { it2 -> fuelGrandTotal(it, it1, it2) } } }
+                totalTaxAmount = transportVat?.let { subsistenceVat?.let { it1 -> remunerationVat?.let { it2 -> fuelGrandTaxTotal(it, it1, it2) } } }
 
                 fuelInspectionId = fuelInspection.id
                 transactionDate =commonDaoServices.getCurrentDate()
@@ -1769,15 +1771,18 @@ class MarketSurveillanceFuelDaoServices(
             //Todo: Payment selection
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
             with(myAccountDetails) {
+                reveneCode = applicationMapProperties.mapRevenueCodeForMSFuelInspection
+                revenueDesc = applicationMapProperties.mapRevenueDescForMSFuelInspection
                 accountName = fuelInspection.company
-                accountNumber = fuelInspection.stationOwnerEmail
+                accountNumber = fuelInspection.companyKraPin
                 currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
             }
 
             invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
                 commonDaoServices.concatenateName(user),
                 updateBatchInvoiceDetail,
-                myAccountDetails
+                myAccountDetails,
+                applicationMapProperties.mapInvoiceTransactionsForMSFuelReconciliation
             )
 
             sr.payload = "${commonDaoServices.createJsonBodyFromEntity(fuelRemediationInvoice)}"
@@ -1802,6 +1807,14 @@ class MarketSurveillanceFuelDaoServices(
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, fuelRemediationInvoice)
+    }
+
+    fun findMSInvoicesWithRefNO(refNumber: String): MsFuelRemedyInvoicesEntity {
+        fuelRemediationInvoiceRepo.findByInvoiceNumber(refNumber)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [refNumber = ${refNumber}], does not Exist")
     }
 
 
@@ -1898,14 +1911,14 @@ class MarketSurveillanceFuelDaoServices(
     fun updateFuelInspectionRemediationInvoiceDetails(
         body: MsFuelRemedyInvoicesEntity,
         map: ServiceMapsEntity,
-        user: UsersEntity
+        user: String
     ): Pair<ServiceRequestsEntity, MsFuelRemedyInvoicesEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
         var fuelRemediationInvoice = body
         try {
             with(fuelRemediationInvoice) {
-                lastModifiedBy = commonDaoServices.concatenateName(user)
+                lastModifiedBy = user
                 lastModifiedOn = commonDaoServices.getTimestamp()
             }
             fuelRemediationInvoice = fuelRemediationInvoiceRepo.save(fuelRemediationInvoice)
@@ -2000,15 +2013,10 @@ class MarketSurveillanceFuelDaoServices(
         return  sampleSubmitRepo.findByMsFuelInspectionId(fuelInspectionID)
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun updateRemediationDetailsAfterPaymentDone() {
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateRemediationDetailsAfterPaymentDone(inv: MsFuelRemedyInvoicesEntity) {
         val map = commonDaoServices.serviceMapDetails(appId)
-        //Find all permits with Paid status
-        val invoices = fuelRemediationInvoiceRepo.findAllByPaymentStatus(map.activeStatus)
-        if  (invoices != null){
-            for (inv in invoices) {
 
-                try {
                    var remediationDetails = findFuelScheduledRemediationDetails(inv.fuelInspectionId?: throw ExpectedDataNotFound("MISSING FUEL INSPECTION ID"))?: throw ExpectedDataNotFound("NO REMEDIATION DETAILS FOUND")
                     with(remediationDetails){
                         proFormaInvoiceNo = inv.invoiceNumber
@@ -2028,16 +2036,6 @@ class MarketSurveillanceFuelDaoServices(
                         lastModifiedOn = commonDaoServices.getTimestamp()
                     }
                     fuelInspection = fuelInspectionRepo.save(fuelInspection)
-
-                } catch (e: Exception) {
-                    KotlinLogging.logger { }.error(e.message)
-                    KotlinLogging.logger { }.debug(e.message, e)
-
-                    continue
-                }
-//            permitRepo.save(permit)
-            }
-        }
 
     }
 
@@ -2171,6 +2169,14 @@ class MarketSurveillanceFuelDaoServices(
 
     fun findFuelRemediationInvoice(fuelInspectionID: Long): MsFuelRemedyInvoicesEntity? {
         return fuelRemediationInvoiceRepo.findByFuelInspectionId(fuelInspectionID)
+    }
+
+    fun findFuelInvoicesWithInvoiceBatchIDMapped(invoiceBatchMappedID: Long): MsFuelRemedyInvoicesEntity {
+        fuelRemediationInvoiceRepo.findByInvoiceBatchNumberId(invoiceBatchMappedID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [invoice Batch Mapped ID = ${invoiceBatchMappedID}], does not Exist")
     }
 
     fun findSampleSubmittedBYFuelInspectionId(fuelInspectionId: Long): QaSampleSubmissionEntity? {
@@ -2406,6 +2412,10 @@ class MarketSurveillanceFuelDaoServices(
     }
 
     fun fuelGrandTotal(totalValue1: BigDecimal, totalValue2: BigDecimal, totalValue3: BigDecimal): BigDecimal {
+        return (totalValue1.plus(totalValue2).plus(totalValue3))
+    }
+
+    fun fuelGrandTaxTotal(totalValue1: BigDecimal, totalValue2: BigDecimal, totalValue3: BigDecimal): BigDecimal {
         return (totalValue1.plus(totalValue2).plus(totalValue3))
     }
 

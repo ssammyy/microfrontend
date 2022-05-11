@@ -74,7 +74,7 @@ class MsFuelRemediationEntity : Serializable{
 
     @Column(name = "DATE_OF_PAYMENT")
     @Basic
-    var dateOfPayment: Date? = null
+    var dateOfPayment: Timestamp? = null
 
     @Column(name = "DESCRIPTION")
     @Basic

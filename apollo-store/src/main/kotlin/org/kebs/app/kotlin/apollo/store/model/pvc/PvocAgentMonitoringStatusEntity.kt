@@ -8,8 +8,11 @@ import javax.persistence.*
 @Entity
 @Table(name = "DAT_KEBS_PVOC_AGENT_MONITORING_STATUS")
 class PvocAgentMonitoringStatusEntity : Serializable {
-    @Column(name = "ID")
+
     @Id
+    @SequenceGenerator(name = "DAT_KEBS_PVOC_AGENT_MONITORING_STATUS_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_AGENT_MONITORING_STATUS_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_PVOC_AGENT_MONITORING_STATUS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @Column(name = "ID")
     var id: Long = 0
 
     @JoinColumn(name = "PARTNER_ID", referencedColumnName = "ID")

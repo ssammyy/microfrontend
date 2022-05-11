@@ -1208,6 +1208,51 @@ class StdLevyController(
 
     }
 
+    @PostMapping("/confirmCompanySuspension")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun confirmCompanySuspension(
+        @RequestBody companySuspendDto: CompanySuspendDto
+    ): ServerResponse
+    {
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = companySuspendDto.companyId
+        }
+        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+            id = companySuspendDto.id
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Suspension Approved",standardLevyService.confirmCompanySuspension(companyProfileEntity,standardLevyOperationsSuspension))
+
+    }
+
+    @PostMapping("/rejectCompanySuspension")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun rejectCompanySuspension(
+        @RequestBody companySuspendDto: CompanySuspendDto
+    ): ServerResponse
+    {
+
+        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+            id = companySuspendDto.id
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Suspension Rejected",standardLevyService.rejectCompanySuspension(standardLevyOperationsSuspension))
+
+    }
+
+    @GetMapping("/getCompanySuspensionRequest")
+    @ResponseBody
+    fun getCompanySuspensionRequest(): MutableList<CompanySuspensionList>
+    {
+        return standardLevyService.getCompanySuspensionRequest()
+    }
+
+
+
+
+
     @PostMapping("/closeCompanyOperations")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -1254,6 +1299,40 @@ class StdLevyController(
         return sm
     }
 
+    @PostMapping("/confirmCompanyClosure")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun confirmCompanyClosure(
+        @RequestBody companyCloseDto: CompanyCloseDto
+    ): ServerResponse
+    {
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = companyCloseDto.companyId
+        }
+        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+            id = companyCloseDto.id
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Closure Rejected",standardLevyService.confirmCompanyClosure(companyProfileEntity,standardLevyOperationsSuspension))
+
+    }
+
+    @PostMapping("/rejectCompanyClosure")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun rejectCompanyClosure(
+        @RequestBody companySuspendDto: CompanySuspendDto
+    ): ServerResponse
+    {
+
+        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+            id = companySuspendDto.id
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Closure Rejected",standardLevyService.rejectCompanyClosure(standardLevyOperationsSuspension))
+
+    }
+
     @GetMapping("/getWindingReportDocumentList")
     fun getWindingReportDocumentList(
         response: HttpServletResponse,
@@ -1286,6 +1365,15 @@ class StdLevyController(
 
 
 
+    @GetMapping("/getCompanyClosureRequest")
+    @ResponseBody
+    fun getCompanyClosureRequest(): MutableList<CompanyClosureList>
+    {
+        return standardLevyService.getCompanyClosureRequest()
+    }
+
+
+
 
     @PostMapping("/anonymous/standard/close")
     fun clos(@RequestBody responseMessage: ResponseMessage) {
@@ -1296,6 +1384,13 @@ class StdLevyController(
     @PostMapping("/anonymous/standard/closetask")
     fun closeTask(@RequestBody responseMessage: ResponseMessage) {
         return standardLevyService.closeTask(responseMessage.message)
+    }
+
+    @GetMapping("/sendLevyPaymentReminders")
+    @ResponseBody
+    fun sendLevyPaymentReminders(): String
+    {
+        return standardLevyService.sendLevyPaymentReminders()
     }
 
 

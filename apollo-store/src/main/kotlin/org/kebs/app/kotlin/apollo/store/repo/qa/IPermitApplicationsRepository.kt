@@ -486,6 +486,9 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
         paymentStatus: Int
     ): List<QaInvoiceMasterDetailsEntity>?
 
+
+    fun findAllByUserIdAndReceiptNoIsNotNull(userId: Long): List<QaInvoiceMasterDetailsEntity>?
+
     fun findAllByUserId(userId: Long): List<QaInvoiceMasterDetailsEntity>?
     fun findByPermitRefNumberAndUserIdAndPermitId(
         permitRefNumber: String,

@@ -442,6 +442,20 @@ export class STA10ManufacturingProcessDto {
     frequency: string;
     processMonitoringRecords: string;
 }
-
+export interface Payments {
+    id: number;
+    invoiceRef:string;
+    userId: number;
+    permitRefNumber: string;
+    receiptNo: string;
+    batchInvoiceNo: number;
+    paymentStatus: number;
+    generatedDate: string;
+    itemCount: number;
+    totalAmount:number;
+    taxAmount:number;
+    subTotalBeforeTax:number;
+    permitId:number;
+}
 
 

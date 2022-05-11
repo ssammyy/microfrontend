@@ -119,6 +119,10 @@ class CdInspectionGeneralEntity : Serializable {
     @Basic
     var currentChecklist: Int = 1
 
+    @Column(name = "CHECKLIST_VERSION")
+    @Basic
+    var checklistVersion: Long = 1
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

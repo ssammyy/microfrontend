@@ -162,7 +162,7 @@ class InvoiceDaoService(
 //                    invoiceNumber = invoiceBatchDetails.batchNumber
                     paymentStatus = map.inactiveStatus
                 }
-                fuelProFormInvoice = msDaoServices.updateFuelInspectionRemediationInvoiceDetails(fuelProFormInvoice,map, user).second
+                fuelProFormInvoice = msDaoServices.updateFuelInspectionRemediationInvoiceDetails(fuelProFormInvoice,map, commonDaoServices.concatenateName(user)).second
 
                 totalAmount = fuelProFormInvoice.transportGrandTotal?.let { totalAmount.plus(it) }!!
                 detailsDescription = "Fuel Inspection Proforma Invoice Number:${fuelProFormInvoice.invoiceNumber}"
@@ -202,7 +202,7 @@ class InvoiceDaoService(
         }
     }
 
-    fun createPaymentDetailsOnStgReconciliationTable(user: String, invoiceBatchDetails: InvoiceBatchDetailsEntity, invoiceAccountDetails: InvoiceAccountDetails): StagingPaymentReconciliation {
+    fun createPaymentDetailsOnStgReconciliationTable(user: String, invoiceBatchDetails: InvoiceBatchDetailsEntity, invoiceAccountDetails: InvoiceAccountDetails, paymentTypeTable : String): StagingPaymentReconciliation {
         val map = commonDaoServices.serviceMapDetails(appId)
         var invoiceDetails = StagingPaymentReconciliation()
         with(invoiceDetails) {
@@ -232,7 +232,15 @@ class InvoiceDaoService(
         }
         invoiceDetails = invoicePaymentRepo.save(invoiceDetails)
 
-        postInvoiceToSageServices.postInvoiceTransactionToSageQa(invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"),invoiceAccountDetails, user, map)
+        when {
+            applicationMapProperties.mapInvoiceTransactionsForPermit ==paymentTypeTable -> {
+                postInvoiceToSageServices.postInvoiceTransactionToSageQa(invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"),invoiceAccountDetails, user, map)
+            }
+            applicationMapProperties.mapInvoiceTransactionsForMSFuelReconciliation == paymentTypeTable -> {
+                postInvoiceToSageServices.postInvoiceTransactionToSageMS(invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"),invoiceAccountDetails, user, map)
+            }
+        }
+
 
         return invoiceDetails
     }
@@ -274,9 +282,20 @@ class InvoiceDaoService(
 //                updateStagingPaymentReconciliation(invoiceDetail)
             }
             applicationMapProperties.mapInvoiceTransactionsForMSFuelReconciliation -> {
-                // Todo: add for fuel update details function
-//                updateStagingPaymentReconciliation(invoiceDetail)
-            }
+                var msFuelInvoiceDetails =  msDaoServices.findFuelInvoicesWithInvoiceBatchIDMapped(updatedBatchInvoiceDetail.id)
+                with(msFuelInvoiceDetails){
+                    paymentStatus = 10
+                    receiptNo = updatedBatchInvoiceDetail.receiptNumber
+                    paymentDate = updatedBatchInvoiceDetail.receiptDate
+                }
+                msFuelInvoiceDetails = msDaoServices.updateFuelInspectionRemediationInvoiceDetails(msFuelInvoiceDetails, map,"SYSTEM").second
+                msDaoServices.updateRemediationDetailsAfterPaymentDone(msFuelInvoiceDetails)
+
+                with(updatedBatchInvoiceDetail){
+                        status = 10
+                    }
+                    updateInvoiceBatchDetailsAfterPaymentDone(updatedBatchInvoiceDetail)
+                }
             applicationMapProperties.mapInvoiceTransactionsForPermit -> {
               var permitBatchedDetails =  qaDaoServices.findBatchInvoicesWithInvoiceBatchIDMapped(updatedBatchInvoiceDetail.id)
                 with(permitBatchedDetails){

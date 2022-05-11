@@ -1700,6 +1700,8 @@ class DestinationInspectionDaoServices(
         // Get existing one or create a new one
         with(inspectionGeneralEntity) {
             cdDetails = cDetails
+            checklistVersion = iCdInspectionGeneralRepo.countByCdDetails(cDetails) + 1
+            currentChecklist = 1
             status = map.activeStatus
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()

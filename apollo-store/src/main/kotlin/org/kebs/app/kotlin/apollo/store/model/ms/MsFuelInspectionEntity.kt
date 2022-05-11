@@ -51,6 +51,10 @@ class MsFuelInspectionEntity : Serializable{
     @Basic
     var stationOwnerEmail: String? = null
 
+    @Column(name = "COMPANY_KRA_PIN")
+    @Basic
+    var companyKraPin: String? = null
+
     @Column(name = "NOT_COMPLIANT_STATUS_BY")
     @Basic
     var notCompliantStatusBy: String? = null

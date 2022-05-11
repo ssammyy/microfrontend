@@ -51,7 +51,7 @@ class Scheduler(
     fun updateDemandNotes() {
         KotlinLogging.logger { }.debug("UPDATING DEMAND NOTES on SW")
         schedulerImpl.updatePaidDemandNotesStatus()
-        msDaoServices.updateRemediationDetailsAfterPaymentDone()
+//        msDaoServices.updateRemediationDetailsAfterPaymentDone()
         KotlinLogging.logger { }.debug("UPDATED DEMAND NOTES on SW")
     }
 

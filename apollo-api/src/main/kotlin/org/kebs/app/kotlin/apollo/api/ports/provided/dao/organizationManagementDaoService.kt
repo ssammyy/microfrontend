@@ -95,7 +95,8 @@ class RegistrationManagementDaoService(
      * Provide users company and branch
      */
     fun provideCompanyDetailsForUser(): UserCompanyDetailsDto? {
-        val user = commonDaoServices.loggedInUserDetails()
+//         val user = commonDaoServices.loggedInUserDetails()
+        val user = commonDaoServices.loggedInUserDetailsEmail()
         user.companyId?.let {
 
             val counter = user.companyId?.let {

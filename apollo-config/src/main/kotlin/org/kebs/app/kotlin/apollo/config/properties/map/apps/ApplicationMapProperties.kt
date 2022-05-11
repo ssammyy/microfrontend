@@ -685,6 +685,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions.for.MS.fuelReconciliation}")
     val mapInvoiceTransactionsForMSFuelReconciliation: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.ms.petroleum.revenue.code}")
+    val mapRevenueCodeForMSFuelInspection: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.ms.petroleum.revenue.desc}")
+    val mapRevenueDescForMSFuelInspection: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions.for.permit}")
     val mapInvoiceTransactionsForPermit: String = ""
 

@@ -481,6 +481,17 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permits Found for the following user with USERNAME = ${user.userName}")
     }
 
+    // find all user payments
+    fun findAllMyPayments(user: UsersEntity): List<QaInvoiceMasterDetailsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+
+        invoiceMasterDetailsRepo.findAllByUserIdAndReceiptNoIsNotNull(userId)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userId}] does not Exist")
+    }
+
 
     //  }
     //  return it
@@ -5115,7 +5126,8 @@ class QADaoServices(
             invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
                     user.userName!!,
                     updateBatchInvoiceDetail,
-                    myAccountDetails
+                    myAccountDetails,
+                applicationMapProperties.mapInvoiceTransactionsForPermit
             )
 
             with(invoiceDetails) {

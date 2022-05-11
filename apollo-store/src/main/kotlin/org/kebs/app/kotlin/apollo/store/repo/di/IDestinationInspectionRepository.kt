@@ -381,6 +381,8 @@ interface ICdInspectionChecklistRepository : HazelcastRepository<CdInspectionChe
 @Repository
 interface ICdInspectionGeneralRepository : HazelcastRepository<CdInspectionGeneralEntity, Long> {
     fun findFirstByCdDetailsAndCurrentChecklist(cdItemDetails: ConsignmentDocumentDetailsEntity, current: Int): CdInspectionGeneralEntity?
+    fun findFirstByIdAndCdDetails(id: Long, cdItemDetails: ConsignmentDocumentDetailsEntity): CdInspectionGeneralEntity?
+    fun countByCdDetails(cdItemDetails: ConsignmentDocumentDetailsEntity): Long
     fun findAllByCdDetails(cdItemDetails: ConsignmentDocumentDetailsEntity): List<CdInspectionGeneralEntity>
     fun findFirstByCdDetails_Uuid(docId: String): CdInspectionGeneralEntity?
 }
