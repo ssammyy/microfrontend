@@ -10,31 +10,14 @@ import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatSelectModule} from '@angular/material/select';
-import {MatSliderModule} from '@angular/material/slider';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatListModule} from '@angular/material/list';
-import {MatGridListModule} from '@angular/material/grid-list';
-import {MatCardModule} from '@angular/material/card';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatStepperModule} from '@angular/material/stepper';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {MatChipsModule} from '@angular/material/chips';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatRadioModule} from '@angular/material/radio';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTableModule} from '@angular/material/table';
-import {MatSortModule} from '@angular/material/sort';
-import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 import {AppComponent} from './app.component';
@@ -226,11 +209,11 @@ import {NepSuccessComponent} from './apollowebs/standards-development/nep-succes
 import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
 
 import {AllpermitsComponent} from './apollowebs/quality-assurance/allpermits/allpermits.component';
-import { EpraListComponent } from './apollowebs/market-surveillance/fuel/epra-list/epra-list.component';
-import { EpraBatchListComponent } from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component';
-import { EpraBatchNewComponent } from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-new/epra-batch-new.component';
-import { ViewFuelSheduledDetailsComponent } from './apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component';
-import { MatMultilineTabMsDirective } from './apollowebs/market-surveillance/mat-multiline-tab-ms.directive';
+import {EpraListComponent} from './apollowebs/market-surveillance/fuel/epra-list/epra-list.component';
+import {EpraBatchListComponent} from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component';
+import {EpraBatchNewComponent} from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-new/epra-batch-new.component';
+import {ViewFuelSheduledDetailsComponent} from './apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component';
+import {MatMultilineTabMsDirective} from './apollowebs/market-surveillance/mat-multiline-tab-ms.directive';
 import {CreateDepartmentComponent} from './apollowebs/standards-development/standard-request/create-department/create-department.component';
 import {CreatetechnicalcommitteeComponent} from './apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component';
 import {CreateproductComponent} from './apollowebs/standards-development/standard-request/createproduct/createproduct.component';
@@ -342,49 +325,17 @@ import {GenerateAuctionKraReportComponent} from './apollowebs/di/auction/generat
 import {UpdateComplaintTaskComponent} from './apollowebs/pvoc/complaints/update-complaint-task/update-complaint-task.component';
 import {UpdateExemptionTaskComponent} from './apollowebs/pvoc/exemptions/update-exemption-task/update-exemption-task.component';
 import {AdminBusinessManagementComponent} from './apollowebs/admin/admin-business-management/admin-business-management.component';
-import { StandardLevyClosureComponent } from './apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component';
-import { StandardLevySuspensionComponent } from './apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component';
+import {StandardLevyClosureComponent} from './apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component';
+import {StandardLevySuspensionComponent} from './apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component';
 import {ComplaintNewComponent} from './apollowebs/market-surveillance/complaint/complaint-new/complaint-new.component';
 import {ComplaintListComponent} from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
 import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
 import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignment-document/cd-general-checklist/cd-general-checklist.component';
-import { PaymentsComponent } from './apollowebs/quality-assurance/payments/payments.component';
+import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payments.component';
+import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 
 
 @NgModule({
-    exports: [
-        MatAutocompleteModule,
-        MatButtonToggleModule,
-        MatCardModule,
-        MatChipsModule,
-        MatCheckboxModule,
-        MatStepperModule,
-        MatDialogModule,
-        MatExpansionModule,
-        MatGridListModule,
-        MatIconModule,
-        MatInputModule,
-        MatListModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatProgressBarModule,
-        MatProgressSpinnerModule,
-        MatRadioModule,
-        MatSelectModule,
-        MatDatepickerModule,
-        MatButtonModule,
-        MatSidenavModule,
-        MatSliderModule,
-        MatSlideToggleModule,
-        MatSnackBarModule,
-        MatSortModule,
-        MatTableModule,
-        MatTabsModule,
-        MatToolbarModule,
-        MatTooltipModule,
-        MatNativeDateModule,
-
-    ],
     imports: [
         CommonModule,
         DataTablesModule,
@@ -399,7 +350,6 @@ import { PaymentsComponent } from './apollowebs/quality-assurance/payments/payme
         SidebarModule,
         NavbarModule,
         FooterModule,
-        RouterModule,
         AppRoutingModule,
         CoreModule,
         MatRadioModule,
@@ -447,9 +397,10 @@ import { PaymentsComponent } from './apollowebs/quality-assurance/payments/payme
         MatTabsModule,
         MatProgressSpinnerModule,
         MDBBootstrapModule.forRoot(),
-        // NgxMatSelectSearchModule
+        NgxMatSelectSearchModule
     ],
     declarations: [
+        AppComponent,
         AdminLayoutComponent,
         AuthLayoutComponent,
         ImportInspectionComponent,
@@ -629,56 +580,8 @@ import { PaymentsComponent } from './apollowebs/quality-assurance/payments/payme
         ComplaintListComponent,
         ComplaintDetailsComponent,
         PaymentsComponent,
-    ],
-
-})
-export class MaterialModule {}
-
-
-@NgModule({
-    imports: [
-        CommonModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        PdfViewerModule,
-        // RouterModule.forRoot(routes, {
-        //     useHash: true
-        // }),
-        HttpClientModule,
-        SidebarModule,
-        NavbarModule,
-        FooterModule,
-        RouterModule,
-        AppRoutingModule,
-        CoreModule,
-        ToastrModule.forRoot({
-            timeOut: 10000,
-            enableHtml: true,
-            newestOnTop: false,
-            maxOpened: 1,
-            autoDismiss: false,
-            positionClass: 'toast-top-right',
-            preventDuplicates: true,
-        }),
-        ReactiveFormsModule,
-        FormsModule,
-        // NgbModule,
-        NgxPaginationModule,
-        FontAwesomeModule,
-        NgxSpinnerModule,
-        DataTablesModule,
-        NgSelectModule,
-        FileUploadModule,
-        NgMultiSelectDropDownModule.forRoot(),
-
-    ],
-    declarations: [
-        AppComponent,
-        AdminLayoutComponent,
-        AuthLayoutComponent,
         IntStdUploadStandardComponent,
         IntStdGazzetteComponent,
-        ManagernotificationsComponent,
         CreateDepartmentComponent,
         CreatetechnicalcommitteeComponent,
         CreateproductComponent,
@@ -696,7 +599,6 @@ export class MaterialModule {}
         StandardLevyPaidHistoryComponent,
         StandardLevyPenaltyHistoryComponent,
         StandardLevyDefaulterHistoryComponent,
-        StdTcWorkplanComponent,
         TransactionViewComponent,
         ViewClientsComponent,
         ViewPartnersComponent,
