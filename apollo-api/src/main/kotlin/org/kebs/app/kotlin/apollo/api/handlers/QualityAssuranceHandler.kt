@@ -3445,4 +3445,15 @@ class QualityAssuranceHandler(
         }
 
     }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    fun permitInvoiceListPaid(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val allpaidInvoices= qaDaoServices.findAllMyPayments(loggedInUser)
+
+
+        return ok().body(allpaidInvoices)
+
+    }
 }

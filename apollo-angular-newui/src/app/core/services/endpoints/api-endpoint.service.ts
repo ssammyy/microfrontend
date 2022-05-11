@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class ApiEndpointService {
 
@@ -10,14 +10,14 @@ export class ApiEndpointService {
      */
     public static PROTOCOL = {
         HTTP: `http://`,
-        HTTPS: `https://`,
+        HTTPS: `https://`
     };
 
     /**
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        //LOCAL_DEV: 'localhost:8006'
+        // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
         LOCAL_DEV: `kimsint.kebs.org:8006`
@@ -258,6 +258,9 @@ export class ApiEndpointService {
         PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
         SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
         MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
+
+        VIEW_ALL_PAYMENTS: `${ApiEndpointService.QA_CONTEXT}/payments`,
+
 
         PERMIT_APPLY_FMARK: `${ApiEndpointService.QA_CONTEXT_APPLY}/fmark`,
         PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1`,

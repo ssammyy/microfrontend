@@ -348,6 +348,7 @@ import {ComplaintNewComponent} from './apollowebs/market-surveillance/complaint/
 import {ComplaintListComponent} from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
 import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
 import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignment-document/cd-general-checklist/cd-general-checklist.component';
+import { PaymentsComponent } from './apollowebs/quality-assurance/payments/payments.component';
 
 
 @NgModule({
@@ -440,7 +441,7 @@ import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignme
         MatButtonModule,
         NgbPaginationModule,
         MatTableModule,
-        NgMultiSelectDropDownModule,
+        NgMultiSelectDropDownModule.forRoot(),
         NgSelectModule,
         NoopAnimationsModule,
         MatTabsModule,
@@ -562,6 +563,7 @@ import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignme
         StandardRequestComponent,
         RequestStandardFormComponent,
         ReviewApplicationsComponent,
+        StdJustificationComponent,
         StandardTaskComponent,
         ProductDetailsComponent,
         ImportationWaiverComponent,
@@ -616,6 +618,7 @@ import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignme
         ComStdConfirmComponent,
         StdTcTasksComponent,
         NepSuccessComponent,
+        SpcSecTaskComponent,
         ManagernotificationsComponent,
         EpraListComponent,
         EpraBatchListComponent,
@@ -625,6 +628,7 @@ import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignme
         ComplaintNewComponent,
         ComplaintListComponent,
         ComplaintDetailsComponent,
+        PaymentsComponent,
     ],
 
 })
@@ -665,6 +669,8 @@ export class MaterialModule {}
         DataTablesModule,
         NgSelectModule,
         FileUploadModule,
+        NgMultiSelectDropDownModule.forRoot(),
+
     ],
     declarations: [
         AppComponent,

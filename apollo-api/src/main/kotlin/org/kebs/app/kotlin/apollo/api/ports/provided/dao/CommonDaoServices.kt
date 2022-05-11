@@ -754,6 +754,17 @@ class CommonDaoServices(
             }
             ?: throw ExpectedDataNotFound("No user has logged in")
     }
+    fun loggedInUserDetailsEmail(): UsersEntity {
+        SecurityContextHolder.getContext().authentication?.name
+            ?.let { username ->
+                usersRepo.findByEmail(username)
+                    ?.let { loggedInUser ->
+                        return loggedInUser
+                    }
+                    ?: throw ExpectedDataNotFound("No userName with the following userName=$username, Exist in the users table")
+            }
+            ?: throw ExpectedDataNotFound("No user has logged in")
+    }
 
     fun checkLoggedInUser(): String? {
         return SecurityContextHolder.getContext().authentication?.name

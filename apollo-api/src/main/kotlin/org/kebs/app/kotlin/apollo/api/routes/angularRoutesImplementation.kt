@@ -455,6 +455,8 @@ class AngularRoutes {
             GET("/sections-list", handler::sectionListMigration)
             GET("/branch-list", handler::branchListMigration)
             GET("/standards-list", handler::standardsListMigration)
+            GET("/payments", handler::permitInvoiceListPaid)
+
             "/permit".nest {
                 POST("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/task-list", handler::permitTaskListMigration)

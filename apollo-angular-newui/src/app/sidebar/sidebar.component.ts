@@ -118,11 +118,18 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['PERMIT_APPLICATION'],
     },
     {
+        path: '/payments',
+        title: 'Payments',
+        type: 'link',
+        icontype: 'receipt_long',
+        privilege: ['PERMIT_APPLICATION'],
+    },
+    {
         path: '/company/applications',
         title: 'Company application',
         type: 'link',
         icontype: 'apply',
-        privilege: ['PERMIT_APPLICATION'],
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
     },
     {
         path: '/pvoc',
