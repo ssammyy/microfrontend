@@ -38,7 +38,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
-                <imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_smark_background_image.png"]]></imageExpression>
+                <imageExpression><![CDATA["/Users/marvinmakauusalamatechnology/IdeaProjects/apollo_new/conf/test/reports/images/kebs_smark_background_image.png"]]></imageExpression>
             </image>
             <staticText>
                 <reportElement x="10" y="27" width="454" height="20" uuid="614eea48-cb68-464f-be18-c03f01c3dccf"/>
@@ -341,7 +341,7 @@
             </image>
             <image>
                 <reportElement x="360" y="567" width="138" height="50" uuid="757a26ee-d8e2-4529-a01e-bf8332d078d0"/>
-                <imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/BMNSignature-transparent.png"]]></imageExpression>
+                <imageExpression><![CDATA["/Users/marvinmakauusalamatechnology/IdeaProjects/apollo_new/conf/test/reports/images/BMNSignature-transparent.png"]]></imageExpression>
             </image>
             <textField>
                 <reportElement x="441" y="125" width="109" height="20" uuid="cf8a9d00-cea8-476a-82bc-17e0ade37517"/>
@@ -359,7 +359,7 @@
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
-                <imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_dmark_background_image.png"]]></imageExpression>
+                <imageExpression><![CDATA["/Users/marvinmakauusalamatechnology/IdeaProjects/apollo_new/conf/test/reports/images/kebs_dmark_background_image.png"]]></imageExpression>
             </image>
             <staticText>
                 <reportElement x="80" y="30" width="390" height="20" uuid="a5ffe669-cb88-4eec-a0c2-86ba85191ebd"/>
