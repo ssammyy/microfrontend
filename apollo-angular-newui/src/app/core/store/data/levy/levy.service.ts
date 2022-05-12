@@ -16,7 +16,7 @@ import {
     ManufacturePenalty,
     ManufacturePendingTask,
     ManufacturingStatus, NotificationStatus,
-    PaidLevy, PaymentDetails,
+    PaidLevy, PaymentDetails, PenaltyDetails,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo,
     SiteVisitFeedBack,
@@ -532,6 +532,33 @@ export class LevyService {
         const params = new HttpParams();
         return this.http.get<PaymentDetails>(url, {params}).pipe();
     }
+
+    public getManufacturesLevyPaymentsList(companyId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURES_PAYMENT_DETAILS);
+        const params = new HttpParams().set('companyId', companyId);
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
+    }
+
+    public getLevyPenalty(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PENALTY_DETAIL);
+        const params = new HttpParams();
+        return this.http.get<PenaltyDetails>(url, {params}).pipe();
+    }
+
+    public getManufacturesLevyPenalty(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_PENALTY_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<PenaltyDetails>(url, {params}).pipe();
+    }
+
+    public getManufacturesLevyPenaltyList(companyId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURES_PENALTY_DETAILS);
+        const params = new HttpParams().set('companyId', companyId);
+        return this.http.get<PenaltyDetails>(url, {params}).pipe();
+    }
+
+
+
 
 
 

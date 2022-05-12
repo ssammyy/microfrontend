@@ -122,6 +122,7 @@ export class StandardLevyClosureComponent implements OnInit {
         button.click();
 
     }
+
     toggleDisplayDocuments(closureID: number) {
         this.loadingText = "Loading ...."
         this.SpinnerService.show();

@@ -72,7 +72,7 @@ class ComStandardService(
     }
 
     //request for company standard
-    fun requestForStandard(companyStandardRequest: CompanyStandardRequest): ProcessInstanceResponse {
+    fun requestForStandard(companyStandardRequest: CompanyStandardRequest): String {
 
         val variables: MutableMap<String, Any> = HashMap()
         companyStandardRequest.companyName?.let { variables.put("companyName", it) }
@@ -105,11 +105,19 @@ class ComStandardService(
             productSubCategoryRepository.findNameById(companyStandardRequest.productSubCategoryId?.toLong())
 
         comStandardRequestRepository.save(companyStandardRequest)
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+//        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+//        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+
+        return "Request Sent"
 
 
     }
+
+    fun getCompanyStandardRequest(): MutableList<CompanyStandardRequest> {
+        return comStandardRequestRepository.getCompanyStandardRequest()
+    }
+
+
 
 
     //Function to retrieve task details for any candidate group

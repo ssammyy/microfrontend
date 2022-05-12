@@ -5132,7 +5132,8 @@ class QADaoServices(
             invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
                     user.userName!!,
                     updateBatchInvoiceDetail,
-                    myAccountDetails
+                    myAccountDetails,
+                applicationMapProperties.mapInvoiceTransactionsForPermit
             )
 
             with(invoiceDetails) {

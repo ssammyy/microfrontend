@@ -123,8 +123,13 @@ interface IFuelRemediationInvoiceRepository : HazelcastRepository<MsFuelRemedyIn
 
     fun findByFuelInspectionId(fuelInspectionId: Long):  MsFuelRemedyInvoicesEntity?
 
+    fun findByInvoiceNumber(invoiceNumber: String):  MsFuelRemedyInvoicesEntity?
+
+    fun findByInvoiceBatchNumberId(invoiceBatchNumberId: Long):  MsFuelRemedyInvoicesEntity?
+
 
     fun findFirstByFuelInspectionId(fuelInspectionId: Long): List<MsFuelRemedyInvoicesEntity>
+
     fun findAllByPaymentStatus(paymentStatus: Int): List<MsFuelRemedyInvoicesEntity>?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?

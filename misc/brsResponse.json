@@ -6,16 +6,16 @@ curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendEntryDetai
 "HEADER": {
 "loginId": "KEBSUSER",
 "password": "password@1",
-"hash": "2479ee38bad5f0f45209cd05cfe0724ba00b20c16a1624d2c6ec53585e1c9e44",
+"hash": "16fbabdb987a5fd53e2e2dd5d0ad7bbbfecb299406dde4c7e9d0fe0b3aa23635",
 "noOfRecords": "1",
-"transmissionDate": "25-04-2022T07:40:00"
+"transmissionDate": "11-05-2022T17:06:36"
 },
 "DETAILS": [
 {
-"entryNumber": "20220425125760",
-"kraPin": "P052052559A",
-"manufacturerName": "DAISY WATER",
-"registrationDate": "21-04-2022T14:41:10",
+"entryNumber": "20220511877224",
+"kraPin": "A005427650Y",
+"manufacturerName": "INGWE PURE WATERS",
+"registrationDate": "11-05-2022T16:18:32",
 "status": "Active"
 }
 ]

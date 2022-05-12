@@ -30,7 +30,76 @@ Tasks <span class="badge badge-primary">{{paymentDetails.length}}</span>
 
 </div>
 <div class="row">
-<div class="material-datatables table-responsive col-md-9">
+    <div class="col-md-12">
+        <div class="card" style="background-color: #e7ecee">
+            <div class="card-body">
+                <h4 class="card-title" style="color: #0d0505; font-weight: bold">Filter By</h4>
+
+                <form>
+                    <!--    <h4 class="card-title" style="color: #0d0505; font-weight: bold">Visit Status</h4>-->
+                    <!--<div class="form-check">-->
+                    <!--<input class="" type="checkbox" value="" id="flexCheckDefault">-->
+                    <!--<label class="" for="flexCheckDefault">-->
+                    <!--Not Scheduled-->
+                    <!--</label>-->
+                    <!--</div>-->
+                    <!--<div class="form-check">-->
+                    <!--<input class="" type="checkbox" value="" id="flexCheckChecked" >-->
+                    <!--<label class="" for="flexCheckChecked">-->
+                    <!--Pending-->
+                    <!--</label>-->
+                    <!--</div>-->
+                    <!--    <div class="form-check">-->
+                    <!--        <input class="" type="checkbox" value="" id="flexCheckChecked1" >-->
+                    <!--        <label class="" for="flexCheckChecked1">-->
+                    <!--            Done-->
+                    <!--        </label>-->
+                    <!--    </div>-->
+<div class="row">
+ <div class="col-3">
+<!--     <h4 class="card-title" style="color: #0d0505; font-weight: bold">Payment Date</h4>-->
+     <div class="form-group">
+         <label class="form-check-label" >
+             From
+         </label>
+         <input class="control-label" type="date" value="" id="from">
+
+     </div>
+ </div>
+ <div class="col-3">
+     <div class="form-group">
+         <label class="form-check-label" >
+             To
+         </label>
+         <input class="control-label" type="date" value="" id="to">
+
+     </div>
+ </div>
+ <div class="col-3">
+     <!--    <h4 class="card-title" style="color: #0d0505; font-weight: bold">Assigned To</h4>-->
+     <div>
+<!--         <label class="form-check-label" >-->
+<!--             Assigned To-->
+<!--         </label>-->
+         <input
+                 class="form-control"   name="assignedTo" type="text" placeholder="Assigned To">
+     </div>
+ </div>
+    <div class="col-3">
+        <button class="btn btn-sm btn-primary">Apply Filter</button>
+    </div>
+
+</div>
+
+
+
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+<div class="material-datatables table-responsive col-md-12">
     <table class="table table-striped table-bordered table-hover" datatable
            [dtTrigger]="dtTrigger">
 <thead>
@@ -38,82 +107,76 @@ Tasks <span class="badge badge-primary">{{paymentDetails.length}}</span>
 <th>#</th>
 <th class="knw">Entry Number</th>
 <th class="sl">Manufacturer</th>
-<th class="knw">Payment Date</th>
-<th class="sl">Payment Amount</th>
+<th class="knw">Registration Number</th>
+<th class="sl">Kra Pin</th>
 <th class="knw">Assign Status</th>
+    <th></th>
 </tr>
 </thead>
 <tbody>
+<!--<input class="" type="checkbox" value="{{paymentDetail.id}}" id="{{paymentDetail.id}}">-->
 <tr  *ngFor="let paymentDetail of paymentDetails let i=index">
-    <td >{{i+1}} <input class="" type="checkbox" value="{{paymentDetail.id}}" id="{{paymentDetail.id}}"></td>
+    <td >{{i+1}} </td>
 <td>{{paymentDetail.entryNumber}}</td>
 <td>{{paymentDetail.companyName}}</td>
-<td>{{paymentDetail.paymentDate}}</td>
-<td>KSH {{paymentDetail.paymentAmount}}</td>
+<td>{{paymentDetail.registrationNumber}}</td>
+<td>KSH {{paymentDetail.kraPin}}</td>
 <td *ngIf="paymentDetail.assignStatus==0"><span class="badge badge-rose" style="width: 135px">Not Assigned</span></td>
-<td *ngIf="paymentDetail.assignStatus==1"><span class="badge badge-rose">Assigned</span></td>
-
+<td *ngIf="paymentDetail.assignStatus==1"><span class="badge badge-success" style="width: 135px">Assigned</span></td>
+<td><button (click)="onOpenModalPayment(paymentDetail,'paymentDetails',paymentDetail.companyId)" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="col-md-3">
-<div class="card" style="background-color: #e7ecee">
-<div class="card-body">
-<h4 class="card-title" style="color: #0d0505; font-weight: bold">Filter By</h4>
+    <div class="modal fade" id="paymentDetails" tabindex="-1" role="dialog" aria-labelledby="paymentDetailsModalLabel" aria-hidden="true">a
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="paymentDetailsModalLabel"><b>Payment Details for {{actionRequest?.companyName}}</b></h3>
+                    <button type="button" class="close" #closeModalCDetails data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="material-datatables table-responsive col-md-12">
+                    <table class="table table-striped table-bordered table-hover" datatable
+                           [dtTriggers]="dtTriggers">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th class="knw">Entry Number</th>
+                            <th class="sl">Manufacturer</th>
+                            <th class="knw">Period For</th>
+                            <th class="sl">Date Paid</th>
+                            <th class="knw">Amount Paid</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr  *ngFor="let paidDetail of paidDetails let i=index">
+                            <td >{{i+1}} </td>
+                            <td>{{paidDetail.entryNumber}}</td>
+                            <td>{{paidDetail.companyName}}</td>
+                            <td>{{paidDetail.periodFrom}}-{{paidDetail.periodTo}}</td>
+                            <td>{{paidDetail.paymentDate}}</td>
+                            <td>KSH {{paidDetail.paymentAmount}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
 
-<form>
-<!--    <h4 class="card-title" style="color: #0d0505; font-weight: bold">Visit Status</h4>-->
-<!--<div class="form-check">-->
-<!--<input class="" type="checkbox" value="" id="flexCheckDefault">-->
-<!--<label class="" for="flexCheckDefault">-->
-<!--Not Scheduled-->
-<!--</label>-->
-<!--</div>-->
-<!--<div class="form-check">-->
-<!--<input class="" type="checkbox" value="" id="flexCheckChecked" >-->
-<!--<label class="" for="flexCheckChecked">-->
-<!--Pending-->
-<!--</label>-->
-<!--</div>-->
-<!--    <div class="form-check">-->
-<!--        <input class="" type="checkbox" value="" id="flexCheckChecked1" >-->
-<!--        <label class="" for="flexCheckChecked1">-->
-<!--            Done-->
-<!--        </label>-->
-<!--    </div>-->
 
-<h4 class="card-title" style="color: #0d0505; font-weight: bold">Payment Date</h4>
-<div class="form-group">
-<label class="form-check-label" >
-From
-</label>
-<input class="control-label" type="date" value="" id="from">
-
-</div>
-<div class="form-group">
-<label class="form-check-label" >
-To
-</label>
-<input class="control-label" type="date" value="" id="to">
-
-</div>
-
-    <h4 class="card-title" style="color: #0d0505; font-weight: bold">Assigned To</h4>
-    <div>
-        <input
-               class="form-control"   name="assignedTo" type="text" placeholder="Assigned To">
-    </div>
-<button class="btn btn-sm btn-primary">Apply Filter</button>
-</form>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
 </div>
 
+</div>
+</div>
 </div>
 </div>
 </div>

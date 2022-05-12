@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ApiEndpointService {
 
@@ -10,14 +10,14 @@ export class ApiEndpointService {
      */
     public static PROTOCOL = {
         HTTP: `http://`,
-        HTTPS: `https://`
+        HTTPS: `https://`,
     };
 
     /**
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        // LOCAL_DEV: 'localhost:8006'
+        //LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
         // LOCAL_DEV: `kimsint.kebs.org:8006`
@@ -456,6 +456,10 @@ export class ApiEndpointService {
         STD_LEVY_PAID_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getPaidLevies`,
         STD_LEVY_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getLevyPayments`,
         STD_LEVY_MANUFACTURE_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPayments`,
+        STD_LEVY_MANUFACTURES_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPaymentsList`,
+        STD_LEVY_PENALTY_DETAIL: `${ApiEndpointService.STL_CONTEXT}/getLevyPenalty`,
+        STD_LEVY_MANUFACTURE_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPenalty`,
+        STD_LEVY_MANUFACTURES_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPenaltyList`,
         STD_LEVY_COMPANY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getCompanyProfile`,
         STD_LEVY_SL_FORM: `${ApiEndpointService.STL_CONTEXT}/getNotificationFormDetails`,
         STD_LEVY_SL_NT_FORM: `${ApiEndpointService.STL_CONTEXT}/getSlNotificationFormDetails`,
