@@ -237,6 +237,7 @@ import {NwaTasksComponent} from "./apollowebs/standards-development/workshop-agr
 import {AdminBusinessManagementComponent} from "./apollowebs/admin/admin-business-management/admin-business-management.component";
 import {StandardLevyClosureComponent} from "./apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component";
 import {StandardLevySuspensionComponent} from "./apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component";
+import {PaymentsComponent} from "./apollowebs/quality-assurance/payments/payments.component";
 
 export const routes: Routes = [
     {
@@ -513,6 +514,12 @@ export const routes: Routes = [
     {
         path: 'smarkpermitdetails', component: AdminLayoutComponent,
         children: [{path: '', component: SmarkComponent}]
+    },
+    {
+        path: 'payments', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: PaymentsComponent}]
     },
     {
         path: 'company',

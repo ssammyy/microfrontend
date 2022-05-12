@@ -19,5 +19,8 @@ class CallbackRouter {
         "/api/v1/callback/qa".nest {
             POST("/payment/completed", handler::processPaymentSageNotification)
         }
+        "/api/v1/callback/ms".nest {
+            POST("/payment/completed", handler::processPaymentSageNotification)
+        }
     }
 }

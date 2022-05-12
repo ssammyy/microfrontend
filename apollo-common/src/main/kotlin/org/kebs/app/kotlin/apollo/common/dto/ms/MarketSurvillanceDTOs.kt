@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.common.dto.ms
 
 import java.math.BigDecimal
 import java.sql.Date
+import java.sql.Timestamp
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
@@ -209,7 +210,7 @@ data class FuelRemediationDto(
         var invoiceAmount: BigDecimal? = null,
         var feePaidReceiptNo: String? = null,
         var dateOfRemediation: Date? = null,
-        var dateOfPayment: Date? = null,
+        var dateOfPayment: Timestamp? = null,
         var invoiceCreated: Boolean? = null,
 )
 

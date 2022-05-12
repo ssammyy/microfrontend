@@ -935,12 +935,13 @@ class RegistrationHandler(
     fun handleValidatePhoneNumberAndTokenSecure(req: ServerRequest): ServerResponse {
         return try {
             val body = req.body<ValidateTokenRequestDto>()
+            println(body)
 
             val errors: Errors = BeanPropertyBindingResult(body, ValidateTokenRequestDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    val data = ValidatePhoneNumberTokenRequestDto(commonDaoServices.loggedInUserDetails().cellphone?:"", body.token)
+                    val data = ValidatePhoneNumberTokenRequestDto(commonDaoServices.loggedInUserDetailsEmail().cellphone?:"", body.token)
                     systemsAdminDaoService.validatePhoneNumberAndTokenB(data, req)
                         ?.let { ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")
