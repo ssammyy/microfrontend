@@ -533,6 +533,15 @@ export class LevyService {
         return this.http.get<PaymentDetails>(url, {params}).pipe();
     }
 
+    public getManufacturesLevyPaymentsList(companyId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURES_PAYMENT_DETAILS);
+        const params = new HttpParams().set('companyId', companyId);
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
+    }
+
+
+
+
 
 
 

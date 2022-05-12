@@ -87,6 +87,10 @@ interface LevyPayments{
     fun getAssignStatus(): Long?
     fun getFirstName(): String?
     fun getLastName(): String?
+    fun getKraPin(): String?
+    fun getRegistrationNumber(): String?
+    fun getPeriodFrom(): String?
+    fun getPeriodTo(): String?
 }
 interface ManufactureListHolder {
     fun getId(): Long?

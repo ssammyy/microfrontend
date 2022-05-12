@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo.std
 
+import org.kebs.app.kotlin.apollo.store.model.StandardLevyOperationsClosure
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaRawMaterialEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
@@ -35,6 +36,9 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
 
 interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest, Long> {
     fun findAllByOrderByIdDesc(): MutableList<CompanyStandardRequest>
+
+    @Query(value = "SELECT * FROM SD_COM_STANDARD_REQUEST  ", nativeQuery = true)
+    fun getCompanyStandardRequest(): MutableList<CompanyStandardRequest>
 
 }
 

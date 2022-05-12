@@ -1500,6 +1500,10 @@ return getUserTasks();
         return companyProfileRepo.getLevyPayments()
     }
 
+    fun getManufacturesLevyPaymentsList(companyId: Long): MutableList<LevyPayments>{
+        return companyProfileRepo.getManufacturesLevyPaymentsList(companyId)
+    }
+
     fun getManufacturesLevyPayments(): MutableList<LevyPayments>{
         commonDaoServices.loggedInUserDetails().id
             ?.let { id ->

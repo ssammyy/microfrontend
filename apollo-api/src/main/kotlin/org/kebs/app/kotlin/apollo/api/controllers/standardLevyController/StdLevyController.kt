@@ -1069,6 +1069,9 @@ class StdLevyController(
         return standardLevyService.getCompanyEditedDetails(manufactureId)
     }
 
+
+
+
     @GetMapping("/getSiteVisitRemarks")
     fun getSiteVisitRemarks(
         response: HttpServletResponse,
@@ -1391,6 +1394,14 @@ class StdLevyController(
     fun sendLevyPaymentReminders(): String
     {
         return standardLevyService.sendLevyPaymentReminders()
+    }
+
+    @GetMapping("/getManufacturesLevyPaymentsList")
+    fun getManufacturesLevyPaymentsList(
+        response: HttpServletResponse,
+        @RequestParam("companyId") companyId: Long
+    ): MutableList<LevyPayments> {
+        return standardLevyService.getManufacturesLevyPaymentsList(companyId)
     }
 
 

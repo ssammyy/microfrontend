@@ -315,6 +315,10 @@ export interface PaymentDetails{
     companyName: string;
     companyId: number;
     assignStatus: number;
+    kraPin: string;
+    registrationNumber: string;
+    periodFrom: string;
+    periodTo: string;
 }
 export interface ManufactureDetailList {
     id: number;
