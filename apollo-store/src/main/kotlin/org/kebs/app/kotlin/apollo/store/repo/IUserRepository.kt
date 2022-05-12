@@ -382,6 +382,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     )
     fun getDistinctManufactureEntryNo(): Long?
 
+
+
     @Query(
         value = "SELECT p.ENTRY_NUMBER as entryNumber, p.ID as id ,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName " +
                 " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID" +
@@ -414,6 +416,32 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getManufactureEmailAddressList(): MutableList<EmailListHolder>
+
+    @Query(
+        value = "SELECT p.ENTRY_NUMBER as entryNumber, p.ID as id ,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName " +
+                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID WHERE p.STATUS='1'" +
+                " ORDER BY p.ID DESC",
+        nativeQuery = true
+    )
+    fun getLevyPenalty(): MutableList<LevyPenalty>
+
+    @Query(
+        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.LEVY_PENALTY_PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,p.NET_PENALTY_AMT as amountDue,p.PENALTY_APPLIED as penalty,p.LEVY_DUE_DATE as levyDueDate," +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName " +
+                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID " +
+                "WHERE p.ENTRY_NUMBER= :entryNumber ORDER BY p.ID DESC",
+        nativeQuery = true
+    )
+    fun getManufacturesLevyPenalty(@Param("entryNumber") entryNumber: Long?): MutableList<LevyPenalty>
+
+    @Query(
+        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.LEVY_PENALTY_PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,p.NET_PENALTY_AMT as amountDue,p.PENALTY_APPLIED as penalty,p.LEVY_DUE_DATE as levyDueDate," +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName " +
+                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID " +
+                "WHERE c.ID= :companyId ORDER BY p.ID DESC",
+        nativeQuery = true
+    )
+    fun getManufacturesLevyPenaltyList(@Param("companyId") companyId: Long?): MutableList<LevyPenalty>
 
 
 

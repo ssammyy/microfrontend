@@ -1500,21 +1500,7 @@ return getUserTasks();
         return companyProfileRepo.getLevyPayments()
     }
 
-    fun getManufacturesLevyPaymentsList(companyId: Long): MutableList<LevyPayments>{
-        return companyProfileRepo.getManufacturesLevyPaymentsList(companyId)
-    }
 
-    fun getManufacturesLevyPayments(): MutableList<LevyPayments>{
-        commonDaoServices.loggedInUserDetails().id
-            ?.let { id ->
-                companyProfileRepo.getManufactureEntryNo(id)
-                    .let {
-                        return companyProfileRepo.getManufacturesLevyPayments(it)
-                    }
-
-            }
-            ?: throw ExpectedDataNotFound("No Data Found")
-    }
 
     fun suspendCompanyOperations(
         standardLevyOperationsSuspension: StandardLevyOperationsSuspension
@@ -1682,6 +1668,42 @@ return getUserTasks();
         }
 
         return "Email Sent"
+    }
+
+    fun getLevyPenalty(): MutableList<LevyPenalty> {
+        return companyProfileRepo.getLevyPenalty()
+    }
+
+    fun getManufacturesLevyPenaltyList(companyId: Long): MutableList<LevyPenalty>{
+        return companyProfileRepo.getManufacturesLevyPenaltyList(companyId)
+    }
+
+    fun getManufacturesLevyPenalty(): MutableList<LevyPenalty>{
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureEntryNo(id)
+                    .let {
+                        return companyProfileRepo.getManufacturesLevyPenalty(it)
+                    }
+
+            }
+            ?: throw ExpectedDataNotFound("No Data Found")
+    }
+
+    fun getManufacturesLevyPaymentsList(companyId: Long): MutableList<LevyPayments>{
+        return companyProfileRepo.getManufacturesLevyPaymentsList(companyId)
+    }
+
+    fun getManufacturesLevyPayments(): MutableList<LevyPayments>{
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureEntryNo(id)
+                    .let {
+                        return companyProfileRepo.getManufacturesLevyPayments(it)
+                    }
+
+            }
+            ?: throw ExpectedDataNotFound("No Data Found")
     }
 
 

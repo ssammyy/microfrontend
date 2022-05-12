@@ -320,6 +320,24 @@ export interface PaymentDetails{
     periodFrom: string;
     periodTo: string;
 }
+export interface PenaltyDetails{
+    id: number;
+    entryNumber: number;
+    paymentDate: string;
+    levyDueDate: string;
+    paymentAmount: bigint;
+    amountDue: bigint;
+    penalty: bigint;
+    lastName: string;
+    firstName: string;
+    companyName: string;
+    companyId: number;
+    assignStatus: number;
+    kraPin: string;
+    registrationNumber: string;
+    periodFrom: string;
+    periodTo: string;
+}
 export interface ManufactureDetailList {
     id: number;
     name: string;

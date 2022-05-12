@@ -1177,21 +1177,6 @@ class StdLevyController(
         return standardLevyService.getBranchName()
     }
 
-    @GetMapping("/getLevyPayments")
-    @ResponseBody
-    fun getLevyPayments(): MutableList<LevyPayments>
-    {
-        return standardLevyService.getLevyPayments()
-    }
-
-    @GetMapping("/getManufacturesLevyPayments")
-    @ResponseBody
-    fun getManufacturesLevyPayments(): MutableList<LevyPayments>
-    {
-        return standardLevyService.getManufacturesLevyPayments()
-    }
-
-
 
    // @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
     @PostMapping("/suspendCompanyOperations")
@@ -1396,12 +1381,48 @@ class StdLevyController(
         return standardLevyService.sendLevyPaymentReminders()
     }
 
+    @GetMapping("/getLevyPayments")
+    @ResponseBody
+    fun getLevyPayments(): MutableList<LevyPayments>
+    {
+        return standardLevyService.getLevyPayments()
+    }
+
+    @GetMapping("/getManufacturesLevyPayments")
+    @ResponseBody
+    fun getManufacturesLevyPayments(): MutableList<LevyPayments>
+    {
+        return standardLevyService.getManufacturesLevyPayments()
+    }
+
     @GetMapping("/getManufacturesLevyPaymentsList")
     fun getManufacturesLevyPaymentsList(
         response: HttpServletResponse,
         @RequestParam("companyId") companyId: Long
     ): MutableList<LevyPayments> {
         return standardLevyService.getManufacturesLevyPaymentsList(companyId)
+    }
+
+    @GetMapping("/getLevyPenalty")
+    @ResponseBody
+    fun getLevyPenalty(): MutableList<LevyPenalty>
+    {
+        return standardLevyService.getLevyPenalty()
+    }
+
+    @GetMapping("/getManufacturesLevyPenalty")
+    @ResponseBody
+    fun getManufacturesLevyPenalty(): MutableList<LevyPenalty>
+    {
+        return standardLevyService.getManufacturesLevyPenalty()
+    }
+
+    @GetMapping("/getManufacturesLevyPenaltyList")
+    fun getManufacturesLevyPenaltyList(
+        response: HttpServletResponse,
+        @RequestParam("companyId") companyId: Long
+    ): MutableList<LevyPenalty> {
+        return standardLevyService.getManufacturesLevyPenaltyList(companyId)
     }
 
 

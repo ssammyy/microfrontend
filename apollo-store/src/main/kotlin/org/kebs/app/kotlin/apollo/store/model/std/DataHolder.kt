@@ -92,6 +92,24 @@ interface LevyPayments{
     fun getPeriodFrom(): String?
     fun getPeriodTo(): String?
 }
+interface LevyPenalty{
+    fun getId(): Long?
+    fun getEntryNumber(): String?
+    fun getPaymentDate(): String?
+    fun getPaymentAmount(): String?
+    fun getAmountDue(): String?
+    fun getPenalty(): String?
+    fun getLevyDueDate(): String?
+    fun getCompanyId(): Long?
+    fun getCompanyName(): String?
+    fun getAssignStatus(): Long?
+    fun getFirstName(): String?
+    fun getLastName(): String?
+    fun getKraPin(): String?
+    fun getRegistrationNumber(): String?
+    fun getPeriodFrom(): String?
+    fun getPeriodTo(): String?
+}
 interface ManufactureListHolder {
     fun getId(): Long?
     fun getName(): String?
