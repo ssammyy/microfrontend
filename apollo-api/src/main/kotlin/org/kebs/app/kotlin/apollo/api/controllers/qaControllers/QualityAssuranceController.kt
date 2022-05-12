@@ -389,6 +389,11 @@ class QualityAssuranceController(
                 returnDetails = approveAssesmentReport(permit, map, permitDetails, loggedInUser)
                 permitDetails = returnDetails.first
             }
+            //PERMIT SUSPENDED/UNSUSPENDED
+            permit.suspensionStatus != null -> {
+                returnDetails = approveAssesmentReport(permit, map, permitDetails, loggedInUser)
+                permitDetails = returnDetails.first
+            }
 
 //            //Permit Resubmit application
 //            permit.resubmitApplicationStatus == map.activeStatus -> {
@@ -533,6 +538,82 @@ class QualityAssuranceController(
             permitDetailsDB.hodApproveAssessmentStatus,
             "HOD",
             "APPROVE/REJECT ASSESSMENT REPORT",
+            map,
+            loggedInUser
+        )
+
+        val closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
+    fun suspendUnsuspendPermit(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        permitDetails: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        var complianceValue: String? = null
+        var permitDetailsDB = permitDetails
+        when (permit.suspensionStatus) {
+            map.activeStatus -> {
+//                val appointedPacSec = qaDaoServices.assignNextOfficerWithDesignation(
+//                    permitDetailsDB,
+//                    map,
+//                    applicationMapProperties.mapQADesignationIDForPacSecId
+//                )
+
+                with(permitDetailsDB) {
+                    suspensionStatus = map.activeStatus
+                    suspensionRemarks = permit.suspensionRemarks
+//                    pacSecId = appointedPacSec?.id
+                    userTaskId = null
+                }
+                qaDaoServices.permitUpdateDetails(permitDetailsDB, map, loggedInUser)
+
+                //Send notification to PAC secretary
+//                val pacSec = appointedPacSec?.id?.let { commonDaoServices.findUserByID(it) }
+//                pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetailsDB) }
+
+                qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusSuspended,
+                    loggedInUser
+                )
+
+            }
+            map.inactiveStatus -> {
+//                complianceValue = "REJECTED"
+                with(permitDetailsDB) {
+                    resubmitApplicationStatus = 1
+                    userTaskId = null
+//                    assessmentScheduledStatus = null
+//                    hodApproveAssessmentStatus = null
+//                    permitAwardStatus = null
+                }
+
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusUnSuspended,
+                    loggedInUser
+                )
+
+//                qaDaoServices.sendAssessmentReportRejection(
+//                    permitDetailsDB,
+//                    complianceValue,
+//                    permitDetailsDB.hodApproveAssessmentRemarks
+//                        ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
+//                )
+
+            }
+        }
+
+        qaDaoServices.permitAddRemarksDetails(
+            permitDetailsDB.id ?: throw Exception("ID NOT FOUND"),
+            permitDetailsDB.suspensionRemarks,
+            permitDetailsDB.suspensionStatus,
+            "PCM",
+            "SUSPEND/UNSUSPEND PERMIT AWARDED",
             map,
             loggedInUser
         )
@@ -1117,13 +1198,12 @@ class QualityAssuranceController(
         when (permitFromInterface.pcmApprovalStatus) {
             map.activeStatus -> {
                 //TODO: CHANGE THE DATE OF EXPIRY IF RENEWAL
-                val issueDate = commonDaoServices.getCurrentDate()
                 val permitType = permitDetailsDB.permitType?.let { qaDaoServices.findPermitType(it) }
                 val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
 
                 with(permitFromInterface) {
-                    awardedPermitNumber = if (permitDetailsFromDB.renewalStatus != map.activeStatus) {
-                        "${permitType?.markNumber}${
+                    if (permitDetailsFromDB.renewalStatus != map.activeStatus) {
+                        awardedPermitNumber = "${permitType?.markNumber}${
                             generateRandomText(
                                 6,
                                 map.secureRandom,
@@ -1131,13 +1211,26 @@ class QualityAssuranceController(
                                 false
                             )
                         }".toUpperCase()
-                    } else {
-                        permitDetailsFromDB.awardedPermitNumber
+                        dateOfIssue = commonDaoServices.getCurrentDate()
+                        dateOfExpiry = expiryDate
+                        effectiveDate = commonDaoServices.getCurrentDate()
+                    } else if (permitDetailsFromDB.renewalStatus == map.activeStatus) {
+                        val previousPermit = qaDaoServices.findPermitWithPermitRefNumberLatest(
+                            permitDetailsFromDB.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+                        )
+                        awardedPermitNumber = previousPermit.awardedPermitNumber
+                        dateOfIssue = commonDaoServices.getCurrentDate()
+                        effectiveDate = commonDaoServices.addYDayToDate(
+                            previousPermit.dateOfExpiry ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"), 1
+                        )
+                        dateOfExpiry = commonDaoServices.addYearsToDate(
+                            effectiveDate ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"),
+                            permitType?.numberOfYears ?: throw Exception("MISSING NUMBER OF YEAR")
+                        )
                     }
                     userTaskId = null
                     permitAwardStatus = map.activeStatus
-                    dateOfIssue = issueDate
-                    dateOfExpiry = expiryDate
+
                 }
                 //Generate permit and forward to manufacturer
                 KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
@@ -2908,7 +3001,7 @@ class QualityAssuranceController(
         val permit = qaDaoServices.findPermitBYID(permitID)
 
         with(permit) {
-            applicationSuspensionStatus = map.activeStatus
+            suspensionStatus = map.activeStatus
             permitStatus = applicationMapProperties.suspended
 //            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
             userTaskId = applicationMapProperties.mapUserTaskNamePCM
@@ -2934,7 +3027,7 @@ class QualityAssuranceController(
         val permit = qaDaoServices.findPermitBYID(permitID)
 
         with(permit) {
-            applicationSuspensionStatus = map.activeStatus
+            suspensionStatus = map.activeStatus
             permitStatus = applicationMapProperties.mapQaStatusPermitAwarded
 //            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
             userTaskId = applicationMapProperties.mapUserTaskNamePCM

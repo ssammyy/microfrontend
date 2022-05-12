@@ -537,7 +537,9 @@ export class SmarkComponent implements OnInit {
     }
 
     reloadCurrentRoute() {
-        location.reload();
+        // location.reload();
+        this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
+
     }
 
     viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {

@@ -2241,6 +2241,7 @@ class QADaoServices(
             createdOn = permit.createdOn
             dateOfIssue = permit.dateOfIssue
             dateOfExpiry = permit.dateOfExpiry
+            effectiveDate = permit.effectiveDate
             commodityDescription = permit.commodityDescription
             brandName = permit.tradeMark
 
@@ -3598,6 +3599,11 @@ class QADaoServices(
             with(updatePermit) {
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
+                if (versionNumber==null)
+                {
+                    versionNumber=1
+                }
+
             }
             updatePermit = permitRepo.save(permits)
 
@@ -6370,6 +6376,19 @@ class QADaoServices(
 
         }
 
+        //update personnel in charge
+        try {
+            val updateQaPersonnel = qaPersonnelInchargeRepo.updatePersonnel(sta10Id, sta10IdToBeUpdated)
+            KotlinLogging.logger { }.info("The response is $updateQaPersonnel")
+
+        }
+        catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+
+        }
+
+
+
         try {
             val updateMachinery = machinePlantsSTA10Repo.updateMachinery(sta10Id, sta10IdToBeUpdated)
             KotlinLogging.logger { }.info("The response is $updateMachinery")
@@ -6380,8 +6399,7 @@ class QADaoServices(
         }
 
         try {
-            println(sta10Id)
-            println(sta10IdToBeUpdated)
+
             val updateRawMaterials = rawMaterialsSTA10Repo.updateRawMaterials(sta10Id, sta10IdToBeUpdated)
             KotlinLogging.logger { }.info("The response is $updateRawMaterials")
 
@@ -6391,8 +6409,7 @@ class QADaoServices(
         }
 
         try {
-            println(sta10Id)
-            println(sta10IdToBeUpdated)
+
             val manufacturingProcessSTA10Repo =
                 manufacturingProcessSTA10Repo.updateManufacturing(sta10Id, sta10IdToBeUpdated)
             KotlinLogging.logger { }.info("The response is $manufacturingProcessSTA10Repo")
@@ -6402,9 +6419,10 @@ class QADaoServices(
 
         }
         try {
-            println(sta10Id)
+
+            println(permitBeingUpdated)
             println(sta10IdToBeUpdated)
-            val productsManufactureSTA10Repo = productsManufactureSTA10Repo.updateProduct(sta10Id, sta10IdToBeUpdated)
+            val productsManufactureSTA10Repo = productsManufactureSTA10Repo.updateProduct(permitBeingUpdated, sta10IdToBeUpdated)
             KotlinLogging.logger { }.info("The response is $productsManufactureSTA10Repo")
 
         } catch (e: Exception) {
