@@ -502,6 +502,7 @@ export interface ManufactureCompletedTask {
     regionName: string;
     countyName: string;
     townName: string;
+    officersFeedback: string;
 
 }
 export interface UsersEntityList {
