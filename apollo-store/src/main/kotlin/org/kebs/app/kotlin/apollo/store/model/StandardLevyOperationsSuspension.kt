@@ -36,7 +36,7 @@ class StandardLevyOperationsSuspension : Serializable {
 
     @Column(name = "DATE_OF_SUSPENSION")
     @Basic
-    var dateOfSuspension: Timestamp? = null
+    var dateOfSuspension: String? = null
 
 
 

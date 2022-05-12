@@ -36,7 +36,7 @@ class StandardLevyOperationsClosure : Serializable {
 
     @Column(name = "DATE_OF_CLOSURE")
     @Basic
-    var dateOfClosure: Timestamp? = null
+    var dateOfClosure: String? = null
 
 
 

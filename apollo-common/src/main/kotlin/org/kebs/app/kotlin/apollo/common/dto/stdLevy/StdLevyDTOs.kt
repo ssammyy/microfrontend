@@ -144,7 +144,7 @@ data class SuspendCompanyDto(
    var id: Long? = null,
    var name: String? = null,
    var reason: String? = null,
-   var dateOfSuspension: Timestamp? = null,
+   var dateOfSuspension: String? = null,
 
 ){
 
@@ -164,7 +164,7 @@ data class CloseCompanyDto(
     var id: Long? = null,
     var name: String? = null,
     var reason: String? = null,
-    var dateOfClosure: Timestamp? = null,
+    var dateOfClosure: String? = null,
 
     ){
 

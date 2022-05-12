@@ -1189,7 +1189,7 @@ class StdLevyController(
         val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
             companyId = suspendCompanyDto.id
             reason = suspendCompanyDto.reason
-            dateOfSuspension = suspendCompanyDto.dateOfSuspension
+            dateOfSuspension = suspendCompanyDto.dateOfSuspension.toString()
         }
 
         return ServerResponse(HttpStatus.OK,"Details Submitted for Verification",standardLevyService.suspendCompanyOperations(standardLevyOperationsSuspension))
@@ -1251,7 +1251,7 @@ class StdLevyController(
         val standardLevyOperationsClosure= StandardLevyOperationsClosure().apply {
             companyId = closeCompanyDto.id
             reason = closeCompanyDto.reason
-            dateOfClosure = closeCompanyDto.dateOfClosure
+            dateOfClosure = closeCompanyDto.dateOfClosure.toString()
         }
 
         return ServerResponse(HttpStatus.OK,"Details Submitted for Verification",standardLevyService.closeCompanyOperations(standardLevyOperationsClosure))
@@ -1266,7 +1266,7 @@ class StdLevyController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         //val windingUpReport = standardLevyOperationsClosureRepository.findByIdOrNull(operationClosureId)?: throw Exception("Record Does Not Exist")
 
         docFile.forEach { u ->
