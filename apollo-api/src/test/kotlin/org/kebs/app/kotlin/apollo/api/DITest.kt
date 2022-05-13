@@ -850,7 +850,8 @@ class DITest {
                                 val invoiceDetail = invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
                                         loggedInUser.userName!!,
                                         updateBatchInvoiceDetail,
-                                        myAccountDetails
+                                        myAccountDetails,
+                                        "DI"
                                 )
 //                                invoiceDetail.invoiceId?.let {
 //                                    val batchInvoiceDetail = invoiceDaoService.findInvoiceBatchDetails(it)
