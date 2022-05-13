@@ -142,6 +142,7 @@ export class SmarkComponent implements OnInit {
 
     ngOnInit(): void {
 
+
         this.getSelectedPermit();
         this.remarksDetails();
 
@@ -538,6 +539,14 @@ export class SmarkComponent implements OnInit {
 
     reloadCurrentRoute() {
         location.reload();
+        // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
+
+    }
+
+    loadCInvoiceRoute() {
+        // location.reload();
+        this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
+
     }
 
     viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
@@ -695,6 +704,7 @@ export class SmarkComponent implements OnInit {
             },
             buttonsStyling: false
         });
+        var productID = 'productID';
 
         swalWithBootstrapButtons.fire({
             title: 'Are you sure your application is complete?',
@@ -718,16 +728,16 @@ export class SmarkComponent implements OnInit {
                                 'success'
                             );
                         } else {
+                            let invoicenumber = this.allPermitDetails.batchID.toString()
                             swalWithBootstrapButtons.fire(
                                 'Submitted!',
                                 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
                                 'success'
-                            );
+                            ).then(r => {
+                                alert(invoicenumber)
+                                window.location.href = '/invoiceDetails#' + invoicenumber
+                            });
                         }
-                        this.reloadCurrentRoute();
-                        // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
-
-                        // this.onUpdateReturnToList();
                     },
                 );
             } else if (
@@ -998,6 +1008,4 @@ export class SmarkComponent implements OnInit {
 
         }
     }
-
-
 }

@@ -2,7 +2,13 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Subject} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
-import {ManufactureDetailList, PaidLevy, PaymentDetails} from "../../../core/store/data/levy/levy.model";
+import {
+    DocumentDTO,
+    ManufactureDetailList,
+    ManufacturePendingTask,
+    PaidLevy,
+    PaymentDetails
+} from "../../../core/store/data/levy/levy.model";
 import {LevyService} from "../../../core/store/data/levy/levy.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DataTableDirective} from "angular-datatables";
@@ -15,12 +21,15 @@ import {DataTableDirective} from "angular-datatables";
 export class StandardLevyPaidComponent implements OnInit {
   tasks: PaidLevy[] = [];
   paymentDetails: PaymentDetails[] = [];
-  public actionRequest: PaidLevy | undefined;
+  paidDetails: PaymentDetails[] = [];
+  public actionRequest: PaymentDetails | undefined;
 
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
+  dtElements: DataTableDirective;
 
   dtTrigger: Subject<any> = new Subject<any>();
+  dtTriggers: Subject<any> = new Subject<any>();
   isDtInitialized: boolean = false
   loadingText: string;
 
@@ -35,6 +44,7 @@ export class StandardLevyPaidComponent implements OnInit {
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    this.dtTriggers.unsubscribe();
   }
   // public getPaidLevies(): void{
   //   this.SpinnerService.show();
@@ -63,16 +73,76 @@ export class StandardLevyPaidComponent implements OnInit {
             this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
               dtInstance.destroy();
               this.dtTrigger.next();
+              this.dtTriggers.next();
             });
           } else {
             this.isDtInitialized = true
             this.dtTrigger.next();
+            this.dtTriggers.next();
           }
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           console.log(error.message);
 
+        }
+    );
+  }
+    public onOpenModalPayment(paymentDetail:PaymentDetails ,mode: string,companyId: number): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+
+        if (mode === 'paymentDetails') {
+            this.actionRequest = paymentDetail;
+            button.setAttribute('data-target', '#paymentDetails');
+            this.loadingText = "Loading ...."
+            this.SpinnerService.show();
+            this.levyService.getManufacturesLevyPaymentsList(companyId).subscribe(
+                (response: PaymentDetails[]) => {
+                    this.paidDetails = response;
+                    this.SpinnerService.hide();
+                    console.log(this.paidDetails);
+                    if (this.isDtInitialized) {
+                        this.dtElements.dtInstance.then((dtInstance: DataTables.Api) => {
+                            dtInstance.destroy();
+                            this.dtTrigger.next();
+                            this.dtTriggers.next();
+                        });
+                    } else {
+                        this.isDtInitialized = true
+                        this.dtTrigger.next();
+                        this.dtTriggers.next();
+                    }
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    console.log(error.message);
+                }
+            );
+
+        }
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+
+    }
+
+  toggleDisplayLevyPaid(companyId: number){
+    this.loadingText = "Loading ...."
+    this.SpinnerService.show();
+    this.levyService.getManufacturesLevyPaymentsList(companyId).subscribe(
+        (response: PaymentDetails[]) => {
+          this.paidDetails = response;
+          this.SpinnerService.hide();
+          console.log(this.paidDetails)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          console.log(error.message);
         }
     );
   }

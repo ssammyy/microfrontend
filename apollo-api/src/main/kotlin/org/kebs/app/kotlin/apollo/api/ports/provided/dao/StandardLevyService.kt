@@ -903,15 +903,15 @@ return getUserTasks();
             variables["approvalStatus"]= "Approved by $approverFname  $approverLname"
             variables["approvalStatusId"]=1
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
-                ?.let { standardLevyFactoryVisitReportEntity ->
+                ?.let { entity ->
 
-                    with(standardLevyFactoryVisitReportEntity) {
+                    entity.apply {
                         assistantManagerRemarks = standardLevyFactoryVisitReportEntity.assistantManagerRemarks
                         status = 1
                         assigneeId = standardLevyFactoryVisitReportEntity.assigneeId
                         accentTo = true
                     }
-                    standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+                    standardLevyFactoryVisitReportRepo.save(entity)
 
                     standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
@@ -959,15 +959,15 @@ return getUserTasks();
             variables["rejectStatus"]= "Rejected by $approverFname  $approverLname"
             variables["approvalStatusId"]=0
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
-                ?.let { standardLevyFactoryVisitReportEntity ->
+                ?.let { entity ->
 
-                    with(standardLevyFactoryVisitReportEntity) {
+                    entity.apply {
                         assistantManagerRemarks = standardLevyFactoryVisitReportEntity.assistantManagerRemarks
                         status = 1
                         assigneeId = standardLevyFactoryVisitReportEntity.assigneeId
                         accentTo = false
                     }
-                    standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+                    standardLevyFactoryVisitReportRepo.save(entity)
 
                     standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
@@ -1057,14 +1057,14 @@ return getUserTasks();
             variables["approvalStatusLevelTwo"]= "Approved by $approverFname  $approverLname"
             variables["approvalStatusId"]=1
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
-                ?.let { standardLevyFactoryVisitReportEntity ->
+                ?.let { entity ->
 
-                    with(standardLevyFactoryVisitReportEntity) {
+                    entity.apply {
                         cheifManagerRemarks = standardLevyFactoryVisitReportEntity.cheifManagerRemarks
                         status = 2
                         accentTo = true
                     }
-                    standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+                    standardLevyFactoryVisitReportRepo.save(entity)
                     standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
 
@@ -1112,14 +1112,14 @@ return getUserTasks();
             variables["rejectStatusLevelTwo"]= "Rejected by $approverFname  $approverLname"
             variables["approvalStatusId"]=0
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
-                ?.let { standardLevyFactoryVisitReportEntity ->
+                ?.let { entity ->
 
-                    with(standardLevyFactoryVisitReportEntity) {
+                    entity.apply {
                         cheifManagerRemarks = standardLevyFactoryVisitReportEntity.cheifManagerRemarks
                         status = 2
                         accentTo = false
                     }
-                    standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+                    standardLevyFactoryVisitReportRepo.save(entity)
                     standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
 
@@ -1196,6 +1196,32 @@ return getUserTasks();
         return getUserTasks()
     }
 
+    fun siteVisitReportFeedbackTest(
+        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
+    ): String {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val variables: MutableMap<String, Any> = java.util.HashMap()
+        standardLevyFactoryVisitReportEntity.officersFeedback?.let { variables["officersFeedback"] = it }
+        standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
+
+        standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
+            ?.let { entity ->
+
+                entity.apply {
+                    officersFeedback = standardLevyFactoryVisitReportEntity.officersFeedback
+                    assigneeId = standardLevyFactoryVisitReportEntity.assigneeId
+                    status = 3
+                    slProcessStatus = 1
+
+                }
+                standardLevyFactoryVisitReportRepo.save(entity)
+            } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
+
+        return "Saved"
+    }
+
     fun siteVisitReportFeedback(
         standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
     ): ProcessInstanceResponseValueSite {
@@ -1207,16 +1233,15 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
 
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
-            ?.let { standardLevyFactoryVisitReportEntity ->
-
-                with(standardLevyFactoryVisitReportEntity) {
+            ?.let { entity ->
+                entity.apply {
                     officersFeedback = standardLevyFactoryVisitReportEntity.officersFeedback
                     assigneeId = standardLevyFactoryVisitReportEntity.assigneeId
                     status = 3
                     slProcessStatus = 1
 
                 }
-                standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
+                standardLevyFactoryVisitReportRepo.save(entity)
             } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
 
         val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
@@ -1227,14 +1252,14 @@ return getUserTasks();
         }
 
         companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
-            ?.let { companyProfileEntity ->
-                with(companyProfileEntity) {
+            ?.let { comEntity ->
+                comEntity.apply {
                     assignedTo = 0
                     assignStatus = 0
                 }
-                companyProfileRepo.save(companyProfileEntity)
+                companyProfileRepo.save(comEntity)
                 runtimeService.createProcessInstanceQuery()
-                    .processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
+                    .processInstanceId(comEntity.slBpmnProcessInstance).list()
                     ?.let { l ->
                         val processInstance = l[0]
                         taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
@@ -1259,7 +1284,7 @@ return getUserTasks();
                         bpmnService.slAssignTask(
                             processInstance.processInstanceId,
                             "Receive Feedback",
-                            standardLevyFactoryVisitReportEntity?.assigneeId
+                            standardLevyFactoryVisitReportEntity.assigneeId
                                 ?: throw NullValueNotAllowedException("invalid user id provided")
                         )
                         return ProcessInstanceResponseValueSite(
@@ -1268,7 +1293,7 @@ return getUserTasks();
                             processInstance.isEnded
                         )
                     }
-                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
+                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${comEntity.slBpmnProcessInstance} ")
 
             }
             ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
@@ -1500,17 +1525,7 @@ return getUserTasks();
         return companyProfileRepo.getLevyPayments()
     }
 
-    fun getManufacturesLevyPayments(): MutableList<LevyPayments>{
-        commonDaoServices.loggedInUserDetails().id
-            ?.let { id ->
-                companyProfileRepo.getManufactureEntryNo(id)
-                    .let {
-                        return companyProfileRepo.getManufacturesLevyPayments(it)
-                    }
 
-            }
-            ?: throw ExpectedDataNotFound("No Data Found")
-    }
 
     fun suspendCompanyOperations(
         standardLevyOperationsSuspension: StandardLevyOperationsSuspension
@@ -1534,35 +1549,57 @@ return getUserTasks();
         companyProfileEntity.id = companyProfileEntity.id
         standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
-            ?.let { companyProfileEntity ->
+            ?.let { entity ->
 
-                with(companyProfileEntity) {
+                entity.apply {
                    status=2
                 }
-                companyProfileRepo.save(companyProfileEntity)
+                companyProfileRepo.save(entity)
 
             }?: throw Exception("COMPANY NOT FOUND")
         standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
-            ?.let { standardLevyOperationsSuspension ->
-                with(standardLevyOperationsSuspension){
+            ?.let { entity ->
+
+                entity.apply {
                     status=1
                 }
-                standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
+                standardLevyOperationsSuspensionRepository.save(entity)
+                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
+                val subject = "Request For Suspension of Company"
+                val messageBody= "Dear ${companyName}, Your request for suspension of company operations has been approved. Regards, KEBS,"
+                if (recipient != null) {
+                    notifications.sendEmail(recipient, subject, messageBody)
+
+                }
             }
 
         return "Company Suspended"
     }
 
     fun rejectCompanySuspension(
-        standardLevyOperationsSuspension: StandardLevyOperationsSuspension
+        standardLevyOperationsSuspension: StandardLevyOperationsSuspension,
+        companyProfileEntity: CompanyProfileEntity,
     ): String {
+        companyProfileEntity.id = companyProfileEntity.id
         standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
         standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
-            ?.let { standardLevyOperationsSuspension ->
-                with(standardLevyOperationsSuspension){
+            ?.let { entity ->
+
+                entity.apply {
                     status=1
                 }
-                standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
+                standardLevyOperationsSuspensionRepository.save(entity)
+                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
+                val subject = "Request For Suspension of Company"
+                val messageBody= "Dear ${companyName}, Your request for suspension of company operations has been declined. Regards, KEBS,"
+                if (recipient != null) {
+                    notifications.sendEmail(recipient, subject, messageBody)
+
+                }
             }
 
         return "Company Suspension Rejected"
@@ -1625,36 +1662,63 @@ return getUserTasks();
         companyProfileEntity.id = companyProfileEntity.id
         standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
-            ?.let { companyProfileEntity ->
+            ?.let { entity ->
 
-                with(companyProfileEntity) {
+                entity.apply {
                     status=0
                 }
-                companyProfileRepo.save(companyProfileEntity)
+                companyProfileRepo.save(entity)
 
             }?: throw Exception("COMPANY NOT FOUND")
         standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
-            ?.let { standardLevyOperationsSuspension ->
-                with(standardLevyOperationsSuspension){
+            ?.let { entity ->
+                entity.apply {
                     status=1
                 }
-                standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
+                standardLevyOperationsSuspensionRepository.save(entity)
+
+                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
+                val subject = "Request For Close of Company"
+                val messageBody= "Dear ${companyName}, Your request for closure of company operations has been approved. Regards, KEBS,"
+                if (recipient != null) {
+                    notifications.sendEmail(recipient, subject, messageBody)
+
+                }
             }
+
+
 
         return "Company Closed"
     }
 
     fun rejectCompanyClosure(
-        standardLevyOperationsSuspension: StandardLevyOperationsSuspension
+        standardLevyOperationsSuspension: StandardLevyOperationsSuspension,
+        companyProfileEntity: CompanyProfileEntity
     ): String {
+
+        companyProfileEntity.id = companyProfileEntity.id
         standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
         standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
-            ?.let { standardLevyOperationsSuspension ->
-                with(standardLevyOperationsSuspension){
+            ?.let { entity ->
+                entity.apply {
                     status=1
                 }
-                standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
+                standardLevyOperationsSuspensionRepository.save(entity)
+
+                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
+                val subject = "Request For Close of Company"
+                val messageBody= "Dear ${companyName}, Your request for closure of company operations has been declined. Regards, KEBS,"
+                if (recipient != null) {
+                    notifications.sendEmail(recipient, subject, messageBody)
+
+                }
+
             }
+
 
         return "Company Closure Rejected"
     }
@@ -1678,6 +1742,42 @@ return getUserTasks();
         }
 
         return "Email Sent"
+    }
+
+    fun getLevyPenalty(): MutableList<LevyPenalty> {
+        return companyProfileRepo.getLevyPenalty()
+    }
+
+    fun getManufacturesLevyPenaltyList(companyId: Long): MutableList<LevyPenalty>{
+        return companyProfileRepo.getManufacturesLevyPenaltyList(companyId)
+    }
+
+    fun getManufacturesLevyPenalty(): MutableList<LevyPenalty>{
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureEntryNo(id)
+                    .let {
+                        return companyProfileRepo.getManufacturesLevyPenalty(it)
+                    }
+
+            }
+            ?: throw ExpectedDataNotFound("No Data Found")
+    }
+
+    fun getManufacturesLevyPaymentsList(companyId: Long): MutableList<LevyPayments>{
+        return companyProfileRepo.getManufacturesLevyPaymentsList(companyId)
+    }
+
+    fun getManufacturesLevyPayments(): MutableList<LevyPayments>{
+        commonDaoServices.loggedInUserDetails().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureEntryNo(id)
+                    .let {
+                        return companyProfileRepo.getManufacturesLevyPayments(it)
+                    }
+
+            }
+            ?: throw ExpectedDataNotFound("No Data Found")
     }
 
 

@@ -1,105 +1,190 @@
-    <div class="container-fluid" style="margin-top: 5%" id="main-container">
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
     <div  class="loading-spinner ">
-    <ngx-spinner
-    bdColor="rgba(51,51,51,0.8)"
-    size="medium"
-    color="#fff"
-    type="ball-scale-multiple"
-    >
-    <p style="font-size: 20px; color: white">Loading...</p>
-    </ngx-spinner>
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
     </div>
     <div class="main-content" >
-    <div class="container-fluid">
-    <div class="row">
-    <div class="col-md-12">
-    <div class="card">
-    <div class="card-header card-header-primary card-header-icon">
-    <div class="card-icon">
-    <i class="material-icons">assignment</i>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
 
-    </div>
-    <div class="card-title float-left"><h4 style="color: #0d47a1; font-weight: bold">Manufacturer with Penalties</h4></div>
+                            </div>
+                            <div class="card-title float-left"><h4 style="color: #0d47a1; font-weight: bold">Payment Details</h4></div>
 
-    <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
-    Tasks <span class="badge badge-primary">{{tasks.length}}</span>
-    </button></div>
-    </div>
-    <div class="card-body">
-    <div class="toolbar">
+                            <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
+                                Tasks <span class="badge badge-primary">{{penaltyDetails.length}}</span>
+                            </button></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
 
-    </div>
-    <div class="row">
-    <div class="material-datatables table-responsive col-md-9">
-    <table  class="table table-striped table-bordered table-hover " datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger" cellspacing="0" width="100%">
-    <thead>
-    <tr>
-    <th>#</th>
-    <th class="knw">Entry Number</th>
-    <th class="sl">Manufacturer</th>
-    <th class="sl">Payment Amount</th>
-    <th class="requestNumber">Visit Status </th>
-    <th class="knw">Assigned To</th>
-    </tr>
-    </thead>
-    <tbody >
-    <tr  *ngFor="let task of tasks let i=index">
-        <td >{{i+1}} <input class="" type="checkbox" value="{{task.id}}" id="{{task.id}}"></td>
-        <td>{{task.id}}</td>
-        <td>{{task.manufacturerName}}</td>
-        <td>{{task.penaltyPayable}}</td>
-        <td>{{task.status}}</td>
-<!--    <td>Pending</td>-->
-    <td>Jane Doe</td>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card" style="background-color: #e7ecee">
+                                        <div class="card-body">
+                                            <h4 class="card-title" style="color: #0d0505; font-weight: bold">Filter By</h4>
 
-    </tr>
-    </tbody>
+                                            <form>
+                                                <!--    <h4 class="card-title" style="color: #0d0505; font-weight: bold">Visit Status</h4>-->
+                                                <!--<div class="form-check">-->
+                                                <!--<input class="" type="checkbox" value="" id="flexCheckDefault">-->
+                                                <!--<label class="" for="flexCheckDefault">-->
+                                                <!--Not Scheduled-->
+                                                <!--</label>-->
+                                                <!--</div>-->
+                                                <!--<div class="form-check">-->
+                                                <!--<input class="" type="checkbox" value="" id="flexCheckChecked" >-->
+                                                <!--<label class="" for="flexCheckChecked">-->
+                                                <!--Pending-->
+                                                <!--</label>-->
+                                                <!--</div>-->
+                                                <!--    <div class="form-check">-->
+                                                <!--        <input class="" type="checkbox" value="" id="flexCheckChecked1" >-->
+                                                <!--        <label class="" for="flexCheckChecked1">-->
+                                                <!--            Done-->
+                                                <!--        </label>-->
+                                                <!--    </div>-->
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <!--     <h4 class="card-title" style="color: #0d0505; font-weight: bold">Payment Date</h4>-->
+                                                        <div class="form-group">
+                                                            <label class="form-check-label" >
+                                                                From
+                                                            </label>
+                                                            <input class="control-label" type="date" value="" id="from">
 
-    </table>
-    </div>
-    <div class="col-md-3">
-    <div class="card" style="background-color: #e7ecee">
-    <div class="card-body">
-    <h4 class="card-title" style="color: #0d0505; font-weight: bold">Filter By</h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <div class="form-group">
+                                                            <label class="form-check-label" >
+                                                                To
+                                                            </label>
+                                                            <input class="control-label" type="date" value="" id="to">
 
-    <form>
-    <h4 class="card-title" style="color: #0d0505; font-weight: bold">Visit Status</h4>
-    <div class="form-check">
-    <input class="" type="checkbox" value="" id="flexCheckDefault">
-    <label class="" for="flexCheckDefault">
-    Not Scheduled
-    </label>
-    </div>
-    <div class="form-check">
-    <input class="" type="checkbox" value="" id="flexCheckChecked" >
-    <label class="" for="flexCheckChecked">
-    Pending
-    </label>
-    </div>
-    <div class="form-check">
-    <input class="" type="checkbox" value="" id="flexCheckChecked1" >
-    <label class="" for="flexCheckChecked1">
-    Done
-    </label>
-    </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <!--    <h4 class="card-title" style="color: #0d0505; font-weight: bold">Assigned To</h4>-->
+                                                        <div>
+                                                            <!--         <label class="form-check-label" >-->
+                                                            <!--             Assigned To-->
+                                                            <!--         </label>-->
+                                                            <input
+                                                                    class="form-control"   name="assignedTo" type="text" placeholder="Assigned To">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <button class="btn btn-sm btn-primary">Apply Filter</button>
+                                                    </div>
 
-    <h4 class="card-title" style="color: #0d0505; font-weight: bold">Assigned To</h4>
-    <div>
-    <input
-    class="form-control"   name="assignedTo" type="text" placeholder="Assigned To">
-    </div>
-    <button class="btn btn-sm btn-primary">Apply Filter</button>
-    </form>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
+                                                </div>
 
+
+
+
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="material-datatables table-responsive col-md-12">
+                                    <table class="table table-striped table-bordered table-hover" datatable
+                                           [dtTrigger]="dtTrigger">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">Entry Number</th>
+                                            <th class="sl">Manufacturer</th>
+                                            <th class="knw">Registration Number</th>
+                                            <th class="sl">Kra Pin</th>
+                                            <th class="knw">Assign Status</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <!--<input class="" type="checkbox" value="{{paymentDetail.id}}" id="{{paymentDetail.id}}">-->
+                                        <tr  *ngFor="let penaltyDetail of penaltyDetails let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{penaltyDetail.entryNumber}}</td>
+                                            <td>{{penaltyDetail.companyName}}</td>
+                                            <td>{{penaltyDetail.registrationNumber}}</td>
+                                            <td>KSH {{penaltyDetail.kraPin}}</td>
+                                            <td *ngIf="penaltyDetail.assignStatus==0"><span class="badge badge-rose" style="width: 135px">Not Assigned</span></td>
+                                            <td *ngIf="penaltyDetail.assignStatus==1"><span class="badge badge-success" style="width: 135px">Assigned</span></td>
+                                            <td><button (click)="onOpenModalPenalty(penaltyDetail,'penaltyDetails',penaltyDetail.companyId)" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal fade" id="penaltyDetails" tabindex="-1" role="dialog" aria-labelledby="paymentDetailsModalLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title" id="paymentDetailsModalLabel"><b>Payment Details for {{actionRequest?.companyName}}</b></h3>
+                                                <button type="button" class="close" #closeModalCDetails data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="material-datatables table-responsive col-md-12">
+                                                    <table class="table table-striped table-bordered table-hover" datatable
+                                                           [dtTrigger]="dtTriggers">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th class="knw">Entry Number</th>
+                                                            <th class="sl">Manufacturer</th>
+                                                            <th class="knw">Period For</th>
+                                                            <th class="sl">Penalty</th>
+                                                            <th class="sl">Date Paid</th>
+                                                            <th class="knw">Amount Paid</th>
+                                                            <th class="knw">Amount Due</th>
+                                                            <th class="knw">Months Late</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr  *ngFor="let penaltiesDetail of penaltiesDetails let i=index">
+                                                            <td >{{i+1}} </td>
+                                                            <td>{{penaltiesDetail.entryNumber}}</td>
+                                                            <td>{{penaltiesDetail.companyName}}</td>
+                                                            <td>{{penaltiesDetail.periodFrom}}-{{penaltiesDetail.periodTo}}</td>
+                                                            <td>{{penaltiesDetail.penalty}}</td>
+                                                            <td>{{penaltiesDetail.paymentDate}}</td>
+                                                            <td>KSH {{penaltiesDetail.paymentAmount}}</td>
+                                                            <td>KSH {{penaltiesDetail.amountDue}}</td>
+                                                            <td>{{penaltiesDetail.levyDueDate}}</td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    </div>
-    </div>
-    </div>
+</div>
 

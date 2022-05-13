@@ -1090,9 +1090,8 @@ class RegistrationDaoServices(
                     stdLevyNotificationFormRepository.save(stdLevyNotificationForm)
 
                     companyProfileRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
-                        ?.let { companyProfileEntity->
-
-                            with(companyProfileEntity){
+                        ?.let { entity ->
+                            entity.apply {
                                 entryNumber=eNumber.entryNumber
                                 branchName=stdLevyNotificationFormDTO.nameOfBranch
                                 assignStatus=0
@@ -1101,7 +1100,7 @@ class RegistrationDaoServices(
 
                             }
 
-                            companyProfileRepo.save(companyProfileEntity)
+                            companyProfileRepo.save(entity)
                             stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
                                 ?.let {stgLevyEntryNumber->
                                     with(stgLevyEntryNumber){

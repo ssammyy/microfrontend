@@ -18,6 +18,7 @@ export class StandardLevyClosureComponent implements OnInit {
   public actionRequest: ClosedCompanyDTO | undefined;
     documentDTOs: DocumentDTO[] = [];
   public approveRequestFormGroup!: FormGroup;
+  public rejectRequestFormGroup!: FormGroup;
     blob: Blob;
     isShowDocumentsTab= true;
 
@@ -38,6 +39,18 @@ export class StandardLevyClosureComponent implements OnInit {
   ngOnInit(): void {
     this.getCompanyClosureRequest();
       this.approveRequestFormGroup = this.formBuilder.group({
+          id: [],
+          companyId: [],
+          reason: [],
+          entryNumber: [],
+          kraPin: [],
+          registrationNumber: [],
+          companyName: [],
+          dateOfClosure: []
+
+      });
+
+      this.rejectRequestFormGroup = this.formBuilder.group({
           id: [],
           companyId: [],
           reason: [],
@@ -104,6 +117,17 @@ export class StandardLevyClosureComponent implements OnInit {
             );
 
         }
+        if (mode==='rejectClosure'){
+            this.actionRequest=closedCompanyDTOs;
+            button.setAttribute('data-target','#rejectClosure');
+            this.rejectRequestFormGroup.patchValue(
+                {
+                    id: this.actionRequest.id,
+                    companyId: this.actionRequest.companyId
+                }
+            );
+
+        }
         this.loadingText = "Loading ...."
         this.SpinnerService.show();
         this.levyService.getWindingUpReportDocumentList(closureID).subscribe(
@@ -122,6 +146,7 @@ export class StandardLevyClosureComponent implements OnInit {
         button.click();
 
     }
+
     toggleDisplayDocuments(closureID: number) {
         this.loadingText = "Loading ...."
         this.SpinnerService.show();
@@ -161,7 +186,7 @@ export class StandardLevyClosureComponent implements OnInit {
     rejectCompanyClosure(): void {
         this.loadingText = "Approving";
         this.SpinnerService.show();
-        this.levyService.rejectCompanyClosure(this.approveRequestFormGroup.value).subscribe(
+        this.levyService.rejectCompanyClosure(this.rejectRequestFormGroup.value).subscribe(
             (response) => {
                 console.log(response);
                 this.SpinnerService.hide();

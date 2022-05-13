@@ -94,6 +94,7 @@
                                             <th class="knw">Kra Pin</th>
                                             <th class="sl">Registration Number</th>
                                             <th>Action</th>
+                                            <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -103,7 +104,8 @@
                                             <td>{{suspendedCompanyDTO.entryNumber}}</td>
                                             <td>{{suspendedCompanyDTO.kraPin}}</td>
                                             <td>{{suspendedCompanyDTO.registrationNumber}}</td>
-                                            <td ><button (click)="openModal(suspendedCompanyDTO,'viewDetails')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> Action</button></td>
+                                            <td ><button (click)="openModal(suspendedCompanyDTO,'viewDetails')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> Confirm</button></td>
+                                            <td ><button (click)="openModal(suspendedCompanyDTO,'rejectSuspension')" type="submit" class="btn btn-danger btn-sm"  style="border-radius: 40px;"> Reject</button></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -235,7 +237,7 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-sm btn-primary">Confirm</button>
+                                                <button type="submit" class="btn btn-sm btn-primary">Confirm</button>
                                                 <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
                                             </div>
                                             </form>
@@ -244,6 +246,142 @@
 
 
                             </div>
+                                <div class="modal fade" id="rejectSuspension" tabindex="-1" role="dialog" aria-labelledby="rejectSuspensionExampleModalLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2 class="modal-title" id="rejectSuspensionExampleModalLabel"><b>Reject Company Suspension</b></h2>
+                                                <button type="button" class="close" #closeModal data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form (ngSubmit)="rejectCompanySuspension()" [formGroup]="rejectRequestFormGroup"
+                                                  class="form">
+                                                <div class="modal-body">
+                                                    <div class="form-body">
+                                                        <div class="row">
+                                                            <input type="hidden"
+                                                                   formControlName="companyId" name="companyId"
+                                                                   value="{{actionRequest?.companyId}}">
+                                                            <input type="hidden"
+                                                                   formControlName="id" name="id"
+                                                                   value="{{actionRequest?.id}}">
+
+                                                        </div>
+                                                        <div class="list-group list-group-flush">
+                                                            <div class="row col-12">
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Company
+                                                                                        Name</b></h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <p class="text-sm mb-0">{{actionRequest?.companyName}}.</p>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>KRA PIN</b>
+                                                                                    </h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <p class="text-sm mb-0">{{actionRequest?.kraPin}}.</p>
+                                                                    </a>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="row col-12">
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Registration
+                                                                                        Number</b></h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <p class="text-sm mb-0">{{actionRequest?.registrationNumber}}
+                                                                            .</p>
+                                                                    </a>
+                                                                </div>
+
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Entry
+                                                                                        Number</b></h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <p class="text-sm mb-0">{{actionRequest?.entryNumber}}.</p>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row col-12">
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Reason for
+                                                                                        Suspension</b></h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <p class="text-sm mb-0">{{actionRequest?.reason}}.</p>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                            <div>
+                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Date of
+                                                                                        Suspension</b></h5>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <p class="text-sm mb-0">{{actionRequest?.dateOfSuspension}}.</p>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+
+                                </div>
                         </div>
                     </div>
                 </div>

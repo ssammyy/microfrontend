@@ -568,6 +568,20 @@ interface IQaSampleCollectionRepository : HazelcastRepository<QaSampleCollection
 @Repository
 interface IQaPersonnelInchargeEntityRepository : HazelcastRepository<QaPersonnelInchargeEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaPersonnelInchargeEntity>?
+
+
+    @Query(value="INSERT INTO DAT_KEBS_QA_PERSONNEL_INCHARGE t1\n" +
+            "(\n" +
+            " t1.PERSONNEL_NAME,t1.QUALIFICATION_INSTITUTION,t1.DATE_OF_EMPLOYMENT,t1.STATUS,t1.STA10_ID\n" +
+            ")\n" +
+            "SELECT   t2.PERSONNEL_NAME,t2.QUALIFICATION_INSTITUTION,t2.DATE_OF_EMPLOYMENT,t2.STATUS,:sta10IdToBeUpdated\n" +
+            "FROM DAT_KEBS_QA_PERSONNEL_INCHARGE t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true)
+    fun updatePersonnel(
+        @Param("sta10Id") sta10Id: Long,
+        @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
+    ): String
+
+
 }
 
 @Repository
@@ -752,14 +766,12 @@ interface IQaManufactureProcessRepository : HazelcastRepository<QaManufacturingP
 interface IQaProductBrandEntityRepository : HazelcastRepository<QaProductManufacturedEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaProductManufacturedEntity>?
     @Query(value="INSERT INTO DAT_KEBS_QA_PRODUCT t1\n" +
-            "(\n" +
-            "    t1.AVAILABLE,t1.PRODUCT_BRAND,t1.PRODUCT_NAME,t1.STATUS,t1.STA10_ID\n" +
-            ")\n" +
-            "SELECT\n" +
-            "   t2.AVAILABLE,t2.PRODUCT_BRAND,t2.PRODUCT_NAME,t2.STATUS,:sta10IdToBeUpdated\n" +
-            "FROM DAT_KEBS_QA_PRODUCT t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true)
+            "    (t1.AVAILABLE, t1.PRODUCT_BRAND, t1.PRODUCT_NAME, t1.STATUS, t1.STA10_ID)\n" +
+            "SELECT '0', t2.TRADE_MARK, t2.PRODUCT_NAME, '1', :sta10IdToBeUpdated\n" +
+            "FROM DAT_KEBS_PERMIT_TRANSACTION t2\n" +
+            "WHERE t2.ID = :permit", nativeQuery = true)
     fun updateProduct(
-        @Param("sta10Id") sta10Id: Long,
+        @Param("permit") permit: Long,
         @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
     ): String
 }

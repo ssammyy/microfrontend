@@ -1069,6 +1069,9 @@ class StdLevyController(
         return standardLevyService.getCompanyEditedDetails(manufactureId)
     }
 
+
+
+
     @GetMapping("/getSiteVisitRemarks")
     fun getSiteVisitRemarks(
         response: HttpServletResponse,
@@ -1174,21 +1177,6 @@ class StdLevyController(
         return standardLevyService.getBranchName()
     }
 
-    @GetMapping("/getLevyPayments")
-    @ResponseBody
-    fun getLevyPayments(): MutableList<LevyPayments>
-    {
-        return standardLevyService.getLevyPayments()
-    }
-
-    @GetMapping("/getManufacturesLevyPayments")
-    @ResponseBody
-    fun getManufacturesLevyPayments(): MutableList<LevyPayments>
-    {
-        return standardLevyService.getManufacturesLevyPayments()
-    }
-
-
 
    // @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
     @PostMapping("/suspendCompanyOperations")
@@ -1201,7 +1189,7 @@ class StdLevyController(
         val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
             companyId = suspendCompanyDto.id
             reason = suspendCompanyDto.reason
-            dateOfSuspension = suspendCompanyDto.dateOfSuspension
+            dateOfSuspension = suspendCompanyDto.dateOfSuspension.toString()
         }
 
         return ServerResponse(HttpStatus.OK,"Details Submitted for Verification",standardLevyService.suspendCompanyOperations(standardLevyOperationsSuspension))
@@ -1234,11 +1222,14 @@ class StdLevyController(
     ): ServerResponse
     {
 
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = companySuspendDto.companyId
+        }
         val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
             id = companySuspendDto.id
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Suspension Rejected",standardLevyService.rejectCompanySuspension(standardLevyOperationsSuspension))
+        return ServerResponse(HttpStatus.OK,"Company Suspension Rejected",standardLevyService.rejectCompanySuspension(standardLevyOperationsSuspension,companyProfileEntity))
 
     }
 
@@ -1263,7 +1254,7 @@ class StdLevyController(
         val standardLevyOperationsClosure= StandardLevyOperationsClosure().apply {
             companyId = closeCompanyDto.id
             reason = closeCompanyDto.reason
-            dateOfClosure = closeCompanyDto.dateOfClosure
+            dateOfClosure = closeCompanyDto.dateOfClosure.toString()
         }
 
         return ServerResponse(HttpStatus.OK,"Details Submitted for Verification",standardLevyService.closeCompanyOperations(standardLevyOperationsClosure))
@@ -1278,7 +1269,7 @@ class StdLevyController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         //val windingUpReport = standardLevyOperationsClosureRepository.findByIdOrNull(operationClosureId)?: throw Exception("Record Does Not Exist")
 
         docFile.forEach { u ->
@@ -1325,11 +1316,14 @@ class StdLevyController(
     ): ServerResponse
     {
 
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = companySuspendDto.companyId
+        }
         val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
             id = companySuspendDto.id
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Closure Rejected",standardLevyService.rejectCompanyClosure(standardLevyOperationsSuspension))
+        return ServerResponse(HttpStatus.OK,"Company Closure Rejected",standardLevyService.rejectCompanyClosure(standardLevyOperationsSuspension,companyProfileEntity))
 
     }
 
@@ -1391,6 +1385,50 @@ class StdLevyController(
     fun sendLevyPaymentReminders(): String
     {
         return standardLevyService.sendLevyPaymentReminders()
+    }
+
+    @GetMapping("/getLevyPayments")
+    @ResponseBody
+    fun getLevyPayments(): MutableList<LevyPayments>
+    {
+        return standardLevyService.getLevyPayments()
+    }
+
+    @GetMapping("/getManufacturesLevyPayments")
+    @ResponseBody
+    fun getManufacturesLevyPayments(): MutableList<LevyPayments>
+    {
+        return standardLevyService.getManufacturesLevyPayments()
+    }
+
+    @GetMapping("/getManufacturesLevyPaymentsList")
+    fun getManufacturesLevyPaymentsList(
+        response: HttpServletResponse,
+        @RequestParam("companyId") companyId: Long
+    ): MutableList<LevyPayments> {
+        return standardLevyService.getManufacturesLevyPaymentsList(companyId)
+    }
+
+    @GetMapping("/getLevyPenalty")
+    @ResponseBody
+    fun getLevyPenalty(): MutableList<LevyPenalty>
+    {
+        return standardLevyService.getLevyPenalty()
+    }
+
+    @GetMapping("/getManufacturesLevyPenalty")
+    @ResponseBody
+    fun getManufacturesLevyPenalty(): MutableList<LevyPenalty>
+    {
+        return standardLevyService.getManufacturesLevyPenalty()
+    }
+
+    @GetMapping("/getManufacturesLevyPenaltyList")
+    fun getManufacturesLevyPenaltyList(
+        response: HttpServletResponse,
+        @RequestParam("companyId") companyId: Long
+    ): MutableList<LevyPenalty> {
+        return standardLevyService.getManufacturesLevyPenaltyList(companyId)
     }
 
 

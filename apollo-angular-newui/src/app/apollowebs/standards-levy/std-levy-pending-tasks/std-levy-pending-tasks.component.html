@@ -118,6 +118,7 @@
                                             <th class="sl">Registration Number</th>
                                             <th class="sl">Task Name</th>
                                             <th class="requestNumber">Status</th>
+                                            <th class="requestNumber">Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -139,6 +140,10 @@
                                             <td *ngIf="manufacturePendingTask.name==='Approve Edited Company Details'"><span class="badge badge-primary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Edit Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Edit Not Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
+                                            <td *ngIf="manufacturePendingTask.taskData.status==0"><span class="badge badge-info" style="width: 94px;">Active</span></td>
+                                            <td *ngIf="manufacturePendingTask.taskData.status==2"><span class="badge badge-default" style="width: 94px;">Suspended</span></td>
+                                            <td *ngIf="manufacturePendingTask.taskData.status==1"><span class="badge badge-info" style="width: 94px;">Closed</span></td>
+                                            <td *ngIf="manufacturePendingTask.taskData.status==4"><span class="badge badge-warning" style="width: 94px;">In-Active</span></td>
 <!--                                            <td *ngIf="manufacturePendingTask.taskData.typeOfManufacture==1"><span class="badge badge-warning">Assigned</span></td>-->
                                             <td *ngIf="manufacturePendingTask.name==='Schedule Site Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'viewPending')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='Prepare Report on Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'prepareSiteVisitReport')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
@@ -3033,16 +3038,15 @@
 
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowSaveFeedBackForm">
-                                                <h4 style="color: red"><b>Feedback Report</b></h4>
+                                                <h4 style="color: red"><b>Feedback Report</b><span style="font-size: xx-small; color: blue;">(*)Required</span></h4>
                                                 <form (ngSubmit)="saveFeedBack()" [formGroup]="prepareFeedBackFormGroup" class="form">
                                                     <div class="form-body">
                                                         <div class="row col-12">
                                                             <div class="form-group col-12">
-                                                                <label><b>Purpose</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                 <textarea [class.is-invalid]="formPrepareFeedBack.officersFeedback.invalid && formPrepareFeedBack.officersFeedback.touched"
                                                                           aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                                           class="form-control one-column-input" formControlName="officersFeedback" name="officersFeedback"
-                                                                          placeholder="Name" type="text"></textarea>
+                                                                          placeholder="Feedback Report" type="text"></textarea>
 
                                                                 <input type="hidden" class="form-control" formControlName="visitID" name="visitID"  value="{{actionRequestPending?.taskData?.visitID}}" >
                                                                 <!--                                                                                                           <input type="hidden" class="form-control" formControlName="assigneeId" name="assigneeId" ngModel="3066" value="3066" >-->
