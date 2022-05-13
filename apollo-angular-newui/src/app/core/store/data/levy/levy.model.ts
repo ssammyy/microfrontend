@@ -193,7 +193,7 @@ export interface AssignCompanyTaskDTO {
     assignedTo: number;
     companyName: string;
     kraPin: string;
-    status: boolean;
+    status: number;
     registrationNumber: string;
     postalAddress: string;
     physicalAddress: string;
@@ -279,7 +279,7 @@ export interface ReportDecisionLevelOne{
     comments: string;
     assigneeId: number;
     manufacturerEntity: number;
-    status: string;
+    status: number;
     role: string;
 }
 
@@ -290,7 +290,7 @@ export interface ReportDecisionLevelTwo{
     comments: string;
     manufacturerEntity: number;
     userType: number;
-    status: string;
+    status: number;
     role: string;
 }
 
@@ -342,7 +342,7 @@ export interface ManufactureDetailList {
     id: number;
     name: string;
     kraPin: string;
-    status: boolean;
+    status: number;
     registrationNumber: string;
     postalAddress: string;
     physicalAddress: string;
@@ -383,7 +383,7 @@ export interface ManufacturePendingTaskData{
     id: number;
     companyName: string;
     kraPin: string;
-    status: boolean;
+    status: number;
     registrationNumber: string;
     postalAddress: string;
     physicalAddress: string;
@@ -444,7 +444,7 @@ export interface ManufactureCompleteTask {
     id: number;
     name: string;
     kraPin: string;
-    status: boolean;
+    status: number;
     registrationNumber: string;
     postalAddress: string;
     physicalAddress: string;
@@ -503,6 +503,7 @@ export interface ManufactureCompletedTask {
     countyName: string;
     townName: string;
     officersFeedback: string;
+    status: number;
 
 }
 export interface UsersEntityList {

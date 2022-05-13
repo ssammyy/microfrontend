@@ -988,6 +988,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
   saveFeedBack(): void {
       this.loadingText = "Saving Feedback...";
     this.SpinnerService.show();
+    console.log(this.prepareFeedBackFormGroup.value);
     this.levyService.saveSiteVisitFeedback(this.prepareFeedBackFormGroup.value).subscribe(
         (response ) => {
           console.log(response);

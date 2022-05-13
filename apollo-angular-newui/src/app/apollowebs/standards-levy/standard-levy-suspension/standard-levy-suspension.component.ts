@@ -19,6 +19,7 @@ export class StandardLevySuspensionComponent implements OnInit {
   suspendedCompanyDTOs: SuspendedCompanyDTO[] = [];
   public actionRequest: SuspendedCompanyDTO | undefined;
   public approveRequestFormGroup!: FormGroup;
+  public rejectRequestFormGroup!: FormGroup;
 
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
@@ -37,6 +38,18 @@ export class StandardLevySuspensionComponent implements OnInit {
   ngOnInit(): void {
     this.getCompanySuspensionRequest();
     this.approveRequestFormGroup = this.formBuilder.group({
+      id: [],
+      companyId: [],
+      reason: [],
+      entryNumber: [],
+      kraPin: [],
+      registrationNumber: [],
+      companyName: [],
+      dateOfClosure: []
+
+    });
+
+    this.rejectRequestFormGroup = this.formBuilder.group({
       id: [],
       companyId: [],
       reason: [],
@@ -109,7 +122,7 @@ export class StandardLevySuspensionComponent implements OnInit {
   rejectCompanySuspension(): void {
     this.loadingText = "Approving";
     this.SpinnerService.show();
-    this.levyService.rejectCompanySuspension(this.approveRequestFormGroup.value).subscribe(
+    this.levyService.rejectCompanySuspension(this.rejectRequestFormGroup.value).subscribe(
         (response) => {
           console.log(response);
           this.SpinnerService.hide();
@@ -135,6 +148,17 @@ export class StandardLevySuspensionComponent implements OnInit {
       this.actionRequest=suspendedCompanyDTOs;
       button.setAttribute('data-target','#viewDetails');
       this.approveRequestFormGroup.patchValue(
+          {
+            id: this.actionRequest.id,
+            companyId: this.actionRequest.companyId
+          }
+      );
+
+    }
+    if (mode==='rejectSuspension'){
+      this.actionRequest=suspendedCompanyDTOs;
+      button.setAttribute('data-target','#rejectSuspension');
+      this.rejectRequestFormGroup.patchValue(
           {
             id: this.actionRequest.id,
             companyId: this.actionRequest.companyId

@@ -120,7 +120,7 @@
                                             <th class="sl">Entry Number</th>
                                             <th class="knw">Kra Pin</th>
                                             <th class="sl">Registration Number</th>
-                                            <th class="requestNumber">Status</th>
+<!--                                            <th class="requestNumber">Status</th>-->
                                             <th class="requestNumber">Action</th>
                                         </tr>
                                         </thead>
@@ -131,7 +131,10 @@
                                             <td>{{manufactureCompleteTask.entryNumber}}</td>
                                             <td>{{manufactureCompleteTask.kraPin}}</td>
                                             <td>{{manufactureCompleteTask.registrationNumber}}</td>
-                                            <td><span class="badge badge-success">Complete</span></td>
+<!--                                            <td *ngIf="manufactureCompleteTask.status==0"><span class="badge badge-info" style="width: 94px;">Active</span></td>-->
+<!--                                            <td *ngIf="manufactureCompleteTask.status==2"><span class="badge badge-default" style="width: 94px;">Suspended</span></td>-->
+<!--                                            <td *ngIf="manufactureCompleteTask.status==1"><span class="badge badge-info" style="width: 94px;">Closed</span></td>-->
+<!--                                            <td *ngIf="manufactureCompleteTask.status==4"><span class="badge badge-warning" style="width: 94px;">In-Active</span></td>-->
                                             <td><button (click)="onOpenModalComplete(manufactureCompleteTask,'viewComplete')" type="submit" class="btn btn-success btn-sm" style="border-radius: 40px;">More</button></td>
                                         </tr>
                                         </tbody>

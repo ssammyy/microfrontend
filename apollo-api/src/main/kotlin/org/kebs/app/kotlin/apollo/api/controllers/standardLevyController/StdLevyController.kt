@@ -1222,11 +1222,14 @@ class StdLevyController(
     ): ServerResponse
     {
 
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = companySuspendDto.companyId
+        }
         val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
             id = companySuspendDto.id
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Suspension Rejected",standardLevyService.rejectCompanySuspension(standardLevyOperationsSuspension))
+        return ServerResponse(HttpStatus.OK,"Company Suspension Rejected",standardLevyService.rejectCompanySuspension(standardLevyOperationsSuspension,companyProfileEntity))
 
     }
 
@@ -1313,11 +1316,14 @@ class StdLevyController(
     ): ServerResponse
     {
 
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = companySuspendDto.companyId
+        }
         val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
             id = companySuspendDto.id
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Closure Rejected",standardLevyService.rejectCompanyClosure(standardLevyOperationsSuspension))
+        return ServerResponse(HttpStatus.OK,"Company Closure Rejected",standardLevyService.rejectCompanyClosure(standardLevyOperationsSuspension,companyProfileEntity))
 
     }
 
