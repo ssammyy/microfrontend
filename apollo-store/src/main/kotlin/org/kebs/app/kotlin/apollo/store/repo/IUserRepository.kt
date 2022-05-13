@@ -369,6 +369,18 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     )
     fun getManufactureId(@Param("id") id: Long?): Long?
 
+    @Query(
+        value = "SELECT USER_ID  FROM DAT_KEBS_COMPANY_PROFILE WHERE ID= :id",
+        nativeQuery = true
+    )
+    fun getContactPersonId(@Param("id") id: Long?): Long?
+
+    @Query(
+        value = "SELECT NAME  FROM DAT_KEBS_COMPANY_PROFILE WHERE ID= :id",
+        nativeQuery = true
+    )
+    fun getCompanyName(@Param("id") id: Long?): String?
+
 
     @Query(
         value = "SELECT ENTRY_NUMBER  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",

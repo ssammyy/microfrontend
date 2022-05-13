@@ -129,10 +129,10 @@
                                             <td>{{manufactureList.entryNumber}}</td>
                                             <td>{{manufactureList.kraPin}}</td>
                                             <td>{{manufactureList.registrationNumber}}</td>
-                                            <td *ngIf="manufactureList.status==='1'"><span class="badge badge-danger">Closed</span></td>
-                                            <td *ngIf="manufactureList.status==='2'"><span class="badge badge-default">Suspended</span></td>
-                                            <td *ngIf="manufactureList.status==='0'"><span class="badge badge-info">Active</span></td>
-                                            <td *ngIf="manufactureList.status==='3'"><span class="badge badge-warning">In-Active</span></td>
+                                            <td *ngIf="manufactureList.status==1"><span class="badge badge-info" style="width: 94px;">Active</span></td>
+                                            <td *ngIf="manufactureList.status==2"><span class="badge badge-default" style="width: 94px;">Suspended</span></td>
+                                            <td *ngIf="manufactureList.status==0"><span class="badge badge-info" style="width: 94px;">Closed</span></td>
+                                            <td *ngIf="manufactureList.status==4"><span class="badge badge-warning" style="width: 94px;">In-Active</span></td>
                                             <td><span class="badge badge-rose">Not Assigned</span></td>
                                             <td>
                                                 <button (click)="onOpenModalList(manufactureList,'viewList')"
