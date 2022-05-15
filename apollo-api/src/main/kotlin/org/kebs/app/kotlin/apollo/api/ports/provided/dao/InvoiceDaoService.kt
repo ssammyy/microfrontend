@@ -408,6 +408,29 @@ class InvoiceDaoService(
                                 }
                                 stgPayment = updateStagingPaymentReconciliation(stgPayment)
                             }
+                            stgPayment.paidAmount!! > stgPayment.invoiceAmount -> {
+                                with(batchInvoiceDetail){
+                                    status =1
+                                    paymentStarted =1
+                                    receiptNumber = stgPayment.transactionId
+                                    receiptDate = stgPayment.paymentTransactionDate
+                                    paidAmount = stgPayment.paidAmount
+                                }
+
+                                batchInvoiceDetail = updateInvoiceBatchDetailsAfterPaymentDone(batchInvoiceDetail)
+
+                                updatePaymentDetailsToSpecificTable(batchInvoiceDetail)
+
+                                with(stgPayment){
+                                    transactionId = null
+                                    invoiceAmount = BigDecimal.ZERO
+                                    paymentTablesUpdatedStatus = null
+                                    paymentTransactionDate = null
+                                    paidAmount = BigDecimal.ZERO
+                                    paymentStarted = 1
+                                }
+                                stgPayment = updateStagingPaymentReconciliation(stgPayment)
+                            }
 
                             stgPayment.paidAmount!! < stgPayment.invoiceAmount -> {
                                 with(stgPayment){
