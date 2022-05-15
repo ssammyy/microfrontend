@@ -219,7 +219,7 @@ class InvoicePaymentService(
                         currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                     }
                     KotlinLogging.logger { }.info("SENDING to SAGE FOR PAYMENT: $demandNoteId")
-                    // Create payment on SAGE
+                    // Create payment on S                                                                                                                                                                                                                              AGE
                     invoiceDaoService.postRequestToSage(
                             loggedInUser.userName!!,
                             demandNote

@@ -273,7 +273,8 @@
                             <div class="col-md-2">
                                 <h5>Action:</h5>
                                 <h5>Documents:</h5>
-                                <button class="btn btn-sm btn-primary" (click)="downloadCorFile()">CoR Certificate
+                                <button *ngIf="corDetails.certificate_details.documentsType!=='F'"
+                                        class="btn btn-sm btn-primary" (click)="downloadCorFile()">CoR Certificate
                                     File
                                 </button>
 

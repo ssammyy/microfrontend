@@ -116,7 +116,7 @@ class InspectionEngineeringItemDto {
             val dto = InspectionEngineeringItemDto().apply {
                 id = entity.id
                 inspection = entity.inspection?.id
-                brand = entity.brand
+                brand = entity.brand.orEmpty()
                 serialNumber = entity.serialNumber
                 compliant = entity.compliant
                 instructionsUseManual = entity.instructionsUseManual
@@ -138,7 +138,7 @@ class InspectionEngineeringItemDto {
                 mfgNameAddress = entity.mfgNameAddress
                 mfgName = entity.mfgNameAddress
                 ksEasApplicable = entity.ksEasApplicable
-                remarks = entity.remarks
+                remarks = entity.remarks.orEmpty()
                 status = entity.status
             }
             entity.itemId?.let {
