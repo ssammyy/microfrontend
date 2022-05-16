@@ -19,7 +19,7 @@ class CDApprovalResponseDTO {
     var documentDetails: DocumentDetails? = null
 }
 
-class DocumentHeader(corNumber: String, msgDate: String, version: String) {
+class DocumentHeader(corNumber: String, msgDate: String, versionNumber: String) {
 
     @JacksonXmlProperty(localName = "refno")
     var refNumber: String? = corNumber
@@ -40,7 +40,7 @@ class DocumentHeader(corNumber: String, msgDate: String, version: String) {
     var msgId: String? = "OG_CD_RES"
 
     @JacksonXmlProperty(localName = "version")
-    var version: String? = version
+    var version: String? = versionNumber
 }
 
 class DocumentDetails(corNumber: String, expiryDate: String, assessedDate: String, status: String, pgaRemarks: String, checkingOfficer: String) {

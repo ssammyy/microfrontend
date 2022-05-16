@@ -42,14 +42,6 @@ class CdStandardsEntity : Serializable {
     @Basic
     var consignmentTypeDescription: String? = null
 
-    @Column(name = "COURIER_PIN")
-    @Basic
-    var courierPin: String? = null
-
-    @Column(name = "COURIER_NAME")
-    @Basic
-    var courierName: String? = null
-
     @Column(name = "MDA_CODE")
     @Basic
     var mdaCode: String? = null
