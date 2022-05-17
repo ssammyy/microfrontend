@@ -5,7 +5,7 @@
         </ngx-spinner>
     </div>
     <div class="container-fluid">
-        <div *ngIf="emailVerificationStatus==0" class="alert alert-warning" role="alert" style="text-align: center;">
+        <div *ngIf="emailVerificationStatus.emailStatus==0" class="alert alert-warning" role="alert" style="text-align: center;">
             Email address is not verified. Click <a  role="button" class="alert-link" (click)=toggleDisplayEmailForm() style="color: black">Here</a> to Verify
         </div>
         <div class="container col-md-12" [hidden]="isShowSendEmailForm">

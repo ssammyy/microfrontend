@@ -129,6 +129,7 @@ class QADaoServices(
     }
 
 
+
 //    fun findPermitIdByPermitRefNumber(permitRefNumber: String): PermitApplicationsEntity
 //    {
 //        permitRepo.findByPermitRefNumber(permitRefNumber)?.let {
@@ -904,6 +905,15 @@ class QADaoServices(
                 ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllPermitListWithPermitType(permitType: Long): List<PermitApplicationsEntity> {
+        permitRepo.findByPermitTypeAndOldPermitStatusIsNull( permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found")
+    }
+
     fun findAllQAOPermitListWithPermitTypeTaskID(
             user: UsersEntity,
             permitType: Long,
@@ -929,6 +939,17 @@ class QADaoServices(
                 }
 
                 ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllPermitListWithPermitTypeAwardedStatusIsNotNull(
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        permitRepo.findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found")
     }
 
     fun findAllAssessorPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {

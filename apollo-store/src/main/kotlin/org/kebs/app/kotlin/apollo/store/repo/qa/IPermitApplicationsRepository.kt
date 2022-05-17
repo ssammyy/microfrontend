@@ -297,6 +297,10 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByPermitTypeAndOldPermitStatusIsNull(
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
         qaoId: Long,
         permitType: Long,
@@ -305,6 +309,10 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
         userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
         permitType: Long
     ): List<PermitApplicationsEntity>?
 
