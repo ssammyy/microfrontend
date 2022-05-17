@@ -28,7 +28,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
-import java.sql.Date
 
 @Repository
 interface IComplaintRepository : HazelcastRepository<ComplaintEntity, Long>, JpaSpecificationExecutor<ComplaintEntity> {
@@ -97,9 +96,9 @@ interface IMsRemarksComplaintRepository : HazelcastRepository<MsRemarksEntity, L
 }
 
 @Repository
-interface IMsProcessNamesComplaintRepository : HazelcastRepository<MsProcessNamesEntity, Long>{
+interface IMsProcessNamesRepository : HazelcastRepository<MsProcessNamesEntity, Long>{
     fun findAllByComplaintStatus(complaintStatus: Int): List<MsProcessNamesEntity>?
     fun findAllByFuelStatus(fuelStatus: Int): List<MsProcessNamesEntity>?
     fun findByComplaintStatusAndId(complaintStatus: Int, id: Long): MsProcessNamesEntity?
-    fun findByFuelStatusAndId(complaintStatus: Int, id: Long): MsProcessNamesEntity?
+    fun findByFuelStatusAndId(fuelStatus: Int, id: Long): MsProcessNamesEntity?
 }

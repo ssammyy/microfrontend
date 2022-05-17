@@ -22,6 +22,7 @@ data class FuelBatchDetailsDto(
         var town: String? = null,
         var referenceNumber: String? = null,
         var batchFileYear: String? = null,
+        var batchFileMonth: String? = null,
         var remarks: String? = null,
         var batchClosed: Boolean? = null,
 )
@@ -37,6 +38,7 @@ data class FuelInspectionDto(
         var id: Long? = null,
         var referenceNumber: String? = null,
         var company: String? = null,
+        var companyKraPin: String? = null,
         var petroleumProduct: String? = null,
         var physicalLocation: String? = null,
         var inspectionDateFrom: Date? = null,
@@ -88,6 +90,10 @@ data class FuelEntityDto(
         @NotEmpty(message = "Required field")
         var stationOwnerEmail: String,
 
+        @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
+        var stationKraPin: String,
+
         var remarks: String? = null,
 )
 
@@ -138,8 +144,7 @@ data class SampleCollectionItemsDto(
 data class RemarksToAddDto(
         var remarksDescription: String? = null,
         var remarksStatus: Int? = null,
-        var processBy: String? = null,
-        var processName: String? = null,
+        var processID: Long? = null,
         var userId: Long? = null,
 )
 

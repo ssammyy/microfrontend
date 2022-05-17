@@ -12,7 +12,7 @@ import {
   selectCountyIdData,
   selectUserInfo,
   Town,
-  TownService
+  TownService,
 } from '../../../../core/store';
 import {CustomeDateValidators, MsService} from '../../../../core/store/data/ms/ms.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -20,14 +20,14 @@ import {
   BatchFileFuelSaveDto,
   FuelBatchDetailsDto, FuelEntityDto,
   FuelInspectionDto,
-  FuelInspectionScheduleListDetailsDto
+  FuelInspectionScheduleListDetailsDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-epra-list',
   templateUrl: './epra-list.component.html',
-  styleUrls: ['./epra-list.component.css']
+  styleUrls: ['./epra-list.component.css'],
 })
 export class EpraListComponent implements OnInit {
   @ViewChild('editModal') editModal !: TemplateRef<any>;
@@ -45,6 +45,8 @@ export class EpraListComponent implements OnInit {
   loading = false;
 
   roles: string[];
+
+  minDate = new Date();
 
   activeStatus = 'my-tasks';
   previousStatus = 'my-tasks';
@@ -66,9 +68,9 @@ export class EpraListComponent implements OnInit {
       delete: false,
       custom: [
         //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'},
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     rowClassFunction: (row) => {
       // console.log(row)
@@ -81,7 +83,7 @@ export class EpraListComponent implements OnInit {
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
@@ -93,27 +95,27 @@ export class EpraListComponent implements OnInit {
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
-        filter: false
+        filter: false,
       },
       company: {
         title: 'COMPANY',
         type: 'string',
-        filter: false
+        filter: false,
       },
       petroleumProduct: {
         title: 'PETROLEUM PRODUCT',
         type: 'string',
-        filter: false
+        filter: false,
       },
       physicalLocation: {
         title: 'PHYSICAL LOCATION',
         type: 'string',
-        filter: false
+        filter: false,
       },
       assignedOfficerStatus: {
         title: 'ASSIGNED OFFICER',
         type: 'boolean',
-        filter: false
+        filter: false,
       },
       inspectionDateFrom: {
         title: 'INSPECTION DATE FROM',
@@ -125,7 +127,7 @@ export class EpraListComponent implements OnInit {
           }
           return '';
         },
-        filter: false
+        filter: false,
       },
       inspectionDateTo: {
         title: 'INSPECTION DATE TO',
@@ -137,23 +139,23 @@ export class EpraListComponent implements OnInit {
           }
           return '';
         },
-        filter: false
+        filter: false,
       },
-      // processStage: {
-      //   title: 'PROCESS STAGE',
-      //   type: 'string',
-      //   filter: false
-      // },
+      processStage: {
+        title: 'PROCESS STAGE',
+        type: 'string',
+        filter: false,
+      },
       endInspectionStatus: {
         title: 'CLOSED STATUS',
         type: 'boolean',
-        filter: false
+        filter: false,
       },
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   dataSet: LocalDataSource = new LocalDataSource();
   documentTypes: any[];
@@ -178,7 +180,7 @@ export class EpraListComponent implements OnInit {
       private SpinnerService: NgxSpinnerService,
       private countyService: CountyService,
       private townService: TownService,
-      private msService: MsService
+      private msService: MsService,
   ) {
     this.county$ = countyService.entities$;
     this.town$ = townService.entities$;
@@ -195,7 +197,7 @@ export class EpraListComponent implements OnInit {
         rs => {
           this.selectedBatchRefNo = rs.get('referenceNumber');
           this.loadData(this.selectedBatchRefNo, this.defaultPage, this.defaultPageSize);
-        }
+        },
     );
 
     this.addNewScheduleForm = this.formBuilder.group({
@@ -205,16 +207,17 @@ export class EpraListComponent implements OnInit {
       inspectionDateFrom: ['', Validators.required],
       inspectionDateTo: ['', Validators.required],
       stationOwnerEmail: ['', Validators.required],
+      stationKraPin: ['', Validators.required],
       remarks: ['', Validators.required],
     }, { validator: [
       // Default error with this validator:  {fromToDate: true}
-      CustomeDateValidators.fromToDate('inspectionDateFrom', 'inspectionDateTo')
+      CustomeDateValidators.fromToDate('inspectionDateFrom', 'inspectionDateTo'),
       // For custome error name like: {customeErrorName: true}, pass third optional parameter with custome name
       // CustomeDateValidators.fromToDate('fromDate', 'toDate', 'customeErrorName')
     ]});
 
     this.closeBatchForm = this.formBuilder.group({
-      remarks: ['', Validators.required]
+      remarks: ['', Validators.required],
     });
   }
 
@@ -240,7 +243,7 @@ export class EpraListComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
 
     // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
@@ -320,7 +323,7 @@ export class EpraListComponent implements OnInit {
           } else {
             return throwError('Invalid request, County id is required');
           }
-        }
+        },
     );
 
   }
@@ -336,20 +339,21 @@ export class EpraListComponent implements OnInit {
       this.dataSave = {...this.dataSave, ...this.addNewScheduleForm.value};
       this.msService.msFuelInspectionAddSchedule(this.loadedData.fuelBatchDetailsDto.referenceNumber, this.dataSave).subscribe(
           (data: any) => {
+            this.addNewScheduleForm.reset();
             console.log(data);
             this.loadedData = data;
             this.totalCount = this.loadedData.fuelInspectionDto.length;
             this.dataSet.load(this.loadedData.fuelInspectionDto);
             this.SpinnerService.hide();
             this.msService.showSuccess('NEW FUEL SCHEDULE CREATED SUCCESSFUL', () => {
-              this.msService.reloadCurrentRoute();
+              this.loadData(this.selectedBatchRefNo, this.defaultPage, this.defaultPageSize);
             });
           },
           error => {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     }
   }
@@ -359,7 +363,7 @@ export class EpraListComponent implements OnInit {
   }
 
   closeBatch() {
-    // this.SpinnerService.show();
+    this.SpinnerService.show();
     let resultStatus = false;
     console.log(this.loadedData.fuelBatchDetailsDto.referenceNumber);
     this.msService.closeMSFuelBatch(this.selectedBatchRefNo).subscribe(
@@ -368,18 +372,18 @@ export class EpraListComponent implements OnInit {
           // this.loadedData = data;
           // this.totalCount = this.loadedData.fuelInspectionDto.length;
           // this.dataSet.load(this.loadedData.fuelInspectionDto);
-          // this.SpinnerService.hide();
+          this.SpinnerService.hide();
           this.msService.reloadCurrentRoute();
 
           resultStatus  = true;
-          // this.msService.showSuccess('BATCH SENT TO KEBS SUCCESSFUL')
+          this.msService.showSuccess('BATCH SENT TO KEBS SUCCESSFUL', this.loadData(this.selectedBatchRefNo, this.defaultPage, this.defaultPageSize));
         },
         error => {
           this.SpinnerService.hide();
           console.log(error);
           resultStatus = false;
           // this.msService.showError("AN ERROR OCCURRED")
-        }
+        },
     );
     return resultStatus;
   }

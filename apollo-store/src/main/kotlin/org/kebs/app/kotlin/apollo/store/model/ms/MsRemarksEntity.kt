@@ -30,6 +30,11 @@ class MsRemarksEntity : Serializable {
     @Column(name = "PROCESS_NAME")
     var processName: String? = null
 
+    @Column(name = "MS_PROCESS_ID")
+    @Basic
+    var msProcessId: Long? = null
+
+
     @Basic
     @Column(name = "DESCRIPTION")
     var description: String? = null
@@ -45,6 +50,10 @@ class MsRemarksEntity : Serializable {
     @Basic
     @Column(name = "FUEL_INSPECTION_ID")
     var fuelInspectionId: Long? = null
+
+    @Basic
+    @Column(name = "FUEL_BATCH_ID")
+    var fuelBatchId: Long? = null
 
     @Basic
     @Column(name = "STATUS")

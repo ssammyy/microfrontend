@@ -41,6 +41,13 @@ interface IFuelBatchRepository : HazelcastRepository<MsFuelBatchInspectionEntity
     fun findByReferenceNumberAndRegionIdAndCountyId(referenceNumber: String, regionId: Long, countyId: Long): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndCountyIdAndRegionId(yearNameId: Long, countyId: Long, regionId: Long): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndCountyIdAndTownIdAndRegionId(yearNameId: Long, countyId: Long, townId: Long, regionId: Long): MsFuelBatchInspectionEntity?
+    fun findByYearNameIdAndCountyIdAndTownIdAndRegionIdAndMonthNameId(
+        yearNameId: Long,
+        countyId: Long,
+        townId: Long,
+        regionId: Long,
+        monthNameId: Long
+    ): MsFuelBatchInspectionEntity?
     fun findAllByCountyIdAndRegionId(countyId: Long, regionId: Long, pageable: Pageable): Page<MsFuelBatchInspectionEntity>
     fun findAllByCountyIdAndRegionIdAndBatchClosed(countyId: Long, regionId: Long,batchClosed: Int, pageable: Pageable): Page<MsFuelBatchInspectionEntity>
     fun findAllByRegionId(regionId: Long, pageable: Pageable): Page<MsFuelBatchInspectionEntity>
@@ -57,6 +64,13 @@ interface IWorkplanYearsCodesRepository: HazelcastRepository<WorkplanYearsCodesE
 
     fun findByYearNameAndStatus(yearName: String, status: Int) : WorkplanYearsCodesEntity?
     fun findByStatusOrderByYearName(status: Int) : List<WorkplanYearsCodesEntity>?
+}
+
+@Repository
+interface IWorkplanMonthlyCodesRepository: HazelcastRepository<WorkplanMonthlyCodesEntity, Long> {
+
+    fun findByMonthlyNameAndStatus(monthlyName: String, status: Int) : WorkplanMonthlyCodesEntity?
+    fun findByStatusOrderByMonthlyName(status: Int) : List<WorkplanMonthlyCodesEntity>?
 }
 
 @Repository

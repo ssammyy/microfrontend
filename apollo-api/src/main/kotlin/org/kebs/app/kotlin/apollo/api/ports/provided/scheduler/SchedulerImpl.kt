@@ -417,6 +417,7 @@ class SchedulerImpl(
                                     .let {  fuelInspection->
                                         var sr = commonDaoServices.createServiceRequest(map)
                                         with(fuelInspection){
+                                            msProcessId = applicationMapProperties.mapMSLabResultsAvailabe
                                             userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER
                                             lastModifiedBy = "SYSTEM SCHEDULER"
                                             lastModifiedOn = commonDaoServices.getTimestamp()

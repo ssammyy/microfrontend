@@ -163,7 +163,7 @@ class InvoiceDaoService(
                     paymentStatus = map.inactiveStatus
                 }
                 fuelProFormInvoice = msDaoServices.updateFuelInspectionRemediationInvoiceDetails(fuelProFormInvoice,map, commonDaoServices.concatenateName(user)).second
-
+                totalTaxAmount =fuelProFormInvoice.totalTaxAmount?.let { totalTaxAmount.plus(it) }!!
                 totalAmount = fuelProFormInvoice.transportGrandTotal?.let { totalAmount.plus(it) }!!
                 detailsDescription = "Fuel Inspection Proforma Invoice Number:${fuelProFormInvoice.invoiceNumber}"
             }
