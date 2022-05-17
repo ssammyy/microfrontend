@@ -571,4 +571,18 @@ export interface ClosedCompanyDTO{
     companyName: string;
 
 }
+export interface EmailVerificationStatus{
+    emailStatus: number;
+}
+
+export interface SendEmailDto{
+    userId: number;
+    email: string;
+}
+
+export interface VerifyEmailDto{
+    userId: number;
+    email: string;
+    verificationToken: string;
+}
 

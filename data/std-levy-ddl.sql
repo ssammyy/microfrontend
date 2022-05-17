@@ -1979,6 +1979,11 @@ begin
     end if;
 end;
 
+/
+alter table DAT_KEBS_USERS
+    add EMAIL_ACTIVATION_STATUS int default 0
+
+/
 
 
 

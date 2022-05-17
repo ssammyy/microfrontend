@@ -1,5 +1,137 @@
 <div class="main-content">
+    <div class="loading-spinner ">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
     <div class="container-fluid">
+        <div *ngIf="emailVerificationStatus==0" class="alert alert-warning" role="alert" style="text-align: center;">
+            Email address is not verified. Click <a  role="button" class="alert-link" (click)=toggleDisplayEmailForm() style="color: black">Here</a> to Verify
+        </div>
+        <div class="container col-md-12" [hidden]="isShowSendEmailForm">
+            <form (ngSubmit)="sendEmailVerificationToken()" [formGroup]="emailActivationFormGroup"
+                  class="form">
+                <h3>Proceed to Verify email</h3>
+                <input type="hidden"
+                       value="{{userId}}"
+                       ngModel="{{userId}}"
+                       class="form-control"
+                       formControlName="userId" name="userId"
+                >
+                <input type="hidden"
+                       value="{{email}}"
+                       ngModel="{{email}}"
+                       class="form-control"
+                       formControlName="email" name="email"
+                >
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-sm"   >Verify</button>
+                </div>
+            </form>
+        </div>
+        <div class="container col-md-12" [hidden]="isShowConfirmEmailForm">
+            <form (ngSubmit)="confirmEmailAddress()" [formGroup]="activateEmailFormGroup"
+                  class="form">
+                <h3>Proceed to Verify email</h3>
+                <input type="hidden"
+                       value="{{userId}}"
+                       ngModel="{{userId}}"
+                       class="form-control"
+                       formControlName="userId" name="userId"
+                >
+                <input type="hidden"
+                       value="{{email}}"
+                       ngModel="{{email}}"
+                       class="form-control"
+                       formControlName="email" name="email"
+                >
+                <div class="form-group col-12">
+                    <label>Enter Token to Validate</label>
+                    <input type="text"
+                           class="form-control"
+                           formControlName="verificationToken" name="verificationToken"
+                    >
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-sm" >Verify</button>
+                </div>
+            </form>
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Verify E-Mail</h5>
+                        <button type="button" #closeModal class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form (ngSubmit)="sendEmailVerificationToken()" [formGroup]="emailActivationFormGroup"
+                          class="form">
+                    <div class="modal-body">
+                        <h3>Proceed to Verify email</h3>
+                        <input type="hidden"
+                               value="{{userId}}"
+                               ngModel="{{userId}}"
+                               class="form-control"
+                               formControlName="userId" name="userId"
+                        >
+                        <input type="hidden"
+                               value="{{email}}"
+                               ngModel="{{email}}"
+                               class="form-control"
+                               formControlName="email" name="email"
+                        >
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm"   >Verify</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="activateModal" tabindex="-1" role="dialog" aria-labelledby="activateModalLabel" aria-hidden="true" #myModal>
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="activateModalLabel">Verify E-Mail</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form (ngSubmit)="confirmEmailAddress()" [formGroup]="activateEmailFormGroup"
+                          class="form">
+                        <div class="modal-body">
+                            <h3>Proceed to Verify email</h3>
+                            <input type="hidden"
+                                   value="{{userId}}"
+                                   ngModel="{{userId}}"
+                                   class="form-control"
+                                   formControlName="userId" name="userId"
+                            >
+                            <input type="hidden"
+                                   value="{{email}}"
+                                   ngModel="{{email}}"
+                                   class="form-control"
+                                   formControlName="email" name="email"
+                            >
+                            <div class="form-group col-12">
+                            <label>Enter Token to Validate</label>
+                            <input type="text"
+                                   class="form-control"
+                                   formControlName="verificationToken" name="verificationToken"
+                            >
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" >Close</button>
+                            <button type="submit" class="btn btn-primary btn-sm" >Verify</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div *ngIf="roles?.includes('PERMIT_APPLICATION')" >
 
             <div class="row" >

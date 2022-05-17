@@ -242,5 +242,16 @@ data class SLFilesListDto(
     }
 }
 
+data class SendEmailDto(
+    var userId: Long? = null,
+    var email: String? = null,
+){}
+
+data class VerifyEmailDto(
+    var userId: Long? = null,
+    var email: String? = null,
+    var verificationToken: String? = null,
+){}
+
 
 

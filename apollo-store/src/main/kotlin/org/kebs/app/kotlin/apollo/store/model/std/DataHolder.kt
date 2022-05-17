@@ -187,6 +187,10 @@ interface BranchNameHolder{
 interface BusinessTypeHolder{
     fun getBusinessType(): Long?
 }
+
+interface EmailVerificationStatus{
+    fun getEmailActivationStatus(): Long?
+}
 interface NotificationFormDetailsHolder{
 //    fun getCompanyName(): String?
 //    fun getPlotNumber(): String?

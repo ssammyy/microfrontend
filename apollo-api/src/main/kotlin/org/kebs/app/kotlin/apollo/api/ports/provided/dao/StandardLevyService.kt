@@ -25,9 +25,14 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.sql.Date
 import java.sql.Timestamp
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 @Service
@@ -64,7 +69,9 @@ class StandardLevyService(
     private val iCompanyProfileDirectorsRepository: ICompanyProfileDirectorsRepository,
     private val standardLevyOperationsClosureRepository: StandardLevyOperationsClosureRepository,
     private val standardLevyOperationsSuspensionRepository: StandardLevyOperationsSuspensionRepository,
-    private val slWindingUpReportUploadsEntityRepository: SlWindingUpReportUploadsEntityRepository
+    private val slWindingUpReportUploadsEntityRepository: SlWindingUpReportUploadsEntityRepository,
+    private val emailVerificationTokenEntityRepo: EmailVerificationTokenEntityRepo,
+    private val iUserRepository: IUserRepository
 
 
     ) {
@@ -1446,6 +1453,9 @@ return getUserTasks();
 //        val businessNature = companyProfileRepo.getBusinessNature(userID)
 //        return iBusinessNatureRepository.getManufacturerStatus(businessNature)
 //    }
+    fun getVerificationStatus(): Int {
+        return commonDaoServices.loggedInUserDetails().emailActivationStatus
+    }
 
     fun getManufacturerStatus(): BusinessTypeHolder{
         commonDaoServices.loggedInUserDetails().id
@@ -1778,6 +1788,76 @@ return getUserTasks();
 
             }
             ?: throw ExpectedDataNotFound("No Data Found")
+    }
+
+    fun getRandomToken(): String? {
+        val rnd = Random()
+        val number = rnd.nextInt(999999)
+
+        // this will convert any number sequence into 6 character.
+        return String.format("%06d", number)
+    }
+
+    fun confirmEmailAddress(
+        usersEntity: UsersEntity,
+        emailVerificationTokenEntity: EmailVerificationTokenEntity
+    ): String{
+        emailVerificationTokenEntity.token=emailVerificationTokenEntity.token
+        usersEntity.id = usersEntity.id
+        emailVerificationTokenEntity.token?.let {
+            emailVerificationTokenEntityRepo.findFirstByToken(it)
+                ?.let {
+                    iUserRepository.findByIdOrNull(usersEntity.id)
+                        ?.let { entity ->
+                            entity.apply {
+                                emailActivationStatus=1
+                            }
+                            iUserRepository.save(entity)
+                        }
+                }?: throw Exception("NO USER FOUND")
+        }
+
+
+        return "EMAIL VERIFIED"
+
+    }
+
+    fun sendEmailVerificationToken(
+        emailVerificationTokenEntity: EmailVerificationTokenEntity
+    ): String? {
+        emailVerificationTokenEntity.createdBy= emailVerificationTokenEntity.createdBy
+        emailVerificationTokenEntity.email = emailVerificationTokenEntity.email
+        val verificationToken= getRandomToken()
+        val tokensEntity = EmailVerificationTokenEntity()
+        with(tokensEntity) {
+            token = verificationToken
+            email = emailVerificationTokenEntity.email
+            status = 10
+            createdBy = emailVerificationTokenEntity.email
+            createdOn = Timestamp.from(Instant.now())
+            tokenExpiryDate = Timestamp.from(Instant.now().plus(10, ChronoUnit.MINUTES))
+            transactionDate = Date(java.util.Date().time)
+            varField1 = UUID.randomUUID().toString()
+        }
+
+        emailVerificationTokenEntityRepo.save(tokensEntity)
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "Save Entity" + gson.toJson(tokensEntity) }
+
+
+        val firstName=  commonDaoServices.loggedInUserDetailsEmail().firstName
+        val secondName=  commonDaoServices.loggedInUserDetailsEmail().lastName
+        val recipient = emailVerificationTokenEntity.email
+        val subject = "Email Verification"
+        val messageBody= "Dear $firstName $secondName , Use this code $verificationToken to verify email. Regards, KEBS,"
+        if (recipient != null) {
+            notifications.sendEmail(recipient, subject, messageBody)
+
+        }
+
+        return "Verification Code Sent"
+
+
     }
 
 

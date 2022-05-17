@@ -17,7 +17,7 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        //LOCAL_DEV: 'localhost:8006'
+       // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
         LOCAL_DEV: `kimsint.kebs.org:8006`
@@ -513,6 +513,9 @@ export class ApiEndpointService {
         STD_LEVY_REJECT_SUSPENSION: `${ApiEndpointService.STL_CONTEXT}/rejectCompanySuspension`,
         STD_LEVY_APPROVE_CLOSURE: `${ApiEndpointService.STL_CONTEXT}/confirmCompanyClosure`,
         STD_LEVY_REJECT_CLOSURE: `${ApiEndpointService.STL_CONTEXT}/rejectCompanyClosure`,
+        USER_EMAIL_VERIFICATION_STATUS: `${ApiEndpointService.STL_CONTEXT}/getVerificationStatus`,
+        SEND_EMAIL_VERIFICATION: `${ApiEndpointService.STL_CONTEXT}/sendEmailVerificationToken`,
+        CONFIRM_EMAIL_VERIFICATION_STATUS: `${ApiEndpointService.STL_CONTEXT}/confirmEmailAddress`,
 
 
 

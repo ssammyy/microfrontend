@@ -140,9 +140,9 @@
                                             <td *ngIf="manufacturePendingTask.name==='Approve Edited Company Details'"><span class="badge badge-primary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Edit Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Edit Not Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
-                                            <td *ngIf="manufacturePendingTask.taskData.status==0"><span class="badge badge-info" style="width: 94px;">Active</span></td>
+                                            <td *ngIf="manufacturePendingTask.taskData.status==1"><span class="badge badge-info" style="width: 94px;">Active</span></td>
                                             <td *ngIf="manufacturePendingTask.taskData.status==2"><span class="badge badge-default" style="width: 94px;">Suspended</span></td>
-                                            <td *ngIf="manufacturePendingTask.taskData.status==1"><span class="badge badge-info" style="width: 94px;">Closed</span></td>
+                                            <td *ngIf="manufacturePendingTask.taskData.status==0"><span class="badge badge-info" style="width: 94px;">Closed</span></td>
                                             <td *ngIf="manufacturePendingTask.taskData.status==4"><span class="badge badge-warning" style="width: 94px;">In-Active</span></td>
 <!--                                            <td *ngIf="manufacturePendingTask.taskData.typeOfManufacture==1"><span class="badge badge-warning">Assigned</span></td>-->
                                             <td *ngIf="manufacturePendingTask.name==='Schedule Site Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'viewPending')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>

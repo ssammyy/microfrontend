@@ -129,6 +129,10 @@ class UsersEntity : Serializable {
     @Basic
     var approvedDate: Timestamp? = null
 
+    @Column(name = "EMAIL_ACTIVATION_STATUS")
+    @Basic
+    var emailActivationStatus: Int = 0
+
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
