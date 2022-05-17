@@ -184,7 +184,7 @@ class InvoicePaymentService(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
             val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
-            val transportDetails = consignmentDocument.cdStandard
+            val transportDetails = consignmentDocument.cdStandardsTwo
             this.billingService.registerBillTransaction(demandNote, transportDetails?.courierPin, consignmentDocument.cdType?.varField1
                     ?: "", map)?.let { billTrx ->
                 demandNote.paymentStatus = PaymentStatus.BILLED.code
@@ -219,7 +219,7 @@ class InvoicePaymentService(
                         currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
                     }
                     KotlinLogging.logger { }.info("SENDING to SAGE FOR PAYMENT: $demandNoteId")
-                    // Create payment on SAGE
+                    // Create payment on S                                                                                                                                                                                                                              AGE
                     invoiceDaoService.postRequestToSage(
                             loggedInUser.userName!!,
                             demandNote

@@ -8,7 +8,7 @@ import {DestinationInspectionService} from "../../../../core/store/data/di/desti
     styleUrls: ['./view-inspection-details.component.css']
 })
 export class ViewInspectionDetailsComponent implements OnInit {
-    activeTab = 1
+    activeTab = 0
     inspectionDetails: any
     documentId: any
     checklidId: any

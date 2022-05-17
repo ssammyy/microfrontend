@@ -1349,7 +1349,10 @@ class ChecklistService(
             }
             map["id"] = mvInspectionChecklist.id ?: 0L
             map["serialNumber"] = mvInspectionChecklist.serialNumber.toString()
-            map["items"] = InspectionAgrochemItemDto.fromList(agrochemItemChecklistRepository.findByInspection(mvInspectionChecklist))
+            val items = InspectionAgrochemItemDto.fromList(agrochemItemChecklistRepository.findByInspection(mvInspectionChecklist))
+            map["items"] = items
+            KotlinLogging.logger { }.info("Number of items: ${items.size}")
+            map["itemNumber"] = items.size
             map["remarks"] = mvInspectionChecklist.remarks.orEmpty()
             map["overallRemarks"] = inspectionGeneral?.overallRemarks.orEmpty()
             map
