@@ -1979,6 +1979,20 @@ begin
     end if;
 end;
 
+/
+alter table DAT_KEBS_USERS
+    add EMAIL_ACTIVATION_STATUS int default 0
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add OTHER_BUSINESS_NATURE_TYPE VARCHAR(350 char)
+
+/
+alter table DAT_KEBS_COMPANY_PROFILE_EDIT
+    add OTHER_BUSINESS_NATURE_TYPE VARCHAR(350 char)
+
+/
+
 
 
 

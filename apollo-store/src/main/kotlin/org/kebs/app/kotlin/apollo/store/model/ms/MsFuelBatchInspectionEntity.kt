@@ -49,6 +49,10 @@ class MsFuelBatchInspectionEntity : Serializable{
     @Basic
     var yearNameId: Long?= null
 
+    @Column(name = "MONTH_NAME_ID")
+    @Basic
+    var monthNameId: Long?= null
+
     @Column(name = "TRANSACTION_DATE")
     @Basic
     var transactionDate: Date? = null

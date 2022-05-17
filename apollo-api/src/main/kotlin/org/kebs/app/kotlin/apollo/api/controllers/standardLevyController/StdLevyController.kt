@@ -599,6 +599,7 @@ class StdLevyController(
             registrationNumber=editCompanyDTO.registrationNumber
             entryNumber=editCompanyDTO.entryNumber
             typeOfManufacture=editCompanyDTO.typeOfManufacture
+            otherBusinessNatureType=editCompanyDTO.otherBusinessNatureType
 
 
 
@@ -724,6 +725,7 @@ class StdLevyController(
             userId= assignToDTO.contactId
             taskType= assignToDTO.taskType
             typeOfManufacture= assignToDTO.typeOfManufacture
+            otherBusinessNatureType= assignToDTO.otherBusinessNatureType
         }
 //        val gson = Gson()
 //        KotlinLogging.logger { }.info { "Assigned Variables" + gson.toJson(assignToDTO) }
@@ -1059,6 +1061,47 @@ class StdLevyController(
     fun getManufacturerStatus(): BusinessTypeHolder {
         return standardLevyService.getManufacturerStatus()
     }
+
+    @GetMapping("/getVerificationStatus")
+    @ResponseBody
+    fun getVerificationStatus(): Int {
+        return standardLevyService.getVerificationStatus()
+    }
+
+    @PostMapping("/sendEmailVerificationToken")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun sendEmailVerificationToken(
+        @RequestBody sendEmailDto: SendEmailDto
+    ): ServerResponse {
+        val emailVerificationTokenEntity= EmailVerificationTokenEntity().apply {
+           email=sendEmailDto.email
+           createdBy= sendEmailDto.userId.toString()
+        }
+        return ServerResponse(HttpStatus.OK,"Email Sent",standardLevyService.sendEmailVerificationToken(emailVerificationTokenEntity))
+
+    }
+
+
+    @PostMapping("/confirmEmailAddress")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun confirmEmailAddress(
+        @RequestBody verifyEmailDto: VerifyEmailDto
+    ): ServerResponse {
+        val emailVerificationTokenEntity= EmailVerificationTokenEntity().apply {
+            token=verifyEmailDto.verificationToken
+        }
+        val usersEntity= UsersEntity().apply {
+            id=verifyEmailDto.userId
+        }
+        return ServerResponse(HttpStatus.OK,"Email Verified",standardLevyService.confirmEmailAddress(usersEntity,emailVerificationTokenEntity))
+
+    }
+
+
+
+
 
 
     @GetMapping("/getCompanyEditedDetails")

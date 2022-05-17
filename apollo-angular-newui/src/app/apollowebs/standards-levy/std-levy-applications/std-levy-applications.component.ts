@@ -206,7 +206,8 @@ export class StdLevyApplicationsComponent implements OnInit {
       kraPin: [],
       registrationNumber: [],
       entryNumber: [],
-      typeOfManufacture:[]
+      typeOfManufacture:[],
+      otherBusinessNatureType:[]
 
     });
 
@@ -252,7 +253,8 @@ export class StdLevyApplicationsComponent implements OnInit {
       userType:[],
       taskType:[],
       typeOfManufacture:[],
-      buildingName:[]
+      buildingName:[],
+      otherBusinessNatureType:[]
 
     });
     this.assignCompanyTask1FormGroup = this.formBuilder.group({
@@ -287,7 +289,8 @@ export class StdLevyApplicationsComponent implements OnInit {
       contactId: [],
       userType:[],
       taskType:[],
-      typeOfManufacture:[]
+      typeOfManufacture:[],
+      otherBusinessNatureType:[]
 
     });
     this.assignCompanyTask2FormGroup = this.formBuilder.group({
@@ -322,7 +325,8 @@ export class StdLevyApplicationsComponent implements OnInit {
       contactId: [],
       userType:[],
       taskType:[],
-      typeOfManufacture:[]
+      typeOfManufacture:[],
+      otherBusinessNatureType:[]
 
     });
 

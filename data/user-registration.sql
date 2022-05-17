@@ -683,3 +683,7 @@ create index dat_kebs_company_profile_idx on dat_kebs_company_profile (status, k
                                                                        county,
                                                                        town) TABLESPACE qaimssdb_idx;
 /
+alter table DAT_KEBS_USERS
+    add EMAIL_ACTIVATION_STATUS int default 0
+
+/

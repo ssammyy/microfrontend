@@ -935,6 +935,7 @@ class RegistrationManagementDaoService(
                         status = applicationMapProperties.transactionActiveStatus
                         createdBy = user.userName
                         createdOn = Timestamp.from(Instant.now())
+                        otherBusinessNatureType=dto.otherCategory
                     }
 
                     val companyProfileEntity = companyRepo.save(entity)
@@ -1017,6 +1018,7 @@ class RegistrationManagementDaoService(
                         manufactureStatus = 1
                         createdBy = user.userName
                         createdOn = Timestamp.from(Instant.now())
+                        otherBusinessNatureType=dto.otherCategory
                     }
 
                     companyProfileEntity = companyRepo.save(companyProfileEntity)

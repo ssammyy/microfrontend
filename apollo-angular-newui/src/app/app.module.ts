@@ -333,6 +333,7 @@ import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/compla
 import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignment-document/cd-general-checklist/cd-general-checklist.component';
 import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payments.component';
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
+import { EpraMonthlyBatchListComponent } from './apollowebs/market-surveillance/fuel/epra-monthly-batch-list/epra-monthly-batch-list.component';
 
 
 @NgModule({
@@ -687,7 +688,8 @@ import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
         StandardLevyClosureComponent,
         StandardLevySuspensionComponent,
         AdminBusinessManagementComponent,
-        CdGeneralChecklistComponent
+        CdGeneralChecklistComponent,
+        EpraMonthlyBatchListComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

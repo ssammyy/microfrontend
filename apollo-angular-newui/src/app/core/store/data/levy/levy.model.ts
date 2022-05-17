@@ -116,6 +116,7 @@ export interface CompanyModel {
     AllCommoditiesManufuctured: string;
     DateOfManufacture: string;
     totalValueOfManufacture: number;
+    otherBusinessNatureType: string;
 
 }
 export interface StdLevyScheduleSiteVisitDTO {
@@ -371,6 +372,7 @@ export interface ManufactureDetailList {
     userId: number;
     ownership: string;
     typeOfManufacture: number;
+    otherBusinessNatureType: string;
 
 }
 export interface ManufacturePendingTask {
@@ -437,6 +439,7 @@ export interface ManufacturePendingTaskData{
     rejectStatus: string;
     approvalStatusLevelTwo: string;
     rejectStatusLevelTwo: string;
+    otherBusinessNatureType: string;
 
 
 }
@@ -570,5 +573,19 @@ export interface ClosedCompanyDTO{
     registrationNumber: string;
     companyName: string;
 
+}
+export interface EmailVerificationStatus{
+    emailStatus: number;
+}
+
+export interface SendEmailDto{
+    userId: number;
+    email: string;
+}
+
+export interface VerifyEmailDto{
+    userId: number;
+    email: string;
+    verificationToken: string;
 }
 

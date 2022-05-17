@@ -10,7 +10,7 @@ import {
     ConfirmEditCompanyDTO,
     DirectorsList,
     DocumentDTO,
-    EditCompanyDTO,
+    EditCompanyDTO, EmailVerificationStatus,
     ManufactureCompletedTask,
     ManufactureDetailList,
     ManufacturePenalty,
@@ -18,14 +18,14 @@ import {
     ManufacturingStatus, NotificationStatus,
     PaidLevy, PaymentDetails, PenaltyDetails,
     ReportDecisionLevelOne,
-    ReportDecisionLevelTwo,
+    ReportDecisionLevelTwo, SendEmailDto,
     SiteVisitFeedBack,
     SiteVisitRemarks,
     SiteVisitReport,
     SLevySL1, SlModel,
     StdLevyScheduleSiteVisitDTO, SuspendCompanyDto, SuspendedCompanyDTO,
     UserEntityRoles,
-    UsersEntityList,
+    UsersEntityList, VerifyEmailDto,
     VisitTask
 } from "./levy.model";
 import {UsersEntity} from "../std/std.model";
@@ -557,6 +557,37 @@ export class LevyService {
         return this.http.get<PenaltyDetails>(url, {params}).pipe();
     }
 
+    public getVerificationStatus(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_EMAIL_VERIFICATION_STATUS);
+        const params = new HttpParams();
+        return this.http.get<EmailVerificationStatus>(url, {params}).pipe();
+    }
+
+    public sendEmailVerificationToken(sendEmailDto: SendEmailDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SEND_EMAIL_VERIFICATION);
+        const params = new HttpParams();
+        return this.http.post<SendEmailDto>(url, sendEmailDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public confirmEmailAddress(verifyEmailDto: VerifyEmailDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.CONFIRM_EMAIL_VERIFICATION_STATUS);
+        const params = new HttpParams();
+        return this.http.post<VerifyEmailDto>(url, verifyEmailDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 
 
 

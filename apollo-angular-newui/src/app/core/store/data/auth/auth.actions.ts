@@ -10,7 +10,7 @@ import {ApiResponse} from '../../../domain/response.model';
 
 export const loadLogout = createAction(
   '[Auth] Load loadLogout',
-  props<{ loginUrl: string }>()
+  props<{ loginUrl: string }>(),
 );
 export const doSendTokenForUser = createAction(
   '[Auth] doSendTokenForUser',

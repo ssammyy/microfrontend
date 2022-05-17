@@ -5,17 +5,17 @@ import {
   loadResponsesFailure,
   LoginCredentials,
   selectTokenValidatedStateValidated,
-  selectUserInfo
+  selectUserInfo,
 } from '../../../core/store';
 import {select, Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgxSpinnerService} from "ngx-spinner";
-import {NotificationService} from "../../../core/store/data/std/notification.service";
+import {NgxSpinnerService} from 'ngx-spinner';
+import {NotificationService} from '../../../core/store/data/std/notification.service';
 
 @Component({
   selector: 'app-otp',
   templateUrl: './otp.component.html',
-  styleUrls: ['./otp.component.css']
+  styleUrls: ['./otp.component.css'],
 })
 export class OtpComponent implements OnInit {
 
@@ -44,25 +44,23 @@ export class OtpComponent implements OnInit {
         {
           // username: new FormControl('', [Validators.required]),
           otp: new FormControl('', [Validators.required]),
-        }
+        },
     );
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       return this.username = u.email;
-
-
     });
 
     // this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dashboard`;
   }
 
   showToasterError(title: string, message: string) {
-    this.notifyService.showError(message, title)
+    this.notifyService.showError(message, title);
 
   }
 
   onClickValidateOtp() {
-    this.loadingText = "Validating OTP...."
+    this.loadingText = 'Validating OTP....';
     // this.SpinnerService.show();
     // console.log(`user name ${this.username}`);
     this.tokenValidated = true;
@@ -75,16 +73,16 @@ export class OtpComponent implements OnInit {
         error: {
           payload: 'OTP is required',
           status: 100,
-          response: '05'
-        }
+          response: '05',
+        },
       }));
 
     } else {
       this.store$.dispatch(doValidateTokenForUser({
         payload: {
           username: this.username,
-          token: this.loginForm?.get('otp')?.value
-        }
+          token: this.loginForm?.get('otp')?.value,
+        },
       }));
 
 
@@ -97,14 +95,11 @@ export class OtpComponent implements OnInit {
           // console.log("redirecturl ni hii " + this.redirectUrl)
           // this.step = 1;
           this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-
             return this.redirectUrl = u.redirectUrl;
-
           });
 
           if (!(this.redirectUrl) || this.redirectUrl === '') {
             this.router.navigate(['dashboard']);
-
           } else {
             this.router.navigate([this.redirectUrl]);
           }
@@ -114,7 +109,7 @@ export class OtpComponent implements OnInit {
           // this.SpinnerService.hide()
 
           this.loginForm?.get('otp')?.reset();
-          this.loginForm.controls.otp.setErrors({invalidNumber:true})  // <--- Set invalidNumber to true
+          this.loginForm.controls.otp.setErrors({invalidNumber: true});  // <--- Set invalidNumber to true
 
           // this.store$.dispatch(loadResponsesFailure({
           //   error: {

@@ -222,10 +222,16 @@
                                                    [class.is-invalid]="formNewScheduleForm.company.invalid && formNewScheduleForm.company.touched">
                                         </mat-form-field>
 
-                                        <label for="stationOwnerEmail">Station Owner Email</label>
+                                        <label for="stationOwnerEmail">Company Email</label>
                                         <mat-form-field class="example-full-width">
                                             <input id="stationOwnerEmail" matInput type="text" placeholder="Please Enter Station Owner Email" formControlName="stationOwnerEmail" name="stationOwnerEmail"
                                                    [class.is-invalid]="formNewScheduleForm.stationOwnerEmail.invalid && formNewScheduleForm.stationOwnerEmail.touched">
+                                        </mat-form-field>
+
+                                        <label for="stationKraPin">Company KRA PIN</label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="stationKraPin" matInput type="text" placeholder="Please Enter Company KRA PIN" formControlName="stationKraPin" name="stationKraPin"
+                                                   [class.is-invalid]="formNewScheduleForm.stationKraPin.invalid && formNewScheduleForm.stationKraPin.touched">
                                         </mat-form-field>
 
                                         <label for="petroleumProduct">Petroleum Product Name</label>
@@ -242,7 +248,7 @@
 
                                         <label for="inspectionDateFrom">Inspection Date From</label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="inspectionDateFrom" matInput type="date" placeholder="Please Enter Inspection Date From" formControlName="inspectionDateFrom" name="inspectionDateFrom"
+                                            <input id="inspectionDateFrom" matInput type="date"  [min]="minDate" placeholder="Please Enter Inspection Date From" formControlName="inspectionDateFrom" name="inspectionDateFrom"
                                                    [class.is-invalid]="formNewScheduleForm.inspectionDateFrom.invalid && formNewScheduleForm.inspectionDateFrom.touched">
                                         </mat-form-field>
 

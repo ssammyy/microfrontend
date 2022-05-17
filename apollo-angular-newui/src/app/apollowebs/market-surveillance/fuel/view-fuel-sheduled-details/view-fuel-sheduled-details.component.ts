@@ -6,11 +6,11 @@ import {
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
   FuelInspectionDto, LaboratoryDto,
-  LIMSFilesFoundDto, MSSSFPDFListDetailsDto, PDFSaveComplianceStatusDto, RemediationDto,
+  LIMSFilesFoundDto, MSRemarksDto, MSSSFPDFListDetailsDto, PDFSaveComplianceStatusDto, RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
   SampleSubmissionDto,
-  SampleSubmissionItemsDto, SSFSaveComplianceStatusDto
+  SampleSubmissionItemsDto, SSFSaveComplianceStatusDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -27,7 +27,7 @@ declare global {
 @Component({
   selector: 'app-view-fuel-sheduled-details',
   templateUrl: './view-fuel-sheduled-details.component.html',
-  styleUrls: ['./view-fuel-sheduled-details.component.css']
+  styleUrls: ['./view-fuel-sheduled-details.component.css'],
 })
 export class ViewFuelSheduledDetailsComponent implements OnInit {
   active: Number = 0;
@@ -38,6 +38,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   currDiv!: string;
   currDivLabel!: string;
   assignOfficerForm!: FormGroup;
+  remarksSavedForm!: FormGroup;
   rapidTestForm!: FormGroup;
   sampleCollectForm!: FormGroup;
   sampleCollectItemsForm!: FormGroup;
@@ -92,11 +93,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
@@ -108,22 +109,22 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       productBrandName: {
         title: 'PRODUCT BRAND NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       batchNo: {
         title: 'BATCH NO',
         type: 'string',
-        filter: false
+        filter: false,
       },
       batchSize: {
         title: 'BATCH SIZE',
         type: 'string',
-        filter: false
+        filter: false,
       },
       sampleSize: {
         title: 'SAMPLE SIZE',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // sampled: {
       //   title: 'Sampled',
@@ -141,8 +142,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsSampleSubmittedItems = {
     selectMode: 'single',  // single|multi
@@ -157,11 +158,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
@@ -173,12 +174,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       parameters: {
         title: 'PARAMETERS',
         type: 'string',
-        filter: false
+        filter: false,
       },
       laboratoryName: {
         title: 'LABORATORY NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // batchSize: {
       //   title: 'BATCH SIZE',
@@ -204,8 +205,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsLabResultsParam = {
     selectMode: 'single',  // single|multi
@@ -220,28 +221,28 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
       param: {
         title: 'PARAM',
         type: 'string',
-        filter: false
+        filter: false,
       },
       result: {
         title: 'RESULT',
         type: 'string',
-        filter: false
+        filter: false,
       },
       method: {
         title: 'METHOD',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // batchSize: {
       //   title: 'BATCH SIZE',
@@ -267,8 +268,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsLIMSPDFFiles = {
     selectMode: 'single',  // single|multi
@@ -282,25 +283,25 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'},
-        {name: 'saveRecord', title: '<i class="btn btn-sm btn-primary">Save PDF</i>'}
+        {name: 'saveRecord', title: '<i class="btn btn-sm btn-primary">Save PDF</i>'},
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
       fileName: {
         title: 'FILE NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       fileSavedStatus: {
         title: 'FILE SAVED STATUS',
         type: 'boolean',
-        filter: false
+        filter: false,
       },
       // method: {
       //   title: 'METHOD',
@@ -331,8 +332,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsSavedPDFFiles = {
     selectMode: 'single',  // single|multi
@@ -346,20 +347,20 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         {name: 'viewPDFRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
-        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'}
+        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'},
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
       pdfName: {
         title: 'PDF NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // complianceRemarks: {
       //   title: 'COMPLIANCE REMARKS',
@@ -369,7 +370,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       complianceStatus: {
         title: 'COMPLIANCE STATUS',
         type: 'boolean',
-        filter: false
+        filter: false,
       },
       // sampled: {
       //   title: 'Sampled',
@@ -387,8 +388,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsRemarks = {
     selectMode: 'single',  // single|multi
@@ -401,26 +402,26 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-        {name: 'viewPDFRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
+        {name: 'viewSavedRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
         // {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View</i>'}
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
       processName: {
         title: 'PROCESS NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       processBy: {
         title: 'PROCESS BY',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // complianceStatus: {
       //   title: 'COMPLIANCE STATUS',
@@ -443,8 +444,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
 
 
@@ -467,12 +468,17 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       return this.roles = u.roles;
     });
 
+    this.remarksSavedForm = this.formBuilder.group({
+      processBy: null,
+      remarksDescription: null,
+    });
+
     this.activatedRoute.paramMap.subscribe(
         rs => {
           this.selectedRefNo = rs.get('referenceNumber');
           this.selectedBatchRefNo = rs.get('batchReferenceNumber');
           this.loadData(this.selectedRefNo, this.selectedBatchRefNo);
-        }
+        },
     );
 
     this.assignOfficerForm = this.formBuilder.group({
@@ -532,7 +538,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     this.sampleSubmitParamsForm = this.formBuilder.group({
       parameters: ['', Validators.required],
-      laboratoryName: ['', Validators.required]
+      laboratoryName: ['', Validators.required],
     });
 
     this.sampleSubmitBSNumberForm = this.formBuilder.group({
@@ -655,7 +661,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
 
 
@@ -722,7 +728,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
   }
 
@@ -745,7 +751,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
   }
 
@@ -768,7 +774,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
   }
 
@@ -791,7 +797,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
   }
 
@@ -811,7 +817,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     }
   }
@@ -831,7 +837,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     }
   }
@@ -857,7 +863,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     }
   }
@@ -883,7 +889,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     }
   }
@@ -903,7 +909,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     }
   }
@@ -928,7 +934,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
               this.SpinnerService.hide();
               console.log(error);
               this.msService.showError('AN ERROR OCCURRED');
-            }
+            },
         );
       } else {
         for (const savedPdf of this.fuelInspection.sampleLabResults.savedPDFFiles) {
@@ -945,7 +951,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
                   this.SpinnerService.hide();
                   console.log(error);
                   this.msService.showError('AN ERROR OCCURRED');
-                }
+                },
             );
           } else {
             this.SpinnerService.hide();
@@ -974,7 +980,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     }
   }
@@ -994,7 +1000,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     }
   }
@@ -1014,7 +1020,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     }
   }
@@ -1034,7 +1040,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     }
   }
@@ -1054,7 +1060,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
-          }
+          },
       );
     // }
   }
@@ -1083,6 +1089,16 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     this.currDivLabel = `COMPLIANCE STATUS AND REMARKS FOR PDF # ${this.selectedPDFFileName}`;
     this.currDiv = 'viewPdfSaveCompliance';
     this.pdfSaveComplianceStatusForm.patchValue(data);
+
+    window.$('#myModal1').modal('show');
+    // this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
+    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+  }
+
+  viewSavedRemarks(data: MSRemarksDto) {
+    this.currDivLabel = `REMARKS FOR ${data.processName}`;
+    this.currDiv = 'viewSavedRemarks';
+    this.remarksSavedForm.patchValue(data);
 
     window.$('#myModal1').modal('show');
     // this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
@@ -1123,4 +1139,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     }
   }
 
+  public onCustomRemarksViewAction(event: any): void {
+    switch (event.action) {
+      case 'viewSavedRemarks':
+        this.viewSavedRemarks(event.data);
+        break;
+    }
+  }
 }

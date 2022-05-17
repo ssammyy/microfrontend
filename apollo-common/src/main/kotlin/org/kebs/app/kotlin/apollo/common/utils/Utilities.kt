@@ -80,6 +80,8 @@ fun getRandomNumberString(): String? {
     return "${prefixText}${genNumber}"
 }
 
+
+
 fun rand(start: Long, end: Long): Long {
     require(start <= end) { "Illegal Argument" }
     return (start..end).random()

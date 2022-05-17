@@ -212,6 +212,7 @@ export class FuelBatchDetailsDto {
     town: string;
     referenceNumber: string;
     batchFileYear: string;
+    batchFileMonth: string;
     remarks: string;
     batchClosed: boolean;
 }

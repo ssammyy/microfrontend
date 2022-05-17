@@ -16,14 +16,14 @@ import {
   selectCountyIdData,
   selectUserInfo,
   Town,
-  TownService
+  TownService,
 } from '../../../../core/store';
-import {HttpErrorResponse} from "@angular/common/http";
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-epra-batch-list',
   templateUrl: './epra-batch-list.component.html',
-  styleUrls: ['./epra-batch-list.component.css']
+  styleUrls: ['./epra-batch-list.component.css'],
 })
 export class EpraBatchListComponent implements OnInit {
   @ViewChild('editModal') editModal !: TemplateRef<any>;
@@ -60,9 +60,9 @@ export class EpraBatchListComponent implements OnInit {
       delete: false,
       custom: [
         //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View More</i>'}
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View More</i>'},
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     rowClassFunction: (row) => {
       // console.log(row)
@@ -75,7 +75,7 @@ export class EpraBatchListComponent implements OnInit {
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
@@ -87,38 +87,43 @@ export class EpraBatchListComponent implements OnInit {
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
-        filter: false
+        filter: false,
       },
       region: {
         title: 'REGION',
         type: 'string',
-        filter: false
+        filter: false,
       },
       county: {
         title: 'COUNTY',
         type: 'string',
-        filter: false
+        filter: false,
       },
       town: {
         title: 'TOWN',
         type: 'string',
-        filter: false
+        filter: false,
       },
       batchFileYear: {
         title: 'BATCH FILE YEAR',
         type: 'string',
-        filter: false
+        filter: false,
+      },
+      batchFileMonth: {
+        title: 'BATCH FILE MONTH',
+        type: 'string',
+        filter: false,
       },
       batchClosed: {
         title: 'BATCH CLOSED',
         type: 'boolean',
-        filter: false
+        filter: false,
       },
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   dataSet: LocalDataSource = new LocalDataSource();
   documentTypes: any[];
@@ -140,7 +145,7 @@ export class EpraBatchListComponent implements OnInit {
               private SpinnerService: NgxSpinnerService,
               private countyService: CountyService,
               private townService: TownService,
-              private msService: MsService
+              private msService: MsService,
   ) {
     this.county$ = countyService.entities$;
     this.town$ = townService.entities$;
@@ -177,7 +182,7 @@ export class EpraBatchListComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
 
     // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
@@ -253,7 +258,7 @@ export class EpraBatchListComponent implements OnInit {
           } else {
             return throwError('Invalid request, County id is required');
           }
-        }
+        },
     );
 
   }
@@ -271,8 +276,9 @@ export class EpraBatchListComponent implements OnInit {
           (data: any) => {
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('NEW FUEL BATCH CREATED SUCCESSFUL');
-          }
+            this.msService.showSuccess('NEW FUEL BATCH CREATED SUCCESSFUL', this.loadData(this.defaultPage, this.defaultPageSize));
+
+          },
           // ,
           // (err: HttpErrorResponse) => {
           //   console.warn(err.error);

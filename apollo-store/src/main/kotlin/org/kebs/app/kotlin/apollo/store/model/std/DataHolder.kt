@@ -147,6 +147,7 @@ interface ManufactureListHolder {
     fun getBranchName(): String?
     fun getClosureOfOperations(): String?
     fun getTypeOfManufacture(): Long?
+    fun getOtherBusinessNatureType(): String?
 }
 
 interface CompleteTasksDetailHolder {
@@ -186,6 +187,10 @@ interface BranchNameHolder{
 }
 interface BusinessTypeHolder{
     fun getBusinessType(): Long?
+}
+
+interface EmailVerificationStatus{
+    fun getEmailActivationStatus(): Long?
 }
 interface NotificationFormDetailsHolder{
 //    fun getCompanyName(): String?

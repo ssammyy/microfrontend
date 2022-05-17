@@ -744,6 +744,11 @@ class CommonDaoServices(
         return year.toString()
     }
 
+    fun getCurrentMonth(): String {
+        val month = Calendar.getInstance()[Calendar.MONTH]
+        return month.toString()
+    }
+
     fun loggedInUserDetails(): UsersEntity {
         SecurityContextHolder.getContext().authentication?.name
                 ?.let { username ->
