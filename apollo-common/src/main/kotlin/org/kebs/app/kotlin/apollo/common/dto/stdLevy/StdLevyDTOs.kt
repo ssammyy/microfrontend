@@ -74,6 +74,7 @@ data class EditCompanyTaskToDTO(
     var kraPin: String? = null,
     var registrationNumber: String? = null,
     var entryNumber: String? = null,
+    var otherBusinessNatureType: String? = null,
     var typeOfManufacture: Int? = null
 )
 data class AssignCompanyTaskToDTO(
@@ -107,7 +108,8 @@ data class AssignCompanyTaskToDTO(
     var entryNumber: String? = null,
     var contactId: Long? = null,
     var taskType: Long? = null,
-    var typeOfManufacture: Int? = null
+    var typeOfManufacture: Int? = null,
+    var otherBusinessNatureType: String? = null
 )
 class ProcessInstanceSiteResponse(val processId: String, val isEnded: Boolean) {
 }

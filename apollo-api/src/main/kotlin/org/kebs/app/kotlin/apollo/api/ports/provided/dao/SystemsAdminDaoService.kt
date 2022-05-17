@@ -1387,6 +1387,7 @@ class SystemsAdminDaoService(
                                                 status = applicationMapProperties.transactionActiveStatus
                                                 createdBy = user.userName
                                                 createdOn = Timestamp.from(Instant.now())
+                                                otherBusinessNatureType=dto.company.otherCategory
                                             }
 
                                             companyProfileEntity = companyProfileRepo.save(companyProfileEntity)

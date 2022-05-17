@@ -408,7 +408,6 @@ data class UserCompanyEntityDto(
         var registrationNumber: String? = null,
         @JsonProperty("postalAddress")
         var postalAddress: String? = null,
-
         @JsonProperty("physicalAddress")
         @NotEmpty(message = "is mandatory")
         var physicalAddress: String? = null,
@@ -455,6 +454,9 @@ data class UserCompanyEntityDto(
         var factoryVisitDate: Date? = null,
         var factoryVisitStatus: Int? = null,
         var manufactureStatus: Int? = null,
+        @JsonProperty("otherCategory")
+        var otherCategory: String? = null
+
 
         ) {
     var id: Long? = null
