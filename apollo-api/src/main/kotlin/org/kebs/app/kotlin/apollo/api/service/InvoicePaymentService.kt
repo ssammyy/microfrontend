@@ -291,7 +291,7 @@ class InvoicePaymentService(
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             //2. Update payment status on KenTrade
             daoServices.findDemandNoteWithID(demandNoteId)?.let {
-                daoServices.sendDemandNotGeneratedToKWIS(it)
+                daoServices.sendDemandNotGeneratedToKWIS(it, consignmentDocument.version?.toString() ?: "1")
                 consignmentDocument.varField10 = "DEMAND NOTE SENT TO KENTRADE, AWAITING PAYMENT"
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Send payment status if its billed
@@ -347,9 +347,11 @@ class InvoicePaymentService(
             // 1. Send demand payment status to SW
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
                 if (amount != null) {
-                    daoServices.sendDemandNotePayedStatusToKWIS(demandNote, amount)
+                    daoServices.sendDemandNotePayedStatusToKWIS(demandNote, amount, consignmentDocument.version?.toString()
+                            ?: "1")
                 } else {
-                    daoServices.sendDemandNotePayedStatusToKWIS(demandNote, demandNote.totalAmount)
+                    daoServices.sendDemandNotePayedStatusToKWIS(demandNote, demandNote.totalAmount, consignmentDocument.version?.toString()
+                            ?: "1")
                 }
                 demandNote
             } ?: throw ExpectedDataNotFound("Demand note with $demandNoteId was not found")

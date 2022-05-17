@@ -757,7 +757,7 @@ class DITest {
     fun demandNoteSubmission() {
         this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(0)?.let { demandNote ->
             KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
-            destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(demandNote)
+            destinationInspectionDaoServices.sendDemandNotGeneratedToKWIS(demandNote, "1")
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         } ?: throw ExpectedDataNotFound("Could not find a single payment")
     }
@@ -766,7 +766,7 @@ class DITest {
     fun demandNotePaymentSubmissionByRef() {
         this.demandNoteRepository.findByDemandNoteNumber("KIMSDN202111174A794")?.let { demandNote ->
             KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
-            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote, BigDecimal.valueOf(200))
+            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote, BigDecimal.valueOf(200), "1")
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         } ?: throw ExpectedDataNotFound("Could not find a single payment")
     }
@@ -775,7 +775,7 @@ class DITest {
     fun demandNotePaymentSubmission() {
         this.demandNoteRepository.findFirstByPaymentStatusAndCdRefNoIsNotNull(1)?.let { demandNote ->
             KotlinLogging.logger { }.info("CdRef No: ${demandNote.cdRefNo}")
-            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote, BigDecimal.valueOf(300))
+            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(demandNote, BigDecimal.valueOf(300), "1")
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         } ?: throw ExpectedDataNotFound("Could not find a single payment")
     }

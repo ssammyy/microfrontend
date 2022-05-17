@@ -190,15 +190,15 @@
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Chassis Number</div>
-                                                    <div class="list-text-accordion">{{corDetails.cor_details.chassisNo}}</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.chasisNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Chassis/VIN Number</div>
-                                                    <div class="list-text-accordion">{{corDetails.cor_details.caxleNo}}</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.numberOfAxles}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Engine Number/Model</div>
-                                                    <div class="list-text-accordion">{{corDetails.cor_details.engineModel}}</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.engineNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Engine Capacity</div>
@@ -222,12 +222,12 @@
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Previous Registration Number</div>
-                                                    <div class="list-text-accordion">{{corDetails.cor_details.prevRegNo}}</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.previousRegistrationNumber}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Previous Country Of Registration
                                                     </div>
-                                                    <div class="list-text-accordion">{{corDetails.cor_details.prevCountryOfReg}}</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.previousCountryOfRegistration}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Tare Weight</div>
@@ -255,11 +255,11 @@
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Body Color</div>
-                                                    <div class="list-text-accordion">{{corDetails.cor_details.color}}</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.bodyColor}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Fuel Type</div>
-                                                    <div class="list-text-accordion">{{corDetails.cor_details.fuel}}</div>
+                                                    <div class="list-text-accordion">{{corDetails.cor_details.fuelType}}</div>
                                                 </li>
                                             </ul>
                                         </ng-template>
@@ -273,7 +273,7 @@
                             <div class="col-md-2">
                                 <h5>Action:</h5>
                                 <h5>Documents:</h5>
-                                <button *ngIf="corDetails.certificate_details.documentsType!=='F'"
+                                <button *ngIf="corDetails.cor_details.documentsType!=='F'"
                                         class="btn btn-sm btn-primary" (click)="downloadCorFile()">CoR Certificate
                                     File
                                 </button>
