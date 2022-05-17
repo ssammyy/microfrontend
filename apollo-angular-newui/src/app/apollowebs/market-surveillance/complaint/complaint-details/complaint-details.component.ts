@@ -1204,7 +1204,7 @@ export class ComplaintDetailsComponent implements OnInit {
   public onCustomRemarksViewAction(event: any): void {
     switch (event.action) {
       case 'viewPDFRemarks':
-        this.viewLIMSPDFSavedRemarks(event.data);
+        this.viewSavedRemarks(event.data);
         break;
     }
   }

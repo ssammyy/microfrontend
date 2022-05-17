@@ -31,6 +31,10 @@ class MsFuelInspectionEntity : Serializable{
     @Basic
     var userTaskId: Long? = null
 
+    @Column(name = "MS_PROCESS_ID")
+    @Basic
+    var msProcessId: Long? = null
+
     @Column(name = "RAPID_TEST_FAILED_REMARKS")
     @Basic
     var rapidTestFailedRemarks: String? = null

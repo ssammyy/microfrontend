@@ -190,16 +190,16 @@ class RequestItems {
         fun fromEntity(item: CdDemandNoteItemsDetailsEntity): RequestItems {
             val itm = RequestItems().apply {
                 cfValue = item.cfvalue
-                detailAmount = item.amountPayable
+                detailAmount = item.adjustedAmount
             }
             try {
                 itm.rate = item.rate?.toDoubleOrNull()
             } catch (ex: NumberFormatException) {
                 itm.rate = 0.0
             }
-            itm.productName = item.product
-            if ((item.product?.length ?: 0) > 50) {
-                itm.productName = item.product?.substring(0, 49)
+            itm.productName = item.feeName
+            if ((item.feeName?.length ?: 0) > 50) {
+                itm.productName = item.feeName?.substring(0, 49)
             }
             return itm
         }

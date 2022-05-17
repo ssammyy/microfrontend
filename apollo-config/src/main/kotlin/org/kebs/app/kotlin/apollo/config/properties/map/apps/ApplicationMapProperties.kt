@@ -697,6 +697,60 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sftp.download.file.userName}")
     val mapSFTPUserName: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.batch.creation}")
+    val mapMSCreateBatch: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.batch.add.sites}")
+    val mapMSAddSiteVisit: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.batch.close}")
+    val mapMSCloseBatch: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.assign.officer}")
+    val mapMSAssignOfficer: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.rapid.test}")
+    val mapMSRapidTest: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.sample.collection}")
+    val mapMSSampleCollection: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.sample.submission}")
+    val mapMSSampleSubmision: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.bs.number}")
+    val mapMSBsNumber: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.pending.lab.results}")
+    val mapMSPendingLabResults: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.available.lab.results}")
+    val mapMSLabResultsAvailabe: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.complance.status}")
+    val mapMSComplanceStatus: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.remediation.schedule}")
+    val mapMSRemediationSchedule: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.remediation.generation}")
+    val mapMSRemediationInvoice: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.payment}")
+    val mapMsPayment: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.remediation}")
+    val mapMSRemediation: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.end.fuel}")
+    val mapMSEndFuel: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.fuel.ended}")
+    val mapMSFuelInspectionEnded: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.save.lab.pdf}")
+    val mapMSSaveSelectedLabResults: Long = 0L
+
 //    @Value("\${org.kebs.app.kotlin.apollo.application.map.sftp.download.file.name}")
 //    val mapSftpDownloadName: String = ""
 

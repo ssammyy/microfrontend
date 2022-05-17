@@ -58,6 +58,7 @@ class Scheduler(
     @Scheduled(fixedDelay = 60_000) //1 Minutes for now
     fun runSchedulerAfterEveryFiveMin() {
         invoiceDaoService.updateOfInvoiceTables()
+
         qaDaoServices.assignPermitApplicationAfterPayment()
         qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()

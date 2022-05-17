@@ -754,6 +754,8 @@ class ConsignmentDocumentDaoService(
             customsRemarks = cdStandardsTwoResponse.customsRemarks
             purposeOfImport = cdStandardsTwoResponse.purposeOfImport
             cocType = cdStandardsTwoResponse.cocType
+            courierName = cdStandardsTwoResponse.courierName
+            courierPin = cdStandardsTwoResponse.courierPin
             localCocType = cdStandardsTwoResponse.localCocType
             description = cdStandardsTwoResponse.localCocTypeDesc
             cocRefNumber = cdStandardsTwoResponse.localCocRefNoType

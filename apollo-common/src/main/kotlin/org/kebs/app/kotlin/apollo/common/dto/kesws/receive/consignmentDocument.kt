@@ -305,6 +305,12 @@ class CDStandardTwoResponse {
     @JsonProperty("LocalCOCType")
     var localCocType: String? = null
 
+    @JsonProperty("CourierNameType")
+    var courierName: String? = null
+
+    @JsonProperty("CourierPinType")
+    var courierPin: String? = null
+
     @JsonProperty("LocalCOCTypeDesc")
     var localCocTypeDesc: String? = null
 

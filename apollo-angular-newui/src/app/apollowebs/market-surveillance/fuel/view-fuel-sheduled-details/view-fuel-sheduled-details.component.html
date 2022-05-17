@@ -497,6 +497,28 @@
 
                                         </div>
                                     </mat-tab>
+                                    <mat-tab *ngIf="fuelInspection?.remarksDetails.length!=0" label="8">
+                                        <!--                                    <mat-tab  label="6">-->
+                                        <ng-template mat-tab-label>
+                                            Remarks Details
+                                        </ng-template>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <div *ngIf="fuelInspection?.remarksDetails.length!=0">
+                                                <div class="form-row">
+                                                    <!--                                                    <div class="col-md-12 mb-3">-->
+                                                    <!--                                                        <label style="color: #0082f3">Photos/Documents</label>-->
+                                                    <!--                                                    </div>-->
+                                                    <div class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsRemarks"
+                                                                         [source]="fuelInspection?.remarksDetails"
+                                                                         (custom)="onCustomRemarksViewAction($event)"
+                                                        ></ng2-smart-table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                        </div>
+                                    </mat-tab>
                                 </mat-tab-group>
                             </div>
                             <div class="col-md-2 p-0">
@@ -565,7 +587,7 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="fuelInspection.bsNumberStatus && fuelInspection.compliantStatusAdded &&
-                                            fuelInspection.sampleLabResults.ssfResultsList.complianceStatus == false && fuelInspection?.fuelRemediation?.invoiceCreated == false"
+                                            fuelInspection.sampleLabResults.ssfResultsList.complianceStatus == false && fuelInspection?.fuelRemediation == null"
                                                      (click)="openModalAddDetails('notCompliantInvoice')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -968,6 +990,27 @@
                                             <textarea id="remarksRemedPaid" matInput type="text"
                                                       formControlName="remarks"
                                                       name="remarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'viewSavedRemarks')">
+                        <form [formGroup]="remarksSavedForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="processBy"><b>ADD BY</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="processBy" matInput type="text" readonly formControlName="processBy" name="processBy">
+                                        </mat-form-field>
+                                        <label for="remarks"><b>Remarks/ Feed back:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea readonly id="remarksDescription" matInput type="text"
+                                                      formControlName="remarksDescription"
+                                                      name="remarksDescription">
                                             </textarea>
                                         </mat-form-field>
                                     </div>

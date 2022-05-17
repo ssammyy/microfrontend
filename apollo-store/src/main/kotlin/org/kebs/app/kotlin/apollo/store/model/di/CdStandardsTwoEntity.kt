@@ -34,6 +34,14 @@ class CdStandardsTwoEntity : Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "COURIER_PIN")
+    @Basic
+    var courierPin: String? = null
+
+    @Column(name = "COURIER_NAME")
+    @Basic
+    var courierName: String? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

@@ -163,7 +163,7 @@ class InvoiceDaoService(
                     paymentStatus = map.inactiveStatus
                 }
                 fuelProFormInvoice = msDaoServices.updateFuelInspectionRemediationInvoiceDetails(fuelProFormInvoice,map, commonDaoServices.concatenateName(user)).second
-
+                totalTaxAmount =fuelProFormInvoice.totalTaxAmount?.let { totalTaxAmount.plus(it) }!!
                 totalAmount = fuelProFormInvoice.transportGrandTotal?.let { totalAmount.plus(it) }!!
                 detailsDescription = "Fuel Inspection Proforma Invoice Number:${fuelProFormInvoice.invoiceNumber}"
             }
@@ -386,6 +386,29 @@ class InvoiceDaoService(
                         var batchInvoiceDetail = findInvoiceBatchDetails(stgPayment.invoiceId?:throw  ExpectedDataNotFound("MISSING INVOICE ID FOR MAPPING BACK AMOUNT PAID"))
                         when {
                             stgPayment.paidAmount == stgPayment.invoiceAmount -> {
+                                with(batchInvoiceDetail){
+                                    status =1
+                                    paymentStarted =1
+                                    receiptNumber = stgPayment.transactionId
+                                    receiptDate = stgPayment.paymentTransactionDate
+                                    paidAmount = stgPayment.paidAmount
+                                }
+
+                                batchInvoiceDetail = updateInvoiceBatchDetailsAfterPaymentDone(batchInvoiceDetail)
+
+                                updatePaymentDetailsToSpecificTable(batchInvoiceDetail)
+
+                                with(stgPayment){
+                                    transactionId = null
+                                    invoiceAmount = BigDecimal.ZERO
+                                    paymentTablesUpdatedStatus = null
+                                    paymentTransactionDate = null
+                                    paidAmount = BigDecimal.ZERO
+                                    paymentStarted = 1
+                                }
+                                stgPayment = updateStagingPaymentReconciliation(stgPayment)
+                            }
+                            stgPayment.paidAmount!! > stgPayment.invoiceAmount -> {
                                 with(batchInvoiceDetail){
                                     status =1
                                     paymentStarted =1
