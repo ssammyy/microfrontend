@@ -309,6 +309,7 @@
                                             <input type="hidden" ngModel="1"
                                                    formControlName="taskType" name="taskType"
                                                    value="1">
+
                                             <input type="hidden" ngModel="{{userId}}" formControlName="assignedTo"
                                                    name="assignedTo" value="{{userId}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}"
@@ -320,6 +321,11 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.kraPin}}"
                                                    formControlName="kraPin" name="kraPin"
                                                    value="{{actionRequestList?.kraPin}}">
+
+                                            <input type="hidden" ngModel="{{actionRequestList?.otherBusinessNatureType}}"
+                                                   formControlName="otherBusinessNatureType" name="otherBusinessNatureType"
+                                                   value="{{actionRequestList?.otherBusinessNatureType}}">
+
                                             <input type="hidden" ngModel="{{actionRequestList?.registrationNumber}}"
                                                    formControlName="registrationNumber" name="registrationNumber"
                                                    value="{{actionRequestList?.registrationNumber}}">
@@ -449,6 +455,9 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.kraPin}}"
                                                    formControlName="kraPin" name="kraPin"
                                                    value="{{actionRequestList?.kraPin}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.otherBusinessNatureType}}"
+                                                   formControlName="otherBusinessNatureType" name="otherBusinessNatureType"
+                                                   value="{{actionRequestList?.otherBusinessNatureType}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.status}}"
                                                    formControlName="status" name="status"
                                                    value="{{actionRequestList?.status}}">
@@ -579,6 +588,9 @@
                                             <input type="hidden" ngModel="{{actionRequestList?.kraPin}}"
                                                    formControlName="kraPin" name="kraPin"
                                                    value="{{actionRequestList?.kraPin}}">
+                                            <input type="hidden" ngModel="{{actionRequestList?.otherBusinessNatureType}}"
+                                                   formControlName="otherBusinessNatureType" name="otherBusinessNatureType"
+                                                   value="{{actionRequestList?.otherBusinessNatureType}}">
                                             <input type="hidden" ngModel="{{actionRequestList?.status}}"
                                                    formControlName="status" name="status"
                                                    value="{{actionRequestList?.status}}">
@@ -679,6 +691,9 @@
                                                         <input type="hidden" ngModel="{{actionRequestList?.kraPin}}"
                                                                formControlName="kraPin" name="kraPin"
                                                                value="{{actionRequestList?.kraPin}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.otherBusinessNatureType}}"
+                                                               formControlName="otherBusinessNatureType" name="otherBusinessNatureType"
+                                                               value="{{actionRequestList?.otherBusinessNatureType}}">
                                                         <input type="hidden" ngModel="{{actionRequestList?.registrationNumber}}"
                                                                formControlName="registrationNumber" name="registrationNumber"
                                                                value="{{actionRequestList?.registrationNumber}}">
@@ -1151,6 +1166,19 @@
                                                     </div>
 
                                                     <p class="text-sm mb-0">{{actionRequestList?.businessNatureName}}.</p>
+                                                </a>
+                                            </div>
+                                            <div class="form-group col-6">
+                                                <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Other</b></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm mb-0">{{actionRequestList?.otherBusinessNatureType}}.</p>
                                                 </a>
                                             </div>
 

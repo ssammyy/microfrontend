@@ -134,6 +134,7 @@ class StandardLevyService(
         companyProfileEditEntity.createdOn = commonDaoServices.getTimestamp()
         companyProfileEditEntity.createdOn?.let{variables.put("createdOn", it)}
         companyProfileEditEntity.typeOfManufacture?.let{variables.put("typeOfManufacture", it)}
+        companyProfileEditEntity.otherBusinessNatureType?.let{variables.put("otherBusinessNatureType", it)}
 
         companyProfileEditEntity.status=1
         val userIntType = companyProfileEditEntity.userType
@@ -541,6 +542,7 @@ return getUserTasks();
                     companyProfileEntity.userId?.let { variables["contactId"] = it }
                     companyProfileEntity.taskType?.let { variables["taskType"] = it }
                     companyProfileEntity.typeOfManufacture?.let { variables["typeOfManufacture"] = it }
+                    companyProfileEntity.otherBusinessNatureType?.let { variables["otherBusinessNatureType"] = it }
 
                     companyProfileEntity.assignedTo = companyProfileEntity.assignedTo
                     companyProfileEntity.assignStatus = 1

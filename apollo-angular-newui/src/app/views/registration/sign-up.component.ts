@@ -46,6 +46,7 @@ export class SignUpComponent implements OnInit {
     timer!: Observable<number>;
     timerObserver!: PartialObserver<number>;
     step = 0;
+    isShow=true;
 
     public clicked = false;
 
@@ -77,6 +78,7 @@ export class SignUpComponent implements OnInit {
     // @ts-ignore
     user: User;
     submitted = false;
+    selectedId: number;
 
 
     constructor(
@@ -137,6 +139,7 @@ export class SignUpComponent implements OnInit {
             directorIdNumber: new FormControl('', [Validators.required]),
             businessLines: new FormControl('', [Validators.required]),
             businessNatures: new FormControl('', [Validators.required]),
+            otherCategory: new FormControl('', [])
         });
 
         this.stepTwoForm = new FormGroup({
@@ -231,7 +234,17 @@ export class SignUpComponent implements OnInit {
 
     updateSelectedBusinessNatures() {
         this.selectedBusinessNature = this.stepOneForm?.get('businessNatures')?.value;
+        const ratings = [84,85,86,87,88,89,90,91,92,93,94,95];
+        console.log(this.selectedBusinessNature);
+        if(ratings.includes(this.selectedBusinessNature)){
+            this.isShow=!this.isShow;
+        }else{
+            this.isShow=true;
+        }
+        console.log(this.selectedBusinessNature)
+
     }
+
 
     onClickBrsLookup() {
         this.submitted = true;

@@ -599,6 +599,7 @@ class StdLevyController(
             registrationNumber=editCompanyDTO.registrationNumber
             entryNumber=editCompanyDTO.entryNumber
             typeOfManufacture=editCompanyDTO.typeOfManufacture
+            otherBusinessNatureType=editCompanyDTO.otherBusinessNatureType
 
 
 
@@ -724,6 +725,7 @@ class StdLevyController(
             userId= assignToDTO.contactId
             taskType= assignToDTO.taskType
             typeOfManufacture= assignToDTO.typeOfManufacture
+            otherBusinessNatureType= assignToDTO.otherBusinessNatureType
         }
 //        val gson = Gson()
 //        KotlinLogging.logger { }.info { "Assigned Variables" + gson.toJson(assignToDTO) }

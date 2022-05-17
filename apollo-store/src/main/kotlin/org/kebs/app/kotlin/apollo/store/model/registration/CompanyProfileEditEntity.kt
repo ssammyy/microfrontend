@@ -155,6 +155,10 @@ class CompanyProfileEditEntity : Serializable {
     @Basic
     var typeOfManufacture: Int? = null
 
+    @Column(name = "OTHER_BUSINESS_NATURE_TYPE")
+    @Basic
+    var otherBusinessNatureType: String? = null
+
 
 
 

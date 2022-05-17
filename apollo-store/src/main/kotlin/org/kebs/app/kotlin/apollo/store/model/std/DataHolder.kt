@@ -147,6 +147,7 @@ interface ManufactureListHolder {
     fun getBranchName(): String?
     fun getClosureOfOperations(): String?
     fun getTypeOfManufacture(): Long?
+    fun getOtherBusinessNatureType(): String?
 }
 
 interface CompleteTasksDetailHolder {
