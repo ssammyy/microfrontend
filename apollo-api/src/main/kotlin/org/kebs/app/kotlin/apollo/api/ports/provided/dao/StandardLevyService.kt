@@ -1841,8 +1841,8 @@ return getUserTasks();
         }
 
         emailVerificationTokenEntityRepo.save(tokensEntity)
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "Save Entity" + gson.toJson(tokensEntity) }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Save Entity" + gson.toJson(tokensEntity) }
 
 
         val firstName=  commonDaoServices.loggedInUserDetailsEmail().firstName
