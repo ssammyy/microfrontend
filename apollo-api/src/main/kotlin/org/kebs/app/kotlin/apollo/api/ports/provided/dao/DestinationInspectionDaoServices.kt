@@ -309,6 +309,7 @@ class DestinationInspectionDaoServices(
         return this.cocRepo.findFirstByCocNumberAndCocNumberIsNotNullOrCoiNumberAndCoiNumberIsNotNull(cocNumber, cocNumber).orElse(null)
     }
 
+    @Transactional
     fun createLocalCoc(
             user: UsersEntity,
             consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
@@ -348,9 +349,8 @@ class DestinationInspectionDaoServices(
                         KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
                         localCocCoiItems(consignmentDocumentDetailsEntity, localCoc, user, map)
                     } catch (e: Exception) {
-                        KotlinLogging.logger { }.debug("Threw error from forward express callback")
-                        KotlinLogging.logger { }.debug(e.message)
-                        KotlinLogging.logger { }.debug(e.toString())
+                        KotlinLogging.logger { }.debug("Threw error from forward express callback", e)
+                        throw e
                     }
                     return localCoc
                 }
@@ -492,7 +492,7 @@ class DestinationInspectionDaoServices(
 
     }
 
-
+    @Transactional
     fun createLocalCoi(
             user: UsersEntity,
             consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
@@ -589,19 +589,27 @@ class DestinationInspectionDaoServices(
             map: ServiceMapsEntity
     ) {
         if (updatedCDDetails.inspectionChecklist == map.activeStatus) { // If checklist was filled, only add compliant items only
-            findCDItemsListWithCDID(updatedCDDetails)
-                    .forEach { cdItemDetails ->
-                        if (cdItemDetails.approveStatus == map.activeStatus || cdItemDetails.approveStatus == null || cdItemDetails.approveStatus == map.inactiveStatus) {
-                            generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
-                                    ?: "NA", cdItemDetails.ownerName ?: "NA")
-                        }
-                    }
-        } else {
-            findCDItemsListWithCDID(updatedCDDetails)
-                    .forEach { cdItemDetails ->
+            val cocItems = findCDItemsListWithCDID(updatedCDDetails)
+            if (cocItems.isNotEmpty()) {
+                cocItems.forEach { cdItemDetails ->
+                    if (cdItemDetails.approveStatus == map.activeStatus || cdItemDetails.approveStatus == null || cdItemDetails.approveStatus == map.inactiveStatus) {
                         generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
                                 ?: "NA", cdItemDetails.ownerName ?: "NA")
                     }
+                }
+            } else {
+                throw ExpectedDataNotFound("Compliance can't be issues when there is zero compliant items")
+            }
+        } else {
+            val cocItems = findCDItemsListWithCDID(updatedCDDetails)
+            if (cocItems.isNotEmpty()) {
+                cocItems.forEach { cdItemDetails ->
+                    generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
+                            ?: "NA", cdItemDetails.ownerName ?: "NA")
+                }
+            } else {
+                throw ExpectedDataNotFound("Compliance can't be issues when there is zero compliant items")
+            }
         }
 
     }
@@ -628,14 +636,15 @@ class DestinationInspectionDaoServices(
                 cocsEntity.consignmentDocId?.let {
                     commonDaoServices.createKesWsFileName(
                             applicationMapProperties.mapKeswsCocDoctype,
-                            it.ucrNumber ?: ""
+                            it.ucrNumber ?: "", coc.version ?: "1"
                     )
                 } ?: throw ExpectedDataNotFound("Invalid Local UCR NUmber")
             }
             else -> {
                 commonDaoServices.createKesWsFileName(
                         applicationMapProperties.mapKeswsCocDoctype,
-                        cocsEntity.ucrNumber ?: ""
+                        cocsEntity.ucrNumber ?: "",
+                        coc.version ?: "1"
                 )
             }
         }
@@ -657,7 +666,7 @@ class DestinationInspectionDaoServices(
         val fileName = coiEntity.ucrNumber?.let {
             commonDaoServices.createKesWsFileName(
                     applicationMapProperties.mapKeswsCoiDoctype,
-                    it
+                    it, coiEntity.version?.toString() ?: "1"
             )
         } ?: throw ExpectedDataNotFound("Consignment document UCR number was not found")
 
@@ -929,7 +938,7 @@ class DestinationInspectionDaoServices(
 //                ?: throw Exception("IDF ITEM(s) Details with IDF ID = ${idfId}, do not Exist")
     }
 
-    fun sendDemandNotGeneratedToKWIS(demandNoteEntity: CdDemandNoteEntity?) {
+    fun sendDemandNotGeneratedToKWIS(demandNoteEntity: CdDemandNoteEntity?, version: String) {
         demandNoteEntity?.let {
             val mpesaDetails = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapMpesaDetails)
             val bank1Details = invoiceDaoService.findPaymentMethodtype(applicationMapProperties.mapBankOneDetails)
@@ -967,7 +976,7 @@ class DestinationInspectionDaoServices(
             demandNoteFinalDto.customDemandNote = demandNote
 
             val fileName = it.demandNoteNumber?.let {
-                commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNoteDoctype, it)
+                commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNoteDoctype, it, version)
             } ?: throw ExpectedDataNotFound("Demand note number not found")
             KotlinLogging.logger { }.debug("DEMAND NOTE FILE NAME: $fileName")
             val xmlFile = commonDaoServices.serializeToXml(fileName, demandNoteFinalDto)
@@ -978,14 +987,14 @@ class DestinationInspectionDaoServices(
     }
 
 
-    fun sendDemandNotePayedStatusToKWIS(demandNote: CdDemandNoteEntity, amount: BigDecimal?) {
+    fun sendDemandNotePayedStatusToKWIS(demandNote: CdDemandNoteEntity, amount: BigDecimal?, version: String) {
         val customDemandNotePay = CustomDemandNotePayXmlDto(demandNote)
         val demandNotePay = DemandNotePayXmlDTO()
         customDemandNotePay.amountPaid = amount
         demandNotePay.customDemandNotePay = customDemandNotePay
 
         val fileName = customDemandNotePay.demandNoteNumber?.let {
-            commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNotePayDoctype, it)
+            commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNotePayDoctype, it, version)
         } ?: throw ExpectedDataNotFound("Demand note number not found on the demand note")
 
         val xmlFile = commonDaoServices.serializeToXml(fileName, demandNotePay)
@@ -3235,12 +3244,13 @@ class DestinationInspectionDaoServices(
             KotlinLogging.logger { }.info { "::::::::::::::::::: CD Ref Number = $cdNumber ::::::::::::::" }
             val docHeader = DocumentHeader(cdNumber, messageDate, version)
             val docDetails = DocumentDetails(cdNumber, formattedExipry, messageDate, status, pgaRemarks, applicationMapProperties.mapKeswsCheckingOfficer)
+            docDetails.verNo = version
             val cdApprovalResponseDTO = CDApprovalResponseDTO()
             cdApprovalResponseDTO.documentHeader = docHeader
             cdApprovalResponseDTO.documentDetails = docDetails
 
             val fileName =
-                    commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsCdApprovalDoctype, cdNumber)
+                    commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsCdApprovalDoctype, cdNumber, version)
             val xmlFile = fileName.let { commonDaoServices.serializeToXml(it, cdApprovalResponseDTO) }
             xmlFile.let { it1 -> sftpService.uploadFile(it1) }
         }
@@ -3261,7 +3271,7 @@ class DestinationInspectionDaoServices(
         cdVerificationRequestXmlDTO.cdVerificationRequestHeader = cdVerificationRequestHeader
         cdVerificationRequestXmlDTO.cdVerificationRequestData = cdVerificationRequestData
 
-        val fileName = commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsOnHoldDoctype, declarationRefNo)
+        val fileName = commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsOnHoldDoctype, declarationRefNo, version.toString())
 
         val xmlFile = fileName.let { commonDaoServices.serializeToXml(fileName, cdVerificationRequestXmlDTO) }
 
@@ -3277,7 +3287,7 @@ class DestinationInspectionDaoServices(
         val fileName = corsBakEntity.chasisNumber?.let {
             commonDaoServices.createKesWsFileName(
                     applicationMapProperties.mapKeswsCorDoctype,
-                    it
+                    it, corsBakEntity.version?.toString() ?: "1"
             )
         } ?: throw ExpectedDataNotFound("Invalid chassis number")
         val xmlFile = commonDaoServices.serializeToXml(fileName, corDto)

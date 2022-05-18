@@ -660,12 +660,16 @@ class CdStandardTwoEntityDao : Serializable {
     var customsRemarks: String? = null
     var cdProcessingFeeId: Long? = null
     var cdDocumentFeeId: Long? = null
+    var courierPin: String? = null
+    var courierName: String? = null
 
     companion object {
         fun fromEntity(standerd: CdStandardsTwoEntity): CdStandardTwoEntityDao {
             return CdStandardTwoEntityDao()
                     .apply {
                         id = standerd.id
+                        courierPin = standerd.courierPin
+                        courierName = standerd.courierName
                         cocRefNumber = standerd.cocRefNumber
                         purposeOfImport = standerd.purposeOfImport
                         cocType = standerd.cocType

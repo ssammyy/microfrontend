@@ -701,11 +701,25 @@
                                                 <div class="list-title-accordion">COC Ref No.</div>
                                                 <div class="list-text-accordion">{{consignment.cd_standards_two.cocRefNumber}}</div>
                                             </li>
-                                            <li class="list-item-accordion">
+                                            <li class="list-item-accordion"
+                                                *ngIf="consignment.cd_standards_two.description">
                                                 <div class="list-title-accordion">COC Type Description</div>
                                                 <div class="list-text-accordion">
                                                     {{consignment.cd_standards_two.description}}</div>
                                             </li>
+                                            <li class="list-item-accordion"
+                                                *ngIf="consignment.cd_standards_two.courierName">
+                                                <div class="list-title-accordion">Courier Name</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.courierName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion"
+                                                *ngIf="consignment.cd_standards_two.courierPin">
+                                                <div class="list-title-accordion">Courier PIN</div>
+                                                <div class="list-text-accordion">
+                                                    {{consignment.cd_standards_two.courierPin}}</div>
+                                            </li>
+
                                         </ul>
                                     </mat-tab>
                                     <mat-tab *ngIf="consignment.cd_service_provider" label="9">

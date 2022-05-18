@@ -639,7 +639,12 @@ class DestinationInspectionService(
             var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
-            val localCoc = daoServices.createLocalCoc(loggedInUser, consignmentDocument, map, remarks, "A")
+            var localCoc: CocsEntity? = null
+            try {
+                localCoc = daoServices.createLocalCoc(loggedInUser, consignmentDocument, map, remarks, "A")
+            } catch (ex: ExpectedDataNotFound) {
+
+            }
             consignmentDocument = daoServices.updateCDStatus(
                     consignmentDocument,
                     ConsignmentDocumentStatus.COC_ISSUED
@@ -648,23 +653,34 @@ class DestinationInspectionService(
             consignmentDocument.localCocOrCorStatus = map.activeStatus
             consignmentDocument.compliantStatus = map.activeStatus
             // Generate NCR if applicable
-            daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")?.let {
+            val ncr = daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")?.let {
                 consignmentDocument.ncrNumber = it.cocNumber
                 consignmentDocument
             }
-            consignmentDocument.cocNumber = localCoc.cocNumber
+            consignmentDocument.cocNumber = localCoc?.cocNumber
+            consignmentDocument.ncrNumber = ncr?.ncrNumber ?: ncr?.cocNumber
             consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
             consignmentDocument = this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_APPROVED)
 
-            KotlinLogging.logger { }.info("Local CoC = ${localCoc.id}")
+            KotlinLogging.logger { }.info("Local CoC = ${localCoc?.id}")
             // Send to single window
-            daoServices.sendLocalCoc(localCoc)
+            localCoc?.let { coc ->
+                daoServices.sendLocalCoc(coc)
+            }
             //Generate PDF File & send to importer
             consignmentDocument.cdImporter?.let {
                 daoServices.findCDImporterDetails(it)
             }?.let { importer ->
-                val fileName = makeCocOrCoiFile(localCoc.id)
-                importer.email?.let { daoServices.sendLocalCocReportEmail(it, fileName) }
+                // Send COC
+                localCoc?.let { coc ->
+                    val fileName = makeCocOrCoiFile(coc.id)
+                    importer.email?.let { daoServices.sendLocalCocReportEmail(it, fileName) }
+                }
+                // Send NCR
+                ncr?.let {
+                    val ncrFileName = makeCocOrCoiFile(it.id!!)
+                    importer.email?.let { email -> daoServices.sendLocalCocReportEmail(email, ncrFileName) }
+                }
             }
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
             KotlinLogging.logger { }.info("GENERATE COC/COI: ${cdUuid}")
@@ -686,12 +702,15 @@ class DestinationInspectionService(
         val fileName = "/tmp/LOCAL-${cocType.toUpperCase()}-".plus(data["CocNo"] as String).plus(".pdf")
         if ("COI".equals(cocType, true)) {
             pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/LocalCoiReport.jrxml", items)
+        } else if ("NCR".equals(cocType)) {
+            pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/NcrReport.jrxml", items)
         } else {
             pdfStream = reportsDaoService.extractReportMapDataSource(data, applicationMapProperties.mapReportLocalCocPath, items)
         }
         reportsDaoService.createFileFromBytes(pdfStream, fileName)
         return fileName
     }
+
 
     fun makeCorFile(corId: Long): String {
         val data = createLocalCorReportMap(corId)
@@ -711,30 +730,44 @@ class DestinationInspectionService(
             var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
-            val localCoi = daoServices.createLocalCoi(loggedInUser, consignmentDocument, map, remarks, "D")
+            var localCoi: CocsEntity? = null
+            try {
+                localCoi = daoServices.createLocalCoi(loggedInUser, consignmentDocument, map, remarks, "D")
+            } catch (ex: ExpectedDataNotFound) {
+                KotlinLogging.logger { }.error("REJECTION UPDATE STATUS ${ex.localizedMessage}")
+            }
             consignmentDocument = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COI_ISSUED)
             // Update CoI generation
             consignmentDocument.localCoi = map.activeStatus
             consignmentDocument.localCoiRemarks = remarks
             consignmentDocument.compliantStatus = map.activeStatus
-            consignmentDocument.cocNumber = localCoi.cocNumber
+            consignmentDocument.cocNumber = localCoi?.coiNumber
             consignmentDocument.varField10 = "COMPLIANCE APPROVED, COI GENERATED"
             // Generate NCR if applicable
-            daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")?.let {
+            val localNcr = daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")?.let {
                 consignmentDocument.ncrNumber = it.cocNumber
                 consignmentDocument
             }
+            consignmentDocument.ncrNumber = localNcr?.cocNumber ?: localNcr?.ncrNumber
             // Send coi to importer
             consignmentDocument.cdImporter?.let {
                 daoServices.findCDImporterDetails(it)
             }?.let { importer ->
-                val fileName = makeCocOrCoiFile(localCoi.id)
-                importer.email?.let { daoServices.sendLocalCocReportEmail(it, fileName) }
+                localCoi?.let { coi ->
+                    val fileName = makeCocOrCoiFile(coi.id)
+                    importer.email?.let { email -> daoServices.sendLocalCocReportEmail(email, fileName) }
+                }
+                localNcr?.let { ncr ->
+                    val fileName = makeCocOrCoiFile(ncr.id!!)
+                    importer.email?.let { email -> daoServices.sendLocalCocReportEmail(email, fileName) }
+                }
             }
             consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
             consignmentDocument = this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_APPROVED)
             // Send to SW
-            daoServices.sendLocalCoi(localCoi)
+            localCoi?.let {
+                daoServices.sendLocalCoi(it)
+            }
             this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(consignmentDocument, it1) }
             KotlinLogging.logger { }.info("GENERATED COI: ${cdUuid}")
         } catch (ex: Exception) {
