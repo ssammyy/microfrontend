@@ -90,7 +90,7 @@ class SftpTest {
 
             val fileName = corDto.cor?.chasisNumber?.let {
                 commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsCorDoctype,
-                        it
+                        it, "1"
                 )
             }
 
@@ -122,7 +122,7 @@ class SftpTest {
 
             val fileName = cocFinalDto.coc?.ucrNumber?.let {
                 commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsCocDoctype,
-                        it
+                        it, "1"
                 )
             }
 
@@ -159,7 +159,7 @@ class SftpTest {
     fun whenDemandNotePaypojoSerializedToXmlFile_thenCorrect() {
         val coiId: Long = 641
         destinationInspectionDaoServices.findDemandNoteWithID(coiId)?.let {
-            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(it, BigDecimal.valueOf(290))
+            destinationInspectionDaoServices.sendDemandNotePayedStatusToKWIS(it, BigDecimal.valueOf(290), "1")
         }
     }
 
@@ -206,7 +206,7 @@ class SftpTest {
         cdVerificationRequestXmlDTO.cdVerificationRequestHeader = cdVerificationRequestHeader
         cdVerificationRequestXmlDTO.cdVerificationRequestData = cdVerificationRequestData
 
-        val fileName = commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNoteDoctype, declarationNo)
+        val fileName = commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNoteDoctype, declarationNo, "1")
 
         val xmlFile = fileName.let { commonDaoServices.serializeToXml(fileName, cdVerificationRequestXmlDTO) }
 

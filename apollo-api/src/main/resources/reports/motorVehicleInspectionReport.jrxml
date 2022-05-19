@@ -87,8 +87,7 @@
                 <textElement textAlignment="Center">
                     <font fontName="Arial" size="16" isBold="true" isItalic="false" isUnderline="false"/>
                 </textElement>
-                <text><![CDATA[
-                    MOTOR VEHICLE INSPECTION REQUEST (MVIR) FORM                                       ]]></text>
+                <text><![CDATA[MOTOR VEHICLE INSPECTION REQUEST (MVIR) FORM]]></text>
             </staticText>
             <staticText>
                 <reportElement style="TextStatic" x="325" y="45" width="56" height="20"
