@@ -5,6 +5,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.service.BillingService
 import org.kebs.app.kotlin.apollo.api.service.PvocMonitoringService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
@@ -36,6 +37,7 @@ class ForeignPvocIntegrations(
         private val idfsItemRepository: IdfItemsEntityRepository,
         private val commonDaoServices: CommonDaoServices,
         private val billingService: BillingService,
+        private val properties: ApplicationMapProperties,
         private val monitoringService: PvocMonitoringService
 ) {
     private final val YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM")
@@ -98,7 +100,7 @@ class ForeignPvocIntegrations(
                         countryOfSupply = coc.countryOfSupply ?: "UNKNOWN"
                         finalInvoiceFobValue = coc.finalInvoiceFobValue ?: 0.0
                         finalInvoiceExchangeRate = coc.finalInvoiceExchangeRate ?: 0.0
-                        finalInvoiceCurrency = coc.finalInvoiceCurrency ?: "KES"
+                        finalInvoiceCurrency = coc.finalInvoiceCurrency ?: properties.applicationCurrencyCode
                         finalInvoiceNumber = coc.finalInvoiceNumber ?: "NA"
                         finalInvoiceDate = coc.finalInvoiceDate ?: commonDaoServices.getTimestamp()
                         shipmentSealNumbers = coc.shipmentSealNumbers ?: "UNKNOWN"
@@ -183,7 +185,7 @@ class ForeignPvocIntegrations(
                         finalInvoiceFobValue = ncr.finalInvoiceFobValue ?: 0.0
                         finalInvoiceNumber = ncr.finalInvoiceNumber ?: "NA"
                         finalInvoiceExchangeRate = ncr.finalInvoiceExchangeRate ?: 0.0
-                        finalInvoiceCurrency = ncr.finalInvoiceCurrency ?: "KES"
+                        finalInvoiceCurrency = ncr.finalInvoiceCurrency ?: properties.applicationCurrencyCode
                         finalInvoiceDate = ncr.finalInvoiceDate ?: commonDaoServices.getTimestamp()
                         shipmentSealNumbers = ncr.shipmentSealNumbers ?: "UNKNOWN"
                         shipmentContainerNumber = ncr.shipmentContainerNumber ?: "UNKNOWN"
@@ -299,7 +301,7 @@ class ForeignPvocIntegrations(
                     finalInvoiceFobValue = coi.finalInvoiceFobValue ?: 0.0
                     finalInvoiceNumber = coi.finalInvoiceNumber ?: "NA"
                     finalInvoiceExchangeRate = coi.finalInvoiceExchangeRate ?: 0.0
-                    finalInvoiceCurrency = coi.finalInvoiceCurrency ?: "KES"
+                    finalInvoiceCurrency = coi.finalInvoiceCurrency ?: properties.applicationCurrencyCode
                     finalInvoiceDate = coi.finalInvoiceDate ?: commonDaoServices.getTimestamp()
                     shipmentSealNumbers = coi.shipmentSealNumbers ?: "UNKNOWN"
                     shipmentContainerNumber = coi.shipmentContainerNumber ?: "UNKNOWN"
@@ -490,7 +492,7 @@ class ForeignPvocIntegrations(
         if (timeline.rfcToInspectionViolation || timeline.rfcToIssuanceViolation || timeline.inspectionToIssuanceViolation || timeline.paymentToIssuanceViolation || timeline.accDocumentsToIssuanceViolation || timeline.finalDocumentsToIssuanceViolation) {
             val date = LocalDateTime.now()
             timeline.royaltyValue = transaction.amount
-            timeline.currencyCode = transaction.currency ?: "KES"
+            timeline.currencyCode = transaction.currency ?: properties.applicationCurrencyCode
             timeline.applicablePenalty = calculatePenalty(transaction.amount, true, timeline.route, user)
             timeline.createdOn = Timestamp.valueOf(date)
             timeline.createdBy = commonDaoServices.loggedInUserAuthentication().name

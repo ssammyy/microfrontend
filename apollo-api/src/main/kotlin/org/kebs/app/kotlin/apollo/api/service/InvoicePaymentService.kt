@@ -62,6 +62,7 @@ class InvoicePaymentService(
         private val invoiceDaoService: InvoiceDaoService,
         private val commonDaoServices: CommonDaoServices,
         private val applicationMapProperties: ApplicationMapProperties,
+        private val amountInWordsService: AmountInWordsService,
         private val billingService: BillingService
 ) {
     final val DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy")
@@ -78,6 +79,7 @@ class InvoicePaymentService(
             map["ablNo"] = demandNote.entryAblNumber.toString()
             map["totalAmount"] = demandNote.totalAmount.toString()
             map["receiptNo"] = demandNote.receiptNo.toString()
+            map["amountInWords"] = demandNote.totalAmount?.let { amountInWordsService.amountToWords(it) } ?: ""
             map = reportsDaoService.addBankAndMPESADetails(map, demandNote.postingReference ?: "UNKNOWN")
         }
         return map
@@ -184,11 +186,9 @@ class InvoicePaymentService(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
             val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
-            val transportDetails = consignmentDocument.cdStandardsTwo
-            this.billingService.registerBillTransaction(demandNote, transportDetails?.courierPin, consignmentDocument.cdType?.varField1
+            this.billingService.registerBillTransaction(demandNote, demandNote.courierPin, consignmentDocument.cdType?.varField1
                     ?: "", map)?.let { billTrx ->
                 demandNote.paymentStatus = PaymentStatus.BILLED.code
-                demandNote.courierPin = transportDetails?.courierPin
                 demandNote.receiptNo = billTrx.tempReceiptNumber
                 demandNote.billId = billTrx.id
                 val dn = this.iDemandNoteRepo.save(demandNote)
@@ -601,6 +601,9 @@ class InvoicePaymentService(
                     //Call Function to add Item Details To be attached To The Demand note
                     demandNote.totalAmount = BigDecimal.ZERO
                     demandNote.amountPayable = BigDecimal.ZERO
+                    demandNote.courierPin = form.courierPin
+                    demandNote.revenueLine = form.revenueLineNumber
+                    demandNote.courier = form.courier
                     form.items?.forEach {
                         items.add(addItemDetailsToDemandNote(it, demandNoteDetails, map, form.presentment, user))
                     }
@@ -635,7 +638,8 @@ class InvoicePaymentService(
                         receiptNo = "NOT PAID"
                         product = form.product ?: "UNKNOWN"
                         rate = "UNKNOWN"
-                        currency = "KES"
+                        currency = applicationMapProperties.applicationCurrencyCode
+                        courierPin = form.courierPin
                         ucrNumber = form.ucrNumber
                         cfvalue = BigDecimal.ZERO
                         //Generate Demand note number
@@ -837,7 +841,7 @@ class InvoicePaymentService(
         }
         // Apply currency conversion rates for today
         when (itemDetails.currency?.toUpperCase()) {
-            "KES" -> {
+            applicationMapProperties.applicationCurrencyCode -> {
                 demandNoteItem.cfvalue = itemDetails.itemValue
                 demandNote.rate = "0.00"
             }
@@ -862,7 +866,7 @@ class InvoicePaymentService(
             createdBy = commonDaoServices.getUserName(user)
         }
         // Apply fee type and adjustments
-        demandNoteCalculation(demandNoteItem, fee, "KES", itemDetails.route, itemDetails.itemId)
+        demandNoteCalculation(demandNoteItem, fee, applicationMapProperties.applicationCurrencyCode, itemDetails.route, itemDetails.itemId)
         // Skip saving for presentment
         if (!presentment) {
             return iDemandNoteItemRepo.save(demandNoteItem)

@@ -243,12 +243,12 @@ class InspectionAgrochemItemDto {
             val dto = InspectionAgrochemItemDto().apply {
                 id = entity.id
                 inspection = entity.inspection?.id
-                brand = entity.brand
+                brand = entity.brand.orEmpty()
                 serialNumber = entity.serialNumber
-                compliant = entity.compliant
-                category = entity.category
+                compliant = entity.compliant.orEmpty()
+                category = entity.category.orEmpty()
                 inspectionDate = entity.createdOn.toString()
-                sampled = entity.sampled
+                sampled = entity.sampled.orEmpty()
                 ssfId = entity.ssfId
                 certMarksPvocDoc = entity.certMarksPvocDoc
                 compositionIngredients = entity.compositionIngredients
@@ -261,7 +261,7 @@ class InspectionAgrochemItemDto {
                 mfgName = entity.mfgName
                 ksEasApplicable = entity.ksEasApplicable
                 csName = ""
-                remarks = entity.remarks
+                remarks = entity.remarks.orEmpty()
                 createdOn = entity.createdOn.toString()
                 sampleUpdated = entity.sampleUpdated
                 description = entity.description

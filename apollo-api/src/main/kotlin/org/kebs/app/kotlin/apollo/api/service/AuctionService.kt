@@ -86,13 +86,22 @@ class AuctionService(
         return Timestamp.valueOf(dateTime)
     }
 
-    fun downloadAuctionReport(stardDate: String, endDate: String): List<AuctionRequestDto> {
+    fun downloadAuctionReport(stardDate: String, endDate: String, status: String): List<AuctionRequestDto> {
         val startTimestamp = getReportTimestamp(stardDate, true)
         val endTimestamp = getReportTimestamp(endDate, false)
         // Get individual items instead
-        val auctionReportDetails = this.auctionItemsRepo.findByAuctionId_ApprovalStatusInAndAuctionId_ApprovedRejectedOnBetween(
-                arrayListOf(AuctionGoodStatus.CONDITIONAL_APPROVAL.status, AuctionGoodStatus.APPROVED.status, AuctionGoodStatus.REJECTED.status, AuctionGoodStatus.HOLD.status),
-                startTimestamp, endTimestamp)
+        val auctionReportDetails = when (status.toLowerCase()) {
+            "rejected" -> this.auctionItemsRepo.findByAuctionId_ApprovalStatusInAndAuctionId_ApprovedRejectedOnBetween(
+                    arrayListOf(AuctionGoodStatus.REJECTED.status),
+                    startTimestamp, endTimestamp)
+            "approved" -> this.auctionItemsRepo.findByAuctionId_ApprovalStatusInAndAuctionId_ApprovedRejectedOnBetween(
+                    arrayListOf(AuctionGoodStatus.CONDITIONAL_APPROVAL.status, AuctionGoodStatus.APPROVED.status),
+                    startTimestamp, endTimestamp)
+            "all" -> this.auctionItemsRepo.findByAuctionId_ApprovalStatusInAndAuctionId_ApprovedRejectedOnBetween(
+                    arrayListOf(AuctionGoodStatus.CONDITIONAL_APPROVAL.status, AuctionGoodStatus.APPROVED.status, AuctionGoodStatus.REJECTED.status, AuctionGoodStatus.HOLD.status),
+                    startTimestamp, endTimestamp)
+            else -> throw ExpectedDataNotFound("Invalid auction status selected")
+        }
         return AuctionRequestDto.fromItemList(auctionReportDetails)
     }
 
