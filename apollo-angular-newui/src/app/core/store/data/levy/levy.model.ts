@@ -575,7 +575,7 @@ export interface ClosedCompanyDTO{
 
 }
 export interface EmailVerificationStatus{
-    emailStatus: number;
+    emailStatus: string;
 }
 
 export interface SendEmailDto{

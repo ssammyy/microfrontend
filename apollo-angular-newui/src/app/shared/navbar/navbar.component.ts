@@ -5,6 +5,13 @@ import {Subscription} from 'rxjs/Subscription';
 import {Location} from '@angular/common';
 import {loadLogout, selectUserInfo} from '../../core/store';
 import {Store} from '@ngrx/store';
+import {EmailVerificationStatus} from "../../core/store/data/levy/levy.model";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {LevyService} from "../../core/store/data/levy/levy.service";
+import {NotificationService} from "../../core/store/data/std/notification.service";
+import {NgxSpinnerService} from "ngx-spinner";
+import {HttpErrorResponse} from "@angular/common/http";
+import { ReactiveFormsModule } from '@angular/forms';
 
 const misc: any = {
     navbar_menu_visible: 0,
@@ -28,14 +35,26 @@ export class NavbarComponent implements OnInit {
     private sidebarVisible: boolean;
     private _router: Subscription;
     roles: string[];
+    emailVerificationStatus !: EmailVerificationStatus;
+    public emailActivationFormGroup!: FormGroup;
+    public activateEmailFormGroup!: FormGroup;
+    userId: number;
+    email: string;
+    loadingTexts: string;
+    isShowSendEmailForm=true;
+    isShowConfirmEmailForm=true;
 
     @ViewChild('app-navbar-cmp', {static: false}) button: any;
 
-    constructor(location: Location, private renderer: Renderer2, private element: ElementRef, private store$: Store<any>, public router: Router
+    constructor(location: Location, private renderer: Renderer2, private element: ElementRef, private store$: Store<any>, public router: Router,private levyService: LevyService,
+                private formBuilder: FormBuilder,
+                private notifyService: NotificationService,
+                private SpinnerService: NgxSpinnerService
     ) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
+
     }
 
     minimizeSidebar() {
@@ -121,6 +140,95 @@ export class NavbarComponent implements OnInit {
                 $layer.remove();
             }
         });
+        this.getVerificationStatus();
+
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.userId = u.id;
+            this.email= u.email;
+        });
+        this.emailActivationFormGroup = this.formBuilder.group({
+            userId:[],
+            email:[]
+        });
+        this.activateEmailFormGroup = this.formBuilder.group({
+            userId:[],
+            email:[],
+            verificationToken: []
+        });
+    }
+    showToasterSuccess(title:string,message:string){
+        this.notifyService.showSuccess(message, title)
+
+    }
+    showToasterError(title:string,message:string){
+        this.notifyService.showError(message, title)
+
+    }
+    toggleDisplayEmailForm() {
+        this.isShowSendEmailForm = !this.isShowSendEmailForm;
+        this.isShowConfirmEmailForm=true;
+
+    }
+
+    sendEmailVerificationToken(): void {
+        this.loadingTexts = "Generating token ...."
+        console.log(this.emailActivationFormGroup.value);
+        this.SpinnerService.show();
+        this.levyService.sendEmailVerificationToken(this.emailActivationFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Token has been generated and sent to your email Address`);
+                this.isShowConfirmEmailForm=!this.isShowConfirmEmailForm;
+                this.isShowSendEmailForm=true;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Generating Token`);
+                console.log(error.message);
+            }
+        );
+        this.hideCloseModal();
+
+
+    }
+    @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
+    public hideCloseModal() {
+        this.closeModal?.nativeElement.click();
+    }
+
+    confirmEmailAddress(): void {
+        this.loadingTexts = "Validating Email Address ...."
+        console.log(this.activateEmailFormGroup.value);
+        this.SpinnerService.show();
+        this.levyService.confirmEmailAddress(this.activateEmailFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Email Address Validated`);
+                this.isShowSendEmailForm=true;
+                this.isShowConfirmEmailForm=true;
+                // this.router.navigateByUrl('/dashboard').then(r => {});
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Validating Email Address`);
+                console.log(error.message);
+            }
+        );
+    }
+    public getVerificationStatus(): void{
+        this.levyService.getVerificationStatus().subscribe(
+            (response: EmailVerificationStatus)=> {
+                this.emailVerificationStatus = response;
+                console.log(this.emailVerificationStatus);
+            },
+            (error: HttpErrorResponse)=>{
+                console.log(error.message)
+                //alert(error.message);
+            }
+        );
     }
     onResize(event) {
         if ($(window).width() > 991) {

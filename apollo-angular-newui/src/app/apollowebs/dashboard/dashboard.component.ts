@@ -13,7 +13,6 @@ import {
 } from 'src/app/core/store';
 import {LevyService} from "../../core/store/data/levy/levy.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {EmailVerificationStatus, ManufacturingStatus} from "../../core/store/data/levy/levy.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {NotificationService} from "../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
@@ -32,9 +31,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     branchCount = 0;
     countAwarded = 0;
     countExpired = 0;
-    emailVerificationStatus !: EmailVerificationStatus;
+    // emailVerificationStatus !: EmailVerificationStatus;
     public emailActivationFormGroup!: FormGroup;
     public activateEmailFormGroup!: FormGroup;
+    emailVerificationStatus:number;
 
     user: UserEntityDto;
 
@@ -214,7 +214,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
     public getVerificationStatus(): void{
         this.levyService.getVerificationStatus().subscribe(
-            (response: EmailVerificationStatus)=> {
+            (response)=> {
                 this.emailVerificationStatus = response;
                 console.log(this.emailVerificationStatus);
             },
