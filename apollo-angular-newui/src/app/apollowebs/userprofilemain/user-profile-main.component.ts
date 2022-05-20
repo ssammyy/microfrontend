@@ -26,7 +26,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 
 
 export class UserProfileMainComponent implements OnInit {
-
+    roles: string[];
     user: UserEntityDto;
     title$: Observable<Titles[]>;
     stepOneForm: FormGroup = new FormGroup({});
@@ -73,6 +73,13 @@ export class UserProfileMainComponent implements OnInit {
             {
                 // validators: ConfirmedValidator('credentials', 'confirmCredentials')
             });
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.roles = u.roles;
+            console.log(this.roles);
+            return this.roles = u.roles;
+
+        });
+
         this.store$.select(selectUserInfo).subscribe(
             (l) => {
                 console.log(`The id is ${l.id}`);
