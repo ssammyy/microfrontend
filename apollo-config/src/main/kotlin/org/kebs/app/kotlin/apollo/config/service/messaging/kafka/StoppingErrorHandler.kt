@@ -61,7 +61,7 @@ class CustomErrorHandler : ConsumerAwareBatchErrorHandler {
                 .mapValues { (_, value) ->
                     value.maxByOrNull { it.offset() }?.offset()
                 }.forEach { (topicPartition, maxOffset) ->
-                consumer.seek(topicPartition, maxOffset ?: 0 + 1)
+                consumer.seek(topicPartition, maxOffset ?: (0 + 1))
                 }
     }
 
@@ -109,7 +109,7 @@ class StoppingErrorHandler(
                 .mapValues { (_, value) ->
                     value.maxByOrNull { it.offset() }?.offset()
                 }.forEach { (topicPartition, maxOffset) ->
-                consumer.seek(topicPartition, maxOffset ?: 0 + 1)
+                consumer.seek(topicPartition, maxOffset ?: (0 + 1))
                 }
     }
 

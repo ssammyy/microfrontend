@@ -588,7 +588,7 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.manufacturerEntity?.let { variables["manufacturerEntity"] = it }
         standardLevyFactoryVisitReportEntity.scheduledVisitDate?.let { variables["scheduledVisitDate"] = it }
         standardLevyFactoryVisitReportEntity.createdBy?.let { variables["createdBy"] = it }
-        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["originator"] = it }
         standardLevyFactoryVisitReportEntity.companyName?.let { variables["companyName"] = it }
         standardLevyFactoryVisitReportEntity.entryNumber?.let { variables["entryNumber"] = it }
@@ -693,7 +693,7 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.personMet?.let { variables["personMet"] = it }
         standardLevyFactoryVisitReportEntity.actionTaken?.let { variables["actionTaken"] = it }
         standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
-        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         standardLevyFactoryVisitReportEntity.userType?.let { variables["userType"] = it }
         standardLevyFactoryVisitReportEntity.makeRemarks?.let { variables["makeRemarks"] = it }
@@ -726,7 +726,7 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.personMet?.let { variables["personMet"] = it }
         standardLevyFactoryVisitReportEntity.actionTaken?.let { variables["actionTaken"] = it }
         standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
-        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         standardLevyFactoryVisitReportEntity.userType?.let { variables["userType"] = it }
         standardLevyFactoryVisitReportEntity.makeRemarks?.let { variables["makeRemarks"] = it }
@@ -1048,7 +1048,7 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["Yes"] = it }
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["No"] = it }
         standardLevyFactoryVisitReportEntity.cheifManagerRemarks?.let { variables["cheifManagerRemarks"] = it }
-        variables["status"] = 2
+        variables["visitStatus"] = 2
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         val userIntType = standardLevyFactoryVisitReportEntity.userType
         val userIntTypes = userIntType.toString()
@@ -1212,7 +1212,7 @@ return getUserTasks();
         val variables: MutableMap<String, Any> = java.util.HashMap()
         standardLevyFactoryVisitReportEntity.officersFeedback?.let { variables["officersFeedback"] = it }
         standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
-        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
 
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
@@ -1238,7 +1238,7 @@ return getUserTasks();
         val variables: MutableMap<String, Any> = java.util.HashMap()
         standardLevyFactoryVisitReportEntity.officersFeedback?.let { variables["officersFeedback"] = it }
         standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
-        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
 
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
