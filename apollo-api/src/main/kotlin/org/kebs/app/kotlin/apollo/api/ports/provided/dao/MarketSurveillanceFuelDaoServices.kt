@@ -918,7 +918,7 @@ class MarketSurveillanceFuelDaoServices(
     ): FuelInspectionDto {
         val batchDetailsDto = mapFuelBatchDetailsDto(batchDetails, map)
         val fuelInspectionOfficer = findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
-        val fuelInspectionRemarks = findRemarksForFuel(fileInspectionDetail.id?: throw ExpectedDataNotFound("MISSING FUEL INSPECTION ID"))
+        val fuelInspectionRemarks = findRemarksForFuel(fileInspectionDetail.id)
         val officerList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(
                 applicationMapProperties.mapMSMappedOfficerROLEID,
                 batchDetails.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
@@ -989,7 +989,7 @@ class MarketSurveillanceFuelDaoServices(
         try {
             val county = commonDaoServices.findCountiesEntityByCountyId(body.county, map.activeStatus)
             val regionIDValue = county.regionId ?: ExpectedDataNotFound("The following County ${county.county}, with ID  = ${county.id} and status = ${county.status}, does not have a region mapped to")
-            val userFuelScheduleBatch = findFuelBatchDetailByYearNameIDCountyRegionAndTown(fuelPlanYearName.id, body.county,body.town,commonDaoServices.findRegionEntityByRegionID(regionIDValue as Long, map.activeStatus).id,fuelPlanYearName.id)
+            val userFuelScheduleBatch = findFuelBatchDetailByYearNameIDCountyRegionAndTown(fuelPlanYearName.id,fuelPlanMonthName.id, body.county,body.town,commonDaoServices.findRegionEntityByRegionID(regionIDValue as Long, map.activeStatus).id)
             when (userFuelScheduleBatch) {
                 null -> {
                     with(fuel) {
