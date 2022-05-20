@@ -1292,11 +1292,11 @@ class ChecklistService(
             map["inspectionOfficer"] = "${it.assignedInspectionOfficer?.firstName.orEmpty()} ${it.assignedInspectionOfficer?.lastName.orEmpty()}".trim()
             map["supervisor"] = "${it.assigner?.firstName.orEmpty()} ${it.assigner?.lastName.orEmpty()}".trim()
             map["receiptNumber"] = "NA"
-            map["feePaid"] = "NO"
+            map["feePaid"] = "0.0"
 
-            daoServices.findDemandNoteWithPaymentStatus(it.id!!, 1)?.let {
-                map["receiptNumber"] = it.demandNoteNumber.toString()
-                map["feePaid"] = "YES"
+            daoServices.findDemandNoteWithPaymentStatus(it.id!!, 1)?.let { dn ->
+                map["receiptNumber"] = dn.demandNoteNumber.toString()
+                map["feePaid"] = dn.amountPaid?.toString() ?: "0.0"
             }
             map["entryPoint"] = it.freightStation?.cfsName ?: "NA"
             map["cfs"] = it.freightStation?.cfsCode ?: "NA"
@@ -1332,11 +1332,10 @@ class ChecklistService(
                 map["cocNumber"] = it.cocNumber ?: ""
                 map["ucrNumber"] = it.ucrNumber ?: ""
                 map["receiptNumber"] = "NA"
-                map["feePaid"] = "NO"
+                map["feePaid"] = "0.0"
                 daoServices.findDemandNoteWithPaymentStatus(it.id!!, 1)?.let {
                     map["receiptNumber"] = it.demandNoteNumber.toString()
-                    map["amount"] = it.amountPayable.toString()
-                    map["feePaid"] = "YES"
+                    map["feePaid"] = it.amountPayable.toString()
                 }
                 map["entryPoint"] = it.freightStation?.cfsName ?: "NA"
                 map["cfs"] = it.freightStation?.cfsCode ?: "NA"

@@ -39,6 +39,7 @@ class DemandNoteRequestForm {
     var ablNumber: String? = null
     var address: String? = null
     var courier: String? = null
+    var courierPin: String? = null
     var customsOffice: String? = null
     var entryPoint: String? = null
     var entryNo: String? = null

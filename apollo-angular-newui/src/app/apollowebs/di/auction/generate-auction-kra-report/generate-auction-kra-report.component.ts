@@ -13,6 +13,20 @@ export class GenerateAuctionKraReportComponent implements OnInit {
     maxDate = new Date().toISOString().split("T")[0]
     minDate = '2020-06-01'
     message: string
+    auctionStatus = [
+        {
+            name: "all",
+            description: "All Items"
+        },
+        {
+            name: "approved",
+            description: "Approved Items"
+        },
+        {
+            name: "rejected",
+            description: "Rejected Items"
+        },
+    ]
     form: FormGroup
     loading: boolean = false
 
@@ -22,6 +36,7 @@ export class GenerateAuctionKraReportComponent implements OnInit {
     ngOnInit(): void {
         this.form = this.fb.group({
             startDate: [this.maxDate, [Validators.required]],
+            auctionStatus: ["all", [Validators.required]],
             endDate: [this.maxDate, [Validators.required]]
         })
     }
@@ -30,7 +45,9 @@ export class GenerateAuctionKraReportComponent implements OnInit {
         let startDate = new DatePipe("En-US").transform(this.form.value.startDate, "yyyyMMdd")
         let endDate = new DatePipe("En-US").transform(this.form.value.endDate, "yyyyMMdd")
         this.loading = true
-        this.diService.downloadDocument("/api/v1/download/auction/report/" + startDate + "/" + endDate)
+        this.diService.downloadDocument("/api/v1/download/auction/report/" + startDate + "/" + endDate, {
+            status: this.form.value.auctionStatus
+        })
         this.loading = false
         this.dialogRef.close(true)
     }

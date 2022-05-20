@@ -279,6 +279,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun findAllBlackListUsers(status: Int): List<CdBlackListUserTargetTypesEntity> {
+
         iBlackListUserTargetRep.findAllByStatusOrderByTypeName(status)
                 ?.let {
                     return it
@@ -590,25 +591,29 @@ class DestinationInspectionDaoServices(
     ) {
         if (updatedCDDetails.inspectionChecklist == map.activeStatus) { // If checklist was filled, only add compliant items only
             val cocItems = findCDItemsListWithCDID(updatedCDDetails)
-            if (cocItems.isNotEmpty()) {
-                cocItems.forEach { cdItemDetails ->
-                    if (cdItemDetails.approveStatus == map.activeStatus || cdItemDetails.approveStatus == null || cdItemDetails.approveStatus == map.inactiveStatus) {
-                        generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
-                                ?: "NA", cdItemDetails.ownerName ?: "NA")
-                    }
+            val itemIds = mutableListOf<Long?>()
+            cocItems.forEach { cdItemDetails ->
+                if (cdItemDetails.approveStatus == map.activeStatus && cdItemDetails.sampledStatus == map.activeStatus) {
+                    // Approved and sampled
+                    itemIds.add(cdItemDetails.id)
+                    generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
+                            ?: "NA", cdItemDetails.ownerName ?: "NA")
+                } else if (cdItemDetails.sampledStatus != map.activeStatus) {
+                    // Not sampled
+                    itemIds.add(cdItemDetails.id)
+                    generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
+                            ?: "NA", cdItemDetails.ownerName ?: "NA")
                 }
-            } else {
+            }
+            // Prevent empty COC/COI generation
+            if (cocItems.isEmpty()) {
                 throw ExpectedDataNotFound("Compliance can't be issues when there is zero compliant items")
             }
         } else {
             val cocItems = findCDItemsListWithCDID(updatedCDDetails)
-            if (cocItems.isNotEmpty()) {
-                cocItems.forEach { cdItemDetails ->
-                    generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
-                            ?: "NA", cdItemDetails.ownerName ?: "NA")
-                }
-            } else {
-                throw ExpectedDataNotFound("Compliance can't be issues when there is zero compliant items")
+            cocItems.forEach { cdItemDetails ->
+                generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
+                        ?: "NA", cdItemDetails.ownerName ?: "NA")
             }
         }
 
@@ -680,7 +685,8 @@ class DestinationInspectionDaoServices(
     }
 
     fun countCocs(date: Timestamp, documentType: String): Long {
-        return cocRepo.countAllByYearGenerate(date.year, documentType)
+        val yearG = commonDaoServices.convertDateToString(date.toLocalDateTime(), "yyyy").toLongOrDefault(1990)
+        return cocRepo.countAllByYearGenerate(yearG, documentType)
     }
 
     fun generateCor(
