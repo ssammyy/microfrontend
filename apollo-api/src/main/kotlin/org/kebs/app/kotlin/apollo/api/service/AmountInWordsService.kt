@@ -1,9 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.service;
 
+import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 
+@Component
 class AmountInWordsService {
     val ONES = arrayOf("Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine")
     var twodigits = arrayOf("Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen")

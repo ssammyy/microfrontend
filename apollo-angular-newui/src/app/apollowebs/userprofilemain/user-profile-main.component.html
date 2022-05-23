@@ -1,4 +1,9 @@
 <div class="main-content">
+    <div class="loading-spinner ">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-8">
@@ -112,9 +117,18 @@
                             <!--                                        </div>-->
                             <!--                                    </div>-->
                             <!--                                </div>-->
-                            <!--                            </div>-->
-                            <button mat-raised-button type="submit" class="btn btn-info pull-right">Update Profile
-                            </button>
+                            <!--
+                                                     </div>-->
+<div class="row col-12">
+    <div class="col-6">
+        <button mat-raised-button type="submit" class="btn btn-info pull-left">Update Profile
+        </button>
+    </div>
+    <div *ngIf="roles?.includes('PERMIT_APPLICATION')"  class="col-6">
+        <button *ngIf="emailVerificationStatus==0" mat-raised-button type="button" class="btn btn-outline-danger float-right" (click)=toggleDisplayEmailForm()>Verify Email</button>
+    </div>
+</div>
+
                             <div class="clearfix"></div>
                         </form>
                     </div>
@@ -132,6 +146,55 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="card card-stats col-md-12" [hidden]="isShowSendEmailForm">
+            <form (ngSubmit)="sendEmailVerificationToken()" [formGroup]="emailActivationFormGroup"
+                  class="form">
+                <h3><b>Proceed to Verify email</b></h3>
+                <input type="hidden"
+                       value="{{userId}}"
+                       ngModel="{{userId}}"
+                       class="form-control"
+                       formControlName="userId" name="userId"
+                >
+                <input type="hidden"
+                       value="{{email}}"
+                       ngModel="{{email}}"
+                       class="form-control"
+                       formControlName="email" name="email"
+                >
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-sm"   >Verify</button>
+                </div>
+            </form>
+        </div>
+        <div class="card card-stats col-md-12" [hidden]="isShowConfirmEmailForm">
+            <form (ngSubmit)="confirmEmailAddress()" [formGroup]="activateEmailFormGroup"
+                  class="form">
+                <h3><b>Proceed to Verify email</b></h3>
+                <input type="hidden"
+                       value="{{userId}}"
+                       ngModel="{{userId}}"
+                       class="form-control"
+                       formControlName="userId" name="userId"
+                >
+                <input type="hidden"
+                       value="{{email}}"
+                       ngModel="{{email}}"
+                       class="form-control"
+                       formControlName="email" name="email"
+                >
+                <div class="form-group col-12">
+                    <label>Enter Token to Validate</label>
+                    <input type="text"
+                           class="form-control"
+                           formControlName="verificationToken" name="verificationToken"
+                    >
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-sm" >Verify</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

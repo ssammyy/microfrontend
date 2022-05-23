@@ -15,16 +15,16 @@
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
-			<leftPen lineWidth="0.5" lineColor="#000000"/>
-			<bottomPen lineWidth="0.5" lineColor="#000000"/>
-			<rightPen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-			<topPen lineWidth="0.5" lineColor="#000000"/>
-			<leftPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
             <bottomPen lineWidth="0.5" lineColor="#000000"/>
             <rightPen lineWidth="0.5" lineColor="#000000"/>
         </box>
@@ -52,6 +52,7 @@
     <parameter name="Remarks" class="java.lang.String"/>
     <parameter name="CoCType" class="java.lang.String"/>
     <parameter name="imagePath" class="java.lang.String"/>
+    <parameter name="OfficerName" class="java.lang.String"/>
     <queryString>
         <![CDATA[]]>
     </queryString>
@@ -60,7 +61,7 @@
         <band splitType="Stretch"/>
     </background>
     <title>
-        <band height="100" splitType="Stretch">
+        <band height="106" splitType="Stretch">
             <image>
                 <reportElement x="94" y="0" width="84" height="77" uuid="b237ab97-8c25-4236-b40e-52eadd3ad277"/>
                 <imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
@@ -95,12 +96,8 @@
                 </textElement>
                 <text><![CDATA[Tel : 020 6948000]]></text>
             </staticText>
-        </band>
-	</title>
-    <detail>
-        <band height="368" splitType="Stretch">
             <staticText>
-                <reportElement mode="Opaque" x="2" y="4" width="550" height="20" backcolor="#D9E1F2"
+                <reportElement mode="Opaque" x="2" y="83" width="550" height="20" backcolor="#D9E1F2"
                                uuid="94b09c0c-3025-43ec-8935-2fc32458c6ef"/>
                 <box>
                     <bottomPen lineWidth="0.75"/>
@@ -110,8 +107,12 @@
                 </textElement>
                 <text><![CDATA[CERTIFICATE OF CONFORMITY]]></text>
             </staticText>
+        </band>
+    </title>
+    <detail>
+        <band height="348" splitType="Stretch">
             <frame>
-                <reportElement x="2" y="27" width="550" height="335" uuid="060c98c3-3f84-4035-839a-aeb4417f05ce">
+                <reportElement x="2" y="4" width="550" height="335" uuid="060c98c3-3f84-4035-839a-aeb4417f05ce">
                     <property name="com.jaspersoft.studio.layout"
                               value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
                 </reportElement>
@@ -328,7 +329,7 @@
                 </textField>
             </frame>
         </band>
-        <band height="152">
+        <band height="119">
             <staticText>
                 <reportElement mode="Opaque" x="2" y="8" width="550" height="20" backcolor="#D9E1F2"
                                uuid="49693f64-520b-46d1-bad3-2967ee6d349d"/>
@@ -341,7 +342,7 @@
                 <text><![CDATA[ITEMS]]></text>
             </staticText>
             <componentElement>
-                <reportElement x="1" y="34" width="552" height="108" uuid="56b86851-de07-4f24-8ec5-e2516b1c45f7">
+                <reportElement x="1" y="34" width="552" height="76" uuid="56b86851-de07-4f24-8ec5-e2516b1c45f7">
                     <property name="com.jaspersoft.studio.layout"
                               value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
                     <property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
@@ -415,19 +416,93 @@
                 </jr:table>
             </componentElement>
         </band>
-        <band height="57">
-            <staticText>
-                <reportElement positionType="Float" x="0" y="32" width="200" height="18"
-                               uuid="e6b63a34-d8a9-40a1-af4d-8edf215e42e8"/>
-                <textElement>
-                    <font size="11" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Managing Director/Authorised Officer]]></text>
-            </staticText>
-            <line>
-                <reportElement positionType="Float" x="2" y="32" width="200" height="1"
-                               uuid="79ba8618-68e1-4889-8d30-a63dc10286fe"/>
-            </line>
+        <band height="108">
+            <frame>
+                <reportElement x="0" y="1" width="553" height="95" uuid="05de5bc5-e2ff-4835-856f-853ba09c4199">
+                    <property name="com.jaspersoft.studio.layout"
+                              value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
+                </reportElement>
+                <box padding="8"/>
+                <staticText>
+                    <reportElement x="0" y="0" width="215" height="27" uuid="439f2a8b-3394-4b12-a079-46ab9fc54ee8"/>
+                    <textElement verticalAlignment="Bottom">
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Name of Authorized Officer:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="215" y="0" width="322" height="27" uuid="92944a9f-bb55-426e-b85a-23f0516ef98c">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.5"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <box>
+                        <bottomPen lineWidth="1.0"/>
+                    </box>
+                    <textElement verticalAlignment="Bottom"/>
+                    <textFieldExpression><![CDATA[$P{OfficerName}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="27" width="215" height="26" uuid="f5f319e9-ec88-4bdc-bccb-ed5f7a8e4068">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement verticalAlignment="Bottom">
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Signature:]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="215" y="27" width="322" height="26" uuid="069bea73-29af-4cfc-9c25-d0b719d905b1"/>
+                    <box>
+                        <bottomPen lineWidth="1.0"/>
+                    </box>
+                    <textElement>
+                        <font size="11" isBold="true" isItalic="true"/>
+                    </textElement>
+                    <text><![CDATA[]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="0" y="53" width="215" height="26" uuid="797ae461-4cc2-4f8c-a941-9b83fda249d2">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="2"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <textElement verticalAlignment="Bottom">
+                        <font size="11"/>
+                    </textElement>
+                    <text><![CDATA[Date and Stamp:]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="215" y="53" width="322" height="26" uuid="e1be0944-0972-47ad-a13d-44b277e5487b">
+                        <property name="com.jaspersoft.layout.grid.x" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.y" value="-1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.x" value="1.5"/>
+                        <property name="com.jaspersoft.layout.grid.weight.y" value="1.0"/>
+                        <property name="com.jaspersoft.layout.grid.rowspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.colspan" value="1"/>
+                        <property name="com.jaspersoft.layout.grid.weight.fixed" value="false"/>
+                    </reportElement>
+                    <box>
+                        <bottomPen lineWidth="1.0"/>
+                    </box>
+                    <textElement verticalAlignment="Bottom"/>
+                    <textFieldExpression><![CDATA[$P{IssueDate}]]></textFieldExpression>
+                </textField>
+            </frame>
         </band>
-	</detail>
+    </detail>
 </jasperReport>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
     Go,
@@ -13,6 +13,9 @@ import {Titles, TitlesService} from '../../core/store/data/title';
 import {Store} from '@ngrx/store';
 import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
+import {LevyService} from "../../core/store/data/levy/levy.service";
+import {NotificationService} from "../../core/store/data/std/notification.service";
+import {NgxSpinnerService} from "ngx-spinner";
 
 
 @Component({
@@ -23,16 +26,27 @@ import {HttpErrorResponse} from '@angular/common/http';
 
 
 export class UserProfileMainComponent implements OnInit {
-
+    roles: string[];
     user: UserEntityDto;
     title$: Observable<Titles[]>;
     stepOneForm: FormGroup = new FormGroup({});
+    public emailActivationFormGroup!: FormGroup;
+    public activateEmailFormGroup!: FormGroup;
+    emailVerificationStatus:number;
+    userId: number;
+    email: string;
+    loadingText: string;
+    isShowSendEmailForm=true;
+    isShowConfirmEmailForm=true;
 
 
     constructor(private store$: Store<any>,
                 private service: UserEntityService,
                 private titleService: TitlesService,
-                private formBuilder: FormBuilder) {
+                private formBuilder: FormBuilder,
+                private levyService: LevyService,
+                private notifyService: NotificationService,
+                private SpinnerService: NgxSpinnerService) {
         this.title$ = titleService.entities$;
         titleService.getAll().subscribe();
     }
@@ -59,6 +73,13 @@ export class UserProfileMainComponent implements OnInit {
             {
                 // validators: ConfirmedValidator('credentials', 'confirmCredentials')
             });
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.roles = u.roles;
+            console.log(this.roles);
+            return this.roles = u.roles;
+
+        });
+
         this.store$.select(selectUserInfo).subscribe(
             (l) => {
                 console.log(`The id is ${l.id}`);
@@ -81,6 +102,28 @@ export class UserProfileMainComponent implements OnInit {
             }
         );
 
+        this.getVerificationStatus();
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.userId = u.id;
+            this.email= u.email;
+        });
+        this.emailActivationFormGroup = this.formBuilder.group({
+            userId:[],
+            email:[]
+        });
+        this.activateEmailFormGroup = this.formBuilder.group({
+            userId:[],
+            email:[],
+            verificationToken: []
+        });
+
+    }
+    showToasterSuccess(title:string,message:string){
+        this.notifyService.showSuccess(message, title)
+
+    }
+    showToasterError(title:string,message:string){
+        this.notifyService.showError(message, title)
 
     }
 
@@ -132,6 +175,78 @@ export class UserProfileMainComponent implements OnInit {
                 }
             }));
         }
+    }
+    public getVerificationStatus(): void{
+        this.levyService.getVerificationStatus().subscribe(
+            (response)=> {
+                this.emailVerificationStatus = response;
+                console.log(this.emailVerificationStatus);
+            },
+            (error: HttpErrorResponse)=>{
+                console.log(error.message)
+                //alert(error.message);
+            }
+        );
+    }
+    toggleDisplayEmailForm() {
+        this.isShowSendEmailForm = !this.isShowSendEmailForm;
+        this.isShowConfirmEmailForm=true;
+
+    }
+
+    sendEmailVerificationToken(): void {
+        this.loadingText = "Generating token ...."
+        console.log(this.emailActivationFormGroup.value);
+        this.SpinnerService.show();
+        this.levyService.sendEmailVerificationToken(this.emailActivationFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Token has been generated and sent to your email Address`);
+                this.isShowConfirmEmailForm=!this.isShowConfirmEmailForm;
+                this.isShowSendEmailForm=true;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Generating Token`);
+                console.log(error.message);
+            }
+        );
+        this.hideCloseModal();
+
+
+    }
+    @ViewChild('myModal') myModal;
+
+    openModel() {
+        this.myModal.nativeElement.className = 'modal fade show';
+    }
+
+    @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
+    public hideCloseModal() {
+        this.closeModal?.nativeElement.click();
+    }
+
+    confirmEmailAddress(): void {
+        this.loadingText = "Validating Email Address ...."
+        console.log(this.activateEmailFormGroup.value);
+        this.SpinnerService.show();
+        this.levyService.confirmEmailAddress(this.activateEmailFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Email Address Validated`);
+                this.isShowSendEmailForm=true;
+                this.isShowConfirmEmailForm=true;
+                // this.router.navigateByUrl('/dashboard').then(r => {});
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Validating Email Address`);
+                console.log(error.message);
+            }
+        );
     }
 
 }

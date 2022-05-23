@@ -334,10 +334,10 @@ class GeneralController(
     }
 
     @GetMapping("/auction/report/{startDate}/{endDate}")
-    fun downloadAuctionReport(@PathVariable("startDate") startDate: String, @PathVariable("endDate") endDate: String, httResponse: HttpServletResponse) {
+    fun downloadAuctionReport(@PathVariable("startDate") startDate: String, @PathVariable("endDate") endDate: String, @RequestParam("status", required = true, defaultValue = "all") status: String, httResponse: HttpServletResponse) {
         val response = ApiResponseModel()
         try {
-            val records = auctionService.downloadAuctionReport(startDate, endDate)
+            val records = auctionService.downloadAuctionReport(startDate, endDate, status)
             if (records.isEmpty()) {
                 response.responseCode = ResponseCodes.EXCEPTION_STATUS
                 response.message = "No records found for the dates ${startDate} to ${endDate}"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="KebsDemandNote" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f1509899-1aca-4f40-b78f-afadd93abf8a">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="TextStatic" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="Times New Roman" fontSize="12" isBold="false"/>
@@ -63,49 +63,61 @@
 	</background>
 	<title>
 		<band height="109" splitType="Stretch">
-			<image>
-				<reportElement x="218" y="2" width="50" height="45" uuid="a1d21aa1-83b3-4c62-a293-553dff51a7bb">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
-			</image>
-			<staticText>
-				<reportElement x="170" y="50" width="150" height="28" uuid="f4529cf3-98a6-4230-8009-4e14f216c7bc">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="72" y="90" width="359" height="18" uuid="acb3c2d4-7009-41ea-b247-7959df707e4f">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="Times New Roman" size="15" isBold="true" isItalic="false" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[QUALITY INSPECTION FEE DEMAND NOTE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="352" y="56" width="90" height="20" uuid="6da58f07-a00b-418e-8bb4-0b9ce54cd5fc">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="11"/>
-				</textElement>
-				<text><![CDATA[Demand Note No :]]></text>
-			</staticText>
-			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
-				<reportElement x="443" y="56" width="110" height="20" uuid="7ab500c9-c89c-41f6-87d8-010032867382">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{demandNoteNo}]]></textFieldExpression>
-			</textField>
-		</band>
+            <image>
+                <reportElement x="100" y="0" width="78" height="76" uuid="a1d21aa1-83b3-4c62-a293-553dff51a7bb">
+                    <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                </reportElement>
+                <imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+            </image>
+            <staticText>
+                <reportElement x="180" y="2" width="301" height="20" uuid="f4529cf3-98a6-4230-8009-4e14f216c7bc">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="17" isBold="true"/>
+                </textElement>
+                <text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="0" y="83" width="554" height="26" backcolor="#D9E1F2"
+                               uuid="acb3c2d4-7009-41ea-b247-7959df707e4f">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="15" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[QUALITY INSPECTION FEE DEMAND NOTE]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="421" y="40" width="90" height="20" uuid="6da58f07-a00b-418e-8bb4-0b9ce54cd5fc">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="11"/>
+                </textElement>
+                <text><![CDATA[Demand Note No :]]></text>
+            </staticText>
+            <textField textAdjust="ScaleFont" isBlankWhenNull="true">
+                <reportElement x="418" y="60" width="129" height="20" uuid="7ab500c9-c89c-41f6-87d8-010032867382">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{demandNoteNo}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="182" y="26" width="200" height="50" uuid="0ad26d1d-aeba-475c-9ce9-ac296b438331"/>
+                <textElement textAlignment="Left">
+                    <font size="9"/>
+                </textElement>
+                <text><![CDATA[Popo Road, off Mombasa Road
+P.O. Box 54974 - 00200, Nairobi
+Tel: (+254 20) 6948000
+Email:info@kebs.org
+]]></text>
+            </staticText>
+        </band>
 	</title>
 	<columnHeader>
 		<band height="71" splitType="Stretch">
@@ -315,27 +327,30 @@
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$P{totalAmount}]]></textFieldExpression>
 			</textField>
-			<rectangle>
-				<reportElement x="0" y="260" width="552" height="56" uuid="3697549a-e36a-499f-b601-fc846bd81442"/>
-			</rectangle>
-			<staticText>
-				<reportElement style="TextStatic" x="11" y="267" width="88" height="20" uuid="b7c2158e-ff7a-4743-8a33-d324d4c0d650"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[Amount in words ]]></text>
-			</staticText>
-			<textField>
-				<reportElement style="TextParamater" x="100" y="267" width="444" height="20" uuid="e474ce40-65d3-4a25-a292-543ef7456ee7">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{amountInWords}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement style="TextStatic" x="10" y="291" width="62" height="20" uuid="dc56d66e-4a4d-4823-a182-a0230b451d8d"/>
+            <rectangle>
+                <reportElement x="0" y="260" width="552" height="56" uuid="3697549a-e36a-499f-b601-fc846bd81442"/>
+            </rectangle>
+            <staticText>
+                <reportElement style="TextStatic" x="11" y="267" width="88" height="20"
+                               uuid="b7c2158e-ff7a-4743-8a33-d324d4c0d650"/>
+                <textElement>
+                    <font size="12"/>
+                </textElement>
+                <text><![CDATA[Amount in words ]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight" evaluationTime="Master">
+                <reportElement style="TextParamater" x="100" y="267" width="444" height="20"
+                               uuid="e474ce40-65d3-4a25-a292-543ef7456ee7">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{amountInWords}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="TextStatic" x="10" y="291" width="62" height="20"
+                               uuid="dc56d66e-4a4d-4823-a182-a0230b451d8d"/>
 				<text><![CDATA[Reciept No]]></text>
 			</staticText>
 			<textField>

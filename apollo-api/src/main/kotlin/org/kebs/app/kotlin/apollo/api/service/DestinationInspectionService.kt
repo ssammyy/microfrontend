@@ -1657,6 +1657,7 @@ class DestinationInspectionService(
             } else {
                 map["CocNo"] = localCocEntity.cocNumber.orEmpty()
             }
+            map["OfficerName"] = localCocEntity.issuingOffice.orEmpty()
             map["IssueDate"] = localCocEntity.cocIssueDate.toString()
             map["EntryNo"] = localCocEntity.customsEntryNumber ?: "N/A"
             map["IdfNo"] = localCocEntity.idfNumber.orEmpty()

@@ -44,17 +44,17 @@ import java.time.format.DateTimeParseException
 
 @Component
 class InvoiceHandlers(
-    private val demandNoteRepository: IDemandNoteRepository,
-    private val commonDaoServices: CommonDaoServices,
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val daoServices: DestinationInspectionDaoServices,
-    private val diBpmn: DestinationInspectionBpmn,
-    private val objectMapper: ObjectMapper,
-    private val invoicePaymentService: InvoicePaymentService,
-    private val sageServices: PostInvoiceToSageServices,
-    private val daoValidatorService: DaoValidatorService,
-    private val validator: Validator
-): AbstractValidationHandler() {
+        private val demandNoteRepository: IDemandNoteRepository,
+        private val commonDaoServices: CommonDaoServices,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val daoServices: DestinationInspectionDaoServices,
+        private val diBpmn: DestinationInspectionBpmn,
+        private val objectMapper: ObjectMapper,
+        private val invoicePaymentService: InvoicePaymentService,
+        private val sageServices: PostInvoiceToSageServices,
+        private val daoValidatorService: DaoValidatorService,
+        private val validator: Validator
+) : AbstractValidationHandler() {
     final val errors = mutableMapOf<String, String>()
 
     fun applicationUploadExchangeRates(req: ServerRequest): ServerResponse {
@@ -253,6 +253,11 @@ class InvoiceHandlers(
                 val transport = daoServices.findCdTransportDetails(it)
                 demandRequest.customsOffice = transport.portOfArrival // JKIA or MSA
             }
+            cdDetails.cdStandardsTwo?.let {
+                demandRequest.courier = it.courierName
+                demandRequest.courierPin = it.courierPin
+            }
+
             demandRequest.entryNo = cdDetails.ucrNumber ?: ""
             cdDetails.freightStation?.let {
                 demandRequest.revenueLineNumber = it.revenueLineNumber
@@ -513,20 +518,20 @@ class InvoiceHandlers(
     fun processPaymentSageNotification(req: ServerRequest): ServerResponse {
         return try {
             req.body<SageNotificationResponse>()
-                .let { body ->
-                    val errors: Errors = BeanPropertyBindingResult(body, SageNotificationResponse::class.java.name)
-                    validator.validate(body, errors)
-                    if (errors.allErrors.isEmpty()) {
-                        val response = sageServices.processPaymentSageNotification(body)
-                        ServerResponse.ok().body(response)
+                    .let { body ->
+                        val errors: Errors = BeanPropertyBindingResult(body, SageNotificationResponse::class.java.name)
+                        validator.validate(body, errors)
+                        if (errors.allErrors.isEmpty()) {
+                            val response = sageServices.processPaymentSageNotification(body)
+                            ServerResponse.ok().body(response)
 
-                    } else {
-                        onValidationErrors(errors)
+                        } else {
+                            onValidationErrors(errors)
+                        }
+
+
                     }
-
-
-                }
-                ?: throw InvalidValueException("No Body found")
+                    ?: throw InvalidValueException("No Body found")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.debug(e.message, e)

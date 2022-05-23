@@ -29,6 +29,7 @@ export class NavbarComponent implements OnInit {
     private _router: Subscription;
     roles: string[];
 
+
     @ViewChild('app-navbar-cmp', {static: false}) button: any;
 
     constructor(location: Location, private renderer: Renderer2, private element: ElementRef, private store$: Store<any>, public router: Router
@@ -36,6 +37,7 @@ export class NavbarComponent implements OnInit {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
+
     }
 
     minimizeSidebar() {
@@ -121,7 +123,11 @@ export class NavbarComponent implements OnInit {
                 $layer.remove();
             }
         });
+
     }
+
+
+
     onResize(event) {
         if ($(window).width() > 991) {
             return false;
