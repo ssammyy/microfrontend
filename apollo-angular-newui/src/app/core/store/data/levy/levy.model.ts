@@ -522,6 +522,9 @@ export interface UserEntityRoles {
 export interface ManufacturingStatus {
     businessType: number;
 }
+export interface OperationStatus {
+    manufacturerStatus: number;
+}
 export interface NotificationStatus {
     name: boolean;
 }

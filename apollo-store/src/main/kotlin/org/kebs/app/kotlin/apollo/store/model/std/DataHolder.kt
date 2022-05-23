@@ -269,4 +269,8 @@ interface EmailListHolder{
     fun getCompanyName(): String?;
 }
 
+interface ManufacturerStatusHolder{
+    fun getManufacturerStatus(): Long?
+}
+
 
