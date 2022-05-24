@@ -790,8 +790,8 @@ export class ComplaintDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['acceptRejectComplaint', 'notKebsMandate','assignHOF'];
-    const arrHeadSave = ['ACCEPT/REJECT COMPLAINT', 'NOT WITHIN KEBS MANDATE','ASSIGN HOF'];
+    const arrHead = ['acceptRejectComplaint', 'notKebsMandate', 'assignHOF', 'assignOfficer'];
+    const arrHeadSave = ['ACCEPT/REJECT COMPLAINT', 'NOT WITHIN KEBS MANDATE','ASSIGN HOF', 'ASSIGN IO'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -905,6 +905,27 @@ export class ComplaintDetailsComponent implements OnInit {
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('HOF ASSIGNED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveAssignIO(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
+      // tslint:disable-next-line:max-line-length
+      this.msService.msComplaintUpdateAssignIODetails(this.complaintInspection.complaintsDetails.refNumber,  this.dataSaveAssignOfficer).subscribe(
+          (data: any) => {
+            this.complaintInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('IO ASSIGNED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();

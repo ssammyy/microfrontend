@@ -609,6 +609,15 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                     </div>
+                                    <div *ngIf="role == 'MS_HOF_MODIFY' && userLoggedInID == complaintInspection?.hofAssigned?.id">
+                                        <button *ngIf="complaintInspection?.officersAssigned == null && complaintInspection?.hofAssigned !=null" (click)="openModalAddDetails('assignOfficer')" mat-raised-button="" data-toggle="modal"
+                                                data-target="#myModal1"
+                                                class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">ASSIGN IO</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                    </div>
 
                                 </div>
 
@@ -753,6 +762,32 @@
                                                         [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
                                                         formControlName="assignedIo" id="assignedIo" name="assignedIo" >
                                                 <mat-option *ngFor="let app of complaintInspection.hofList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="assignedRemarks" matInput type="text"
+                                                      formControlName="assignedRemarks"
+                                                      name="assignedRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'assignOfficer')">
+                        <form [formGroup]="assignOfficerForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="assignedIo"><b>Select officer</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
+                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >
+                                                <mat-option *ngFor="let app of complaintInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
@@ -1006,7 +1041,7 @@
                     <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
                     </button>
                     <button *ngIf="(currDiv == 'assignOfficer')" mat-raised-button type="button" class="btn btn-success"
-<!--                            (click)="onClickSaveAssignOfficerBatch(assignOfficerForm.valid);"-->
+                            (click)="onClickSaveAssignIO(assignOfficerForm.valid);"
                             [disabled]="!assignOfficerForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
