@@ -117,10 +117,18 @@
                             <!--                                        </div>-->
                             <!--                                    </div>-->
                             <!--                                </div>-->
-                            <!--                            </div>-->
-                            <button mat-raised-button type="submit" class="btn btn-info pull-left">Update Profile
-                            </button>
-                            <button *ngIf="emailVerificationStatus==0" mat-raised-button type="button" class="btn btn-outline-danger float-right" (click)=toggleDisplayEmailForm()>Verify Email</button>
+                            <!--
+                                                     </div>-->
+<div class="row col-12">
+    <div class="col-6">
+        <button mat-raised-button type="submit" class="btn btn-info pull-left">Update Profile
+        </button>
+    </div>
+    <div *ngIf="roles?.includes('PERMIT_APPLICATION')"  class="col-6">
+        <button *ngIf="emailVerificationStatus==0" mat-raised-button type="button" class="btn btn-outline-danger float-right" (click)=toggleDisplayEmailForm()>Verify Email</button>
+    </div>
+</div>
+
                             <div class="clearfix"></div>
                         </form>
                     </div>

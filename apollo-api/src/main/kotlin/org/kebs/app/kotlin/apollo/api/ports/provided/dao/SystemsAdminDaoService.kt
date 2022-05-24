@@ -1198,7 +1198,7 @@ class SystemsAdminDaoService(
                         county = null
                         town = null
                         region = null
-                        status = true
+                        status = null
 
                     }
 

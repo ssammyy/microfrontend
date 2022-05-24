@@ -15,7 +15,7 @@ import {
     ManufactureDetailList,
     ManufacturePenalty,
     ManufacturePendingTask,
-    ManufacturingStatus, NotificationStatus,
+    ManufacturingStatus, NotificationStatus, OperationStatus,
     PaidLevy, PaymentDetails, PenaltyDetails,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo, SendEmailDto,
@@ -82,6 +82,12 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_STATUS);
         const params = new HttpParams();
         return this.http.get<ManufacturingStatus>(url, {params}).pipe();
+    }
+
+    public getOperationStatus(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_COMPANY_STATUS);
+        const params = new HttpParams();
+        return this.http.get<OperationStatus>(url, {params}).pipe();
     }
 
     public scheduleSiteVisit(stdLevyScheduleSiteVisitDTO: StdLevyScheduleSiteVisitDTO): Observable<any> {

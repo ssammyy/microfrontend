@@ -11,11 +11,6 @@ import {
     selectUserInfo,
     UserEntityDto
 } from 'src/app/core/store';
-import {LevyService} from "../../core/store/data/levy/levy.service";
-import {HttpErrorResponse} from "@angular/common/http";
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {NotificationService} from "../../core/store/data/std/notification.service";
-import {NgxSpinnerService} from "ngx-spinner";
 
 declare const $: any;
 

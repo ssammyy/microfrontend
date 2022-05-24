@@ -461,6 +461,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
 
 
+
+
 }
 
 @Repository

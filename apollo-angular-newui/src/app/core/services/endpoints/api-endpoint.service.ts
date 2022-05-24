@@ -517,6 +517,7 @@ export class ApiEndpointService {
         USER_EMAIL_VERIFICATION_STATUS: `${ApiEndpointService.STL_CONTEXT}/getVerificationStatus`,
         SEND_EMAIL_VERIFICATION: `${ApiEndpointService.STL_CONTEXT}/sendEmailVerificationToken`,
         CONFIRM_EMAIL_VERIFICATION_STATUS: `${ApiEndpointService.STL_CONTEXT}/confirmEmailAddress`,
+        STD_LEVY_COMPANY_STATUS: `${ApiEndpointService.STL_CONTEXT}/getOperationStatus`,
 
 
 
