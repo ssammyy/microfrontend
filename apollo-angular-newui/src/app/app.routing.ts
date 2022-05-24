@@ -25,11 +25,11 @@ import {UserComponent} from './apollowebs/company/branch/users/user.component';
 import {UserList} from './apollowebs/company/branch/users/user.list';
 import {SmarkApplicationsAllComponent} from './apollowebs/quality-assurance/smark-applications-all/smark-applications-all.component';
 import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
-import {AddBranchComponent} from "./apollowebs/company/branch/add-branch/add-branch.component";
-import {OtpComponent} from "./views/registration/otp/otp.component";
-import {PdfViewComponent} from "./pdf-view/pdf-view.component";
-import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.component";
-import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
+import {AddBranchComponent} from './apollowebs/company/branch/add-branch/add-branch.component';
+import {OtpComponent} from './views/registration/otp/otp.component';
+import {PdfViewComponent} from './pdf-view/pdf-view.component';
+import {TaskManagerComponent} from './apollowebs/task-manager/task-manager.component';
+import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
 import {ImportInspectionComponent} from './apollowebs/pvoc/import-inspection/import-inspection.component';
 import {ExceptionsApplicationComponent} from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
 import {ImportationWaiverComponent} from './apollowebs/pvoc/importation-waiver/importation-waiver.component';
@@ -71,65 +71,65 @@ import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-det
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
 import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
-import {ComStdApproveJustificationComponent} from "./apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component";
-import {ComStdDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component";
-import {ComStdUploadComponent} from "./apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component";
-import {SpcSecTaskComponent} from "./apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component";
-import {AllpermitsComponent} from "./apollowebs/quality-assurance/allpermits/allpermits.component";
-import {NepNotificationComponent} from "./apollowebs/standards-development/nep-notification/nep-notification.component";
-import {ManagernotificationsComponent} from "./apollowebs/standards-development/managernotifications/managernotifications.component";
-import {CreateDepartmentComponent} from "./apollowebs/standards-development/standard-request/create-department/create-department.component";
-import {CreatetechnicalcommitteeComponent} from "./apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component";
-import {IntStdUploadStandardComponent} from "./apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component";
-import {IntStdGazzetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component";
-import {CreateproductComponent} from "./apollowebs/standards-development/standard-request/createproduct/createproduct.component";
-import {CreateproductSubCategoryComponent} from "./apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component";
-import {RoleSwitcherComponent} from "./apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component";
-import {CustomerRegistrationComponent} from "./apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component";
-import {StandardsLevyHomeComponent} from "./apollowebs/standards-levy/standards-levy-home/standards-levy-home.component";
-import {ComStandardLevyComponent} from "./apollowebs/standards-levy/com-standard-levy/com-standard-levy.component";
-import {ComPaymentHistoryComponent} from "./apollowebs/standards-levy/com-payment-history/com-payment-history.component";
-import {ComStdLevyFormComponent} from "./apollowebs/standards-levy/com-std-levy-form/com-std-levy-form.component";
-import {StandardLevyDashboardComponent} from "./apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component";
-import {StandardLevyPaidComponent} from "./apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component";
-import {StandardLevyPenaltiesComponent} from "./apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component";
-import {StandardLevyDefaulterComponent} from "./apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component";
-import {StandardLevyPenaltyHistoryComponent} from "./apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component";
-import {StandardLevyPaidHistoryComponent} from "./apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component";
-import {StandardLevyDefaulterHistoryComponent} from "./apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component";
-import {StdTscSecTasksComponentComponent} from "./apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component";
-import {StdTcTasksComponent} from "./apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component";
-import {InvoiceConsolidateComponent} from "./apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component";
-import {FmarkApplicationComponent} from "./apollowebs/quality-assurance/fmark-application/fmark-application.component";
-import {SmarkComponent} from "./apollowebs/quality-assurance/smark/smark.component";
-import {ViewDiDeclarationDocumentsComponent} from "./apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component";
-import {ViewIdfDocumentDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component";
-import {ItemDetailsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component";
-import {ViewTasksComponent} from "./apollowebs/di/view-tasks/view-tasks.component";
-import {DiCorComponent} from "./apollowebs/di/view-single-consignment-document/di-cor/di-cor.component";
-import {DiCocComponent} from "./apollowebs/di/view-single-consignment-document/di-coc/di-coc.component";
-import {ViewInspectionDetailsComponent} from "./apollowebs/di/view-single-consignment-document/view-inspection-details/view-inspection-details.component";
-import {ChecklistDataFormComponent} from "./apollowebs/di/view-single-consignment-document/checklist-data-form/checklist-data-form.component";
-import {InspectionDashboardComponent} from "./apollowebs/di/inspection-dashboard/inspection-dashboard.component";
-import {LabResultsComponent} from "./apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component";
-import {CurrencyExchangeRatesComponent} from "./apollowebs/di/currency-exchange-rates/currency-exchange-rates.component";
-import {MessageDashboardComponent} from "./apollowebs/di/message-dashboard/message-dashboard.component";
-import {TransactionViewComponent} from "./apollowebs/di/transaction-view/transaction-view.component";
-import {ViewClientsComponent} from "./apollowebs/system/clients/view-clients/view-clients.component";
-import {ViewPartnersComponent} from "./apollowebs/pvoc/partners/view-partners/view-partners.component";
-import {ViewPartnerDetailsComponent} from "./apollowebs/pvoc/partners/view-partner-details/view-partner-details.component";
-import {IsmApplicationsComponent} from "./apollowebs/di/ism/ism-applications/ism-applications.component";
-import {ViewIsmApplicationComponent} from "./apollowebs/di/ism/view-ism-application/view-ism-application.component";
-import {ViewCorporateCustomersComponent} from "./apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component";
-import {ViewCorporateComponent} from "./apollowebs/invoice/corporate/view-corporate/view-corporate.component";
-import {ViewBillLimitsComponent} from "./apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component";
-import {ViewTransactionsComponent} from "./apollowebs/invoice/corporate/view-transactions/view-transactions.component";
-import {ViewAuctionItemsComponent} from "./apollowebs/di/auction/view-auction-items/view-auction-items.component";
-import {AuctionItemDetailsComponent} from "./apollowebs/di/auction/auction-item-details/auction-item-details.component";
+import {ComStdApproveJustificationComponent} from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
+import {ComStdDraftComponent} from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
+import {ComStdUploadComponent} from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
+import {SpcSecTaskComponent} from './apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component';
+import {AllpermitsComponent} from './apollowebs/quality-assurance/allpermits/allpermits.component';
+import {NepNotificationComponent} from './apollowebs/standards-development/nep-notification/nep-notification.component';
+import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
+import {CreateDepartmentComponent} from './apollowebs/standards-development/standard-request/create-department/create-department.component';
+import {CreatetechnicalcommitteeComponent} from './apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component';
+import {IntStdUploadStandardComponent} from './apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component';
+import {IntStdGazzetteComponent} from './apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component';
+import {CreateproductComponent} from './apollowebs/standards-development/standard-request/createproduct/createproduct.component';
+import {CreateproductSubCategoryComponent} from './apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component';
+import {RoleSwitcherComponent} from './apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component';
+import {CustomerRegistrationComponent} from './apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component';
+import {StandardsLevyHomeComponent} from './apollowebs/standards-levy/standards-levy-home/standards-levy-home.component';
+import {ComStandardLevyComponent} from './apollowebs/standards-levy/com-standard-levy/com-standard-levy.component';
+import {ComPaymentHistoryComponent} from './apollowebs/standards-levy/com-payment-history/com-payment-history.component';
+import {ComStdLevyFormComponent} from './apollowebs/standards-levy/com-std-levy-form/com-std-levy-form.component';
+import {StandardLevyDashboardComponent} from './apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component';
+import {StandardLevyPaidComponent} from './apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component';
+import {StandardLevyPenaltiesComponent} from './apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component';
+import {StandardLevyDefaulterComponent} from './apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component';
+import {StandardLevyPenaltyHistoryComponent} from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
+import {StandardLevyPaidHistoryComponent} from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
+import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
+import {StdTscSecTasksComponentComponent} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
+import {StdTcTasksComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
+import {InvoiceConsolidateComponent} from './apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component';
+import {FmarkApplicationComponent} from './apollowebs/quality-assurance/fmark-application/fmark-application.component';
+import {SmarkComponent} from './apollowebs/quality-assurance/smark/smark.component';
+import {ViewDiDeclarationDocumentsComponent} from './apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component';
+import {ViewIdfDocumentDetailsComponent} from './apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component';
+import {ItemDetailsComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component';
+import {ViewTasksComponent} from './apollowebs/di/view-tasks/view-tasks.component';
+import {DiCorComponent} from './apollowebs/di/view-single-consignment-document/di-cor/di-cor.component';
+import {DiCocComponent} from './apollowebs/di/view-single-consignment-document/di-coc/di-coc.component';
+import {ViewInspectionDetailsComponent} from './apollowebs/di/view-single-consignment-document/view-inspection-details/view-inspection-details.component';
+import {ChecklistDataFormComponent} from './apollowebs/di/view-single-consignment-document/checklist-data-form/checklist-data-form.component';
+import {InspectionDashboardComponent} from './apollowebs/di/inspection-dashboard/inspection-dashboard.component';
+import {LabResultsComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component';
+import {CurrencyExchangeRatesComponent} from './apollowebs/di/currency-exchange-rates/currency-exchange-rates.component';
+import {MessageDashboardComponent} from './apollowebs/di/message-dashboard/message-dashboard.component';
+import {TransactionViewComponent} from './apollowebs/di/transaction-view/transaction-view.component';
+import {ViewClientsComponent} from './apollowebs/system/clients/view-clients/view-clients.component';
+import {ViewPartnersComponent} from './apollowebs/pvoc/partners/view-partners/view-partners.component';
+import {ViewPartnerDetailsComponent} from './apollowebs/pvoc/partners/view-partner-details/view-partner-details.component';
+import {IsmApplicationsComponent} from './apollowebs/di/ism/ism-applications/ism-applications.component';
+import {ViewIsmApplicationComponent} from './apollowebs/di/ism/view-ism-application/view-ism-application.component';
+import {ViewCorporateCustomersComponent} from './apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component';
+import {ViewCorporateComponent} from './apollowebs/invoice/corporate/view-corporate/view-corporate.component';
+import {ViewBillLimitsComponent} from './apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component';
+import {ViewTransactionsComponent} from './apollowebs/invoice/corporate/view-transactions/view-transactions.component';
+import {ViewAuctionItemsComponent} from './apollowebs/di/auction/view-auction-items/view-auction-items.component';
+import {AuctionItemDetailsComponent} from './apollowebs/di/auction/auction-item-details/auction-item-details.component';
 
-import {EpraBatchListComponent} from "./apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component";
-import {EpraListComponent} from "./apollowebs/market-surveillance/fuel/epra-list/epra-list.component";
-import {ViewFuelSheduledDetailsComponent} from "./apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component";
+import {EpraBatchListComponent} from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component';
+import {EpraListComponent} from './apollowebs/market-surveillance/fuel/epra-list/epra-list.component';
+import {ViewFuelSheduledDetailsComponent} from './apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component';
 import {ComplaintNewComponent} from './apollowebs/market-surveillance/complaint/complaint-new/complaint-new.component';
 import {ComplaintListComponent} from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
 import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
@@ -184,60 +184,60 @@ import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/compla
 //         }]
 //     }
 // ];
-import {ViewComplaintsComponent} from "./apollowebs/pvoc/complaints/view-complaints/view-complaints.component";
-import {ViewComplaintDetailsComponent} from "./apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component";
-import {ViewWaiverApplicationsComponent} from "./apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component";
-import {ViewWaiverDetailsComponent} from "./apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component";
-import {ViewExemptionApplicationsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component";
-import {ViewExemptionDetailsComponent} from "./apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component";
-import {StdJustificationComponent} from "./apollowebs/standards-development/standard-request/std-justification/std-justification.component";
-import {StdTcWorkplanComponent} from "./apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component";
-import {PreparePreliminaryDraftComponent} from "./apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component";
-import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component";
-import {ComStdPlTaskComponent} from "./apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component";
-import {ComStdDraftViewComponent} from "./apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component";
-import {ComStdListComponent} from "./apollowebs/standards-development/company-standard/com-std-list/com-std-list.component";
-import {StandardLevySiteVisitComponent} from "./apollowebs/standards-levy/standard-levy-site-visit/standard-levy-site-visit.component";
-import {StandardLevySiteVisitApproveTwoComponent} from "./apollowebs/standards-levy/standard-levy-site-visit-approve-two/standard-levy-site-visit-approve-two.component";
-import {StandardLevySiteVisitApproveOneComponent} from "./apollowebs/standards-levy/standard-levy-site-visit-approve-one/standard-levy-site-visit-approve-one.component";
-import {StandardLevySiteVisitFeedbackComponent} from "./apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component";
-import {StandardLevyUploadSiteVisitFeedbackComponent} from "./apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component";
-import {StandardLevyManufactureDetailsComponent} from "./apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component";
-import {RequestForFormationOfTCComponent} from "./apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component";
-import {ReviewJustificationOfTCComponent} from "./apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component";
-import {ReviewFeedbackSPCComponent} from "./apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component";
-import {ApproveDraftStdComponent} from "./apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component";
-import {StdDraughtsmanComponent} from "./apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component";
-import {StdProofreadComponent} from "./apollowebs/standards-development/publishing/std-proofread/std-proofread.component";
-import {EditorTasksComponent} from "./apollowebs/standards-development/publishing/editor-tasks/editor-tasks.component";
-import {StdHopTasksComponent} from "./apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component";
-import {StdPublishingComponent} from "./apollowebs/standards-development/publishing/std-publishing/std-publishing.component";
-import {CallsForApplicationComponent} from "./apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component";
-import {ReviewRecommendationComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component";
-import {ReviewRecommendationOfSpcComponentComponent} from "./apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component";
-import {SubmitApplicationComponent} from "./apollowebs/standards-development/membershipToTc/submit-application/submit-application.component";
-import {UploadTcMemberComponentComponent} from "./apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component";
-import {ReviewApplicationComponent} from "./apollowebs/standards-development/membershipToTc/review-application/review-application.component";
-import {ManifestDocumentComponent} from "./apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component";
-import {IncompleteIDFDocumentsComponent} from "./apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component";
-import {ReviewApplicationsAcceptedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component";
-import {ReviewApplicationsRejectedComponent} from "./apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component";
+import {ViewComplaintsComponent} from './apollowebs/pvoc/complaints/view-complaints/view-complaints.component';
+import {ViewComplaintDetailsComponent} from './apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component';
+import {ViewWaiverApplicationsComponent} from './apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component';
+import {ViewWaiverDetailsComponent} from './apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component';
+import {ViewExemptionApplicationsComponent} from './apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component';
+import {ViewExemptionDetailsComponent} from './apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component';
+import {StdJustificationComponent} from './apollowebs/standards-development/standard-request/std-justification/std-justification.component';
+import {StdTcWorkplanComponent} from './apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component';
+import {PreparePreliminaryDraftComponent} from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
+import {NwaPreliminaryDraftComponent} from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
+import {ComStdPlTaskComponent} from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
+import {ComStdDraftViewComponent} from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
+import {ComStdListComponent} from './apollowebs/standards-development/company-standard/com-std-list/com-std-list.component';
+import {StandardLevySiteVisitComponent} from './apollowebs/standards-levy/standard-levy-site-visit/standard-levy-site-visit.component';
+import {StandardLevySiteVisitApproveTwoComponent} from './apollowebs/standards-levy/standard-levy-site-visit-approve-two/standard-levy-site-visit-approve-two.component';
+import {StandardLevySiteVisitApproveOneComponent} from './apollowebs/standards-levy/standard-levy-site-visit-approve-one/standard-levy-site-visit-approve-one.component';
+import {StandardLevySiteVisitFeedbackComponent} from './apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component';
+import {StandardLevyUploadSiteVisitFeedbackComponent} from './apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component';
+import {StandardLevyManufactureDetailsComponent} from './apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component';
+import {RequestForFormationOfTCComponent} from './apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component';
+import {ReviewJustificationOfTCComponent} from './apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component';
+import {ReviewFeedbackSPCComponent} from './apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component';
+import {ApproveDraftStdComponent} from './apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component';
+import {StdDraughtsmanComponent} from './apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component';
+import {StdProofreadComponent} from './apollowebs/standards-development/publishing/std-proofread/std-proofread.component';
+import {EditorTasksComponent} from './apollowebs/standards-development/publishing/editor-tasks/editor-tasks.component';
+import {StdHopTasksComponent} from './apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component';
+import {StdPublishingComponent} from './apollowebs/standards-development/publishing/std-publishing/std-publishing.component';
+import {CallsForApplicationComponent} from './apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component';
+import {ReviewRecommendationComponent} from './apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component';
+import {ReviewRecommendationOfSpcComponentComponent} from './apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component';
+import {SubmitApplicationComponent} from './apollowebs/standards-development/membershipToTc/submit-application/submit-application.component';
+import {UploadTcMemberComponentComponent} from './apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component';
+import {ReviewApplicationComponent} from './apollowebs/standards-development/membershipToTc/review-application/review-application.component';
+import {ManifestDocumentComponent} from './apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component';
+import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component';
+import {ReviewApplicationsAcceptedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component';
+import {ReviewApplicationsRejectedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component';
 import {ApproveApplicationComponent} from './apollowebs/standards-development/membershipToTc/approve-application/approve-application.component';
-import {ApprovedMembersComponent} from "./apollowebs/standards-development/membershipToTc/approved-members/approved-members.component";
-import {MembersToCreateCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component";
-import {MembersCreatedCredentialsComponent} from "./apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component";
-import {ApproveInductionComponent} from "./apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component";
-import {StdLevyCompleteTasksComponent} from "./apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component";
-import {StdLevyPendingTasksComponent} from "./apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component";
-import {StdLevyApplicationsComponent} from "./apollowebs/standards-levy/std-levy-applications/std-levy-applications.component";
-import {UploadSacSummaryComponent} from "./apollowebs/standards-development/adoptionOfEaStds/upload-sac-summary/upload-sac-summary.component";
-import {ViewSacSummaryComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component";
-import {ViewSacSummaryApprovedComponent} from "./apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component";
-import {NwaTasksComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component";
-import {AdminBusinessManagementComponent} from "./apollowebs/admin/admin-business-management/admin-business-management.component";
-import {StandardLevyClosureComponent} from "./apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component";
-import {StandardLevySuspensionComponent} from "./apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component";
-import {PaymentsComponent} from "./apollowebs/quality-assurance/payments/payments.component";
+import {ApprovedMembersComponent} from './apollowebs/standards-development/membershipToTc/approved-members/approved-members.component';
+import {MembersToCreateCredentialsComponent} from './apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component';
+import {MembersCreatedCredentialsComponent} from './apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component';
+import {ApproveInductionComponent} from './apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component';
+import {StdLevyCompleteTasksComponent} from './apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component';
+import {StdLevyPendingTasksComponent} from './apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component';
+import {StdLevyApplicationsComponent} from './apollowebs/standards-levy/std-levy-applications/std-levy-applications.component';
+import {UploadSacSummaryComponent} from './apollowebs/standards-development/adoptionOfEaStds/upload-sac-summary/upload-sac-summary.component';
+import {ViewSacSummaryComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component';
+import {ViewSacSummaryApprovedComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component';
+import {NwaTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component';
+import {AdminBusinessManagementComponent} from './apollowebs/admin/admin-business-management/admin-business-management.component';
+import {StandardLevyClosureComponent} from './apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component';
+import {StandardLevySuspensionComponent} from './apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component';
+import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payments.component';
 
 export const routes: Routes = [
     {
@@ -254,17 +254,17 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: SignUpComponent
+                component: SignUpComponent,
             },
             {
                 path: 'register',
-                component: SignUpComponent
-            }
+                component: SignUpComponent,
+            },
 
         ],
         data: {
-            title: 'KEBS'
-        }
+            title: 'KEBS',
+        },
     },
     {
         path: 'login',
@@ -273,26 +273,26 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: LoginComponent
+                component: LoginComponent,
             },
             {
                 path: 'reset',
-                component: ResetCredentialsComponent
+                component: ResetCredentialsComponent,
             },
             {
                 path: 'otp',
-                component: OtpComponent
+                component: OtpComponent,
 
-            }
+            },
 
         ],
         data: {
-            title: 'KEBS'
-        }
+            title: 'KEBS',
+        },
     },
     {
         path: 'qr-code-qa-permit-scan', component: RegistrationComponent,
-        children: [{path: '', component: QrCodeDetailsComponent}]
+        children: [{path: '', component: QrCodeDetailsComponent}],
     },
     // {path: '**', component: AdminLayoutComponent},
     {
@@ -301,76 +301,76 @@ export const routes: Routes = [
         ,
         children: [
             {path: '', component: DashboardComponent},
-        ]
+        ],
 
     },
     {
         path: 'company/companies', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: CompaniesList}]
+        children: [{path: '', component: CompaniesList}],
 
     },
     {
         path: 'company', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: CompanyComponent}]
+        children: [{path: '', component: CompanyComponent}],
     },
     {
         path: 'company/view', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: CompanyViewComponent}]
+        children: [{path: '', component: CompanyViewComponent}],
     },
     {
         path: 'company/branches', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: BranchList}]
+        children: [{path: '', component: BranchList}],
     },
     {
         path: 'companies/view/branch', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: BranchViewComponent}]
+        children: [{path: '', component: BranchViewComponent}],
     },
     {
         path: 'branches', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: BranchList}]
+        children: [{path: '', component: BranchList}],
 
     },
     {
         path: 'branches/add_branch', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: AddBranchComponent}]
+        children: [{path: '', component: AddBranchComponent}],
     },
     {
         path: 'users/add_users', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: AddUserComponent}]
+        children: [{path: '', component: AddUserComponent}],
     },
     {
         path: 'companies/branch', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: BranchComponent}]
+        children: [{path: '', component: BranchComponent}],
     },
     {
         path: 'companies/branches/users', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: UserList}]
+        children: [{path: '', component: UserList}],
     },
     {
         path: 'company/users', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: UserList}]
+        children: [{path: '', component: UserList}],
     },
     {
         path: 'companies/branches/user', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: UserComponent}]
+        children: [{path: '', component: UserComponent}],
     },
 
 
@@ -378,18 +378,17 @@ export const routes: Routes = [
         path: 'permitdetails', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: DmarkComponent}]
+        children: [{path: '', component: DmarkComponent}],
     },
     {
         canActivate: [RouteGuard],
         path: 'invoice/all_invoice', component: AdminLayoutComponent,
-        children: [{path: '', component: InvoiceComponent}]
+        children: [{path: '', component: InvoiceComponent}],
     },
     {
         path: 'invoiceDetails', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
-        children: [{path: '', component: InvoiceDetailsComponent}]
+        children: [{path: '', component: InvoiceDetailsComponent}],
     },
 
     {
@@ -399,127 +398,127 @@ export const routes: Routes = [
         children: [
             {
                 path: 'user_management',
-                component: UsermanagementComponent
+                component: UsermanagementComponent,
             },
             {
                 path: 'business_management',
-                component: AdminBusinessManagementComponent
-            }
+                component: AdminBusinessManagementComponent,
+            },
 
-        ]
+        ],
     },
     {
         path: 'fmark/fMarkAllApp', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: FmarkallappsComponent}]
+        children: [{path: '', component: FmarkallappsComponent}],
     },
     {
         path: 'fmark/all_fmark_awarded', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: FmarkAllAwardedApplicationsComponent}]
+        children: [{path: '', component: FmarkAllAwardedApplicationsComponent}],
     },
     {
         path: 'st10Form', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: St10FormComponent}]
+        children: [{path: '', component: St10FormComponent}],
     },
     {
         path: 'permitReport', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: PermitReportComponent}]
+        children: [{path: '', component: PermitReportComponent}],
     },
     {
         path: 'smark/newSmarkPermit', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: NewSmarkPermitComponent}]
+        children: [{path: '', component: NewSmarkPermitComponent}],
     },
     {
         path: 'dmark/newDmarkPermit', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: NewDmarkPermitComponent}]
+        children: [{path: '', component: NewDmarkPermitComponent}],
     },
     {
         path: 'userDetails', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: UserManagementProfileComponent}]
+        children: [{path: '', component: UserManagementProfileComponent}],
     },
     {
         path: 'dmark/all_dmark', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: DmarkApplicationsAllComponent}]
+        children: [{path: '', component: DmarkApplicationsAllComponent}],
     },
     {
         path: 'dmark/all_dmark_awarded', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: DmarkAllAwardedApplicationsComponent}]
+        children: [{path: '', component: DmarkAllAwardedApplicationsComponent}],
     },
     {
         path: 'profile', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: UserProfileMainComponent}]
+        children: [{path: '', component: UserProfileMainComponent}],
     },
     {
         path: 'all_my_permits', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: AllpermitsComponent}]
+        children: [{path: '', component: AllpermitsComponent}],
     },
     {
         path: 'smark/all_smark', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: SmarkApplicationsAllComponent}]
+        children: [{path: '', component: SmarkApplicationsAllComponent}],
     },
     {
         path: 'smark/all_smark_awarded', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: SmarkAllAwardedApplicationsComponent}]
+        children: [{path: '', component: SmarkAllAwardedApplicationsComponent}],
     },
     {
         path: 'invoice/consolidate_invoice', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: InvoiceConsolidateComponent}]
+        children: [{path: '', component: InvoiceConsolidateComponent}],
     },
     {
         path: 'all_tasks_list', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: TaskManagerComponent}]
+        children: [{path: '', component: TaskManagerComponent}],
     },
     {
         path: 'all_qa_tasks_list', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: QaTaskDetailsComponent}]
+        children: [{path: '', component: QaTaskDetailsComponent}],
     },
     {
         path: 'fmark/application', component: AdminLayoutComponent,
-        children: [{path: '', component: FmarkApplicationComponent}]
+        children: [{path: '', component: FmarkApplicationComponent}],
     },
     {
-        path: 'invoice_test', component: PdfViewComponent
+        path: 'invoice_test', component: PdfViewComponent,
     },
 
     {
         path: 'smarkpermitdetails', component: AdminLayoutComponent,
-        children: [{path: '', component: SmarkComponent}]
+        children: [{path: '', component: SmarkComponent}],
     },
     {
         path: 'payments', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
-        children: [{path: '', component: PaymentsComponent}]
+        children: [{path: '', component: PaymentsComponent}],
     },
     {
         path: 'company',
@@ -527,9 +526,9 @@ export const routes: Routes = [
         children: [
             {
                 path: 'applications',
-                component: ImportInspectionComponent
-            }
-        ]
+                component: ImportInspectionComponent,
+            },
+        ],
     },
     {
         path: 'pvoc',
@@ -542,35 +541,35 @@ export const routes: Routes = [
                     {
                         path: 'apply',
                         component: ImportationWaiverComponent,
-                        pathMatch: 'full'
+                        pathMatch: 'full',
                     },
                     {
                         path: 'applications',
                         component: ViewWaiverApplicationsComponent,
-                        pathMatch: 'full'
+                        pathMatch: 'full',
                     },
                     {
                         path: 'application/details/:id',
-                        component: ViewWaiverDetailsComponent
-                    }
-                ]
+                        component: ViewWaiverDetailsComponent,
+                    },
+                ],
             },
             {
                 path: 'exemption',
                 children: [
                     {
                         path: 'apply',
-                        component: ExceptionsApplicationComponent
+                        component: ExceptionsApplicationComponent,
                     },
                     {
                         path: 'applications',
-                        component: ViewExemptionApplicationsComponent
+                        component: ViewExemptionApplicationsComponent,
                     },
                     {
                         path: 'view/:id',
-                        component: ViewExemptionDetailsComponent
-                    }
-                ]
+                        component: ViewExemptionDetailsComponent,
+                    },
+                ],
 
             },
             {
@@ -578,28 +577,28 @@ export const routes: Routes = [
                 children: [
                     {
                         path: '',
-                        component: ViewPartnersComponent
+                        component: ViewPartnersComponent,
                     },
                     {
                         path: 'view/:id',
-                        component: ViewPartnerDetailsComponent
-                    }
-                ]
+                        component: ViewPartnerDetailsComponent,
+                    },
+                ],
             },
             {
-                path: "complaints",
+                path: 'complaints',
                 children: [
                     {
                         path: '',
-                        component: ViewComplaintsComponent
+                        component: ViewComplaintsComponent,
                     },
                     {
                         path: ':id',
-                        component: ViewComplaintDetailsComponent
-                    }
-                ]
-            }
-        ]
+                        component: ViewComplaintDetailsComponent,
+                    },
+                ],
+            },
+        ],
     },
     {
         path: 'tasks',
@@ -608,9 +607,9 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: ViewTasksComponent
-            }
-        ]
+                component: ViewTasksComponent,
+            },
+        ],
     },
     {
         path: 'demand/notes',
@@ -619,9 +618,9 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: TransactionViewComponent
-            }
-        ]
+                component: TransactionViewComponent,
+            },
+        ],
     },
     {
         path: 'di',
@@ -631,80 +630,80 @@ export const routes: Routes = [
             {
                 path: '',
                 component: ConsignmentDocumentListComponent,
-                pathMatch: 'full'
+                pathMatch: 'full',
             },
             {
                 path: 'declaration/document/:id',
-                component: ViewDiDeclarationDocumentsComponent
+                component: ViewDiDeclarationDocumentsComponent,
             },
             {
                 path: 'manifest/document/:id',
-                component: ManifestDocumentComponent
+                component: ManifestDocumentComponent,
             },
             {
                 path: 'inspection/checklist/:id',
                 canActivate: [RouteGuard],
-                component: ChecklistDataFormComponent
+                component: ChecklistDataFormComponent,
             },
             {
                 path: 'cor/details/:id',
                 canActivate: [RouteGuard],
-                component: DiCorComponent
+                component: DiCorComponent,
             },
             {
                 path: 'certificate/:docType/details/:id',
                 canActivate: [RouteGuard],
-                component: DiCocComponent
+                component: DiCocComponent,
             },
             {
                 path: 'idf/details/:id',
                 canActivate: [RouteGuard],
-                component: ViewIdfDocumentDetailsComponent
+                component: ViewIdfDocumentDetailsComponent,
             },
             {
                 path: 'item/:cdUuid/:id',
                 canActivate: [RouteGuard],
-                component: ItemDetailsComponent
+                component: ItemDetailsComponent,
             },
             {
                 path: 'item/lab-results/:id/:page/:cdUuid',
                 canActivate: [RouteGuard],
-                component: LabResultsComponent
+                component: LabResultsComponent,
             },
             {
                 path: ':id',
                 canActivate: [RouteGuard],
-                component: ViewSingleConsignmentDocumentComponent
+                component: ViewSingleConsignmentDocumentComponent,
             },
             {
                 path: 'version/:id',
                 canActivate: [RouteGuard],
-                component: ViewSingleConsignmentDocumentComponent
+                component: ViewSingleConsignmentDocumentComponent,
             },
             {
                 path: 'checklist/details/:id',
                 canActivate: [RouteGuard],
-                component: ViewInspectionDetailsComponent
+                component: ViewInspectionDetailsComponent,
             },
             {
                 path: 'auction/view',
                 canActivate: [RouteGuard],
-                component: ViewAuctionItemsComponent
+                component: ViewAuctionItemsComponent,
             },
             {
                 path: 'auction/details/:id',
                 canActivate: [RouteGuard],
-                component: AuctionItemDetailsComponent
+                component: AuctionItemDetailsComponent,
             },
             {
                 path: 'kentrade/exchange/messages',
                 canActivate: [RouteGuard],
-                component: MessageDashboardComponent
+                component: MessageDashboardComponent,
             },
             {
                 path: 'kentrade/idf/documents',
                 canActivate: [RouteGuard],
-                component: IncompleteIDFDocumentsComponent
+                component: IncompleteIDFDocumentsComponent,
             },
             {
                 path: 'ism',
@@ -712,16 +711,16 @@ export const routes: Routes = [
                     {
                         path: 'requests',
                         canActivate: [RouteGuard],
-                        component: IsmApplicationsComponent
+                        component: IsmApplicationsComponent,
                     },
                     {
                         path: 'request/:id',
                         // canActivate: [RouteGuard],
-                        component: ViewIsmApplicationComponent
-                    }
-                ]
+                        component: ViewIsmApplicationComponent,
+                    },
+                ],
             },
-        ]
+        ],
     },
     {
         path: 'dashboard',
@@ -731,9 +730,9 @@ export const routes: Routes = [
             {
                 path: 'inspection',
                 canActivate: [RouteGuard],
-                component: InspectionDashboardComponent
-            }
-        ]
+                component: InspectionDashboardComponent,
+            },
+        ],
     },
     {
         path: 'transaction',
@@ -742,29 +741,29 @@ export const routes: Routes = [
         children: [
             {
                 path: 'demand-notes',
-                component: TransactionViewComponent
+                component: TransactionViewComponent,
             },
             {
                 path: 'corporates-customers',
-                component: ViewCorporateCustomersComponent
+                component: ViewCorporateCustomersComponent,
             },
             {
                 path: 'corporate/:id',
-                component: ViewCorporateComponent
+                component: ViewCorporateComponent,
             },
             {
                 path: 'exchange-rates',
-                component: CurrencyExchangeRatesComponent
+                component: CurrencyExchangeRatesComponent,
             },
             {
                 path: 'bill/:cid/:id',
-                component: ViewTransactionsComponent
+                component: ViewTransactionsComponent,
             },
             {
                 path: 'limits',
-                component: ViewBillLimitsComponent
-            }
-        ]
+                component: ViewBillLimitsComponent,
+            },
+        ],
     },
     {
         path: 'currency',
@@ -773,9 +772,9 @@ export const routes: Routes = [
         children: [
             {
                 path: 'rates',
-                component: CurrencyExchangeRatesComponent
-            }
-        ]
+                component: CurrencyExchangeRatesComponent,
+            },
+        ],
     },
     {
         path: 'system',
@@ -784,9 +783,9 @@ export const routes: Routes = [
         children: [
             {
                 path: 'api-clients',
-                component: ViewClientsComponent
-            }
-        ]
+                component: ViewClientsComponent,
+            },
+        ],
     },
     {
         path: 'ministry',
@@ -796,14 +795,14 @@ export const routes: Routes = [
             {
                 path: 'inspection',
                 canActivate: [RouteGuard],
-                component: MinistryInspectionHomeComponent
+                component: MinistryInspectionHomeComponent,
             },
             {
                 path: 'inspection/:id',
                 canActivate: [RouteGuard],
-                component: MotorVehicleInspectionSingleViewComponent
-            }
-        ]
+                component: MotorVehicleInspectionSingleViewComponent,
+            },
+        ],
     },
 
 
@@ -811,99 +810,99 @@ export const routes: Routes = [
     {
         path: 'nwaJustification', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: NwaJustificationFormComponent}]
+        children: [{path: '', component: NwaJustificationFormComponent}],
     },
     {
         path: 'nwaJustificationTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: NwaJustificationTasksComponent}]
+        children: [{path: '', component: NwaJustificationTasksComponent}],
     },
     {
         path: 'nwaKnwSecTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: NwaKnwSecTasksComponent}]
+        children: [{path: '', component: NwaKnwSecTasksComponent}],
     },
     {
         path: 'nwaDirStTasks', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
-        children: [{path: '', component: NwaDiSdtTasksComponent}]
+        children: [{path: '', component: NwaDiSdtTasksComponent}],
     },
     {
         path: 'nwaHopTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: NwaHopTasksComponent}]
+        children: [{path: '', component: NwaHopTasksComponent}],
     },
     {
         path: 'nwaSacSecTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: SacSecTasksComponent}]
+        children: [{path: '', component: SacSecTasksComponent}],
     },
     {
         path: 'nwaHoSicTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: HoSicTasksComponent}]
+        children: [{path: '', component: HoSicTasksComponent}],
     },
     {
         path: 'nwaPreparePD', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: NwaPreliminaryDraftComponent}]
+        children: [{path: '', component: NwaPreliminaryDraftComponent}],
     },
     {
         path: 'nwaTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: NwaTasksComponent}]
+        children: [{path: '', component: NwaTasksComponent}],
     },
 
     // SD International Standards
     {
         path: 'isProposalForm', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
-        children: [{path: '', component: IsProposalFormComponent}]
+        children: [{path: '', component: IsProposalFormComponent}],
     },
     {
         path: 'isProposalComments', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
-        children: [{path: '', component: IntStdCommentsComponent}]
+        children: [{path: '', component: IntStdCommentsComponent}],
     },
     {
         path: 'isProposalResponses', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: IntStdResponsesListComponent}]
+        children: [{path: '', component: IntStdResponsesListComponent}],
     },
     {
         path: 'isJustificationList', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: IntStdJustificationListComponent}]
+        children: [{path: '', component: IntStdJustificationListComponent}],
     },
     {
         path: 'isJustificationApp', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: IntStdJustificationAppComponent}]
+        children: [{path: '', component: IntStdJustificationAppComponent}],
     },
     {
         path: 'isUploadStd', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: IntStdUploadStandardComponent}]
+        children: [{path: '', component: IntStdUploadStandardComponent}],
     },
     {
         path: 'isUploadNotice', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: IntStdGazzetteComponent}]
+        children: [{path: '', component: IntStdGazzetteComponent}],
     },
     // SD SYSTEMIC REVIEW
     {
         path: 'requestStandardReview', component: AdminLayoutComponent,
-        children: [{path: '', component: ReviewStandardsComponent}]
+        children: [{path: '', component: ReviewStandardsComponent}],
     },
     {
         path: 'systemicReviewComments', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: SystemicReviewCommentsComponent}]
+        children: [{path: '', component: SystemicReviewCommentsComponent}],
     },
     {
         path: 'systemicRecommendations', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: SystemicAnalyseCommentsComponent}]
+        children: [{path: '', component: SystemicAnalyseCommentsComponent}],
     },
 
     // SD COMPANY STANDARDS
@@ -914,77 +913,77 @@ export const routes: Routes = [
     {
         path: 'comStdRequest',
         component: StandardRequestComponent,
-        children: [{path: '', component: CsRequestFormComponent}]
+        children: [{path: '', component: CsRequestFormComponent}],
     },
     {
         path: 'comStdList', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdRequestListComponent}]
+        children: [{path: '', component: ComStdRequestListComponent}],
     },
 
     {
         path: 'comStdJustification', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdJcJustificationComponent}]
+        children: [{path: '', component: ComStdJcJustificationComponent}],
     },
     {
         path: 'comAppJustification', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdApproveJustificationComponent}]
+        children: [{path: '', component: ComStdApproveJustificationComponent}],
     },
     {
         path: 'comStdJustificationList', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdJcJustificationListComponent}]
+        children: [{path: '', component: ComStdJcJustificationListComponent}],
     },
     {
         path: 'comStdAppJustification', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdApproveJustificationComponent}]
+        children: [{path: '', component: ComStdApproveJustificationComponent}],
     },
     {
         path: 'comPlTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdPlTaskComponent}]
+        children: [{path: '', component: ComStdPlTaskComponent}],
     },
     {
         path: 'comStdDraft', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdDraftComponent}]
+        children: [{path: '', component: ComStdDraftComponent}],
     },
     {
         path: 'comStdConfirmation', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdDraftViewComponent}]
+        children: [{path: '', component: ComStdDraftViewComponent}],
     },
     {
         path: 'comStdUpload', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdUploadComponent}]
+        children: [{path: '', component: ComStdUploadComponent}],
     },
     {
         path: 'comStdListed', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdListComponent}]
+        children: [{path: '', component: ComStdListComponent}],
     },
     {
         path: 'nep_information_received', component: AdminLayoutComponent,
-        children: [{path: '', component: InformationcheckComponent}]
+        children: [{path: '', component: InformationcheckComponent}],
     },
     {
         path: 'nep_division_response', component: AdminLayoutComponent,
-        children: [{path: '', component: DivisionresponseComponent}]
+        children: [{path: '', component: DivisionresponseComponent}],
     },
     {
         path: 'managernotification', component: AdminLayoutComponent,
-        children: [{path: '', component: ManagernotificationsComponent}]
+        children: [{path: '', component: ManagernotificationsComponent}],
     },
     {
         path: 'nepnotification', component: AdminLayoutComponent,
-        children: [{path: '', component: NepNotificationComponent}]
+        children: [{path: '', component: NepNotificationComponent}],
     },
     {
-        path: 'make_enquiry', component: MakeEnquiryComponent
+        path: 'make_enquiry', component: MakeEnquiryComponent,
     },
 
 
@@ -992,54 +991,54 @@ export const routes: Routes = [
     {
         path: 'request-standards',
         component: StandardRequestComponent,
-        children: [{path: '', component: RequestStandardFormComponent}]
+        children: [{path: '', component: RequestStandardFormComponent}],
     },
     {
-        //Review Standard Requests
+        // Review Standard Requests
         path: 'ms-standards', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardTaskComponent}]
+        children: [{path: '', component: StandardTaskComponent}],
     },
     {
-        //Prepare New Work Item
+        // Prepare New Work Item
         path: 'std-tsc-sec-task', component: AdminLayoutComponent,
-        children: [{path: '', component: StdTscSecTasksComponentComponent}]
+        children: [{path: '', component: StdTscSecTasksComponentComponent}],
     },
     {
-        //Vote On New Work Item
+        // Vote On New Work Item
         path: 'std-tc-task', component: AdminLayoutComponent,
-        children: [{path: '', component: StdTcTasksComponent}]
+        children: [{path: '', component: StdTcTasksComponent}],
     },
     {
-        //Upload Justification
+        // Upload Justification
         path: 'upload-justification', component: AdminLayoutComponent,
-        children: [{path: '', component: StdJustificationComponent}]
+        children: [{path: '', component: StdJustificationComponent}],
     },
 
-    //Decision On Justification
+    // Decision On Justification
     {
         path: 'decision-justification', component: AdminLayoutComponent,
-        children: [{path: '', component: SpcSecTaskComponent}]
+        children: [{path: '', component: SpcSecTaskComponent}],
     },
-    //Upload WorkPlan
+    // Upload WorkPlan
     {
         path: 'upload-workplan', component: AdminLayoutComponent,
-        children: [{path: '', component: StdTcWorkplanComponent}]
+        children: [{path: '', component: StdTcWorkplanComponent}],
     },
     {
         path: 'department', component: AdminLayoutComponent,
-        children: [{path: '', component: CreateDepartmentComponent}]
+        children: [{path: '', component: CreateDepartmentComponent}],
     },
     {
         path: 'technicalCommittee', component: AdminLayoutComponent,
-        children: [{path: '', component: CreatetechnicalcommitteeComponent}]
+        children: [{path: '', component: CreatetechnicalcommitteeComponent}],
     },
     {
         path: 'productCategory', component: AdminLayoutComponent,
-        children: [{path: '', component: CreateproductComponent}]
+        children: [{path: '', component: CreateproductComponent}],
     },
     {
         path: 'productSubCategory', component: AdminLayoutComponent,
-        children: [{path: '', component: CreateproductSubCategoryComponent}]
+        children: [{path: '', component: CreateproductSubCategoryComponent}],
     },
 
 
@@ -1050,7 +1049,7 @@ export const routes: Routes = [
     {
         // prepare Preliminary Draft
         path: 'preparePd', component: AdminLayoutComponent,
-        children: [{path: '', component: PreparePreliminaryDraftComponent}]
+        children: [{path: '', component: PreparePreliminaryDraftComponent}],
     },
 
 
@@ -1063,38 +1062,38 @@ export const routes: Routes = [
     {
         path: 'draftStandard',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: StdPublishingComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: StdPublishingComponent}],
     },
     {
         path: 'hopTasks',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: StdHopTasksComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: StdHopTasksComponent}],
     },
     {
         path: 'editorTasks',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: EditorTasksComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: EditorTasksComponent}],
     },
     {
         path: 'proofReaderTasks',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: StdProofreadComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: StdProofreadComponent}],
     },
     {
         path: 'draughtsmanTasks',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: StdDraughtsmanComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: StdDraughtsmanComponent}],
     },
     {
         path: 'hopApproval',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ApproveDraftStdComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ApproveDraftStdComponent}],
     },
     /****************************************************************
      * FORMATION OF TECHNICAL COMMITTEE
@@ -1102,20 +1101,20 @@ export const routes: Routes = [
     {
         path: 'requestForFormationOfTC',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: RequestForFormationOfTCComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: RequestForFormationOfTCComponent}],
     },
     {
         path: 'reviewJustificationOfTC',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ReviewJustificationOfTCComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewJustificationOfTCComponent}],
     },
     {
         path: 'reviewFeedbackSPC',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ReviewFeedbackSPCComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewFeedbackSPCComponent}],
     },
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - FORMATION OF TECHNICAL COMMITTEE ROUTES
@@ -1126,84 +1125,84 @@ export const routes: Routes = [
     {
         path: 'callsForApplication',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: CallsForApplicationComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: CallsForApplicationComponent}],
     },
     {
         path: 'submitApplication',
-        component: SubmitApplicationComponent
+        component: SubmitApplicationComponent,
     },
     {
         path: 'reviewApplication',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ReviewApplicationComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationComponent}],
     },
     {
         path: 'reviewRecommendation',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ReviewRecommendationComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewRecommendationComponent}],
     },
     {
         path: 'reviewRecommendationOfSpc',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ReviewRecommendationOfSpcComponentComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewRecommendationOfSpcComponentComponent}],
     },
     {
         path: 'reviewAccepted',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ReviewApplicationsAcceptedComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationsAcceptedComponent}],
     },
     {
         path: 'reviewRejected',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ReviewApplicationsRejectedComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewApplicationsRejectedComponent}],
     },
 
     {
         path: 'approveApplication',
         component: StandardRequestComponent,
-        children: [{path: '', component: ApproveApplicationComponent}]
+        children: [{path: '', component: ApproveApplicationComponent}],
     },
     {
         path: 'approvedMembers',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ApprovedMembersComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ApprovedMembersComponent}],
     },
     {
         path: 'createCredentials',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: MembersToCreateCredentialsComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: MembersToCreateCredentialsComponent}],
     },
     {
         path: 'sendInductionEmail',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: MembersCreatedCredentialsComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: MembersCreatedCredentialsComponent}],
     },
     {
         path: 'getInduction',
         component: StandardRequestComponent,
-        children: [{path: '', component: ApproveInductionComponent}]
+        children: [{path: '', component: ApproveInductionComponent}],
     },
     {
         path: 'sendNotice',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: MembersCreatedCredentialsComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: MembersCreatedCredentialsComponent}],
     },
 
     {
         path: 'uploadTcMember',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: UploadTcMemberComponentComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: UploadTcMemberComponentComponent}],
     },
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - MEMBERSHIP OF TECHNICAL COMMITTEE
@@ -1215,20 +1214,20 @@ export const routes: Routes = [
     {
         path: 'uploadSacSummary',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: UploadSacSummaryComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: UploadSacSummaryComponent}],
     },
     {
         path: 'viewSacSummary',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ViewSacSummaryComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ViewSacSummaryComponent}],
     },
     {
         path: 'viewSacSummaryApproved',
         component: AdminLayoutComponent,
-        //canActivate: [AuthGuard],
-        children: [{path: '', component: ViewSacSummaryApprovedComponent}]
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ViewSacSummaryApprovedComponent}],
     },
 
     /****************************************************************
@@ -1239,70 +1238,72 @@ export const routes: Routes = [
 
     {
         path: 'productSubCategory', component: AdminLayoutComponent,
-        children: [{path: '', component: CreateproductSubCategoryComponent}]
+        children: [{path: '', component: CreateproductSubCategoryComponent}],
     },
 
     // STANDARDS LEVY
     {
         path: 'roleSwitcher', component: StandardsLevyHomeComponent,
-        children: [{path: '', component: RoleSwitcherComponent}]
+        children: [{path: '', component: RoleSwitcherComponent}],
     },
     {
         path: 'standardsLevy/levyRegistration', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: CustomerRegistrationComponent}]
+        children: [{path: '', component: CustomerRegistrationComponent}],
     },
     {
         path: 'comStdLevy', component: AdminLayoutComponent,
-        children: [{path: '', component: ComStandardLevyComponent}]
+        children: [{path: '', component: ComStandardLevyComponent}],
     },
     {
         path: 'comPaymentHistory', component: AdminLayoutComponent,
-        children: [{path: '', component: ComPaymentHistoryComponent}]
-        //No data
+        children: [{path: '', component: ComPaymentHistoryComponent}],
+        // No data
     },
     {
         path: 'comStdLevyForm', component: AdminLayoutComponent,
-        children: [{path: '', component: ComStdLevyFormComponent}]
+        children: [{path: '', component: ComStdLevyFormComponent}],
     },
     {
         path: 'stdLevyHome', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevyDashboardComponent}]
+        children: [{path: '', component: StandardLevyDashboardComponent}],
     },
 
-    {
-        path: 'epra', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: EpraBatchListComponent}]
-    },
-    {
-        path: 'epra/:referenceNumber', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: EpraListComponent}]
-    },
-    {
-        path: 'epra/fuelInspection/details/:referenceNumber/:batchReferenceNumber', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: ViewFuelSheduledDetailsComponent}]
-    },
     // {
-    //     path: 'epra',
-    //     component: AdminLayoutComponent,
+    //     path: 'epra', component: AdminLayoutComponent,
     //     canActivate: [RouteGuard],
-    //     children: [
-    //         {
-    //             path: '',
-    //             component: EpraBatchListComponent},
-    //         {
-    //             path: ':referenceNumber',
-    //             component: EpraListComponent
-    //         },
-    //         {
-    //             path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
-    //             component: ViewFuelSheduledDetailsComponent
-    //         }
-    //     ]
+    //     children: [{path: '', component: EpraBatchListComponent}],
     // },
+    // {
+    //     path: 'epra/:referenceNumber', component: AdminLayoutComponent,
+    //     canActivate: [RouteGuard],
+    //     children: [{path: '', component: EpraListComponent}],
+    // },
+    // {
+    //     path: 'epra/fuelInspection/details/:referenceNumber/:batchReferenceNumber', component: AdminLayoutComponent,
+    //     canActivate: [RouteGuard],
+    //     children: [{path: '', component: ViewFuelSheduledDetailsComponent}],
+    // },
+    {
+        path: 'epra',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: '',
+                component: EpraBatchListComponent,
+                pathMatch: 'full',
+            },
+            {
+                path: ':referenceNumber',
+                component: EpraListComponent,
+            },
+            {
+                path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
+                component: ViewFuelSheduledDetailsComponent
+            },
+        ],
+    },
     {
         path: 'complaint',
         component: AdminLayoutComponent,
@@ -1313,14 +1314,14 @@ export const routes: Routes = [
                 component: ComplaintListComponent},
             {
                 path: 'details/:referenceNumber',
-                component: ComplaintDetailsComponent
-            }
+                component: ComplaintDetailsComponent,
+            },
             // ,
             // {
             //     path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
             //     component: ViewFuelSheduledDetailsComponent
             // }
-        ]
+        ],
     },
     {
         path: 'complain',
@@ -1328,8 +1329,8 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: ComplaintNewComponent
-            }
+                component: ComplaintNewComponent,
+            },
             // ,
             // {
             //     path: 'complain',
@@ -1338,85 +1339,85 @@ export const routes: Routes = [
 
         ],
         data: {
-            title: 'KEBS'
-        }
+            title: 'KEBS',
+        },
     },
     {
         path: 'stdLevyPenalties', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevyPenaltiesComponent}]
+        children: [{path: '', component: StandardLevyPenaltiesComponent}],
     },
     {path: 'stdLevyPaid', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevyPaidComponent}]
+        children: [{path: '', component: StandardLevyPaidComponent}],
     },
     {
         path: 'stdLevyDefaulters', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevyDefaulterComponent}]
-        //no data
+        children: [{path: '', component: StandardLevyDefaulterComponent}],
+        // no data
     },
     {
         path: 'stdLevyPaidHistory', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevyPaidHistoryComponent}]
-        //no data
+        children: [{path: '', component: StandardLevyPaidHistoryComponent}],
+        // no data
     },
     {
         path: 'stdLevyPenaltiesHistory', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevyPenaltyHistoryComponent}]
+        children: [{path: '', component: StandardLevyPenaltyHistoryComponent}],
     },
     {
         path: 'stdLevyDefaultersHistory', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevyDefaulterHistoryComponent}]
+        children: [{path: '', component: StandardLevyDefaulterHistoryComponent}],
     },
     {
         path: 'viewSiteVisits', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevySiteVisitComponent}]
+        children: [{path: '', component: StandardLevySiteVisitComponent}],
     },
     {
         path: 'viewSiteVisitsReports', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevySiteVisitApproveOneComponent}]
+        children: [{path: '', component: StandardLevySiteVisitApproveOneComponent}],
     },
     {
         path: 'viewSiteVisitsReportTwo', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevySiteVisitApproveTwoComponent}]
+        children: [{path: '', component: StandardLevySiteVisitApproveTwoComponent}],
     },
     {
         path: 'uploadVisitFeedBack', component: AdminLayoutComponent,
-        children: [{path: '', component: StandardLevyUploadSiteVisitFeedbackComponent}]
+        children: [{path: '', component: StandardLevyUploadSiteVisitFeedbackComponent}],
     },
     {
         path: 'viewSiteVisitsFeedBack', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: StandardLevySiteVisitFeedbackComponent}]
+        children: [{path: '', component: StandardLevySiteVisitFeedbackComponent}],
     },
     {
         path: 'slManufacturers', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: StandardLevyManufactureDetailsComponent}]
+        children: [{path: '', component: StandardLevyManufactureDetailsComponent}],
     },
 
     {
         path: 'slApplications', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: StdLevyApplicationsComponent}]
+        children: [{path: '', component: StdLevyApplicationsComponent}],
     },
     {
         path: 'slPendingTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: StdLevyPendingTasksComponent}]
+        children: [{path: '', component: StdLevyPendingTasksComponent}],
     },
     {
         path: 'slCompleteTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: StdLevyCompleteTasksComponent}]
+        children: [{path: '', component: StdLevyCompleteTasksComponent}],
     },
     {
         path: 'slCompanySuspension', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: StandardLevySuspensionComponent}]
+        children: [{path: '', component: StandardLevySuspensionComponent}],
     },
     {
         path: 'slCompanyClosure', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: StandardLevyClosureComponent}]
+        children: [{path: '', component: StandardLevyClosureComponent}],
     },
 
     /****************MS COMPONENTS ENDS HERE**********************************/
@@ -1426,7 +1427,7 @@ export const routes: Routes = [
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
 export class AppRoutingModule {
 }

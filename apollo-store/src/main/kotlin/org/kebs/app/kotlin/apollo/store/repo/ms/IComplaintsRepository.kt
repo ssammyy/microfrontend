@@ -27,6 +27,8 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -35,10 +37,46 @@ interface IComplaintRepository : HazelcastRepository<ComplaintEntity, Long>, Jpa
     fun findAllByOrderByIdDesc(pageable: Pageable): Page<ComplaintEntity>
     fun findByHodAssigned(hodAssigned: Long): List<ComplaintEntity>
     fun findByHodAssigned(hodAssigned: Long,pageable: Pageable): Page<ComplaintEntity>
+    fun findByHodAssignedAndUserTaskId(hodAssigned: Long,userTaskID: Long,pageable: Pageable): Page<ComplaintEntity>
     fun findByHofAssigned(hofAssigned: Long): List<ComplaintEntity>
     fun findByHofAssigned(hofAssigned: Long,pageable: Pageable): Page<ComplaintEntity>
+    fun findByHofAssignedAndUserTaskId(hofAssigned: Long,userTaskID: Long,pageable: Pageable): Page<ComplaintEntity>
     fun findByAssignedIo(assignedIo: Long): List<ComplaintEntity>
     fun findByAssignedIo(assignedIo: Long,pageable: Pageable): Page<ComplaintEntity>
+    fun findByAssignedIoAndUserTaskId(assignedIo: Long,userTaskID: Long,pageable: Pageable): Page<ComplaintEntity>
+
+    @Query(
+        "SELECT cp.* FROM  DAT_KEBS_MS_COMPLAINT cp, DAT_KEBS_MS_COMPLAINT_LOCATION cpl\n" +
+                "WHERE cp.id = cpl.COMPLAINT_ID and  cp.USER_TASK_ID =:userTaskID  and cpl.REGION = :regionID and cpl.COUNTY = :countID",
+        nativeQuery = true
+    )
+    fun findByUserTaskId(
+        @Param("userTaskID") userTaskID: Long,
+        @Param("regionID") regionID: Long,
+        @Param("countID") countID: Long,
+    ): List<ComplaintEntity>
+
+    @Query(
+        "SELECT cp.* FROM  DAT_KEBS_MS_COMPLAINT cp, DAT_KEBS_MS_COMPLAINT_LOCATION cpl\n" +
+                "WHERE cp.id = cpl.COMPLAINT_ID and  cp.USER_TASK_ID IS NOT NULL and cpl.REGION = :regionID and cpl.COUNTY = :countID",
+        nativeQuery = true
+    )
+    fun findOngoingTask(
+        @Param("regionID") regionID: Long,
+        @Param("countID") countID: Long,
+    ): List<ComplaintEntity>
+
+    @Query(
+        "SELECT cp.* FROM  DAT_KEBS_MS_COMPLAINT cp, DAT_KEBS_MS_COMPLAINT_LOCATION cpl\n" +
+                "WHERE cp.id = cpl.COMPLAINT_ID  and  cp.USER_TASK_ID =:userTaskID and  cp.MS_PROCESS_ID =:msProcessID AND cpl.REGION = :regionID and cpl.COUNTY = :countID",
+        nativeQuery = true
+    )
+    fun findNewComplaint(
+        @Param("userTaskID") userTaskID: Long,
+        @Param("msProcessID") msProcessID: Long,
+        @Param("regionID") regionID: Long,
+        @Param("countID") countID: Long,
+    ): List<ComplaintEntity>
 
     //    fun findByIdAndMsProcessStatus(id: Long, msProcessStatus: Int, pageable: Pageable):  Page<ComplaintEntity>?
     fun findByIdAndMsProcessStatus(id: Long, msProcessStatus: Int): ComplaintEntity?

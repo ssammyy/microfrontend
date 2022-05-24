@@ -107,6 +107,24 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.manager.petroleum}")
     val mapMSUserTaskNameMANAGERPETROLEUM: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.cp.complainant}")
+    val mapMSCPWorkPlanUserTaskNameComplainant: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.cp.hodRm}")
+    val mapMSCPWorkPlanUserTaskNameHodRm: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.cp.hof}")
+    val mapMSCPWorkPlanUserTaskNameHof: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.cp.msIO}")
+    val mapMSCPWorkPlanUserTaskNameIO: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.cpWkPlan.msDirector}")
+    val mapMSCPWorkPlanUserTaskNameDirector: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.cpWkPlan.labTest}")
+    val mapMSCPWorkPlanUserTaskNameLabTest: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ms.users.officer}")
     val mapMSUserTaskNameOFFICER: Long = 0L
 
@@ -157,6 +175,12 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.officer.roleID}")
     val mapMSMappedOfficerROLEID: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.complaint.officer.roleID}")
+    val mapMSComplaintWorkPlanMappedOfficerROLEID: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.complaint.hof.roleID}")
+    val mapMSComplaintWorkPlanMappedHOFROLEID: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.manager.petroleum.roleID}")
     val mapMSMappedManagerPetroliumROLEID: Long = 0L
@@ -1118,8 +1142,14 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.not.mandate}")
     val msComplaintProcessNotMandate: Long? = null
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.rejected}")
+    val msComplaintProcessRejected: Long? = null
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.assign.officer}")
     val msComplaintProcessAssignOfficer: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.assign.hof}")
+    val msComplaintProcessAssignHOF: Long? = null
 
     @Value("\${org.kebs.app.kotlin.apollo.application.page.start}")
     val pageStart: Int = 1

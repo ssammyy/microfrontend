@@ -51,6 +51,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.io.Files
 import com.google.gson.Gson
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.json.JSONObject
@@ -469,7 +470,6 @@ class CommonDaoServices(
             countyId: Long,
             regionId: Long
     ): List<UsersEntity>? {
-
         return usersRepo.findOfficerUsersByRegionAndCountyAndRoleFromUserDetails(roleId, countyId, regionId, 1)
     }
 
@@ -703,7 +703,8 @@ class CommonDaoServices(
     ) {
         val map = serviceMapDetails(appID)
         val sr = mapServiceRequestForSuccess(map, payload, user)
-        user.email?.let { sendEmailWithUserEmail(it, emailTemplateUuid, emailEntity, map, sr) }
+        runBlocking {  user.email?.let { sendEmailWithUserEmail(it, emailTemplateUuid, emailEntity, map, sr) }}
+
 //        user.email?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsComplaintAcknowledgementRejectionWIthOGANotification, userRegisteredSuccessfulEmailCompose(user), commonDaoServices.serviceMapDetails(appId), commonDaoServices.mapServiceRequestForSuccess(map, payload, user)) }
     }
 
@@ -889,16 +890,12 @@ class CommonDaoServices(
             designationsEntity: DesignationsEntity,
             regionsEntity: RegionsEntity,
             status: Int
-    ): UserProfilesEntity {
-        iUserProfilesRepo.findByDesignationIdAndRegionIdAndStatus(
-                designationsEntity,
-                regionsEntity,
-                status
-        )
+    ): List<UserProfilesEntity> {
+        iUserProfilesRepo.findByDesignationIdAndRegionIdAndStatus(designationsEntity, regionsEntity, status)
                 ?.let { userProfile ->
                     return userProfile
                 }
-                ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}] and [status = $status]")
+                ?: throw ExpectedDataNotFound("No user(s) Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}] and [status = $status]")
     }
 
     fun findUserProfileWithDesignationRegionDepartmentAndStatusAndSection(
@@ -1432,7 +1429,7 @@ class CommonDaoServices(
         return sr
     }
 
-    fun sendEmailWithUserEntity(
+  suspend  fun sendEmailWithUserEntity(
             user: UsersEntity,
             uuid: String,
             valuesMapped: Any,
@@ -1474,7 +1471,7 @@ class CommonDaoServices(
         return true
     }
 
-    fun sendEmailWithUserEmail(
+    suspend fun sendEmailWithUserEmail(
             userEmail: String,
             uuid: String,
             valuesMapped: Any,

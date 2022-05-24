@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
@@ -140,6 +141,7 @@ class MarketSurveillanceFuelDaoServices(
                 fileSaved.second.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
             )
 
+            runBlocking {
             managerPetroleumList
                 ?.forEach { mp->
                     val scheduleEmailDetails =  FuelScheduledDTO()
@@ -153,6 +155,7 @@ class MarketSurveillanceFuelDaoServices(
                     }
                     commonDaoServices.sendEmailWithUserEntity(mp, applicationMapProperties.mapMsFuelScheduleMPNotification, scheduleEmailDetails, map, fileSaved.first)
                 }
+            }
 
             val fuelBatchList = findAllFuelBatchListBasedOnPageable(page).toList()
             return mapFuelBatchListDto(fuelBatchList, map)
@@ -281,7 +284,7 @@ class MarketSurveillanceFuelDaoServices(
             fullName = fileInspectionDetail.company
             refNumber = fileInspectionDetail.referenceNumber
         }
-        commonDaoServices.sendEmailWithUserEmail(fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"), applicationMapProperties.mapMsFuelInspectionScheduleEndedNotification, emailValuesStationOwner, map, detailsSaved.first)
+        runBlocking {commonDaoServices.sendEmailWithUserEmail(fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"), applicationMapProperties.mapMsFuelInspectionScheduleEndedNotification, emailValuesStationOwner, map, detailsSaved.first)}
 //        val emailValuesEpra = FuelScheduledRemediationEndedDTO()
 //        with(emailValuesEpra) {
 //            baseUrl = applicationMapProperties.baseUrlValue
@@ -334,7 +337,9 @@ class MarketSurveillanceFuelDaoServices(
                             commentRemarks = fileOfficerSaved.second.remarks
                             dateSubmitted = fileOfficerSaved.second.transactionDate
                         }
-                        commonDaoServices.sendEmailWithUserEntity(officerDetails, applicationMapProperties.mapMsFuelAssignedIONotification, dataValue, map, fileSaved2.first)
+                        runBlocking {
+                            commonDaoServices.sendEmailWithUserEntity(officerDetails, applicationMapProperties.mapMsFuelAssignedIONotification, dataValue, map, fileSaved2.first)
+                        }
                         return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
                     }
                     else {
@@ -647,7 +652,7 @@ class MarketSurveillanceFuelDaoServices(
                         )
 
                         val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-                        commonDaoServices.sendEmailWithUserEmail(
+                        runBlocking { commonDaoServices.sendEmailWithUserEmail(
                             fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
                             applicationMapProperties.mapMsFuelInspectionLabResultsNotification,
                             dataValue,
@@ -655,6 +660,7 @@ class MarketSurveillanceFuelDaoServices(
                             savedSSfComplianceStatus.first,
                             fileContent.path
                         )
+                        }
                     }
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
             }else {
@@ -718,13 +724,14 @@ class MarketSurveillanceFuelDaoServices(
                 val remarksSaved = fuelAddRemarksDetails(fileInspectionDetail.id,remarksDto, map, loggedInUser)
 
 
-                commonDaoServices.sendEmailWithUserEmail(
+                runBlocking { commonDaoServices.sendEmailWithUserEmail(
                     fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
                     applicationMapProperties.mapMsFuelInspectionRemediationInvoiceNotification,
                     fileInspectionDetail, map,
                     savedRemediationInvoice.first,
                     invoiceRemediationPDF(fileInspectionDetail.id).path
                 )
+                }
 
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
             }
@@ -797,13 +804,13 @@ class MarketSurveillanceFuelDaoServices(
                     remediationDate = savedRemediation.second.dateOfRemediation
                 }
 
-                commonDaoServices.sendEmailWithUserEmail(
+                runBlocking {commonDaoServices.sendEmailWithUserEmail(
                     fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
                     applicationMapProperties.mapMsFuelInspectionRemediationScheduleNotification,
                     emailValue,
                     map,
                     savedRemediation.first
-                )
+                )}
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
             }
             else -> {

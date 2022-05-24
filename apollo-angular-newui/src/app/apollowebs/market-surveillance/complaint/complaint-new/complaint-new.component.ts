@@ -25,7 +25,7 @@ import {
   selectValidateTokenAndPhoneValidated,
   Town,
   TownService,
-  User
+  User,
 } from '../../../../core/store';
 import {select, Store} from '@ngrx/store';
 import {takeUntil} from 'rxjs/operators';
@@ -35,7 +35,7 @@ import {
   ComplaintDto,
   ComplaintLocationDto,
   MSComplaintSubmittedSuccessful,
-  NewComplaintDto
+  NewComplaintDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {NgxSpinnerService} from 'ngx-spinner';
@@ -43,7 +43,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 @Component({
   selector: 'app-complaint-new',
   templateUrl: './complaint-new.component.html',
-  styleUrls: ['./complaint-new.component.css']
+  styleUrls: ['./complaint-new.component.css'],
 })
 export class ComplaintNewComponent implements OnInit {
 
@@ -129,12 +129,12 @@ export class ComplaintNewComponent implements OnInit {
           this.ispause.next;
         }
         this.time -= 1;
-      }
+      },
     };
 
     this.stepZeroForm = this.formBuilder.group({
       registrationNumber: ['', Validators.required],
-      directorIdNumber: ['', Validators.required]
+      directorIdNumber: ['', Validators.required],
     });
 
     // this.stepZeroForm = new FormGroup({
@@ -146,7 +146,7 @@ export class ComplaintNewComponent implements OnInit {
       lastName: new FormControl('', [Validators.required]),
       emailAddress: new FormControl('', [Validators.required]),
       phoneNumber: new FormControl('', [Validators.required]),
-      postalAddress: new FormControl('', [Validators.required])
+      postalAddress: new FormControl('', [Validators.required]),
     });
 
     this.stepTwoForm = new FormGroup({
@@ -155,14 +155,14 @@ export class ComplaintNewComponent implements OnInit {
       complaintDescription: new FormControl('', [Validators.required]),
       // complaintCategory: new FormControl('', [Validators.required]),
       // myProduct: new FormControl('', [Validators.required]),
-      productBrand: new FormControl('', [Validators.required])
+      productBrand: new FormControl('', [Validators.required]),
     });
 
     this.stepThreeForm = new FormGroup({
       county: new FormControl(),
       town: new FormControl('', [Validators.required]),
       marketCenter: new FormControl('', [Validators.required]),
-      buildingName: new FormControl('', [Validators.required])
+      buildingName: new FormControl('', [Validators.required]),
     });
 
     this.stepFourForm = this.formBuilder.group({
@@ -171,15 +171,15 @@ export class ComplaintNewComponent implements OnInit {
           userName: ['', Validators.required],
           email: ['', Validators.required],
           credentials: ['', Validators.required],
-          confirmCredentials: ['', [Validators.required]]
+          confirmCredentials: ['', [Validators.required]],
         },
         {
-          validators: ConfirmedValidator('credentials', 'confirmCredentials')
+          validators: ConfirmedValidator('credentials', 'confirmCredentials'),
         });
 
     this.stepFiveForm = this.formBuilder.group({
       cellphone: ['', Validators.required],
-      otp: ['', Validators.required]
+      otp: ['', Validators.required],
     });
 
 
@@ -225,7 +225,7 @@ export class ComplaintNewComponent implements OnInit {
           } else {
             return throwError('Invalid request, Company id is required');
           }
-        }
+        },
     );
 
   }
@@ -267,8 +267,8 @@ export class ComplaintNewComponent implements OnInit {
         error: {
           payload: 'Some required details are missing, kindly recheck',
           status: 100,
-          response: '05'
-        }
+          response: '05',
+        },
       }));
 
     }
@@ -324,7 +324,7 @@ export class ComplaintNewComponent implements OnInit {
                       this.SpinnerService.hide();
                       console.log(error);
                       this.msService.showError('AN Error Occurred, Try Again Later');
-                    }
+                    },
                 );
 
           //     },
@@ -344,7 +344,7 @@ export class ComplaintNewComponent implements OnInit {
       payload: {
         phone: this.stepFiveForm?.get('cellphone')?.value,
         token: this.stepFiveForm?.get('otp')?.value,
-      }
+      },
     }));
     this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
       console.log(`status inside is ${d}`);
@@ -358,7 +358,7 @@ export class ComplaintNewComponent implements OnInit {
           this.user = {...this.user, ...this.complaintSoFar};
 
           this.store$.dispatch(loadRegistrations({
-            payload: {company: this.company, user: this.user}
+            payload: {company: this.company, user: this.user},
           }));
 
           this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((succeeded) => {
@@ -374,8 +374,8 @@ export class ComplaintNewComponent implements OnInit {
             error: {
               payload: 'Cellphone needs to be validated',
               status: 100,
-              response: '05'
-            }
+              response: '05',
+            },
           }));
         }
 
@@ -417,15 +417,15 @@ export class ComplaintNewComponent implements OnInit {
         error: {
           payload: 'Enter a valid cellphone number',
           status: 100,
-          response: '05'
-        }
+          response: '05',
+        },
       }));
 
     } else {
       this.store$.dispatch(loadSendTokenToPhone({
         payload: {
-          phone: this.validationCellphone
-        }
+          phone: this.validationCellphone,
+        },
       }));
 
       this.store$.pipe(select(selectTokenSentStateOtpSent)).subscribe((d) => {

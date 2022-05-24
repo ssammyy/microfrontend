@@ -38,7 +38,13 @@ import {
     MsDepartment,
     MsDivisionDetails,
     MsProducts,
-    MsProductCategories, MsBroadProductCategory, MsProductSubcategory
+    MsProductCategories,
+    MsBroadProductCategory,
+    MsProductSubcategory,
+    ComplaintApproveDto,
+    ComplaintRejectDto,
+    ComplaintAdviceRejectDto,
+    ComplaintAssignDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidatorFn} from '@angular/forms';
@@ -46,7 +52,7 @@ import Swal from 'sweetalert2';
 import {AllPermitDetailsDto} from '../qa/qa.model';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class MsService {
 
@@ -262,9 +268,9 @@ export class MsService {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
+                cancelButton: 'btn btn-danger',
             },
-            buttonsStyling: false
+            buttonsStyling: false,
         });
 
         swalWithBootstrapButtons.fire({
@@ -274,7 +280,7 @@ export class MsService {
             showCancelButton: true,
             confirmButtonText: 'Yes!',
             cancelButtonText: 'No!',
-            reverseButtons: true
+            reverseButtons: true,
         }).then((result) => {
             if (result.isConfirmed) {
                 if (fn) {
@@ -283,13 +289,13 @@ export class MsService {
                         swalWithBootstrapButtons.fire(
                             'Submitted!',
                             successMessage,
-                            'success'
+                            'success',
                         );
                     } else if (results == false) {
                         swalWithBootstrapButtons.fire(
                             'Submitted!',
                             'AN ERROR OCCURRED',
-                            'error'
+                            'error',
                         );
                     }
                 }
@@ -301,7 +307,7 @@ export class MsService {
                 swalWithBootstrapButtons.fire(
                     'Cancelled',
                     cancelMessage,
-                    'error'
+                    'error',
                 );
             }
         });
@@ -314,7 +320,7 @@ export class MsService {
             customClass: {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',
             },
-            icon: 'success'
+            icon: 'success',
         }).then(() => {
             if (fn) {
                 fn();
@@ -329,7 +335,7 @@ export class MsService {
             customClass: {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',
             },
-            icon: 'error'
+            icon: 'error',
         }).then(() => {
             if (fn) {
                 fn();
@@ -347,7 +353,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -361,7 +367,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -375,7 +381,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -389,7 +395,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -403,7 +409,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -417,7 +423,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -436,7 +442,7 @@ export class MsService {
             , catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.error} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -446,8 +452,8 @@ export class MsService {
         //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {
             headers: {
-                'enctype': 'multipart/form-data'
-            }, params: {'refNumber': 'refNumber'}
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -455,13 +461,25 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
-    public loadMSComplaintList(page: string, records: string): Observable<ApiResponseModel> {
+    public loadMSComplaintList(page: string, records: string, routeTake: string): Observable<ApiResponseModel> {
         // console.log(data);
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.ALL_COMPLAINT_LIST);
+        let url = null;
+        switch (routeTake) {
+            case 'my-tasks':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.MY_TASK_COMPLAINT_LIST);
+                break;
+            case 'on-going':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.ONGOING_COMPLAINT_LIST);
+                break;
+            case 'new-complaint':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.NEW_COMPLAINT_LIST);
+                break;
+        }
+
         const params = new HttpParams()
             .set('page', page)
             .set('records', records);
@@ -472,7 +490,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -489,7 +507,87 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
+        );
+    }
+
+    public msComplaintUpdateAcceptanceDetails(referenceNo: string, data: ComplaintApproveDto): Observable<AllComplaintsDetailsDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_ACCEPTANCE);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNo);
+        return this.http.put<AllComplaintsDetailsDto>(url, data, {params}).pipe(
+            map(function (response: AllComplaintsDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msComplaintUpdateRejectDetails(referenceNo: string, data: ComplaintRejectDto): Observable<AllComplaintsDetailsDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_REJECTION);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNo);
+        return this.http.put<AllComplaintsDetailsDto>(url, data, {params}).pipe(
+            map(function (response: AllComplaintsDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msComplaintUpdateMandateOGADetails(referenceNo: string, data: ComplaintAdviceRejectDto): Observable<AllComplaintsDetailsDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_OGA_MANDATE);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNo);
+        return this.http.put<AllComplaintsDetailsDto>(url, data, {params}).pipe(
+            map(function (response: AllComplaintsDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msComplaintUpdateAssignHOFDetails(referenceNo: string, data: ComplaintAssignDto): Observable<AllComplaintsDetailsDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_ASSIGN_HOF);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNo);
+        return this.http.put<AllComplaintsDetailsDto>(url, data, {params}).pipe(
+            map(function (response: AllComplaintsDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msComplaintUpdateAssignIODetails(referenceNo: string, data: ComplaintAssignDto): Observable<AllComplaintsDetailsDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_ASSIGN_IO);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNo);
+        return this.http.put<AllComplaintsDetailsDto>(url, data, {params}).pipe(
+            map(function (response: AllComplaintsDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
         );
     }
 
@@ -509,7 +607,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -523,7 +621,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -539,7 +637,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -556,7 +654,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -572,7 +670,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -588,7 +686,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -605,7 +703,7 @@ export class MsService {
             , catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.error} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -621,7 +719,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -639,7 +737,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -655,7 +753,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -672,7 +770,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -691,7 +789,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -708,7 +806,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -725,7 +823,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -742,7 +840,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -759,7 +857,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -776,7 +874,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -793,7 +891,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -810,7 +908,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -827,7 +925,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -844,7 +942,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -861,7 +959,7 @@ export class MsService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
