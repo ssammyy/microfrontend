@@ -1,7 +1,7 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {ApproveRejectItemComponent} from "../approve-reject-item/approve-reject-item.component";
 
 @Component({
@@ -43,19 +43,24 @@ export class LabResultsComponent implements OnInit {
             .subscribe(
                 res => {
                     if (res) {
+                        //On updating compliance status on a sampled item,user should be redirected to previous page
+                        this.goBack()
+                    } else {
                         this.loadLabResults()
                     }
                 }
             )
     }
-    downloadLabResult(fileName: any){
-        let params={
+
+    downloadLabResult(fileName: any) {
+        let params = {
             fileName: fileName,
             bsNumber: this.labResults.ssf_details.bsNumber
         }
-        this.diService.downloadDocument("/api/v1/download/lims/lab-result/pdf",params)
+        this.diService.downloadDocument("/api/v1/download/lims/lab-result/pdf", params)
 
     }
+
     loadLabPdfsResults() {
         this.diService.loadLabResultsDocuments(this.labResults.ssf_details.id)
             .subscribe(

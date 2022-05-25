@@ -250,7 +250,7 @@ class ChecklistService(
                     checklistItem.itemId = itm.itemId
                     checklistItem.sizeClassCapacity = itm.sizeClassCapacity
                     checklistItem.description = detail.hsDescription
-                    checklistItem.brand = detail.productBrandName
+                    checklistItem.brand = itm.brand ?: detail.productBrandName
                     checklistItem.serialNumber = itm.serialNumber
                     checklistItem.compliant = itm.compliant
                     checklistItem.inspection = engineering
@@ -307,11 +307,11 @@ class ChecklistService(
                     } else {
                         checklistItem.sampleUpdated = map.activeStatus
                     }
-                    checklistItem.productDescription = detail.itemDescription
-                    checklistItem.quantityDeclared = detail.quantity.toString()
+                    checklistItem.productDescription = itm.productDescription ?: detail.itemDescription
+                    checklistItem.quantityDeclared = itm.quantityDeclared ?: detail.quantity.toString()
                     checklistItem.itemId = itm.itemId
                     checklistItem.description = detail.hsDescription
-                    checklistItem.brand = detail.productBrandName
+                    checklistItem.brand = itm.brand ?: detail.productBrandName
                     checklistItem.serialNumber = itm.serialNumber
                     checklistItem.compliant = itm.compliant
                     checklistItem.inspection = agrochemChecklist
@@ -334,11 +334,11 @@ class ChecklistService(
      * 1. if result, then check if we have all result for all lab records and clear wait
      * 2. else Check if we added any lab result request during checklist saving
      */
-    fun updateConsignmentSampledStatus(cdItemDetails: ConsignmentDocumentDetailsEntity, result: Boolean, isVehicle: Boolean): Boolean {
+    fun updateConsignmentSampledStatus(cdItemDetails: ConsignmentDocumentDetailsEntity, result: Boolean, isVehicle: Boolean, map: ServiceMapsEntity): Boolean {
         var response = false
         try {
             if (result) {
-                val items = iCdItemsRepo.findByCdDocIdAndSampledStatus(cdItemDetails, 1)
+                val items = iCdItemsRepo.findByCdDocIdAndSampledStatus(cdItemDetails, map.activeStatus)
                 var allItemsResult = true
                 for (itm in items) {
                     if (itm.allTestReportStatus != 1) {
@@ -353,20 +353,30 @@ class ChecklistService(
                     daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.LAB_RESULT_RESULT)
                 }
             } else {
-                val items = iCdItemsRepo.findByCdDocIdAndSampledStatus(cdItemDetails, 1)
-                if (items.isNotEmpty()) {
-                    cdItemDetails.status = ConsignmentApprovalStatus.WAITING.code
-                    if (isVehicle) {
-                        cdItemDetails.varField10 = "Waiting for ministry report"
-                        daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.MINISTRY_REQUEST)
+                if (isVehicle) {
+                    val items = iCdItemsRepo.findByCdDocIdAndMinistrySubmissionStatus(cdItemDetails, map.activeStatus)
+                    if (items.isEmpty()) {
+                        cdItemDetails.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
+                        cdItemDetails.varField10 = "CHECKLIST FILLED, AWAITING COMPLIANCE STATUS"
+                        daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.CHECKLIST_FILLED)
                     } else {
+                        cdItemDetails.varField10 = "Waiting for ministry report"
+                        cdItemDetails.status = ConsignmentApprovalStatus.WAITING.code
+                        daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.MINISTRY_REQUEST)
+                        response = true
+                    }
+                } else {
+                    val items = iCdItemsRepo.findByCdDocIdAndSampledStatus(cdItemDetails, map.activeStatus)
+                    if (items.isEmpty()) {
+                        cdItemDetails.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
+                        cdItemDetails.varField10 = "CHECKLIST FILLED, AWAITING COMPLIANCE STATUS"
+                        daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.CHECKLIST_FILLED)
+                    } else {
+                        cdItemDetails.status = ConsignmentApprovalStatus.WAITING.code
                         cdItemDetails.varField10 = "Waiting for lab result"
                         daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.LAB_REQUEST)
+                        response = true
                     }
-                    response = true
-                } else {
-                    cdItemDetails.varField10 = "CHECKLIST FILLED, AWAITING COMPLIANCE STATUS"
-                    daoServices.updateCDStatus(cdItemDetails, ConsignmentDocumentStatus.CHECKLIST_FILLED)
                 }
             }
         } catch (ex: Exception) {
@@ -503,6 +513,7 @@ class ChecklistService(
                     checklistItem.description = detail.hsDescription
                     checklistItem.serialNumber = itm.serialNumber
                     checklistItem.compliant = itm.compliant
+                    checklistItem.brand = itm.brand ?: detail.productBrandName
                     checklistItem.status = map.activeStatus
                     checklistItem.inspection = otherChecklist
                     this.otherItemChecklistRepository.save(checklistItem)

@@ -24,6 +24,46 @@ export class ItemSelectionComponent implements OnInit {
             description: 'Non-Compliant',
         }
     ]
+    engineeringSections = [
+        {
+            name: 'TEXTILE',
+            description: 'Textile Industry',
+        },
+        {
+            name: 'MECHANICAL',
+            description: 'Mechanical Industry',
+        },
+        {
+            name: 'CIVIL',
+            description: 'Civil Industry',
+        },
+        {
+            name: 'ELECTRICAL',
+            description: 'Electrical Industry',
+        },
+        {
+            name: 'OTHER',
+            description: 'Other Industry',
+        },
+    ]
+    agrochemicalSections = [
+        {
+            name: 'FOOD',
+            description: 'Food Industry',
+        },
+        {
+            name: 'AGRICULTURAL',
+            description: 'Agriculture',
+        },
+        {
+            name: 'CHEMICAL',
+            description: 'Chemical Industry',
+        },
+        {
+            name: 'OTHER',
+            description: 'Other Industry',
+        },
+    ]
     @Output() private selectedItemsChange = new EventEmitter<any>();
     @Input() items: any[]
     @Input() categories: any[]
@@ -87,7 +127,9 @@ export class ItemSelectionComponent implements OnInit {
         let dialogRef: MatDialogRef<any> = null;
         let formData = {
             itemId: row.id,
+            engineeringSections: this.engineeringSections,
             complianceStatus: this.complianceStatus,
+            agrochemicalSections: this.agrochemicalSections,
             categories: this.categories,
             checklist: row.checklist
         }

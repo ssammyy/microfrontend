@@ -34,6 +34,10 @@ class CdInspectionEngineeringItemChecklistEntity : Serializable {
     @Basic
     var productDescription: String? = null
 
+    @Column(name = "APPLIED_SECTION")
+    @Basic
+    var section: String? = null
+
     @Column(name = "BRAND")
     @Basic
     var brand: String? = null

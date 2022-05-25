@@ -632,9 +632,44 @@ class DestinationInspectionService(
         return true
     }
 
+    fun swGenerateNcr(cdUuid: String, remarks: String, supervisor: String, documentType: String) {
+        try {
+            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            val loggedInUser = commonDaoServices.findUserByUserName(supervisor)
+            consignmentDocument = daoServices.updateCDStatus(
+                    consignmentDocument,
+                    ConsignmentDocumentStatus.NCR_ISSUED
+            )
+            consignmentDocument.varField10 = "NO COMPLIANT ITEMS, NCR GENERATED"
+            consignmentDocument.localCocOrCorStatus = map.invalidStatus
+            consignmentDocument.compliantStatus = map.invalidStatus
+            consignmentDocument.status = ConsignmentApprovalStatus.REJECTED.code
+            // Generate NCR if applicable
+            val ncr = daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")?.let {
+                consignmentDocument.ncrNumber = it.cocNumber
+                consignmentDocument
+            }
+            //Generate PDF File & send to importer
+            consignmentDocument.cdImporter?.let {
+                daoServices.findCDImporterDetails(it)
+            }?.let { importer ->
+                // Send NCR
+                ncr?.let {
+                    val ncrFileName = makeCocOrCoiFile(it.id!!)
+                    importer.email?.let { email -> daoServices.sendLocalCocReportEmail(email, ncrFileName) }
+                }
+            }
+            this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+            KotlinLogging.logger { }.info("GENERATE COC/COI: ${cdUuid}")
+        } catch (ex: Exception) {
+
+        }
+    }
+
     @Transactional
     fun swGenerateCoC(cdUuid: String, remarks: String, supervisor: String): Boolean {
-        KotlinLogging.logger { }.info("REQUESTING COC: ${cdUuid}")
+        KotlinLogging.logger { }.info("REQUESTING COC: $cdUuid")
         try {
             var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
@@ -642,16 +677,24 @@ class DestinationInspectionService(
             var localCoc: CocsEntity? = null
             try {
                 localCoc = daoServices.createLocalCoc(loggedInUser, consignmentDocument, map, remarks, "A")
+                consignmentDocument = daoServices.updateCDStatus(
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.COC_ISSUED
+                )
+                consignmentDocument.varField10 = "COMPLIANCE APPROVED, COC GENERATED"
+                consignmentDocument.localCocOrCorStatus = map.activeStatus
+                consignmentDocument.compliantStatus = map.activeStatus
+                consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
             } catch (ex: ExpectedDataNotFound) {
-
+                consignmentDocument = daoServices.updateCDStatus(
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.NCR_ISSUED
+                )
+                consignmentDocument.varField10 = "NO COMPLIANT ITEMS, NCR GENERATED"
+                consignmentDocument.localCocOrCorStatus = map.invalidStatus
+                consignmentDocument.compliantStatus = map.invalidStatus
+                consignmentDocument.status = ConsignmentApprovalStatus.REJECTED.code
             }
-            consignmentDocument = daoServices.updateCDStatus(
-                    consignmentDocument,
-                    ConsignmentDocumentStatus.COC_ISSUED
-            )
-            consignmentDocument.varField10 = "COMPLIANCE APPROVED, COC GENERATED"
-            consignmentDocument.localCocOrCorStatus = map.activeStatus
-            consignmentDocument.compliantStatus = map.activeStatus
             // Generate NCR if applicable
             val ncr = daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")?.let {
                 consignmentDocument.ncrNumber = it.cocNumber
@@ -659,7 +702,6 @@ class DestinationInspectionService(
             }
             consignmentDocument.cocNumber = localCoc?.cocNumber
             consignmentDocument.ncrNumber = ncr?.ncrNumber ?: ncr?.cocNumber
-            consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
             consignmentDocument = this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_APPROVED)
 
             KotlinLogging.logger { }.info("Local CoC = ${localCoc?.id}")

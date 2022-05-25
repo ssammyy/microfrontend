@@ -840,16 +840,21 @@ class InvoicePaymentService(
             demandNoteItem = CdDemandNoteItemsDetailsEntity()
         }
         // Apply currency conversion rates for today
-        when (itemDetails.currency?.toUpperCase()) {
-            applicationMapProperties.applicationCurrencyCode -> {
-                demandNoteItem.cfvalue = itemDetails.itemValue
-                demandNote.rate = "0.00"
+        if (applicationMapProperties.applicationCurrencyConversionEnabled) {
+            when (itemDetails.currency?.toUpperCase()) {
+                applicationMapProperties.applicationCurrencyCode, "KES", "KSH" -> {
+                    demandNoteItem.cfvalue = itemDetails.itemValue
+                    demandNote.rate = "0.00"
+                }
+                else -> {
+                    convertAmount(itemDetails.itemValue, "${itemDetails.currency}", demandNoteItem)
+                    demandNote.rate = demandNoteItem.rate ?: "0.00"
+                    KotlinLogging.logger { }.warn("Exchange Rate for ${itemDetails.currency}:${itemDetails.itemValue} => ${demandNoteItem.cfvalue}")
+                }
             }
-            else -> {
-                convertAmount(itemDetails.itemValue, "${itemDetails.currency}", demandNoteItem)
-                demandNote.rate = demandNoteItem.rate ?: "0.00"
-                KotlinLogging.logger { }.warn("Exchange Rate for ${itemDetails.currency}:${itemDetails.itemValue} => ${demandNoteItem.cfvalue}")
-            }
+        } else {
+            demandNoteItem.cfvalue = itemDetails.itemValue
+            demandNote.rate = "0.00"
         }
         // Add extra data
         with(demandNoteItem) {

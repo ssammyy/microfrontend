@@ -327,7 +327,7 @@ class ChecklistHandler(
                     // Update ministry and lab result status of a consignment
                     cdItem = daoServices.findCDWithUuid(cdUuid)
                     cdItem.inspectionChecklist = map.activeStatus
-                    checlistService.updateConsignmentSampledStatus(cdItem, false, form.vehicle != null)
+                    checlistService.updateConsignmentSampledStatus(cdItem, false, form.vehicle?.items.isNullOrEmpty(), map)
                     // Add inspection remarks
                     this.cdAuditService.addHistoryRecord(cdItem.id!!, cdItem.ucrNumber, form.overallRemarks, "ADD_CHECKLIST", "Filled consignment checklist", loggedInUser.userName)
                 }

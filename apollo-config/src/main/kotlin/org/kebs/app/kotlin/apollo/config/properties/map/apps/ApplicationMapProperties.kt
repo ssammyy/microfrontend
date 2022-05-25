@@ -35,6 +35,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.currency.code}")
     val applicationCurrencyCode: String = "KSH"
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.currency.conversion.enable:false}")
+    val applicationCurrencyConversionEnabled: Boolean = false
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.role.id}")
     val manufacturerRoleId: Long? = null
 
