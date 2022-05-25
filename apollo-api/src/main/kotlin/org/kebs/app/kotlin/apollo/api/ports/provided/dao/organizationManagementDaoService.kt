@@ -165,7 +165,7 @@ class RegistrationManagementDaoService(
         SecurityContextHolder.getContext().authentication
             ?.name
             ?.let { user ->
-                usersRepo.findByUserName(user)
+                usersRepo.findByEmail(user)
                     ?.let {
                         if (it.id != userId) throw InvalidInputException("Attempt to perform unauthorized action")
                         return userEntityToDto(it)
@@ -827,7 +827,7 @@ class RegistrationManagementDaoService(
                         it.town
                     ).apply {
                         id = it.id
-                        status = it.status == 1
+                        status = it.status
                     }
                 }
 
@@ -857,7 +857,7 @@ class RegistrationManagementDaoService(
                         it.town
                     ).apply {
                         id = it.id
-                        status = it.status == 1
+                        status = it.status
                     }
                 }
             }
@@ -893,7 +893,7 @@ class RegistrationManagementDaoService(
                     it.town
                 ).apply {
                     id = it.id
-                    status = it.status == 1
+                    status = it.status
                 }
             } else throw InvalidValueException("Attempt to fetch Organization rejected")
         }
@@ -964,7 +964,7 @@ class RegistrationManagementDaoService(
                     ).apply {
                         id = companyProfileEntity.id
 
-                        status = companyProfileEntity.status == 1
+                        status = companyProfileEntity.status
                     }
 
                 }

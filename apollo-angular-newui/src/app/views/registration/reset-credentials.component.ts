@@ -6,7 +6,7 @@ import {
   loadResetAuths,
   loadResponsesFailure,
   selectTokenSentStateOtpSent,
-  selectTokenValidatedStateValidated
+  selectTokenValidatedStateValidated,
 } from '../../core/store';
 import {select, Store} from '@ngrx/store';
 import {throwError} from 'rxjs';
@@ -14,7 +14,7 @@ import {throwError} from 'rxjs';
 @Component({
   selector: 'app-reset-credentials',
   templateUrl: './reset-credentials.component.html',
-  styles: []
+  styles: [],
 })
 export class ResetCredentialsComponent implements OnInit {
   step = 0;
@@ -37,7 +37,7 @@ export class ResetCredentialsComponent implements OnInit {
     this.stepOneForm = new FormGroup({
         credentials: new FormControl('', [Validators.required, Validators.minLength(6)]),
         confirmCredentials: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      }
+      },
     );
 
 
@@ -56,8 +56,8 @@ export class ResetCredentialsComponent implements OnInit {
         error: {
           payload: 'Username is required',
           status: 100,
-          response: '05'
-        }
+          response: '05',
+        },
       }));
 
     } else {
@@ -87,16 +87,16 @@ export class ResetCredentialsComponent implements OnInit {
         error: {
           payload: 'Username and/or OTP is required',
           status: 100,
-          response: '05'
-        }
+          response: '05',
+        },
       }));
 
     } else {
       this.store$.dispatch(doValidateTokenForUser({
         payload: {
           username: this.stepZeroForm?.get('username')?.value,
-          token: this.stepZeroForm?.get('otp')?.value
-        }
+          token: this.stepZeroForm?.get('otp')?.value,
+        },
       }));
 
     }
@@ -141,8 +141,8 @@ export class ResetCredentialsComponent implements OnInit {
           error: {
             payload: 'Provide valid credentials and confirmation',
             status: 100,
-            response: '05'
-          }
+            response: '05',
+          },
         }));
 
       } else {
@@ -150,16 +150,16 @@ export class ResetCredentialsComponent implements OnInit {
           this.store$.dispatch(loadResetAuths({
             payload: {
               username: this.username,
-              password: this.stepOneForm?.get('credentials')?.value
-            }, redirectUrl: ''
+              password: this.stepOneForm?.get('credentials')?.value,
+            }, redirectUrl: '',
           }));
         } else {
           this.store$.dispatch(loadResponsesFailure({
             error: {
               payload: 'Password and confirmation must match',
               status: 100,
-              response: '05'
-            }
+              response: '05',
+            },
           }));
 
         }
@@ -172,8 +172,8 @@ export class ResetCredentialsComponent implements OnInit {
         error: {
           payload: 'All fields require to be filled in',
           status: 100,
-          response: '05'
-        }
+          response: '05',
+        },
       }));
 
     }

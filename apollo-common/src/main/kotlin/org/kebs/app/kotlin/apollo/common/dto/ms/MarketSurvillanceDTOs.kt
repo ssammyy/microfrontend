@@ -345,7 +345,6 @@ data class ComplaintAdviceRejectDto(
 )
 
 data class ComplaintAssignDto(
-        var assignedIoStatus: Int? = null,
         var assignedRemarks: String? = null,
         var assignedIo: Long? = null
 )
@@ -360,7 +359,9 @@ data class MSRemarksDto(
 data class AllComplaintsDetailsDto(
         var complaintsDetails: ComplaintsDetailsDto? = null,
         var officersList: List<MsUsersDto>? = null,
+        var hofList: List<MsUsersDto>? = null,
         var officersAssigned: MsUsersDto? = null,
+        var hofAssigned: MsUsersDto? = null,
         var remarksDetails: List<MSRemarksDto>? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: SampleSubmissionDto? = null,
@@ -391,11 +392,16 @@ data class ComplaintsDetailsDto(
         var status: String? = null,
 //        var officersList: List<MsUsersDto>? = null,
 //        var divisionList: List<MsDivisionDto>? = null,
-        var approvedStatus: Int? = null,
-        var assignedIOStatus: Int? = null,
-        var rejectedStatusStatus: Int? = null,
+        var approvedStatus: Boolean? = null,
+        var assignedIOStatus: Boolean? = null,
+        var rejectedStatus: Boolean? = null,
         var complaintFiles: List<ComplaintsFilesFoundDto>? = null
 
+)
+
+data class ComplaintsTaskAndAssignedDto(
+        var complaintAssigned: List<ComplaintsListDto>? = null,
+        var complaintTaskID: List<ComplaintsListDto>? = null,
 )
 
 data class ComplaintsListDto(

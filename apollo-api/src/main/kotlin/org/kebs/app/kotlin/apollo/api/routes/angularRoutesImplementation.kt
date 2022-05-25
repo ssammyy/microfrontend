@@ -356,16 +356,14 @@ class AngularRoutes {
                     POST("/new", msHandler::saveNewComplaint)
                 }
             }
-            "".nest {
-                "/validateToken".nest {
-                    POST("", handler::handleValidatePhoneNumberAndTokenSecure)
+            "validateToken".nest {
+                POST("", handler::handleValidatePhoneNumberAndTokenSecure)
+                GET("", otherHandler::notSupported)
+                "/{id}".nest {
                     GET("", otherHandler::notSupported)
-                    "/{id}".nest {
-                        GET("", otherHandler::notSupported)
-                        PUT("", otherHandler::notSupported)
-                    }
-
+                    PUT("", otherHandler::notSupported)
                 }
+
             }
         }
 
@@ -571,8 +569,17 @@ class AngularRoutes {
             }
             "/complaint".nest {
                 GET("/list", handler::getAllComplaintList)
+                GET("/list-new", handler::getAllComplaintNewList)
+                GET("/list-on-going", handler::getAllComplaintOnGoingList)
+                GET("/list-my-task", handler::getAllComplaintMyTaskList)
                 GET("/details", handler::getComplaintDetails)
-                PUT("/accept", handler::updateComplaintByAccepting)
+                "/update".nest {
+                    PUT("/accept", handler::updateComplaintByAccepting)
+                    PUT("/reject", handler::updateComplaintByRejecting)
+                    PUT("/advice-where", handler::updateComplaintByMandatedForOga)
+                    PUT("/assign-hof", handler::updateComplaintByAssigningHof)
+                    PUT("/assign-io", handler::updateComplaintByAssigningIO)
+                }
 //                POST("/new", handler::saveNewComplaint)
             }
 //            "/workPlan".nest {

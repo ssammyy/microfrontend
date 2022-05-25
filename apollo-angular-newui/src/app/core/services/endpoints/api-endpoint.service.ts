@@ -17,11 +17,11 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        LOCAL_DEV: 'localhost:8006'
+          // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        // LOCAL_DEV: `kimsint.kebs.org:8006`
-        // LOCAL_DEV: `kims.kebs.org`
+        //  LOCAL_DEV: `kimsint.kebs.org:8006`,
+        LOCAL_DEV: `kims.kebs.org`,
         // LOCAL_DEV: '10.10.0.149:8007'
     };
 
@@ -89,6 +89,7 @@ export class ApiEndpointService {
     public static MS_CONTEXT = '/api/v1/migration/ms';
     public static MS_FUEL_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/fuel`;
     public static MS_COMPLAINT_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/complaint`;
+    public static MS_COMPLAINT_UPDATE_CONTEXT = `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/update`;
     public static MS_COMMON_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/common`;
 
     /**
@@ -516,6 +517,7 @@ export class ApiEndpointService {
         USER_EMAIL_VERIFICATION_STATUS: `${ApiEndpointService.STL_CONTEXT}/getVerificationStatus`,
         SEND_EMAIL_VERIFICATION: `${ApiEndpointService.STL_CONTEXT}/sendEmailVerificationToken`,
         CONFIRM_EMAIL_VERIFICATION_STATUS: `${ApiEndpointService.STL_CONTEXT}/confirmEmailAddress`,
+        STD_LEVY_COMPANY_STATUS: `${ApiEndpointService.STL_CONTEXT}/getOperationStatus`,
 
 
 
@@ -564,7 +566,15 @@ export class ApiEndpointService {
         CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
         UPLOAD_COMPLIANT_FILE: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/file/save`,
         ALL_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list`,
+        NEW_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-new`,
+        MY_TASK_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-my-task`,
+        ONGOING_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-on-going`,
         COMPLAINT_DETAILS: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/details`,
+        COMPLAINT_DETAILS_UPDATE_ACCEPTANCE: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/accept`,
+        COMPLAINT_DETAILS_UPDATE_REJECTION: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/reject`,
+        COMPLAINT_DETAILS_UPDATE_OGA_MANDATE: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/advice-where`,
+        COMPLAINT_DETAILS_UPDATE_ASSIGN_HOF: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/assign-hof`,
+        COMPLAINT_DETAILS_UPDATE_ASSIGN_IO: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/assign-io`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
       };

@@ -461,6 +461,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
 
 
+
+
 }
 
 @Repository
@@ -559,7 +561,7 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
         designationId: DesignationsEntity,
         regionId: RegionsEntity,
         status: Int
-    ): UserProfilesEntity?
+    ): List<UserProfilesEntity>?
 
     fun findByRegionIdAndDepartmentIdAndStatusAndSectionIdAndDesignationId(
         regionId: RegionsEntity,

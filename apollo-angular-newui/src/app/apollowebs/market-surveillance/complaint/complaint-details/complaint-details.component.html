@@ -158,7 +158,7 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="complaintInspection?.officersAssigned" label="4">
+                                    <mat-tab *ngIf="complaintInspection?.officersAssigned" label="5">
                                         <ng-template mat-tab-label>
                                             Assigned Officer Details
                                         </ng-template>
@@ -178,6 +178,29 @@
                                                 <div class="list-title-accordion">Email</div>
                                                 <div class="list-text-accordion">
                                                     {{complaintInspection?.officersAssigned?.email}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="complaintInspection?.hofAssigned" label="6">
+                                        <ng-template mat-tab-label>
+                                            Assigned HOF Details
+                                        </ng-template>
+                                        <b class="text-primary">Assigned HOF Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">First Name</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.hofAssigned?.firstName}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Last Name</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.hofAssigned?.lastName}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.hofAssigned?.email}}</div>
                                             </li>
                                         </ul>
                                     </mat-tab>
@@ -563,139 +586,44 @@
                             <div class="col-md-2 p-0">
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
-                                    <div *ngIf="role == 'MS_MP_MODIFY'">
-                                        <button *ngIf="complaintInspection?.batchDetails?.batchClosed && complaintInspection.assignedOfficerStatus ==false" (click)="openModalAddDetails('assignOfficer')" mat-raised-button="" data-toggle="modal"
+                                    <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
+                                        <button *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == false && complaintInspection?.complaintsDetails?.rejectedStatus == false" (click)="openModalAddDetails('acceptRejectComplaint')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#myModal1"
                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">ASSIGN OFFICER</span>
+                                                class="mat-button-wrapper">ACCEPT/REJECT COMPLAINT</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == false && complaintInspection?.complaintsDetails?.rejectedStatus ==false" (click)="openModalAddDetails('notKebsMandate')" mat-raised-button="" data-toggle="modal"
+                                                data-target="#myModal1"
+                                                class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">MANDATE FOR OGA</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == true && complaintInspection?.hofAssigned ==null" (click)="openModalAddDetails('assignHOF')" mat-raised-button="" data-toggle="modal"
+                                                data-target="#myModal1"
+                                                class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">ASSIGN HOF</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                     </div>
-                                    <div *ngIf="role == 'MS_IOP_MODIFY' && complaintInspection?.assignedOfficerStatus && complaintInspection?.officersAssigned?.id == userLoggedInID">
-                                        <button *ngIf="complaintInspection?.rapidTestDone == false" (click)="openModalAddDetails('rapidTest')" mat-raised-button="" data-toggle="modal"
+                                    <div *ngIf="role == 'MS_HOF_MODIFY' && userLoggedInID == complaintInspection?.hofAssigned?.id">
+                                        <button *ngIf="complaintInspection?.officersAssigned == null && complaintInspection?.hofAssigned !=null" (click)="openModalAddDetails('assignOfficer')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#myModal1"
                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">RAPID TEST</span>
+                                                class="mat-button-wrapper">ASSIGN IO</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
-                                        <button *ngIf="complaintInspection?.rapidTest?.rapidTestStatus == true && complaintInspection?.rapidTestDone == true && complaintInspection?.endInspectionStatus == false"
-                                                (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"
-                                                class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">END FUEL</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <div *ngIf="complaintInspection?.rapidTestDone == true && complaintInspection.rapidTest.rapidTestStatus==false">
-                                            <button *ngIf="complaintInspection.sampleCollectionStatus == false" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#sampleCollectModal"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD SAMPLE COLLECTED</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="complaintInspection.sampleCollectionStatus == true && complaintInspection.sampleSubmittedStatus== false" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#sampleSubmitModal"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD SAMPLE SUBMITTED</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="complaintInspection.sampleCollectionStatus && complaintInspection.sampleSubmittedStatus && complaintInspection.bsNumberStatus== false" (click)="openModalAddDetails('addBsNumber')" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#myModal1"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD BS NUMBER</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="complaintInspection.bsNumberStatus && complaintInspection.compliantStatusAdded && complaintInspection.remediationScheduledStatus==false
-                                            && complaintInspection.sampleLabResults.ssfResultsList.complianceStatus" (click)="openModalAddDetails('scheduleRemediation')" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#myModal1"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">SCHEDULE REMEDIATION DATE</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="complaintInspection.bsNumberStatus && complaintInspection.compliantStatusAdded && complaintInspection.remediationScheduledStatus
-                                            && complaintInspection.sampleLabResults.ssfResultsList.complianceStatus && complaintInspection.remendiationCompleteStatus == false" (click)="openModalAddDetails('addRemediationDetails')" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#myModal1"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">REMEDIATION</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button  *ngIf="complaintInspection.bsNumberStatus && complaintInspection.compliantStatusAdded &&
-                                            complaintInspection.sampleLabResults.ssfResultsList.complianceStatus == false && complaintInspection?.fuelRemediation.invoiceCreated == false"
-                                                     (click)="openModalAddDetails('notCompliantInvoice')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
-                                                     class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">GENERATE REMEDIATION INVOICE</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="complaintInspection.compliantStatusAdded && complaintInspection.sampleLabResults.ssfResultsList.complianceStatus == false
-                                            && complaintInspection.proFormaInvoiceStatus && complaintInspection.remediationScheduledStatus==false"
-                                                    (click)="openModalAddDetails('scheduleRemediationInvoicePaid')" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#myModal1"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">SCHEDULE REMEDIATION DATE</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="complaintInspection.compliantStatusAdded && complaintInspection.sampleLabResults.ssfResultsList.complianceStatus == false
-                                            && complaintInspection.proFormaInvoiceStatus && complaintInspection.remediationScheduledStatus && complaintInspection.remendiationCompleteStatus == false"
-                                                    (click)="openModalAddDetails('addRemediationDetails')" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#myModal1"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">REMEDIATION</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="complaintInspection.remendiationCompleteStatus && complaintInspection?.endInspectionStatus == false"
-                                                    (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">END FUEL</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                        </div>
-
                                     </div>
 
                                 </div>
 
                                 <br/>
                                 <b>Document Details:</b>
-                                <!--                                <div *ngIf="fuelInspection.ui">-->
-                                <!--                                    <a class="btn btn-sm btn-warning" href="{{fuelInspection.cd_details.summaryPageURL}}"-->
-                                <!--                                       *ngIf="fuelInspection.cd_details.summaryPageURL" target="_blank">View on-->
-                                <!--                                        KenTrade</a>-->
-                                <!--                                    <br/>-->
-                                <!--                                    <button *ngIf="fuelInspection.ui.checklistFilled" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewInspectionChecklists()">VIEW INSPECTION REPORT-->
-                                <!--                                    </button>-->
-                                <!--                                    <button *ngIf="fuelInspection.ui.corAvailable" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewCoR()">-->
-                                <!--                                        CERTIFICATE OF-->
-                                <!--                                        ROADWORTHINESS-->
-                                <!--                                    </button>-->
-                                <!--                                    <button *ngIf="fuelInspection.ui.cocAvailable" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewCoC('coc')">CERTIFICATE OF COMPLIANCE-->
-                                <!--                                    </button>-->
-                                <!--                                    <button *ngIf="fuelInspection.ui.ncrAvailable" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewCoC('ncr')">NCR-->
-                                <!--                                    </button>-->
-                                <!--                                    <button *ngIf="fuelInspection.ui.coiAvailable" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewCoC('coi')">CERTIFICATE OF Inspection-->
-                                <!--                                    </button>-->
-                                <!--                                    <button *ngIf="fuelInspection.ui.idfAvailable" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewIdfDocument()">IDF DOCUMENT-->
-                                <!--                                    </button>-->
-                                <!--                                    <button class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">-->
-                                <!--                                        DECLARATION DOCUMENT-->
-                                <!--                                    </button>-->
-                                <!--                                </div>-->
+
                             </div>
                         </div>
                     </div>
@@ -748,21 +676,100 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'complaintAcceptRejectAdvice')">
-<!--                        [hidden]="loginForm.get('otp')?.invalid"-->
-                        <form [formGroup]="remarksSavedForm" class="form">
+                    <div *ngIf="(currDiv == 'acceptRejectComplaint')">
+                        <form [formGroup]="acceptRejectComplaintForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="processBy"><b>ADD BY</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="processBy" matInput type="text" readonly formControlName="processBy" name="processBy">
+                                        <label for="approved"><b>Select Results</b></label>
+                                        <mat-form-field id="approved">
+                                            <mat-select (selectionChange)="updateSelectedStatus()"
+                                                    placeholder="Please Select an option"
+                                                        formControlName="approved"
+                                                        [class.is-invalid]="formAcceptRejectForm.approved.invalid && formAcceptRejectForm.approved.touched"
+                                                        name="approved">
+                                                <mat-option [value]="1">ACCEPT</mat-option>
+                                                <mat-option [value]="0">REJECT</mat-option>
+                                            </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks"><b>Remarks/ Feed back:</b></label>
+                                        <div *ngIf="(selectComplaintStatus == 'Accept')">
+                                            <label for="department"><b>Select Department</b></label>
+                                            <mat-form-field>
+                                                <mat-select (selectionChange)="onChangeSelectedDepartment()"
+                                                        placeholder="Please Select an option"
+                                                            [class.is-invalid]="formAcceptRejectForm.department.invalid && formAcceptRejectForm.department.touched"
+                                                            formControlName="department" id="department" name="department" >
+                                                    <mat-option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</mat-option>
+
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <label for="division"><b>Select Division</b></label>
+                                            <mat-form-field>
+                                                <mat-select placeholder="Please Select an option"msDivisions
+                                                            [class.is-invalid]="formAcceptRejectForm.division.invalid && formAcceptRejectForm.division.touched"
+                                                            formControlName="division" id="division" name="division" >
+                                                    <mat-option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}} </mat-option>
+
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <label for="approvedRemarks"><b>Please write, in detail, your feedback For Accepting / Rejecting:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea readonly id="remarksDescription" matInput type="text"
-                                                      formControlName="remarksDescription"
-                                                      name="remarksDescription">
+                                            <textarea id="approvedRemarks" matInput type="text"
+                                                      formControlName="approvedRemarks"
+                                                      name="approvedRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'notKebsMandate')">
+                        <form [formGroup]="adviceComplaintForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="advisedWhereToRemarks"><b>Please write, in detail, Where The Complaint belongs:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="advisedWhereToRemarks" matInput type="text"
+                                                      formControlName="advisedWhereToRemarks"
+                                                      [class.is-invalid]="formAdviceComplaintForm.advisedWhereToRemarks.invalid && formAdviceComplaintForm.advisedWhereToRemarks.touched"
+                                                      name="advisedWhereToRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                        <label for="rejectedRemarks"><b>Please write, in detail, your feedback :</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="rejectedRemarks" matInput type="text"
+                                                      formControlName="rejectedRemarks"
+                                                      [class.is-invalid]="formAdviceComplaintForm.rejectedRemarks.invalid && formAdviceComplaintForm.rejectedRemarks.touched"
+                                                      name="rejectedRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'assignHOF')">
+                        <form [formGroup]="assignOfficerForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="assignedIo"><b>Select officer</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
+                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >
+                                                <mat-option *ngFor="let app of complaintInspection.hofList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="assignedRemarks" matInput type="text"
+                                                      formControlName="assignedRemarks"
+                                                      name="assignedRemarks">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -775,20 +782,20 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="assignedUserID"><b>Select officer</b></label>
+                                        <label for="assignedIo"><b>Select officer</b></label>
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formAssignOfficerForm.assignedUserID.invalid && formAssignOfficerForm.assignedUserID.touched"
-                                                        formControlName="assignedUserID" id="assignedUserID" name="assignedUserID" >
+                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
+                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >
                                                 <mat-option *ngFor="let app of complaintInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
+                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="remarks" matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks">
+                                            <textarea id="assignedRemarks" matInput type="text"
+                                                      formControlName="assignedRemarks"
+                                                      name="assignedRemarks">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -796,60 +803,9 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'rapidTest')">
-                        <form [formGroup]="rapidTestForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="rapidTestStatus"><b>Select Test Results</b></label>
-                                        <mat-form-field id="rapidTestStatus">
-                                            <mat-select placeholder="Please Select an option"
-                                                        formControlName="rapidTestStatus"
-                                                        [class.is-invalid]="formRapidTestForm.rapidTestStatus.invalid && formRapidTestForm.rapidTestStatus.touched"
-                                                        name="rapidTestStatus">
-                                                <mat-option [value]="true">PASS</mat-option>
-                                                <mat-option [value]="false">FAIL</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <label for="rapidTestRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="rapidTestRemarks" matInput type="text"
-                                                      formControlName="rapidTestRemarks"
-                                                      name="rapidTestRemarks">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'pdfSaveCompliance')">
-                        <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="complianceStatusPdf"><b>Select Compliance Status</b></label>
-                                        <mat-form-field id="complianceStatusPdf">
-                                            <mat-select placeholder="Please Select an option"
-                                                        formControlName="complianceStatus"
-                                                        [class.is-invalid]="formPdfSaveComplianceStatusForm.complianceStatus.invalid && formPdfSaveComplianceStatusForm.complianceStatus.touched"
-                                                        name="complianceStatus">
-                                                <mat-option [value]="true">Compliant</mat-option>
-                                                <mat-option [value]="false">Non-Compliant</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="complianceRemarksPDF" matInput type="text"
-                                                      formControlName="complianceRemarks"
-                                                      name="complianceRemarks">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+
+
+
                     <div *ngIf="(currDiv == 'viewPdfSaveCompliance')">
                         <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
                             <div class="form-body">
@@ -1085,20 +1041,26 @@
                     <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
                     </button>
                     <button *ngIf="(currDiv == 'assignOfficer')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveAssignOfficerBatch(assignOfficerForm.valid);"
+                            (click)="onClickSaveAssignIO(assignOfficerForm.valid);"
                             [disabled]="!assignOfficerForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'rapidTest')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveRapidTestResults(rapidTestForm.valid);"
-                            [disabled]="!rapidTestForm.valid"
+                    <button *ngIf="(currDiv == 'assignHOF')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveAssignHof(assignOfficerForm.valid);"
+                            [disabled]="!assignOfficerForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'addBsNumber')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveBSNumber(sampleSubmitBSNumberForm.valid);"
-                            [disabled]="!sampleSubmitBSNumberForm.valid"
+                    <button *ngIf="(currDiv == 'acceptRejectComplaint')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveAcceptRejectFormResults(acceptRejectComplaintForm.valid);"
+                            [disabled]="!acceptRejectComplaintForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'notKebsMandate')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveAdviceWhereFormResults(adviceComplaintForm.valid);"
+                            [disabled]="!adviceComplaintForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

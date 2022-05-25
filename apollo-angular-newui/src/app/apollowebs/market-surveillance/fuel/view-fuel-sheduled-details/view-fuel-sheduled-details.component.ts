@@ -456,8 +456,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       private formBuilder: FormBuilder,
       private store$: Store<any>,
       private SpinnerService: NgxSpinnerService,
-              private activatedRoute: ActivatedRoute,
-              private router: Router) {
+      private activatedRoute: ActivatedRoute,
+      private router: Router) {
   }
 
   ngOnInit(): void {

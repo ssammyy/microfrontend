@@ -70,6 +70,8 @@ class ComplaintEntity : Serializable {
     @Basic
     var complaintTitle: String? = null
 
+
+
 //    @Transient
 //    var confirmDivisionId: Long? = 0
 //
@@ -81,6 +83,10 @@ class ComplaintEntity : Serializable {
 
 //    @Transient
 //    var confirmDepartmentId: Long? = 0
+
+    @Column(name = "USER_TASK_ID")
+    @Basic
+    var userTaskId: Long? = null
 
     @Column(name = "UUID")
     @Basic

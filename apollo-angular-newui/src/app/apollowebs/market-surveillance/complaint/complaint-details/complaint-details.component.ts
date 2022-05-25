@@ -1,11 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import {
   AllComplaintsDetailsDto,
-  BSNumberSaveDto, ComplaintDetailsDto, ComplaintsFilesFoundDto, CompliantRemediationDto,
+  BSNumberSaveDto, ComplaintAdviceRejectDto, ComplaintApproveDto, ComplaintAssignDto,
+  ComplaintDetailsDto, ComplaintRejectDto,
+  ComplaintsFilesFoundDto,
+  CompliantRemediationDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
-  FuelInspectionDto, LaboratoryDto, LIMSFilesFoundDto, MSRemarksDto, MSSSFPDFListDetailsDto, PDFSaveComplianceStatusDto, RemediationDto,
-  SampleCollectionDto, SampleCollectionItemsDto, SampleSubmissionDto, SampleSubmissionItemsDto, SSFSaveComplianceStatusDto
+  FuelInspectionDto,
+  LaboratoryDto,
+  LIMSFilesFoundDto,
+  MsDepartment, MsDivisionDetails,
+  MSRemarksDto,
+  MSSSFPDFListDetailsDto,
+  PDFSaveComplianceStatusDto,
+  RemediationDto,
+  SampleCollectionDto,
+  SampleCollectionItemsDto,
+  SampleSubmissionDto,
+  SampleSubmissionItemsDto,
+  SSFSaveComplianceStatusDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoggedInUser, selectUserInfo} from '../../../../core/store';
@@ -23,7 +37,7 @@ declare global {
 @Component({
   selector: 'app-complaint-details',
   templateUrl: './complaint-details.component.html',
-  styleUrls: ['./complaint-details.component.css']
+  styleUrls: ['./complaint-details.component.css'],
 })
 export class ComplaintDetailsComponent implements OnInit {
 
@@ -34,8 +48,10 @@ export class ComplaintDetailsComponent implements OnInit {
   complaintInspection: AllComplaintsDetailsDto;
   currDiv!: string;
   currDivLabel!: string;
+  selectComplaintStatus!: string;
   remarksSavedForm!: FormGroup;
-  acceptComplaintForm!: FormGroup;
+  acceptRejectComplaintForm!: FormGroup;
+  adviceComplaintForm!: FormGroup;
 
   assignOfficerForm!: FormGroup;
   rapidTestForm!: FormGroup;
@@ -49,8 +65,9 @@ export class ComplaintDetailsComponent implements OnInit {
   scheduleRemediationForm!: FormGroup;
   notCompliantInvoiceForm!: FormGroup;
   remediationForm!: FormGroup;
-  dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
-  dataSaveRapidTest: FuelEntityRapidTestDto;
+  dataSaveAssignOfficer: ComplaintAssignDto;
+  dataSaveAcceptance: ComplaintApproveDto;
+  dataSaveAdviceWhere: ComplaintAdviceRejectDto;
   dataSaveSampleCollect: SampleCollectionDto;
   dataSaveSampleCollectItems: SampleCollectionItemsDto;
   dataSaveSampleSubmit: SampleSubmissionDto;
@@ -63,6 +80,9 @@ export class ComplaintDetailsComponent implements OnInit {
   dataSaveRemediation: RemediationDto;
 
   labList: LaboratoryDto[];
+  msDepartments: MsDepartment[];
+  msDivisions: MsDivisionDetails[];
+  departmentSelected!: number;
   roles: string[];
   userLoggedInID: number;
   userProfile: LoggedInUser;
@@ -92,11 +112,11 @@ export class ComplaintDetailsComponent implements OnInit {
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
@@ -108,22 +128,22 @@ export class ComplaintDetailsComponent implements OnInit {
       productBrandName: {
         title: 'PRODUCT BRAND NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       batchNo: {
         title: 'BATCH NO',
         type: 'string',
-        filter: false
+        filter: false,
       },
       batchSize: {
         title: 'BATCH SIZE',
         type: 'string',
-        filter: false
+        filter: false,
       },
       sampleSize: {
         title: 'SAMPLE SIZE',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // sampled: {
       //   title: 'Sampled',
@@ -141,8 +161,8 @@ export class ComplaintDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsSampleSubmittedItems = {
     selectMode: 'single',  // single|multi
@@ -157,11 +177,11 @@ export class ComplaintDetailsComponent implements OnInit {
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
@@ -173,12 +193,12 @@ export class ComplaintDetailsComponent implements OnInit {
       parameters: {
         title: 'PARAMETERS',
         type: 'string',
-        filter: false
+        filter: false,
       },
       laboratoryName: {
         title: 'LABORATORY NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // batchSize: {
       //   title: 'BATCH SIZE',
@@ -204,8 +224,8 @@ export class ComplaintDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsLabResultsParam = {
     selectMode: 'single',  // single|multi
@@ -220,28 +240,28 @@ export class ComplaintDetailsComponent implements OnInit {
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
       param: {
         title: 'PARAM',
         type: 'string',
-        filter: false
+        filter: false,
       },
       result: {
         title: 'RESULT',
         type: 'string',
-        filter: false
+        filter: false,
       },
       method: {
         title: 'METHOD',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // batchSize: {
       //   title: 'BATCH SIZE',
@@ -267,8 +287,8 @@ export class ComplaintDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsLIMSPDFFiles = {
     selectMode: 'single',  // single|multi
@@ -282,25 +302,25 @@ export class ComplaintDetailsComponent implements OnInit {
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'},
-        {name: 'saveRecord', title: '<i class="btn btn-sm btn-primary">Save PDF</i>'}
+        {name: 'saveRecord', title: '<i class="btn btn-sm btn-primary">Save PDF</i>'},
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
       fileName: {
         title: 'FILE NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       fileSavedStatus: {
         title: 'FILE SAVED STATUS',
         type: 'boolean',
-        filter: false
+        filter: false,
       },
       // method: {
       //   title: 'METHOD',
@@ -331,8 +351,8 @@ export class ComplaintDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsSavedPDFFiles = {
     selectMode: 'single',  // single|multi
@@ -346,20 +366,20 @@ export class ComplaintDetailsComponent implements OnInit {
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         {name: 'viewPDFRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
-        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'}
+        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'},
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
       pdfName: {
         title: 'PDF NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // complianceRemarks: {
       //   title: 'COMPLIANCE REMARKS',
@@ -369,7 +389,7 @@ export class ComplaintDetailsComponent implements OnInit {
       complianceStatus: {
         title: 'COMPLIANCE STATUS',
         type: 'boolean',
-        filter: false
+        filter: false,
       },
       // sampled: {
       //   title: 'Sampled',
@@ -387,8 +407,8 @@ export class ComplaintDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsComplaintsFiles = {
     selectMode: 'single',  // single|multi
@@ -402,25 +422,25 @@ export class ComplaintDetailsComponent implements OnInit {
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         // {name: 'viewPDFRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
-        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View</i>'}
+        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View</i>'},
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
       documentType: {
         title: 'File NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       fileName: {
         title: 'DOCUMENT TYPE',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // complianceStatus: {
       //   title: 'COMPLIANCE STATUS',
@@ -443,8 +463,8 @@ export class ComplaintDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
   public settingsRemarks = {
     selectMode: 'single',  // single|multi
@@ -460,23 +480,23 @@ export class ComplaintDetailsComponent implements OnInit {
         {name: 'viewPDFRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
         // {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View</i>'}
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
       processName: {
         title: 'PROCESS NAME',
         type: 'string',
-        filter: false
+        filter: false,
       },
       processBy: {
         title: 'PROCESS BY',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // complianceStatus: {
       //   title: 'COMPLIANCE STATUS',
@@ -499,8 +519,8 @@ export class ComplaintDetailsComponent implements OnInit {
     },
     pager: {
       display: true,
-      perPage: 20
-    }
+      perPage: 20,
+    },
   };
 
 
@@ -527,17 +547,25 @@ export class ComplaintDetailsComponent implements OnInit {
           this.selectedRefNo = rs.get('referenceNumber');
           // this.selectedBatchRefNo = rs.get('batchReferenceNumber');
           this.loadData(this.selectedRefNo);
-        }
+        },
     );
 
     this.assignOfficerForm = this.formBuilder.group({
-      assignedUserID: ['', Validators.required],
-      remarks: null,
+      assignedIo: ['', Validators.required],
+      assignedRemarks: null,
     });
 
-    this.acceptComplaintForm = this.formBuilder.group({
-      assignedUserID: ['', Validators.required],
-      remarks: null,
+    this.acceptRejectComplaintForm = this.formBuilder.group({
+      approved: ['', Validators.required],
+      department: null,
+      division: null,
+      approvedRemarks: ['', Validators.required],
+    });
+
+    this.adviceComplaintForm = this.formBuilder.group({
+      advisedWhereToRemarks: ['', Validators.required],
+      rejectedRemarks: ['', Validators.required],
+      mandateForOga: 1,
     });
 
     this.rapidTestForm = this.formBuilder.group({
@@ -597,7 +625,7 @@ export class ComplaintDetailsComponent implements OnInit {
 
     this.sampleSubmitParamsForm = this.formBuilder.group({
       parameters: ['', Validators.required],
-      laboratoryName: ['', Validators.required]
+      laboratoryName: ['', Validators.required],
     });
 
     this.sampleSubmitBSNumberForm = this.formBuilder.group({
@@ -646,12 +674,12 @@ export class ComplaintDetailsComponent implements OnInit {
     return this.assignOfficerForm.controls;
   }
 
-  get formRapidTestForm(): any {
-    return this.rapidTestForm.controls;
+  get formAcceptRejectForm(): any {
+    return this.acceptRejectComplaintForm.controls;
   }
 
-  get formPdfSaveComplianceStatusForm(): any {
-    return this.pdfSaveComplianceStatusForm.controls;
+  get formAdviceComplaintForm(): any {
+    return this.adviceComplaintForm.controls;
   }
 
   get formSSFSaveComplianceStatusForm(): any {
@@ -699,18 +727,29 @@ export class ComplaintDetailsComponent implements OnInit {
     this.msService.msComplaintDetails(referenceNumber).subscribe(
         (data) => {
           this.complaintInspection = data;
-          // if(this.fuelInspection.sampleSubmittedStatus!= true){
-          //   this.msService.loadMSLabList().subscribe(
-          //       (data) => {
-          //         this.labList = data;
-          //         console.log(data);
-          //       },
-          //       error => {
-          //         console.log(error);
-          //         this.msService.showError('AN ERROR OCCURRED');
-          //       }
-          //   );
-          // }
+          // tslint:disable-next-line:max-line-length
+          if (this.complaintInspection.complaintsDetails.approvedStatus === false && this.complaintInspection.complaintsDetails.rejectedStatus === false) {
+            this.msService.msDepartmentListDetails().subscribe(
+                (dataDep: MsDepartment[]) => {
+                  this.msDepartments = dataDep;
+                  console.log(dataDep);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msDivisionListDetails().subscribe(
+                (dataDiv: MsDivisionDetails[]) => {
+                  this.msDivisions = dataDiv;
+                  console.log(dataDiv);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+          }
           // this.totalCount = this.loadedData.length;
           // this.dataSet.load(this.loadedData);
           this.SpinnerService.hide();
@@ -720,7 +759,7 @@ export class ComplaintDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
 
 
@@ -751,14 +790,8 @@ export class ComplaintDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['scheduleRemediationInvoicePaid',
-      'assignOfficer', 'rapidTest', 'addBsNumber',
-      'ssfAddComplianceStatus', 'scheduleRemediation',
-      'addRemediationDetails', 'notCompliantInvoice'];
-    const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID',
-      'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER',
-      'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
-      'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED'];
+    const arrHead = ['acceptRejectComplaint', 'notKebsMandate', 'assignHOF', 'assignOfficer'];
+    const arrHeadSave = ['ACCEPT/REJECT COMPLAINT', 'NOT WITHIN KEBS MANDATE','ASSIGN HOF', 'ASSIGN IO'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -787,7 +820,7 @@ export class ComplaintDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
   }
 
@@ -810,7 +843,7 @@ export class ComplaintDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
   }
 
@@ -833,7 +866,7 @@ export class ComplaintDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
   }
 
@@ -856,50 +889,124 @@ export class ComplaintDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
   }
 
 
-  onClickSaveAssignOfficerBatch(valid: boolean) {
-    // if (valid) {
-    //   this.SpinnerService.show();
-    //   this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
-    //   this.msService.msFuelInspectionScheduledAssignOfficer(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
-    //       (data: any) => {
-    //         this.complaintInspection = data;
-    //         console.log(data);
-    //         this.SpinnerService.hide();
-    //         this.msService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY');
-    //       },
-    //       error => {
-    //         this.SpinnerService.hide();
-    //         console.log(error);
-    //         this.msService.showError('AN ERROR OCCURRED');
-    //       }
-    //   );
-    // }
+  onClickSaveAssignHof(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
+      // tslint:disable-next-line:max-line-length
+      this.msService.msComplaintUpdateAssignHOFDetails(this.complaintInspection.complaintsDetails.refNumber,  this.dataSaveAssignOfficer).subscribe(
+          (data: any) => {
+            this.complaintInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('HOF ASSIGNED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
   }
 
-  onClickSaveRapidTestResults(valid: boolean) {
-    // if (valid) {
-    //   this.SpinnerService.show();
-    //   this.dataSaveRapidTest = {...this.dataSaveRapidTest, ...this.rapidTestForm.value};
-    //   this.msService.msFuelInspectionScheduledRapidTest(this.complaintInspection.batchDetails.referenceNumber, this.complaintInspection.referenceNumber, this.dataSaveRapidTest).subscribe(
-    //       (data: any) => {
-    //         this.complaintInspection = data;
-    //         console.log(data);
-    //         this.SpinnerService.hide();
-    //         this.msService.showSuccess('RAPID TEST RESULTS SAVED SUCCESSFULLY');
-    //       },
-    //       error => {
-    //         this.SpinnerService.hide();
-    //         console.log(error);
-    //         this.msService.showError('AN ERROR OCCURRED');
-    //       }
-    //   );
-    // }
+  onClickSaveAssignIO(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
+      // tslint:disable-next-line:max-line-length
+      this.msService.msComplaintUpdateAssignIODetails(this.complaintInspection.complaintsDetails.refNumber,  this.dataSaveAssignOfficer).subscribe(
+          (data: any) => {
+            this.complaintInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('IO ASSIGNED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
   }
+
+  onClickSaveAcceptRejectFormResults(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveAcceptance = {...this.dataSaveAcceptance, ...this.acceptRejectComplaintForm.value};
+      if (this.selectComplaintStatus === 'Accept') {
+        // tslint:disable-next-line:max-line-length
+        this.msService.msComplaintUpdateAcceptanceDetails(this.complaintInspection.complaintsDetails.refNumber, this.dataSaveAcceptance).subscribe(
+            (data: any) => {
+              this.complaintInspection = data;
+              console.log(data);
+              this.acceptRejectComplaintForm.reset();
+              this.SpinnerService.hide();
+              this.msService.showSuccess('COMPLAINT ACCEPTANCE, SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              this.acceptRejectComplaintForm.reset();
+              console.log(error);
+              this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+      } else if (this.selectComplaintStatus === 'Reject') {
+        const newRejectDto = new ComplaintRejectDto();
+        newRejectDto.rejected = this.dataSaveAcceptance.approved;
+        newRejectDto.rejectedRemarks = this.dataSaveAcceptance.approvedRemarks;
+        this.msService.msComplaintUpdateRejectDetails(this.complaintInspection.complaintsDetails.refNumber, newRejectDto).subscribe(
+            (data: any) => {
+              this.complaintInspection = data;
+              this.acceptRejectComplaintForm.reset();
+              console.log(data);
+              this.SpinnerService.hide();
+              this.msService.showSuccess('COMPLAINT REJECTION, SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              this.acceptRejectComplaintForm.reset();
+              console.log(error);
+              this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+      }
+
+
+
+    }
+  }
+
+  onClickSaveAdviceWhereFormResults(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveAdviceWhere = {...this.dataSaveAdviceWhere, ...this.adviceComplaintForm.value};
+        // tslint:disable-next-line:max-line-length
+        this.msService.msComplaintUpdateMandateOGADetails(this.complaintInspection.complaintsDetails.refNumber, this.dataSaveAdviceWhere).subscribe(
+            (data: any) => {
+              this.complaintInspection = data;
+              console.log(data);
+              this.acceptRejectComplaintForm.reset();
+              this.SpinnerService.hide();
+              this.msService.showSuccess('COMPLAINANT ADVICED WHERE TO TAKE THE COMPLAINT, SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              this.acceptRejectComplaintForm.reset();
+              console.log(error);
+              this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+
+    }
+  }
+
 
   onClickSaveSampleCollected(valid: boolean, valid2: boolean) {
     // if (valid && valid2) {
@@ -1218,4 +1325,18 @@ export class ComplaintDetailsComponent implements OnInit {
   }
 
 
+  updateSelectedStatus() {
+    const valueSelected = this.acceptRejectComplaintForm?.get('approved')?.value;
+    if (valueSelected === 1) {
+      this.selectComplaintStatus = 'Accept';
+    } else {
+      this.selectComplaintStatus = 'Reject';
+    }
+      console.log(`rejectAccept set to ${this.selectComplaintStatus}`);
+
+  }
+
+  onChangeSelectedDepartment() {
+    this.departmentSelected = this.acceptRejectComplaintForm?.get('department')?.value;
+  }
 }

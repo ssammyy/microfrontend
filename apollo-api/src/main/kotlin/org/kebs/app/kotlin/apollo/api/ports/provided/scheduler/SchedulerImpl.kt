@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.scheduler
 
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
@@ -426,8 +427,8 @@ class SchedulerImpl(
                                             sr = commonDaoServices.mapServiceRequestForSuccessUserNotRegistered(map, "${commonDaoServices.createJsonBodyFromEntity(fileInspectionDetail)}", "LAB RESULTS")
                                             val fuelInspectionOfficer = marketSurveillanceDaoServices.findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
                                             fuelInspectionOfficer?.assignedIo?.let {
-                                                commonDaoServices.sendEmailWithUserEntity(
-                                                    commonDaoServices.findUserByID(it), applicationMapProperties.mapMsLabResultsIONotification, fileInspectionDetail, map, sr)
+                                                runBlocking { commonDaoServices.sendEmailWithUserEntity(
+                                                    commonDaoServices.findUserByID(it), applicationMapProperties.mapMsLabResultsIONotification, fileInspectionDetail, map, sr)}
                                             }
                                         }
                                     }
