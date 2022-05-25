@@ -11,11 +11,6 @@ import {
     selectUserInfo,
     UserEntityDto
 } from 'src/app/core/store';
-import {LevyService} from "../../core/store/data/levy/levy.service";
-import {HttpErrorResponse} from "@angular/common/http";
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {NotificationService} from "../../core/store/data/std/notification.service";
-import {NgxSpinnerService} from "ngx-spinner";
 
 declare const $: any;
 
@@ -31,19 +26,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     branchCount = 0;
     countAwarded = 0;
     countExpired = 0;
-    // emailVerificationStatus !: EmailVerificationStatus;
-    public emailActivationFormGroup!: FormGroup;
-    public activateEmailFormGroup!: FormGroup;
-    emailVerificationStatus:number;
 
     user: UserEntityDto;
 
     roles: string[];
-    userId: number;
-    email: string;
-    loadingText: string;
-    isShowSendEmailForm=true;
-    isShowConfirmEmailForm=true;
 
     @ViewChild('content') content: any;
 
@@ -106,18 +92,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
 
     constructor(private router: Router,
-                private store$: Store<any>,
-                private levyService: LevyService,
-                private formBuilder: FormBuilder,
-                private notifyService: NotificationService,
-                private SpinnerService: NgxSpinnerService,
+                private store$: Store<any>
     ) {
     }
 
     public ngOnInit() {
         // Load all PermitList Details
         // this.qaService.loadFirmPermitList(this.)
-        this.getVerificationStatus();
         this.store$.select(selectCompanyInfoDtoStateData).subscribe(
             (d) => {
                 if (d) {
@@ -136,29 +117,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             return this.roles = u.roles;
         });
 
-        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            this.userId = u.id;
-            this.email= u.email;
-        });
-        this.emailActivationFormGroup = this.formBuilder.group({
-            userId:[],
-            email:[]
-        });
-        this.activateEmailFormGroup = this.formBuilder.group({
-            userId:[],
-            email:[],
-            verificationToken: []
-        });
 
     }
-    showToasterSuccess(title:string,message:string){
-        this.notifyService.showSuccess(message, title)
 
-    }
-    showToasterError(title:string,message:string){
-        this.notifyService.showError(message, title)
-
-    }
 
     ngAfterViewInit() {
         const breakCards = true;
@@ -212,76 +173,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/dashboard']);
 
     }
-    public getVerificationStatus(): void{
-        this.levyService.getVerificationStatus().subscribe(
-            (response)=> {
-                this.emailVerificationStatus = response;
-                console.log(this.emailVerificationStatus);
-            },
-            (error: HttpErrorResponse)=>{
-                console.log(error.message)
-                //alert(error.message);
-            }
-        );
-    }
-    toggleDisplayEmailForm() {
-        this.isShowSendEmailForm = !this.isShowSendEmailForm;
-        this.isShowConfirmEmailForm=true;
-
-    }
-
-    sendEmailVerificationToken(): void {
-        this.loadingText = "Generating token ...."
-        console.log(this.emailActivationFormGroup.value);
-        this.SpinnerService.show();
-        this.levyService.sendEmailVerificationToken(this.emailActivationFormGroup.value).subscribe(
-            (response ) => {
-                console.log(response);
-                this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, `Token has been generated and sent to your email Address`);
-                this.isShowConfirmEmailForm=!this.isShowConfirmEmailForm;
-                this.isShowSendEmailForm=true;
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Generating Token`);
-                console.log(error.message);
-            }
-        );
-        this.hideCloseModal();
 
 
-    }
-    @ViewChild('myModal') myModal;
-
-    openModel() {
-        this.myModal.nativeElement.className = 'modal fade show';
-    }
-
-    @ViewChild('closeModal') private closeModal: ElementRef | undefined;
-
-    public hideCloseModal() {
-        this.closeModal?.nativeElement.click();
-    }
-
-    confirmEmailAddress(): void {
-        this.loadingText = "Validating Email Address ...."
-        console.log(this.activateEmailFormGroup.value);
-        this.SpinnerService.show();
-        this.levyService.confirmEmailAddress(this.activateEmailFormGroup.value).subscribe(
-            (response ) => {
-                console.log(response);
-                this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, `Email Address Validated`);
-                this.isShowSendEmailForm=true;
-                this.isShowConfirmEmailForm=true;
-               // this.router.navigateByUrl('/dashboard').then(r => {});
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Validating Email Address`);
-                console.log(error.message);
-            }
-        );
-    }
 }

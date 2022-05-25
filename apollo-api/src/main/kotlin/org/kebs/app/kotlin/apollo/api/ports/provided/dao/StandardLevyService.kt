@@ -116,7 +116,7 @@ class StandardLevyService(
         companyProfileEditEntity: CompanyProfileEditEntity
     ): ProcessInstanceSiteResponse {
 
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         val variables: MutableMap<String, Any> = mutableMapOf()
         companyProfileEditEntity.name?.let { variables["companyName"] = it }
         companyProfileEditEntity.kraPin?.let { variables["kraPin"] = it }
@@ -192,7 +192,7 @@ class StandardLevyService(
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
             ?.let { entity ->
 
-                val loggedInUser = commonDaoServices.loggedInUserDetails()
+                val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
                 val variables: MutableMap<String, Any> = mutableMapOf()
                 companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
                 companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
@@ -301,7 +301,7 @@ return getUserTasks();
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
             ?.let { entity ->
 
-                val loggedInUser = commonDaoServices.loggedInUserDetails()
+                val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
                 val variables: MutableMap<String, Any> = mutableMapOf()
                 companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
                 companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
@@ -402,7 +402,7 @@ return getUserTasks();
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
             ?.let { entity ->
 
-                val loggedInUser = commonDaoServices.loggedInUserDetails()
+                val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
                 val variables: MutableMap<String, Any> = mutableMapOf()
                 companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
                 companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
@@ -507,7 +507,7 @@ return getUserTasks();
     fun assignCompany(
         companyProfileEntity: CompanyProfileEntity
     ): ProcessInstanceSiteResponse {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
 
         val variables: MutableMap<String, Any> = mutableMapOf()
                     companyProfileEntity.assignedTo?.let { variables["assignedTo"] = it }
@@ -583,12 +583,12 @@ return getUserTasks();
     fun scheduleSiteVisit(
         standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
     ): ProcessInstanceResponseSite {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         val variables: MutableMap<String, Any> = java.util.HashMap()
         standardLevyFactoryVisitReportEntity.manufacturerEntity?.let { variables["manufacturerEntity"] = it }
         standardLevyFactoryVisitReportEntity.scheduledVisitDate?.let { variables["scheduledVisitDate"] = it }
         standardLevyFactoryVisitReportEntity.createdBy?.let { variables["createdBy"] = it }
-        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["originator"] = it }
         standardLevyFactoryVisitReportEntity.companyName?.let { variables["companyName"] = it }
         standardLevyFactoryVisitReportEntity.entryNumber?.let { variables["entryNumber"] = it }
@@ -654,7 +654,7 @@ return getUserTasks();
     //Return task details for PL OFFICER
     fun getUserTasks(): List<TaskDetailsBody> {
         val tasks = taskService.createTaskQuery()
-            .taskAssignee("${commonDaoServices.loggedInUserDetails().id ?: throw NullValueNotAllowedException(" invalid user id provided")}")
+            .taskAssignee("${commonDaoServices.loggedInUserDetailsEmail().id ?: throw NullValueNotAllowedException(" invalid user id provided")}")
             .list()
         return getTaskDetails(tasks)
     }
@@ -680,20 +680,20 @@ return getUserTasks();
 
 //        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_SL_PRINCIPAL_LEVY_OFFICER).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         val tasks = taskService.createTaskQuery()
-            .taskAssignee("${commonDaoServices.loggedInUserDetails().id ?: throw NullValueNotAllowedException(" invalid user id provided")}")
+            .taskAssignee("${commonDaoServices.loggedInUserDetailsEmail().id ?: throw NullValueNotAllowedException(" invalid user id provided")}")
             .list()
         return getTaskDetails(tasks)
     }
 
     fun reportOnSiteVisitTest(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity) {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         val variables: MutableMap<String, Any> = java.util.HashMap()
         standardLevyFactoryVisitReportEntity.visitDate?.let { variables["visitDate"] = it }
         standardLevyFactoryVisitReportEntity.purpose?.let { variables["purpose"] = it }
         standardLevyFactoryVisitReportEntity.personMet?.let { variables["personMet"] = it }
         standardLevyFactoryVisitReportEntity.actionTaken?.let { variables["actionTaken"] = it }
         standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
-        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         standardLevyFactoryVisitReportEntity.userType?.let { variables["userType"] = it }
         standardLevyFactoryVisitReportEntity.makeRemarks?.let { variables["makeRemarks"] = it }
@@ -719,14 +719,14 @@ return getUserTasks();
     }
 
     fun reportOnSiteVisit(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity): ProcessInstanceResponseValueSite {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         val variables: MutableMap<String, Any> = java.util.HashMap()
         standardLevyFactoryVisitReportEntity.visitDate?.let { variables["visitDate"] = it }
         standardLevyFactoryVisitReportEntity.purpose?.let { variables["purpose"] = it }
         standardLevyFactoryVisitReportEntity.personMet?.let { variables["personMet"] = it }
         standardLevyFactoryVisitReportEntity.actionTaken?.let { variables["actionTaken"] = it }
         standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
-        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         standardLevyFactoryVisitReportEntity.userType?.let { variables["userType"] = it }
         standardLevyFactoryVisitReportEntity.makeRemarks?.let { variables["makeRemarks"] = it }
@@ -888,7 +888,7 @@ return getUserTasks();
         standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): List<TaskDetailsBody> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         standardLevyFactoryVisitReportEntity.assistantManagerRemarks?.let { variables["assistantManagerRemarks"] = it }
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["No"] = it }
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["Yes"] = it }
@@ -983,7 +983,7 @@ return getUserTasks();
             val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
             val recipient= "Christine.gaiti@bskglobaltech.com"
             val subject = "Report Rejected  $userEmail"
-            val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetails().userName+".Log in to KIMS to make recommended changes."
+            val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetailsEmail().userName+".Log in to KIMS to make recommended changes."
             notifications.sendEmail(recipient, subject, messageBody)
 
 
@@ -1044,11 +1044,11 @@ return getUserTasks();
     fun decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
                                      standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks): List<TaskDetailsBody> {
         val variables: MutableMap<String, Any> = mutableMapOf()
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["Yes"] = it }
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["No"] = it }
         standardLevyFactoryVisitReportEntity.cheifManagerRemarks?.let { variables["cheifManagerRemarks"] = it }
-        variables["status"] = 2
+        variables["visitStatus"] = 2
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         val userIntType = standardLevyFactoryVisitReportEntity.userType
         val userIntTypes = userIntType.toString()
@@ -1135,7 +1135,7 @@ return getUserTasks();
             val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
             val recipient= "Christine.gaiti@bskglobaltech.com"
             val subject = "Report Rejected  $userEmail"
-            val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetails().userName+".Log in to KIMS to make recommended changes."
+            val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetailsEmail().userName+".Log in to KIMS to make recommended changes."
             notifications.sendEmail(recipient, subject, messageBody)
 
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
@@ -1208,11 +1208,11 @@ return getUserTasks();
     fun siteVisitReportFeedbackTest(
         standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
     ): String {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         val variables: MutableMap<String, Any> = java.util.HashMap()
         standardLevyFactoryVisitReportEntity.officersFeedback?.let { variables["officersFeedback"] = it }
         standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
-        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
 
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
@@ -1234,11 +1234,11 @@ return getUserTasks();
     fun siteVisitReportFeedback(
         standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
     ): ProcessInstanceResponseValueSite {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         val variables: MutableMap<String, Any> = java.util.HashMap()
         standardLevyFactoryVisitReportEntity.officersFeedback?.let { variables["officersFeedback"] = it }
         standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
-        standardLevyFactoryVisitReportEntity.status?.let { variables["status"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
 
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
@@ -1367,7 +1367,7 @@ return getUserTasks();
     }
 
     fun getSlLoggedIn(): UserTypeHolder {
-        commonDaoServices.loggedInUserDetails().id?.let { id ->
+        commonDaoServices.loggedInUserDetailsEmail().id?.let { id ->
             return usersEntityRepository.getSlLoggedById(id)
         } ?: throw NullValueNotAllowedException("User Not Found")
     }
@@ -1380,13 +1380,13 @@ return getUserTasks();
 //    }
 //
     fun getRoles(): List<UserRoleHolder> {
-        commonDaoServices.loggedInUserDetails().id?.let { id ->
+        commonDaoServices.loggedInUserDetailsEmail().id?.let { id ->
             return iUserRoleAssignmentsRepository.getRoleByUserId(id)
         } ?: throw NullValueNotAllowedException("Role Not Found")
     }
 
     fun getNotificationFormDetails(): NotificationFormDetailsHolder{
-        commonDaoServices.loggedInUserDetails().id
+        commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureId(id)
                     .let {
@@ -1401,7 +1401,7 @@ return getUserTasks();
     }
 
     fun getBranchName(): BranchNameHolder{
-        commonDaoServices.loggedInUserDetails().id
+        commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureId(id)
                     .let {
@@ -1416,7 +1416,7 @@ return getUserTasks();
     }
 
     fun getSLNotificationStatus(): Boolean {
-        commonDaoServices.loggedInUserDetails().id
+        commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureId(id)
                     .let {
@@ -1438,7 +1438,7 @@ return getUserTasks();
 
 
     fun getIfRecordExists(): Boolean {
-        val userId = commonDaoServices.loggedInUserDetails().id
+        val userId = commonDaoServices.loggedInUserDetailsEmail().id
         val gson = Gson()
         KotlinLogging.logger { }.info { "User ID" + gson.toJson(userId) }
         val companyId = companyProfileRepo.getManufactureId(userId) ?: throw ExpectedDataNotFound("NO Company Found")
@@ -1456,11 +1456,11 @@ return getUserTasks();
 //        return iBusinessNatureRepository.getManufacturerStatus(businessNature)
 //    }
     fun getVerificationStatus(): Int {
-        return commonDaoServices.loggedInUserDetails().emailActivationStatus
+        return commonDaoServices.loggedInUserDetailsEmail().emailActivationStatus
     }
 
     fun getManufacturerStatus(): BusinessTypeHolder{
-        commonDaoServices.loggedInUserDetails().id
+        commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getBusinessNature(id)
                     .let {
@@ -1470,6 +1470,16 @@ return getUserTasks();
             } ?: throw NullValueNotAllowedException("User Not Found")
 
     }
+
+//    fun getOperationStatus(): ManufacturerStatusHolder{
+//        commonDaoServices.loggedInUserDetailsEmail().id
+//            ?.let { id ->
+//             return   companyProfileRepo.getOperationStatus(id)
+//
+//            } ?: throw NullValueNotAllowedException("User Not Found")
+//
+//    }
+
 
     fun getSlNotificationFormDetails(manufactureId: Long): NotificationFormDetailsHolder {
         stdLevyNotificationFormRepository.findTopByManufactureIdOrderByIdDesc(manufactureId)
@@ -1488,7 +1498,7 @@ return getUserTasks();
 
 
     fun getCompanyDirectors(): List<DirectorListHolder>? {
-        commonDaoServices.loggedInUserDetails().id
+        commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureId(id)
                     .let {
@@ -1765,7 +1775,7 @@ return getUserTasks();
     }
 
     fun getManufacturesLevyPenalty(): MutableList<LevyPenalty>{
-        commonDaoServices.loggedInUserDetails().id
+        commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureEntryNo(id)
                     .let {
@@ -1781,7 +1791,7 @@ return getUserTasks();
     }
 
     fun getManufacturesLevyPayments(): MutableList<LevyPayments>{
-        commonDaoServices.loggedInUserDetails().id
+        commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureEntryNo(id)
                     .let {

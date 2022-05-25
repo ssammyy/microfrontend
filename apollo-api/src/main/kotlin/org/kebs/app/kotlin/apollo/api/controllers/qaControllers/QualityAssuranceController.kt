@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
 
 import mu.KotlinLogging
+import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -29,6 +30,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import java.sql.Date
 import javax.servlet.http.HttpServletResponse
 
 
@@ -1220,13 +1222,43 @@ class QualityAssuranceController(
                         )
                         awardedPermitNumber = previousPermit.awardedPermitNumber
                         dateOfIssue = commonDaoServices.getCurrentDate()
-                        effectiveDate = commonDaoServices.addYDayToDate(
-                            previousPermit.dateOfExpiry ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"), 1
-                        )
-                        dateOfExpiry = commonDaoServices.addYearsToDate(
-                            effectiveDate ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"),
-                            permitType?.numberOfYears ?: throw Exception("MISSING NUMBER OF YEAR")
-                        )
+                        val date = previousPermit.dateOfExpiry
+                        var effectiveDateVariable: Date? = null
+                        var dateOfExpiryVariable: Date? = null
+                        if(date==null)
+                        {
+//                            println(previousPermit.versionNumber)
+//                            println(previousPermit.dateOfExpiry)
+                            when (previousPermit.versionNumber) {
+                                2L -> {
+
+                                    val migratedPermit = qaDaoServices.findPermitWithPermitRefNumberMigrated(
+                                        permitDetailsFromDB.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+                                    )
+                                    effectiveDateVariable = commonDaoServices.addYDayToDate(
+                                        migratedPermit.dateOfExpiry ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"), 1
+                                    )
+                                    dateOfExpiryVariable = commonDaoServices.addYearsToDate(
+                                        effectiveDateVariable ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE MKI"),
+                                        permitType?.numberOfYears ?: throw Exception("MISSING NUMBER OF YEAR")
+                                    )
+
+                                }
+                            }
+                        }
+                        else {
+                            effectiveDateVariable = commonDaoServices.addYDayToDate(
+                                previousPermit.dateOfExpiry ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE KKK"), 1
+                            )
+                            dateOfExpiryVariable = commonDaoServices.addYearsToDate(
+                                effectiveDateVariable ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"),
+                                permitType?.numberOfYears ?: throw Exception("MISSING NUMBER OF YEAR")
+                            )
+                        }
+
+                        effectiveDate =effectiveDateVariable
+                        dateOfExpiry = dateOfExpiryVariable
+
                     }
                     userTaskId = null
                     permitAwardStatus = map.activeStatus

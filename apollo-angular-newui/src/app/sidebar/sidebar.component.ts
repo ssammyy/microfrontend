@@ -301,7 +301,7 @@ export class SidebarComponent implements OnInit {
     fullname = '';
 
     constructor(
-        private store$: Store<any>, private router: Router,
+        private store$: Store<any>, private router: Router
     ) {
     }
 
@@ -321,6 +321,7 @@ export class SidebarComponent implements OnInit {
             this.roles = u.roles;
             return this.fullname = u.fullName;
         });
+
     }
 
     // Check if role is in required privileges
@@ -359,4 +360,6 @@ export class SidebarComponent implements OnInit {
     onClickGoToProfilePage() {
         this.router.navigate(['/profile']);
     }
+
+
 }

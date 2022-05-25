@@ -1,9 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.service
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.SearchForms
@@ -529,13 +526,13 @@ class DestinationInspectionService(
                     "BlackList Consignment Document [blacklistStatus= ${1}, blacklistRemarks= ${remarks}]"
             val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, loggedInUser)
             consignmentDocument.assigner?.let {
-                commonDaoServices.sendEmailWithUserEntity(
+                runBlocking {commonDaoServices.sendEmailWithUserEntity(
                         it,
                         daoServices.diCdAssignedUuid,
                         consignmentDocument,
                         map,
                         sr
-                )
+                )}
             }
             return true
         } catch (ex: Exception) {

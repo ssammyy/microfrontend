@@ -20,7 +20,7 @@
                                 >
                                     <thead>
                                     <tr>
-                                        <th>Entry No.</th>
+                                        <th>No.</th>
                                         <th>Company Name</th>
                                         <th>Status</th>
                                         <th class="disabled-sorting text-right">Actions</th>
@@ -28,7 +28,7 @@
                                     </thead>
                                     <tfoot>
                                     <tr>
-                                        <th>Entry No.</th>
+                                        <th>No.</th>
                                         <th>Company Name</th>
                                         <th>Active</th>
                                         <th class="disabled-sorting text-right">Actions</th>
@@ -38,7 +38,10 @@
                                     <tr *ngFor="let row of companies$ | async">
                                         <td>{{row.id}}</td>
                                         <td>{{row.name}}</td>
-                                        <td>{{row.status}}</td>
+                                        <td *ngIf="row.status==1"><span class="badge badge-info" style="width: 94px;">Active</span></td>
+                                        <td *ngIf="row.status==2"><span class="badge badge-default" style="width: 94px;">Suspended</span></td>
+                                        <td *ngIf="row.status==0"><span class="badge badge-info" style="width: 94px;">Closed</span></td>
+                                        <td *ngIf="row.status==4"><span class="badge badge-warning" style="width: 94px;">In-Active</span></td>
                                         <td class="text-right">
                                             <a (click)="viewRecord(row)"
                                                class="btn btn-link btn-info"><i
@@ -51,9 +54,6 @@
                                                class="btn btn-link btn-warning"><i
                                                     class="material-icons">dvr</i> View Branches</a>
 
-                                            <a (click)="onClickPlantDetails(row)"
-                                               class="btn btn-link btn-danger"><i
-                                                    class="material-icons">close</i> Close Firm</a>
                                         </td>
                                     </tr>
                                     </tbody>

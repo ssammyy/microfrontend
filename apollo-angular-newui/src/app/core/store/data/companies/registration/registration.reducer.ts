@@ -76,7 +76,7 @@ export const initialBrsValidationState: BrsValidationState = {
         streetName: '',
         town: 0,
         yearlyTurnover: 0,
-        status: false,
+        status: 0,
         otherCategory: ''
     },
     step: 0

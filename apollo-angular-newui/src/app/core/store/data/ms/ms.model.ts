@@ -7,13 +7,18 @@ export class Ms {
 export class ComplaintApproveDto {
     department: number;
     division: number;
-    approveStatus: number;
     approvedRemarks: string;
+    approved: number;
 }
 
 export class ComplaintAdviceRejectDto {
-    rejectStatus: number;
+    mandateForOga: number;
     advisedWhereToRemarks: string;
+    rejectedRemarks: string;
+}
+
+export class ComplaintRejectDto {
+    rejected: number;
     rejectedRemarks: string;
 }
 
@@ -98,7 +103,9 @@ export class ApiResponseModel {
 export class AllComplaintsDetailsDto {
     complaintsDetails: ComplaintDetailsDto;
     officersList: MsUsersDto[];
+    hofList: MsUsersDto[];
     officersAssigned: MsUsersDto;
+    hofAssigned: MsUsersDto;
     remarksDetails: MSRemarksDto[];
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto;
@@ -110,6 +117,11 @@ export class MSRemarksDto {
     remarksDescription: string;
     processBy: string;
     processName: string;
+}
+
+export class ComplaintsTaskAndAssignedDto {
+    complaintAssigned: ComplaintsListDto[];
+    complaintTaskID: ComplaintsListDto[];
 }
 
 export class ComplaintsListDto {
@@ -141,9 +153,9 @@ export class ComplaintDetailsDto {
     buildingName: string;
     date: Date;
     status: string;
-    approvedStatus: number;
-    assignedIOStatus: number;
-    rejectedStatusStatus: number;
+    approvedStatus: boolean;
+    assignedIOStatus: boolean;
+    rejectedStatus: boolean;
     complaintFiles: ComplaintsFilesFoundDto[];
 }
 
@@ -243,6 +255,11 @@ export class BatchFileFuelSaveDto {
 export class FuelEntityAssignOfficerDto {
     assignedUserID: bigint;
     remarks: string;
+}
+
+export class ComplaintAssignDto {
+    assignedRemarks: string;
+    assignedIo: bigint;
 }
 
 export class CompliantRemediationDto {

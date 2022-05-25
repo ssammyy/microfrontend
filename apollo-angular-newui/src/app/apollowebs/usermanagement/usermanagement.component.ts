@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
     Go,
@@ -8,7 +8,7 @@ import {
     UserEntityDto,
     UserEntityService
 } from '../../core/store';
-import {Observable, of} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {Titles, TitlesService} from '../../core/store/data/title';
 import {Store} from '@ngrx/store';
 import {catchError} from 'rxjs/operators';
@@ -31,6 +31,8 @@ import {
     Towns
 } from '../../../../../apollo-webs/src/app/shared/models/master-data-details';
 import swal from 'sweetalert2';
+import {DataTableDirective} from "angular-datatables";
+import {SACSummary} from "../../core/store/data/std/request_std.model";
 
 declare interface DataTable {
     headerRow: string[];
@@ -49,6 +51,9 @@ declare const $: any;
 export class UsermanagementComponent implements OnInit {
 
     user: UserEntityDto;
+
+    tasks: UserEntityDto[] = [];
+
     title$: Observable<Titles[]>;
     addUserFormGroup: FormGroup = new FormGroup({});
     public dataTable!: DataTable;
@@ -76,7 +81,13 @@ export class UsermanagementComponent implements OnInit {
     l2SubSubSections: SubSectionsL2EntityDto[] = [];
     counties: Counties[] = [];
     towns: Towns[] = [];
-
+    dtOptions: DataTables.Settings = {};
+    dtTrigger: Subject<any> = new Subject<any>();
+    @ViewChild(DataTableDirective, {static: false})
+    dtElement: DataTableDirective;
+    isDtInitialized: boolean = false
+    public itemId: number;
+    loadingText: string;
 
     constructor(private store$: Store<any>,
                 private _loading: LoadingService,
@@ -95,40 +106,54 @@ export class UsermanagementComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.loadingText = "Retrieving Data Please Wait ...."
+        this.SpinnerService.show();
         let formattedArray = [];
         this.SpinnerService.show();
         this.masterService.loadUsers().subscribe(
             (data: any) => {
+                this.SpinnerService.hide();
+                this.tasks = data;
+
                 formattedArray = data.map(i => [i.id, i.firstName, i.lastName, i.userName, i.email, i.registrationDate, i.status]);
                 this.SpinnerService.hide();
+                if (this.isDtInitialized) {
+                    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                        dtInstance.destroy();
+                        this.dtTrigger.next();
+                    });
+                } else {
+                    this.isDtInitialized = true
+                    this.dtTrigger.next();
+                }
 
-                this.dataTable = {
-                    headerRow: ['Full Name', 'User name', 'Email', 'Date Registered', 'Status', 'Actions'],
-                    footerRow: ['Full Name', 'User name', 'Email', 'Date Registered', 'Status', 'Actions'],
-                    dataRows: formattedArray
-                };
+                // this.dataTable = {
+                //     headerRow: ['Full Name', 'User name', 'Email', 'Date Registered', 'Status', 'Actions'],
+                //     footerRow: ['Full Name', 'User name', 'Email', 'Date Registered', 'Status', 'Actions'],
+                //     dataRows: formattedArray
+                // };
             });
 
 
-
-        this.dataTable2 = {
-            headerRow: ['Role Name', 'Functions', 'Modules', 'Actions'],
-            footerRow: ['Role Name', 'Functions', 'Modules', 'Actions'],
-
-            dataRows: [
-                ['STC Secretary', 'View Standards', 'Standards', 'btn-round'],
-
-            ]
-        };
-        this.dataTable3 = {
-            headerRow: ['Role Name', 'Menu', 'Submenus', 'Actions'],
-            footerRow: ['Role Name', 'Menu', 'Submenu', 'Actions'],
-
-            dataRows: [
-                ['STC Secretary', 'Request', 'View Standard Request,Edit Standard Request', 'btn-round'],
-
-            ]
-        };
+        //
+        // this.dataTable2 = {
+        //     headerRow: ['Role Name', 'Functions', 'Modules', 'Actions'],
+        //     footerRow: ['Role Name', 'Functions', 'Modules', 'Actions'],
+        //
+        //     dataRows: [
+        //         ['STC Secretary', 'View Standards', 'Standards', 'btn-round'],
+        //
+        //     ]
+        // };
+        // this.dataTable3 = {
+        //     headerRow: ['Role Name', 'Menu', 'Submenus', 'Actions'],
+        //     footerRow: ['Role Name', 'Menu', 'Submenu', 'Actions'],
+        //
+        //     dataRows: [
+        //         ['STC Secretary', 'Request', 'View Standard Request,Edit Standard Request', 'btn-round'],
+        //
+        //     ]
+        // };
 
         this.getALlRecommendedDetails();
 

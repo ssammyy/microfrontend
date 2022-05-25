@@ -2,10 +2,10 @@ import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
   BatchFileFuelSaveDto,
-  ComplaintDetailsDto, ComplaintsListDto, FuelBatchDetailsDto,
+  ComplaintDetailsDto, ComplaintsListDto, ComplaintsTaskAndAssignedDto, FuelBatchDetailsDto,
   FuelEntityDto,
   FuelInspectionDto,
-  FuelInspectionScheduleListDetailsDto
+  FuelInspectionScheduleListDetailsDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {Observable, Subject, throwError} from 'rxjs';
 import {County, CountyService, loadCountyId, selectCountyIdData, selectUserInfo, Town, TownService} from '../../../../core/store';
@@ -18,7 +18,7 @@ import {CustomeDateValidators, MsService} from '../../../../core/store/data/ms/m
 @Component({
   selector: 'app-complaint-list',
   templateUrl: './complaint-list.component.html',
-  styleUrls: ['./complaint-list.component.css']
+  styleUrls: ['./complaint-list.component.css'],
 })
 export class ComplaintListComponent implements OnInit {
   @ViewChild('editModal') editModal !: TemplateRef<any>;
@@ -55,9 +55,9 @@ export class ComplaintListComponent implements OnInit {
       delete: false,
       custom: [
         //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View More</i>'}
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View More</i>'},
       ],
-      position: 'right' // left|right
+      position: 'right', // left|right
     },
     rowClassFunction: (row) => {
       // console.log(row)
@@ -70,7 +70,7 @@ export class ComplaintListComponent implements OnInit {
     },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true
+      confirmDelete: true,
     },
     noDataMessage: 'No data found',
     columns: {
@@ -82,17 +82,17 @@ export class ComplaintListComponent implements OnInit {
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
-        filter: false
+        filter: false,
       },
       complaintTitle: {
         title: 'Complaint Title',
         type: 'string',
-        filter: false
+        filter: false,
       },
       targetedProducts: {
         title: 'Product Brand',
         type: 'string',
-        filter: false
+        filter: false,
       },
       // complaintCategory: {
       //   title: 'Complaint Category',
@@ -102,18 +102,18 @@ export class ComplaintListComponent implements OnInit {
       transactionDate: {
         title: 'Date Received',
         type: 'date',
-        filter: false
+        filter: false,
       },
       progressStep: {
         title: 'Status',
         type: 'string',
-        filter: false
+        filter: false,
       },
     },
     pager: {
       display: true,
-      perPage: 10
-    }
+      perPage: 10,
+    },
   };
   dataSet: LocalDataSource = new LocalDataSource();
   documentTypes: any[];
@@ -125,6 +125,7 @@ export class ComplaintListComponent implements OnInit {
   managerPetroleumUser = false;
   ioUser = false;
   search: Subject<string>;
+  loadedListData: ComplaintsTaskAndAssignedDto;
   loadedData: ComplaintsListDto[];
 
 
@@ -135,7 +136,7 @@ export class ComplaintListComponent implements OnInit {
               private SpinnerService: NgxSpinnerService,
               private countyService: CountyService,
               private townService: TownService,
-              private msService: MsService
+              private msService: MsService,
   ) {
     this.county$ = countyService.entities$;
     this.town$ = townService.entities$;
@@ -148,7 +149,7 @@ export class ComplaintListComponent implements OnInit {
       return this.roles = u.roles;
     });
 
-    this.loadData(this.defaultPage, this.defaultPageSize);
+    this.loadData(this.defaultPage, this.defaultPageSize, this.activeStatus);
     this.addNewBatchForm = this.formBuilder.group({
       county: ['', Validators.required],
       town: ['', Validators.required],
@@ -156,10 +157,10 @@ export class ComplaintListComponent implements OnInit {
     });
   }
 
-  private loadData(page: number, records: number): any {
+  private loadData(page: number, records: number, routeTake: string): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
-    this.msService.loadMSComplaintList(String(page), String(records)).subscribe(
+    this.msService.loadMSComplaintList(String(page), String(records), routeTake).subscribe(
         (data) => {
           console.log(`TEST DATA===${data}`);
           this.loadedData = data.data;
@@ -172,7 +173,7 @@ export class ComplaintListComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
-        }
+        },
     );
 
     // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
@@ -204,7 +205,7 @@ export class ComplaintListComponent implements OnInit {
   onManagerPetroleumChange(event: any) {
     if (this.managerPetroleumUser) {
       this.personalTasks = event.target.value;
-      this.loadData(this.defaultPage, this.defaultPageSize);
+      this.loadData(this.defaultPage, this.defaultPageSize, this.activeStatus);
     }
   }
 
@@ -214,7 +215,7 @@ export class ComplaintListComponent implements OnInit {
     this.searchStatus = null;
     if (status !== this.activeStatus) {
       this.activeStatus = status;
-      this.loadData(this.defaultPage, this.defaultPageSize);
+      this.loadData(this.defaultPage, this.defaultPageSize, this.activeStatus);
     }
   }
 
@@ -248,7 +249,7 @@ export class ComplaintListComponent implements OnInit {
           } else {
             return throwError('Invalid request, County id is required');
           }
-        }
+        },
     );
 
   }
@@ -267,7 +268,7 @@ export class ComplaintListComponent implements OnInit {
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('NEW FUEL BATCH CREATED SUCCESSFUL');
-          }
+          },
           // ,
           // (err: HttpErrorResponse) => {
           //   console.warn(err.error);
@@ -311,7 +312,7 @@ export class ComplaintListComponent implements OnInit {
     if (pageIndex) {
       this.currentPageInternal = pageIndex - 1;
       this.currentPage = pageIndex;
-      this.loadData(this.currentPageInternal, this.defaultPageSize);
+      this.loadData(this.currentPageInternal, this.defaultPageSize, this.activeStatus);
     }
   }
 

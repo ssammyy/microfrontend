@@ -104,6 +104,8 @@ class QualityAssuranceHandler(
     private val qaAllWorkPlanCreatedListPage = "quality-assurance/created-workPlan-list.html"
     private val qaInspectionReportPage = "quality-assurance/customer/inspection-report-new-details"
     private val qaInspectionReportListsPage = "quality-assurance/customer/inspection-report-list"
+    private val qaReportsPage = "quality-assurance/employees-reports-home"
+
 
     //Inspection details
     private val cdSampleCollectPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-collect.html"
@@ -115,7 +117,8 @@ class QualityAssuranceHandler(
 
     @PreAuthorize(
         "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') " +
-                "or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"
+                "or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ')" +
+                " or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')"
     )
     fun home(req: ServerRequest): ServerResponse {
         try {
@@ -144,13 +147,38 @@ class QualityAssuranceHandler(
     }
 
     @PreAuthorize(
+        " hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') " +
+                "or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ')" +
+                " or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')"
+    )
+    fun reports(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+
+                    req.attributes()["permitFmarkType"] = qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark)
+                    req.attributes()["permitSmarkType"] = qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdSmark)
+                    req.attributes()["permitDmarkType"] = qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIDDmark)
+                    req.attributes()["map"] = map
+            return ok().render(qaReportsPage, req.attributes())
+
+            }
+        catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            throw e
+        }
+    }
+
+    @PreAuthorize(
         "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ')" +
-                " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"
+                " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or " +
+                "hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')"
     )
     fun permitList(req: ServerRequest): ServerResponse {
         try {
             val auth = commonDaoServices.loggedInUserAuthentication()
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+
             val map = commonDaoServices.serviceMapDetails(appId)
 //            var viewPage = qaPermitListPage
             val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
@@ -181,6 +209,7 @@ class QualityAssuranceHandler(
             var permitListMyTasksAddedTogether = mutableListOf<PermitEntityDto>()
             var permitListAllApplicationsAddedTogether = mutableListOf<PermitEntityDto>()
             var permitListAllCompleteAddedTogether = mutableListOf<PermitEntityDto>()
+
 
             //Get logged in user Task required there attention
             permitListMyTasksAddedTogether =
@@ -221,9 +250,10 @@ class QualityAssuranceHandler(
         permitListAllApplicationsAddedTogether: MutableList<PermitEntityDto>,
         permitListAllCompleteAddedTogether: MutableList<PermitEntityDto>
     ): Pair<MutableList<PermitEntityDto>, MutableList<PermitEntityDto>> {
+        println(auth.authorities)
         auth.authorities.forEach { a ->
 
-            if (a.authority == "QA_OFFICER_READ") {
+            if (a.authority == "QA_OFFICER_READ" ) {
                 qaDaoServices.listPermits(
                     qaDaoServices.findAllQAOPermitListWithPermitType(
                         loggedInUser,
@@ -234,6 +264,19 @@ class QualityAssuranceHandler(
                 qaDaoServices.listPermits(
                     qaDaoServices.findAllQAOPermitListWithPermitTypeAwardedStatusIsNotNull(
                         loggedInUser,
+                        permitTypeID
+                    ), map
+                ).let { permitListAllCompleteAddedTogether.addAll(it) }
+            }
+            if (a.authority == "QA_DIRECTOR_READ" ) {
+                qaDaoServices.listPermits(
+                    qaDaoServices.findAllPermitListWithPermitType(
+                        permitTypeID
+                    ), map
+                ).let { permitListAllApplicationsAddedTogether.addAll(it) }
+
+                qaDaoServices.listPermits(
+                    qaDaoServices.findAllPermitListWithPermitTypeAwardedStatusIsNotNull(
                         permitTypeID
                     ), map
                 ).let { permitListAllCompleteAddedTogether.addAll(it) }
