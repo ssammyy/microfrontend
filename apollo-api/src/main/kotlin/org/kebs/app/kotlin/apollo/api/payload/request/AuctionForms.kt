@@ -68,6 +68,9 @@ class AuctionForm {
     @NotEmpty(message = "Shipment location is required")
     var shipmentPort: String? = null
 
+    var containerNo: String? = null // B/L No
+    var manifestNo: String? = null // B/L No
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     var shipmentDate: Timestamp? = null
 
@@ -95,6 +98,8 @@ class AuctionForm {
         request.location = this.itemLocation
         request.auctionLotNo = this.auctionLotNo
         request.auctionDate = this.auctionDate
+        request.manifestNo = this.manifestNo
+        request.blNo = this.containerNo
         request.shipmentPort = this.shipmentPort
         request.shipmentDate = this.shipmentDate
         request.arrivalDate = this.arrivalDate

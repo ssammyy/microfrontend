@@ -4,6 +4,7 @@ package org.kebs.app.kotlin.apollo.api
 import com.google.gson.Gson
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
+import org.joda.time.DateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -21,8 +22,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.math.BigDecimal
 import java.security.SecureRandom
+import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
+import java.util.*
 
 
 @ExtendWith(SpringExtension::class)
@@ -101,6 +104,58 @@ class QAControllerTest {
             qaDaoServices.permitRejectedVersionCreation(842, map, commonDaoServices.findUserByID(2046))
 //        KotlinLogging.logger { }.info { "complaint = ${complaint.toString()} " }
     }
+    @Test
+    fun permitDetailsB() {
+        val previousPermit = qaDaoServices.findPermitWithPermitRefNumberLatest(52865.toString())
+        KotlinLogging.logger { }.info { "Preddate = $previousPermit.dateOfExpiry " }
+        println(previousPermit.dateOfExpiry)
+
+
+        val date = previousPermit.dateOfExpiry
+        var effectiveDateVariable: Date? = null
+        var dateOfExpiryVariable: Date? = null
+        if(date==null)
+        {
+            println(previousPermit.versionNumber)
+            println(previousPermit.dateOfExpiry)
+            when (previousPermit.versionNumber) {
+                2L -> {
+
+                    val migratedPermit = qaDaoServices.findPermitWithPermitRefNumberMigrated(
+                        52865.toString() ?: throw Exception("INVALID PERMIT REF NUMBER")
+                    )
+                     effectiveDateVariable = commonDaoServices.addYDayToDate(
+                        migratedPermit.dateOfExpiry ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"), 1
+                    )
+                    dateOfExpiryVariable = commonDaoServices.addYearsToDate(
+                        effectiveDateVariable ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE MKI"),
+                        2 ?: throw Exception("MISSING NUMBER OF YEAR")
+                    )
+
+                }
+            }
+        }
+        else {
+             effectiveDateVariable = commonDaoServices.addYDayToDate(
+                previousPermit.dateOfExpiry ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE KKK"), 1
+            )
+            dateOfExpiryVariable = commonDaoServices.addYearsToDate(
+                effectiveDateVariable ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"),
+                2 ?: throw Exception("MISSING NUMBER OF YEAR")
+            )
+        }
+
+
+
+
+        KotlinLogging.logger { }.info { "date = $effectiveDateVariable " }
+        KotlinLogging.logger { }.info { "date = $dateOfExpiryVariable " }
+
+    }
+
+
+
+
 
     @Test
     fun permitDetailsCalculation() {

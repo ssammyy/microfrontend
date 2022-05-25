@@ -1,7 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.payload;
 
+import io.ktor.util.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import java.sql.Timestamp
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -102,6 +104,7 @@ class InspectionEngineeringItemDto {
     var description: String? = null
     var productDescription: String? = null
     var itemNumber: Long? = null
+    var section: String? = null
     var itemType: String? = null
     var csName: String? = null
     var csDate: String? = null
@@ -125,6 +128,7 @@ class InspectionEngineeringItemDto {
                 sampleUpdated = entity.sampleUpdated
                 description = entity.description
                 itemId = entity.itemId?.id
+                section = entity.section
                 category = entity.category
                 quantityVerified = entity.quantityVerified
                 quantityDeclared = entity.quantityVerified
@@ -208,6 +212,7 @@ class InspectionAgrochemItemDto {
     var category: String? = null
     var entryPoint: String? = null
     var cfs: String? = null
+    var section: String? = null
     var compositionIngredients: String? = null
     var storageCondition: String? = null
     var certMarksPvocDoc: String? = null
@@ -250,6 +255,7 @@ class InspectionAgrochemItemDto {
                 inspectionDate = entity.createdOn.toString()
                 sampled = entity.sampled.orEmpty()
                 ssfId = entity.ssfId
+                section = entity.section
                 certMarksPvocDoc = entity.certMarksPvocDoc
                 compositionIngredients = entity.compositionIngredients
                 storageCondition = entity.storageCondition
@@ -295,6 +301,7 @@ class InspectionAgrochemDetailsDto {
     var inspectionDate: Timestamp? = null
     var compliant: String? = null
     var ucrNumber: String? = null
+    var brand: String? = null
     var instructionsUseManual: String? = null
     var inspectionReportApprovalComments: String? = null
     var description: String? = null
@@ -303,18 +310,23 @@ class InspectionAgrochemDetailsDto {
     var items: List<InspectionAgrochemItemDto>? = null
 
     companion object {
+        @OptIn(InternalAPI::class)
         fun fromEntity(entity: CdInspectionAgrochemChecklist): InspectionAgrochemDetailsDto {
             val dto = InspectionAgrochemDetailsDto().apply {
                 id = entity.id
                 inspection = entity.inspectionGeneral?.id
                 serialNumber = entity.serialNumber
                 inspectionDate = entity.createdOn
-                remarks = entity.remarks
+                remarks = entity.remarks.orEmpty()
+                instructionsUseManual = ""
+                inspectionReportApprovalComments = entity.remarks.orEmpty()
+                brand = entity.brand.orEmpty()
                 description = entity.description
                 status = entity.status
             }
             entity.inspectionGeneral?.cdDetails?.let {
                 dto.ucrNumber = it.ucrNumber
+                dto.inspectionDate = Timestamp.valueOf(it.inspectionDate?.toLocalDateTime() ?: LocalDateTime.now())
             }
             entity.inspectionChecklistType?.let {
                 dto.itemTypeId = it.id

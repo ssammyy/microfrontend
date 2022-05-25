@@ -594,12 +594,17 @@ class DestinationInspectionDaoServices(
             val itemIds = mutableListOf<Long?>()
             cocItems.forEach { cdItemDetails ->
                 if (cdItemDetails.approveStatus == map.activeStatus && cdItemDetails.sampledStatus == map.activeStatus) {
-                    // Approved and sampled
+                    //1. Approved and sampled
                     itemIds.add(cdItemDetails.id)
                     generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
                             ?: "NA", cdItemDetails.ownerName ?: "NA")
-                } else if (cdItemDetails.sampledStatus != map.activeStatus) {
-                    // Not sampled
+                } else if (cdItemDetails.checklistStatus == map.activeStatus && cdItemDetails.approveStatus == map.activeStatus) {
+                    //2. Checklist filled and item approved
+                    itemIds.add(cdItemDetails.id)
+                    generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
+                            ?: "NA", cdItemDetails.ownerName ?: "NA")
+                } else if (cdItemDetails.checklistStatus != map.activeStatus) {
+                    //3.  Checklist was not filled
                     itemIds.add(cdItemDetails.id)
                     generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
                             ?: "NA", cdItemDetails.ownerName ?: "NA")
@@ -607,7 +612,7 @@ class DestinationInspectionDaoServices(
             }
             // Prevent empty COC/COI generation
             if (cocItems.isEmpty()) {
-                throw ExpectedDataNotFound("Compliance can't be issues when there is zero compliant items")
+                throw ExpectedDataNotFound("Compliance Certificate can't be issues when there is zero compliant items")
             }
         } else {
             val cocItems = findCDItemsListWithCDID(updatedCDDetails)

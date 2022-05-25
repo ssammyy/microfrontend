@@ -64,8 +64,8 @@ class AuctionRequestDto {
                 reportId = auction.reportId
                 cfsCode = auction.cfsId?.cfsCode
                 cfsName = auction.cfsId?.cfsName
-                manifestNo = "NA"
-                blNo = "N/A"
+                manifestNo = auction.manifestNo
+                blNo = auction.blNo
                 location = auction.location ?: "N/A"
                 goodsDesc = auction.location ?: ""
                 containerDets = auction.location ?: ""

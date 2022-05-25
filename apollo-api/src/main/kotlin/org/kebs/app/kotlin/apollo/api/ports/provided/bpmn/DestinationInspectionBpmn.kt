@@ -80,14 +80,13 @@ class DestinationInspectionBpmn(
         detail.varField1 = processInstance.processDefinitionId
         detail.status = ConsignmentApprovalStatus.WAITING.code
         // Update CD status
-        this.daoServices.updateCdItemDetailsInDB(detail, null)
         detail.cdDocId?.let {
             it.varField7 = processInstance.processDefinitionId
             it.varField8 = processStarted.toString()
             it.varField9 = Timestamp.from(Instant.now()).toString()
             it.varField10 = "Submitted to ministry"
-            val cdDetail = daoServices.updateCDStatus(it, ConsignmentDocumentStatus.MINISTRY_REQUEST)
-        }
+            daoServices.updateCDStatus(it, ConsignmentDocumentStatus.MINISTRY_REQUEST)
+        } ?: this.daoServices.updateCdItemDetailsInDB(detail, null)
     }
 
     fun startAssignmentProcesses(data: MutableMap<String, Any?>, consignmentDocument: ConsignmentDocumentDetailsEntity) {
