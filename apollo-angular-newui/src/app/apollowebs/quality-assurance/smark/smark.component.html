@@ -1666,11 +1666,20 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
 
                         <button style="width: -webkit-fill-available"
-                                *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true && allPermitDetails?.permitDetails?.oldPermitStatus == false && allPermitDetails?.permitDetails?.processStatusID !=59"
+                                *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true && allPermitDetails?.permitDetails?.oldPermitStatus == false && allPermitDetails?.permitDetails?.processStatusID !=59 && allPermitDetails?.permitDetails?.versionNumber != null"
                                 mat-raised-button=""
                                 (click)="submitRenewalApplication()"
                                 class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">RE-NEW</span>
+                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                            <div class="mat-button-focus-overlay"></div>
+                        </button>
+                        <button style="width: -webkit-fill-available"
+                                *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true && allPermitDetails?.permitDetails?.oldPermitStatus == false && allPermitDetails?.permitDetails?.processStatusID !=59 && allPermitDetails?.permitDetails?.versionNumber == null"
+                                mat-raised-button=""
+                                (click)="submitRenewalApplication()"
+                                class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                class="mat-button-wrapper">UPDATE TO RENEW</span>
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                             <div class="mat-button-focus-overlay"></div>
                         </button>
@@ -1686,7 +1695,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <div *ngIf="allPermitDetails?.permitDetails?.sendApplication == false  && allPermitDetails?.permitDetails?.versionNumber != null ">
+                        <div *ngIf="allPermitDetails?.permitDetails?.sendApplication == false  && allPermitDetails?.permitDetails?.versionNumber != null && allPermitDetails?.permitDetails?.varField7 == null ">
                             <a style="width: -webkit-fill-available" href="/smark/newSmarkPermit#{{sta1?.id}}"
                                mat-raised-button=""
                                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>

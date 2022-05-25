@@ -894,6 +894,13 @@ class QADaoServices(
                 }
                 ?: throw ExpectedDataNotFound("No Permit Found for the following [PERMIT NO = ${permitRefNumber}]")
     }
+    fun findPermitWithPermitRefNumberMigrated(permitRefNumber: String): PermitApplicationsEntity {
+        permitRepo.findTopByPermitRefNumberOrderByIdAsc(permitRefNumber)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following [PERMIT NO = ${permitRefNumber}]")
+    }
 
     fun findAllQAOPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
@@ -2424,6 +2431,8 @@ class QADaoServices(
     ): List<UsersEntity> {
 
         val plantAttached = findPlantDetails(plantID)
+
+
         usersRepo.findOfficerPermitUsersBySectionAndRegion(
                 roleID,
                 permit.sectionId ?: throw ExpectedDataNotFound("MISSING SECTION ID ON PERMIT"),
@@ -4112,6 +4121,7 @@ class QADaoServices(
                     oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
 
             oldPermit.oldPermitStatus = 1
+            oldPermit.varField7 = null
 //            oldPermit.renewalStatus = s.activeStatus
             //update last previous version permit old status
             oldPermit = permitUpdateDetails(oldPermit, s, user).second
@@ -4153,6 +4163,7 @@ class QADaoServices(
                 status = s.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
+                applicantName = commonDaoServices.concatenateName(user)
             }
             saveNewPermit = permitRepo.save(saveNewPermit)
 
@@ -6365,8 +6376,6 @@ class QADaoServices(
     }
 
     fun updatePermitWithSelectedPermit(permit: Long?, permitBeingUpdated: Long?) {
-
-
 
         try {
             val response = permit?.let { permitBeingUpdated?.let { it1 -> permitRepo.updatePermitToNew(it, it1) } }
