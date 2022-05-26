@@ -75,6 +75,8 @@ export class AddAuctionRecordComponent implements OnInit {
             categoryCode: [null, Validators.required],
             cfsCode: [null, Validators.required],
             auctionLotNo: [null, Validators.required],
+            containerNo: [null, Validators.required],
+            manifestNo: [null, Validators.required],
             auctionDate: [null, Validators.required],
             shipmentPort: [null, Validators.required],
             shipmentDate: [null, Validators.required],

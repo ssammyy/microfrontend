@@ -543,11 +543,6 @@ export class SmarkComponent implements OnInit {
 
     }
 
-    loadCInvoiceRoute() {
-        // location.reload();
-        this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
-
-    }
 
     viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
         this.SpinnerService.show();
@@ -728,18 +723,16 @@ export class SmarkComponent implements OnInit {
                                 'success'
                             );
                         } else {
-                            let invoicenumber = this.allPermitDetails.batchID.toString()
                             swalWithBootstrapButtons.fire(
                                 'Submitted!',
                                 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
                                 'success'
-                            ).then(r => {
-                                alert(invoicenumber)
-                                window.location.href = '/invoiceDetails#' + invoicenumber
-                            });
+                            )
                         }
                     },
                 );
+                //this.loadCInvoiceRoute();
+
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === swal.DismissReason.cancel
@@ -930,6 +923,12 @@ export class SmarkComponent implements OnInit {
 
     goToInvoiceGenerated() {
         this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
+    }
+
+    loadCInvoiceRoute() {
+        // location.reload();
+        this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
+
     }
 
     showModal(allPermitDetails: PermitEntityDetails) {

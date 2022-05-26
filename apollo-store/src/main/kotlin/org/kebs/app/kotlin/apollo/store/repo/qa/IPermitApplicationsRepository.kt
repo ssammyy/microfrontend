@@ -49,9 +49,9 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     @Query(
         value = "UPDATE APOLLO.DAT_KEBS_PERMIT_TRANSACTION  t1\n" +
-                "SET(t1.ENABLED,t1.PRODUCT_STANDARD, t1.STA10_FILLED_STATUS,t1.VERSION_NUMBER)=\n" +
+                "SET(t1.ENABLED,t1.PRODUCT_STANDARD, t1.STA10_FILLED_STATUS,t1.VERSION_NUMBER,t1.VAR_FIELD_7)=\n" +
                 "    (\n" +
-                "        SELECT t2.ENABLED,t2.PRODUCT_STANDARD, t2.STA10_FILLED_STATUS,t2.VERSION_NUMBER\n" +
+                "        SELECT t2.ENABLED,t2.PRODUCT_STANDARD, t2.STA10_FILLED_STATUS,t2.VERSION_NUMBER,5\n" +
                 "        FROM APOLLO.DAT_KEBS_PERMIT_TRANSACTION  t2\n" +
                 "        WHERE  t2.ID=:permit\n" +
                 "\n" +
@@ -297,6 +297,10 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByPermitTypeAndOldPermitStatusIsNull(
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
         qaoId: Long,
         permitType: Long,
@@ -305,6 +309,10 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
         userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
         permitType: Long
     ): List<PermitApplicationsEntity>?
 
@@ -435,6 +443,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
 
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): PermitApplicationsEntity?
+
+    fun findTopByPermitRefNumberOrderByIdAsc(permitRefNumber: String): PermitApplicationsEntity?
     fun findByIdAndAttachedPlantId(id: Long, attachedPlantId: Long): PermitApplicationsEntity?
 }
 

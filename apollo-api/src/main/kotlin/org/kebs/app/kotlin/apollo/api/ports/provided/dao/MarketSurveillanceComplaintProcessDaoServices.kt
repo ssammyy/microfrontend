@@ -306,13 +306,6 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         val complaintFound = findComplaintByRefNumber(referenceNo)
-        val remarksDto = RemarksToAddDto()
-        with(remarksDto){
-            remarksDescription= body.approvedRemarks
-            remarksStatus= map.activeStatus
-            processID = complaintFound.msProcessId
-            userId= loggedInUser.id
-        }
 
         with(complaintFound) {
             hodAssigned = loggedInUser.id
@@ -324,6 +317,14 @@ class MarketSurveillanceComplaintProcessDaoServices(
             approvedRemarks = body.approvedRemarks
             approvedBy = commonDaoServices.getUserName(loggedInUser)
             approvedDate = commonDaoServices.getCurrentDate()
+        }
+
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.approvedRemarks
+            remarksStatus= map.activeStatus
+            processID = complaintFound.msProcessId
+            userId= loggedInUser.id
         }
 
         val complaintUpdated = updateComplaintDetailsInDB(complaintFound, map, loggedInUser)

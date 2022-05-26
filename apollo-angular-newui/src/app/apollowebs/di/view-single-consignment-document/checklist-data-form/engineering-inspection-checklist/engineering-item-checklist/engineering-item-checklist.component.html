@@ -16,6 +16,13 @@
             </select>
         </div>
         <div class="col-sm-4 col-md-3">
+            <label for="section" class="waiver-form-label">Select Section</label>
+            <select id="section" class="waiver-form-input-master" formControlName="section">
+                <option value="" disabled>Select One</option>
+                <option *ngFor="let d of engineeringSections" [value]="d.name">{{d.description}}</option>
+            </select>
+        </div>
+        <div class="col-sm-4 col-md-3">
             <label for="sampled" class="waiver-form-label">Sampled?</label>
             <select id="sampled" class="waiver-form-input-master" formControlName="sampled">
                 <option [value]="">None</option>

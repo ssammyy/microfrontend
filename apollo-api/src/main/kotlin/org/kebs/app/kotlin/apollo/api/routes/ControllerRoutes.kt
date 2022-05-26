@@ -374,6 +374,7 @@ class ControllerRoutes {
             GET("/scheme-of-supervision", handler::generatedSchemeSupervision)
             GET("/product-quality-status", handler::generateProductQualityStatus)
             GET("/invoice-details", handler::getInvoiceDetails)
+            GET("/reports", handler::permitList)
 
             "/workPlan".nest {
                 GET("/list", handler::allWorkPlanList)

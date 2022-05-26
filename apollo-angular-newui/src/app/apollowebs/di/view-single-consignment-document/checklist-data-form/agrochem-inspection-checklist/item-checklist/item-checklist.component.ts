@@ -9,6 +9,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 })
 export class ItemChecklistComponent implements OnInit {
     complianceStatus: any[]
+    agrochemicalSections: any[]
     categories: any[]
     form: FormGroup
     itemId: any
@@ -19,12 +20,13 @@ export class ItemChecklistComponent implements OnInit {
 
     ngOnInit(): void {
         this.itemId = this.data.itemId
-        this.complianceStatus=this.data.complianceStatus
+        this.complianceStatus = this.data.complianceStatus
+        this.agrochemicalSections = this.data.agrochemicalSections
         this.categories = this.data.categories
-        console.log(this.categories)
         let formData = this.data.checklist
         this.form = this.fb.group({
-            brand: [formData ? formData.branch : '', Validators.maxLength(256)],
+            brand: [formData ? formData.brand : '', Validators.maxLength(256)],
+            section: [formData ? formData.section : '', Validators.required],
             ksEasApplicable: [formData ? formData.ksEasApplicable : '', Validators.maxLength(256)],
             quantityVerified: [formData ? formData.quantityVerified : '', Validators.maxLength(256)],
             dateMfgPackaging: [formData ? formData.dateMfgPackaging : '', Validators.maxLength(256)],

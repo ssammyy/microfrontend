@@ -4,8 +4,14 @@ import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import java.sql.Date
+import java.time.LocalDate
 import kotlin.random.Random
 import kotlin.random.nextULong
+
+fun formatDate(): String {
+    val date = LocalDate.now()
+    return "${date.year}${date.dayOfYear}"
+}
 
 class AgrochemCheckListItems {
     val category: String? = null
@@ -14,6 +20,7 @@ class AgrochemCheckListItems {
     var sampled: String? = null
     var serialNumber: String? = null
     var brand: String? = null
+    var section: String? = null
     var ksEasApplicable: String? = null
     var quantityVerified: String? = null
     var quantityVerifiedUnit: String? = null
@@ -40,6 +47,7 @@ class EngineeringCheckListItems {
     var sampled: String? = null
     var serialNumber: String? = null
     var brand: String? = null
+    var section: String? = null
     var ksEasApplicable: String? = null
     var quantityVerified: String? = null
     var quantityVerifiedUnit: String? = null
@@ -101,6 +109,7 @@ class OtherCheckListItems {
     var defects: String? = null
     var presenceAbsenceBanned: String? = null
     var documentation: String? = null
+    val remarks: String? = null
 }
 
 class OtherCheckList {
@@ -136,7 +145,7 @@ class CheckListForm {
             dt.compliant = item.compliant
             dt.category = item.category
             dt.sampled = item.sampled
-            dt.serialNumber = "EG${item.itemId}${Random(12).nextULong()}"
+            dt.serialNumber = "EGC${item.itemId}${formatDate()}${Random(5).nextULong()}"
             dt.quantityVerified = item.quantityVerified
             dt.quantityVerifiedUnit = item.quantityVerifiedUnit
             dt.warrantyPeriodDocumentation = item.warrantyPeriodDocumentation
@@ -150,6 +159,7 @@ class CheckListForm {
             dt.mfgNameAddress = item.mfgNameAddress
             dt.ksEasApplicable = item.ksEasApplicable
             dt.brand = item.brand
+            dt.section = item.section
             dt.remarks = item.remarks
             dt.status = 1
             listItems.add(dt)
@@ -174,8 +184,9 @@ class CheckListForm {
             dt.category = item.category
             dt.sampled = item.sampled
             dt.appearance = item.appearance
-            dt.serialNumber = "AC${item.itemId}${Random(12).nextULong()}"
+            dt.serialNumber = "ACC${item.itemId}${formatDate()}${Random(5).nextULong()}"
             dt.brand = item.brand
+            dt.section = item.section
             dt.certMarksPvocDoc = item.certMarksPvocDoc
             dt.ksEasApplicable = item.ksEasApplicable
             dt.quantityVerified = item.quantityVerified
@@ -186,7 +197,7 @@ class CheckListForm {
             dt.mfgAddress = item.mfgAddress
             dt.compositionIngredients = item.compositionIngredients
             dt.storageCondition = item.storageCondition
-            dt.remarks = agrochem?.remarks
+            dt.remarks = item.remarks
             dt.status = 1
             listItems.add(dt)
         }
@@ -207,7 +218,7 @@ class CheckListForm {
             val dt = CdInspectionOtherItemChecklistEntity()
             dt.itemIdTmp = item.itemId
             dt.compliant = item.compliant
-            dt.serialNumber = "OT${item.itemId}${Random(12).nextULong()}"
+            dt.serialNumber = "OTC${item.itemId}${formatDate()}${Random(5).nextULong()}"
             dt.category = item.category
             dt.sampled = item.sampled
             dt.serialNumber = item.serialNumber
@@ -220,7 +231,7 @@ class CheckListForm {
             dt.defects = item.defects
             dt.presenceAbsenceBanned = item.presenceAbsenceBanned
             dt.documentation = item.documentation
-            dt.remarks = others?.remarks
+            dt.remarks = item.remarks
             dt.status = 1
             listItems.add(dt)
         }
@@ -243,7 +254,7 @@ class CheckListForm {
             dt.stationId = item.stationId
             dt.compliant = item.compliant
             dt.category = item.category
-            dt.serialNumber = "MV${item.itemId}${Random(12).nextULong()}"
+            dt.serialNumber = "MVC${item.itemId}${formatDate()}${Random(5).nextULong()}"
             dt.sampled = item.submitToMinistry
             dt.makeVehicle = item.makeVehicle
             dt.chassisNo = item.chassisNo

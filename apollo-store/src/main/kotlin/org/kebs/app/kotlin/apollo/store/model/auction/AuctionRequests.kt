@@ -40,6 +40,14 @@ class AuctionRequests : Serializable {
     @Basic
     var shipmentPort: String? = null
 
+    @Column(name = "MANIFEST_NO")
+    @Basic
+    var manifestNo: String? = null
+
+    @Column(name = "BL_NO")
+    @Basic
+    var blNo: String? = null
+
     @Column(name = "SHIPMENT_DATE")
     @Basic
     var shipmentDate: Timestamp? = null
