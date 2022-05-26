@@ -196,7 +196,7 @@ export class PermitEntityDetails {
     processStatusID: number;
     fmarkGeneratedID: number;
     oldPermitStatus: number;
-    varField7:number;
+    varField7:string;
 }
 
 
