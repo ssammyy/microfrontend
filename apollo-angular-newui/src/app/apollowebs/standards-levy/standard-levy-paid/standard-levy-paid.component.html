@@ -109,7 +109,6 @@ Tasks <span class="badge badge-primary">{{paymentDetails.length}}</span>
 <th class="sl">Manufacturer</th>
 <th class="knw">Registration Number</th>
 <th class="sl">Kra Pin</th>
-<th class="knw">Assign Status</th>
     <th></th>
 </tr>
 </thead>
@@ -120,9 +119,7 @@ Tasks <span class="badge badge-primary">{{paymentDetails.length}}</span>
 <td>{{paymentDetail.entryNumber}}</td>
 <td>{{paymentDetail.companyName}}</td>
 <td>{{paymentDetail.registrationNumber}}</td>
-<td>KSH {{paymentDetail.kraPin}}</td>
-<td *ngIf="paymentDetail.assignStatus==0"><span class="badge badge-rose" style="width: 135px">Not Assigned</span></td>
-<td *ngIf="paymentDetail.assignStatus==1"><span class="badge badge-success" style="width: 135px">Assigned</span></td>
+<td>{{paymentDetail.kraPin}}</td>
 <td><button (click)="onOpenModalPayment(paymentDetail,'paymentDetails',paymentDetail.companyId)" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
 </tr>
 </tbody>

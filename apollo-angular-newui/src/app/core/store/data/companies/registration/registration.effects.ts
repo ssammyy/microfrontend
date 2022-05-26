@@ -31,6 +31,7 @@ export class RegistrationEffects {
                     .pipe(
                         mergeMap((data) => {
                             if (data.status) {
+                                console.log(data.registrationNumber)
                                 return [
                                     loadBrsValidationsSuccess({data: data, step: 1}),
                                     loadResponsesSuccess({
