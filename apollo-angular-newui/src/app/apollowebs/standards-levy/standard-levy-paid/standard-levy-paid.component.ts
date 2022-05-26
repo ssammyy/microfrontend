@@ -146,21 +146,21 @@ export class StandardLevyPaidComponent implements OnInit {
         }
     );
   }
-    viewPdfFile(): void {
-        this.loadingText = "Loading...";
-        this.SpinnerService.show();
-        this.levyService.generatePdf().subscribe(
-            (dataPdf: any) => {
-                this.SpinnerService.hide();
-
-                // tslint:disable-next-line:prefer-const
-                let downloadURL = window.URL.createObjectURL(dataPdf);
-                const link = document.createElement('a');
-                link.href = downloadURL;
-                link.click();
-                // this.pdfUploadsView = dataPdf;
-            },
-        );
-    }
+    // viewPdfFile(): void {
+    //     this.loadingText = "Loading...";
+    //     this.SpinnerService.show();
+    //     this.levyService.generatePdf().subscribe(
+    //         (dataPdf: any) => {
+    //             this.SpinnerService.hide();
+    //
+    //             // tslint:disable-next-line:prefer-const
+    //             let downloadURL = window.URL.createObjectURL(dataPdf);
+    //             const link = document.createElement('a');
+    //             link.href = downloadURL;
+    //             link.click();
+    //             // this.pdfUploadsView = dataPdf;
+    //         },
+    //     );
+    // }
 
 }
