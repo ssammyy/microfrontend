@@ -25,6 +25,10 @@ export class ValidateTokenRequestDto {
     username = '';
     token = '';
 }
+export class ValidateTokenRequestDtoB {
+    phone = '';
+    token = '';
+}
 
 export class CompanyInfoDto {
     companyId = 0;
