@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {
   doSendTokenForUser,
-  doValidateTokenForUser, doValidateTokenForUserB,
+  doValidateTokenForUserB,
   loadResetAuths,
   loadResponsesFailure,
   selectTokenSentStateOtpSent,
@@ -157,8 +157,12 @@ export class ResetCredentialsComponent implements OnInit {
               password: this.stepOneForm?.get('credentials')?.value,
             },
           }));
+          // window.close();
+          // window.open('/dashboard')
+          window.open('/dashboard','_self').close();
+          window.open('/dashboard')
 
-          this.route.navigate(['/dashboard']);
+          // this.route.navigate(['/dashboard']);
 
         } else {
           this.store$.dispatch(loadResponsesFailure({

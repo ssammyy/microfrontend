@@ -267,7 +267,7 @@ export class AuthEffects {
                                 loadUserCompanyInfoSuccess({data: null}),
                                 loadBranchIdSuccess({branchId: null, branch: null}),
                                 loadCompanyIdSuccess({companyId: null, company: null}),
-                                Go({payload: null, link: action.loginUrl, redirectUrl: null})
+                                // Go({payload: null, link: action.loginUrl, redirectUrl: null})
                             ];
                         }),
                         catchError(
