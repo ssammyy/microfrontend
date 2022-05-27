@@ -1254,7 +1254,9 @@ class SystemsAdminDaoService(
     fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto, req: ServerRequest): CustomResponse? =
         commonDaoServices.validateOTPToken(
             request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
-            commonDaoServices.makeKenyanMSISDNFormat(request.phone),
+//            commonDaoServices.makeKenyanMSISDNFormat(request.phone),
+            request.phone ?: throw NullValueNotAllowedException("Invalid User Email provided"),
+
             req
         )
 

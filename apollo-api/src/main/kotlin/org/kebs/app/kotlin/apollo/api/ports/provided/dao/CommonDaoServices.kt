@@ -1978,9 +1978,16 @@ class CommonDaoServices(
     fun validateOTPToken(token: String, phoneNumber: String?, req: ServerRequest?): CustomResponse {
         val result = CustomResponse()
         try {
+
+            //find phonenumber of email address associated with user
+                val users = phoneNumber?.let { usersRepo.findByEmail(it) }
+            val correctPhone = if (users != null) users.cellphone else throw InvalidValueException("Invalid User provided")
+
+
+
             emailVerificationTokenEntityRepo.findFirstByTokenAndStatusOrderByIdDesc(token, 10)
                     ?.let { verificationToken ->
-                        if (verificationToken.email != phoneNumber) throw InvalidValueException("Invalid Token provided")
+                        if (verificationToken.email != correctPhone) throw InvalidValueException("Invalid Token provided")
 
                         verificationToken.tokenExpiryDate
                                 ?.let { expiry ->

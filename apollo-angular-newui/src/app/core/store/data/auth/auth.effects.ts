@@ -4,6 +4,8 @@ import {
     doSendTokenForUser,
     doSendTokenForUserSuccess,
     doValidateTokenForUser,
+    doValidateTokenForUserB,
+
     doValidateTokenForUserFailure,
     doValidateTokenForUserSuccess,
     loadAuths,
@@ -19,7 +21,7 @@ import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpErrorResponse} from '@angular/common/http';
 import {catchError, mergeMap, switchMap} from 'rxjs/operators';
-import {Go} from '../route';
+import {Go, GoB} from '../route';
 import {AuthService} from './auth.service';
 import {loadResponsesFailure, loadResponsesSuccess} from '../response';
 import {loadBranchIdSuccess, loadCompanyIdSuccess} from '../companies';
@@ -38,7 +40,7 @@ export class AuthEffects {
                             if (data.status === 200) {
                                 return [
                                     loadResponsesSuccess({message: data}),
-                                    Go({payload: null, link: 'login', redirectUrl: action.redirectUrl})
+                                    GoB({payload: null})
                                 ];
                             } else {
                                 return [
@@ -166,7 +168,39 @@ export class AuthEffects {
             ),
         {dispatch: true}
     );
-
+    doValidateTokenForUserB: Observable<Action> = createEffect(
+        () =>
+            this.actions$.pipe(
+                ofType(doValidateTokenForUserB),
+                switchMap((action) => this.service.validateTokenForUserB(action.payload)
+                    .pipe(
+                        mergeMap((data) => {
+                            if (data.status === 200) {
+                                return [
+                                    doValidateTokenForUserSuccess({data: data, validated: true}),
+                                    loadResponsesSuccess({message: data})
+                                ];
+                            } else {
+                                return [
+                                    doValidateTokenForUserFailure({data: data, validated: false})
+                                ];
+                            }
+                        }),
+                        catchError(
+                            (err: HttpErrorResponse) => {
+                                return of(doValidateTokenForUserFailure({
+                                    data: {
+                                        payload: err.error,
+                                        status: err.status,
+                                        response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                                    }, validated: false
+                                }));
+                            })
+                    )
+                )
+            ),
+        {dispatch: true}
+    );
 
     loadUserCompanyInfo: Observable<Action> = createEffect(
         () =>
