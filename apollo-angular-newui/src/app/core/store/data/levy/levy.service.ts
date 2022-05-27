@@ -595,18 +595,18 @@ export class LevyService {
         );
     }
 
-    // public generatePdf(): Observable<any> {
-    //     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_E_SLIP);
-    //
-    //     return this.http.get<any>(url).pipe(
-    //         map(function (response: any) {
-    //             return response;
-    //         }),
-    //         catchError((fault: HttpErrorResponse) => {
-    //             return throwError(fault);
-    //         })
-    //     );
-    // }
+    public generatePdf(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_E_SLIP);
+
+        return this.http.get<any>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 
 
 

@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.standardLevyController
 
+
 import com.google.gson.Gson
 import com.lowagie.text.DocumentException
 import mu.KotlinLogging
@@ -35,7 +36,6 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.io.IOException
-import java.sql.Date
 import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -1486,15 +1486,18 @@ class StdLevyController(
     }
 
 
+
+
+
     @GetMapping("/generatePdf")
     @Throws(DocumentException::class, IOException::class)
     fun generator(response: HttpServletResponse) {
         response.contentType = "application/pdf"
         val dateFormat: DateFormat = SimpleDateFormat("YYYY-MM-DD:HH:MM:SS")
         val currentDateTime = dateFormat.format(System.currentTimeMillis())
-        val headerkey = "Content-Disposition"
-        val headervalue = "attachment; filename=pdf_$currentDateTime.pdf"
-        response.setHeader(headerkey, headervalue)
+        val headerKey = "Content-Disposition"
+        val headerValue = "attachment; filename=pdf_$currentDateTime.pdf"
+        response.setHeader(headerKey, headerValue)
         val companyList: MutableIterable<CompanyProfileEntity> = standardLevyService.getAllCompany()
         val generetorUser = PDFGeneratorVehicle()
         generetorUser.setCompanyList(companyList)
