@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-          LOCAL_DEV: 'localhost:8006'
+         //  LOCAL_DEV: 'localhost:8006',
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        //  LOCAL_DEV: `kimsint.kebs.org:8006`,
+         LOCAL_DEV: `kimsint.kebs.org:8006`,
         // LOCAL_DEV: `kims.kebs.org`,
         // LOCAL_DEV: '10.10.0.149:8007'
     };
@@ -518,6 +518,7 @@ export class ApiEndpointService {
         SEND_EMAIL_VERIFICATION: `${ApiEndpointService.STL_CONTEXT}/sendEmailVerificationToken`,
         CONFIRM_EMAIL_VERIFICATION_STATUS: `${ApiEndpointService.STL_CONTEXT}/confirmEmailAddress`,
         STD_LEVY_COMPANY_STATUS: `${ApiEndpointService.STL_CONTEXT}/getOperationStatus`,
+        STD_LEVY_E_SLIP: `${ApiEndpointService.STL_CONTEXT}/generatePdf`,
 
 
 
