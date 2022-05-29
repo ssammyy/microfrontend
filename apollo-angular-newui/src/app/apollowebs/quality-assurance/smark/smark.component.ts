@@ -383,7 +383,6 @@ export class SmarkComponent implements OnInit {
         this.route.fragment.subscribe(params => {
             const permitID = params;
             // localStorage.setItem('permitID')
-            // console.log(this.permitID);
             //  this.SpinnerService.show();
             let formattedArraySta10 = [];
             let formattedArrayOrdinaryFiles = [];

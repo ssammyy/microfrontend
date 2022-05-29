@@ -460,7 +460,9 @@ data class PermitDetailsDto(
     var processStatusID: Long? = null,
     var fmarkGeneratedID: Long? = null,
     var oldPermitStatus: Boolean? = null,
-)
+    var varField7: String? = null,
+
+    )
 
 data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,

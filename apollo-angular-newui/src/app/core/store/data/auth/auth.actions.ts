@@ -4,7 +4,7 @@ import {
     LoggedInUser,
     LoginCredentials,
     SendTokenRequestDto,
-    ValidateTokenRequestDto
+    ValidateTokenRequestDto, ValidateTokenRequestDtoB
 } from './auth.model';
 import {ApiResponse} from '../../../domain/response.model';
 
@@ -23,6 +23,10 @@ export const doSendTokenForUserSuccess = createAction(
 export const doValidateTokenForUser = createAction(
   '[Auth] doValidateTokenForUser',
   props<{ payload: ValidateTokenRequestDto }>()
+);
+export const doValidateTokenForUserB = createAction(
+    '[Auth] doValidateTokenForUserB',
+    props<{ payload: ValidateTokenRequestDtoB }>()
 );
 export const doValidateTokenForUserSuccess = createAction(
   '[Auth] doValidateTokenForUserSuccess',
@@ -44,7 +48,7 @@ export const loadLogoutFailure = createAction(
 
 export const loadResetAuths = createAction(
   '[Auth] loadResetAuths',
-  props<{ payload: LoginCredentials, redirectUrl: string }>()
+  props<{ payload: LoginCredentials }>()
 );
 export const loadAuths = createAction(
   '[Auth] Load Auths',

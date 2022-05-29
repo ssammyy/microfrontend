@@ -2272,6 +2272,8 @@ class QADaoServices(
             effectiveDate = permit.effectiveDate
             commodityDescription = permit.commodityDescription
             brandName = permit.tradeMark
+            varField7 = permit.varField7
+
 
             if (permit.productStandard != null) {
                 val standardsDetails = findStandardsByID(

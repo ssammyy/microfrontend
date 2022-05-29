@@ -1,11 +1,14 @@
 package org.kebs.app.kotlin.apollo.api.controllers.standardLevyController
 
+
 import com.google.gson.Gson
+import com.lowagie.text.DocumentException
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.StandardLevyService
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.PDFGeneratorVehicle
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.CompanySl1DTO
 import org.kebs.app.kotlin.apollo.common.dto.ManufactureSubmitEntityDto
@@ -32,13 +35,17 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import java.io.IOException
 import java.sql.Timestamp
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.servlet.http.HttpServletResponse
+
 
 @RestController
 @RequestMapping("/api/v1/migration/stdLevy")
@@ -1347,11 +1354,11 @@ class StdLevyController(
         val companyProfileEntity= CompanyProfileEntity().apply {
             id = companyCloseDto.companyId
         }
-        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+        val standardLevyOperationsClosure= StandardLevyOperationsClosure().apply {
             id = companyCloseDto.id
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Closure Rejected",standardLevyService.confirmCompanyClosure(companyProfileEntity,standardLevyOperationsSuspension))
+        return ServerResponse(HttpStatus.OK,"Company Closure Rejected",standardLevyService.confirmCompanyClosure(companyProfileEntity,standardLevyOperationsClosure))
 
     }
 
@@ -1366,11 +1373,11 @@ class StdLevyController(
         val companyProfileEntity= CompanyProfileEntity().apply {
             id = companySuspendDto.companyId
         }
-        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+        val standardLevyOperationsClosure= StandardLevyOperationsClosure().apply {
             id = companySuspendDto.id
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Closure Rejected",standardLevyService.rejectCompanyClosure(standardLevyOperationsSuspension,companyProfileEntity))
+        return ServerResponse(HttpStatus.OK,"Company Closure Rejected",standardLevyService.rejectCompanyClosure(standardLevyOperationsClosure,companyProfileEntity))
 
     }
 
@@ -1476,6 +1483,25 @@ class StdLevyController(
         @RequestParam("companyId") companyId: Long
     ): MutableList<LevyPenalty> {
         return standardLevyService.getManufacturesLevyPenaltyList(companyId)
+    }
+
+
+
+
+
+    @GetMapping("/generatePdf")
+    @Throws(DocumentException::class, IOException::class)
+    fun generator(response: HttpServletResponse) {
+        response.contentType = "application/pdf"
+        val dateFormat: DateFormat = SimpleDateFormat("YYYY-MM-DD:HH:MM:SS")
+        val currentDateTime = dateFormat.format(System.currentTimeMillis())
+        val headerKey = "Content-Disposition"
+        val headerValue = "attachment; filename=pdf_$currentDateTime.pdf"
+        response.setHeader(headerKey, headerValue)
+        val companyList: MutableIterable<CompanyProfileEntity> = standardLevyService.getAllCompany()
+        val generetorUser = PDFGeneratorVehicle()
+        generetorUser.setCompanyList(companyList)
+        generetorUser.generate(response)
     }
 
 

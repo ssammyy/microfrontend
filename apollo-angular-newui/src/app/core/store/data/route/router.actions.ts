@@ -8,6 +8,11 @@ export const Go = createAction(
   '[Router] Go',
   props<{ payload: any, link: string, redirectUrl: string }>()
 );
+export const GoB = createAction(
+    '[Router] Go',
+    props<{ payload: any}>()
+);
+
 
 export const Back = createAction(
   '[Router] Back'

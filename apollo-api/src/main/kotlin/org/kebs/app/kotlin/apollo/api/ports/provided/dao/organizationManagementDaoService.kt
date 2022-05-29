@@ -219,12 +219,12 @@ class RegistrationManagementDaoService(
     fun resetUserCredentials(request: LoginRequest): CustomResponse? {
         val result = CustomResponse()
         try {
-            usersRepo.findByUserName(request.username ?: throw NullValueNotAllowedException("Provide a valid username"))
+            usersRepo.findByEmail(request.username ?: throw NullValueNotAllowedException("Provide a valid username"))
                 ?.let { u ->
                     u.apply {
                         credentials = BCryptPasswordEncoder().encode(request.password)
                         confirmCredentials = BCryptPasswordEncoder().encode("")
-                        modifiedBy = request.username
+                        modifiedBy = u.userName
                         modifiedOn = Timestamp.from(Instant.now())
                         enabled = applicationMapProperties.transactionActiveStatus
                         accountExpired = applicationMapProperties.transactionInactiveStatus
