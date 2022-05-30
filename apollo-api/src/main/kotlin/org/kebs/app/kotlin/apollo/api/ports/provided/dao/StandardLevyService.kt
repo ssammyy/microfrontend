@@ -8,10 +8,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
-import org.kebs.app.kotlin.apollo.common.dto.stdLevy.LevyClosureValue
-import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ProcessInstanceResponseSite
-import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ProcessInstanceResponseValueSite
-import org.kebs.app.kotlin.apollo.common.dto.stdLevy.ProcessInstanceSiteResponse
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -1418,7 +1415,8 @@ return getUserTasks();
 
     }
 
-    fun getSLNotificationStatus(): Boolean {
+    fun getSLNotificationStatus(): ResponseNotification {
+
         commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureId(id)
@@ -1427,16 +1425,16 @@ return getUserTasks();
                             ?.let {
 
                                 //Manufacturer
-                                return true
+                                return ResponseNotification(1)
                             }
                             ?: run {
                                 //Contractor
-                                return false
+                                return ResponseNotification(0)
                             }
                     }
 
             }
-            ?: return false
+            ?: return ResponseNotification(0)
     }
 
 
@@ -1816,7 +1814,8 @@ return getUserTasks();
     fun confirmEmailAddress(
         usersEntity: UsersEntity,
         emailVerificationTokenEntity: EmailVerificationTokenEntity
-    ): String{
+    ): ResponseMessage {
+        var slResponse=""
         emailVerificationTokenEntity.token=emailVerificationTokenEntity.token
         usersEntity.id = usersEntity.id
         emailVerificationTokenEntity.token?.let {
@@ -1828,12 +1827,14 @@ return getUserTasks();
                                 emailActivationStatus=1
                             }
                             iUserRepository.save(entity)
+
                         }
-                }?: throw Exception("NO USER FOUND")
+                    slResponse="Email Verified"
+                }?: throw Exception("Token Used is Incorrect")
+            slResponse="Token Used is Incorrect"
         }
 
-
-        return "EMAIL VERIFIED"
+        return ResponseMessage(slResponse)
 
     }
 

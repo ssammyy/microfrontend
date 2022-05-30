@@ -13,6 +13,11 @@ export const GoB = createAction(
     props<{ payload: any}>()
 );
 
+export const GoC = createAction(
+    '[Router] Go',
+    props<{ payload: any}>()
+);
+
 
 export const Back = createAction(
   '[Router] Back'

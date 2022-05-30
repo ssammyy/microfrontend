@@ -355,8 +355,8 @@ export class SidebarComponent implements OnInit {
 
     onClickLogout() {
         this.store$.dispatch(loadLogout({loginUrl: 'login'}));
-        window.open('/login','_self').close();
-        window.open('/login')
+        //window.open('/login','_self').close();
+        //window.open('/login')
     }
 
     onClickGoToProfilePage() {

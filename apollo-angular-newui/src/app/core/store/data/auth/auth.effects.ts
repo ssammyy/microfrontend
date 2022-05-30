@@ -21,7 +21,7 @@ import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpErrorResponse} from '@angular/common/http';
 import {catchError, mergeMap, switchMap} from 'rxjs/operators';
-import {Go, GoB} from '../route';
+import {Go, GoB, GoC} from '../route';
 import {AuthService} from './auth.service';
 import {loadResponsesFailure, loadResponsesSuccess} from '../response';
 import {loadBranchIdSuccess, loadCompanyIdSuccess} from '../companies';
@@ -261,13 +261,14 @@ export class AuthEffects {
                                         accessToken: '',
                                         fullName: '',
                                         companyID: 0,
-                                        redirectUrl:undefined
+                                        redirectUrl:'/login'
                                     }
                                 }),
                                 loadUserCompanyInfoSuccess({data: null}),
                                 loadBranchIdSuccess({branchId: null, branch: null}),
                                 loadCompanyIdSuccess({companyId: null, company: null}),
-                                // Go({payload: null, link: action.loginUrl, redirectUrl: null})
+                                Go({payload: null, link: action.loginUrl, redirectUrl: '/login'})
+                                //window.open('/login','_self').close()
                             ];
                         }),
                         catchError(

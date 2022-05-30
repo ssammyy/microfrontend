@@ -12,8 +12,8 @@ curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendEntryDetai
 },
 "DETAILS": [
 {
-"entryNumber": "20220511877224",
-"kraPin": "A005427650Y",
+"entryNumber": "20220511876226",
+"kraPin": "P051654254J",
 "manufacturerName": "INGWE PURE WATERS",
 "registrationDate": "11-05-2022T16:18:32",
 "status": "Active"

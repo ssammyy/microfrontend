@@ -255,5 +255,10 @@ data class VerifyEmailDto(
     var verificationToken: String? = null,
 ){}
 
+class ResponseMessage (val responseMessage: String) {
+}
+class ResponseNotification (val responseMessage: Int) {
+}
+
 
 
