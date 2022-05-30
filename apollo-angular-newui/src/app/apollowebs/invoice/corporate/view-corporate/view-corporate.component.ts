@@ -34,6 +34,10 @@ export class ViewCorporateComponent implements OnInit {
         )
     }
 
+    goBack() {
+        this.router.navigate(["/transaction/corporates-customers"])
+    }
+
     loadData() {
         this.fiService.getCorporateDetails(this.corporateId)
             .subscribe(
@@ -77,6 +81,19 @@ export class ViewCorporateComponent implements OnInit {
                 res => {
                     if (res) {
                         this.loadData()
+                    }
+                }
+            )
+    }
+
+    closeBill(billId: any) {
+        this.fiService.closeAndSendBillCorporateAction(billId)
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.fiService.showSuccess(res.message, null)
+                    } else {
+                        this.fiService.showError(res.message, null)
                     }
                 }
             )

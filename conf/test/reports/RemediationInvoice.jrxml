@@ -184,13 +184,13 @@
 	<title>
 		<band height="95" splitType="Stretch">
 			<staticText>
-				<reportElement x="127" y="53" width="439" height="25" uuid="d7b26d11-81f9-4944-ab28-350e0ceb8743">
+				<reportElement x="189" y="53" width="326" height="25" uuid="d7b26d11-81f9-4944-ab28-350e0ceb8743">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="12" isBold="true" isItalic="false" isUnderline="true"/>
 				</textElement>
-				<text><![CDATA[SAMPLE OF A QUOTATION FOR REMEDIATIO OF ADULTERATED FUEL – ]]></text>
+				<text><![CDATA[INVOICE FOR REMEDIATIO OF ADULTERATED FUEL – ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="307" y="16" width="199" height="18" uuid="30249af3-3c7c-4fe2-b892-e2c0e09947e0"/>
@@ -236,10 +236,10 @@
 				<textFieldExpression><![CDATA[$F{invoiceNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="566" y="53" width="197" height="25" uuid="8698d375-be9b-4a2f-a301-5731508a5145">
+				<reportElement x="518" y="53" width="197" height="25" uuid="8698d375-be9b-4a2f-a301-5731508a5145">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{fuelInspectionRefNumber}]]></textFieldExpression>
 			</textField>
 		</band>

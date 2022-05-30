@@ -8,7 +8,12 @@
                             <i class="material-icons">handshake</i>
                         </div>
                         <h4 class="card-title">Corporate Customer Details
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+
+                            </button>
                         </h4>
+
                     </div>
                     <div class="card-body" *ngIf="corporateDetails">
                         <div class="row">
@@ -115,6 +120,9 @@
                                                 <mat-cell *matCellDef="let element">
                                                     <button mat-raised-button (click)="viewTransactions(element.id)"><i
                                                             class="fa fa-eye">View</i>
+                                                    </button>
+                                                    <button mat-raised-button (click)="closeBill(element.id)"><i
+                                                            class="fa fa-close">Close Bill</i>
                                                     </button>
                                                 </mat-cell>
                                             </ng-container>

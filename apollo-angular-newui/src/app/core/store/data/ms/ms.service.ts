@@ -44,7 +44,7 @@ import {
     ComplaintApproveDto,
     ComplaintRejectDto,
     ComplaintAdviceRejectDto,
-    ComplaintAssignDto,
+    ComplaintAssignDto, MsStandardProductCategory, ComplaintClassificationDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidatorFn} from '@angular/forms';
@@ -427,6 +427,19 @@ export class MsService {
         );
     }
 
+    public msProductStandardCategoryListDetails(): Observable<MsStandardProductCategory[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_STANDARD_PRODUCT_CATEGORY);
+        return this.http.get<MsStandardProductCategory[]>(url).pipe(
+            map(function (response: MsStandardProductCategory[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     // tslint:disable-next-line:max-line-length
     public createNewComplaint(customerDetails: ComplaintCustomersDto, complaintDetails: ComplaintDto, locationDetails: ComplaintLocationDto): Observable<MSComplaintSubmittedSuccessful> {
         const newComplaintDto = new NewComplaintDto();
@@ -477,6 +490,9 @@ export class MsService {
                 break;
             case 'new-complaint':
                 url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.NEW_COMPLAINT_LIST);
+                break;
+            case 'completed':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLETED_COMPLAINT_LIST);
                 break;
         }
 
@@ -578,6 +594,22 @@ export class MsService {
     public msComplaintUpdateAssignIODetails(referenceNo: string, data: ComplaintAssignDto): Observable<AllComplaintsDetailsDto> {
         console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_ASSIGN_IO);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNo);
+        return this.http.put<AllComplaintsDetailsDto>(url, data, {params}).pipe(
+            map(function (response: AllComplaintsDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msComplaintUpdateSaveClassificationDetails(referenceNo: string, data: ComplaintClassificationDto): Observable<AllComplaintsDetailsDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_ADD_CLASSIFICATION_DETAILS);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
         return this.http.put<AllComplaintsDetailsDto>(url, data, {params}).pipe(

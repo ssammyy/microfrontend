@@ -158,6 +158,7 @@ class CommonDaoServices(
         private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
         private val verificationTokensRepoB: IUserVerificationTokensRepositoryB,
         private val countyRepo: ICountiesRepository,
+        private val sampleStandardsRepository: ISampleStandardsRepository,
         private val standardCategoryRepo: IStandardCategoryRepository,
         private val productCategoriesRepository: IKebsProductCategoriesRepository,
         private val broadProductCategoryRepository: IBroadProductCategoryRepository,
@@ -1702,6 +1703,22 @@ class CommonDaoServices(
                     return department
                 }
                 ?: throw ExpectedDataNotFound("Department with ID  = ${departmentId}, does not Exist")
+    }
+
+    fun findStandardCategoryByID(standardCategoryId: Long): StandardsCategoryEntity {
+        standardCategoryRepo.findByIdOrNull(standardCategoryId)
+                ?.let { standardCategory ->
+                    return standardCategory
+                }
+                ?: throw ExpectedDataNotFound("Standard Category with ID  = ${standardCategoryId}, does not Exist")
+    }
+
+     fun findSampleStandardsByID(standardCategoryId: Long): SampleStandardsEntity {
+         sampleStandardsRepository.findBySubCategoryId(standardCategoryId)
+                ?.let { standardDetails ->
+                    return standardDetails
+                }
+                ?: throw ExpectedDataNotFound("Standard Details with Sub-Category ID  = ${standardCategoryId}, does not Exist")
     }
 
     fun findBroadCategoryByID(broadCategoryId: Long): BroadProductCategoryEntity {

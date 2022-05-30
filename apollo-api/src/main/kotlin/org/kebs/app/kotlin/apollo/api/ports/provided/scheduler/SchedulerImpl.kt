@@ -469,5 +469,6 @@ class SchedulerImpl(
                 updateLabResultsWithDetails(ssfFound, map)
             }
         }
+        KotlinLogging.logger { }.info { "::::::::::::::::::::::::ENDED LAB RESULTS SCHEDULER::::::::::::::::::" }
     }
 }

@@ -593,18 +593,13 @@ class DestinationInspectionDaoServices(
             val cocItems = findCDItemsListWithCDID(updatedCDDetails)
             val itemIds = mutableListOf<Long?>()
             cocItems.forEach { cdItemDetails ->
-                if (cdItemDetails.approveStatus == map.activeStatus && cdItemDetails.sampledStatus == map.activeStatus) {
-                    //1. Approved and sampled
-                    itemIds.add(cdItemDetails.id)
-                    generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
-                            ?: "NA", cdItemDetails.ownerName ?: "NA")
-                } else if (cdItemDetails.checklistStatus == map.activeStatus && cdItemDetails.approveStatus == map.activeStatus) {
-                    //2. Checklist filled and item approved
+                if (cdItemDetails.approveStatus == map.activeStatus) {
+                    //1. Approved CD Item
                     itemIds.add(cdItemDetails.id)
                     generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
                             ?: "NA", cdItemDetails.ownerName ?: "NA")
                 } else if (cdItemDetails.checklistStatus != map.activeStatus) {
-                    //3.  Checklist was not filled
+                    //2.  Checklist was not filled(Pre-Approved)
                     itemIds.add(cdItemDetails.id)
                     generateLocalCocItem(cdItemDetails, localCocEntity, user, map, cdItemDetails.ownerPin
                             ?: "NA", cdItemDetails.ownerName ?: "NA")
@@ -3135,6 +3130,7 @@ class DestinationInspectionDaoServices(
             map: ServiceMapsEntity
     ): CdItemDetailsEntity? {
         var updateItem = item
+        updateItem.checklistStatus = map.activeStatus
         // Mark sampled or not sampled
         when (sampled) {
             "YES" -> {

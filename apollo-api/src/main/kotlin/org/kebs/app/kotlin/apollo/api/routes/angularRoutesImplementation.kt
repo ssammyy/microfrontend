@@ -454,7 +454,6 @@ class AngularRoutes {
             GET("/branch-list", handler::branchListMigration)
             GET("/standards-list", handler::standardsListMigration)
             GET("/payments", handler::permitInvoiceListPaid)
-
             "/permit".nest {
                 POST("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/task-list", handler::permitTaskListMigration)
@@ -569,6 +568,7 @@ class AngularRoutes {
             }
             "/complaint".nest {
                 GET("/list", handler::getAllComplaintList)
+                GET("/list-completed", handler::getAllComplaintCompletedList)
                 GET("/list-new", handler::getAllComplaintNewList)
                 GET("/list-on-going", handler::getAllComplaintOnGoingList)
                 GET("/list-my-task", handler::getAllComplaintMyTaskList)
@@ -579,12 +579,15 @@ class AngularRoutes {
                     PUT("/advice-where", handler::updateComplaintByMandatedForOga)
                     PUT("/assign-hof", handler::updateComplaintByAssigningHof)
                     PUT("/assign-io", handler::updateComplaintByAssigningIO)
+                    PUT("/add-classification-details", handler::updateComplaintByAddingClassificationDetails)
+                    PUT("/start-ms-process", handler::updateComplaintByAddingClassificationDetails)
                 }
 //                POST("/new", handler::saveNewComplaint)
             }
-//            "/workPlan".nest {
-//
-//            }
+            "/workPlan".nest {
+                POST("/new", handler::saveNewWorkPlan)
+
+            }
             "/fuel".nest {
                 GET("/all-batch-list", handler::getAllFuelBatchList)
                 POST("/add", handler::saveNewFuelScheduleBatch)

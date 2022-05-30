@@ -112,9 +112,50 @@
                                                     {{complaintInspection?.complaintsDetails?.buildingName}}</div>
                                             </li>
                                         </ul>
-                                    </mat-tab
-                                    >
-                                    <mat-tab *ngIf="complaintInspection?.complaintsDetails?.complaintFiles.length!=0" label="3">
+                                    </mat-tab>
+                                    <mat-tab *ngIf="complaintInspection?.complaintsDetails?.classificationDetailsStatus" label="3">
+                                        <ng-template mat-tab-label>
+                                            Complaint Targeted Product Details
+                                        </ng-template>
+                                        <b class="text-primary">Complaint Targeted Product Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Standard  Category</div>
+                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.standardCategory}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Broad Product Category</div>
+                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.broadProductCategory}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Product Category</div>
+                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.productCategory}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Product</div>
+                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.productName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Product Sub-Category</div>
+                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.productSubcategory}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Product Brand</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.productBrand}}
+                                                </div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Standard Title</div>
+                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.ksApplicable?.standardTitle}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">KS Number</div>
+                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.ksApplicable?.standardNumber}}</div>
+                                            </li>
+
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="complaintInspection?.complaintsDetails?.complaintFiles.length!=0" label="4">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             Complainant Photos/Documents
@@ -136,7 +177,7 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="complaintInspection?.remarksDetails.length!=0" label="4">
+                                    <mat-tab *ngIf="complaintInspection?.remarksDetails.length!=0" label="5">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             Remarks Details
@@ -158,7 +199,44 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="complaintInspection?.officersAssigned" label="5">
+                                    <mat-tab *ngIf="complaintInspection?.acceptanceDone" label="6">
+                                        <ng-template mat-tab-label>
+                                            Complaint Acceptance/Rejection Details
+                                        </ng-template>
+                                        <b class="text-primary">Complaint Acceptance/Rejection Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li *ngIf="complaintInspection?.acceptanceResults?.acceptanceStatus" class="list-item-accordion ">
+                                                <div class="list-title-accordion">Complaint Acceptance Status</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.acceptanceResults?.acceptanceStatus}}
+                                                </div>
+                                            </li>
+                                            <li *ngIf="complaintInspection?.acceptanceResults?.rejectedStatus" class="list-item-accordion ">
+                                                <div class="list-title-accordion">Complaint Rejection Only Status</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.acceptanceResults?.rejectedStatus}}
+                                                </div>
+                                            </li>
+                                            <div *ngIf="complaintInspection?.acceptanceResults?.mandateOGAStatus">
+                                                <li class="list-item-accordion ">
+                                                    <div class="list-title-accordion">Complaint Rejection With Mandate To OGA Status</div>
+                                                    <div class="list-text-accordion">{{complaintInspection?.acceptanceResults?.mandateOGAStatus}}
+                                                    </div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Complaint Mandate To OGA Remarks</div>
+                                                    <div class="list-text-accordion">
+                                                        {{complaintInspection?.acceptanceResults?.ogaWhereRemarks}}
+                                                    </div>
+                                                </li>
+                                            </div>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Complaint Remarks Added</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.acceptanceResults?.acceptanceRemarks}}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="complaintInspection?.officersAssigned" label="7">
                                         <ng-template mat-tab-label>
                                             Assigned Officer Details
                                         </ng-template>
@@ -181,7 +259,7 @@
                                             </li>
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="complaintInspection?.hofAssigned" label="6">
+                                    <mat-tab *ngIf="complaintInspection?.hofAssigned" label="8">
                                         <ng-template mat-tab-label>
                                             Assigned HOF Details
                                         </ng-template>
@@ -204,403 +282,26 @@
                                             </li>
                                         </ul>
                                     </mat-tab>
-<!--                                    <mat-tab *ngIf="complaintInspection?.rapidTestDone" label="3">-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Rapid Test Details-->
-<!--                                        </ng-template>-->
-<!--                                        <b class="text-primary">Rapid Test Details</b>-->
-<!--                                        <ul class="w-list-unstyled">-->
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Test Status</div>-->
-<!--                                                <div class="list-text-accordion">{{complaintInspection?.rapidTest?.rapidTestStatus}}-->
-<!--                                                </div>-->
-<!--                                            </li>-->
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Test Remarks</div>-->
-<!--                                                <div class="list-text-accordion">{{complaintInspection?.rapidTest?.rapidTestRemarks}}-->
-<!--                                                </div>-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
-<!--                                    </mat-tab>-->
-<!--                                    <mat-tab *ngIf="complaintInspection?.sampleCollected" label="4">-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Sample Collected Details-->
-<!--                                        </ng-template>-->
-<!--                                        <b class="text-primary">Sample Collected Details</b>-->
-<!--                                        <div class="panel" style="max-height: 388px;">-->
-<!--                                            <ul class="w-list-unstyled">-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Name Manufacturer Trader</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.nameManufacturerTrader}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Address Manufacturer Trader</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.addressManufacturerTrader}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Sampling Method</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.samplingMethod}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Reasons Collecting Samples</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.reasonsCollectingSamples}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Any Remarks-->
-<!--                                                    </div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.anyRemarks}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Designation Officer Collecting Sample</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.designationOfficerCollectingSample}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Name Officer Collecting Sample</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.nameOfficerCollectingSample}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Date Officer Collecting Sample</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.dateOfficerCollectingSample|date}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Name Witness</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.nameWitness}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Designation Witness</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.designationWitness}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Date Witness</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleCollected?.dateWitness|date}}</div>-->
-<!--                                                </li>-->
-<!--                                            </ul>-->
-<!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(complaintInspection?.sampleCollected?.id, complaintInspection?.referenceNumber,'application/pdf')">Download</button>-->
-<!--                                            <div class="form-row">-->
-<!--                                                <div class="col-md-12 mb-3">-->
-<!--                                                    <label style="color: #0082f3">Items</label>-->
-<!--                                                </div>-->
-<!--                                                <div class="table-striped table-condensed table-responsive">-->
-<!--                                                    <ng2-smart-table [settings]="settingsSampleCollectItems" [source]="complaintInspection?.sampleCollected?.productsList"></ng2-smart-table>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </mat-tab>-->
-<!--                                    <mat-tab *ngIf="complaintInspection?.sampleSubmitted" label="5">-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Sample Submitted Details-->
-<!--                                        </ng-template>-->
-<!--                                        <b class="text-primary">Sample Submitted Details</b>-->
-<!--                                        <div class="panel" style="max-height: 388px;">-->
-<!--                                            <ul class="w-list-unstyled">-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Name Product</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.nameProduct}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Packaging</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.packaging}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Labelling Identification</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.labellingIdentification}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">File Ref Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.fileRefNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">References Standards-->
-<!--                                                    </div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.referencesStandards}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Size Test Sample</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.sizeTestSample}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Size Ref Sample</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.sizeRefSample}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Condition</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.condition}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Sample References</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.sampleReferences}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Senders Name</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.sendersName}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Designation</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.designation}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Address</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.address}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Senders Date</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.sendersDate| date}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Receivers Name</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.receiversName}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Test Charges Ksh</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.testChargesKsh}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Receipt Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.receiptLpoNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Invoice Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.invoiceNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Disposal</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.disposal}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Remarks</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.remarks}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Sample Collection Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.sampleCollectionNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Bs Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleSubmitted?.bsNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                            </ul>-->
-<!--                                            &lt;!&ndash;                                            <button class="btn-sm btn-primary" >Download</button>&ndash;&gt;-->
-<!--                                            <div class="form-row">-->
-<!--                                                <div class="col-md-12 mb-3">-->
-<!--                                                    <label style="color: #0082f3">Items</label>-->
-<!--                                                </div>-->
-<!--                                                <div class="table-striped table-condensed table-responsive">-->
-<!--                                                    <ng2-smart-table [settings]="settingsSampleSubmittedItems" [source]="complaintInspection?.sampleSubmitted?.parametersList"></ng2-smart-table>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <br>-->
-<!--                                        </div>-->
-<!--                                    </mat-tab>-->
-<!--                                    <mat-tab *ngIf="complaintInspection?.sampleLabResults?.parametersListTested" label="6">-->
-<!--                                        &lt;!&ndash;                                    <mat-tab  label="6">&ndash;&gt;-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Lab Results Details-->
-<!--                                        </ng-template>-->
-<!--                                        &lt;!&ndash;                                        <b class="text-primary">Lab Results Details</b>&ndash;&gt;-->
-<!--                                        <label style="color: #0082f3">Lab Results Details</label>-->
-<!--                                        <div class="panel" style="max-height: 388px;">-->
-<!--                                            <div *ngFor="let role of roles">-->
-<!--                                                <button *ngIf="role == 'MS_IOP_MODIFY' && complaintInspection?.bsNumberStatus && complaintInspection?.compliantStatusAdded==false && complaintInspection.sampleLabResults.savedPDFFiles.length != 0" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#myModal1"-->
-<!--                                                        class="btn btn-sm btn-primary mr-3"><span-->
-<!--                                                        class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>-->
-<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
-<!--                                            <br>-->
-<!--                                            <ul class="w-list-unstyled">-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">BS Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Compliance Remarks</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Compliance Status</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>-->
-<!--                                                </li>-->
-<!--                                            </ul>-->
-
-<!--                                            <div class="form-row">-->
-<!--                                                <div class="col-md-12 mb-3">-->
-<!--                                                    <label style="color: #0082f3">Lab Results Param</label>-->
-<!--                                                </div>-->
-<!--                                                <div class="table-striped table-condensed table-responsive">-->
-<!--                                                    <ng2-smart-table [settings]="settingsLabResultsParam" [source]="complaintInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div *ngIf="complaintInspection?.sampleLabResults?.parametersListTested!=null">-->
-<!--                                                <div *ngFor="let role of roles">-->
-<!--                                                    <div  *ngIf="role == 'MS_IOP_MODIFY'" class="form-row">-->
-<!--                                                        <div class="col-md-12 mb-3">-->
-<!--                                                            <label style="color: #0082f3">Lab Results PDF Found</label>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="table-striped table-condensed table-responsive">-->
-<!--                                                            <ng2-smart-table [settings]="settingsLIMSPDFFiles"-->
-<!--                                                                             [source]="complaintInspection?.sampleLabResults?.limsPDFFiles"-->
-<!--                                                                             (custom)="onCustomLIMSPDFAction($event,complaintInspection?.sampleLabResults?.ssfResultsList.bsNumber)"-->
-<!--                                                            ></ng2-smart-table>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                                <div class="form-row">-->
-<!--                                                    <div class="col-md-12 mb-3">-->
-<!--                                                        <label style="color: #0082f3">Lab Results PDF SAVED</label>-->
-<!--                                                    </div>-->
-<!--                                                    <div class="table-striped table-condensed table-responsive">-->
-<!--                                                        <ng2-smart-table [settings]="settingsSavedPDFFiles"-->
-<!--                                                                         [source]="complaintInspection?.sampleLabResults?.savedPDFFiles"-->
-<!--                                                                         (custom)="onCustomLIMSPDFViewAction($event)"-->
-<!--                                                        ></ng2-smart-table>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <br>-->
-<!--                                        </div>-->
-<!--                                    </mat-tab>-->
-<!--                                    <mat-tab *ngIf="complaintInspection?.fuelRemediation" label="7">-->
-<!--                                        &lt;!&ndash;                                    <mat-tab label="7">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    <mat-tab  label="6">&ndash;&gt;-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Remediation Details-->
-<!--                                        </ng-template>-->
-<!--                                        &lt;!&ndash;                                        <b class="text-primary">Lab Results Details</b>&ndash;&gt;-->
-<!--                                        <label style="color: #0082f3">Remediation Details</label>-->
-<!--                                        <div class="panel" style="max-height: 388px;">-->
-<!--                                            <ul class="w-list-unstyled">-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Remediation Date</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.fuelRemediation?.dateOfRemediation| date}}</div>-->
-<!--                                                </li>-->
-<!--                                                <div *ngIf="complaintInspection?.fuelRemediation?.invoiceCreated">-->
-<!--                                                    <li class="list-item-accordion">-->
-<!--                                                        <div class="list-title-accordion">Pro Forma Invoice No</div>-->
-<!--                                                        <div class="list-text-accordion">-->
-<!--                                                            {{complaintInspection?.fuelRemediation?.proFormaInvoiceNo}}</div>-->
-<!--                                                    </li>-->
-<!--                                                    <li class="list-item-accordion">-->
-<!--                                                        <div class="list-title-accordion">Receipt No</div>-->
-<!--                                                        <div class="list-text-accordion">-->
-<!--                                                            {{complaintInspection?.fuelRemediation?.feePaidReceiptNo}}</div>-->
-<!--                                                    </li>-->
-<!--                                                    <li class="list-item-accordion">-->
-<!--                                                        <div class="list-title-accordion">Invoice Amount</div>-->
-<!--                                                        <div class="list-text-accordion">-->
-<!--                                                            {{complaintInspection?.fuelRemediation?.invoiceAmount}}</div>-->
-<!--                                                    </li>-->
-<!--                                                    <li class="list-item-accordion">-->
-<!--                                                        <div class="list-title-accordion">Date Of Payment</div>-->
-<!--                                                        <div class="list-text-accordion">-->
-<!--                                                            {{complaintInspection?.fuelRemediation?.dateOfPayment| date}}</div>-->
-<!--                                                    </li>-->
-<!--                                                </div>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Product Type</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.fuelRemediation?.productType}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Applicable Kenya Standard</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.fuelRemediation?.applicableKenyaStandard}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Remediation Procedure</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.fuelRemediation?.remediationProcedure}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">volume Of Product Contaminated</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.fuelRemediation?.volumeOfProductContaminated}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Contaminated Fuel Type</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.fuelRemediation?.contaminatedFuelType}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Quantity Of Fuel</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.fuelRemediation?.quantityOfFuel}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Volume Added</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.fuelRemediation?.volumeAdded}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Total Volume</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{complaintInspection?.fuelRemediation?.totalVolume}}</div>-->
-<!--                                                </li>-->
-<!--                                            </ul>-->
-<!--                                            <br>-->
-<!--                                            <div *ngIf="complaintInspection?.fuelRemediation.invoiceCreated">-->
-<!--                                                <button class="btn-sm btn-primary" (click)="viewRemediationInvoicePdfFile(complaintInspection?.id, complaintInspection?.referenceNumber,'application/pdf')">VIEW INVOICE</button>-->
-<!--                                            </div>-->
-
-<!--                                        </div>-->
-<!--                                    </mat-tab>-->
                                 </mat-tab-group>
                             </div>
                             <div class="col-md-2 p-0">
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
-                                        <button *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == false && complaintInspection?.complaintsDetails?.rejectedStatus == false" (click)="openModalAddDetails('acceptRejectComplaint')" mat-raised-button="" data-toggle="modal"
+                                        <button *ngIf="complaintInspection?.acceptanceDone == false " (click)="openModalAddDetails('acceptRejectComplaint')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#myModal1"
                                                 class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">ACCEPT/REJECT COMPLAINT</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
-                                        <button *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == false && complaintInspection?.complaintsDetails?.rejectedStatus ==false" (click)="openModalAddDetails('notKebsMandate')" mat-raised-button="" data-toggle="modal"
-                                                data-target="#myModal1"
-                                                class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">MANDATE FOR OGA</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
+<!--                                        <button *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == false && complaintInspection?.complaintsDetails?.rejectedStatus ==false" (click)="openModalAddDetails('notKebsMandate')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                data-target="#myModal1"-->
+<!--                                                class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                class="mat-button-wrapper">MANDATE FOR OGA</span>-->
+<!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                                            <div class="mat-button-focus-overlay"></div>-->
+<!--                                        </button>-->
                                         <button *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == true && complaintInspection?.hofAssigned ==null" (click)="openModalAddDetails('assignHOF')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#myModal1"
                                                 class="btn btn-sm btn-primary mr-2"><span
@@ -614,6 +315,22 @@
                                                 data-target="#myModal1"
                                                 class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">ASSIGN IO</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                    </div>
+                                    <div *ngIf="role == 'MS_IO_MODIFY' && userLoggedInID == complaintInspection?.officersAssigned?.id">
+                                        <button *ngIf="complaintInspection?.complaintsDetails?.classificationDetailsStatus == false " (click)="openModalAddDetails('addClassificationDetails')" mat-raised-button="" data-toggle="modal"
+                                                data-target="#myModal1"
+                                                class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">ADD CLASSIFICATION DETAILS</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button *ngIf="complaintInspection?.complaintsDetails?.classificationDetailsStatus == true " (click)="openModalAddDetails('startMSProcess')" mat-raised-button="" data-toggle="modal"
+                                                data-target="#myModal1"
+                                                class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">START MS-PROCESS</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -665,7 +382,7 @@
                                             <input id="processBy" matInput type="text" readonly formControlName="processBy" name="processBy">
                                         </mat-form-field>
                                         <label for="remarks"><b>Remarks/ Feed back:</b></label>
-                                        <mat-form-field class="example-full-width">
+                                        <mat-form-field class="example-full-width" id="remarks">
                                             <textarea readonly id="remarksDescription" matInput type="text"
                                                       formControlName="remarksDescription"
                                                       name="remarksDescription">
@@ -713,6 +430,31 @@
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
+                                        <div *ngIf="(selectComplaintStatus == 'Reject')">
+                                            <label for="mandateForOga"><b>Select Rejection type</b></label>
+                                            <mat-form-field id="mandateForOga">
+                                                <mat-select (selectionChange)="updateSelectedRejectionStatus()"
+                                                            placeholder="Please Select an option"
+                                                            formControlName="mandateForOga"
+                                                            [class.is-invalid]="formAcceptRejectForm.mandateForOga.invalid && formAcceptRejectForm.mandateForOga.touched"
+                                                            name="mandateForOga">
+                                                    <mat-option [value]="0">REJECT ONLY</mat-option>
+                                                    <mat-option [value]="1">REJECT WITH MANDATE</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <div *ngIf="(selectComplaintRejectionStatus == 'Accept')">
+                                                <label for="advisedWhereToRemarks"><b>Please write, in detail, Where The Complaint belongs:</b></label>
+                                                <mat-form-field class="example-full-width">
+                                                    <textarea id="advisedWhereToRemarks" matInput type="text"
+                                                              formControlName="advisedWhereToRemarks"
+                                                              [class.is-invalid]="formAcceptRejectForm.advisedWhereToRemarks.invalid && formAcceptRejectForm.advisedWhereToRemarks.touched"
+                                                              name="advisedWhereToRemarks">
+                                                    </textarea>
+                                                </mat-form-field>
+
+                                            </div>
+
+                                        </div>
                                         <label for="approvedRemarks"><b>Please write, in detail, your feedback For Accepting / Rejecting:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="approvedRemarks" matInput type="text"
@@ -725,32 +467,32 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'notKebsMandate')">
-                        <form [formGroup]="adviceComplaintForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="advisedWhereToRemarks"><b>Please write, in detail, Where The Complaint belongs:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="advisedWhereToRemarks" matInput type="text"
-                                                      formControlName="advisedWhereToRemarks"
-                                                      [class.is-invalid]="formAdviceComplaintForm.advisedWhereToRemarks.invalid && formAdviceComplaintForm.advisedWhereToRemarks.touched"
-                                                      name="advisedWhereToRemarks">
-                                            </textarea>
-                                        </mat-form-field>
-                                        <label for="rejectedRemarks"><b>Please write, in detail, your feedback :</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="rejectedRemarks" matInput type="text"
-                                                      formControlName="rejectedRemarks"
-                                                      [class.is-invalid]="formAdviceComplaintForm.rejectedRemarks.invalid && formAdviceComplaintForm.rejectedRemarks.touched"
-                                                      name="rejectedRemarks">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<!--                    <div *ngIf="(currDiv == 'notKebsMandate')">-->
+<!--                        <form [formGroup]="adviceComplaintForm" class="form">-->
+<!--                            <div class="form-body">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div>-->
+<!--                                        <label for="advisedWhereToRemarks"><b>Please write, in detail, Where The Complaint belongs:</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <textarea id="advisedWhereToRemarks" matInput type="text"-->
+<!--                                                      formControlName="advisedWhereToRemarks"-->
+<!--                                                      [class.is-invalid]="formAdviceComplaintForm.advisedWhereToRemarks.invalid && formAdviceComplaintForm.advisedWhereToRemarks.touched"-->
+<!--                                                      name="advisedWhereToRemarks">-->
+<!--                                            </textarea>-->
+<!--                                        </mat-form-field>-->
+<!--                                        <label for="rejectedRemarks"><b>Please write, in detail, your feedback :</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <textarea id="rejectedRemarks" matInput type="text"-->
+<!--                                                      formControlName="rejectedRemarks"-->
+<!--                                                      [class.is-invalid]="formAdviceComplaintForm.rejectedRemarks.invalid && formAdviceComplaintForm.rejectedRemarks.touched"-->
+<!--                                                      name="rejectedRemarks">-->
+<!--                                            </textarea>-->
+<!--                                        </mat-form-field>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
                     <div *ngIf="(currDiv == 'assignHOF')">
                         <form [formGroup]="assignOfficerForm" class="form">
                             <div class="form-body">
@@ -803,56 +545,62 @@
                             </div>
                         </form>
                     </div>
-
-
-
-                    <div *ngIf="(currDiv == 'viewPdfSaveCompliance')">
-                        <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
+                    <div *ngIf="(currDiv == 'addClassificationDetails')">
+                        <form [formGroup]="classificationForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="complianceStatusPdf"><b>Select Compliance Status</b></label>
-                                        <mat-form-field id="complianceStatusPdft">
-                                            <mat-select disabled placeholder="Please Select an option"
-                                                        formControlName="complianceStatus"
-                                                        [class.is-invalid]="formPdfSaveComplianceStatusForm.complianceStatus.invalid && formPdfSaveComplianceStatusForm.complianceStatus.touched"
-                                                        name="complianceStatus">
-                                                <mat-option [value]="true">Compliant</mat-option>
-                                                <mat-option [value]="false">Non-Compliant</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
-                                        <mat-form-field disabled class="example-full-width">
-                                            <textarea id="complianceRemarksPDFt" matInput type="text"
-                                                      formControlName="complianceRemarks"
-                                                      name="complianceRemarks">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'ssfAddComplianceStatus')">
-                        <form [formGroup]="ssfSaveComplianceStatusForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
-                                        <mat-form-field id="complianceStatusSSF">
+                                        <label for="productClassification"><b>Select Product Classification</b></label>
+                                        <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
-                                                        formControlName="complianceStatus"
-                                                        [class.is-invalid]="formSSFSaveComplianceStatusForm.complianceStatus.invalid && formSSFSaveComplianceStatusForm.complianceStatus.touched"
-                                                        name="complianceStatus">
-                                                <mat-option [value]="true">Compliant</mat-option>
-                                                <mat-option [value]="false">Non-Compliant</mat-option>
+                                                        (selectionChange)="onChangeSelectedProductClassification()"
+                                                        [class.is-invalid]="formClassificationForm.productClassification.invalid && formClassificationForm.productClassification.touched"
+                                                        formControlName="productClassification" id="productClassification" name="productClassification" >
+                                                <mat-option *ngFor="let app of standardProductCategory" [value]="app.id">{{app.standardCategory}}</mat-option>
+
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for the whole Lab results:</b></label>
+                                        <label for="broadProductCategory"><b>Select Broad Product Category</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        (selectionChange)="onChangeSelectedBroadProductCategory()"
+                                                        [class.is-invalid]="formClassificationForm.broadProductCategory.invalid && formClassificationForm.broadProductCategory.touched"
+                                                        formControlName="broadProductCategory" id="broadProductCategory" name="broadProductCategory" >
+                                                <mat-option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="productCategory"><b>Select Product Category</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        (selectionChange)="onChangeSelectedProductCategory()"
+                                                        [class.is-invalid]="formClassificationForm.productCategory.invalid && formClassificationForm.productCategory.touched"
+                                                        formControlName="productCategory" id="productCategory" name="productCategory" >
+                                                <mat-option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="myProduct"><b>Select Product</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        (selectionChange)="onChangeSelectedMyProduct()"
+                                                        [class.is-invalid]="formClassificationForm.myProduct.invalid && formClassificationForm.myProduct.touched"
+                                                        formControlName="myProduct" id="myProduct" name="myProduct" >
+                                                <mat-option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="productSubcategory"><b>Select Product Sub-Category</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        (selectionChange)="onChangeSelectedProductSubcategory()"
+                                                        [class.is-invalid]="formClassificationForm.productSubcategory.invalid && formClassificationForm.productSubcategory.touched"
+                                                        formControlName="productSubcategory" id="productSubcategory" name="productSubcategory" >
+                                                <mat-option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="classificationRemarks"><b>Please write, in detail, your feedback for Classification Details Above:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="complianceRemarksSSF" matInput type="text"
-                                                      formControlName="complianceRemarks"
-                                                      name="complianceRemarks">
+                                            <textarea id="classificationRemarks" matInput type="text"
+                                                      formControlName="classificationRemarks"
+                                                      name="classificationRemarks">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -860,26 +608,25 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'addBsNumber')">
-                        <form [formGroup]="sampleSubmitBSNumberForm" class="form">
+                    <div *ngIf="(currDiv == 'startMSProcess')">
+                        <form [formGroup]="assignOfficerForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="bsNumber"><b>BS Number</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="bsNumber" matInput type="text" placeholder="Please Enter Bs Number received date" formControlName="bsNumber" name="bsNumber"
-                                                   [class.is-invalid]="formSampleSubmitBSNumberForm.bsNumber.invalid && formSampleSubmitBSNumberForm.bsNumber.touched">
+                                        <label for="assignedIo"><b>Select officer</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
+                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >
+                                                <mat-option *ngFor="let app of complaintInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+
+                                            </mat-select>
                                         </mat-form-field>
-                                        <label for="submittedDate"><b>Received Date</b></label>
+                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Bs Number received date" formControlName="submittedDate" name="submittedDate"
-                                                   [class.is-invalid]="formSampleSubmitBSNumberForm.submittedDate.invalid && formSampleSubmitBSNumberForm.submittedDate.touched">
-                                        </mat-form-field>
-                                        <label for="remarks"><b>Please write, in detail, your feedback for Attached BS Number:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="remarksBsNumber" matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks">
+                                            <textarea id="assignedRemarks" matInput type="text"
+                                                      formControlName="assignedRemarks"
+                                                      name="assignedRemarks">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -887,154 +634,7 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'notCompliantInvoice')">
-                        <form [formGroup]="notCompliantInvoiceForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="volumeFuelRemediated"><b>Volume of fuel to remediate, in litres</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="volumeFuelRemediated" matInput type="number" min="1" placeholder="Please Enter Volume of fuel to remediate, in litres" formControlName="volumeFuelRemediated" name="volumeFuelRemediated"
-                                                   [class.is-invalid]="formNotCompliantInvoiceForm.volumeFuelRemediated.invalid && formNotCompliantInvoiceForm.volumeFuelRemediated.touched">
-                                        </mat-form-field>
-                                        <label for="transportAirTicket"><b>Air ticket</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="transportAirTicket" matInput type="number"  min="0" placeholder="Please Enter Air ticket" formControlName="transportAirTicket" name="transportAirTicket"
-                                                   [class.is-invalid]="formNotCompliantInvoiceForm.transportAirTicket.invalid && formNotCompliantInvoiceForm.transportAirTicket.touched">
-                                        </mat-form-field>
-                                        <label for="transportInkm"><b>Km</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="transportInkm" matInput type="number"  min="0" placeholder="Please Enter Km" formControlName="transportInkm" name="transportInkm"
-                                                   [class.is-invalid]="formNotCompliantInvoiceForm.transportInkm.invalid && formNotCompliantInvoiceForm.transportInkm.touched">
-                                        </mat-form-field>
-                                        <label for="subsistenceTotalNights"><b>Subsistence Total Nights</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="subsistenceTotalNights" matInput type="number" min="1"  placeholder="Please Enter Subsistence Total Nights" formControlName="subsistenceTotalNights" name="subsistenceTotalNights"
-                                                   [class.is-invalid]="formNotCompliantInvoiceForm.subsistenceTotalNights.invalid && formNotCompliantInvoiceForm.subsistenceTotalNights.touched">
-                                        </mat-form-field>
-                                        <!--                                        <label for="submittedDate"><b>Received Date</b></label>-->
-                                        <!--                                        <mat-form-field class="example-full-width">-->
-                                        <!--                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Bs Number received date" formControlName="submittedDate" name="submittedDate"-->
-                                        <!--                                                   [class.is-invalid]="formSampleSubmitBSNumberForm.submittedDate.invalid && formSampleSubmitBSNumberForm.submittedDate.touched">-->
-                                        <!--                                        </mat-form-field>-->
-                                        <label for="remarks"><b>Please write, in detail, your feedback:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="remarksrmediatVolume" matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'addRemediationDetails')">
-                        <form [formGroup]="remediationForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="productType"><b>Product Type</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="productType" matInput type="text" placeholder="Please Enter Product Type" formControlName="productType" name="productType"
-                                                   [class.is-invalid]="formRemediationForm.productType.invalid && formRemediationForm.productType.touched">
-                                        </mat-form-field>
-                                        <label for="quantityOfFuel"><b>Quantity Of Fuel</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="quantityOfFuel" matInput type="text"  placeholder="Please Enter Quantity Of Fuel" formControlName="quantityOfFuel" name="quantityOfFuel"
-                                                   [class.is-invalid]="formRemediationForm.quantityOfFuel.invalid && formRemediationForm.quantityOfFuel.touched">
-                                        </mat-form-field>
-                                        <label for="contaminatedFuelType"><b>Contaminated Fuel Type</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="contaminatedFuelType" matInput type="text"  placeholder="Please Enter Contaminated Fuel Type" formControlName="contaminatedFuelType" name="contaminatedFuelType"
-                                                   [class.is-invalid]="formRemediationForm.contaminatedFuelType.invalid && formRemediationForm.contaminatedFuelType.touched">
-                                        </mat-form-field>
-                                        <label for="applicableKenyaStandard"><b>Applicable Kenya Standard</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="applicableKenyaStandard" matInput type="text"  placeholder="Please Enter Applicable Kenya Standard" formControlName="applicableKenyaStandard" name="applicableKenyaStandard"
-                                                   [class.is-invalid]="formRemediationForm.applicableKenyaStandard.invalid && formRemediationForm.applicableKenyaStandard.touched">
-                                        </mat-form-field>
-                                        <label for="remediationProcedure"><b>Remediation Procedure</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="remediationProcedure" matInput type="text"  placeholder="Please Enter Remediation Procedure" formControlName="remediationProcedure" name="remediationProcedure"
-                                                   [class.is-invalid]="formRemediationForm.remediationProcedure.invalid && formRemediationForm.remediationProcedure.touched">
-                                        </mat-form-field>
-                                        <label for="volumeOfProductContaminated"><b>Volume Of Product Contaminated</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="volumeOfProductContaminated" matInput type="number"  placeholder="Please Enter Volume Of Product Contaminated" formControlName="volumeOfProductContaminated" name="volumeOfProductContaminated"
-                                                   [class.is-invalid]="formRemediationForm.volumeOfProductContaminated.invalid && formRemediationForm.volumeOfProductContaminated.touched">
-                                        </mat-form-field>
-                                        <label for="volumeAdded"><b>Volume Added</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="volumeAdded" matInput type="number"  placeholder="Please Enter Volume Added" formControlName="volumeAdded" name="volumeAdded"
-                                                   [class.is-invalid]="formRemediationForm.volumeAdded.invalid && formRemediationForm.volumeAdded.touched">
-                                        </mat-form-field>
-                                        <label for="totalVolume"><b>Total Volume</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="totalVolume" matInput type="number" placeholder="Please Enter Total Volume" formControlName="totalVolume" name="totalVolume"
-                                                   [class.is-invalid]="formRemediationForm.totalVolume.invalid && formRemediationForm.totalVolume.touched">
-                                        </mat-form-field>
-                                        <!--                                        <label for="submittedDate"><b>Received Date</b></label>-->
-                                        <!--                                        <mat-form-field class="example-full-width">-->
-                                        <!--                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Bs Number received date" formControlName="submittedDate" name="submittedDate"-->
-                                        <!--                                                   [class.is-invalid]="formSampleSubmitBSNumberForm.submittedDate.invalid && formSampleSubmitBSNumberForm.submittedDate.touched">-->
-                                        <!--                                        </mat-form-field>-->
-                                        <!--                                        <label for="remarks"><b>Please write, in detail, your feedback:</b></label>-->
-                                        <!--                                        <mat-form-field class="example-full-width">-->
-                                        <!--                                            <textarea id="remarksrmediatVolume" matInput type="text"-->
-                                        <!--                                                      formControlName="remarks"-->
-                                        <!--                                                      name="remarks">-->
-                                        <!--                                            </textarea>-->
-                                        <!--                                        </mat-form-field>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'scheduleRemediation')">
-                        <form [formGroup]="scheduleRemediationForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="dateOfRemediation"><b>Remediation Date</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="dateOfRemediation" matInput type="date" placeholder="Please Enter Remediation date" formControlName="dateOfRemediation" name="dateOfRemediation"
-                                                   [class.is-invalid]="formScheduleRemediationForm.dateOfRemediation.invalid && formScheduleRemediationForm.dateOfRemediation.touched">
-                                        </mat-form-field>
-                                        <label for="remarks"><b>Please write, in detail, your feedback for Remediation:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="remarksRemed" matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'scheduleRemediationInvoicePaid')">
-                        <form [formGroup]="scheduleRemediationForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="dateOfRemediation"><b>Remediation Date</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="dateOfRemediation5" matInput type="date" placeholder="Please Enter Remediation date" formControlName="dateOfRemediation" name="dateOfRemediation"
-                                                   [class.is-invalid]="formScheduleRemediationForm.dateOfRemediation.invalid && formScheduleRemediationForm.dateOfRemediation.touched">
-                                        </mat-form-field>
-                                        <label for="remarks"><b>Please write, in detail, your feedback for Attached BS Number:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="remarksRemedPaid" matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+
                 </div>
                 <div class="modal-footer">
 
@@ -1064,39 +664,9 @@
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'pdfSaveCompliance')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSavePDFSelected(pdfSaveComplianceStatusForm.valid);"
-                            [disabled]="!pdfSaveComplianceStatusForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'ssfAddComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
-                            [disabled]="!ssfSaveComplianceStatusForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'scheduleRemediation')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveScheduleRemediation(scheduleRemediationForm.valid);"
-                            [disabled]="!scheduleRemediationForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'scheduleRemediationInvoicePaid')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveScheduleRemediation(scheduleRemediationForm.valid);"
-                            [disabled]="!scheduleRemediationForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'addRemediationDetails')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveRemediationForm(remediationForm.valid);"
-                            [disabled]="!remediationForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'notCompliantInvoice')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveNotCompliantInvoice(notCompliantInvoiceForm.valid);"
-                            [disabled]="!notCompliantInvoiceForm.valid"
+                    <button *ngIf="(currDiv == 'addClassificationDetails')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveClassificationDetails(classificationForm.valid);"
+                            [disabled]="!classificationForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -1105,474 +675,4 @@
         </div>
     </div>
     <!--  End Dynamic Modal -->
-
-    <!-- Sample collect Modal -->
-    <div class="modal fade" id="sampleCollectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Fill Sample Collected Details</h4>
-                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        <i class="material-icons">clear</i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form [formGroup]="sampleCollectForm">
-                        <div class="form-group bmd-form-group is-filled">
-                            <h5 class="mb-3" style="color: #0066B1">Sample Collect Details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>NAME MANUFACTURER TRADER</b></label>
-                                        <input [class.is-invalid]="formSampleCollectForm.nameManufacturerTrader.invalid && formSampleCollectForm.nameManufacturerTrader.touched"
-                                               class="form-control two-column-input"
-                                               formControlName="nameManufacturerTrader" name="nameManufacturerTrader" required type="text">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>ADDRESS MANUFACTURER TRADER</b></label>
-                                        <input [class.is-invalid]="formSampleCollectForm.addressManufacturerTrader.invalid && formSampleCollectForm.addressManufacturerTrader.touched"
-                                               class="form-control two-column-input"
-                                               formControlName="addressManufacturerTrader" name="addressManufacturerTrader" required type="text">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>SAMPLING METHOD</b></label>
-                                        <input [class.is-invalid]="formSampleCollectForm.samplingMethod.invalid && formSampleCollectForm.samplingMethod.touched"
-                                               class="form-control two-column-input"
-                                               formControlName="samplingMethod" name="samplingMethod" required type="text">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>REASONS COLLECTING SAMPLES</b> </label>
-                                        <input [class.is-invalid]="formSampleCollectForm.reasonsCollectingSamples.invalid && formSampleCollectForm.reasonsCollectingSamples.touched"
-                                               class="form-control two-column-input"
-                                               formControlName="reasonsCollectingSamples"
-                                               name="reasonsCollectingSamples" required type="text">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>ANY REMARKS</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="anyRemarks" name="anyRemarks"
-                                               required
-                                               [class.is-invalid]="formSampleCollectForm.anyRemarks.invalid && formSampleCollectForm.anyRemarks.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>DESIGNATION OFFICER COLLECTING SAMPLE</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="designationOfficerCollectingSample" name="designationOfficerCollectingSample" required
-                                               [class.is-invalid]="formSampleCollectForm.designationOfficerCollectingSample.invalid && formSampleCollectForm.designationOfficerCollectingSample.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>NAME OF OFFICER COLLECTING SAMPLE</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="nameOfficerCollectingSample" name="nameOfficerCollectingSample" required ngModel="{{userProfile.fullName}}" disabled
-                                               [class.is-invalid]="formSampleCollectForm.nameOfficerCollectingSample.invalid && formSampleCollectForm.nameOfficerCollectingSample.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>DATE OFFICER COLLECTED SAMPLE</b> </label>
-                                        <input type="date" class="form-control two-column-input"
-                                               formControlName="dateOfficerCollectingSample" name="dateOfficerCollectingSample" required
-                                               [class.is-invalid]="formSampleCollectForm.dateOfficerCollectingSample.invalid && formSampleCollectForm.dateOfficerCollectingSample.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>NAME WITNESS</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="nameWitness" name="nameWitness" required
-                                               [class.is-invalid]="formSampleCollectForm.nameWitness.invalid && formSampleCollectForm.nameWitness.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>DESIGNATION OF WITNESS</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="designationWitness" name="designationWitness" required
-                                               [class.is-invalid]="formSampleCollectForm.designationWitness.invalid && formSampleCollectForm.designationWitness.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>WITNESS DATE</b></label>
-                                        <input type="date" class="form-control two-column-input"
-                                               formControlName="dateWitness" name="dateWitness" required
-                                               [class.is-invalid]="formSampleCollectForm.dateWitness.invalid && formSampleCollectForm.dateWitness.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <!--                                    <div class="form-group">-->
-                                    <!--                                                    <label><b>DESIGNATION OF WITNESS</b> </label>-->
-                                    <!--                                                    <input type="text" class="form-control two-column-input"-->
-                                    <!--                                                           formControlName="designationWitness" name="designationWitness" required-->
-                                    <!--                                                           [class.is-invalid]="formSampleCollectForm.designationWitness.invalid && formSampleCollectForm.designationWitness.touched">-->
-                                    <!--                                    </div>-->
-                                </div>
-
-                            </div>
-                        </div>
-                    </form>
-                    <form [formGroup]="sampleCollectItemsForm">
-                        <div class="form-group bmd-form-group is-filled">
-                            <h5 class="mb-3" style="color: #0066B1">Item Details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>PRODUCT BRAND NAME</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="productBrandName" name="productBrandName" required
-                                               [class.is-invalid]="formSampleCollectItemsForm.productBrandName.invalid && formSampleCollectItemsForm.productBrandName.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>BATCH NO</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="batchNo" name="batchNo" required
-                                               [class.is-invalid]="formSampleCollectItemsForm.batchNo.invalid && formSampleCollectItemsForm.batchNo.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>BATCH SIZE</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="batchSize" name="batchSize" required
-                                               [class.is-invalid]="formSampleCollectItemsForm.batchSize.invalid && formSampleCollectItemsForm.batchSize.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>SAMPLE SIZE</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="sampleSize" name="sampleSize" required
-                                               [class.is-invalid]="formSampleCollectItemsForm.sampleSize.invalid && formSampleCollectItemsForm.sampleSize.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </form>
-
-                    <div class="modal-footer">
-                        <button  mat-raised-button type="button" class="btn btn-danger"
-                                 data-dismiss="modal">
-                            Close
-                        </button>
-                        <button mat-raised-button type="button"  data-dismiss="modal" class="btn btn-success" [disabled]="!sampleCollectForm.valid && !sampleCollectItemsForm.valid"
-                                (click)="onClickSaveSampleCollected(sampleCollectForm.valid,sampleCollectItemsForm.valid)">SUBMIT
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- End Sample Collect Modal -->
-
-    <!-- Sample Submit Modal -->
-    <div class="modal fade" id="sampleSubmitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Fill Sample Submitted Details</h4>
-                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        <i class="material-icons">clear</i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form [formGroup]="sampleSubmitForm">
-                        <div class="form-group bmd-form-group is-filled">
-                            <h5 class="mb-3" style="color: #0066B1">Sample Collect Details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>NAME PRODUCT</b></label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.nameProduct.invalid && formSampleSubmitForm.nameProduct.touched"
-                                               class="form-control two-column-input" ngModel="{{complaintInspection?.sampleCollected?.productsList[0]?.productBrandName}}" disabled
-                                               formControlName="nameProduct" name="nameProduct" required type="text">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>PACKAGING</b></label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.packaging.invalid && formSampleSubmitForm.packaging.touched"
-                                               class="form-control two-column-input"
-                                               formControlName="packaging" name="packaging" required type="text">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>LABELLING IDENTIFICATION</b></label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.labellingIdentification.invalid && formSampleSubmitForm.labellingIdentification.touched"
-                                               class="form-control two-column-input"
-                                               formControlName="labellingIdentification" name="labellingIdentification" required type="text">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>FILE REF NUMBER</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.fileRefNumber.invalid && formSampleSubmitForm.fileRefNumber.touched"
-                                               class="form-control two-column-input"
-                                               formControlName="fileRefNumber"
-                                               name="fileRefNumber" required type="text">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>REFERENCES STANDARDS</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="referencesStandards" name="referencesStandards"
-                                               required
-                                               [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>SIZE TEST SAMPLE</b> </label>
-                                        <input type="number" class="form-control two-column-input"
-                                               formControlName="sizeTestSample" name="sizeTestSample" required
-                                               [class.is-invalid]="formSampleSubmitForm.sizeTestSample.invalid && formSampleSubmitForm.sizeTestSample.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>SIZE REF SAMPLE</b></label>
-                                        <input type="number" class="form-control two-column-input"
-                                               formControlName="sizeRefSample" name="sizeRefSample" required
-                                               [class.is-invalid]="formSampleSubmitForm.sizeRefSample.invalid && formSampleSubmitForm.sizeRefSample.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>CONDITION</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="condition" name="condition" required
-                                               [class.is-invalid]="formSampleSubmitForm.condition.invalid && formSampleSubmitForm.condition.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>SAMPLE REFERENCES</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="sampleReferences" name="sampleReferences" required
-                                               [class.is-invalid]="formSampleSubmitForm.sampleReferences.invalid && formSampleSubmitForm.sampleReferences.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>SENDERS NAME</b> </label>
-                                        <input type="text" class="form-control two-column-input" ngModel="{{userProfile.fullName}}" disabled
-                                               formControlName="sendersName" name="sendersName" required
-                                               [class.is-invalid]="formSampleSubmitForm.sendersName.invalid && formSampleSubmitForm.sendersName.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>DESIGNATION</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="designation" name="designation" required
-                                               [class.is-invalid]="formSampleSubmitForm.designation.invalid && formSampleSubmitForm.designation.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>ADDRESS</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="address" name="address" required
-                                               [class.is-invalid]="formSampleSubmitForm.address.invalid && formSampleSubmitForm.address.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>SENDERS DATE</b></label>
-                                        <input type="date" class="form-control two-column-input"
-                                               formControlName="sendersDate" name="sendersDate" required
-                                               [class.is-invalid]="formSampleSubmitForm.sendersDate.invalid && formSampleSubmitForm.sendersDate.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>RECEIVERS NAME</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="receiversName" name="receiversName" required
-                                               [class.is-invalid]="formSampleSubmitForm.receiversName.invalid && formSampleSubmitForm.receiversName.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>TEST CHARGES KSH</b></label>
-                                        <input type="number" class="form-control two-column-input"
-                                               formControlName="testChargesKsh" name="testChargesKsh" required
-                                               [class.is-invalid]="formSampleSubmitForm.testChargesKsh.invalid && formSampleSubmitForm.testChargesKsh.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>RECEIPT LPO NUMBER</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="receiptLpoNumber" name="receiptLpoNumber" required
-                                               [class.is-invalid]="formSampleSubmitForm.receiptLpoNumber.invalid && formSampleSubmitForm.receiptLpoNumber.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>INVOICE NUMBER</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="invoiceNumber" name="invoiceNumber" required
-                                               [class.is-invalid]="formSampleSubmitForm.invoiceNumber.invalid && formSampleSubmitForm.invoiceNumber.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>DISPOSAL</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="disposal" name="disposal" required
-                                               [class.is-invalid]="formSampleSubmitForm.disposal.invalid && formSampleSubmitForm.disposal.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>REMARKS</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="remarks" name="remarks" required
-                                               [class.is-invalid]="formSampleSubmitForm.remarks.invalid && formSampleSubmitForm.remarks.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>SAMPLE COLLECTION NUMBER</b> </label>
-                                        <input type="number" class="form-control two-column-input" ngModel="{{complaintInspection?.sampleCollected?.id}}" disabled
-                                               formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required
-                                               [class.is-invalid]="formSampleSubmitForm.sampleCollectionNumber.invalid && formSampleSubmitForm.sampleCollectionNumber.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </form>
-                    <form [formGroup]="sampleSubmitParamsForm">
-                        <div class="form-group bmd-form-group is-filled">
-                            <h5 class="mb-3" style="color: #0066B1">Parameter Details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>PARAMETERS</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="parameters" name="parameters" required
-                                               [class.is-invalid]="formSampleSubmitParamsForm.parameters.invalid && formSampleSubmitParamsForm.parameters.touched">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>LABORATORY NAME</b> </label>
-                                        <!--                                        <mat-form-field>-->
-                                        <!--                                            <mat-select placeholder="Please Select an option"-->
-                                        <!--                                                        [class.is-invalid]="formSampleSubmitParamsForm.laboratoryName.invalid && formSampleSubmitParamsForm.laboratoryName.touched"-->
-                                        <!--                                                        formControlName="laboratoryName" id="laboratoryName" name="laboratoryName" >-->
-                                        <!--                                                <mat-option *ngFor="let app of labList" [value]="app.id">{{app.labName}}</mat-option>-->
-
-                                        <!--                                            </mat-select>-->
-                                        <!--                                        </mat-form-field>-->
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="laboratoryName" name="laboratoryName" required
-                                               [class.is-invalid]="formSampleSubmitParamsForm.laboratoryName.invalid && formSampleSubmitParamsForm.laboratoryName.touched">
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </form>
-
-                    <div class="modal-footer">
-                        <button  mat-raised-button type="button" class="btn btn-danger"
-                                 data-dismiss="modal">
-                            Close
-                        </button>
-                        <button mat-raised-button type="button" data-dismiss="modal" class="btn btn-success" [disabled]="!sampleSubmitForm.valid && !sampleSubmitParamsForm.valid"
-                                (click)="onClickSaveSampleSubmitted(sampleSubmitForm.valid,sampleSubmitParamsForm.valid)" >SUBMIT
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- End Sample Collect Modal -->
 </div>

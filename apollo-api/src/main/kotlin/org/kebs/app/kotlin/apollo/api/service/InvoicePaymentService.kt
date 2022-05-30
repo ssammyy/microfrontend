@@ -227,6 +227,8 @@ class InvoicePaymentService(
                 } ?: ExpectedDataNotFound("Demand note number not set")
             }
             return true
+        } catch (ex: ExpectedDataNotFound) {
+            throw ex
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to generate batch number", ex)
             throw ex
