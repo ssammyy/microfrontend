@@ -526,7 +526,7 @@ export interface OperationStatus {
     manufacturerStatus: number;
 }
 export interface NotificationStatus {
-    name: boolean;
+    responseMessage: number;
 }
 
 export interface Branch {
