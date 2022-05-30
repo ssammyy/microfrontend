@@ -110,6 +110,15 @@ data class FuelEntityRapidTestDto(
         var rapidTestStatus: Boolean,
 )
 
+
+data class MsComplaintAcceptanceStatusDto(
+        var acceptanceRemarks: String? = null,
+        var ogaWhereRemarks: String? = null,
+        var acceptanceStatus: Boolean,
+        var rejectedStatus: Boolean,
+        var mandateOGAStatus: Boolean,
+)
+
 data class FuelEntityCompliantStatusDto(
         @NotNull(message = "Required field")
         var compliantRemarks: String? = null,
@@ -349,6 +358,23 @@ data class ComplaintAssignDto(
         var assignedIo: Long? = null
 )
 
+data class StandardDetailsDto(
+        var standardTitle: String? = null,
+        var standardNumber: String? = null,
+        var ics: String? = null,
+        var hsCode: String? = null,
+        var subCategoryId: Long? = null,
+)
+
+data class ComplaintClassificationDto(
+        var productClassification: Long? = null,
+        var broadProductCategory: Long? = null,
+        var productCategory: Long? = null,
+        var myProduct: Long? = null,
+        var productSubcategory: Long? = null,
+        var classificationRemarks: String? = null,
+)
+
 data class MSRemarksDto(
         var id: Long? = null,
         var remarksDescription: String? = null,
@@ -358,6 +384,8 @@ data class MSRemarksDto(
 
 data class AllComplaintsDetailsDto(
         var complaintsDetails: ComplaintsDetailsDto? = null,
+        var acceptanceDone : Boolean,
+        var acceptanceResults : MsComplaintAcceptanceStatusDto? =null,
         var officersList: List<MsUsersDto>? = null,
         var hofList: List<MsUsersDto>? = null,
         var officersAssigned: MsUsersDto? = null,
@@ -379,8 +407,9 @@ data class ComplaintsDetailsDto(
         var complaintCategory: String? = null,
         var complaintTitle: String? = null,
         var complaintDescription: String? = null,
+        var standardCategory: String? = null,
         var broadProductCategory: String? = null,
-        var productClassification: String? = null,
+        var productCategory: String? = null,
         var productSubcategory: String? = null,
         var productName: String? = null,
         var productBrand: String? = null,
@@ -395,7 +424,9 @@ data class ComplaintsDetailsDto(
         var approvedStatus: Boolean? = null,
         var assignedIOStatus: Boolean? = null,
         var rejectedStatus: Boolean? = null,
-        var complaintFiles: List<ComplaintsFilesFoundDto>? = null
+        var classificationDetailsStatus: Boolean? = null,
+        var complaintFiles: List<ComplaintsFilesFoundDto>? = null,
+        var ksApplicable: StandardDetailsDto? = null
 
 )
 

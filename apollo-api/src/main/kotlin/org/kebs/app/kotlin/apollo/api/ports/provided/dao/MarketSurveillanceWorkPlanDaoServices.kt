@@ -35,7 +35,7 @@ import java.time.Instant
 
 
 @Service
-class MarketSurveillanceComplaintProcessDaoServices(
+class MarketSurveillanceWorkPlanDaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val msTypesRepo: IMsTypesRepository,
     private val complaintsRepo: IComplaintRepository,
@@ -76,8 +76,9 @@ class MarketSurveillanceComplaintProcessDaoServices(
     lateinit var reportsControllers: ReportsController
 
 
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun saveNewComplaint(body: NewComplaintDto, docFile: List<MultipartFile>): MSComplaintSubmittedSuccessful {
+    fun saveNewWorkPlan(body: NewComplaintDto): MSComplaintSubmittedSuccessful {
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val msType = findMsTypeDetailsWithUuid(applicationMapProperties.mapMsComplaintTypeUuid)
@@ -93,7 +94,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             val complaintLocation = saveNewComplaintLocation(body.locationDetails, body.complaintDetails, map, complaint.second)
             payload += "${commonDaoServices.createJsonBodyFromEntity(complaintLocation)}"
 
-            val uploads = saveComplaintFiles(docFile, map, complaint.second)
+//            val uploads = saveComplaintFiles(docFile, map, complaint.second)
 
 
             val designationsEntity = commonDaoServices.findDesignationByID(applicationMapProperties.mapMsComplaintAndWorkPlanDesignationHOD)

@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-          LOCAL_DEV: 'localhost:8006'
+          LOCAL_DEV: 'localhost:8006',
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        //  LOCAL_DEV: `kimsint.kebs.org:8006`
+        //  LOCAL_DEV: `kimsint.kebs.org:8006`,
         // LOCAL_DEV: `kims.kebs.org`
         // LOCAL_DEV: '10.10.0.149:8007'
     };
@@ -566,6 +566,7 @@ export class ApiEndpointService {
         CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
         UPLOAD_COMPLIANT_FILE: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/file/save`,
         ALL_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list`,
+        COMPLETED_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-completed`,
         NEW_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-new`,
         MY_TASK_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-my-task`,
         ONGOING_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-on-going`,
@@ -575,6 +576,7 @@ export class ApiEndpointService {
         COMPLAINT_DETAILS_UPDATE_OGA_MANDATE: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/advice-where`,
         COMPLAINT_DETAILS_UPDATE_ASSIGN_HOF: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/assign-hof`,
         COMPLAINT_DETAILS_UPDATE_ASSIGN_IO: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/assign-io`,
+        COMPLAINT_DETAILS_ADD_CLASSIFICATION_DETAILS: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/add-classification-details`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
       };

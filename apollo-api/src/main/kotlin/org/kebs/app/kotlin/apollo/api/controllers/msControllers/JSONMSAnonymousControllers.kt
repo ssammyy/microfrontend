@@ -46,7 +46,7 @@ class JSONMSAnonymousControllers(
     final var appId = applicationMapProperties.mapMarketSurveillance
 
     @PostMapping("/complaint/file/save")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFilesMsComplaintFile(
 //        @RequestParam("refNumber") refNumber: String,
         @RequestParam("docFile") docFile: List<MultipartFile>,

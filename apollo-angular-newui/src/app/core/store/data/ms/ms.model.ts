@@ -11,6 +11,15 @@ export class ComplaintApproveDto {
     approved: number;
 }
 
+export class ComplaintApproveRejectAdviceWhereDto {
+    department: number;
+    division: number;
+    approvedRemarks: string;
+    approved: number;
+    mandateForOga: number;
+    advisedWhereToRemarks: string;
+}
+
 export class ComplaintAdviceRejectDto {
     mandateForOga: number;
     advisedWhereToRemarks: string;
@@ -102,6 +111,8 @@ export class ApiResponseModel {
 
 export class AllComplaintsDetailsDto {
     complaintsDetails: ComplaintDetailsDto;
+    acceptanceDone: Boolean;
+    acceptanceResults: MsComplaintAcceptanceStatusDto;
     officersList: MsUsersDto[];
     hofList: MsUsersDto[];
     officersAssigned: MsUsersDto;
@@ -131,6 +142,22 @@ export class ComplaintsListDto {
     transactionDate: Date;
     progressStep: string;
 }
+export class ComplaintClassificationDto {
+    productClassification: number;
+    broadProductCategory: number;
+    productCategory: number;
+    myProduct: number;
+    productSubcategory: number;
+    classificationRemarks: string;
+}
+
+export class MsComplaintAcceptanceStatusDto {
+    acceptanceRemarks: string;
+    ogaWhereRemarks: string;
+    acceptanceStatus: boolean;
+    rejectedStatus: boolean;
+    mandateOGAStatus: boolean;
+}
 
 export class ComplaintDetailsDto {
     id: number;
@@ -142,8 +169,9 @@ export class ComplaintDetailsDto {
     complaintCategory: string;
     complaintTitle: string;
     complaintDescription: string;
+    standardCategory: string;
     broadProductCategory: string;
-    productClassification: string;
+    productCategory: string;
     productSubcategory: string;
     productName: string;
     productBrand: string;
@@ -156,7 +184,9 @@ export class ComplaintDetailsDto {
     approvedStatus: boolean;
     assignedIOStatus: boolean;
     rejectedStatus: boolean;
+    classificationDetailsStatus: boolean;
     complaintFiles: ComplaintsFilesFoundDto[];
+    ksApplicable: StandardDetailsDto;
 }
 
 
@@ -186,6 +216,13 @@ export class ComplaintsFilesFoundDto {
     fileName: string;
     documentType: string;
     fileContentType: string;
+}
+export class StandardDetailsDto {
+    standardTitle: string;
+    standardNumber: string;
+    ics: string;
+    hsCode: string;
+    subCategoryId: number;
 }
 
 

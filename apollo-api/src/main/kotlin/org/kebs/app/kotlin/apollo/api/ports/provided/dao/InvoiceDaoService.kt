@@ -347,105 +347,115 @@ class InvoiceDaoService(
     fun updateOfInvoiceTables() {
         findAllInvoicesPaid()
                 ?.forEach { invoice ->
+                    KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED PAYMENT UPDATE SCHEDULER::::::::::::::::::" }
                     try {
-                        var stgPayment = invoice
-                        var logPaymentMade = LogStgPaymentReconciliationEntity()
-                        with(logPaymentMade){
-                            paymentReconciliationId = stgPayment.id
-                            invoiceId = stgPayment.invoiceId
-                            accountName = stgPayment.accountName
-                            accountNumber = stgPayment.accountNumber
-                            currency = stgPayment.currency
-                            statusCode = stgPayment.statusCode
-                            statusDescription = stgPayment.statusDescription
-                            additionalInformation = stgPayment.additionalInformation
-                            invoiceAmount = stgPayment.invoiceAmount
-                            paidAmount = stgPayment.paidAmount
-                            outstandingAmount = stgPayment.outstandingAmount
-                            transactionId = stgPayment.transactionId
-                            transactionDate = stgPayment.transactionDate
-                            customerName = stgPayment.customerName
-                            paymentSource = stgPayment.paymentSource
-                            extras = stgPayment.extras
-                            invoiceDate = stgPayment.invoiceDate
-                            description = stgPayment.description
-                            status = stgPayment.status
-                            version = stgPayment.version
-                            referenceCode = stgPayment.referenceCode
-                            actualAmount = stgPayment.actualAmount
-                            paymentStarted = stgPayment.paymentStarted
-                            sageInvoiceNumber = stgPayment.sageInvoiceNumber
-                            invoiceTaxAmount = stgPayment.invoiceTaxAmount
-                            paymentTransactionDate = stgPayment.paymentTransactionDate
-                            createdBy = "SYSTEM SCHEDULER"
-                            createdOn = commonDaoServices.getTimestamp()
-                        }
-
-                        logPaymentMade = invoiceLogPaymentRepo.save(logPaymentMade)
-
-                        var batchInvoiceDetail = findInvoiceBatchDetails(stgPayment.invoiceId?:throw  ExpectedDataNotFound("MISSING INVOICE ID FOR MAPPING BACK AMOUNT PAID"))
                         when {
-                            stgPayment.paidAmount == stgPayment.invoiceAmount -> {
-                                with(batchInvoiceDetail){
-                                    status =1
-                                    paymentStarted =1
-                                    receiptNumber = stgPayment.transactionId
-                                    receiptDate = stgPayment.paymentTransactionDate
+                            invoice.paidAmount!= BigDecimal.ZERO -> {
+                                var stgPayment = invoice
+                                var logPaymentMade = LogStgPaymentReconciliationEntity()
+                                with(logPaymentMade){
+                                    paymentReconciliationId = stgPayment.id
+                                    invoiceId = stgPayment.invoiceId
+                                    accountName = stgPayment.accountName
+                                    accountNumber = stgPayment.accountNumber
+                                    currency = stgPayment.currency
+                                    statusCode = stgPayment.statusCode
+                                    statusDescription = stgPayment.statusDescription
+                                    additionalInformation = stgPayment.additionalInformation
+                                    invoiceAmount = stgPayment.invoiceAmount
                                     paidAmount = stgPayment.paidAmount
+                                    outstandingAmount = stgPayment.outstandingAmount
+                                    transactionId = stgPayment.transactionId
+                                    transactionDate = stgPayment.transactionDate
+                                    customerName = stgPayment.customerName
+                                    paymentSource = stgPayment.paymentSource
+                                    extras = stgPayment.extras
+                                    invoiceDate = stgPayment.invoiceDate
+                                    description = stgPayment.description
+                                    status = stgPayment.status
+                                    version = stgPayment.version
+                                    referenceCode = stgPayment.referenceCode
+                                    actualAmount = stgPayment.actualAmount
+                                    paymentStarted = stgPayment.paymentStarted
+                                    sageInvoiceNumber = stgPayment.sageInvoiceNumber
+                                    invoiceTaxAmount = stgPayment.invoiceTaxAmount
+                                    paymentTransactionDate = stgPayment.paymentTransactionDate
+                                    createdBy = "SYSTEM SCHEDULER"
+                                    createdOn = commonDaoServices.getTimestamp()
                                 }
 
-                                batchInvoiceDetail = updateInvoiceBatchDetailsAfterPaymentDone(batchInvoiceDetail)
+                                logPaymentMade = invoiceLogPaymentRepo.save(logPaymentMade)
 
-                                updatePaymentDetailsToSpecificTable(batchInvoiceDetail)
+                                var batchInvoiceDetail = findInvoiceBatchDetails(stgPayment.invoiceId?:throw  ExpectedDataNotFound("MISSING INVOICE ID FOR MAPPING BACK AMOUNT PAID"))
+                                when {
+                                    stgPayment.paidAmount == stgPayment.invoiceAmount -> {
+                                        with(batchInvoiceDetail){
+                                            status =1
+                                            paymentStarted =1
+                                            receiptNumber = stgPayment.transactionId
+                                            receiptDate = stgPayment.paymentTransactionDate
+                                            paidAmount = stgPayment.paidAmount
+                                        }
 
-                                with(stgPayment){
-                                    transactionId = null
-                                    invoiceAmount = BigDecimal.ZERO
-                                    paymentTablesUpdatedStatus = null
-                                    paymentTransactionDate = null
-                                    paidAmount = BigDecimal.ZERO
-                                    paymentStarted = 1
+                                        batchInvoiceDetail = updateInvoiceBatchDetailsAfterPaymentDone(batchInvoiceDetail)
+
+                                        updatePaymentDetailsToSpecificTable(batchInvoiceDetail)
+
+                                        with(stgPayment){
+                                            transactionId = null
+                                            invoiceAmount = BigDecimal.ZERO
+                                            paymentTablesUpdatedStatus = null
+                                            paymentTransactionDate = null
+                                            paidAmount = BigDecimal.ZERO
+                                            paymentStarted = 1
+                                        }
+                                        stgPayment = updateStagingPaymentReconciliation(stgPayment)
+                                    }
+                                    stgPayment.paidAmount!! > stgPayment.invoiceAmount -> {
+                                        with(batchInvoiceDetail){
+                                            status =1
+                                            paymentStarted =1
+                                            receiptNumber = stgPayment.transactionId
+                                            receiptDate = stgPayment.paymentTransactionDate
+                                            paidAmount = stgPayment.paidAmount
+                                        }
+
+                                        batchInvoiceDetail = updateInvoiceBatchDetailsAfterPaymentDone(batchInvoiceDetail)
+
+                                        updatePaymentDetailsToSpecificTable(batchInvoiceDetail)
+
+                                        with(stgPayment){
+                                            transactionId = null
+                                            invoiceAmount = BigDecimal.ZERO
+                                            paymentTablesUpdatedStatus = null
+                                            paymentTransactionDate = null
+                                            paidAmount = BigDecimal.ZERO
+                                            paymentStarted = 1
+                                        }
+                                        stgPayment = updateStagingPaymentReconciliation(stgPayment)
+                                    }
+
+                                    stgPayment.paidAmount!! < stgPayment.invoiceAmount -> {
+                                        with(stgPayment){
+                                            transactionId = null
+                                            invoiceAmount = (invoiceAmount?.minus(paidAmount!!))
+                                            paymentTablesUpdatedStatus = null
+                                            paymentTransactionDate = null
+                                            paymentSource = null
+                                            paidAmount = BigDecimal.ZERO
+                                            paymentStarted = 1
+                                        }
+                                        stgPayment = updateStagingPaymentReconciliation(stgPayment)
+
+                                    }
                                 }
-                                stgPayment = updateStagingPaymentReconciliation(stgPayment)
                             }
-                            stgPayment.paidAmount!! > stgPayment.invoiceAmount -> {
-                                with(batchInvoiceDetail){
-                                    status =1
-                                    paymentStarted =1
-                                    receiptNumber = stgPayment.transactionId
-                                    receiptDate = stgPayment.paymentTransactionDate
-                                    paidAmount = stgPayment.paidAmount
-                                }
-
-                                batchInvoiceDetail = updateInvoiceBatchDetailsAfterPaymentDone(batchInvoiceDetail)
-
-                                updatePaymentDetailsToSpecificTable(batchInvoiceDetail)
-
-                                with(stgPayment){
-                                    transactionId = null
-                                    invoiceAmount = BigDecimal.ZERO
-                                    paymentTablesUpdatedStatus = null
-                                    paymentTransactionDate = null
-                                    paidAmount = BigDecimal.ZERO
-                                    paymentStarted = 1
-                                }
-                                stgPayment = updateStagingPaymentReconciliation(stgPayment)
-                            }
-
-                            stgPayment.paidAmount!! < stgPayment.invoiceAmount -> {
-                                with(stgPayment){
-                                    transactionId = null
-                                    invoiceAmount = (invoiceAmount?.minus(paidAmount!!))
-                                    paymentTablesUpdatedStatus = null
-                                    paymentTransactionDate = null
-                                    paymentSource = null
-                                    paidAmount = BigDecimal.ZERO
-                                    paymentStarted = 1
-                                }
-                                stgPayment = updateStagingPaymentReconciliation(stgPayment)
-
+                            else -> {
+                                KotlinLogging.logger { }.info("Invoice with REFERENCE CODE : ${invoice.referenceCode} and SAGE INVOICE NUMBER : ${invoice.sageInvoiceNumber} Paid Amount is zero and will not be updated")
                             }
                         }
+                        KotlinLogging.logger { }.info { "::::::::::::::::::::::::ENDED PAYMENT UPDATE SCHEDULER::::::::::::::::::" }
+
                     } catch (e: ExpectedDataNotFound) {
                         KotlinLogging.logger { }.debug("Payment update failed: ${e.message}")
                     } catch (e: Exception) {

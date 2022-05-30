@@ -1139,6 +1139,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.letter}")
     val msComplaintProcessLetterSubmitted: Long? = null
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.classification-details}")
+    val msComplaintProcessClassificationDetails: Long? = null
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.mandate}")
     val msComplaintProcessMandate: Long? = null
 
