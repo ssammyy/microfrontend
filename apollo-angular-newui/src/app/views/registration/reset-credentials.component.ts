@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {
   doSendTokenForUser,
-  doValidateTokenForUser,
+  doValidateTokenForUserB,
   loadResetAuths,
   loadResponsesFailure,
   selectTokenSentStateOtpSent,
@@ -10,6 +10,7 @@ import {
 } from '../../core/store';
 import {select, Store} from '@ngrx/store';
 import {throwError} from 'rxjs';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-reset-credentials',
@@ -23,9 +24,11 @@ export class ResetCredentialsComponent implements OnInit {
   otpSent = false;
   tokenValidated = false;
   username = '';
+  hide = true;
 
   constructor(
     private store$: Store<any>,
+    private route:Router
   ) {
   }
 
@@ -40,9 +43,10 @@ export class ResetCredentialsComponent implements OnInit {
       },
     );
 
-
   }
 
+  get passwordInput()
+  { return this.stepOneForm.get('credentials'); }
 
 
   onClickSendOtp() {
@@ -92,9 +96,9 @@ export class ResetCredentialsComponent implements OnInit {
       }));
 
     } else {
-      this.store$.dispatch(doValidateTokenForUser({
+      this.store$.dispatch(doValidateTokenForUserB({
         payload: {
-          username: this.stepZeroForm?.get('username')?.value,
+          phone: this.stepZeroForm?.get('username')?.value,
           token: this.stepZeroForm?.get('otp')?.value,
         },
       }));
@@ -151,8 +155,15 @@ export class ResetCredentialsComponent implements OnInit {
             payload: {
               username: this.username,
               password: this.stepOneForm?.get('credentials')?.value,
-            }, redirectUrl: '',
+            },
           }));
+          // window.close();
+          // window.open('/dashboard')
+          window.open('/dashboard','_self').close();
+          window.open('/dashboard')
+
+          // this.route.navigate(['/dashboard']);
+
         } else {
           this.store$.dispatch(loadResponsesFailure({
             error: {

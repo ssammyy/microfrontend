@@ -32,7 +32,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Service
@@ -980,11 +979,13 @@ return getUserTasks();
 
                     standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
-            val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
-            val recipient= "Christine.gaiti@bskglobaltech.com"
-            val subject = "Report Rejected  $userEmail"
+            //val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+            val recipient= standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+            val subject = "Report Rejected  "
             val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetailsEmail().userName+".Log in to KIMS to make recommended changes."
-            notifications.sendEmail(recipient, subject, messageBody)
+            if (recipient != null) {
+                notifications.sendEmail(recipient, subject, messageBody)
+            }
 
 
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
@@ -1132,11 +1133,13 @@ return getUserTasks();
                     standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
 
-            val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
-            val recipient= "Christine.gaiti@bskglobaltech.com"
-            val subject = "Report Rejected  $userEmail"
+            //val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+            val recipient= standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+            val subject = "Report Rejected  "
             val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetailsEmail().userName+".Log in to KIMS to make recommended changes."
-            notifications.sendEmail(recipient, subject, messageBody)
+            if (recipient != null) {
+                notifications.sendEmail(recipient, subject, messageBody)
+            }
 
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
                 ?.let { companyProfileEntity ->
@@ -1679,10 +1682,10 @@ return getUserTasks();
 
     fun confirmCompanyClosure(
         companyProfileEntity: CompanyProfileEntity,
-        standardLevyOperationsSuspension: StandardLevyOperationsSuspension
+        standardLevyOperationsClosure: StandardLevyOperationsClosure
     ): String {
         companyProfileEntity.id = companyProfileEntity.id
-        standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
+        standardLevyOperationsClosure.id = standardLevyOperationsClosure.id
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
             ?.let { entity ->
 
@@ -1692,12 +1695,12 @@ return getUserTasks();
                 companyProfileRepo.save(entity)
 
             }?: throw Exception("COMPANY NOT FOUND")
-        standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
+        standardLevyOperationsClosureRepository.findByIdOrNull(standardLevyOperationsClosure.id)
             ?.let { entity ->
                 entity.apply {
                     status=1
                 }
-                standardLevyOperationsSuspensionRepository.save(entity)
+                standardLevyOperationsClosureRepository.save(entity)
 
                 val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
                 val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
@@ -1716,18 +1719,18 @@ return getUserTasks();
     }
 
     fun rejectCompanyClosure(
-        standardLevyOperationsSuspension: StandardLevyOperationsSuspension,
+        standardLevyOperationsClosure: StandardLevyOperationsClosure,
         companyProfileEntity: CompanyProfileEntity
     ): String {
 
         companyProfileEntity.id = companyProfileEntity.id
-        standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
-        standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
+        standardLevyOperationsClosure.id = standardLevyOperationsClosure.id
+        standardLevyOperationsClosureRepository.findByIdOrNull(standardLevyOperationsClosure.id)
             ?.let { entity ->
                 entity.apply {
                     status=1
                 }
-                standardLevyOperationsSuspensionRepository.save(entity)
+                standardLevyOperationsClosureRepository.save(entity)
 
                 val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
                 val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
@@ -1870,6 +1873,10 @@ return getUserTasks();
         return "Verification Code Sent"
 
 
+    }
+
+    fun getAllCompany(): MutableIterable<CompanyProfileEntity> {
+        return companyProfileRepo.findAll()
     }
 
 

@@ -232,6 +232,7 @@ export class NavbarComponent implements OnInit {
 
     onClickLogout() {
         this.store$.dispatch(loadLogout({loginUrl: 'login'}));
-
+        window.open('/login','_self').close();
+        window.open('/login')
     }
 }

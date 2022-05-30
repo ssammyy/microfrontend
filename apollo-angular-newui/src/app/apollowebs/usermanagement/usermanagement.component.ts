@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
     Go,
@@ -13,7 +13,7 @@ import {Titles, TitlesService} from '../../core/store/data/title';
 import {Store} from '@ngrx/store';
 import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {LoadingService} from '../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MasterService} from '../../core/store/data/master/master.service';
@@ -32,7 +32,9 @@ import {
 } from '../../../../../apollo-webs/src/app/shared/models/master-data-details';
 import swal from 'sweetalert2';
 import {DataTableDirective} from "angular-datatables";
-import {SACSummary} from "../../core/store/data/std/request_std.model";
+import {DataHolder, ReviewFormationOFTCRequest, SACSummary} from "../../core/store/data/std/request_std.model";
+import {TechnicalCommittee} from "../../core/store/data/std/std.model";
+import {UserRegister} from "../../../../../apollo-webs/src/app/shared/models/user";
 
 declare interface DataTable {
     headerRow: string[];
@@ -53,12 +55,15 @@ export class UsermanagementComponent implements OnInit {
     user: UserEntityDto;
 
     tasks: UserEntityDto[] = [];
+    public actionRequest: UserEntityDto | undefined;
 
     title$: Observable<Titles[]>;
     addUserFormGroup: FormGroup = new FormGroup({});
     public dataTable!: DataTable;
     public dataTable2!: DataTable;
     public dataTable3!: DataTable;
+    public userID!: string;
+    public userDetails!: UserRegister;
 
     public directoratesEntityDto!: DirectoratesEntityDto[];
     public designationEntityDto!: DesignationEntityDto[];
@@ -96,6 +101,8 @@ export class UsermanagementComponent implements OnInit {
                 private masterService: MasterService,
                 private titleService: TitlesService,
                 private router: Router,
+                private route: ActivatedRoute,
+
                 private formBuilder: FormBuilder) {
         this.title$ = titleService.entities$;
         titleService.getAll().subscribe();
@@ -348,62 +355,45 @@ export class UsermanagementComponent implements OnInit {
             });
     }
 
-    ngAfterViewInit() {
-        $(`#datatables`).DataTable({
-            'pagingType': 'full_numbers',
-            'lengthMenu': [
-                [10, 25, 50, -1],
-                [10, 25, 50, 'All']
-            ],
-            responsive: true,
-            language: {
-                search: '_INPUT_',
-                searchPlaceholder: 'Search records',
-            }
+    public onOpenModal(task: UserEntityDto): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+        console.log(task.id);
+        this.route.fragment.subscribe(params => {
+            this.userID = String(task.id);
+            console.log(this.userID);
+            this.masterService.loadUserDetails(this.userID).subscribe(
+                (data: UserRegister) => {
+                    this.userDetails = data;
+                    console.log(this.userDetails);
 
-        });
-        $(`#datatablescd`).DataTable({
-            'pagingType': 'full_numbers',
-            'lengthMenu': [
-                [10, 25, 50, -1],
-                [10, 25, 50, 'All']
-            ],
-            responsive: true,
-            language: {
-                search: '_INPUT_',
-                searchPlaceholder: 'Search records',
-            }
+                }
+            );
 
         });
 
-        const table = $('#datatables').DataTable();
 
 
 
-        // Edit record
-        table.on('click', '.edit', function (e) {
-            let $tr = $(this).closest('tr');
-            if ($($tr).hasClass('child')) {
-                $tr = $tr.prev('.parent');
-            }
+        this.actionRequest = task;
+        button.setAttribute('data-target', '#editUserModal');
 
-            const data = table.row($tr).data();
-        });
-
-        // Delete a record
-        table.on('click', '.remove', function (e) {
-            const $tr = $(this).closest('tr');
-            table.row($tr).remove().draw();
-            e.preventDefault();
-        });
-
-        // Like record
-        // table.on('click', '.like', function (e) {
-        //     alert('You clicked on Like button');
-        //     e.preventDefault();
-        // });
-
-        $('.card .material-datatables label').addClass('form-group');
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
     }
+    @ViewChild('closeViewModal') private closeModal: ElementRef | undefined;
+    public hideModel() {
+        this.closeModal?.nativeElement.click();
+    }
+
+
+    private getSelectedUser(userSelected) {
+    }
+
+
 
 }

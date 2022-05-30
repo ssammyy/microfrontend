@@ -8,7 +8,7 @@ import {
     LoggedInUser,
     LoginCredentials,
     SendTokenRequestDto,
-    ValidateTokenRequestDto
+    ValidateTokenRequestDto, ValidateTokenRequestDtoB
 } from './auth.model';
 import {ApiResponse} from '../../../domain/response.model';
 
@@ -51,6 +51,14 @@ export class AuthService {
             catchError((fault: HttpErrorResponse) => throwError(fault))
         );
     }
+    public validateTokenForUserB(payload: ValidateTokenRequestDtoB): Observable<ApiResponse> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN);
+        return this.http.post<ApiResponse>(url, payload).pipe(
+            map((r: ApiResponse): ApiResponse => r),
+            catchError((fault: HttpErrorResponse) => throwError(fault))
+        );
+    }
+
 
     public logout(): Observable<ApiResponse> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOGOUT_URL);

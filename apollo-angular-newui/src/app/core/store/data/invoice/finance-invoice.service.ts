@@ -39,6 +39,12 @@ export class FinanceInvoiceService {
         return this.http.post(ApiEndpointService.getEndpoint("/api/v1/corporate/status/" + corporateId), data)
     }
 
+    closeAndSendBillCorporateAction(billId: any): Observable<any> {
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/corporate/bill/close/" + billId), {
+            remarks: "Closed bill from portal"
+        })
+    }
+
     loadBillTypes(): Observable<any> {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/bill/limits"))
     }
@@ -54,13 +60,13 @@ export class FinanceInvoiceService {
         })
     }
 
-    loadBillStatus(corporateId: any, status: any,page: number, pageSize: number): Observable<any> {
+    loadBillStatus(corporateId: any, status: any, page: number, pageSize: number): Observable<any> {
         let params = {}
         if (pageSize) {
             params['page'] = page
             params['size'] = pageSize
         }
-        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/corporate/bills/" + corporateId+"/status/"+status), {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/corporate/bills/" + corporateId + "/status/" + status), {
             params: params
         })
     }
