@@ -612,24 +612,24 @@
                         <form [formGroup]="assignOfficerForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <div>
-                                        <label for="assignedIo"><b>Select officer</b></label>
-                                        <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
-                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >
-                                                <mat-option *ngFor="let app of complaintInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+<!--                                    <div>-->
+<!--                                        <label for="assignedIo"><b>Select officer</b></label>-->
+<!--                                        <mat-form-field>-->
+<!--                                            <mat-select placeholder="Please Select an option"-->
+<!--                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"-->
+<!--                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >-->
+<!--                                                <mat-option *ngFor="let app of complaintInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>-->
 
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="assignedRemarks" matInput type="text"
-                                                      formControlName="assignedRemarks"
-                                                      name="assignedRemarks">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
+<!--                                            </mat-select>-->
+<!--                                        </mat-form-field>-->
+<!--                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <textarea id="assignedRemarks" matInput type="text"-->
+<!--                                                      formControlName="assignedRemarks"-->
+<!--                                                      name="assignedRemarks">-->
+<!--                                            </textarea>-->
+<!--                                        </mat-form-field>-->
+<!--                                    </div>-->
                                 </div>
                             </div>
                         </form>
