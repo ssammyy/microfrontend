@@ -342,6 +342,15 @@ class AngularRoutes {
                     }
 
                 }
+                "/resetPasswordValidateToken".nest {
+                    POST("", handler::resetPasswordHandleValidatePhoneNumberAndToken)
+                    GET("", otherHandler::notSupported)
+                    "/{id}".nest {
+                        GET("", otherHandler::notSupported)
+                        PUT("", otherHandler::notSupported)
+                    }
+
+                }
                 "/registerCompany".nest {
                     POST("", handler::handleRegisterCompany)
                     GET("", otherHandler::notSupported)

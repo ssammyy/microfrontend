@@ -109,6 +109,7 @@ export class ApiEndpointService {
         SEND_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendToken`,
         SEND_TOKEN_FOR_USER: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendTokenForUser`,
         VALIDATE_TOKEN_FOR_USER: `${ApiEndpointService.MASTERS_CONTEXT}/validateToken`,
+        RESET_PASSWORD_VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/resetPasswordValidateToken`,
         VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
         REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
         COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,

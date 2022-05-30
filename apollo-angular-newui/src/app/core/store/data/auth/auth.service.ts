@@ -52,7 +52,7 @@ export class AuthService {
         );
     }
     public validateTokenForUserB(payload: ValidateTokenRequestDtoB): Observable<ApiResponse> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.RESET_PASSWORD_VALIDATE_TOKEN);
         return this.http.post<ApiResponse>(url, payload).pipe(
             map((r: ApiResponse): ApiResponse => r),
             catchError((fault: HttpErrorResponse) => throwError(fault))

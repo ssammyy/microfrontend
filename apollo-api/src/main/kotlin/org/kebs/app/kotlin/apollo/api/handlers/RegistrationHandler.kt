@@ -931,6 +931,34 @@ class RegistrationHandler(
         }
 
     }
+
+    @PreAuthorize("isAnonymous()")
+    fun resetPasswordHandleValidatePhoneNumberAndToken(req: ServerRequest): ServerResponse {
+        return try {
+            val body = req.body<ValidatePhoneNumberTokenRequestDto>()
+
+            val errors: Errors = BeanPropertyBindingResult(body, ValidatePhoneNumberTokenRequestDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    systemsAdminDaoService.resetPasswordValidatePhoneNumberAndToken(body, req)
+                        ?.let { ok().body(it) }
+                        ?: onErrors("We could not process your request at the moment")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+
+    }
+
 //    @PreAuthorize("isAnonymous()")
     fun handleValidatePhoneNumberAndTokenSecure(req: ServerRequest): ServerResponse {
         return try {
