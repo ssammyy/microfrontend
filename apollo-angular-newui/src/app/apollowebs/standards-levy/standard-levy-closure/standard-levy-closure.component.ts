@@ -169,7 +169,8 @@ export class StandardLevyClosureComponent implements OnInit {
         this.SpinnerService.show();
         this.levyService.confirmCompanyClosure(this.approveRequestFormGroup.value).subscribe(
             (response) => {
-                console.log(response);
+                //console.log(response);
+                this.getCompanyClosureRequest();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Request for Closure Approved`);
             },
@@ -188,7 +189,8 @@ export class StandardLevyClosureComponent implements OnInit {
         this.SpinnerService.show();
         this.levyService.rejectCompanyClosure(this.rejectRequestFormGroup.value).subscribe(
             (response) => {
-                console.log(response);
+                //console.log(response);
+                this.getCompanyClosureRequest();
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Request for Closure Rejected`);
             },

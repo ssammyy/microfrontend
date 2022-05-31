@@ -179,6 +179,7 @@ interface CompleteTasksDetailHolder {
     fun getStreetName(): String?
     fun getOfficersFeedback(): String?
     fun getStatus(): Long?
+    fun getOtherBusinessNatureType(): String?
 
 }
 interface BranchNameHolder{

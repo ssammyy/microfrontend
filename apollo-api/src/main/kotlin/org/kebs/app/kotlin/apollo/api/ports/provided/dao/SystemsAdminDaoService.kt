@@ -1328,7 +1328,7 @@ class SystemsAdminDaoService(
                                                 typeOfUser = applicationMapProperties.transactionActiveStatus
                                                 title = u.title
                                                 email = u.email
-                                                userName = u.userName
+                                                userName = u.email
                                                 cellphone = commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
                                                 userRegNo = "KEBS${
                                                     commonDaoServices.generateTransactionReference(5).toUpperCase()

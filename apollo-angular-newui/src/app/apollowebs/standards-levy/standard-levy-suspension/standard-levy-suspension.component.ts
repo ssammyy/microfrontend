@@ -105,7 +105,8 @@ export class StandardLevySuspensionComponent implements OnInit {
     this.SpinnerService.show();
     this.levyService.confirmCompanySuspension(this.approveRequestFormGroup.value).subscribe(
         (response) => {
-          console.log(response);
+         // console.log(response);
+          this.getCompanySuspensionRequest();
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, `Request for Suspension Approved`);
         },
@@ -124,7 +125,8 @@ export class StandardLevySuspensionComponent implements OnInit {
     this.SpinnerService.show();
     this.levyService.rejectCompanySuspension(this.rejectRequestFormGroup.value).subscribe(
         (response) => {
-          console.log(response);
+          //console.log(response);
+          this.getCompanySuspensionRequest();
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, `Request for Suspension Rejected`);
         },
