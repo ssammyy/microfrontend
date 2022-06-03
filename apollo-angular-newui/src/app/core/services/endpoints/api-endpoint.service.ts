@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {environment} from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root',
@@ -17,12 +18,7 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-         //  LOCAL_DEV: 'localhost:8006',
-        // LOCAL_DEV: '12:8006'
-        // LOCAL_DEV: '41.72.209.58:8006'
-         LOCAL_DEV: `kimsint.kebs.org:8006`,
-        // LOCAL_DEV: `kims.kebs.org`,
-        // LOCAL_DEV: '10.10.0.149:8007'
+        LOCAL_DEV: environment.base_url,
     };
 
     /**
@@ -521,9 +517,6 @@ export class ApiEndpointService {
         STD_LEVY_E_SLIP: `${ApiEndpointService.STL_CONTEXT}/generatePdf`,
 
 
-
-
-
     };
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
@@ -561,7 +554,7 @@ export class ApiEndpointService {
         MS_BROAD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/broadProductCategory`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
-      };
+    };
 
     public static MARKET_SURVEILLANCE_COMPLAINT = {
         CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
@@ -578,7 +571,8 @@ export class ApiEndpointService {
         COMPLAINT_DETAILS_UPDATE_ASSIGN_IO: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/assign-io`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
-      };
+    };
+
     /**
      * Constructor.
      */
@@ -587,40 +581,41 @@ export class ApiEndpointService {
     ) {
     }
 
-  /**
-   * Constructs an API endpoint.
-   *
-   * NOTE: In the future this could construct API endpoints using environmental configs provided
-   * at build time or at runtime via (for example) query string params...but for now we'll
-   * keep this dumb simple.
-   */
-  public static getEndpoint(endpoint: string): string {
-    const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
-    const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
-    const context: string = ApiEndpointService.CONTEXT;
-    return `${protocol}${domain}${context}${endpoint}`;
-  }
+    /**
+     * Constructs an API endpoint.
+     *
+     * NOTE: In the future this could construct API endpoints using environmental configs provided
+     * at build time or at runtime via (for example) query string params...but for now we'll
+     * keep this dumb simple.
+     */
+    public static getEndpoint(endpoint: string): string {
 
-  /**
-   * Determines if the requested URL is an authentication API endpoint.
-   * @param  url the url
-   * @returns it requires authentication
-   * @returns it requires authentication
-   */
-  public static isAuthEndpoint(url: string = ''): boolean {
-    return (
-      url.toLowerCase().indexOf(ApiEndpointService.ANONYMOUS_CONTEXT) > -1
-      || url.toLowerCase().indexOf(ApiEndpointService.AUTH_CONTEXT) > -1
-    );
+        const protocol: string = environment.https_enabled ? ApiEndpointService.PROTOCOL.HTTPS : ApiEndpointService.PROTOCOL.HTTP;
+        const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
+        const context: string = ApiEndpointService.CONTEXT;
+        return `${protocol}${domain}${context}${endpoint}`;
+    }
+
+    /**
+     * Determines if the requested URL is an authentication API endpoint.
+     * @param  url the url
+     * @returns it requires authentication
+     * @returns it requires authentication
+     */
+    public static isAuthEndpoint(url: string = ''): boolean {
+        return (
+            url.toLowerCase().indexOf(ApiEndpointService.ANONYMOUS_CONTEXT) > -1
+            || url.toLowerCase().indexOf(ApiEndpointService.AUTH_CONTEXT) > -1
+        );
 
     }
 
-  /**
-   * Determines if the requested URL is an API endpoint.
-   * @param url the url
-   * @returns this is an apiEndPoint
-   */
-  public static isApiEndpoint(url: string = ''): boolean {
-    return url.toLowerCase().indexOf(ApiEndpointService.CONTEXT) > -1;
-  }
+    /**
+     * Determines if the requested URL is an API endpoint.
+     * @param url the url
+     * @returns this is an apiEndPoint
+     */
+    public static isApiEndpoint(url: string = ''): boolean {
+        return url.toLowerCase().indexOf(ApiEndpointService.CONTEXT) > -1;
+    }
 }

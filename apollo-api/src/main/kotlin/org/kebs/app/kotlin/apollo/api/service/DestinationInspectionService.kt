@@ -526,13 +526,15 @@ class DestinationInspectionService(
                     "BlackList Consignment Document [blacklistStatus= ${1}, blacklistRemarks= ${remarks}]"
             val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, loggedInUser)
             consignmentDocument.assigner?.let {
-                runBlocking {commonDaoServices.sendEmailWithUserEntity(
-                        it,
-                        daoServices.diCdAssignedUuid,
-                        consignmentDocument,
-                        map,
-                        sr
-                )}
+                runBlocking {
+                    commonDaoServices.sendEmailWithUserEntity(
+                            it,
+                            daoServices.diCdAssignedUuid,
+                            consignmentDocument,
+                            map,
+                            sr
+                    )
+                }
             }
             return true
         } catch (ex: Exception) {
@@ -738,7 +740,8 @@ class DestinationInspectionService(
 
         val pdfStream: ByteArrayOutputStream
         val cocType = data["CoCType"] as String
-        val fileName = "/tmp/LOCAL-${cocType.toUpperCase()}-".plus(data["CocNo"] as String).plus(".pdf")
+        val cocNumber = data["CocNo"] as String
+        val fileName = "/tmp/LOCAL-${cocType.toUpperCase()}-".plus(cocNumber.replace('\\', '-')).plus(".pdf")
         if ("COI".equals(cocType, true)) {
             pdfStream = reportsDaoService.extractReportMapDataSource(data, "classpath:reports/LocalCoiReport.jrxml", items)
         } else if ("NCR".equals(cocType)) {
@@ -755,7 +758,7 @@ class DestinationInspectionService(
         val data = createLocalCorReportMap(corId)
         data["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
         val corNumber = data["corNumber"] as String
-        val fileName = "/tmp/LOCAL-COR-${corNumber}.pdf"
+        val fileName = "/tmp/LOCAL-COR-${corNumber.replace('\\', '-')}.pdf"
         val pdfStream = reportsDaoService.extractReportEmptyDataSource(data, "classpath:reports/LocalCoRReport.jrxml")
         reportsDaoService.createFileFromBytes(pdfStream, fileName)
         return fileName
