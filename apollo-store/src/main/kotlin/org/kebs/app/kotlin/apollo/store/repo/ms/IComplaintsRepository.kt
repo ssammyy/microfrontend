@@ -35,6 +35,7 @@ import org.springframework.stereotype.Repository
 interface IComplaintRepository : HazelcastRepository<ComplaintEntity, Long>, JpaSpecificationExecutor<ComplaintEntity> {
     override fun findAll(): List<ComplaintEntity>
     fun findAllByOrderByIdDesc(pageable: Pageable): Page<ComplaintEntity>
+    fun findAllByMsComplaintEndedStatusOrderByIdDesc(msComplaintEndedStatus: Int, pageable: Pageable): Page<ComplaintEntity>
     fun findByHodAssigned(hodAssigned: Long): List<ComplaintEntity>
     fun findByHodAssigned(hodAssigned: Long,pageable: Pageable): Page<ComplaintEntity>
     fun findByHodAssignedAndUserTaskId(hodAssigned: Long,userTaskID: Long,pageable: Pageable): Page<ComplaintEntity>
@@ -130,7 +131,9 @@ interface IComplaintLocationRepository : HazelcastRepository<ComplaintLocationEn
 @Repository
 interface IMsRemarksComplaintRepository : HazelcastRepository<MsRemarksEntity, Long>{
     fun findAllByComplaintId(complaintId: Long): List<MsRemarksEntity>?
+    fun findAllByComplaintIdOrderByIdAsc(complaintId: Long): List<MsRemarksEntity>?
     fun findAllByFuelInspectionId(fuelInspectionId: Long): List<MsRemarksEntity>?
+    fun findAllByFuelInspectionIdOrderByIdAsc(fuelInspectionId: Long): List<MsRemarksEntity>?
 }
 
 @Repository

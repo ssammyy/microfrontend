@@ -105,6 +105,7 @@ export class ApiEndpointService {
         SEND_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendToken`,
         SEND_TOKEN_FOR_USER: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendTokenForUser`,
         VALIDATE_TOKEN_FOR_USER: `${ApiEndpointService.MASTERS_CONTEXT}/validateToken`,
+        RESET_PASSWORD_VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/resetPasswordValidateToken`,
         VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
         REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
         COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
@@ -560,6 +561,7 @@ export class ApiEndpointService {
         CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
         UPLOAD_COMPLIANT_FILE: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/file/save`,
         ALL_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list`,
+        COMPLETED_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-completed`,
         NEW_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-new`,
         MY_TASK_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-my-task`,
         ONGOING_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-on-going`,
@@ -569,6 +571,7 @@ export class ApiEndpointService {
         COMPLAINT_DETAILS_UPDATE_OGA_MANDATE: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/advice-where`,
         COMPLAINT_DETAILS_UPDATE_ASSIGN_HOF: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/assign-hof`,
         COMPLAINT_DETAILS_UPDATE_ASSIGN_IO: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/assign-io`,
+        COMPLAINT_DETAILS_ADD_CLASSIFICATION_DETAILS: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/add-classification-details`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
     };

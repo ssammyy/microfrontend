@@ -158,6 +158,7 @@ class CommonDaoServices(
         private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
         private val verificationTokensRepoB: IUserVerificationTokensRepositoryB,
         private val countyRepo: ICountiesRepository,
+        private val sampleStandardsRepository: ISampleStandardsRepository,
         private val standardCategoryRepo: IStandardCategoryRepository,
         private val productCategoriesRepository: IKebsProductCategoriesRepository,
         private val broadProductCategoryRepository: IBroadProductCategoryRepository,
@@ -1704,6 +1705,22 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("Department with ID  = ${departmentId}, does not Exist")
     }
 
+    fun findStandardCategoryByID(standardCategoryId: Long): StandardsCategoryEntity {
+        standardCategoryRepo.findByIdOrNull(standardCategoryId)
+                ?.let { standardCategory ->
+                    return standardCategory
+                }
+                ?: throw ExpectedDataNotFound("Standard Category with ID  = ${standardCategoryId}, does not Exist")
+    }
+
+     fun findSampleStandardsByID(standardCategoryId: Long): SampleStandardsEntity {
+         sampleStandardsRepository.findBySubCategoryId(standardCategoryId)
+                ?.let { standardDetails ->
+                    return standardDetails
+                }
+                ?: throw ExpectedDataNotFound("Standard Details with Sub-Category ID  = ${standardCategoryId}, does not Exist")
+    }
+
     fun findBroadCategoryByID(broadCategoryId: Long): BroadProductCategoryEntity {
         broadProductCategoryRepository.findByIdOrNull(broadCategoryId)
                 ?.let { broadCategory ->
@@ -1978,28 +1995,21 @@ class CommonDaoServices(
     fun validateOTPToken(token: String, phoneNumber: String?, req: ServerRequest?): CustomResponse {
         val result = CustomResponse()
         try {
-
-            //find phonenumber of email address associated with user
-                val users = phoneNumber?.let { usersRepo.findByEmail(it) }
-            val correctPhone = if (users != null) users.cellphone else throw InvalidValueException("Invalid User provided")
-
-
-
             emailVerificationTokenEntityRepo.findFirstByTokenAndStatusOrderByIdDesc(token, 10)
-                    ?.let { verificationToken ->
-                        if (verificationToken.email != correctPhone) throw InvalidValueException("Invalid Token provided")
+                ?.let { verificationToken ->
+                    if (verificationToken.email != phoneNumber) throw InvalidValueException("Invalid Token provided")
 
-                        verificationToken.tokenExpiryDate
-                                ?.let { expiry ->
-                                    when {
-                                        expiry.after(Timestamp.from(Instant.now())) -> {
+                    verificationToken.tokenExpiryDate
+                        ?.let { expiry ->
+                            when {
+                                expiry.after(Timestamp.from(Instant.now())) -> {
 
-                                            verificationToken.status = 30
+                                    verificationToken.status = 30
 
 
-                                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
-                                            verificationToken.lastModifiedBy = "Verification Token Received"
-                                            emailVerificationTokenEntityRepo.save(verificationToken)
+                                    verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                                    verificationToken.lastModifiedBy = "Verification Token Received"
+                                    emailVerificationTokenEntityRepo.save(verificationToken)
 
 
 //                                    SecurityContextHolder.getContext().authentication
@@ -2049,26 +2059,134 @@ class CommonDaoServices(
 //                                        }
 //                                        ?: throw InvalidValueException("Verification Token without a valid expiry found")
 
-                                            return CustomResponse().apply {
-                                                response = "00"
-                                                payload = "Success, valid OTP received"
-                                                status = 200
-                                            }
-
-                                        }
-                                        else -> {
-                                            verificationToken.status = 25
-                                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
-                                            verificationToken.lastModifiedBy = "Expired Verification Token Received"
-                                            emailVerificationTokenEntityRepo.save(verificationToken)
-                                            throw InvalidValueException("Token Verification failed")
-                                        }
+                                    return CustomResponse().apply {
+                                        response = "00"
+                                        payload = "Success, valid OTP received"
+                                        status = 200
                                     }
 
                                 }
-                                ?: throw InvalidValueException("Verification Token without a valid expiry found")
-                    }
-                    ?: throw NullValueNotAllowedException("Invalid Token, validation failed")
+                                else -> {
+                                    verificationToken.status = 25
+                                    verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                                    verificationToken.lastModifiedBy = "Expired Verification Token Received"
+                                    emailVerificationTokenEntityRepo.save(verificationToken)
+                                    throw InvalidValueException("Token Verification failed")
+                                }
+                            }
+
+                        }
+                        ?: throw InvalidValueException("Verification Token without a valid expiry found")
+                }
+                ?: throw NullValueNotAllowedException("Invalid Token, validation failed")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            return CustomResponse().apply {
+                payload = e.message
+                status = 500
+                response = "99"
+            }
+
+        }
+    }
+
+
+    fun resetPasswordValidateOTPToken(token: String, phoneNumber: String?, req: ServerRequest?): CustomResponse {
+        val result = CustomResponse()
+        try {
+
+            //find phonenumber of email address associated with user
+            val users = phoneNumber?.let { usersRepo.findByEmail(it) }
+            val correctPhone = if (users != null) users.cellphone else throw InvalidValueException("Invalid User provided")
+
+
+
+            emailVerificationTokenEntityRepo.findFirstByTokenAndStatusOrderByIdDesc(token, 10)
+                ?.let { verificationToken ->
+                    if (verificationToken.email != correctPhone) throw InvalidValueException("Invalid Token provided")
+
+                    verificationToken.tokenExpiryDate
+                        ?.let { expiry ->
+                            when {
+                                expiry.after(Timestamp.from(Instant.now())) -> {
+
+                                    verificationToken.status = 30
+
+
+                                    verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                                    verificationToken.lastModifiedBy = "Verification Token Received"
+                                    emailVerificationTokenEntityRepo.save(verificationToken)
+
+
+//                                    SecurityContextHolder.getContext().authentication
+//                                        ?.let { auth ->
+//                                            KotlinLogging.logger {  }.info("Authentication ${auth.name}")
+//                                            usersRepo.findByEmail(auth.name)
+//                                                ?.let { user ->
+//                                                    val request = req?.servletRequest()
+//                                                        ?.let { ServletServerHttpRequest(it) }
+//                                                        ?: throw NullValueNotAllowedException("Empty request receivded during authentication flow")
+//                                                    val oAuthToken =
+//                                                        tokenService.tokenFromAuthentication(
+//                                                            auth,
+//                                                            concatenateName(user),
+//                                                            request
+//                                                        )
+//
+//                                                    val roles =
+//                                                        tokenService.extractRolesFromToken(token)?.map { it.authority }
+//                                                    val response = JwtResponse(
+//                                                        oAuthToken,
+//                                                        user.id,
+//                                                        user.userName,
+//                                                        user.email,
+//                                                        concatenateName(user),
+//                                                        roles,
+//                                                    ).apply {
+//                                                        /**
+//                                                         * TODO: Set expiry padding configuration  check this time stamp is false
+//                                                         */
+////                        val localDate = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+////                        val timestamp: Timestamp = Timestamp.valueOf(localDate)
+////                        expiry = timestam
+//                                                        companyID = user.companyId
+//                                                        branchID = user.plantId
+//
+//                                                    }
+//                                                    response.expiry =
+//                                                        LocalDateTime.now()
+//                                                            .plusMinutes(authenticationProperties.jwtExpirationMs)
+//                                                            .minusSeconds(20L)
+//
+//                                                    ServerResponse.ok().body(response)
+//                                                }
+//                                                ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
+//
+//                                        }
+//                                        ?: throw InvalidValueException("Verification Token without a valid expiry found")
+
+                                    return CustomResponse().apply {
+                                        response = "00"
+                                        payload = "Success, valid OTP received"
+                                        status = 200
+                                    }
+
+                                }
+                                else -> {
+                                    verificationToken.status = 25
+                                    verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                                    verificationToken.lastModifiedBy = "Expired Verification Token Received"
+                                    emailVerificationTokenEntityRepo.save(verificationToken)
+                                    throw InvalidValueException("Token Verification failed")
+                                }
+                            }
+
+                        }
+                        ?: throw InvalidValueException("Verification Token without a valid expiry found")
+                }
+                ?: throw NullValueNotAllowedException("Invalid Token, validation failed")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.debug(e.message, e)

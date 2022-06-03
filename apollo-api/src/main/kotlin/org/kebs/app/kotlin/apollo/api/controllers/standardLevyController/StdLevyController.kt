@@ -95,7 +95,7 @@ class StdLevyController(
     ): String? {
         val result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         val companyProfile = companyProfileEntity.registrationNumber?.let { commonDaoServices.findCompanyProfileWithRegistrationNumber(it) }
 
         if (companyProfile==null){
@@ -134,7 +134,7 @@ class StdLevyController(
         model: Model,
         @RequestParam("entryNo") entryNo: Long
     ): List<KraPaymentsEntityDto> {
-        val userId = commonDaoServices.loggedInUserDetails().id ?: -3L
+        val userId = commonDaoServices.loggedInUserDetailsEmail().id ?: -3L
         val isEmployee = userRolesRepo.findByUserIdAndRoleIdAndStatus(userId, applicationMapProperties.slEmployeeRoleId ?: throw NullValueNotAllowedException("Role definition for employees not done"), 1)?.id != null
         if (isEmployee) {
             val details = entityManager
@@ -190,7 +190,7 @@ class StdLevyController(
                             throw InvalidInputException("Attempt to approve an already approved report, aborting")
                         }
                         else -> {
-                            if (report.slManager != null && report.slManager != commonDaoServices.loggedInUserDetails().id) {
+                            if (report.slManager != null && report.slManager != commonDaoServices.loggedInUserDetailsEmail().id) {
                                 throw InvalidInputException("Attempt to approve report but not the assignee")
                             } else {
                                 when (approval) {
@@ -203,7 +203,7 @@ class StdLevyController(
                                         )
                                         report.managersApproval = 1
                                         report.cheifManagerRemarks = remarks
-                                        report.slManager = commonDaoServices.loggedInUserDetails().id
+                                        report.slManager = commonDaoServices.loggedInUserDetailsEmail().id
                                         report.modifiedBy = "${commonDaoServices.checkLoggedInUser()}|${report.modifiedBy}"
                                         report.varField1 = "${report.modifiedOn}"
                                         report.status = report.status ?: 0 + 1
@@ -225,7 +225,7 @@ class StdLevyController(
                                             false
                                         )
                                         report.cheifManagerRemarks = remarks
-                                        report.slManager = commonDaoServices.loggedInUserDetails().id
+                                        report.slManager = commonDaoServices.loggedInUserDetailsEmail().id
                                         report.modifiedBy = "${commonDaoServices.checkLoggedInUser()}|${report.modifiedBy}"
                                         report.varField1 = "${report.modifiedOn}"
                                         report.status = report.status ?: 0 + 1
@@ -278,7 +278,7 @@ class StdLevyController(
                             /**
                              * Is approval sent by selected approver
                              */
-                            if (report.assistantManager != null && report.assistantManager != commonDaoServices.loggedInUserDetails().id) {
+                            if (report.assistantManager != null && report.assistantManager != commonDaoServices.loggedInUserDetailsEmail().id) {
                                 throw InvalidInputException("Attempt to approve report but not the assignee")
                             } else {
                                 when (approval) {
@@ -291,7 +291,7 @@ class StdLevyController(
                                         )
                                         report.assistantManagerApproval = 1
                                         report.assistantManagerRemarks = remarks
-                                        report.assistantManager = commonDaoServices.loggedInUserDetails().id
+                                        report.assistantManager = commonDaoServices.loggedInUserDetailsEmail().id
                                         report.modifiedBy = commonDaoServices.checkLoggedInUser()
                                         report.status = report.status ?: 0 + 1
                                         report.slStatus = report.status
@@ -309,11 +309,11 @@ class StdLevyController(
                                     else -> {
                                         standardsLevyBpmn.slsvApproveReportAsstManagerComplete(
                                             report.id ?: throw NullValueNotAllowedException("Invalid Report ID"),
-                                            commonDaoServices.loggedInUserDetails().id ?: throw NullValueNotAllowedException("Invalid User for approval"),
+                                            commonDaoServices.loggedInUserDetailsEmail().id ?: throw NullValueNotAllowedException("Invalid User for approval"),
                                             false
                                         )
                                         report.assistantManagerRemarks = remarks
-                                        report.assistantManager = commonDaoServices.loggedInUserDetails().id
+                                        report.assistantManager = commonDaoServices.loggedInUserDetailsEmail().id
                                         report.modifiedBy = commonDaoServices.checkLoggedInUser()
                                         report.status = report.status ?: 0 + 1
                                         report.slStatus = report.status
@@ -392,7 +392,7 @@ class StdLevyController(
                     report.createdBy = commonDaoServices.checkLoggedInUser()
                     report.createdOn = Timestamp.from(Instant.now())
                     report.assistantManager = slLevelOneApproval
-                    report.principalLevyOfficer = commonDaoServices.loggedInUserDetails().id
+                    report.principalLevyOfficer = commonDaoServices.loggedInUserDetailsEmail().id
 
                     standardLevyFactoryVisitReportRepository.save(report)
                     docFile
@@ -486,7 +486,7 @@ class StdLevyController(
 
     @GetMapping("/getCompanyProfile")
     fun getCompanyProfile(): MutableList<CompanyProfileEntity> {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         return commonDaoServices.findCompanyProfileDetail(loggedInUser.id?:throw  Exception("INVALID USER ID FOUND"))
 
     }
@@ -528,7 +528,7 @@ class StdLevyController(
     ): String? {
 
         val map = commonDaoServices.serviceMapDetails(appId)
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
 
         val result: ServiceRequestsEntity?
 
@@ -570,10 +570,10 @@ class StdLevyController(
           manufacturerEntity= stdLevyScheduleSiteVisitDTO.manufacturerEntity
           scheduledVisitDate= stdLevyScheduleSiteVisitDTO.scheduledVisitDate
           status= 0
-          createdBy= commonDaoServices.loggedInUserDetails().userName
+          createdBy= commonDaoServices.loggedInUserDetailsEmail().userName
           createdOn= Timestamp(System.currentTimeMillis())
           taskId= stdLevyScheduleSiteVisitDTO.taskId
-          assigneeId= commonDaoServices.loggedInUserDetails().id
+          assigneeId= commonDaoServices.loggedInUserDetailsEmail().id
           entryNumber= stdLevyScheduleSiteVisitDTO.entryNumber
           companyName= stdLevyScheduleSiteVisitDTO.companyName
           registrationNumber= stdLevyScheduleSiteVisitDTO.registrationNumber
@@ -811,7 +811,7 @@ class StdLevyController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         val siteVisit = standardLevyFactoryVisitReportRepo.findByIdOrNull(reportFileID)?: throw Exception("VISIT ID DOES NOT EXIST")
 
         docFile.forEach { u ->
@@ -1004,7 +1004,7 @@ class StdLevyController(
     fun getMnCompleteTask(): MutableList<CompanyProfileEntity>
     {
 
-        commonDaoServices.loggedInUserDetails().id?.let { id ->
+        commonDaoServices.loggedInUserDetailsEmail().id?.let { id ->
             return standardLevyService.getMnCompleteTask(id)
 
         }
@@ -1019,7 +1019,7 @@ class StdLevyController(
     @ResponseBody
     fun getMnPendingTask(): MutableList<CompanyProfileEntity>
     {
-        commonDaoServices.loggedInUserDetails().id?.let { id ->
+        commonDaoServices.loggedInUserDetailsEmail().id?.let { id ->
             return standardLevyService.getMnPendingTask(id)
 
         }
@@ -1192,7 +1192,7 @@ class StdLevyController(
 
     @GetMapping("/getSLNotificationStatus")
     @ResponseBody
-    fun getSLNotificationStatus(): Boolean
+    fun getSLNotificationStatus(): ResponseNotification
     {
 
         return standardLevyService.getSLNotificationStatus()

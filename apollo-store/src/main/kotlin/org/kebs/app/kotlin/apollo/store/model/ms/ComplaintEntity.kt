@@ -124,6 +124,10 @@ class ComplaintEntity : Serializable {
     @Basic
     var product: Long? = null
 
+    @Column(name = "CLASSIFICATION_DETAILS_STATUS")
+    @Basic
+    var classificationDetailsStatus: Int? = null
+
     @Column(name = "STANDARD_CATEGORY")
     @Basic
     var standardCategory: Long? = null
@@ -143,6 +147,10 @@ class ComplaintEntity : Serializable {
     @Column(name = "MANDATE_FOR_OGA")
     @Basic
     var mandateForOga: Int? = null
+
+    @Column(name = "MS_COMPLAINT_ENDED_STATUS")
+    @Basic
+    var msComplaintEndedStatus: Int? = null
 
     @Column(name = "STATUS")
     @Basic

@@ -2703,7 +2703,7 @@ class MarketSurveillanceFuelDaoServices(
     }
 
     fun findRemarksForFuel(fuelInspectionID: Long): List<MsRemarksEntity>? {
-        return remarksRepo.findAllByFuelInspectionId(fuelInspectionID)
+        return remarksRepo.findAllByFuelInspectionIdOrderByIdAsc(fuelInspectionID)
     }
 }
 

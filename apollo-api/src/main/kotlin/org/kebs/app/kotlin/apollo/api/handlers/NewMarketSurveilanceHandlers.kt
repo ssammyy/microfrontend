@@ -40,10 +40,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import com.google.gson.Gson
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceComplaintProcessDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MasterDataDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -66,6 +63,7 @@ class NewMarketSurveillanceHandler(
     private val masterDataDaoService: MasterDataDaoService,
     private val marketSurveillanceFuelDaoServices: MarketSurveillanceFuelDaoServices,
     private val marketSurveillanceComplaintDaoServices: MarketSurveillanceComplaintProcessDaoServices,
+    private val marketSurveillanceWorkPlanDaoServices: MarketSurveillanceWorkPlanDaoServices,
     private val commonDaoServices: CommonDaoServices,
     private val validator: Validator,
 ) : AbstractValidationHandler() {
@@ -644,6 +642,20 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun getAllComplaintCompletedList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msComplaintAllCompletedLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun getAllComplaintMyTaskList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
@@ -792,21 +804,87 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun updateComplaintByAddingClassificationDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val body = req.body<ComplaintClassificationDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ComplaintClassificationDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.updateComplaintByAddingClassification(referenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updateComplaintByStartingMsProcess(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val body = req.body<ComplaintClassificationDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ComplaintClassificationDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.updateComplaintByAddingClassification(referenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    /*******************************************************************************************************************************************************************************************************************************************************************************************/
+                                        /**************************************
+                                         ******THE START OF MS WORK-PLAN*******
+                                         **************************************/
+    /*******************************************************************************************************************************************************************************************************************************************************************************************/
 
 
 
-//    fun saveNewComplaint(req: ServerRequest): ServerResponse {
-//        return try {
-//            marketSurveillanceComplaintDaoServices.saveNewComplaint(referenceNo,batchReferenceNo,bsNumber)
-//                .let {
-//                    ServerResponse.ok().body(it)
-//                }
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error(e.message)
-//            KotlinLogging.logger { }.debug(e.message, e)
-//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
-//        }
-//    }
+
+
+    fun saveNewWorkPlan(req: ServerRequest): ServerResponse {
+        return try {
+            val body = req.body<NewComplaintDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, NewComplaintDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.saveNewWorkPlan(body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
 
 }
 

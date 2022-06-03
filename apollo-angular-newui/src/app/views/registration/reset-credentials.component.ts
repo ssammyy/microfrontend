@@ -159,10 +159,9 @@ export class ResetCredentialsComponent implements OnInit {
           }));
           // window.close();
           // window.open('/dashboard')
-          window.open('/dashboard','_self').close();
-          window.open('/dashboard')
 
-          // this.route.navigate(['/dashboard']);
+
+           this.route.navigate(['/dashboard']);
 
         } else {
           this.store$.dispatch(loadResponsesFailure({

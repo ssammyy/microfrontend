@@ -507,6 +507,7 @@ export interface ManufactureCompletedTask {
     townName: string;
     officersFeedback: string;
     status: number;
+    otherBusinessNatureType: string;
 
 }
 export interface UsersEntityList {
@@ -526,7 +527,7 @@ export interface OperationStatus {
     manufacturerStatus: number;
 }
 export interface NotificationStatus {
-    name: boolean;
+    responseMessage: number;
 }
 
 export interface Branch {
