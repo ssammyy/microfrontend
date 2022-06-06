@@ -289,7 +289,7 @@ class InvoiceRequestItems {
     companion object {
         fun fromEntity(item: BillSummary, accountDescription: String): InvoiceRequestItems {
             val itm = InvoiceRequestItems().apply {
-                amount = item.getTotalAmount()?.plus(item.getTotalTax() ?: BigDecimal.ZERO)
+                amount = item.getTotalAmount()
                 taxAmount = item.getTotalTax() ?: BigDecimal.ZERO
             }
             itm.taxable = when {
@@ -354,7 +354,7 @@ class SageInvoiceRequest {
                 customerCode = corporate.corporateCode
                 customerName = corporate.corporateName
                 invoiceDesc = dn.billDescription
-                invoiceAmnt = dn.totalAmount
+                invoiceAmnt = dn.billAmount
             }
             return req
         }

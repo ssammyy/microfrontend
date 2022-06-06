@@ -400,6 +400,8 @@ class BillingService(
         if (corporate.isPresent) {
             with(myAccountDetails) {
                 accountName = corporate.get().corporateName
+                bill.billStatusDesc = BillStatus.CLOSED.name
+                bill.billStatus = BillStatus.CLOSED.status
                 accountNumber = corporate.get().corporateIdentifier
                 currency = properties.mapInvoiceTransactionsLocalCurrencyPrefix
             }

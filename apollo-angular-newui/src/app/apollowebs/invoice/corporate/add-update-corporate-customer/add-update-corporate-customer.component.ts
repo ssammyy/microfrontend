@@ -33,6 +33,48 @@ export class AddUpdateCorporateCustomerComponent implements OnInit {
             code: "OTHER"
         },
     ]
+    cooporateGroupCodes = [
+        {
+            name: "Trading - Coast Region Customers",
+            code: "TRACRC"
+        },
+        {
+            name: "Trading - Foreign Customers",
+            code: "TRAFOR"
+        },
+        {
+            name: "Trading - Head Office Customers",
+            code: "TRAHQS"
+        },
+        {
+            name: "Trading - Lake Region Customers",
+            code: "TRALRC"
+        },
+        {
+            name: "Trading - Mount Kenya Customers",
+            code: "TRAMKR"
+        },
+        {
+            name: "Trading - North Eastern Customers",
+            code: "TRANER"
+        },
+        {
+            name: "Trading - Nairobi Region Customers",
+            code: "TRANRB"
+        },
+        {
+            name: "Trading - North Rift Customers",
+            code: "TRANRR"
+        },
+        {
+            name: "Trading - Rift Valley Customers",
+            code: "TRARVR"
+        },
+        {
+            name: "Trading - South Rift Region Customers",
+            code: "TRASRR"
+        },
+    ]
     billingTypes: any
 
     constructor(private fb: FormBuilder, private dialog: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any, private fiService: FinanceInvoiceService) {
@@ -42,7 +84,7 @@ export class AddUpdateCorporateCustomerComponent implements OnInit {
         this.form = this.fb.group({
             corporateIdentifier: [this.data ? this.data.corporateIdentifier : null, [Validators.required, Validators.minLength(2)]],
             corporateName: [this.data ? this.data.corporateName : null, [Validators.required, Validators.minLength(2)]],
-            corporateCode: [this.data ? this.data.corporateCode : null, [Validators.required, Validators.minLength(2)]],
+            groupCode: [this.data ? this.data.corporateGroupCode : null, [Validators.required, Validators.minLength(2)]],
             corporateType: [this.data ? this.data.corporateType : null, [Validators.required]],
             corporateEmail: [this.data ? this.data.corporateEmail : null, [Validators.required, Validators.email]],
             corporatePhone: [this.data ? this.data.corporatePhone : null, Validators.required],
@@ -72,7 +114,7 @@ export class AddUpdateCorporateCustomerComponent implements OnInit {
         this.message = null
         this.loading = true
         if (this.data) {
-            result = this.fiService.updateCorporateCustomer(this.form.value, this.data.partnerId)
+            result = this.fiService.updateCorporateCustomer(this.form.value, this.data.corporateId)
         } else {
             result = this.fiService.addCorporateCustomer(this.form.value)
         }

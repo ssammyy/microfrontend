@@ -3,9 +3,6 @@ package org.kebs.app.kotlin.apollo.api.payload.response
 import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import java.math.BigDecimal
 import java.sql.Timestamp
-import javax.persistence.Basic
-import javax.persistence.Column
-import javax.persistence.Id
 
 class FinanceInvoiceDao {
 }
@@ -23,12 +20,15 @@ class BillingLimitsDao {
 }
 
 class CorporateCustomerAccountDao {
-    var corporatId: Long = 0
+    var corporateId: Long = 0
     var corporateIdentifier: String? = null
     var corporateName: String? = null
+    var altCorporateName: String? = null
+    var corporateCode: String? = null
+    var corporateGroupCode: String? = null
     var corporateType: String? = null // COURIER
     var corporateEmail: String? = null
-    var corporatePhone: String? =null
+    var corporatePhone: String? = null
     var corporateBillNumber: String? = null
     var lastPayment: Timestamp? = null
     var contactName: String? = null
@@ -39,6 +39,7 @@ class CorporateCustomerAccountDao {
     var accountSuspended: String? = null
     var paymentDays: Int? = 0
     var accountStatus: String? = null
+    var countryName: String? = null
     var remarks: String? = null
     var status: Int? = null
 
@@ -46,15 +47,19 @@ class CorporateCustomerAccountDao {
         fun fromEntity(account: CorporateCustomerAccounts): CorporateCustomerAccountDao {
             val dao = CorporateCustomerAccountDao()
             dao.apply {
-                corporatId = account.id
+                corporateId = account.id
                 remarks = account.varField1
+                corporateCode = account.corporateCode
+                corporateGroupCode = account.corporateGroupCode
                 corporateIdentifier = account.corporateIdentifier
                 corporateName = account.corporateName
+                altCorporateName = account.altCorporateName
                 corporateType = account.corporateType
                 corporateEmail = account.corporateEmail
-                corporatePhone=account.corporatePhone
+                corporatePhone = account.corporatePhone
                 corporateBillNumber = account.corporateBillNumber
                 lastPayment = account.lastPayment
+                countryName = account.countryName
                 contactName = account.contactName
                 contactPhone = account.contactPhone
                 contactEmail = account.contactEmail
