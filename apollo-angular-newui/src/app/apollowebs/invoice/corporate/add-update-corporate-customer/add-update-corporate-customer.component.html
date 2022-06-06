@@ -16,11 +16,13 @@
                   *ngIf="(form.get('corporateName').touched && !form.get('corporateName').value) ||  form.get('corporateName').invalid">Corporate name should be at least 2 characters</span>
         </div>
         <div class="col-sm-12 col-md-6">
-            <label for="corporateCode" class="waiver-form-label">Corporate Code</label>
-            <input type="text" class="waiver-form-input-master" name="corporateCode"
-                   data-name="corporateCode" id="corporateCode" formControlName="corporateCode">
+            <label for="groupCode" class="waiver-form-label">Corporate Group Code</label>
+            <select id="groupCode" class="waiver-form-input-master" formControlName="groupCode">
+                <option value="" disabled selected>Select Group Code</option>
+                <option *ngFor="let d of cooporateGroupCodes" [value]="d.code">{{d.name}}</option>
+            </select>
             <span class="error"
-                  *ngIf="(form.get('corporateCode').touched && !form.get('corporateCode').value) ||  form.get('corporateCode').invalid">Corporate code should be at least 2 characters</span>
+                  *ngIf="(form.get('groupCode').touched && !form.get('groupCode').value) ||  form.get('groupCode').invalid">Corporate group code should be at least 2 characters</span>
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="corporatePhone" class="waiver-form-label">Corporate Phone number</label>

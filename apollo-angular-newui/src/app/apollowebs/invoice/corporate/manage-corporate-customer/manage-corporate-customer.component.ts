@@ -29,6 +29,10 @@ export class ManageCorporateCustomerComponent implements OnInit {
         {
             "code": "DELETE",
             "description": "Delete account"
+        },
+        {
+            "code": "UPDATE_LIMIT",
+            "description": "Synchronize SAGE limit & details"
         }
     ]
     public form: FormGroup;

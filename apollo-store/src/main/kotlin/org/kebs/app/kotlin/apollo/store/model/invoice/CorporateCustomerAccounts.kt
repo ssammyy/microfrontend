@@ -21,8 +21,14 @@ class CorporateCustomerAccounts : Serializable {
     @Column(name = "CORPORATE_NAME", nullable = false)
     var corporateName: String? = null
 
-    @Column(name = "CORPORATE_CODE", nullable = false)
+    @Column(name = "ALT_CORPORATE_NAME")
+    var altCorporateName: String? = null
+
+    @Column(name = "CORPORATE_CODE")
     var corporateCode: String? = null
+
+    @Column(name = "CORPORATE_GROUP_CODE")
+    var corporateGroupCode: String? = null
 
     @Column(name = "CORPORATE_TYPE", nullable = false)
     var corporateType: String? = null // COURIER
@@ -33,22 +39,25 @@ class CorporateCustomerAccounts : Serializable {
     @Column(name = "CORPORATE_PHONE", nullable = false)
     var corporatePhone: String? = null
 
-    @Column(name = "CORPORATE_BILL_NUMBER", nullable = false, unique = true)
+    @Column(name = "CORPORATE_BILL_NUMBER", unique = true)
     var corporateBillNumber: String? = null
 
-    @Column(name = "LAST_PAYMENT", nullable = false)
+    @Column(name = "LAST_PAYMENT")
     var lastPayment: Timestamp? = null
 
-    @Column(name = "CONTACT_NAME", nullable = false)
+    @Column(name = "CONTACT_NAME")
     var contactName: String? = null
 
-    @Column(name = "CONTACT_PHONE", nullable = false)
+    @Column(name = "CONTACT_PHONE")
     var contactPhone: String? = null
 
-    @Column(name = "CONTACT_EMAIL", nullable = false)
+    @Column(name = "COUNTRY_NAME")
+    var countryName: String? = null
+
+    @Column(name = "CONTACT_EMAIL")
     var contactEmail: String? = null
 
-    @Column(name = "CURRENT_BALANCE", nullable = false)
+    @Column(name = "CURRENT_BALANCE")
     var currentBalance: BigDecimal? = null
 
     @Column(name = "ACCOUNT_SUSPENDEND", nullable = false)
@@ -62,6 +71,9 @@ class CorporateCustomerAccounts : Serializable {
 
     @Column(name = "ACCOUNT_BLOCKED", nullable = false)
     var accountBlocked: Int? = null
+
+    @Column(name = "CUSTOM_ACCOUNT_LIMIT", nullable = true, precision = 19, scale = 2)
+    var customAccountLimit: BigDecimal? = null
 
     @JoinColumn(name = "ACCOUNT_LIMITS", nullable = true, referencedColumnName = "ID")
     @ManyToOne
