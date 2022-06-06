@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.service.BillingService
+import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
@@ -58,6 +59,9 @@ import kotlin.test.assertNotNull
 class DITest {
     @Autowired
     lateinit var destinationInspectionDaoServices: DestinationInspectionDaoServices
+
+    @Autowired
+    lateinit var diServices: DestinationInspectionService
 
     @Autowired
     lateinit var resourceLoader: ResourceLoader
@@ -793,6 +797,15 @@ class DITest {
         this.cocRepository.findFirstByCoiNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNullOrderByCreatedOnDesc("COI")?.let { coi ->
             destinationInspectionDaoServices.sendLocalCoi(coi)
         } ?: throw ExpectedDataNotFound("Could not find a COI document")
+    }
+
+    @Test
+    fun coiEmailTest() {
+        this.cocRepository.findFirstByCoiNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNullOrderByCreatedOnDesc("COI")?.let { coi ->
+            val ncrFileName = diServices.makeCocOrCoiFile(coi.id)
+            coi.importerEmail?.let { email -> destinationInspectionDaoServices.sendLocalCocReportEmail(email, ncrFileName) }
+
+        }
     }
 
     @Test

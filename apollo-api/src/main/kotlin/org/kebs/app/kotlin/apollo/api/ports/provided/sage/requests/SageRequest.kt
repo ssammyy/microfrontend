@@ -34,8 +34,7 @@ class SageQARequestBody {
     var details: MutableList<SageQADetails>? = null
 }
 
-class SageQAHeader
-{
+class SageQAHeader {
 
     @JsonProperty("serviceName")
     @NotNull(message = "Required field")
@@ -53,8 +52,8 @@ class SageQAHeader
     @NotNull(message = "Required field")
     var connectionPassword: String? = null
 }
-class SageQARequest
-{
+
+class SageQARequest {
     @JsonProperty("BatchNo")
     @NotNull(message = "Required field")
     var BatchNo: String? = null
@@ -78,12 +77,15 @@ class SageQARequest
     @JsonProperty("CustomerCode")
     @NotNull(message = "Required field")
     var CustomerCode: String? = null
+
     @JsonProperty("CustomerName")
     @NotNull(message = "Required field")
     var CustomerName: String? = null
+
     @JsonProperty("InvoiceDesc")
     @NotNull(message = "Required field")
     var InvoiceDesc: String? = null
+
     @JsonProperty("InvoiceAmnt")
     @NotNull(message = "Required field")
     var InvoiceAmnt: BigDecimal? = null
@@ -92,8 +94,8 @@ class SageQARequest
     @NotNull(message = "Required field")
     var TaxPINNo: String? = null
 }
-class SageQADetails
-{
+
+class SageQADetails {
     @JsonProperty("RevenueAcc")
     @NotNull(message = "Required field")
     var RevenueAcc: String? = null
@@ -133,8 +135,6 @@ class QASageRoot {
     var header: HeaderSage? = null
     var response: ResponseSage? = null
 }
-
-
 
 
 class SageQaResponseHeader {
@@ -289,7 +289,7 @@ class InvoiceRequestItems {
     companion object {
         fun fromEntity(item: BillSummary, accountDescription: String): InvoiceRequestItems {
             val itm = InvoiceRequestItems().apply {
-                amount = item.getTotalAmount()
+                amount = item.getTotalAmount()?.plus(item.getTotalTax() ?: BigDecimal.ZERO)
                 taxAmount = item.getTotalTax() ?: BigDecimal.ZERO
             }
             itm.taxable = when {
@@ -318,15 +318,15 @@ class SageInvoiceRequest {
     var documentDate: Timestamp? = null
 
     @JsonProperty("ServiceType")
-    var invoiceType: Int? = null
+    var serviceType: String? = null
 
     @JsonProperty("InvoiceType")
-    var serviceType: String? = null
+    var invoiceType: Int? = null
 
     @JsonProperty("CurrencyCode")
     var currencyCode: String? = null
 
-    @JsonProperty("CustomerNumber")
+    @JsonProperty("TaxPINNo")
     var customerNumber: String? = null
 
     @JsonProperty("CustomerCode")
