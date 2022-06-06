@@ -334,6 +334,7 @@ import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignme
 import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payments.component';
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 import { EpraMonthlyBatchListComponent } from './apollowebs/market-surveillance/fuel/epra-monthly-batch-list/epra-monthly-batch-list.component';
+import {MatListModule} from "@angular/material/list";
 
 
 @NgModule({
@@ -398,7 +399,8 @@ import { EpraMonthlyBatchListComponent } from './apollowebs/market-surveillance/
         MatTabsModule,
         MatProgressSpinnerModule,
         MDBBootstrapModule.forRoot(),
-        NgxMatSelectSearchModule
+        NgxMatSelectSearchModule,
+        MatListModule
     ],
     declarations: [
         AppComponent,

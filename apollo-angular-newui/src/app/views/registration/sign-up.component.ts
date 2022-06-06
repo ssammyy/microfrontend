@@ -162,7 +162,7 @@ export class SignUpComponent implements OnInit {
         this.stepFourForm = this.formBuilder.group({
                 firstName: [],
                 lastName: ['', Validators.required],
-                userName: ['', Validators.required],
+                //userName: ['', Validators.required],
                 email: ['', Validators.required],
                 credentials: ['', Validators.required],
                 confirmCredentials: ['', [Validators.required]]

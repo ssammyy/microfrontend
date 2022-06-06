@@ -518,6 +518,9 @@ export class ApiEndpointService {
         STD_LEVY_E_SLIP: `${ApiEndpointService.STL_CONTEXT}/generatePdf`,
 
 
+
+
+
     };
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
@@ -555,7 +558,7 @@ export class ApiEndpointService {
         MS_BROAD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/broadProductCategory`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
-    };
+      };
 
     public static MARKET_SURVEILLANCE_COMPLAINT = {
         CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
@@ -574,8 +577,7 @@ export class ApiEndpointService {
         COMPLAINT_DETAILS_ADD_CLASSIFICATION_DETAILS: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/add-classification-details`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
-    };
-
+      };
     /**
      * Constructor.
      */

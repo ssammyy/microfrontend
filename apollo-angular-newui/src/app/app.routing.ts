@@ -261,6 +261,7 @@ export const routes: Routes = [
                 component: SignUpComponent,
             },
 
+
         ],
         data: {
             title: 'KEBS',
@@ -284,6 +285,7 @@ export const routes: Routes = [
                 component: OtpComponent,
 
             },
+
 
         ],
         data: {
