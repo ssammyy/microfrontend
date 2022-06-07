@@ -24,16 +24,6 @@ import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
-import kotlin.Any
-import kotlin.Array
-import kotlin.Boolean
-import kotlin.Exception
-import kotlin.Int
-import kotlin.Long
-import kotlin.String
-import kotlin.let
-import kotlin.run
-import kotlin.toString
 
 
 @Component
@@ -90,7 +80,7 @@ class Notifications(
     }
 
     fun sendEmail(recipientEmail: String, subject: String, messageText: String, attachmentFilePath: String? = null){
-        processEmail(recipientEmail, subject, messageText, null)
+        processEmail(recipientEmail, subject, messageText, attachmentFilePath)
     }
 
     fun sendEmailServiceTask(recipientEmail: String, notificationId: Int){
@@ -218,7 +208,7 @@ class Notifications(
     }
 
     fun processEmail(recipientEmail: String, subject: String, messageText: String, attachmentFilePath: String?){
-        KotlinLogging.logger { }.info("Sending email to $recipientEmail")
+        KotlinLogging.logger { }.info("Sending email to=$recipientEmail, Attachments=$attachmentFilePath")
 
         val props = Properties()
         props.put("mail.smtp.starttls.enable", applicationMapProperties.mapApplicationEmailSmtpStartTlsEnable)

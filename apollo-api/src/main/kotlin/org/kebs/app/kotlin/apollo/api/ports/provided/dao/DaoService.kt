@@ -18,7 +18,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlFactory
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.google.common.io.Files
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.client.features.auth.*
@@ -32,36 +31,29 @@ import io.ktor.http.*
 import mu.KotlinLogging
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.jasypt.encryption.StringEncryptor
-import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraDetails
-import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.common.dto.AuditItemEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.CocsItemsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.CorItemsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.CurrencyExchangeRatesEntityDto
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.config.security.ssl.SslContextFactory
-import org.kebs.app.kotlin.apollo.store.customdto.*
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.BatchJobDetails
+import org.kebs.app.kotlin.apollo.store.model.IntegrationConfigurationEntity
+import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICocItemsRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
-import org.springframework.data.jpa.repository.Modifying
 import org.springframework.http.codec.json.AbstractJackson2Decoder
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.Validator
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.remoteAddressOrNull
-import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
 import java.io.Reader
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -73,11 +65,6 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-import javax.persistence.criteria.CriteriaUpdate
-import javax.persistence.criteria.Path
-import javax.persistence.criteria.Root
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLOutputFactory
 
@@ -199,6 +186,49 @@ class DaoService(
 
 
         return Triple(log, res, response)
+
+    }
+
+    final suspend inline fun <reified T : Any> processResponses(
+            response: HttpResponse?,
+            url: String,
+            config: IntegrationConfigurationEntity,
+    ): Pair<T?, HttpResponse?> {
+        var res: T? = null
+        try {
+
+
+            response
+                    ?.let { r ->
+                        when {
+                            r.status.value >= config.okLower && r.status.value <= config.okUpper -> {
+
+                                val responseText = r.readText()
+
+                                KotlinLogging.logger { }.error(responseText)
+                                val message =
+                                        "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
+                                KotlinLogging.logger { }.info(message)
+                                res = mapper().readValue<T>(responseText)
+
+                            }
+                            else -> {
+                                val message =
+                                        "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
+                                KotlinLogging.logger { }.info(message)
+
+                            }
+                        }
+
+                    }
+                    ?: throw InvalidValueException("Null Response received")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error("Received [Exception = ${e.message}, URL = $url]!")
+            KotlinLogging.logger { }.debug("Received [Exception = ${e.message}, URL = $url]!", e)
+
+        }
+
+        return Pair(res, response)
 
     }
 

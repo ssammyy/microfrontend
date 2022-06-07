@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 
 import mu.KotlinLogging
+import org.flowable.common.engine.api.FlowableException
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
@@ -193,10 +194,20 @@ class DestinationInspectionBpmn(
         } catch (ex: ExpectedDataNotFound) {
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = ex.localizedMessage
+        } catch (ex: FlowableException) {
+            val rc: Throwable = org.apache.commons.lang3.exception.ExceptionUtils.getRootCause(ex)
+            if (rc is ExpectedDataNotFound) {
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Task update failed with: ${rc.localizedMessage}"
+            } else {
+                KotlinLogging.logger { }.error("FAILED TO COMPLETE TASK", ex)
+                response.responseCode = ResponseCodes.EXCEPTION_STATUS
+                response.message = "Task update failed: "
+            }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO COMPLETE TASK", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
-            response.message = "Task update failed"
+            response.message = "Task update failed: "
         }
         return response
     }

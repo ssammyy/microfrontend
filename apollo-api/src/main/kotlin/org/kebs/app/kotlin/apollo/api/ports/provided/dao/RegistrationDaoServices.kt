@@ -1054,7 +1054,7 @@ class RegistrationDaoServices(
        ): NotificationForm {
         val map = commonDaoServices.serviceMapDetails(appId)
         var add = stdLevyNotificationForm
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         var eNumber = generateEntryNumber(map, loggedInUser)
 
 //        val gson = Gson()
@@ -1184,7 +1184,7 @@ class RegistrationDaoServices(
         sr: ServiceRequestsEntity
     ): StdLevyNotificationFormEntity {
         var add = stdLevyNotificationFormEntity
-         val loggedInUser = commonDaoServices.loggedInUserDetails()
+         val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         with(add) {
             nameBusinessProprietor = companySl1DTO.NameAndBusinessOfProprietors
             commoditiesManufactured = companySl1DTO.AllCommoditiesManufuctured

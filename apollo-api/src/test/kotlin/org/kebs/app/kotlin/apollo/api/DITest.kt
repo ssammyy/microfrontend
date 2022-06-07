@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.service.BillingService
+import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
@@ -58,6 +59,9 @@ import kotlin.test.assertNotNull
 class DITest {
     @Autowired
     lateinit var destinationInspectionDaoServices: DestinationInspectionDaoServices
+
+    @Autowired
+    lateinit var diServices: DestinationInspectionService
 
     @Autowired
     lateinit var resourceLoader: ResourceLoader
@@ -796,6 +800,15 @@ class DITest {
     }
 
     @Test
+    fun coiEmailTest() {
+        this.cocRepository.findFirstByCoiNumberIsNotNullAndCocTypeAndConsignmentDocIdIsNotNullOrderByCreatedOnDesc("COI")?.let { coi ->
+            val ncrFileName = diServices.makeCocOrCoiFile(coi.id)
+            coi.importerEmail?.let { email -> destinationInspectionDaoServices.sendLocalCocReportEmail(email, ncrFileName) }
+
+        }
+    }
+
+    @Test
     fun corSubmission() {
         this.corsEntityRepository.findFirstByChasisNumberIsNotNullAndConsignmentDocIdIsNotNull()?.let { cor ->
             KotlinLogging.logger { }.info("Ref No: ${cor.consignmentDocId?.cdStandard?.applicationRefNo}")
@@ -1003,6 +1016,29 @@ class DITest {
                                 KotlinLogging.logger { }.debug("Starting background task")
                                 destinationInspectionDaoServices.createLocalCoc(loggedInUser, cdDetails, map, "", "A")
 
+                            }
+                }
+    }
+
+    @Test
+    fun testSendingCOCWithEmptyItems() {
+//        val cdId: Long = 481
+//        val inspectionOfficerId: Long = 1083
+        val appId = applicationMapProperties.mapImportInspection
+
+        usersRepo.findByUserName("kpaul7747@gmail.com")
+                ?.let { loggedInUser ->
+//                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
+                    val map = commonDaoServices.serviceMapDetails(appId)
+                    destinationInspectionDaoServices.findCdWithUcrNumber("UCR2200008391")
+                            ?.let { cdDetails ->
+                                try {
+                                    KotlinLogging.logger { }.debug("Starting background task")
+                                    val coc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, cdDetails, map, "", "A")
+                                    Assertions.assertNull(coc)
+                                } catch (ex: Exception) {
+                                    KotlinLogging.logger { }.debug("Expected failed request due to empty COC items", ex)
+                                }
                             }
                 }
     }

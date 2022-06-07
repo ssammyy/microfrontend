@@ -67,4 +67,15 @@ class SageIntegrationTests {
             Thread.sleep(TimeUnit.SECONDS.toMillis(20))
         } ?: throw ExpectedDataNotFound("Could not find a single bill")
     }
+
+    @Test
+    fun testCheckCourierService() {
+
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        val courier = CorporateCustomerAccounts()
+        sageService.checkCourierDetails("P051130348L", "TRASRR", courier, map)
+        Assert.assertNotNull(courier.corporateCode, "Corporate code is required")
+        Assert.assertNotNull("Expected remote reference", courier.countryName)
+        Thread.sleep(TimeUnit.SECONDS.toMillis(20))
+    }
 }

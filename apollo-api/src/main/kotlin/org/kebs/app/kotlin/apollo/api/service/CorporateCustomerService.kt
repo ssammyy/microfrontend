@@ -7,6 +7,8 @@ import org.kebs.app.kotlin.apollo.api.payload.request.CorporateForm
 import org.kebs.app.kotlin.apollo.api.payload.request.CorporateStatusUpdateForm
 import org.kebs.app.kotlin.apollo.api.payload.response.CorporateCustomerAccountDao
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.repo.IBillingLimitsRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICorporateCustomerRepository
@@ -23,6 +25,8 @@ class CorporateCustomerService(
         private val corporateCustomersRepository: ICorporateCustomerRepository,
         private val billingLimitsRepository: IBillingLimitsRepository,
         private val commonDaoServices: CommonDaoServices,
+        private val sageService: PostInvoiceToSageServices,
+        private val applicationMapProperties: ApplicationMapProperties,
 ) {
 
     fun listTransactionLimits(): ApiResponseModel {
@@ -45,9 +49,11 @@ class CorporateCustomerService(
         val response = ApiResponseModel()
         try {
             if (this.corporateCustomersRepository.findAllByCorporateIdentifier(form.corporateIdentifier).isEmpty) {
+                val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 val customer = CorporateCustomerAccounts()
                 customer.corporateIdentifier = form.corporateIdentifier
                 customer.contactEmail = form.contactEmail
+                customer.corporateGroupCode = form.groupCode
                 customer.corporatePhone = form.corporatePhone
                 customer.lastPayment = Timestamp.from(Instant.now())
                 customer.contactName = form.contactName
@@ -59,16 +65,18 @@ class CorporateCustomerService(
                 customer.corporateBillNumber = "KBN${commonDaoServices.convertDateToString(LocalDateTime.now(), "yyyyMMdd")}${countAccountsToday()}".toUpperCase()
                 customer.corporateEmail = form.corporateEmail
                 customer.corporateName = form.corporateName
-                customer.corporateCode = form.corporateCode
                 customer.corporateType = form.corporateType
                 customer.isCiakMember = form.isCiakMember
                 customer.paymentDays = form.mouDays
                 customer.currentBalance = BigDecimal.ZERO
-                customer.status = 1
+                customer.status = map.activeStatus
                 customer.accountBlocked = 0
                 customer.accountSuspendend = 0
                 customer.createdOn = Timestamp.from(Instant.now())
                 customer.createdBy = commonDaoServices.getLoggedInUser()?.userName
+                // Add customer details
+                this.sageService.checkCourierDetails(form.corporateIdentifier.orEmpty(), form.groupCode.orEmpty(), customer, map)
+                // Save record
                 val saved = this.corporateCustomersRepository.save(customer)
                 response.data = saved.id
                 response.message = "Account created"
@@ -93,9 +101,11 @@ class CorporateCustomerService(
             response.message = "Invalid corporate identifier"
             response.responseCode = ResponseCodes.NOT_FOUND
         } else {
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val customer = corporateIdentifier.get()
             customer.contactEmail = form.contactEmail
             customer.contactName = form.contactName
+            customer.corporateGroupCode = form.groupCode
             customer.paymentDays = form.mouDays
             val limits = billingLimitsRepository.findById(form.billingLimitId)
             if (limits.isPresent) {
@@ -107,6 +117,7 @@ class CorporateCustomerService(
             customer.corporateType = form.corporateType
             customer.modifiedOn = Timestamp.from(Instant.now())
             customer.modifiedBy = commonDaoServices.getLoggedInUser()?.userName
+            this.sageService.checkCourierDetails(form.corporateIdentifier.orEmpty(), form.groupCode.orEmpty(), customer, map)
             val saved = this.corporateCustomersRepository.save(customer)
             response.data = saved.id
             response.message = "Account updated"
@@ -128,6 +139,7 @@ class CorporateCustomerService(
                 response.responseCode = ResponseCodes.INVALID_CODE
                 return response
             }
+            val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             customer.varField1 = form.remarks
             when (form.actionCode) {
                 "BLOCK" -> {
@@ -155,6 +167,12 @@ class CorporateCustomerService(
                 }
                 "DELETE" -> {
                     customer.status = 4
+                    this.corporateCustomersRepository.save(customer)
+                    response.message = "Account activated"
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                }
+                "UPDATE_LIMIT" -> {
+                    this.sageService.checkCourierDetails(customer.corporateIdentifier.orEmpty(), customer.corporateGroupCode.orEmpty(), customer, map)
                     this.corporateCustomersRepository.save(customer)
                     response.message = "Account activated"
                     response.responseCode = ResponseCodes.SUCCESS_CODE

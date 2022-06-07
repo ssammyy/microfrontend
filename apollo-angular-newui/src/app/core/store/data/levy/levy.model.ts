@@ -507,6 +507,7 @@ export interface ManufactureCompletedTask {
     townName: string;
     officersFeedback: string;
     status: number;
+    otherBusinessNatureType: string;
 
 }
 export interface UsersEntityList {

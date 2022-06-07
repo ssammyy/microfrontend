@@ -13,7 +13,6 @@
 
                             </button>
                         </h4>
-
                     </div>
                     <div class="card-body" *ngIf="corporateDetails">
                         <div class="row">
@@ -35,6 +34,18 @@
                                             <div class="col-sm-3 col-md-4">
                                                 <label class="waiver-form-label">Corporate Name</label>
                                                 <p>{{corporateDetails.corporateName}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">SAGE Corporate Name</label>
+                                                <p>{{corporateDetails.altCorporateName}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">SAGE Corporate Code</label>
+                                                <p>{{corporateDetails.corporateCode}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">SAGE Corporate Group Code</label>
+                                                <p>{{corporateDetails.corporateGroupCode}}</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
                                                 <label class="waiver-form-label">Email Address</label>
@@ -63,6 +74,10 @@
                                             <div class="col-sm-3 col-md-4">
                                                 <label class="waiver-form-label">Account Suspended</label>
                                                 <p>{{corporateDetails.accountSuspended}}</p>
+                                            </div>
+                                            <div class="col-sm-3 col-md-4">
+                                                <label class="waiver-form-label">Country Name</label>
+                                                <p>{{corporateDetails.countryName}}</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4" *ngIf="corporateDetails.remarks">
                                                 <label class="waiver-form-label">Last Remarks</label>
@@ -191,6 +206,7 @@
                             </div>
                             <div class="col-md-2">
                                 <b>Actions</b>
+                                <button class="btn btn-primary" (click)="editAccount()">Edit Account</button>
                                 <button class="btn btn-primary" (click)="manageAccount()">Manage Account</button>
                                 <br/>
                             </div>
