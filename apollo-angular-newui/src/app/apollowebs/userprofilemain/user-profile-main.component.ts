@@ -1,3 +1,4 @@
+import swal from "sweetalert2";
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
@@ -16,6 +17,16 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {LevyService} from "../../core/store/data/levy/levy.service";
 import {NotificationService} from "../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
+import {AdoptionOfEaStdsService} from "../../core/store/data/std/adoption-of-ea-stds.service";
+import {DomSanitizer} from "@angular/platform-browser";
+
+class ImageSnippet {
+    pending: boolean = false;
+    status: string = 'init';
+
+    constructor(public src: string, public file: File) {
+    }
+}
 
 
 @Component({
@@ -32,12 +43,18 @@ export class UserProfileMainComponent implements OnInit {
     stepOneForm: FormGroup = new FormGroup({});
     public emailActivationFormGroup!: FormGroup;
     public activateEmailFormGroup!: FormGroup;
-    emailVerificationStatus:number;
+    emailVerificationStatus: number;
     userId: number;
     email: string;
     loadingText: string;
-    isShowSendEmailForm=true;
-    isShowConfirmEmailForm=true;
+    isShowSendEmailForm = true;
+    isShowConfirmEmailForm = true;
+    imageToShow: any;
+    isImageLoading: boolean;
+    selectedFile: File;
+    thumbnail: any;
+    private base64textString: Blob;
+    public uploadedFilesB: FileList;
 
 
     constructor(private store$: Store<any>,
@@ -45,6 +62,8 @@ export class UserProfileMainComponent implements OnInit {
                 private titleService: TitlesService,
                 private formBuilder: FormBuilder,
                 private levyService: LevyService,
+                private uploadSignature: AdoptionOfEaStdsService,
+                private sanitizer: DomSanitizer,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService) {
         this.title$ = titleService.entities$;
@@ -73,20 +92,65 @@ export class UserProfileMainComponent implements OnInit {
             {
                 // validators: ConfirmedValidator('credentials', 'confirmCredentials')
             });
+
+
+        this.getVerificationStatus();
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.userId = u.id;
+            this.email= u.email;
+        });
+        this.emailActivationFormGroup = this.formBuilder.group({
+            userId: [],
+            email: []
+        });
+        this.activateEmailFormGroup = this.formBuilder.group({
+            userId: [],
+            email: [],
+            verificationToken: []
+        });
+
+    }
+
+    ngAfterViewInit() {
+        this.loaduserinfo()
+
+    }
+
+    showToasterSuccess(title: string, message: string) {
+        this.notifyService.showSuccess(message, title)
+
+    }
+
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
+
+    }
+
+    loaduserinfo() {
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
             this.roles = u.roles;
-            console.log(this.roles);
+            // console.log(this.roles);
             return this.roles = u.roles;
 
         });
 
         this.store$.select(selectUserInfo).subscribe(
             (l) => {
-                console.log(`The id is ${l.id}`);
+                // console.log(`The id is ${l.id}`);
                 return this.service.getByKey(`${l.id}/`).subscribe(
                     (u) => {
-                        console.log(`The id is ${l.id} vs ${u.id}`);
+                        // console.log(`The id is ${l.id} vs ${u.id}`);
+
                         this.stepOneForm.patchValue(u);
+                        this.isImageLoading = true;
+
+                        if (u.signature != null) {
+                            let objectURL = 'data:image/jpeg;base64,' + u.signature;
+                            this.thumbnail = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+                            this.isImageLoading = true
+
+                        }
+
                         return this.user = u;
                     }, catchError((err: HttpErrorResponse) => {
                         console.log((err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`);
@@ -101,86 +165,60 @@ export class UserProfileMainComponent implements OnInit {
                 );
             }
         );
-
-        this.getVerificationStatus();
-        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            this.userId = u.id;
-            this.email= u.email;
-        });
-        this.emailActivationFormGroup = this.formBuilder.group({
-            userId:[],
-            email:[]
-        });
-        this.activateEmailFormGroup = this.formBuilder.group({
-            userId:[],
-            email:[],
-            verificationToken: []
-        });
-
-    }
-    showToasterSuccess(title:string,message:string){
-        this.notifyService.showSuccess(message, title)
-
-    }
-    showToasterError(title:string,message:string){
-        this.notifyService.showError(message, title)
-
     }
 
     onClickSave(valid: boolean) {
-        if (valid) {
+        // if (valid) {
+        this.user = {...this.user, ...this.stepOneForm.value};
+        this.service.update(this.user).subscribe(
+            (a) => {
+
+                this.store$.dispatch(
+                    loadResponsesSuccess({
+                        message: {
+                            response: '00',
+                            payload: `Profile Successfully Updated.`,
+                            status: 200
+                        }
+                    })
+                );
+                return this.store$.dispatch(Go({
+                    payload: null,
+                    link: 'profile',
+                    redirectUrl: 'profile'
+                }));
 
 
-            this.user = {...this.user, ...this.stepOneForm.value};
-
-
-            this.service.update(this.user).subscribe(
-                (a) => {
-
-                    this.store$.dispatch(
-                        loadResponsesSuccess({
-                            message: {
-                                response: '00',
-                                payload: `Profile Successfully Updated.`,
-                                status: 200
-                            }
-                        })
-                    );
-                    return this.store$.dispatch(Go({
-                        payload: null,
-                        link: 'profile',
-                        redirectUrl: 'profile'
+            },
+            catchError(
+                (err: HttpErrorResponse) => {
+                    return of(loadResponsesFailure({
+                        error: {
+                            payload: err.error,
+                            status: err.status,
+                            response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                        }
                     }));
+                }));
 
 
-                },
-                catchError(
-                    (err: HttpErrorResponse) => {
-                        return of(loadResponsesFailure({
-                            error: {
-                                payload: err.error,
-                                status: err.status,
-                                response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
-                            }
-                        }));
-                    }));
-
-
-        } else {
-            this.store$.dispatch(loadResponsesFailure({
-                error: {
-                    payload: 'Some required details are missing, kindly recheck',
-                    status: 100,
-                    response: '05'
-                }
-            }));
-        }
+        //  }
+        // else {
+        //     this.store$.dispatch(loadResponsesFailure({
+        //         error: {
+        //             payload: 'Some required details are missing, kindly recheck',
+        //             status: 100,
+        //             response: '05'
+        //         }
+        //     }));
+        // }
     }
+
     public getVerificationStatus(): void{
         this.levyService.getVerificationStatus().subscribe(
             (response)=> {
                 this.emailVerificationStatus = response;
-                console.log(this.emailVerificationStatus);
+                // console.log(this.emailVerificationStatus);
             },
             (error: HttpErrorResponse)=>{
                 console.log(error.message)
@@ -188,6 +226,7 @@ export class UserProfileMainComponent implements OnInit {
             }
         );
     }
+
     toggleDisplayEmailForm() {
         this.isShowSendEmailForm = !this.isShowSendEmailForm;
         this.isShowConfirmEmailForm=true;
@@ -216,6 +255,7 @@ export class UserProfileMainComponent implements OnInit {
 
 
     }
+
     @ViewChild('myModal') myModal;
 
     openModel() {
@@ -238,7 +278,7 @@ export class UserProfileMainComponent implements OnInit {
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Email Address Validated`);
                 this.isShowSendEmailForm=true;
-                this.isShowConfirmEmailForm=true;
+                this.isShowConfirmEmailForm = true;
                 // this.router.navigateByUrl('/dashboard').then(r => {});
             },
             (error: HttpErrorResponse) => {
@@ -247,6 +287,56 @@ export class UserProfileMainComponent implements OnInit {
                 console.log(error.message);
             }
         );
+    }
+
+    handleFileSelect(evt) {
+        const files = evt.target.files;
+        const file = files[0];
+
+        if (files && file) {
+            const reader = new FileReader();
+            reader.onload = this._handleReaderLoaded.bind(this);
+            reader.readAsBinaryString(file);
+            this.selectedFile = file;
+
+        }
+
+    }
+
+    _handleReaderLoaded(readerEvt) {
+        this.base64textString = readerEvt.target.result;
+    }
+
+
+    onClickSaveUploads() {
+        if (this.uploadedFilesB.length > 0) {
+            const file = this.uploadedFilesB;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            this.uploadSignature.uploadService(formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    console.log(data);
+                    swal.fire({
+                        title: 'Signature Uploaded Successfully.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    }).then((result) => {
+                        if (result.value) {
+                            window.location.href = "/profile";
+                        }
+
+                    });
+                })
+        }
+
     }
 
 }

@@ -261,6 +261,7 @@ class AngularRoutes {
                             PUT("", handler::handleUpdateLoggedInUserUserEntityDtoDetails)
                             GET("", handler::handleLoggedInUserUserEntityDtoDetails)
                         }
+
                     }
                 }
             }

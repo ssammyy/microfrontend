@@ -30,6 +30,12 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 //        companyId: Long,userTaskId: Long
 //    ): List<PermitApplicationsEntity>?
 
+    @Query(
+        value="SELECT max(ch.PERMIT_REF_NUMBER) FROM DAT_KEBS_PERMIT_TRANSACTION ch",
+        nativeQuery = true
+    )
+    fun getMaxId(): String?
+
     fun findAllByOldPermitStatusIsNullAndUserTaskId(userTaskId: Long): List<PermitApplicationsEntity>?
     fun findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitType(
         userTaskId: Long,

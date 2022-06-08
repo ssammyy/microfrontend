@@ -2618,20 +2618,30 @@ class QADaoServices(
 
         var sr = commonDaoServices.createServiceRequest(map)
         var savePermit = permits
+        var maxpermit=permitRepo.getMaxId()
+        if(maxpermit.toString().contains("REF"))
+        {
+            maxpermit = 60000.toString()
+        }
+
+        var newMaxPermit = maxpermit?.plus(1)
+
         try {
 
             with(savePermit) {
                 userId = user.id
                 productName = permits.commodityDescription
                 permitType = permitTypeDetails.id
-                permitRefNumber = "REF${permitTypeDetails.markNumber}${
-                    generateRandomText(
-                            5,
-                            map.secureRandom,
-                            map.messageDigestAlgorithm,
-                            true
-                    )
-                }".toUpperCase()
+//                permitRefNumber = "REF${permitTypeDetails.markNumber}${
+//                    generateRandomText(
+//                            5,
+//                            map.secureRandom,
+//                            map.messageDigestAlgorithm,
+//                            true
+//                    )
+//                }".toUpperCase()
+
+                permitRefNumber = newMaxPermit.toString()
                 enabled = map.initStatus
                 divisionId = commonDaoServices.findSectionWIthId(
                         sectionId ?: throw ExpectedDataNotFound("SECTION ID IS MISSING")

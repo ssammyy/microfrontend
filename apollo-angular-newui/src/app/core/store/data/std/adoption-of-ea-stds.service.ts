@@ -97,8 +97,25 @@ export class AdoptionOfEaStdsService {
     );
   }
 
+    public uploadService(data: FormData): Observable<any> {
+        const url = `${this.apiAdoptionToEAStandardUrl}signature-upload`;
+        const params = new HttpParams();
+        console.log(url)
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
 
-  public viewDocs(editedDraftStandardDocumentId: any, doctype: string): Observable<any> {
+
+    }
+
+
+
+    public viewDocs(editedDraftStandardDocumentId: any, doctype: string): Observable<any> {
     const url = `${this.apiAdoptionToEAStandardUrl}` + 'view';
     const params = new HttpParams()
         .set('draftStandardId', editedDraftStandardDocumentId)

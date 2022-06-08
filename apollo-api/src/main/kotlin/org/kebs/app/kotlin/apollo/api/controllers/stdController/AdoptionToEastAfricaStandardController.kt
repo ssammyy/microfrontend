@@ -2,23 +2,29 @@ package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationManagementDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.AdoptionOfEastAfricaStandardService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.DraftDocumentService
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
+import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.store.model.UsersSignatureEntity
 import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.DecisionFeedback
 import org.kebs.app.kotlin.apollo.store.model.std.SACSummary
 import org.kebs.app.kotlin.apollo.store.model.std.SACSummaryHolder
 import org.kebs.app.kotlin.apollo.store.repo.std.SACSummaryRepository
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerRequest
+import org.springframework.web.servlet.function.body
 import javax.servlet.http.HttpServletResponse
 
 @RestController
@@ -28,6 +34,8 @@ class AdoptionToEastAfricaStandardController(
     private val sacSummaryRepository: SACSummaryRepository,
     val commonDaoServices: CommonDaoServices,
     val draftDocumentService: DraftDocumentService,
+    private val service: RegistrationManagementDaoService,
+
 
 
     ) {
@@ -186,4 +194,30 @@ class AdoptionToEastAfricaStandardController(
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
     }
+
+    @PostMapping("/signature-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadSignature(
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model )
+    :CommonDaoServices.MessageSuccessFailDTO {
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
+        val upload = UsersSignatureEntity()
+
+
+        docFile.forEach { u ->
+                service.uploadSignature(
+                    upload,
+                    u,
+                    loggedInUser
+
+                )
+            }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
 }

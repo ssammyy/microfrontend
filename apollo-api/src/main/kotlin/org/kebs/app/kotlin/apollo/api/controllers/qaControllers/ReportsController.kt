@@ -13,7 +13,9 @@ import org.kebs.app.kotlin.apollo.store.repo.ISampleStandardsRepository
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.servlet.http.HttpServletResponse
+import kotlin.collections.HashMap
 
 @RestController
 @RequestMapping("/api/qa/report/")
@@ -207,6 +209,11 @@ class ReportsController(
         val s = commonDaoServices.serviceMapDetails(appId)
         val permit = qaDaoServices.findPermitBYID(id)
 
+        val user = permit.qaoId?.let { commonDaoServices.findUserByID(it) }
+//        val imageBase64: String = Base64.getEncoder().encodeToString(user?.signature)
+
+        println(user)
+
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
         var filePath: String? = null
 
@@ -214,6 +221,8 @@ class ReportsController(
         map["PermitNo"] = foundPermitDetails.permitNumber.toString()
         map["PostalAddress"] = foundPermitDetails.postalAddress.toString()
         map["PhysicalAddress"] = foundPermitDetails.physicalAddress.toString()
+       // map["Signature"] = imageBase64
+
         map["DateOfIssue"] =
             foundPermitDetails.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
         map["ExpiryDate"] =
