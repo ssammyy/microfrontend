@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.service.BillStatus
 import org.kebs.app.kotlin.apollo.api.service.BillingService
 import org.kebs.app.kotlin.apollo.api.service.CorporateCustomerService
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -137,6 +138,9 @@ class CorporateCustomerHandler(
             val billId = req.pathVariable("billId").toLong()
             val form = req.body(CorporateStatusUpdateForm::class.java)
             response = this.billService.closeAndGenerateBill(billId, form.remarks ?: "")
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = ex.localizedMessage
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to close bill", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

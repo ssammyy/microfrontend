@@ -28,6 +28,7 @@ class ImageSnippet {
     }
 }
 
+declare const $: any;
 
 @Component({
     selector: 'app-userprofilemain',
@@ -116,15 +117,7 @@ export class UserProfileMainComponent implements OnInit {
 
     }
 
-    showToasterSuccess(title: string, message: string) {
-        this.notifyService.showSuccess(message, title)
 
-    }
-
-    showToasterError(title: string, message: string) {
-        this.notifyService.showError(message, title)
-
-    }
 
     loaduserinfo() {
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
@@ -165,6 +158,30 @@ export class UserProfileMainComponent implements OnInit {
                 );
             }
         );
+
+        this.getVerificationStatus();
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.userId = u.id;
+            this.email= u.email;
+        });
+        this.emailActivationFormGroup = this.formBuilder.group({
+            userId:[],
+            email:[]
+        });
+        this.activateEmailFormGroup = this.formBuilder.group({
+            userId:[],
+            email:[],
+            verificationToken: ['', Validators.required]
+        });
+
+    }
+    showToasterSuccess(title:string,message:string){
+        this.notifyService.showSuccess(message, title)
+
+    }
+    showToasterError(title:string,message:string){
+        this.notifyService.showError(message, title)
+
     }
 
     onClickSave(valid: boolean) {
@@ -287,6 +304,33 @@ export class UserProfileMainComponent implements OnInit {
                 console.log(error.message);
             }
         );
+    }
+    showNotification(from: any, align: any) {
+        const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
+
+        const color = Math.floor((Math.random() * 6) + 1);
+
+        $.notify({
+            icon: 'notifications',
+            message: 'KEBS QAIMSS'
+        }, {
+            type: type[color],
+            timer: 3000,
+            placement: {
+                from: from,
+                align: align
+            },
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0} alert-with-icon" role="alert">' +
+                '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
+                '<i class="material-icons" data-notify="icon">notifications</i> ' +
+                '<span data-notify="title"></span> ' +
+                '<span data-notify="message">Check your Email for verification token</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
     }
 
     handleFileSelect(evt) {

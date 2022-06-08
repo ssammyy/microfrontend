@@ -231,12 +231,18 @@
                     <input type="text"
                            class="form-control"
                            formControlName="verificationToken" name="verificationToken"
-                    >
+                   required="" >
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-sm" >Verify</button>
+                <div *ngIf="activateEmailFormGroup.valid" class="modal-footer">
+                    <button  type="submit" class="btn btn-primary btn-sm" >Submit</button>
+
                 </div>
             </form>
+            <div *ngIf="!activateEmailFormGroup.valid" class="modal-footer">
+                <button  class="btn btn-sm btn-primary "
+                        (click)="showNotification('top','right')">Submit
+                </button>
+            </div>
         </div>
     </div>
 </div>

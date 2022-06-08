@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.OptBoolean
 import java.sql.Timestamp
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
+
 class SageHeader {
     @JsonProperty("messageID")
     var messageID: String? = null
@@ -61,4 +62,40 @@ class SageInvoicePostingResponseResult {
     @JsonProperty("response")
     @NotNull(message = "Request details are required")
     val response: SageInvoiceResponse? = null
+}
+
+
+class SageCourierResponse {
+    @JsonProperty("CustomerCode")
+    @NotNull(message = "Customer code is required")
+    val customerCode: String? = null
+
+    @JsonProperty("CustomerName")
+    val customerName: String? = null
+
+    @JsonProperty("GroupCode")
+    val groupCode: String? = null
+
+    @JsonProperty("City")
+    val city: String? = null
+
+    @JsonProperty("Country")
+    val country: String? = null
+
+    @JsonProperty("TaxNo")
+    val taxNo: String? = null
+
+    @JsonProperty("CreditLimit")
+    val creditLimit: Double? = null
+}
+
+class SageCourierDetailsResponseResult {
+    @JsonProperty("header")
+    @Valid
+    @NotNull(message = "Header details are required")
+    var header: SageHeader? = null
+
+    @Valid
+    @JsonProperty("response")
+    val response: Array<SageCourierResponse>? = null
 }

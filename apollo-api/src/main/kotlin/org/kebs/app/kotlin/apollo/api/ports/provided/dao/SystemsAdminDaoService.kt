@@ -1302,7 +1302,7 @@ class SystemsAdminDaoService(
                         ?.let { throw ExpectedDataNotFound("The Company with this [Registration Number : ${dto.company.registrationNumber}] already exists") }
                         ?: run {
                             usersRepo.findByUserName(
-                                dto.user.userName ?: throw NullValueNotAllowedException("Username is required")
+                                dto.user.email ?: throw NullValueNotAllowedException("Username is required")
                             )
                                 ?.let {
                                     throw InvalidValueException("Selected username is already in use")

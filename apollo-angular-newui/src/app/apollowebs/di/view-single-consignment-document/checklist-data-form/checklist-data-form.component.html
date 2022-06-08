@@ -57,7 +57,7 @@
                                 </div>
 
                             </mat-step>
-                            <mat-step label="Agrochem Checklist">
+                            <mat-step label="Agrochem Checklist" *ngIf="consignment.ui.cocRequest">
                                 <app-agrochem-inspection-checklist
                                         (agrochemDetails)="setAgrochemChecklist($event)"
                                         [categories]="categories"
@@ -73,7 +73,7 @@
                                     </button>
                                 </div>
                             </mat-step>
-                            <mat-step label="Engineering checklist">
+                            <mat-step label="Engineering checklist" *ngIf="consignment.ui.cocRequest">
                                 <app-engineering-inspection-checklist
                                         (engineeringDetails)="setEngineringChecklist($event)"
                                         [categories]="categories"
@@ -88,7 +88,7 @@
                                     </button>
                                 </div>
                             </mat-step>
-                            <mat-step label="Vehicle Checklist">
+                            <mat-step label="Vehicle Checklist" *ngIf="consignment.ui.corRequest">
                                 <app-vehicle-inspection-checklist (vehicleDetails)="setVehicleChecklist($event)"
                                                                   [stations]="stations"
                                                                   [categories]="categories"
@@ -103,7 +103,7 @@
                                     </button>
                                 </div>
                             </mat-step>
-                            <mat-step label="Other Checklists">
+                            <mat-step label="Other Checklists" *ngIf="consignment.ui.cocRequest">
                                 <app-other-inspection-checklist
                                         (otherDetails)="setOtherChecklist($event)"
                                         [itemList]="itemList"

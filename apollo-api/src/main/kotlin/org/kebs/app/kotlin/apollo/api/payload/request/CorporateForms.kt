@@ -14,7 +14,7 @@ class CorporateForm {
     var corporateName: String? = null
 
     @NotNull(message = "Enter corporate Code")
-    var corporateCode: String? = null
+    var groupCode: String? = null
 
     @NotNull(message = "Please select corporate Type")
     var corporateType: String? = null // COURIER

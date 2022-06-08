@@ -7,14 +7,14 @@ const PROVIDERS = [
   {
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
-    multi: true
-  }
+    multi: true,
+  },
 ];
 
 @NgModule({
   imports: [],
   exports: [],
   declarations: [],
-  providers: PROVIDERS
+  providers: PROVIDERS,
 })
 export class HttpInterceptorModule { }

@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FinanceInvoiceService} from "../../../../core/store/data/invoice/finance-invoice.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ManageCorporateCustomerComponent} from "../manage-corporate-customer/manage-corporate-customer.component";
+import {AddUpdateCorporateCustomerComponent} from "../add-update-corporate-customer/add-update-corporate-customer.component";
 
 @Component({
     selector: 'app-view-corporate',
@@ -65,6 +66,20 @@ export class ViewCorporateComponent implements OnInit {
                             default:
                                 this.billList = res.data.bills
                         }
+                    }
+                }
+            )
+    }
+
+    editAccount() {
+        this.dialog.open(AddUpdateCorporateCustomerComponent, {
+            data: this.corporateDetails
+        })
+            .afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadData()
                     }
                 }
             )

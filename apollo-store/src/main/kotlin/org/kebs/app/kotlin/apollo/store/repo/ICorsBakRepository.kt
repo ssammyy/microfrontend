@@ -14,5 +14,5 @@ interface ICorsBakRepository : HazelcastRepository<CorsBakEntity, Long> {
     fun findByConsignmentDocId(entity: ConsignmentDocumentDetailsEntity?): CorsBakEntity?
 
     @Query(value = "select count(*) as cc from DAT_KEBS_CORS_BAK where to_char(COR_ISSUE_DATE,'YYYY')=:gYear", nativeQuery = true)
-    fun countAllByYearGenerate(gYear: Int): Long
+    fun countAllByYearGenerate(gYear: Long): Long
 }

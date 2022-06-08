@@ -1020,6 +1020,29 @@ class DITest {
                 }
     }
 
+    @Test
+    fun testSendingCOCWithEmptyItems() {
+//        val cdId: Long = 481
+//        val inspectionOfficerId: Long = 1083
+        val appId = applicationMapProperties.mapImportInspection
+
+        usersRepo.findByUserName("kpaul7747@gmail.com")
+                ?.let { loggedInUser ->
+//                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
+                    val map = commonDaoServices.serviceMapDetails(appId)
+                    destinationInspectionDaoServices.findCdWithUcrNumber("UCR2200008391")
+                            ?.let { cdDetails ->
+                                try {
+                                    KotlinLogging.logger { }.debug("Starting background task")
+                                    val coc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, cdDetails, map, "", "A")
+                                    Assertions.assertNull(coc)
+                                } catch (ex: Exception) {
+                                    KotlinLogging.logger { }.debug("Expected failed request due to empty COC items", ex)
+                                }
+                            }
+                }
+    }
+
     private fun updateCDDetails() {
         val consignmentDocument =
                 consignmentDocument.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", "")
