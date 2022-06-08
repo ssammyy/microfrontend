@@ -18,7 +18,7 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        LOCAL_DEV: environment.base_url,
+        LOCAL_DEV: `kimsint.kebs.org:8006`,
     };
 
     /**
