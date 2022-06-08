@@ -6,23 +6,21 @@ import {Go, selectIsAuthenticated, selectUserInfo} from '../store';
 import {first, map} from 'rxjs/operators';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class RouteGuard implements CanActivate {
     constructor(
-        private store$: Store<any>
+        private store$: Store<any>,
     ) {
     }
 
     tokenExpired(token: string) {
-        if(token) {
+        if (token) {
             const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
             // console.log(`MY TOKEN VALUE = ${expiry}`);
             return (Math.floor((new Date).getTime() / 1000)) >= expiry;
-        }
-        else
-        {
-            return false
+        } else {
+            return false;
         }
 
     }
@@ -47,7 +45,7 @@ export class RouteGuard implements CanActivate {
                 // console.log(`canActivate( Yes. Navigate the user to the requested route. )`);
                 return true;
             }),
-            first()
+            first(),
         );
     }
 
@@ -60,7 +58,7 @@ export class RouteGuard implements CanActivate {
             (a) => {
                 //   console.log(`Authd = ${a} redirecting to login`);
                 auth = a;
-            }
+            },
         );
         // this.store$.select(selectUserInfo).subscribe(
         //     (a) => {
@@ -74,10 +72,10 @@ export class RouteGuard implements CanActivate {
                     this.store$.select(selectUserInfo).subscribe(
                         (a) => {
                             auth = !this.tokenExpired(a.accessToken);
-                        }
+                        },
                     );
                 }
-            }
+            },
         );
 
         return of(auth);
