@@ -12,6 +12,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UserRoleAssignmentsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersSignatureEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -24,11 +25,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
+import kotlin.text.Typography.section
 
 @Service
 class RegistrationManagementDaoService(
@@ -41,6 +44,8 @@ class RegistrationManagementDaoService(
     private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val usersRepo: IUserRepository,
+    private val usersSignatureRepository: UserSignatureRepository,
+
     private val userProfileRepo: IUserProfilesRepository,
     private val tokenService: JwtTokenService,
     private val registrationDaoServices: RegistrationDaoServices,
@@ -149,6 +154,7 @@ class RegistrationManagementDaoService(
                             title = dto.title
                         }
 
+
                         val entity = usersRepo.save(it)
                         return userEntityToDto(entity)
                     }
@@ -156,6 +162,44 @@ class RegistrationManagementDaoService(
             }
             ?: throw NullValueNotAllowedException("Your request could not be processed at the moment")
     }
+    fun uploadSignature(
+        uploads: UsersSignatureEntity,
+        docFile: MultipartFile,
+        users: UsersEntity,
+    ): UsersSignatureEntity ? {
+
+
+        //check if data exists
+//        val signatureb = users.id?.let { usersSignatureRepository.findByUserId(it) }
+
+        val signatureTable = usersSignatureRepository.findByUserId(users.id!!)
+        if(signatureTable == null)
+        {
+            with(uploads) {
+                userId = users.id
+                signature = docFile.bytes
+                enabled = 1
+                createdBy = commonDaoServices.concatenateName(users)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+
+        }
+        else {
+
+            with(uploads) {
+                signature = docFile.bytes
+                modifiedBy = commonDaoServices.concatenateName(users)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+        }
+
+        return usersSignatureRepository.save(uploads)
+
+
+    }
+
+
+
 
     /**
      * CRUD For users, will start with managing the currently logged in user
@@ -177,6 +221,15 @@ class RegistrationManagementDaoService(
 
     private fun userEntityToDto(it: UsersEntity): UserEntityDto {
         val profile = userProfileRepo.findByUserId(it)
+        val signatureFromDb = usersSignatureRepository.findByUserId(it.id!!)
+//        val signatureDb = it.id?.let { it1 -> usersSignatureRepository.findByUserId(it1) }
+        var finalSignature: ByteArray? = null
+//
+        if(signatureFromDb!=null)
+        {
+             finalSignature = signatureFromDb.signature
+        }
+
 
         return UserEntityDto(
             id = it.id,
@@ -207,7 +260,8 @@ class RegistrationManagementDaoService(
             region = profile?.regionId?.id,
             county = profile?.countyID?.id,
             town = profile?.townID?.id,
-            subRegion = profile?.subRegionId?.id
+            subRegion = profile?.subRegionId?.id,
+            signature = finalSignature
         )
     }
 

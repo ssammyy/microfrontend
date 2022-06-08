@@ -5,7 +5,6 @@ import {
     doSendTokenForUserSuccess,
     doValidateTokenForUser,
     doValidateTokenForUserB,
-
     doValidateTokenForUserFailure,
     doValidateTokenForUserSuccess,
     loadAuths,

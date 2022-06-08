@@ -110,6 +110,7 @@ export class ApiEndpointService {
         REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
         COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
         USER_DETAILS: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/`,
+        USER_DETAILS_SIGNATURE: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/signature`,
         LOGOUT_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/logout`,
         COMPANY_DETAIL_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/companyDetails`,
         BRANCH_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/{companyId}/branches/`,
