@@ -1443,7 +1443,7 @@ class StdLevyController(
 
     @GetMapping("/getLevyPayments")
     @ResponseBody
-    fun getLevyPayments(): MutableList<LevyPayments>
+    fun getLevyPayments(): List<LevyPayments>
     {
         return standardLevyService.getLevyPayments()
     }

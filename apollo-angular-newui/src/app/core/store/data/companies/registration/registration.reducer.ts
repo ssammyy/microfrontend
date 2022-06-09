@@ -77,7 +77,8 @@ export const initialBrsValidationState: BrsValidationState = {
         town: 0,
         yearlyTurnover: 0,
         status: 0,
-        otherCategory: ''
+        otherCategory: '',
+        otherBusinessNatureType: ''
     },
     step: 0
 

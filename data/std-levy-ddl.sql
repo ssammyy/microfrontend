@@ -1993,6 +1993,10 @@ alter table DAT_KEBS_COMPANY_PROFILE_EDIT
 
 /
 
+alter table DAT_KEBS_USERS
+    add SIGNATURE BLOB
+/
+
 
 
 

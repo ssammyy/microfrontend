@@ -1385,7 +1385,33 @@ return getUserTasks();
         } ?: throw NullValueNotAllowedException("Role Not Found")
     }
 
+//    fun getNotificationFormDetails(): LevyCustomResponse?{
+//        val result = LevyCustomResponse()
+//        try {
+//            commonDaoServices.loggedInUserDetailsEmail().id
+//                ?.let { id ->
+//                    companyProfileRepo.getManufactureId(id)
+//                        .let {
+//                            stdLevyNotificationFormRepository.findTopByManufactureIdOrderByIdDesc(it)
+//                                ?.let {
+//                                    result.payload= stdLevyNotificationFormRepository.getNotificationFormDetails(it)
+//                                }
+//
+//                        }
+//                } ?: throw NullValueNotAllowedException("Form Not Found")
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            KotlinLogging.logger { }.error(e.message, e)
+//            result.apply {
+//                response = e.message
+//            }
+//        }
+//
+//        return result
+//    }
+
     fun getNotificationFormDetails(): NotificationFormDetailsHolder{
+
         commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureId(id)
@@ -1544,8 +1570,8 @@ return getUserTasks();
         runtimeService.deleteProcessInstance(taskId, "cleaning")
     }
 
-    fun getLevyPayments(): MutableList<LevyPayments> {
-        return companyProfileRepo.getLevyPayments()
+    fun getLevyPayments(): List<LevyPayments> {
+        return companyProfileRepo.getLevyPayments().distinct()
     }
 
 

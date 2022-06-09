@@ -1,11 +1,18 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Subject} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
-import {ManufacturePenalty, PaymentDetails, PenaltyDetails} from "../../../core/store/data/levy/levy.model";
+import {
+  PenaltyDetails
+} from "../../../core/store/data/levy/levy.model";
 import {LevyService} from "../../../core/store/data/levy/levy.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DataTableDirective} from "angular-datatables";
+import jsPDF from 'jspdf';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import htmlToPdfmake from 'html-to-pdfmake';
 
 @Component({
   selector: 'app-standard-levy-penalties',
@@ -16,6 +23,7 @@ export class StandardLevyPenaltiesComponent implements OnInit {
   penaltyDetails: PenaltyDetails[] = [];
   penaltiesDetails: PenaltyDetails[] = [];
   public actionRequest: PenaltyDetails | undefined;
+  public pdfRequest: PenaltyDetails | undefined;
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
   dtElements: DataTableDirective;
@@ -24,6 +32,9 @@ export class StandardLevyPenaltiesComponent implements OnInit {
   dtTriggers: Subject<any> = new Subject<any>();
   isDtInitialized: boolean = false
   loadingText: string;
+  isShow=true;
+  title = 'htmlToPdf';
+  @ViewChild('pdfTable') pdfTable: ElementRef;
   constructor(
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
@@ -38,6 +49,9 @@ export class StandardLevyPenaltiesComponent implements OnInit {
     this.dtTrigger.unsubscribe();
     this.dtTriggers.unsubscribe();
   }
+
+
+
   public getLevyPenalty(): void{
     this.loadingText = "Retrieving Payments ...."
     this.SpinnerService.show();
@@ -64,6 +78,32 @@ export class StandardLevyPenaltiesComponent implements OnInit {
 
         }
     );
+  }
+  public downloadAsPDF() {
+    const doc = new jsPDF();
+
+    const pdfTable = this.pdfTable.nativeElement;
+
+    const html = htmlToPdfmake(pdfTable.innerHTML);
+
+    const documentDefinition = { content: html };
+    pdfMake.createPdf(documentDefinition).open();
+
+  }
+
+  public onOpenModalPending(penaltiesDetails: PenaltyDetails, mode: string): void {
+    const container = document.getElementById('main-container');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.style.display = 'none';
+    //button.setAttribute('data-toggle', 'modal');
+    if (mode === 'generatePdf') {
+      this.pdfRequest = penaltiesDetails;
+      button.setAttribute('data-target', '#generatePdf');
+      this.downloadAsPDF();
+
+    }
+
   }
 
   public onOpenModalPenalty(penaltyDetail:PenaltyDetails ,mode: string,companyId: number): void {

@@ -397,12 +397,11 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
 
     @Query(
-        value = "SELECT p.ENTRY_NUMBER as entryNumber, p.ID as id ,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName " +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID" +
-                " ORDER BY p.ID DESC",
+        value = "SELECT DISTINCT c.ENTRY_NUMBER as entryNumber,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber FROM DAT_KEBS_COMPANY_PROFILE c, LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
+                "WHERE p.ENTRY_NUMBER=c.ENTRY_NUMBER ",
         nativeQuery = true
     )
-    fun getLevyPayments(): MutableList<LevyPayments>
+    fun getLevyPayments(): List<LevyPayments>
 
 
     @Query(
@@ -430,9 +429,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufactureEmailAddressList(): MutableList<EmailListHolder>
 
     @Query(
-        value = "SELECT p.ENTRY_NUMBER as entryNumber, p.ID as id ,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName " +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID WHERE p.STATUS='1'" +
-                " ORDER BY p.ID DESC",
+        value = "SELECT DISTINCT c.ENTRY_NUMBER as entryNumber,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,p.STATUS as status  FROM DAT_KEBS_COMPANY_PROFILE c, LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
+                "WHERE p.ENTRY_NUMBER=c.ENTRY_NUMBER AND p.STATUS='1'",
         nativeQuery = true
     )
     fun getLevyPenalty(): MutableList<LevyPenalty>

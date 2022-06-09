@@ -67,6 +67,7 @@ export class CompanyViewComponent implements OnInit {
       directorIdNumber: new FormControl({value: '', disabled: true}, [Validators.required]),
       businessLines: new FormControl({value: '', disabled: true}, [Validators.required]),
       businessNatures: new FormControl({value: '', disabled: true}, [Validators.required]),
+      otherBusinessNatureType: new FormControl({value: '', disabled: true}, [Validators.required]),
     });
 
     this.stepTwoForm = new FormGroup({
@@ -84,7 +85,7 @@ export class CompanyViewComponent implements OnInit {
       town: new FormControl({value: '', disabled: true}, [Validators.required])
     });
     this.store$.select(selectCompanyData).subscribe((d) => {
-      console.log(`The id ${d.id}`);
+      console.log(d);
       return this.company = d;
     });
 

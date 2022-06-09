@@ -20,4 +20,5 @@ export interface Company {
     county: number;
     town: number;
     otherCategory: string;
+    otherBusinessNatureType: string;
 }

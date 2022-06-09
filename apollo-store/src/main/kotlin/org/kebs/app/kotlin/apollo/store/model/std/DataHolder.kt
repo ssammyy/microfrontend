@@ -211,6 +211,11 @@ interface NotificationFormDetailsHolder{
 
 }
 
+class LevyCustomResponse {
+    var response: String? = null
+    var payload: MutableList<NotificationFormDetailsHolder>? = null
+}
+
 interface DirectorListHolder {
     fun getDirectorName(): String?
 }
