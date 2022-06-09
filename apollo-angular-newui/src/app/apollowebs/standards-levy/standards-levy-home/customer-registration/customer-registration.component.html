@@ -11,8 +11,8 @@ type="ball-scale-multiple"
 </div>
 <div class="main-content">
 <div class="container-fluid">
-<div class="row">
-<div class="col-md-12">
+<div class="row col-lg-12 col-md-12 col-sm-12">
+<div class="col-lg-12 col-md-12 col-sm-12">
 <div class="card">
 <div class="card-header card-header-primary card-header-icon">
 <div class="card-icon">
@@ -25,15 +25,15 @@ type="ball-scale-multiple"
     <div class="toolbar">
 
     </div>
-    <div class="form-wizard">
-        <div  class="row col-12">
-            <div *ngIf="manufacturingStatus?.businessType==1" class="row col-12">
+    <div class="form-wizard col-lg-12 col-md-12 col-sm-12">
+        <div  class="row col-lg-12 col-md-12 col-sm-12">
+            <div *ngIf="manufacturingStatus?.businessType==1" class="row col-lg-12 col-md-12 col-sm-12">
 
                 <form (ngSubmit)="onClickSaveSL1(manufacturerInfoForm.valid)" [formGroup]="manufacturerInfoForm"
-                      class="form col-12"
+                      class="form col-lg-12 col-md-12 col-sm-12"
                       enctype="multipart/form-data">
 
-                    <div class="row">
+                    <div class="row col-lg-12 col-md-12 col-sm-12">
                         <div class="col-md-6 ml-auto mr-auto">
                             <div class="card">
                                 <div class="card-body text-center">
@@ -45,8 +45,8 @@ type="ball-scale-multiple"
                     </div>
 
                     <div class="form-body">
-                        <div class="row">
-                            <div class="form-group col-6">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="businessCompanyName1">Business/Company Name </label>
                                 <input type="text" class="form-control" ngModel="{{companyDetail.name}}"
                                        id="businessCompanyName1" formControlName="businessCompanyName"
@@ -55,27 +55,27 @@ type="ball-scale-multiple"
 
                             </div>
 
-                            <div class="form-group col-6">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="plotNumber1">Plot Number</label>
                                 <input type="text" ngModel="{{companyDetail.plotNumber}}" class="form-control"
                                        id="plotNumber1" formControlName="plotNumber" name="plotNumber"
                                        placeholder="Plot Number" disabled>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="form-group col-4">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-4 col-md-4 col-sm-12">
                                 <label for="roadStreet1">Road / Street </label>
                                 <input type="text" ngModel="{{companyDetail.streetName}}" class="form-control"
                                        id="roadStreet1" formControlName="roadStreet" name="roadStreet"
                                        placeholder="Road / Street " disabled>
                             </div>
-                            <div class="form-group col-4">
+                            <div class="form-group col-lg-4 col-md-4 col-sm-12">
                                 <label for="postalAddress1">Postal Address </label>
                                 <input type="text" ngModel="{{companyDetail.postalAddress}}" class="form-control"
                                        id="postalAddress1" formControlName="postalAddress" name="postalAddress"
                                        placeholder="Postal Address" disabled>
                             </div>
-                            <div class="form-group col-4">
+                            <div class="form-group col-lg-4 col-md-4 col-sm-12">
                                 <label for="telephone1">Telephone</label>
                                 <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control"
                                        id="telephone1" formControlName="telephone" name="telephone"
@@ -83,8 +83,8 @@ type="ball-scale-multiple"
                             </div>
 
                         </div>
-                        <div class="row">
-                            <div class="form-group col-12">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="mainPhysicalLocation1">Main Physical Location </label>
                                 <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control"
                                           id="mainPhysicalLocation1" name="mainPhysicalLocation"
@@ -93,8 +93,8 @@ type="ball-scale-multiple"
 
                             </div>
                         </div>
-                        <div class="row" >
-                            <div class="form-group col-12">
+                        <div class="row col-lg-12 col-md-12 col-sm-12" >
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="NameAndBusinessOfProprietors1">Name and Business of Proprietors and
                                     Partners; and In the
                                     case of Companies, the Chief Executive and Directors</label>
@@ -105,8 +105,8 @@ type="ball-scale-multiple"
                                           placeholder="" ></textarea>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="form-group col-12">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="AllCommoditiesManufuctured1">All Commodities Manufactured or to be
                                     Manufactured<span style="font-size: medium; color: blue;">(Commodities are comma separated)</span><span
                                             style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -118,8 +118,8 @@ type="ball-scale-multiple"
                             </div>
 
                         </div>
-                        <div class="row">
-                            <div class="form-group col-6">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="DateOfManufacture1">Date upon which Manufacture Commenced or will Commence
                                     <span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="date"
@@ -128,7 +128,7 @@ type="ball-scale-multiple"
                                        formControlName="DateOfManufacture"
                                        name="DateOfManufacture" placeholder="">
                             </div>
-                            <div class="form-group col-6">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="totalValueOfManufacture1">Total value of Manufacture in last Calender Year
                                     KSH <span
                                             style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -154,8 +154,8 @@ type="ball-scale-multiple"
                         </div>
 
                         <h4 style=" color: red;">If you have branches kindly add them here</h4>
-                        <div class="row">
-                            <div class="form-group col-6">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="nameOfBranch1">Name of Branch <span
                                         style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="text" ngModel="{{slBranchName?.branchName}}" class="form-control" id="nameOfBranch1"
@@ -163,7 +163,7 @@ type="ball-scale-multiple"
                                        name="nameOfBranch"
                                        placeholder="Name of Branch" required>
                             </div>
-                            <div class="form-group col-6">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="location1">Location <span
                                         style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control" id="location1"
@@ -229,7 +229,7 @@ type="ball-scale-multiple"
             <div *ngIf="manufacturingStatus?.businessType==2" class="row col-12">
                 <form (ngSubmit)="onClickSaveManufacturing(manufacturingInfoForm.valid)"
                       [formGroup]="manufacturingInfoForm"
-                      class="form col-12"
+                      class="form col-lg-12 col-md-12 col-sm-12"
                       enctype="multipart/form-data">
                     <div class="card-body text-center">
                         <h2 style="color: red; font-weight: bold; font-size: medium">Kindly Fill the details below</h2>
@@ -237,8 +237,8 @@ type="ball-scale-multiple"
                     </div>
 
                     <div class="form-body">
-                        <div class="row">
-                            <div class="form-group col-6">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="businessCompanyName2">Name of Business <span
                                         style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="text" class="form-control" ngModel="{{companyDetail.name}}"
@@ -248,21 +248,21 @@ type="ball-scale-multiple"
 
                             </div>
 
-                            <div class="form-group col-6">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="plotNumber2">Plot Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="text" ngModel="{{companyDetail.plotNumber}}" class="form-control"
                                        id="plotNumber2" name="plotNumber"
                                        formControlName="plotNumber" placeholder="Plot Number" disabled>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="form-group col-6">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="roadStreet2">Road / Street <span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="text" ngModel="{{companyDetail.streetName}}" class="form-control"
                                        id="roadStreet2" name="roadStreet"
                                        formControlName="roadStreet" placeholder="Road / Street " disabled>
                             </div>
-                            <div class="form-group col-6">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="postalAddress2">Address <span
                                         style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="text" ngModel="{{companyDetail.postalAddress}}" class="form-control"
@@ -270,8 +270,8 @@ type="ball-scale-multiple"
                                        formControlName="postalAddress" placeholder="Postal Address" disabled>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="form-group col-6">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="telephone2">Telephone Number<span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <input type="text" ngModel="{{companyDetail.companyTelephone}}" class="form-control"
                                        id="telephone2" name="telephone"
@@ -279,8 +279,8 @@ type="ball-scale-multiple"
                             </div>
 
                         </div>
-                        <div class="row">
-                            <div class="form-group col-12">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="NameAndBusinessOfProprietors2">Name and Business of Proprietors or
                                     Partners; and In the case of Companies, the Chief Executive and Directors<span
                                             style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -291,8 +291,8 @@ type="ball-scale-multiple"
                                           placeholder="" ></textarea>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="form-group col-12">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="mainPhysicalLocation2">Admin Location <span
                                         style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <textarea type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control"
@@ -302,22 +302,22 @@ type="ball-scale-multiple"
 
                     </div>
                 </div>
-                <div class="row">
-                    <div class="form-group col-12">
+                <div class="row col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
                         <label for="AllCommoditiesManufuctured2">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)<span style="font-size: medium; color: blue;">(Items are comma separated)</span><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                         <textarea [class.is-invalid]="manufacturingInfo.AllCommoditiesManufuctured.invalid && manufacturingInfo.AllCommoditiesManufuctured.touched" type="text"  id="AllCommoditiesManufuctured2" formControlName="AllCommoditiesManufuctured" name="AllCommoditiesManufuctured" class="form-control" placeholder=""></textarea>
                     </div>
 
                 </div>
-                <div class="row">
-                    <div class="form-group col-6">
+                <div class="row col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                         <label for="DateOfManufacture2">Date upon which Contracting Commenced or will Commence <span style="font-size: xx-small; color: red;">(*)Required</span></label>
                         <input type="date"
                                [class.is-invalid]="manufacturingInfo.DateOfManufacture.invalid && manufacturingInfo.DateOfManufacture.touched"
                                class="form-control" id="DateOfManufacture2"
                                name="DateOfManufacture" class="form-control" formControlName="DateOfManufacture" placeholder="" >
                     </div>
-                    <div class="form-group col-6">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                         <label for="totalValueOfManufacture2">Total value of Manufacture in last Calender Year
                             KSH</label>
                         <input type="number"
@@ -342,13 +342,13 @@ type="ball-scale-multiple"
                 </div>
 
                 <h4 style=" color: red;">If you have branches kindly add them here</h4>
-                <div class="row">
-                    <div class="form-group col-6">
+                <div class="row col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                         <label for="nameOfBranch2">Name of Branch <span style="font-size: xx-small; color: red;">(*)Required</span></label>
                         <input type="text" ngModel="{{slBranchName?.branchName}}" class="form-control" id="nameOfBranch2" formControlName="nameOfBranch" name="nameOfBranch"
                              value="{{slBranchName?.branchName}}"  placeholder="Name of Branch" >
                     </div>
-                    <div class="form-group col-6">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                         <label for="location2">Location <span style="font-size: xx-small; color: red;">(*)Required</span></label>
                         <input type="text" ngModel="{{companyDetail.physicalAddress}}" class="form-control" id="location2" formControlName="location" name="location"
                                placeholder="Location" >
@@ -422,83 +422,83 @@ type="ball-scale-multiple"
          </div>
 
 
-         <div class="col-12" *ngFor="let companyDetail of companyDetails">
-             <div class="card col-12">
+         <div class="col-lg-12 col-md-12 col-sm-12" *ngFor="let companyDetail of companyDetails">
+             <div class="card col-lg-12 col-md-12 col-sm-12">
                  <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of
                      Business
                  </div>
                     <div class="card-body">{{companyDetail.name}}</div>
                 </div>
 
-                <div class="row">
-                    <div class="card col-6">
+                <div class="row col-lg-12 col-md-12 col-sm-12">
+                    <div class="card col-lg-6 col-md-6 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
                         <div class="card-body">{{companyDetail.plotNumber}}</div>
                     </div>
-                    <div class="card col-6">
+                    <div class="card col-lg-6 col-md-6 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
                         <div class="card-body">{{companyDetail.streetName}}</div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="card col-6">
+                <div class="row col-lg-12 col-md-12 col-sm-12">
+                    <div class="card col-lg-6 col-md-6 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
                         <div class="card-body">{{companyDetail.postalAddress}}</div>
                     </div>
-                    <div class="card col-6">
+                    <div class="card col-lg-6 col-md-6 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
                         <div class="card-body">{{companyDetail.companyTelephone}}</div>
                     </div>
                 </div>
 
 
-                <div class="row">
-                    <div class="card col-6">
+                <div class="row col-lg-12 col-md-12 col-sm-12">
+                    <div class="card col-lg-6 col-md-6 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
                         <div class="card-body">{{companyDetail.physicalAddress}}</div>
                     </div>
-                    <div class="card col-6">
+                    <div class="card col-lg-6 col-md-6 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
                         <div class="card-body">{{companyDetail.registrationNumber}}</div>
                     </div>
 
                 </div>
-                <div class="col-12" >
-                    <div class="card col-12">
+                <div class="col-lg-12 col-md-12 col-sm-12" >
+                    <div class="card col-lg-12 col-md-12 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
                             Partners; and In the case of Companies, the Chief Executive and Directors</div>
                         <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="card col-6">
+                <div class="row col-lg-12 col-md-12 col-sm-12">
+                    <div class="card col-lg-6 col-md-6 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
                         <div class="card-body">{{companyDetail.kraPin}}</div>
                     </div>
-                    <div class="card col-6">
+                    <div class="card col-lg-6 col-md-6 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
                         <div class="card-body">{{companyDetail.branchName}}</div>
                     </div>
 
                 </div>
-                <div class="card col-12">
+                <div class="card col-lg-12 col-md-12 col-sm-12">
                     <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
                     <div class="card-body">{{companyDetail.physicalAddress}}</div>
                 </div>
 
 
 
-                <div class="card col-12">
+                <div class="card col-lg-12 col-md-12 col-sm-12">
                     <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
                         Manufactured(Commodities are comma separated)</div>
                     <div class="card-body">{{slFormDetails?.commodity}}</div>
                 </div>
-                <div class="row">
-                    <div class="card col-6">
+                <div class="row col-lg-12 col-md-12 col-sm-12">
+                    <div class="card col-lg-6 col-md-6 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
                         <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
                     </div>
-                    <div class="card col-6">
+                    <div class="card col-lg-6 col-md-6 col-sm-12">
                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
                             KSH</div>
                         <div class="card-body">{{slFormDetails?.totalValue}}</div>
@@ -509,79 +509,79 @@ type="ball-scale-multiple"
             </div>
 
         </div>
-        <div *ngIf="manufacturingStatus?.businessType==2" class="row col-12">
+        <div *ngIf="manufacturingStatus?.businessType==2" class="row col-lg-12 col-md-12 col-sm-12">
             <div class="card-body text-center">
                 <h2 style="color: red; font-weight: bold; font-size: medium">Form Has already been filled</h2>
                 <h3 style="color: #0d0505; font-weight: bold">SL1-C Form</h3>
             </div>
-                    <div class="col-12" *ngFor="let companyDetail of companyDetails">
-                        <div class="card col-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12" *ngFor="let companyDetail of companyDetails">
+                        <div class="card col-lg-12 col-md-12 col-sm-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                             <div class="card-body">{{companyDetail.name}}</div>
                         </div>
 
-                    <div class="row">
-                        <div class="card col-6">
+                    <div class="row col-lg-12 col-md-12 col-sm-12">
+                        <div class="card col-lg-6 col-md-6 col-sm-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
                             <div class="card-body">{{companyDetail.plotNumber}}</div>
                         </div>
-                        <div class="card col-6">
+                        <div class="card col-lg-6 col-md-6 col-sm-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
                             <div class="card-body">{{companyDetail.streetName}}</div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="card col-6">
+                    <div class="row col-lg-12 col-md-12 col-sm-12">
+                        <div class="card col-lg-6 col-md-6 col-sm-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
                             <div class="card-body">{{companyDetail.postalAddress}}</div>
                         </div>
-                        <div class="card col-6">
+                        <div class="card col-lg-6 col-md-6 col-sm-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
                             <div class="card-body">{{companyDetail.companyTelephone}}</div>
                         </div>
                     </div>
-                        <div class="card col-12">
+                        <div class="card col-lg-12 col-md-12 col-sm-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
                                 Partners; and In the case of Companies, the Chief Executive and Directors</div>
                             <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
                         </div>
 
-                    <div class="row">
-                        <div class="card col-6">
+                    <div class="row col-lg-12 col-md-12 col-sm-12">
+                        <div class="card col-lg-6 col-md-6 col-sm-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
                             <div class="card-body">{{companyDetail.physicalAddress}}</div>
                         </div>
-                        <div class="card col-6">
+                        <div class="card col-lg-6 col-md-6 col-sm-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
                             <div class="card-body">{{companyDetail.registrationNumber}}</div>
                         </div>
 
                     </div>
-                        <div class="row">
-                            <div class="card col-6">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="card col-lg-6 col-md-6 col-sm-12">
                                 <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
                                 <div class="card-body">{{companyDetail.kraPin}}</div>
                             </div>
-                            <div class="card col-6">
+                            <div class="card col-lg-6 col-md-6 col-sm-12">
                                 <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
                                 <div class="card-body">{{companyDetail.branchName}}</div>
                             </div>
 
                         </div>
-                        <div class="card col-12">
+                        <div class="card col-lg-12 col-md-12 col-sm-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
                             <div class="card-body">{{companyDetail.physicalAddress}}</div>
                         </div>
-                        <div class="card col-12">
+                        <div class="card col-lg-12 col-md-12 col-sm-12">
                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)</div>
                             <div class="card-body">{{slFormDetails?.commodity}}</div>
                         </div>
-                        <div class="row">
-                            <div class="card col-6">
+                        <div class="row col-lg-12 col-md-12 col-sm-12">
+                            <div class="card col-lg-6 col-md-6 col-sm-12">
                                 <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
                                 <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
                             </div>
-                            <div class="card col-6">
+                            <div class="card col-lg-6 col-md-6 col-sm-12">
                                 <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
                                     KSH</div>
                                 <div class="card-body">{{slFormDetails?.totalValue}}</div>

@@ -7,7 +7,7 @@ import {
     ApproveVisitTask,
     AssignCompanyTaskDTO, Branch, CloseCompanyDto, ClosedCompanyDTO,
     CompanyModel, CompanyOperationsDto,
-    ConfirmEditCompanyDTO,
+    ConfirmEditCompanyDTO, DefaulterDetails,
     DirectorsList,
     DocumentDTO,
     EditCompanyDTO, EmailVerificationStatus,
@@ -532,6 +532,14 @@ export class LevyService {
         const params = new HttpParams();
         return this.http.get<PaymentDetails>(url, {params}).pipe();
     }
+
+    public getLevyDefaulters(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_DEFAULTER_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<DefaulterDetails>(url, {params}).pipe();
+    }
+
+
 
     public getManufacturesLevyPayments(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_PAYMENT_DETAILS);

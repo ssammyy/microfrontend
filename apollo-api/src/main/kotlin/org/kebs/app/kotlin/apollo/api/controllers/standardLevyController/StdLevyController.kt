@@ -1470,6 +1470,14 @@ class StdLevyController(
         return standardLevyService.getLevyPenalty()
     }
 
+    @GetMapping("/getLevyDefaulters")
+    @ResponseBody
+    fun getLevyDefaulters(): MutableList<LevyPenalty>
+    {
+        return standardLevyService.getLevyDefaulters()
+    }
+
+
     @GetMapping("/getManufacturesLevyPenalty")
     @ResponseBody
     fun getManufacturesLevyPenalty(): MutableList<LevyPenalty>

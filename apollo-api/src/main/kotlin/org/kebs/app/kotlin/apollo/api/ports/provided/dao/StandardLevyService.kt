@@ -1829,6 +1829,10 @@ return getUserTasks();
             ?: throw ExpectedDataNotFound("No Data Found")
     }
 
+    fun getLevyDefaulters(): MutableList<LevyPenalty> {
+        return companyProfileRepo.getLevyDefaulters()
+    }
+
     fun getRandomToken(): String? {
         val rnd = Random()
         val number = rnd.nextInt(999999)
