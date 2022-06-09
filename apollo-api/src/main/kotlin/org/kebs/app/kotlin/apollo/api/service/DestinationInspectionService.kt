@@ -362,7 +362,7 @@ class DestinationInspectionService(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
 
-            var loggedInUser = this.commonDaoServices.findUserByUserName(supervisor)
+            val loggedInUser = this.commonDaoServices.findUserByUserName(supervisor)
             daoServices.generateCor(consignmentDocument, map, loggedInUser).let { corDetails ->
                 // Update CD
                 daoServices.updateCDStatus(

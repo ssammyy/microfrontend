@@ -495,6 +495,7 @@ data class UserEntityDto(
         var county: Long? = null,
         var town: Long? = null,
         var subRegion: Long? = null,
+        var signature: ByteArray? = null,
 )
 
 

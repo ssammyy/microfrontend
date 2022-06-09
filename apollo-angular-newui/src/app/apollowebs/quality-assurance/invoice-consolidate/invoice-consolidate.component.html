@@ -32,7 +32,7 @@
                                             <th class="task">Total Amount</th>
                                             <th class="task">Reference Number</th>
                                             <th class="task">Action</th>
-                                            <th class="task">Select</th>
+<!--                                            <th class="task">Select</th>-->
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -48,13 +48,13 @@
                                                     PAY NOW
                                                 </button>
                                             </td>
-                                            <td style="padding-left: 50px" *ngIf="task.totalAmount != 0">
-                                                <input class="form-check-input" type="checkbox"
-                                                       value="{{task.permitID}}"
-                                                       id="defaultCheck1"
-                                                       (change)="onChange($event.target.checked, task.permitID)"
-                                                       [checked]="checked(task)">
-                                            </td>
+<!--                                            <td style="padding-left: 50px" *ngIf="task.totalAmount != 0">-->
+<!--                                                <input class="form-check-input" type="checkbox"-->
+<!--                                                       value="{{task.permitID}}"-->
+<!--                                                       id="defaultCheck1"-->
+<!--                                                       (change)="onChange($event.target.checked, task.permitID)"-->
+<!--                                                       [checked]="checked(task)">-->
+<!--                                            </td>-->
                                         </tr>
                                         </tbody>
                                     </table>
@@ -114,21 +114,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <div class="card">
-                            <div class="card-header card-header-primary card-header-icon">
-                                <h4 class="card-title">Complete Consolidation</h4>
-                            </div>
-                            <div class="card-icon">
-                                <div class="card-body">
-                                    <button style="width: -webkit-fill-available;font-size: 8.1px;"
-                                            type="button" class="btn btn-primary" (click)="submit()">
-                                        Consolidate
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<!--                    <div class="col-md-2">-->
+<!--                        <div class="card">-->
+<!--                            <div class="card-header card-header-primary card-header-icon">-->
+<!--                                <h4 class="card-title">Complete Consolidation</h4>-->
+<!--                            </div>-->
+<!--                            <div class="card-icon">-->
+<!--                                <div class="card-body">-->
+<!--                                    <button style="width: -webkit-fill-available;font-size: 8.1px;"-->
+<!--                                            type="button" class="btn btn-primary" (click)="submit()">-->
+<!--                                        Consolidate-->
+<!--                                    </button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <!-- end content-->
 
                 </div>

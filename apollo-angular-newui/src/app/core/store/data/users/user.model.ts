@@ -41,5 +41,6 @@ export class UserEntityDto {
     town: bigint;
     subRegion: bigint;
     emailActivationStatus: number;
+    signature: any;
 }
 

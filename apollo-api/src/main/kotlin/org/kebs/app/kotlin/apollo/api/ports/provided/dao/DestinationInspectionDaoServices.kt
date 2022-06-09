@@ -606,7 +606,7 @@ class DestinationInspectionDaoServices(
                 }
             }
             // Prevent empty COC/COI generation
-            if (cocItems.isEmpty()) {
+            if (itemIds.isEmpty()) {
                 throw ExpectedDataNotFound("Compliance Certificate can't be issues when there is zero compliant items")
             }
         } else {
@@ -681,7 +681,8 @@ class DestinationInspectionDaoServices(
     }
 
     fun countCor(date: Timestamp): Long {
-        return corsBakRepository.countAllByYearGenerate(date.year)
+        val yearG = commonDaoServices.convertDateToString(date.toLocalDateTime(), "yyyy").toLongOrDefault(1990)
+        return corsBakRepository.countAllByYearGenerate(yearG)
     }
 
     fun countCocs(date: Timestamp, documentType: String): Long {

@@ -532,7 +532,7 @@ export class ComplaintDetailsComponent implements OnInit {
               newAdviceWhereToDto.advisedWhereToRemarks = this.dataSaveAcceptance.advisedWhereToRemarks;
               newAdviceWhereToDto.rejectedRemarks = this.dataSaveAcceptance.approvedRemarks;
               // tslint:disable-next-line:max-line-length
-              this.msService.msComplaintUpdateMandateOGADetails(this.complaintInspection.complaintsDetails.refNumber, this.dataSaveAdviceWhere).subscribe(
+              this.msService.msComplaintUpdateMandateOGADetails(this.complaintInspection.complaintsDetails.refNumber, newAdviceWhereToDto).subscribe(
                   (data: any) => {
                     this.complaintInspection = data;
                     console.log(data);

@@ -184,7 +184,7 @@
 	<title>
 		<band height="95" splitType="Stretch">
 			<staticText>
-				<reportElement x="189" y="53" width="326" height="25" uuid="d7b26d11-81f9-4944-ab28-350e0ceb8743">
+				<reportElement x="170" y="53" width="345" height="25" uuid="d7b26d11-81f9-4944-ab28-350e0ceb8743">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
