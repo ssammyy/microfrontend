@@ -413,8 +413,33 @@ export class LevyService {
         );
     }
 
+    public resumeCompanyOperations(suspendCompanyDto: SuspendCompanyDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_RESUME_OPERATIONS);
+        const params = new HttpParams();
+        return this.http.post<SuspendCompanyDto>(url, suspendCompanyDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
     public confirmCompanySuspension(companyOperationsDto: CompanyOperationsDto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVE_SUSPENSION);
+        const params = new HttpParams();
+        return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public confirmCompanyResumption(companyOperationsDto: CompanyOperationsDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_APPROVE_RESUMPTION);
         const params = new HttpParams();
         return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
             map(function (response: any) {
@@ -428,6 +453,19 @@ export class LevyService {
 
     public rejectCompanySuspension(companyOperationsDto: CompanyOperationsDto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REJECT_SUSPENSION);
+        const params = new HttpParams();
+        return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public rejectCompanyResumption(companyOperationsDto: CompanyOperationsDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REJECT_RESUMPTION);
         const params = new HttpParams();
         return this.http.post<CompanyOperationsDto>(url, companyOperationsDto, {params}).pipe(
             map(function (response: any) {

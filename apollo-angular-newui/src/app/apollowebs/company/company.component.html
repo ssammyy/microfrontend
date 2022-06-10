@@ -13,10 +13,13 @@
                         <div class="card-icon">
                             <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title col-6">Review Company Details</h4>
-                        <div class="col-4">
+                        <h4 class="card-title col-6">Review Company Details{{status}}</h4>
+                        <div *ngIf="status==1" class="col-4">
                             <button class="btn btn-sm btn-warning float-right" data-toggle="modal" data-target="#suspendModal">Suspend Operations</button>
                             <button class="btn btn-sm btn-primary float-right" style="height: 46px;" data-toggle="modal" data-target="#closeModal">Close Operations</button>
+                        </div>
+                        <div *ngIf="status==2" class="col-4">
+                            <button class="btn btn-sm btn-warning float-right" data-toggle="modal" data-target="#resumeModal">Resume Operations</button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -521,6 +524,68 @@
         </div>
     </div>
 </div>
+    <div class="modal" id="resumeModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Request Resumption of Operations</h4>
+                    <button type="button" class="close" #closeModalSuspension data-dismiss="modal">&times;</button>
+                </div>
+                <hr>
+                <!-- Modal body -->
+                <form (ngSubmit)="uploadResumptionForm()" [formGroup]="resumeOperationsForm">
+                    <div class="modal-body">
+                        <input class="form-control two-column-input"
+                               formControlName="id"
+                               name="id" disabled
+                               required="required" type="hidden">
+                        <input class="form-control two-column-input"
+                               formControlName="name"
+                               name="name" disabled
+                               placeholder="The company name"
+                               required="required" type="hidden">
+                        <input class="form-control two-column-input"
+                               formControlName="registrationNumber"
+
+                               name="registrationNumber" disabled
+                               placeholder="Company registration number"
+                               required="required" type="hidden">
+                        <input class="form-control two-column-input"
+                               formControlName="kraPin"
+                               name="kraPin" disabled
+                               placeholder="Company KRA pin"
+                               required="required" type="hidden">
+                        <input class="form-control two-column-input"
+                               formControlName="directorIdNumber"
+
+                               name="directorIdNumber" disabled
+                               placeholder="The id number of one director"
+                               required="required" type="hidden">
+                        <div class="col-12 row">
+                            <label>Reason For Resumption of Operations:</label>
+                            <textarea class="form-control two-column-input" formControlName="reason" name="reason" required="required" ></textarea>
+
+                        </div>
+                        <div class="col-12 row">
+                            <label>Date of Resumption:</label>
+                            <input class="form-control two-column-input"
+                                   formControlName="dateOfSuspension"
+                                   name="dateOfSuspension"
+                                   required="required" type="date">
+                        </div>
+
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-primary float-right" type="submit" >Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 <div class="modal" id="closeModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

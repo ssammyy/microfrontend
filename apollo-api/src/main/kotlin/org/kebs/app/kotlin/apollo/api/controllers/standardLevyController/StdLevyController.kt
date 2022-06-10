@@ -1250,6 +1250,24 @@ class StdLevyController(
 
     }
 
+    // @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
+    @PostMapping("/resumeCompanyOperations")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun resumeCompanyOperations(
+        @RequestBody suspendCompanyDto: SuspendCompanyDto
+    ): ServerResponse
+    {
+        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+            companyId = suspendCompanyDto.id
+            reason = suspendCompanyDto.reason
+            dateOfSuspension = suspendCompanyDto.dateOfSuspension.toString()
+        }
+
+        return ServerResponse(HttpStatus.OK,"Details Submitted for Verification",standardLevyService.resumeCompanyOperations(standardLevyOperationsSuspension))
+
+    }
+
     @PostMapping("/confirmCompanySuspension")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -1265,6 +1283,24 @@ class StdLevyController(
         }
 
         return ServerResponse(HttpStatus.OK,"Company Suspension Approved",standardLevyService.confirmCompanySuspension(companyProfileEntity,standardLevyOperationsSuspension))
+
+    }
+
+    @PostMapping("/confirmCompanyResumption")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun confirmCompanyResumption(
+        @RequestBody companySuspendDto: CompanySuspendDto
+    ): ServerResponse
+    {
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = companySuspendDto.companyId
+        }
+        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+            id = companySuspendDto.id
+        }
+
+        return ServerResponse(HttpStatus.OK,"Resumption of Company Operations Approved",standardLevyService.confirmCompanyResumption(companyProfileEntity,standardLevyOperationsSuspension))
 
     }
 
@@ -1284,6 +1320,25 @@ class StdLevyController(
         }
 
         return ServerResponse(HttpStatus.OK,"Company Suspension Rejected",standardLevyService.rejectCompanySuspension(standardLevyOperationsSuspension,companyProfileEntity))
+
+    }
+
+    @PostMapping("/rejectCompanyResumption")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun rejectCompanyResumption(
+        @RequestBody companySuspendDto: CompanySuspendDto
+    ): ServerResponse
+    {
+
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id = companySuspendDto.companyId
+        }
+        val standardLevyOperationsSuspension= StandardLevyOperationsSuspension().apply {
+            id = companySuspendDto.id
+        }
+
+        return ServerResponse(HttpStatus.OK,"Company Resumption Rejected",standardLevyService.rejectCompanyResumption(standardLevyOperationsSuspension,companyProfileEntity))
 
     }
 

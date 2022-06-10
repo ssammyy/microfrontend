@@ -1587,6 +1587,17 @@ return getUserTasks();
         return standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
     }
 
+    fun resumeCompanyOperations(
+        standardLevyOperationsSuspension: StandardLevyOperationsSuspension
+    ): StandardLevyOperationsSuspension {
+        standardLevyOperationsSuspension.companyId= standardLevyOperationsSuspension.companyId
+        standardLevyOperationsSuspension.reason = standardLevyOperationsSuspension.reason
+        standardLevyOperationsSuspension.dateOfSuspension= standardLevyOperationsSuspension.dateOfSuspension
+        standardLevyOperationsSuspension.status= 2
+
+        return standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
+    }
+
     fun getCompanySuspensionRequest(): MutableList<CompanySuspensionList> {
         return standardLevyOperationsSuspensionRepository.getCompanySuspensionRequest()
     }
@@ -1626,6 +1637,41 @@ return getUserTasks();
 
         return "Company Suspended"
     }
+    fun confirmCompanyResumption(
+        companyProfileEntity: CompanyProfileEntity,
+        standardLevyOperationsSuspension: StandardLevyOperationsSuspension
+    ): String {
+        companyProfileEntity.id = companyProfileEntity.id
+        standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
+        companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
+            ?.let { entity ->
+
+                entity.apply {
+                    status=1
+                }
+                companyProfileRepo.save(entity)
+
+            }?: throw Exception("COMPANY NOT FOUND")
+        standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
+            ?.let { entity ->
+
+                entity.apply {
+                    status=1
+                }
+                standardLevyOperationsSuspensionRepository.save(entity)
+                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
+                val subject = "Request For Resumption of Company Operations"
+                val messageBody= "Dear ${companyName}, Your request for resumption of company operations has been approved. Regards, KEBS,"
+                if (recipient != null) {
+                    notifications.sendEmail(recipient, subject, messageBody)
+
+                }
+            }
+
+        return "Company Suspension Lifted"
+    }
 
     fun rejectCompanySuspension(
         standardLevyOperationsSuspension: StandardLevyOperationsSuspension,
@@ -1652,6 +1698,33 @@ return getUserTasks();
             }
 
         return "Company Suspension Rejected"
+    }
+
+    fun rejectCompanyResumption(
+        standardLevyOperationsSuspension: StandardLevyOperationsSuspension,
+        companyProfileEntity: CompanyProfileEntity,
+    ): String {
+        companyProfileEntity.id = companyProfileEntity.id
+        standardLevyOperationsSuspension.id = standardLevyOperationsSuspension.id
+        standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
+            ?.let { entity ->
+
+                entity.apply {
+                    status=1
+                }
+                standardLevyOperationsSuspensionRepository.save(entity)
+                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
+                val subject = "Request For Suspension of Company"
+                val messageBody= "Dear ${companyName}, Your request for resumption of company operations has been declined. Regards, KEBS,"
+                if (recipient != null) {
+                    notifications.sendEmail(recipient, subject, messageBody)
+
+                }
+            }
+
+        return "Company Resumption Rejected"
     }
 
 
