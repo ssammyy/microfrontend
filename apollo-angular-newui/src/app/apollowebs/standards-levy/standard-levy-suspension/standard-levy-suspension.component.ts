@@ -19,7 +19,9 @@ export class StandardLevySuspensionComponent implements OnInit {
   suspendedCompanyDTOs: SuspendedCompanyDTO[] = [];
   public actionRequest: SuspendedCompanyDTO | undefined;
   public approveRequestFormGroup!: FormGroup;
+  public approveResumeFormGroup!: FormGroup;
   public rejectRequestFormGroup!: FormGroup;
+  public rejectResumptionFormGroup!: FormGroup;
 
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
@@ -48,8 +50,30 @@ export class StandardLevySuspensionComponent implements OnInit {
       dateOfClosure: []
 
     });
+    this.approveResumeFormGroup = this.formBuilder.group({
+      id: [],
+      companyId: [],
+      reason: [],
+      entryNumber: [],
+      kraPin: [],
+      registrationNumber: [],
+      companyName: [],
+      dateOfClosure: []
+
+    });
 
     this.rejectRequestFormGroup = this.formBuilder.group({
+      id: [],
+      companyId: [],
+      reason: [],
+      entryNumber: [],
+      kraPin: [],
+      registrationNumber: [],
+      companyName: [],
+      dateOfClosure: []
+
+    });
+    this.rejectResumptionFormGroup = this.formBuilder.group({
       id: [],
       companyId: [],
       reason: [],
@@ -120,6 +144,26 @@ export class StandardLevySuspensionComponent implements OnInit {
 
   }
 
+  confirmCompanyResumption(): void {
+    this.loadingText = "Approving";
+    this.SpinnerService.show();
+    this.levyService.confirmCompanyResumption(this.approveResumeFormGroup.value).subscribe(
+        (response) => {
+          // console.log(response);
+          this.getCompanySuspensionRequest();
+          this.SpinnerService.hide();
+          this.showToasterSuccess(response.httpStatus, `Request for Resumption Approved`);
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Approving Request`);
+          console.log(error.message);
+        }
+    );
+    this.hideModel();
+
+  }
+
   rejectCompanySuspension(): void {
     this.loadingText = "Approving";
     this.SpinnerService.show();
@@ -132,7 +176,27 @@ export class StandardLevySuspensionComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Rejecting Request`);
+          this.showToasterError('Error', `Error try Again`);
+          console.log(error.message);
+        }
+    );
+    this.hideModel();
+
+  }
+
+  rejectCompanyResumption(): void {
+    this.loadingText = "Approving";
+    this.SpinnerService.show();
+    this.levyService.rejectCompanyResumption(this.rejectResumptionFormGroup.value).subscribe(
+        (response) => {
+          //console.log(response);
+          this.getCompanySuspensionRequest();
+          this.SpinnerService.hide();
+          this.showToasterSuccess(response.httpStatus, `Request for Resumption Rejected`);
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Try Again`);
           console.log(error.message);
         }
     );

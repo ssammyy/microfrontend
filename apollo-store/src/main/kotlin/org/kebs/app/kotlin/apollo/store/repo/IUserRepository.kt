@@ -453,6 +453,12 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     )
     fun getManufacturesLevyPenaltyList(@Param("companyId") companyId: Long?): MutableList<LevyPenalty>
 
+    @Query(
+        value = "SELECT DISTINCT c.ENTRY_NUMBER as entryNumber,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,p.STATUS as status  FROM DAT_KEBS_COMPANY_PROFILE c, LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
+                "WHERE p.ENTRY_NUMBER=c.ENTRY_NUMBER AND p.OVERDUE='1'",
+        nativeQuery = true
+    )
+    fun getLevyDefaulters(): MutableList<LevyPenalty>
 
 
 

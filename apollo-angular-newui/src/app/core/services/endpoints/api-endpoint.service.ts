@@ -19,6 +19,7 @@ export class ApiEndpointService {
      */
     public static DOMAIN = {
         LOCAL_DEV: `kimsint.kebs.org:8006`,
+       // LOCAL_DEV: 'localhost:8006',
     };
 
     /**
@@ -454,6 +455,7 @@ export class ApiEndpointService {
         STD_LEVY_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerPenalty`,
         STD_LEVY_PAID_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getPaidLevies`,
         STD_LEVY_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getLevyPayments`,
+        STD_LEVY_DEFAULTER_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getLevyDefaulters`,
         STD_LEVY_MANUFACTURE_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPayments`,
         STD_LEVY_MANUFACTURES_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPaymentsList`,
         STD_LEVY_PENALTY_DETAIL: `${ApiEndpointService.STL_CONTEXT}/getLevyPenalty`,
@@ -502,6 +504,7 @@ export class ApiEndpointService {
         STD_LEVY_NOTIFICATION_FORM_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSLNotificationStatus`,
         STD_LEVY_BRANCH_NAME: `${ApiEndpointService.STL_CONTEXT}/getBranchName`,
         STD_LEVY_SUSPEND_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/suspendCompanyOperations`,
+        STD_LEVY_RESUME_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/resumeCompanyOperations`,
         STD_LEVY_VIEW_SUSPENDED_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/getCompanySuspensionRequest`,
         STD_LEVY_CLOSE_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/closeCompanyOperations`,
         STD_LEVY_VIEW_CLOSED_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/getCompanyClosureRequest`,
@@ -509,7 +512,9 @@ export class ApiEndpointService {
         STD_LEVY_GET_WINDING_UP_REPORT_LIST: `${ApiEndpointService.STL_CONTEXT}/getWindingReportDocumentList`,
         STD_LEVY_VIEW_WINDING_UP_REPORT: `${ApiEndpointService.STL_CONTEXT}/view/windingUpReport`,
         STD_LEVY_APPROVE_SUSPENSION: `${ApiEndpointService.STL_CONTEXT}/confirmCompanySuspension`,
+        STD_LEVY_APPROVE_RESUMPTION: `${ApiEndpointService.STL_CONTEXT}/confirmCompanyResumption`,
         STD_LEVY_REJECT_SUSPENSION: `${ApiEndpointService.STL_CONTEXT}/rejectCompanySuspension`,
+        STD_LEVY_REJECT_RESUMPTION: `${ApiEndpointService.STL_CONTEXT}/rejectCompanyResumption`,
         STD_LEVY_APPROVE_CLOSURE: `${ApiEndpointService.STL_CONTEXT}/confirmCompanyClosure`,
         STD_LEVY_REJECT_CLOSURE: `${ApiEndpointService.STL_CONTEXT}/rejectCompanyClosure`,
         USER_EMAIL_VERIFICATION_STATUS: `${ApiEndpointService.STL_CONTEXT}/getVerificationStatus`,
