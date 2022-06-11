@@ -18,7 +18,7 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        LOCAL_DEV: `kimsint.kebs.org:8006`,
+        LOCAL_DEV: environment.base_url,
     };
 
     /**
@@ -84,6 +84,7 @@ export class ApiEndpointService {
     public static REQUEST_STANDARD = `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard/dropdown`;
     public static MS_CONTEXT = '/api/v1/migration/ms';
     public static MS_FUEL_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/fuel`;
+    public static MS_WORK_PLAN_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/workPlan`;
     public static MS_COMPLAINT_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/complaint`;
     public static MS_COMPLAINT_UPDATE_CONTEXT = `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/update`;
     public static MS_COMMON_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/common`;
@@ -578,6 +579,12 @@ export class ApiEndpointService {
         COMPLAINT_DETAILS_ADD_CLASSIFICATION_DETAILS: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/add-classification-details`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
+      };
+    public static MARKET_SURVEILLANCE_WORK_PLAN = {
+        ALL_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-list`,
+        ADD_NEW_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/add`,
+        // CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
+
       };
     /**
      * Constructor.

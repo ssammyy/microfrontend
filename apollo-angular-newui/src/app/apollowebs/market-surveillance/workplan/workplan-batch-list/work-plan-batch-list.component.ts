@@ -1,31 +1,20 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {MatDialog} from '@angular/material/dialog';
-import {Observable, Subject, throwError} from 'rxjs';
 import {Router} from '@angular/router';
-import {MsService} from '../../../../core/store/data/ms/ms.service';
-import {LocalDataSource} from 'ng2-smart-table';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {BatchFileFuelSaveDto, FuelBatchDetailsDto} from '../../../../core/store/data/ms/ms.model';
-import {EpraBatchNewComponent} from './epra-batch-new/epra-batch-new.component';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {
-  County,
-  CountyService,
-  loadCountyId,
-  selectCountyIdData,
-  selectUserInfo,
-  Town,
-  TownService,
-} from '../../../../core/store';
-import {HttpErrorResponse} from '@angular/common/http';
+import {County, CountyService, selectUserInfo, Town, TownService} from '../../../../core/store';
+import {MsService} from '../../../../core/store/data/ms/ms.service';
+import {BatchFileFuelSaveDto, FuelBatchDetailsDto, WorkPlanBatchDetailsDto} from '../../../../core/store/data/ms/ms.model';
+import {Observable, Subject} from 'rxjs';
+import {LocalDataSource} from 'ng2-smart-table';
 
 @Component({
-  selector: 'app-epra-batch-list',
-  templateUrl: './epra-batch-list.component.html',
-  styleUrls: ['./epra-batch-list.component.css'],
+  selector: 'app-workplan-batch-list',
+  templateUrl: './work-plan-batch-list.component.html',
+  styleUrls: ['./work-plan-batch-list.component.css'],
 })
-export class EpraBatchListComponent implements OnInit {
+export class WorkPlanBatchListComponent implements OnInit {
   @ViewChild('editModal') editModal !: TemplateRef<any>;
   currDiv!: string;
   currDivLabel!: string;
@@ -64,15 +53,6 @@ export class EpraBatchListComponent implements OnInit {
       ],
       position: 'right', // left|right
     },
-    rowClassFunction: (row) => {
-      // console.log(row)
-      if (row.data.isNcrDocument) {
-        return 'risky';
-      } else {
-        return '';
-      }
-
-    },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
       confirmDelete: true,
@@ -89,33 +69,28 @@ export class EpraBatchListComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      region: {
-        title: 'REGION',
+      yearName: {
+        title: 'YEAR NAME',
         type: 'string',
         filter: false,
       },
-      county: {
-        title: 'COUNTY',
+      userCreated: {
+        title: 'CREATED BY',
         type: 'string',
         filter: false,
       },
-      town: {
-        title: 'TOWN',
-        type: 'string',
+      createdDate: {
+        title: 'CREATED DATE',
+        type: 'date',
         filter: false,
       },
-      batchFileYear: {
-        title: 'BATCH FILE YEAR',
-        type: 'string',
+      endedDate: {
+        title: 'ENDED DATE',
+        type: 'date',
         filter: false,
       },
-      batchFileMonth: {
-        title: 'BATCH FILE MONTH',
-        type: 'string',
-        filter: false,
-      },
-      batchClosed: {
-        title: 'BATCH CLOSED',
+      workPlanStatus: {
+        title: 'APPROVAL STATUS',
         type: 'boolean',
         filter: false,
       },
@@ -135,17 +110,18 @@ export class EpraBatchListComponent implements OnInit {
   managerPetroleumUser = false;
   ioUser = false;
   search: Subject<string>;
-  loadedData: FuelBatchDetailsDto[] = this.msService.fuelBatchDetailsListExamples();
+  loadedData: WorkPlanBatchDetailsDto[] = [];
 
 
-  constructor(private store$: Store<any>,
-              // private dialog: MatDialog,
-              private router: Router,
-              private formBuilder: FormBuilder,
-              private SpinnerService: NgxSpinnerService,
-              private countyService: CountyService,
-              private townService: TownService,
-              private msService: MsService,
+  constructor(
+      private store$: Store<any>,
+      // private dialog: MatDialog,
+      private router: Router,
+      private formBuilder: FormBuilder,
+      private SpinnerService: NgxSpinnerService,
+      private countyService: CountyService,
+      private townService: TownService,
+      private msService: MsService,
   ) {
     this.county$ = countyService.entities$;
     this.town$ = townService.entities$;
@@ -153,23 +129,15 @@ export class EpraBatchListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       return this.roles = u.roles;
     });
-
     this.loadData(this.defaultPage, this.defaultPageSize);
-    this.addNewBatchForm = this.formBuilder.group({
-      county: ['', Validators.required],
-      town: ['', Validators.required],
-      remarks: ['', Validators.required],
-    });
   }
 
   private loadData(page: number, records: number): any {
     this.SpinnerService.show();
-    const params = {'personal': this.personalTasks};
-    this.msService.loadMSFuelBatchList(String(page), String(records)).subscribe(
+    this.msService.loadMSWorkPlanBatchList(String(page), String(records)).subscribe(
         (data) => {
           console.log(`TEST DATA===${data}`);
           this.loadedData = data;
@@ -211,19 +179,19 @@ export class EpraBatchListComponent implements OnInit {
   }
 
 
-  onManagerPetroleumChange(event: any) {
-    if (this.managerPetroleumUser) {
-      this.personalTasks = event.target.value;
-      this.loadData(this.defaultPage, this.defaultPageSize);
-    }
-  }
-
   toggleStatus(status: string): void {
     console.log(status);
     this.message = null;
     this.searchStatus = null;
     if (status !== this.activeStatus) {
       this.activeStatus = status;
+      this.loadData(this.defaultPage, this.defaultPageSize);
+    }
+  }
+
+  onManagerPetroleumChange(event: any) {
+    if (this.managerPetroleumUser) {
+      this.personalTasks = event.target.value;
       this.loadData(this.defaultPage, this.defaultPageSize);
     }
   }
@@ -241,87 +209,31 @@ export class EpraBatchListComponent implements OnInit {
     this.router.navigate([`/epra`, data.referenceNumber]);
   }
 
-  get formNewBatchForm(): any {
-    return this.addNewBatchForm.controls;
-  }
-
-
-  updateSelectedCounty() {
-    this.selectedCounty = this.addNewBatchForm?.get('county')?.value;
-    console.log(`county set to ${this.selectedCounty}`);
-    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
-    this.store$.select(selectCountyIdData).subscribe(
-        (d) => {
-          if (d) {
-            console.log(`Select county inside is ${d}`);
-            return this.townService.getAll();
-          } else {
-            return throwError('Invalid request, County id is required');
-          }
-        },
-    );
-
-  }
-
-  updateSelectedTown() {
-    this.selectedTown = this.addNewBatchForm?.get('town')?.value;
-    console.log(`town set to ${this.selectedTown}`);
-  }
-
-  onClickSaveNewBatch(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSave = {...this.dataSave, ...this.addNewBatchForm.value};
-      this.msService.addNewMSFuelBatch(this.dataSave).subscribe(
-          (data: any) => {
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('NEW FUEL BATCH CREATED SUCCESSFUL', this.loadData(this.defaultPage, this.defaultPageSize));
-
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
-    }
-  }
-
-  openModalAddDetails(divVal: string): void {
-    const arrHead = ['addNewBatchDetails'];
-    const arrHeadSave = ['ADD NEW BATCH FILE'];
-
-    for (let h = 0; h < arrHead.length; h++) {
-      if (divVal === arrHead[h]) {
-        this.currDivLabel = arrHeadSave[h];
-      }
-    }
-    this.currDiv = divVal;
-  }
-
-  // addNewBatch(event: any, type: string) {
-  //   let ref = this.dialog.open(EpraBatchNewComponent, {
-  //     data: {
-  //       documentType: type
-  //     }
-  //   })
-  //   ref.afterClosed()
-  //       .subscribe(
-  //           res => {
-  //             if (res) {
-  //               this.loadData(this.defaultPage, this.defaultPageSize)
-  //             }
-  //           }
-  //       )
-  // }
-
-
   pageChange(pageIndex?: any) {
     if (pageIndex) {
       this.currentPageInternal = pageIndex - 1;
       this.currentPage = pageIndex;
       this.loadData(this.currentPageInternal, this.defaultPageSize);
     }
+  }
+
+  addNewWorkPlan() {
+    this.SpinnerService.show();
+    this.msService.addNewMSWorkPlanBatch(String(this.defaultPage), String(this.defaultPageSize)).subscribe(
+        (data: any) => {
+          console.log(`TEST DATA===${data}`);
+          this.loadedData = data;
+          this.totalCount = this.loadedData.length;
+          this.dataSet.load(this.loadedData);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('NEW WORK-PLAN BATCH CREATED SUCCESSFUL');
+
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 }

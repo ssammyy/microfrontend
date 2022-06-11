@@ -595,7 +595,18 @@ class AngularRoutes {
 //                POST("/new", handler::saveNewComplaint)
             }
             "/workPlan".nest {
-                POST("/new", handler::saveNewWorkPlan)
+                GET("/all-batch-list", handler::getAllWorkPlanBatchList)
+                POST("/add", handler::saveNewWorkPlanBatch)
+                "/inspection".nest {
+                    GET("/list", handler::getAllWorkPlanList)
+//                    GET("/list-completed", handler::getAllWorkPlanCompletedList)
+//                    GET("/list-new", handler::getAllWorkPlanNewList)
+//                    GET("/list-on-going", handler::getAllWorkPlanOnGoingList)
+//                    GET("/list-my-task", handler::getAllWorkPlanMyTaskList)
+                    POST("/new", handler::saveNewWorkPlanSchedule)
+                }
+
+
 
             }
             "/fuel".nest {

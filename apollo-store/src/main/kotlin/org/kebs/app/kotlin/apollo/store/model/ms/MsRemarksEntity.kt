@@ -52,6 +52,10 @@ class MsRemarksEntity : Serializable {
     var fuelInspectionId: Long? = null
 
     @Basic
+    @Column(name = "WORK_PLAN_ID")
+    var workPlanId: Long? = null
+
+    @Basic
     @Column(name = "FUEL_BATCH_ID")
     var fuelBatchId: Long? = null
 

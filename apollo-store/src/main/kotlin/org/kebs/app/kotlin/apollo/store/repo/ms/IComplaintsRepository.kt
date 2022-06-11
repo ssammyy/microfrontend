@@ -140,6 +140,8 @@ interface IMsRemarksComplaintRepository : HazelcastRepository<MsRemarksEntity, L
 interface IMsProcessNamesRepository : HazelcastRepository<MsProcessNamesEntity, Long>{
     fun findAllByComplaintStatus(complaintStatus: Int): List<MsProcessNamesEntity>?
     fun findAllByFuelStatus(fuelStatus: Int): List<MsProcessNamesEntity>?
+    fun findAllByWorkPlanStatus(workPlanStatus: Int): List<MsProcessNamesEntity>?
     fun findByComplaintStatusAndId(complaintStatus: Int, id: Long): MsProcessNamesEntity?
     fun findByFuelStatusAndId(fuelStatus: Int, id: Long): MsProcessNamesEntity?
+    fun findByWorkPlanStatusAndId(workPlanStatus: Int, id: Long): MsProcessNamesEntity?
 }

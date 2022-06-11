@@ -15,6 +15,19 @@ data class BatchFileFuelSaveDto(
         var remarks: String? = null,
 )
 
+data class WorkPlanBatchDetailsDto(
+        var id: Long? = null,
+        var workPlanRegion: Long? = null,
+        var createdDate: Date? = null,
+        var createdStatus: Boolean? = null,
+        var endedDate: Date? = null,
+        var endedStatus: Boolean? = null,
+        var workPlanStatus: Boolean? = null,
+        var referenceNumber: String? = null,
+        var userCreated: String? = null,
+        var yearName: String? = null,
+)
+
 data class FuelBatchDetailsDto(
         var id: Long? = null,
         var region: String? = null,
@@ -25,6 +38,11 @@ data class FuelBatchDetailsDto(
         var batchFileMonth: String? = null,
         var remarks: String? = null,
         var batchClosed: Boolean? = null,
+)
+
+data class WorkPlanScheduleListDetailsDto(
+        var workPlanList: List<WorkPlanInspectionDto>? = null,
+        var createdWorkPlan: WorkPlanBatchDetailsDto? = null
 )
 
 data class FuelInspectionScheduleListDetailsDto(
@@ -65,6 +83,88 @@ data class FuelInspectionDto(
         var fuelRemediation: FuelRemediationDto? = null,
 )
 
+data class WorkPlanInspectionDto(
+        var id: Long? = null,
+        var productCategory: Long? = null,
+        var broadProductCategory: Long? = null,
+        var product: Long? = null,
+        var standardCategory: Long? = null,
+        var productSubCategory: Long? = null,
+        var department: String? = null,
+        var divisionId: Long? = null,
+        var sampleSubmittedId: Long? = null,
+        var division: String? = null,
+        var officerName: String? = null,
+        var nameActivity: String? = null,
+        var targetedProducts: String? = null,
+        var resourcesRequired: String? = null,
+        var budget: String? = null,
+        var approvedOn: Date? = null,
+        var approvedStatus: Boolean? = null,
+        var workPlanYearId: Long? = null,
+        var clientAppealed: Boolean? = null,
+        var hodRecommendationStatus: Boolean? = null,
+        var hodRecommendationStart: Boolean? = null,
+        var hodRecommendation: String? = null,
+        var destructionNotificationStatus: Boolean? = null,
+        var destructionNotificationDate: Date? = null,
+        var hodRecommendationRemarks: String? = null,
+        var preliminaryParamStatus: Boolean? = null,
+        var dataReportGoodsStatus: Boolean? = null,
+        var scfLabparamsStatus: Boolean? = null,
+        var bsNumberStatus: Boolean? = null,
+        var ssfLabparamsStatus: Boolean? = null,
+        var msPreliminaryReportStatus: Boolean? = null,
+        var preliminaryApprovedStatus: Boolean? = null,
+        var msFinalReportStatus: Boolean? = null,
+        var finalApprovedStatus: Boolean? = null,
+        var chargeSheetStatus: Boolean? = null,
+        var investInspectReportStatus: Boolean? = null,
+        var sampleCollectionStatus: Boolean? = null,
+        var sampleSubmittedStatus: Boolean? = null,
+        var seizureDeclarationStatus: Boolean? = null,
+        var dataReportStatus: Boolean? = null,
+        var approvedBy: String? = null,
+        var approved: String? = null,
+        var rejectedOn: Date? = null,
+        var rejectedStatus: Boolean? = null,
+        var onsiteStartStatus: Boolean? = null,
+        var onsiteStartDate: Date? = null,
+        var onsiteEndDate: Date? = null,
+        var sendSffDate: Date? = null,
+        var sendSffStatus: Boolean? = null,
+        var onsiteEndStatus: Boolean? = null,
+        var destractionStatus: Boolean? = null,
+        var rejectedBy: String? = null,
+        var rejected: String? = null,
+        var msEndProcessRemarks: String? = null,
+        var rejectedRemarks: String? = null,
+        var approvedRemarks: String? = null,
+        var progressValue: Boolean? = null,
+        var progressStep: String? = null,
+        var county: Long? = null,
+        var subcounty: String? = null,
+        var townMarketCenter: Long? = null,
+        var locationActivityOther: String? = null,
+        var timeActivityDate: Date? = null,
+        var timeDateReportSubmitted: Date? = null,
+        var timeActivityRemarks: String? = null,
+        var rescheduledDateNotVisited: Date? = null,
+        var rescheduledDateReportSubmitted: Date? = null,
+        var rescheduledActivitiesRemarks: String? = null,
+        var activityUndertakenPeriod: String? = null,
+        var nameHof: String? = null,
+        var reviewSupervisorDate: Date? = null,
+        var reviewSupervisorRemarks: String? = null,
+        var destructionClientEmail: String? = null,
+        var region: Long? = null,
+        var complaintId: Long? = null,
+        var officerId: Long? = null,
+        var destructionDocId: Long? = null,
+        var complaintDepartment: Long? = null,
+        var referenceNumber: String? = null,
+)
+
 data class FuelEntityDto(
         @NotNull(message = "Required field")
         @NotEmpty(message = "Required field")
@@ -93,6 +193,25 @@ data class FuelEntityDto(
         @NotNull(message = "Required field")
         @NotEmpty(message = "Required field")
         var stationKraPin: String,
+
+        var remarks: String? = null,
+)
+
+data class WorkPlanEntityDto(
+        var complaintDepartment: Long? = null,
+        var divisionId: Long? = null,
+        var nameActivity: String? = null,
+        var timeActivityDate: Date? = null,
+        var county: Long? = null,
+        var townMarketCenter: Long? = null,
+        var locationActivityOther: String? = null,
+        var standardCategory: Long? = null,
+        var broadProductCategory: Long? = null,
+        var productCategory: Long? = null,
+        var product: Long? = null,
+        var productSubCategory: Long? = null,
+        var resourcesRequired: String? = null,
+        var budget: String? = null,
 
         var remarks: String? = null,
 )

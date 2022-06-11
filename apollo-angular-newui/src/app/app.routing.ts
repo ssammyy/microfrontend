@@ -238,6 +238,7 @@ import {AdminBusinessManagementComponent} from './apollowebs/admin/admin-busines
 import {StandardLevyClosureComponent} from './apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component';
 import {StandardLevySuspensionComponent} from './apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component';
 import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payments.component';
+import {WorkPlanBatchListComponent} from './apollowebs/market-surveillance/workplan/workplan-batch-list/work-plan-batch-list.component';
 
 export const routes: Routes = [
     {
@@ -1294,6 +1295,26 @@ export const routes: Routes = [
             {
                 path: '',
                 component: EpraBatchListComponent,
+                pathMatch: 'full',
+            },
+            {
+                path: ':referenceNumber',
+                component: EpraListComponent,
+            },
+            {
+                path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
+                component: ViewFuelSheduledDetailsComponent,
+            },
+        ],
+    },
+    {
+        path: 'workPlan',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: '',
+                component: WorkPlanBatchListComponent,
                 pathMatch: 'full',
             },
             {

@@ -335,6 +335,8 @@ import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payment
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 import { EpraMonthlyBatchListComponent } from './apollowebs/market-surveillance/fuel/epra-monthly-batch-list/epra-monthly-batch-list.component';
 import {MatListModule} from "@angular/material/list";
+import { WorkPlanBatchListComponent } from './apollowebs/market-surveillance/workplan/workplan-batch-list/work-plan-batch-list.component';
+import { WorkPlanListComponent } from './apollowebs/market-surveillance/workplan/work-plan-list/work-plan-list.component';
 
 
 @NgModule({
@@ -691,7 +693,9 @@ import {MatListModule} from "@angular/material/list";
         StandardLevySuspensionComponent,
         AdminBusinessManagementComponent,
         CdGeneralChecklistComponent,
-        EpraMonthlyBatchListComponent
+        EpraMonthlyBatchListComponent,
+        WorkPlanBatchListComponent,
+        WorkPlanListComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

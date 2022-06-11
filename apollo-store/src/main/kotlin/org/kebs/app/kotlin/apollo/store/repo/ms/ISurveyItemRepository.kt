@@ -90,7 +90,7 @@ interface IChargeSheetRepository : HazelcastRepository<MsChargeSheetEntity, Long
 interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
-    fun findByWorkPlanYearId(workPlanYearId: Long): List<MsWorkPlanGeneratedEntity>?
+    fun findByWorkPlanYearId(workPlanYearId: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
     fun findByUuid(uuid: String): MsWorkPlanGeneratedEntity?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }

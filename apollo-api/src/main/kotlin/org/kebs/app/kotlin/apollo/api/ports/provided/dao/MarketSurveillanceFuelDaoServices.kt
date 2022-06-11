@@ -2294,27 +2294,30 @@ class MarketSurveillanceFuelDaoServices(
         map: ServiceMapsEntity
     ): List<FuelBatchDetailsDto> {
         val fuelBatchListDto = mutableListOf<FuelBatchDetailsDto>()
-        if (fuelBatchList!=null){
-            return fuelBatchList.map {
-                FuelBatchDetailsDto(
-                    it.id,
-                    it.regionId?.let { it1 -> commonDaoServices.findRegionEntityByRegionID(it1, map.activeStatus).region },
-                    it.countyId?.let { it1 ->
-                        commonDaoServices.findCountiesEntityByCountyId(
-                            it1,
-                            map.activeStatus
-                        ).county
-                    },
-                    it.townId?.let { it1 -> commonDaoServices.findTownEntityByTownId(it1).town },
-                    it.referenceNumber,
-                    it.yearNameId?.let { it1 -> findPlanYear(it1).yearName },
-                    it.monthNameId?.let { it1 -> findPlanMonth(it1).description },
-                    it.remarks,
-                    it.batchClosed == 1
-                )
+        when {
+            fuelBatchList!=null -> {
+                return fuelBatchList.map {
+                    FuelBatchDetailsDto(
+                        it.id,
+                        it.regionId?.let { it1 -> commonDaoServices.findRegionEntityByRegionID(it1, map.activeStatus).region },
+                        it.countyId?.let { it1 ->
+                            commonDaoServices.findCountiesEntityByCountyId(
+                                it1,
+                                map.activeStatus
+                            ).county
+                        },
+                        it.townId?.let { it1 -> commonDaoServices.findTownEntityByTownId(it1).town },
+                        it.referenceNumber,
+                        it.yearNameId?.let { it1 -> findPlanYear(it1).yearName },
+                        it.monthNameId?.let { it1 -> findPlanMonth(it1).description },
+                        it.remarks,
+                        it.batchClosed == 1
+                    )
+                }
             }
-        }else{
-            return fuelBatchListDto
+            else -> {
+                return fuelBatchListDto
+            }
         }
     }
 

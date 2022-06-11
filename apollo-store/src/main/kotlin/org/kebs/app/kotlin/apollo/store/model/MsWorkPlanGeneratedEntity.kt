@@ -13,7 +13,7 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @SequenceGenerator(name = "DAT_KEBS_MS_WORKPLAN_GENARATED_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_MS_WORKPLAN_GENARATED_SEQ")
     @GeneratedValue(generator = "DAT_KEBS_MS_WORKPLAN_GENARATED_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
-    var id: Long? = 0
+    var id: Long = 0
 
     @Transient
     var process: String? = null
@@ -53,6 +53,14 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "DIVISION_ID")
     @Basic
     var divisionId: Long? = null
+
+    @Column(name = "MS_PROCESS_ID")
+    @Basic
+    var msProcessId: Long? = null
+
+    @Column(name = "USER_TASK_ID")
+    @Basic
+    var userTaskId: Long? = null
 
 //    @JoinColumn(name = "DIVISION_ID", referencedColumnName = "ID")
 //    @ManyToOne

@@ -44,7 +44,7 @@ import {
     ComplaintApproveDto,
     ComplaintRejectDto,
     ComplaintAdviceRejectDto,
-    ComplaintAssignDto, MsStandardProductCategory, ComplaintClassificationDto,
+    ComplaintAssignDto, MsStandardProductCategory, ComplaintClassificationDto, WorkPlanBatchDetailsDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidatorFn} from '@angular/forms';
@@ -342,6 +342,47 @@ export class MsService {
             }
         });
     }
+    // tslint:disable-next-line:max-line-length
+    /*******************************************************************START OF MARKET SURVEILLANCE*****************************************************************************/
+
+    public loadMSWorkPlanBatchList(page: string, records: string): Observable<WorkPlanBatchDetailsDto[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ALL_BATCH_LIST);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<WorkPlanBatchDetailsDto[]>(url, {params}).pipe(
+            map(function (response: WorkPlanBatchDetailsDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public addNewMSWorkPlanBatch(page: string, records: string): Observable<WorkPlanBatchDetailsDto[]> {
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ADD_NEW_BATCH);
+        return this.http.post<WorkPlanBatchDetailsDto[]>(url, null, {params}).pipe(
+            map(function (response: WorkPlanBatchDetailsDto[]) {
+                return response;
+            })
+            , catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.error} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+
+    // tslint:disable-next-line:max-line-length
+    /*******************************************************************START OF COMPLAINT*****************************************************************************/
+
 
     public msDepartmentListDetails(): Observable<MsDepartment[]> {
         // console.log(data);
@@ -609,6 +650,7 @@ export class MsService {
 
     public msComplaintUpdateSaveClassificationDetails(referenceNo: string, data: ComplaintClassificationDto): Observable<AllComplaintsDetailsDto> {
         console.log(data);
+        // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_ADD_CLASSIFICATION_DETAILS);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);

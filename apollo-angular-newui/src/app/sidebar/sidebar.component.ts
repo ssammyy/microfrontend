@@ -287,6 +287,14 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
         icontype: 'diamond',
     },
+    {
+        path: '/workPlan',
+        title: 'MS WORK-PLAN',
+        type: 'link',
+        collapse: 'workPlan',
+        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
+        icontype: 'receipt',
+    },
 ];
 
 @Component({

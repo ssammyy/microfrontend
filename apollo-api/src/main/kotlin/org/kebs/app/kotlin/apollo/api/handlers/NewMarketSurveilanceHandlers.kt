@@ -859,17 +859,44 @@ class NewMarketSurveillanceHandler(
     /*******************************************************************************************************************************************************************************************************************************************************************************************/
 
 
-
-
-
-    fun saveNewWorkPlan(req: ServerRequest): ServerResponse {
+    fun getAllWorkPlanBatchList(req: ServerRequest): ServerResponse {
         return try {
-            val body = req.body<NewComplaintDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, NewComplaintDto::class.java.name)
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceWorkPlanDaoServices.getAllWorkPlanBatchList(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun saveNewWorkPlanBatch(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceWorkPlanDaoServices.createNewWorkPlanBatch(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun saveNewWorkPlanSchedule(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val body = req.body<WorkPlanEntityDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, FuelEntityDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.saveNewWorkPlan(body)
+                    val page = commonDaoServices.extractPageRequest(req)
+                    marketSurveillanceWorkPlanDaoServices.createNewWorkPlanSchedule(body, batchReferenceNo, page)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -878,13 +905,85 @@ class NewMarketSurveillanceHandler(
                     onValidationErrors(errors)
                 }
             }
-
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
             ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+
+    fun getAllWorkPlanList(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceWorkPlanDaoServices.getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo,page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+//    fun getAllWorkPlanOnGoingList(req: ServerRequest): ServerResponse {
+//        return try {
+//            val page = commonDaoServices.extractPageRequest(req)
+//            marketSurveillanceWorkPlanDaoServices.msComplaintOnGoingLists(page)
+//                .let {
+//                    ServerResponse.ok().body(it)
+//                }
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+//        }
+//    }
+//
+//    fun getAllWorkPlanNewList(req: ServerRequest): ServerResponse {
+//        return try {
+//            val page = commonDaoServices.extractPageRequest(req)
+//            marketSurveillanceWorkPlanDaoServices.msComplaintNewLists(page)
+//                .let {
+//                    ServerResponse.ok().body(it)
+//                }
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+//        }
+//    }
+//
+//    fun getAllWorkPlanCompletedList(req: ServerRequest): ServerResponse {
+//        return try {
+//            val page = commonDaoServices.extractPageRequest(req)
+//            marketSurveillanceWorkPlanDaoServices.msComplaintAllCompletedLists(page)
+//                .let {
+//                    ServerResponse.ok().body(it)
+//                }
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+//        }
+//    }
+//
+//    fun getAllWorkPlanMyTaskList(req: ServerRequest): ServerResponse {
+//        return try {
+//            val page = commonDaoServices.extractPageRequest(req)
+//            marketSurveillanceWorkPlanDaoServices.msComplaintMyTaskLists(page)
+//                .let {
+//                    ServerResponse.ok().body(it)
+//                }
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+//        }
+//    }
+
 
 }
 

@@ -253,6 +253,19 @@ export class ComplaintLocationDto {
     buildingName: string;
 }
 
+export class WorkPlanBatchDetailsDto {
+    id: number;
+    workPlanRegion: number;
+    createdDate: Date;
+    createdStatus: boolean;
+    endedDate: Date;
+    endedStatus: boolean;
+    workPlanStatus: boolean;
+    referenceNumber: string;
+    userCreated: string;
+    yearName: string;
+}
+
 
 export class FuelBatchDetailsDto {
     id: number;
