@@ -20,6 +20,7 @@ import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaAwardedPermitTrackerEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
@@ -45,7 +46,9 @@ class QualityAssuranceController(
     private val limsServices: LimsServices,
     private val qaInvoiceCalculation: QaInvoiceCalculationDaoServices,
     private val commonDaoServices: CommonDaoServices,
-) {
+    private val iQaAwardedPermitTrackerEntityRepository: IQaAwardedPermitTrackerEntityRepository,
+
+    ) {
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
 
@@ -1202,21 +1205,26 @@ class QualityAssuranceController(
                 //TODO: CHANGE THE DATE OF EXPIRY IF RENEWAL
                 val permitType = permitDetailsDB.permitType?.let { qaDaoServices.findPermitType(it) }
                 val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
+                val awardedPermitNumberToBeAwarded = iQaAwardedPermitTrackerEntityRepository.getMaxId()?.plus(1)
 
                 with(permitFromInterface) {
                     if (permitDetailsFromDB.renewalStatus != map.activeStatus) {
-                        awardedPermitNumber = "${permitType?.markNumber}${
-                            generateRandomText(
-                                6,
-                                map.secureRandom,
-                                map.messageDigestAlgorithm,
-                                false
-                            )
-                        }".toUpperCase()
+//                        awardedPermitNumber = "${permitType?.markNumber}${
+//                            generateRandomText(
+//                                6,
+//                                map.secureRandom,
+//                                map.messageDigestAlgorithm,
+//                                false
+//                            )
+//                        }".toUpperCase()
+                        awardedPermitNumber = awardedPermitNumberToBeAwarded?.toString()
+
                         dateOfIssue = commonDaoServices.getCurrentDate()
                         dateOfExpiry = expiryDate
                         effectiveDate = commonDaoServices.getCurrentDate()
-                    } else if (permitDetailsFromDB.renewalStatus == map.activeStatus) {
+
+                    }
+                    else if (permitDetailsFromDB.renewalStatus == map.activeStatus) {
                         val previousPermit = qaDaoServices.findPermitWithPermitRefNumberLatest(
                             permitDetailsFromDB.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
                         )

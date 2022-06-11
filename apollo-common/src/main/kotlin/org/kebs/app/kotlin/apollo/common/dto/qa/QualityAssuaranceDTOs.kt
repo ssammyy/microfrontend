@@ -80,7 +80,9 @@ data class ConsolidatedInvoiceDto(
     var paidStatus: Int? = null,
     var submittedStatus: Int? = null,
     var receiptNo: String? = null,
-)
+    var sageInvoiceNumber: String?=null,
+
+    )
 
 data class PermitInvoiceDto(
     var permitID: Long? = null,

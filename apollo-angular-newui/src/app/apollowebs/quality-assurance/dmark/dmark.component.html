@@ -1302,6 +1302,14 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                         <div class="mat-button-focus-overlay"></div>
                     </button>
+                    <button style="width: -webkit-fill-available"
+                            *ngIf="allPermitDetails?.permitDetails?.processStatusName == 'PENDING PAYMENT'"
+                            mat-raised-button=""
+                            (click)="goToPayment()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                            class="mat-button-wrapper">Proceed To Payment</span>
+                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                        <div class="mat-button-focus-overlay"></div>
+                    </button>
 
                     <div *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.permitForeignStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
                         <a style="width: -webkit-fill-available;" href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""

@@ -159,21 +159,6 @@ export class UserProfileMainComponent implements OnInit {
             }
         );
 
-        this.getVerificationStatus();
-        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            this.userId = u.id;
-            this.email= u.email;
-        });
-        this.emailActivationFormGroup = this.formBuilder.group({
-            userId:[],
-            email:[]
-        });
-        this.activateEmailFormGroup = this.formBuilder.group({
-            userId:[],
-            email:[],
-            verificationToken: ['', Validators.required]
-        });
-
     }
     showToasterSuccess(title:string,message:string){
         this.notifyService.showSuccess(message, title)
