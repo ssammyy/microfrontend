@@ -727,6 +727,8 @@ class CustomResponse {
     var payload: String? = null
 }
 
+
+
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy::class)
 data class OrganizationUserEntityDto(
         var id: Long?,

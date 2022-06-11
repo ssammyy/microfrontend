@@ -38,7 +38,7 @@ interface StandardLevyOperationsClosureRepository : HazelcastRepository<Standard
 
 interface StandardLevyOperationsSuspensionRepository : HazelcastRepository<StandardLevyOperationsSuspension, Long> {
 
-    @Query(value = "SELECT  c.NAME as companyName,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,s.ID as id,s.COMPANY_ID as companyId,s.REASON as reason,s.STATUS as status,s.DESCRIPTION as description,s.DATE_OF_SUSPENSION as dateOfSuspension FROM DAT_KEBS_SUSPENSION_OF_OPERATIONS s JOIN DAT_KEBS_COMPANY_PROFILE c ON s.COMPANY_ID=c.ID WHERE  s.STATUS='0'", nativeQuery = true)
+    @Query(value = "SELECT  c.NAME as companyName,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,s.ID as id,s.COMPANY_ID as companyId,s.REASON as reason,s.STATUS as status,s.DESCRIPTION as description,s.DATE_OF_SUSPENSION as dateOfSuspension FROM DAT_KEBS_SUSPENSION_OF_OPERATIONS s JOIN DAT_KEBS_COMPANY_PROFILE c ON s.COMPANY_ID=c.ID WHERE  s.STATUS IN('0','2')", nativeQuery = true)
     fun getCompanySuspensionRequest(): MutableList<CompanySuspensionList>
 }
 

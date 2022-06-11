@@ -33,6 +33,7 @@ export class InvoiceComponent implements OnInit, AfterViewInit {
     this.qaService.loadInvoiceBatchList().subscribe(
         (data: any) => {
           this.allInvoiceData = data;
+          console.log(data)
           // tslint:disable-next-line:max-line-length
           formattedArray = data.map(i => [i.sageInvoiceNumber, i.receiptNo, i.paidDate, i.totalAmount, i.paidStatus, i.id]);
 

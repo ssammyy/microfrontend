@@ -7,7 +7,7 @@ import {
     Company,
     CompanyService,
     County, CountyService, Go, loadCountyId, loadResponsesFailure, loadResponsesSuccess,
-    Region, RegionService, selectCompanyData, selectCountyIdData,
+    Region, RegionService, selectCompanyData, selectCountyIdData, selectUserInfo,
     Town, TownService
 } from '../../core/store';
 import {Observable, of, throwError} from 'rxjs';
@@ -27,10 +27,12 @@ declare const $: any;
 })
 export class CompanyComponent implements OnInit {
 
+    status: number;
     stepOneForm: FormGroup = new FormGroup({});
     stepTwoForm: FormGroup = new FormGroup({});
     stepThreeForm: FormGroup = new FormGroup({});
     suspendOperationsForm: FormGroup = new FormGroup({});
+    resumeOperationsForm: FormGroup = new FormGroup({});
     closeOperationsForm: FormGroup = new FormGroup({});
     companySoFar: Partial<Company> | undefined;
     // @ts-ignore
@@ -99,10 +101,23 @@ export class CompanyComponent implements OnInit {
             console.log(`The id ${d.id}`);
             return this.company = d;
         });
+        this.store$.select(selectCompanyData).pipe().subscribe((d) => {
+            this.status = d.status;
+            return this.status = d.status;
+        });
 
         console.log(this.company)
 
         this.suspendOperationsForm = new FormGroup({
+            name: new FormControl('', [Validators.required]),
+            registrationNumber: new FormControl('', [Validators.required]),
+            kraPin: new FormControl('', [Validators.required]),
+            directorIdNumber: new FormControl('', [Validators.required]),
+            id: new FormControl('', [Validators.required]),
+            reason: new FormControl('', [Validators.required]),
+            dateOfSuspension: new FormControl('', [Validators.required]),
+        });
+        this.resumeOperationsForm = new FormGroup({
             name: new FormControl('', [Validators.required]),
             registrationNumber: new FormControl('', [Validators.required]),
             kraPin: new FormControl('', [Validators.required]),
@@ -125,6 +140,7 @@ export class CompanyComponent implements OnInit {
         this.stepTwoForm.patchValue(this.company);
         this.stepThreeForm.patchValue(this.company);
         this.suspendOperationsForm.patchValue(this.company);
+        this.resumeOperationsForm.patchValue(this.company);
         this.closeOperationsForm.patchValue(this.company);
         console.log(`Select town ID inside is ${this.company.town}`);
         this.companySoFar = this.company;
@@ -321,6 +337,27 @@ export class CompanyComponent implements OnInit {
             this.hideModelSuspension();
 
     }
+
+    uploadResumptionForm(): void {
+        this.loadingText = "Saving";
+        this.SpinnerService.show();
+        this.levyService.resumeCompanyOperations(this.suspendOperationsForm.value).subscribe(
+            (response) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Record Saved`);
+                this.suspendOperationsForm.reset();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Saving Record`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelSuspension();
+
+    }
+
     uploadClosureForm(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();

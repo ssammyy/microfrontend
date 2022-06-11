@@ -469,6 +469,14 @@ interface IQaProcessStatusRepository : HazelcastRepository<QaProcessStatusEntity
     fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
     fun findByStatus(status: Int): List<QaProcessStatusEntity>?
 }
+@Repository
+interface IQaAwardedPermitTrackerEntityRepository : HazelcastRepository<QaAwardedPermitTrackerEntity, Long> {
+    @Query(
+        value="SELECT max(ch.AWARDED_PERMIT_NUMBER) FROM DAT_KEBS_AWARDED_PERMIT_TRACKER ch",
+        nativeQuery = true
+    )
+    fun getMaxId(): Long?
+}
 
 @Repository
 interface IQaInvoiceDetailsRepository : HazelcastRepository<QaInvoiceDetailsEntity, Long> {

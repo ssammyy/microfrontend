@@ -49,6 +49,8 @@ class QADaoServices(
         private val workPlanCreatedRepo: IQaWorkplanRepository,
         private val iPermitRatingRepo: IPermitRatingRepository,
         private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
+        private val iQaAwardedPermitTrackerEntityRepository: IQaAwardedPermitTrackerEntityRepository,
+
         private val sampleStandardsRepo: ISampleStandardsRepository,
         private val remarksEntityRepo: IQaRemarksEntityRepository,
         private val invoiceDaoService: InvoiceDaoService,
@@ -2595,6 +2597,12 @@ class QADaoServices(
             modifiedBy = commonDaoServices.concatenateName(user)
             modifiedOn = commonDaoServices.getTimestamp()
         }
+        //save awarded permit number
+        val awardPermit = QaAwardedPermitTrackerEntity()
+        awardPermit.awardedPermitNumber= permit.awardedPermitNumber?.toLong()
+        awardPermit.createdOn=commonDaoServices.getTimestamp()
+        iQaAwardedPermitTrackerEntityRepository.save(awardPermit)
+
         return permitRepo.save(permit)
     }
 
@@ -2632,16 +2640,14 @@ class QADaoServices(
                 userId = user.id
                 productName = permits.commodityDescription
                 permitType = permitTypeDetails.id
-//                permitRefNumber = "REF${permitTypeDetails.markNumber}${
-//                    generateRandomText(
-//                            5,
-//                            map.secureRandom,
-//                            map.messageDigestAlgorithm,
-//                            true
-//                    )
-//                }".toUpperCase()
-
-                permitRefNumber = newMaxPermit.toString()
+                permitRefNumber = "REF${permitTypeDetails.markNumber}${
+                    generateRandomText(
+                            5,
+                            map.secureRandom,
+                            map.messageDigestAlgorithm,
+                            true
+                    )
+                }".toUpperCase()
                 enabled = map.initStatus
                 divisionId = commonDaoServices.findSectionWIthId(
                         sectionId ?: throw ExpectedDataNotFound("SECTION ID IS MISSING")
@@ -5498,6 +5504,9 @@ class QADaoServices(
                     fmarkPermit
             ) as PermitApplicationsEntity
 
+            val awardedPermitNumberToBeAwarded = iQaAwardedPermitTrackerEntityRepository.getMaxId()?.plus(1)
+
+
             with(fmarkPermit) {
                 id = null
                 smarkGeneratedFrom = 1
@@ -5511,19 +5520,27 @@ class QADaoServices(
                             true
                     )
                 }".toUpperCase()
-                awardedPermitNumber = "${permitTypeDetails.markNumber}${
-                    generateRandomText(
-                            6,
-                            s.secureRandom,
-                            s.messageDigestAlgorithm,
-                            false
-                    )
-                }".toUpperCase()
+//                awardedPermitNumber = "${permitTypeDetails.markNumber}${
+//                    generateRandomText(
+//                            6,
+//                            s.secureRandom,
+//                            s.messageDigestAlgorithm,
+//                            false
+//                    )
+//                }".toUpperCase()
+                awardedPermitNumber = awardedPermitNumberToBeAwarded?.toString()
 
 
             }
 
             fmarkPermit = permitRepo.save(fmarkPermit)
+
+            //save awarded permit number
+            val awardPermit = QaAwardedPermitTrackerEntity()
+            awardPermit.awardedPermitNumber=awardedPermitNumberToBeAwarded
+            awardPermit.createdOn=commonDaoServices.getTimestamp()
+            iQaAwardedPermitTrackerEntityRepository.save(awardPermit)
+
 
             val savedSMarkFMarkId = generateSmarkFmarkEntity(permit, fmarkPermit, user)
 
@@ -6333,6 +6350,7 @@ class QADaoServices(
                     p.paidStatus,
                     p.submittedStatus,
                     p.receiptNo,
+                p.sageInvoiceNumber,
             )
         }
     }

@@ -878,7 +878,7 @@ class RegistrationManagementDaoService(
                         it.directorIdNumber,
                         it.region,
                         it.county,
-                        it.town
+                        it.town,
                     ).apply {
                         id = it.id
                         status = it.status
@@ -944,7 +944,8 @@ class RegistrationManagementDaoService(
                     it.directorIdNumber,
                     it.region,
                     it.county,
-                    it.town
+                    it.town,
+
                 ).apply {
                     id = it.id
                     status = it.status
