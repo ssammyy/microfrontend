@@ -73,7 +73,11 @@ class ConsignmentDocumentDaoService(
     fun insertConsignmentDetailsFromXml(consignmentDoc: ConsignmentDocument, byteArray: ByteArray) {
         val appId = applicationMapProperties.mapKesws
         val map = commonDaoServices.serviceMapDetails(appId)
-        val loggedInUser = commonDaoServices.findUserByUserName(applicationMapProperties.mapSFTPUserName)
+        val loggedInUser = UsersEntity()
+        loggedInUser.id = 0
+        loggedInUser.userName = "sftp-user"
+        loggedInUser.firstName = "FTP"
+        loggedInUser.lastName = "KEBS"
         try {
             consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.ucrNumber?.let { ucr ->
                 val docSummary =
@@ -262,7 +266,8 @@ class ConsignmentDocumentDaoService(
             uuid = commonDaoServices.generateUUIDString()
             status = ConsignmentApprovalStatus.NEW.code
             version = versionNumber
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
+            modifiedBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         consignmentDocumentDetails = iConsignmentDocumentDetailsRepo.save(consignmentDocumentDetails)
@@ -283,7 +288,7 @@ class ConsignmentDocumentDaoService(
             map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         with(consignmentDocumentDetails) {
-            modifiedBy = commonDaoServices.concatenateName(user)
+            modifiedBy = user.userName
             modifiedOn = commonDaoServices.getTimestamp()
         }
         return iConsignmentDocumentDetailsRepo.save(consignmentDocumentDetails)
@@ -572,7 +577,7 @@ class ConsignmentDocumentDaoService(
         var itemCurrier = cdItemsCurrierDetails
         with(itemCurrier) {
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
 
         }
@@ -622,7 +627,8 @@ class ConsignmentDocumentDaoService(
             cdServiceProvider = cdStandardResponse.cdServiceProvider?.let { cdServicesProviderDetails(it, user, map) }
 
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
+            modifiedBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         standardsDetails = iCdStandardsRepo.save(standardsDetails)
@@ -655,7 +661,7 @@ class ConsignmentDocumentDaoService(
             assessedLane = riskAssessmentResponse.assessedLane
             assessedDate = riskAssessmentResponse.assessedDate
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         riskDetails = iCdRiskDetailsAssessmentRepository.save(riskDetails)
@@ -681,7 +687,7 @@ class ConsignmentDocumentDaoService(
             actionName = riskActionValuesResponse.actionName
             cdRiskDetailsAssessmentId = riskDetails.id
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         return iCdRiskDetailsActionDetailsRepository.save(riskActionDetails)
@@ -702,7 +708,7 @@ class ConsignmentDocumentDaoService(
             phyCountry = cDServiceProviderResponse.phyCountry
             physicalCountryName = phyCountry?.let { daoServices.findCdCountryByCountryCode(it)?.countryName }
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         servicesProviderDetails = iCdServiceProviderRepo.save(servicesProviderDetails)
@@ -729,7 +735,7 @@ class ConsignmentDocumentDaoService(
             seedReferenceNo = itemCommodityResponse.seedReferenceNo
             producerDetails = itemCommodityResponse.producerDetails
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         itemNonCommodity = iCdItemCommodityDetailsRepository.save(itemNonCommodity)
@@ -780,7 +786,7 @@ class ConsignmentDocumentDaoService(
                 }
             }
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         standardsTwoDetails = iCdStandardsTwoRepo.save(standardsTwoDetails)
@@ -850,7 +856,7 @@ class ConsignmentDocumentDaoService(
             receiptNumber = processingFeeResponse.receiptNumber
             receiptDate = processingFeeResponse.receiptDate
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         processingFee = iCdProcessingFeeRepository.save(processingFee)
@@ -872,7 +878,7 @@ class ConsignmentDocumentDaoService(
             receiptNumber = documentFeeResponse.receiptNumber
             receiptDate = documentFeeResponse.receiptDate
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         documentFee = iCdDocumentFeeRepository.save(documentFee)
@@ -905,7 +911,7 @@ class ConsignmentDocumentDaoService(
             warehouseCode = cdImporterResponse.warehouseCode
             warehouseLocation = cdImporterResponse.warehouseLocation
             email = cdImporterResponse.email
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         importerDetails = iCdImporterRepo.save(importerDetails)
@@ -950,7 +956,7 @@ class ConsignmentDocumentDaoService(
             warehouseCode = cdExporterResponse.warehouseCode
             warehouseLocation = cdExporterResponse.warehouseLocation
             email = cdExporterResponse.email
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         exporterDetails = iCdExporterRepo.save(exporterDetails)
@@ -1005,7 +1011,7 @@ class ConsignmentDocumentDaoService(
             placeOfApplication = cdTransportResponse.placeOfApplication
             dateOfArrival = cdTransportResponse.dateOfArrival
 
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         transportDetails = iCdTransportRepo.save(transportDetails)
@@ -1062,7 +1068,7 @@ class ConsignmentDocumentDaoService(
             warehouseCode = cdConsigneeResponse.warehouseCode
             warehouseLocation = cdConsigneeResponse.warehouseLocation
             email = cdConsigneeResponse.email
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         consigneeDetails = iCdConsigneeRepo.save(consigneeDetails)
@@ -1093,7 +1099,7 @@ class ConsignmentDocumentDaoService(
             certificationCategory = pgaHeaderFieldsResponse.certificationCategory
             placeOfApplication = pgaHeaderFieldsResponse.placeOfApplication
             preferredInspectionDate = pgaHeaderFieldsResponse.preferredInspectionDate
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         pgaHeaderFieldsDetails = iCdPgaHeaderFieldsRepository.save(pgaHeaderFieldsDetails)
@@ -1136,7 +1142,7 @@ class ConsignmentDocumentDaoService(
             warehouseLocation = cdConsignorResponse.warehouseLocation
 //            ogaRefNo = cdConsignorResponse.ogaRefNo
             email = cdConsignorResponse.email
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         consignorDetails = iCdConsignorRepo.save(consignorDetails)
@@ -1182,7 +1188,7 @@ class ConsignmentDocumentDaoService(
             invoiceNumber = cdHeaderOneResponse.invoiceNumber
             countryOfSupply = cdHeaderOneResponse.countryOfSupply
             countryOfSupplyName = countryOfSupply?.let { daoServices.findCdCountryByCountryCode(it)?.countryName }
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         valuesHeaderDetails = iCdValuesHeaderLevelRepo.save(valuesHeaderDetails)
@@ -1219,7 +1225,7 @@ class ConsignmentDocumentDaoService(
             remittanceAmount = cdHeaderTwoResponse.remittanceAmount
             remittanceDate = cdHeaderTwoResponse.remittanceDate
             remittanceReference = cdHeaderTwoResponse.remittanceReference
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         headerTwoDetails = iCdHeaderTwoDetailsRepository.save(headerTwoDetails)
@@ -1281,7 +1287,7 @@ class ConsignmentDocumentDaoService(
             supplementaryUnitOfQty = product1Response.supplementaryQuantity?.unitOfQty
             supplementaryUnitOfQtyDesc = product1Response.supplementaryQuantity?.unitOfQtyDesc
 
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         itemDetails = iCdItemsRepo.save(itemDetails)
@@ -1317,7 +1323,7 @@ class ConsignmentDocumentDaoService(
                     product2Response.endUserDetailsResponse?.let { endUserDetails(it, user, map).id }
 
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         products2Details = iCdProducts2Repository.save(products2Details)
@@ -1349,7 +1355,7 @@ class ConsignmentDocumentDaoService(
             technicalRejection = approvalHistoryResponse.technicalRejection
             cdId = consignmentDocumentDetailsEntity.id
 
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         approvalDetails = iCdApprovalHistoryRepository.save(approvalDetails)
@@ -1373,7 +1379,7 @@ class ConsignmentDocumentDaoService(
             useGeneralDescription = endUserResponse.useGeneralDescription
             useDetails = endUserResponse.useDetails
             status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         endUserDetails = iCdProducts2EndUserDetailsRepository.save(endUserDetails)
@@ -1400,7 +1406,7 @@ class ConsignmentDocumentDaoService(
             containerLoadIndicator = containersResponse.containerLoadIndicator
             cdTransportId = cdTransportDetails.id
 
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         containerDetails = iCdContainerRepository.save(containerDetails)
@@ -1427,7 +1433,7 @@ class ConsignmentDocumentDaoService(
             thirdPartyAccount = thirdPartiesResponse.thirdPartyAccount
             cdStandardsTwoId = cdStandardsTwoDetails.id
 
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         thirdPartiesDetails = iCdThirdPartyDetailsRepository.save(thirdPartiesDetails)
@@ -1454,7 +1460,7 @@ class ConsignmentDocumentDaoService(
             thirdPartyAccount = thirdPartiesApplicantResponseResponse.thirdPartyAccount
             cdStandardsTwoId = cdStandardsTwoDetails.id
 
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         thirdPartiesDetails = iCdApplicantDefinedThirdPartyDetailsRepository.save(thirdPartiesDetails)
@@ -1479,7 +1485,7 @@ class ConsignmentDocumentDaoService(
             vehicleYear = cdItemNonStandardResponse.vehicleYear
             vehicleModel = cdItemNonStandardResponse.vehicleModel
             vehicleMake = cdItemNonStandardResponse.vehicleMake
-            createdBy = commonDaoServices.concatenateName(user)
+            createdBy = user.userName
             createdOn = commonDaoServices.getTimestamp()
         }
         nonStandardEntity = iCdItemNonStandardEntityRepository.save(nonStandardEntity)

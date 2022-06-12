@@ -163,7 +163,10 @@ class DestinationInspectionService(
     fun updateStatus(cdUuid: String, cdStatusTypeId: Long, supervisor: String, remarks: String): Boolean {
         try {
             var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-            val cdStatusType = daoServices.findCdStatusValue(cdStatusTypeId)
+            val cdStatusType = when (consignmentDocument.approveRejectCdStatusType?.finalStatus) {
+                1 -> consignmentDocument.approveRejectCdStatusType!!
+                else -> daoServices.findCdStatusValue(cdStatusTypeId)
+            }
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Check if the consignment should be marked as completed
             if (cdStatusType.modificationAllowed != map.activeStatus) {
@@ -212,6 +215,7 @@ class DestinationInspectionService(
                 consignmentDocument = daoServices.updateCDStatus(consignmentDocument, cdStatusTypeId)
                 cdAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, remarks, "KEBS DOCUMENT STATUS TO ${cdStatusType.category}", "Consignment document ${cdStatusType.category?.toLowerCase()}", username = supervisor)
             }
+            return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO UPDATE STATUS", ex)
         }
@@ -695,12 +699,9 @@ class DestinationInspectionService(
                 consignmentDocument.status = ConsignmentApprovalStatus.REJECTED.code
             }
             // Generate NCR if applicable
-            val ncr = daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")?.let {
-                consignmentDocument.ncrNumber = it.cocNumber
-                consignmentDocument
-            }
+            val ncr = daoServices.createLocalNcr(loggedInUser, consignmentDocument, map, remarks, "A")
             consignmentDocument.cocNumber = localCoc?.cocNumber
-            consignmentDocument.ncrNumber = ncr?.ncrNumber ?: ncr?.cocNumber
+            consignmentDocument.ncrNumber = ncr?.cocNumber
             consignmentDocument = this.daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_APPROVED)
 
             KotlinLogging.logger { }.info("Local CoC = ${localCoc?.id}")
@@ -718,18 +719,18 @@ class DestinationInspectionService(
                     importer.email?.let { daoServices.sendLocalCocReportEmail(it, fileName) }
                 }
                 // Send NCR
-                ncr?.let {
-                    val ncrFileName = makeCocOrCoiFile(it.id!!)
+                ncr?.let { ncrTmp ->
+                    val ncrFileName = makeCocOrCoiFile(ncrTmp.id)
                     importer.email?.let { email -> daoServices.sendLocalCocReportEmail(email, ncrFileName) }
                 }
             }
             this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
-            KotlinLogging.logger { }.info("GENERATE COC/COI: ${cdUuid}")
+            KotlinLogging.logger { }.info("GENERATED COC/NCR: ${cdUuid}")
             return true
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("REJECTION UPDATE STATUS", ex)
+            throw ex
         }
-        return false
     }
 
     fun makeCocOrCoiFile(cocCoiId: Long): String {
@@ -1717,7 +1718,7 @@ class DestinationInspectionService(
             map["CoCType"] = localCocEntity.cocType.orEmpty()
             val cocItems = daoServices.findCocItemList(cocId)
             map["dataSources"] = hashMapOf(Pair("itemDataSource", cocItems))
-        } ?: throw ExpectedDataNotFound("Invalid local CocNumber")
+        } ?: throw ExpectedDataNotFound("Invalid local Coc/Coi/Ncr Number")
         return map
     }
 
