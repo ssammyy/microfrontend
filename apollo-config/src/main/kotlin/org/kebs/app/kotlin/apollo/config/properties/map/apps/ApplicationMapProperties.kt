@@ -725,9 +725,6 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions.for.permit}")
     val mapInvoiceTransactionsForPermit: String = ""
 
-    @Value("\${org.kebs.app.kotlin.apollo.application.map.sftp.download.file.userName}")
-    val mapSFTPUserName: String = ""
-
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.batch.creation}")
     val mapMSCreateBatch: Long = 0L
 
