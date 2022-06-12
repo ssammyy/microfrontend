@@ -44,7 +44,7 @@ import {
     ComplaintApproveDto,
     ComplaintRejectDto,
     ComplaintAdviceRejectDto,
-    ComplaintAssignDto, MsStandardProductCategory, ComplaintClassificationDto, WorkPlanBatchDetailsDto,
+    ComplaintAssignDto, MsStandardProductCategory, ComplaintClassificationDto, WorkPlanBatchDetailsDto, WorkPlanScheduleListDetailsDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidatorFn} from '@angular/forms';
@@ -373,6 +373,39 @@ export class MsService {
             })
             , catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.error} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadMSWorkPlanList(page: string, records: string, referenceNo: string, routeTake: string): Observable<WorkPlanScheduleListDetailsDto> {
+        // console.log(data);
+        let url = null;
+        switch (routeTake) {
+            case 'my-tasks':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.MY_TASK_WORK_PLAN_LIST);
+                break;
+            case 'on-going':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ONGOING_WORK_PLAN_LIST);
+                break;
+            case 'new-complaint':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.NEW_WORK_PLAN_LIST);
+                break;
+            case 'completed':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.COMPLETED_WORK_PLAN_LIST);
+                break;
+        }
+
+        const params = new HttpParams()
+            .set('batchReferenceNo', referenceNo)
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<WorkPlanScheduleListDetailsDto>(url, {params}).pipe(
+            map(function (response: WorkPlanScheduleListDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
             }),
         );

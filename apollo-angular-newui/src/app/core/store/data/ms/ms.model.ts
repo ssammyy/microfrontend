@@ -142,6 +142,28 @@ export class ComplaintsListDto {
     transactionDate: Date;
     progressStep: string;
 }
+
+export class WorkPlanScheduleListDetailsDto {
+    workPlanList: WorkPlanListDto[];
+    createdWorkPlan: WorkPlanBatchDetailsDto;
+}
+
+export class WorkPlanListDto {
+    id: number;
+    referenceNumber: string;
+    nameActivity: string;
+    timeActivityDate: Date;
+    budget: string;
+    progressStep: string;
+}
+
+// export class ComplaintsListDto {
+//     referenceNumber: string;
+//     complaintTitle: string;
+//     targetedProducts: string;
+//     transactionDate: Date;
+//     progressStep: string;
+// }
 export class ComplaintClassificationDto {
     productClassification: number;
     broadProductCategory: number;

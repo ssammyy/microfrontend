@@ -917,7 +917,7 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val page = commonDaoServices.extractPageRequest(req)
-            marketSurveillanceWorkPlanDaoServices.getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo,page)
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionListBasedOnBatchRefNo(batchReferenceNo,page)
                 .let {
                     ServerResponse.ok().body(it)
                 }

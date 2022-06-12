@@ -141,7 +141,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo: String,page: PageRequest): WorkPlanScheduleListDetailsDto {
+    fun getAllWorPlanInspectionListBasedOnBatchRefNo(batchReferenceNo: String,page: PageRequest): WorkPlanScheduleListDetailsDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val auth = commonDaoServices.loggedInUserAuthentication()
         val loggedInUserProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)

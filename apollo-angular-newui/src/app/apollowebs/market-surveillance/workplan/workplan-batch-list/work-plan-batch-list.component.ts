@@ -206,7 +206,7 @@ export class WorkPlanBatchListComponent implements OnInit {
 
   viewRecord(data: FuelBatchDetailsDto) {
     console.log('TEST 101' + data.id);
-    this.router.navigate([`/epra`, data.referenceNumber]);
+    this.router.navigate([`/workPlan`, data.referenceNumber]);
   }
 
   pageChange(pageIndex?: any) {

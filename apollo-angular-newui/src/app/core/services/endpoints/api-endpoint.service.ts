@@ -587,6 +587,11 @@ export class ApiEndpointService {
     public static MARKET_SURVEILLANCE_WORK_PLAN = {
         ALL_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-list`,
         ADD_NEW_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/add`,
+        ALL_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/list`,
+        COMPLETED_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/list-completed`,
+        NEW_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/list-new`,
+        MY_TASK_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/list-my-task`,
+        ONGOING_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/list-on-going`,
         // CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
 
       };
