@@ -341,12 +341,12 @@ export class CompanyComponent implements OnInit {
     uploadResumptionForm(): void {
         this.loadingText = "Saving";
         this.SpinnerService.show();
-        this.levyService.resumeCompanyOperations(this.suspendOperationsForm.value).subscribe(
+        this.levyService.resumeCompanyOperations(this.resumeOperationsForm.value).subscribe(
             (response) => {
                 console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Record Saved`);
-                this.suspendOperationsForm.reset();
+                this.resumeOperationsForm.reset();
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

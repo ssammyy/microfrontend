@@ -221,9 +221,31 @@ export class StandardLevySuspensionComponent implements OnInit {
       );
 
     }
+    if (mode==='viewResumption'){
+      this.actionRequest=suspendedCompanyDTOs;
+      button.setAttribute('data-target','#viewResumption');
+      this.approveResumeFormGroup.patchValue(
+          {
+            id: this.actionRequest.id,
+            companyId: this.actionRequest.companyId
+          }
+      );
+
+    }
     if (mode==='rejectSuspension'){
       this.actionRequest=suspendedCompanyDTOs;
       button.setAttribute('data-target','#rejectSuspension');
+      this.rejectRequestFormGroup.patchValue(
+          {
+            id: this.actionRequest.id,
+            companyId: this.actionRequest.companyId
+          }
+      );
+
+    }
+    if (mode==='rejectResumption'){
+      this.actionRequest=suspendedCompanyDTOs;
+      button.setAttribute('data-target','#rejectResumption');
       this.rejectRequestFormGroup.patchValue(
           {
             id: this.actionRequest.id,
