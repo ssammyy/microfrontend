@@ -92,6 +92,7 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
     fun findByWorkPlanYearId(workPlanYearId: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
     fun findByUuid(uuid: String): MsWorkPlanGeneratedEntity?
+    fun findByReferenceNumber(referenceNumber: String): MsWorkPlanGeneratedEntity?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
 

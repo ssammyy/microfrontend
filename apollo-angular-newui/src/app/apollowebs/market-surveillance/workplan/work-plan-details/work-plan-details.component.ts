@@ -1,40 +1,48 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import swal from 'sweetalert2';
+import { Component, OnInit } from '@angular/core';
 import {
-  BatchFileFuelSaveDto,
-  BSNumberSaveDto, CompliantRemediationDto,
+  AllComplaintsDetailsDto,
+  BSNumberSaveDto,
+  ComplaintAdviceRejectDto,
+  ComplaintApproveRejectAdviceWhereDto,
+  ComplaintAssignDto,
+  ComplaintClassificationDto, CompliantRemediationDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
-  FuelInspectionDto, LaboratoryDto,
-  LIMSFilesFoundDto, MSRemarksDto, MSSSFPDFListDetailsDto, PDFSaveComplianceStatusDto, RemediationDto,
+  FuelInspectionDto,
+  LaboratoryDto, LIMSFilesFoundDto,
+  MsDepartment,
+  MsDivisionDetails, MSRemarksDto, MSSSFPDFListDetailsDto,
+  PDFSaveComplianceStatusDto, RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
   SampleSubmissionDto,
   SampleSubmissionItemsDto, SSFSaveComplianceStatusDto,
+  WorkPlanInspectionDto,
 } from '../../../../core/store/data/ms/ms.model';
-import {MsService} from '../../../../core/store/data/ms/ms.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {NgxSpinnerService} from 'ngx-spinner';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Store} from '@ngrx/store';
+import {
+  BroadProductCategory,
+  ProductCategories,
+  Products,
+  ProductSubcategory,
+  StandardProductCategory,
+} from '../../../../core/store/data/master/master.model';
 import {LoggedInUser, selectUserInfo} from '../../../../core/store';
-declare global {
-  interface Window {
-    $: any;
-  }
-}
+import {MsService} from '../../../../core/store/data/ms/ms.service';
+import {Store} from '@ngrx/store';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
-  selector: 'app-view-fuel-sheduled-details',
-  templateUrl: './view-fuel-sheduled-details.component.html',
-  styleUrls: ['./view-fuel-sheduled-details.component.css'],
+  selector: 'app-work-plan-details',
+  templateUrl: './work-plan-details.component.html',
+  styleUrls: ['./work-plan-details.component.css'],
 })
-export class ViewFuelSheduledDetailsComponent implements OnInit {
+export class WorkPlanDetailsComponent implements OnInit {
   active: Number = 0;
   selectedRefNo: string;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
-  fuelInspection: FuelInspectionDto;
   currDiv!: string;
   currDivLabel!: string;
   assignOfficerForm!: FormGroup;
@@ -448,11 +456,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     },
   };
 
+  private workPlanInspection: WorkPlanInspectionDto;
 
 
   constructor(
       private msService: MsService,
-              // private dialog: MatDialog,
+      // private dialog: MatDialog,
       private formBuilder: FormBuilder,
       private store$: Store<any>,
       private SpinnerService: NgxSpinnerService,
@@ -461,25 +470,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       this.userLoggedInID = u.id;
       this.userProfile = u;
       return this.roles = u.roles;
     });
-
-    this.remarksSavedForm = this.formBuilder.group({
-      processBy: null,
-      remarksDescription: null,
-    });
-
-    this.activatedRoute.paramMap.subscribe(
-        rs => {
-          this.selectedRefNo = rs.get('referenceNumber');
-          this.selectedBatchRefNo = rs.get('batchReferenceNumber');
-          this.loadData(this.selectedRefNo, this.selectedBatchRefNo);
-        },
-    );
 
     this.assignOfficerForm = this.formBuilder.group({
       assignedUserID: ['', Validators.required],
@@ -577,6 +572,13 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       totalVolume: ['', Validators.required],
     });
 
+    this.activatedRoute.paramMap.subscribe(
+        rs => {
+          this.selectedRefNo = rs.get('referenceNumber');
+          this.selectedBatchRefNo = rs.get('batchReferenceNumber');
+          this.loadData(this.selectedRefNo, this.selectedBatchRefNo);
+        },
+    );
   }
 
   get formAssignOfficerForm(): any {
@@ -591,7 +593,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     return this.pdfSaveComplianceStatusForm.controls;
   }
 
- get formSSFSaveComplianceStatusForm(): any {
+  get formSSFSaveComplianceStatusForm(): any {
     return this.ssfSaveComplianceStatusForm.controls;
   }
 
@@ -628,28 +630,9 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   private loadData(referenceNumber: string, batchReferenceNumber: string ): any {
     this.SpinnerService.show();
-    // let params = {'personal': this.personalTasks}
-    // this.fuelInspection = this.msService.fuelInspectionDetailsExamples()
-    // this.totalCount = this.loadedData.fuelInspectionDto.length;
-    // this.dataSet.load(this.loadedData.fuelInspectionDto);
-    // this.SpinnerService.hide();
-    this.msService.msFuelInspectionScheduledDetails(batchReferenceNumber, referenceNumber).subscribe(
+    this.msService.msWorkPlanScheduleDetails(batchReferenceNumber, referenceNumber).subscribe(
         (data) => {
-          this.fuelInspection = data;
-          // if(this.fuelInspection.sampleSubmittedStatus!= true){
-          //   this.msService.loadMSLabList().subscribe(
-          //       (data) => {
-          //         this.labList = data;
-          //         console.log(data);
-          //       },
-          //       error => {
-          //         console.log(error);
-          //         this.msService.showError('AN ERROR OCCURRED');
-          //       }
-          //   );
-          // }
-          // this.totalCount = this.loadedData.length;
-          // this.dataSet.load(this.loadedData);
+          this.workPlanInspection = data;
           this.SpinnerService.hide();
           console.log(data);
         },
@@ -659,32 +642,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
           this.msService.showError('AN ERROR OCCURRED');
         },
     );
-
-
-
-    // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
-    // console.log(this.activeStatus)
-    // // Clear list before loading
-    // this.dataSet.load([])
-    // // Switch
-    // if (this.activeStatus === "completed") {
-    //   data = this.diService.listCompletedCd(documentTypeUuid, page, size)
-    // } else if (this.activeStatus === "ongoing") {
-    //   data = this.diService.listSectionOngoingCd(documentTypeUuid, page, size)
-    // } else if (this.activeStatus === "not-assigned") {
-    //   data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
-    // }
-    // data.subscribe(
-    //     result => {
-    //       if (result.responseCode === "00") {
-    //         let listD: any[] = result.data;
-    //         this.totalCount = result.totalCount
-    //         this.dataSet.load(listD)
-    //       } else {
-    //         console.log(result)
-    //       }
-    //     }
-    // );
+    
   }
 
   openModalAddDetails(divVal: string): void {
@@ -802,9 +760,9 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
-      this.msService.msFuelInspectionScheduledAssignOfficer(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
+      this.msService.msFuelInspectionScheduledAssignOfficer(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
           (data: any) => {
-            this.fuelInspection = data;
+            this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY');
@@ -822,9 +780,9 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveRapidTest = {...this.dataSaveRapidTest, ...this.rapidTestForm.value};
-      this.msService.msFuelInspectionScheduledRapidTest(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveRapidTest).subscribe(
+      this.msService.msFuelInspectionScheduledRapidTest(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveRapidTest).subscribe(
           (data: any) => {
-            this.fuelInspection = data;
+            this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('RAPID TEST RESULTS SAVED SUCCESSFULLY');
@@ -848,9 +806,9 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       sampleCollectionItemsDto.push(this.dataSaveSampleCollectItems);
       this.dataSaveSampleCollect.productsList = sampleCollectionItemsDto;
 
-      this.msService.msFuelInspectionScheduledAddSampleCollection(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
+      this.msService.msFuelInspectionScheduledAddSampleCollection(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
           (data: any) => {
-            this.fuelInspection = data;
+            this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('SAMPLE COLLECTION SAVED SUCCESSFULLY');
@@ -874,9 +832,9 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       sampleSubmissionParamsDto.push(this.dataSaveSampleSubmitParam);
       this.dataSaveSampleSubmit.parametersList = sampleSubmissionParamsDto;
 
-      this.msService.msFuelInspectionScheduledAddSampleSubmission(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleSubmit).subscribe(
+      this.msService.msFuelInspectionScheduledAddSampleSubmission(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmit).subscribe(
           (data: any) => {
-            this.fuelInspection = data;
+            this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('SAMPLE SUBMISSION SAVED SUCCESSFULLY');
@@ -894,9 +852,9 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmitBSNumber = {...this.dataSaveSampleSubmitBSNumber, ...this.sampleSubmitBSNumberForm.value};
-      this.msService.msFuelInspectionScheduledAddSampleSubmissionBSNumber(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
+      this.msService.msFuelInspectionScheduledAddSampleSubmissionBSNumber(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
           (data: any) => {
-            this.fuelInspection = data;
+            this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('BS NUMBER ADDED SUCCESSFULLY');
@@ -914,14 +872,14 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataPDFSaveComplianceStatus = {...this.dataPDFSaveComplianceStatus, ...this.pdfSaveComplianceStatusForm.value};
-      this.dataPDFSaveComplianceStatus.ssfID = this.fuelInspection.sampleLabResults.ssfResultsList.sffId;
-      this.dataPDFSaveComplianceStatus.bsNumber = this.fuelInspection.sampleLabResults.ssfResultsList.bsNumber;
+      this.dataPDFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
+      this.dataPDFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
       this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      if (this.fuelInspection.sampleLabResults.savedPDFFiles.length === 0) {
-        this.msService.msFuelInspectionScheduledSavePDFLIMS(this.fuelInspection.batchDetails.referenceNumber,
-            this.fuelInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+      if (this.workPlanInspection.sampleLabResults.savedPDFFiles.length === 0) {
+        this.msService.msFuelInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
+            this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
             (data: any) => {
-              this.fuelInspection = data;
+              this.workPlanInspection = data;
               console.log(data);
               this.SpinnerService.hide();
               this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
@@ -933,12 +891,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             },
         );
       } else {
-        for (const savedPdf of this.fuelInspection.sampleLabResults.savedPDFFiles) {
+        for (const savedPdf of this.workPlanInspection.sampleLabResults.savedPDFFiles) {
           if (savedPdf.pdfName !== this.selectedPDFFileName) {
-            this.msService.msFuelInspectionScheduledSavePDFLIMS(this.fuelInspection.batchDetails.referenceNumber,
-                this.fuelInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+            this.msService.msFuelInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
+                this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
                 (data: any) => {
-                  this.fuelInspection = data;
+                  this.workPlanInspection = data;
                   console.log(data);
                   this.SpinnerService.hide();
                   this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
@@ -958,36 +916,36 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
-      this.dataSSFSaveComplianceStatus.ssfID = this.fuelInspection.sampleLabResults.ssfResultsList.sffId;
-      this.dataSSFSaveComplianceStatus.bsNumber = this.fuelInspection.sampleLabResults.ssfResultsList.bsNumber;
-      // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      this.msService.msFuelInspectionScheduledSaveSSFComplianceStatus(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSSFSaveComplianceStatus).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
-    }
-  }
+  // onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
+  //   if (valid) {
+  //     this.SpinnerService.show();
+  //     this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
+  //     this.dataSSFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
+  //     this.dataSSFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
+  //     // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+  //     this.msService.msFuelInspectionScheduledSaveSSFComplianceStatus(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSSFSaveComplianceStatus).subscribe(
+  //         (data: any) => {
+  //           this.workPlanInspection = data;
+  //           console.log(data);
+  //           this.SpinnerService.hide();
+  //           this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY');
+  //         },
+  //         error => {
+  //           this.SpinnerService.hide();
+  //           console.log(error);
+  //           this.msService.showError('AN ERROR OCCURRED');
+  //         },
+  //     );
+  //   }
+  // }
 
   onClickSaveScheduleRemediation(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveScheduleRemediation = {...this.dataSaveScheduleRemediation, ...this.scheduleRemediationForm.value};
-      this.msService.msFuelInspectionScheduledRemediation(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveScheduleRemediation).subscribe(
+      this.msService.msFuelInspectionScheduledRemediation(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveScheduleRemediation).subscribe(
           (data: any) => {
-            this.fuelInspection = data;
+            this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('REMEDIATION SCHEDULE SAVED SUCCESSFULLY');
@@ -1005,9 +963,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveNotCompliantInvoice = {...this.dataSaveNotCompliantInvoice, ...this.notCompliantInvoiceForm.value};
-      this.msService.msFuelInspectionNotCompliantRemediationInvoice(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveNotCompliantInvoice).subscribe(
+      this.msService.msFuelInspectionNotCompliantRemediationInvoice(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.dataSaveNotCompliantInvoice).subscribe(
           (data: any) => {
-            this.fuelInspection = data;
+            this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('REMEDIATION INVOICE GENERATED SUCCESSFULLY');
@@ -1025,9 +985,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
-      this.msService.msFuelInspectionRemediation(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveRemediation).subscribe(
+      this.msService.msFuelInspectionRemediation(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.dataSaveRemediation).subscribe(
           (data: any) => {
-            this.fuelInspection = data;
+            this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('REMEDIATION DETAILS SAVED SUCCESSFULLY');
@@ -1043,40 +1005,42 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   onClickSaveEndRemediation() {
     // if (valid) {
-      this.SpinnerService.show();
-      // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
-      this.msService.msFuelInspectionEnd(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber).subscribe(
-          (data: any) => {
-            this.fuelInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('FUEL INSPECTION ENDED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
+    this.SpinnerService.show();
+    // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+    // tslint:disable-next-line:max-line-length
+    this.msService.msFuelInspectionEnd(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('FUEL INSPECTION ENDED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
     // }
   }
 
+
   goBack() {
-    console.log('TEST 101' + this.fuelInspection.batchDetails.referenceNumber);
-    this.router.navigate([`/epra`, this.fuelInspection.batchDetails.referenceNumber]);
+    console.log('TEST 101' + this.workPlanInspection.batchDetails.referenceNumber);
+    this.router.navigate([`/epra`, this.workPlanInspection.batchDetails.referenceNumber]);
   }
 
   viewLIMSPDFRecord(data: LIMSFilesFoundDto, bsNumber: string) {
     console.log('TEST 101 REF NO VIEW: ' + data.fileName);
     this.viewLabResultsPdfFile(String(data.fileName), bsNumber, 'application/pdf');
-    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+    // this.router.navigate([`/epra/workPlanInspection/details/`,data.referenceNumber]);
   }
 
   viewLIMSPDFSaved(data: MSSSFPDFListDetailsDto) {
     console.log('TEST 101 REF NO VIEW FILE: ' + data.pdfSavedId);
 
     this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
-    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+    // this.router.navigate([`/epra/workPlanInspection/details/`,data.referenceNumber]);
   }
 
   viewLIMSPDFSavedRemarks(data: MSSSFPDFListDetailsDto) {
@@ -1088,7 +1052,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     window.$('#myModal1').modal('show');
     // this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
-    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+    // this.router.navigate([`/epra/workPlanInspection/details/`,data.referenceNumber]);
   }
 
   viewSavedRemarks(data: MSRemarksDto) {
@@ -1098,7 +1062,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     window.$('#myModal1').modal('show');
     // this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
-    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+    // this.router.navigate([`/epra/workPlanInspection/details/`,data.referenceNumber]);
   }
 
   saveLIMSPDFRecord(data: LIMSFilesFoundDto) {
@@ -1110,7 +1074,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     window.$('#myModal1').modal('show');
     // $('#myModal1').modal('show');
     // this.openModalAddDetails('assignOfficer')
-    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+    // this.router.navigate([`/epra/workPlanInspection/details/`,data.referenceNumber]);
   }
 
   public onCustomLIMSPDFAction(event: any, bsNumber: string): void {

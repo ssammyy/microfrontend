@@ -14,9 +14,9 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">CMP</i>
+                            <i class="material-icons">WP</i>
                         </div>
-                        <h4 class="card-title">Complaint List Details
+                        <h4 class="card-title">Work-Plan List Details
                             <!--                            <button class="btn btn-sm btn-default float-right mr-7"-->
                             <!--                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back-->
                             <!--                            </button>-->
@@ -135,26 +135,26 @@
                             </div>
                             <div class="btn-group btn-group-sm float-right" role="group"
                                  aria-label="Applications Status">
-                                <!--                                <div *ngFor="let role of roles">-->
-                                <!--                                    <div *ngIf="role == 'EPRA'">-->
-                                <!--                                        <button *ngIf="loadedData.fuelBatchDetailsDto.batchClosed!=true" (click)="onClickCloseBatch()" mat-raised-button=""-->
-                                <!--                                                class="btn btn-sm btn-warning mr-2"><span-->
-                                <!--                                                class="mat-button-wrapper">CLOSE BATCH</span>-->
-                                <!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-                                <!--                                            <div class="mat-button-focus-overlay"></div>-->
-                                <!--                                        </button>-->
-                                <!--                                    </div>-->
-                                <!--                                    <br>-->
-                                <!--                                    <div *ngIf="role == 'EPRA'">-->
-                                <!--                                        <button *ngIf="loadedData.fuelBatchDetailsDto.batchClosed!=true" (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
-                                <!--                                                data-target="#myModal1"-->
-                                <!--                                                class="btn btn-sm btn-primary mr-2"><span-->
-                                <!--                                                class="mat-button-wrapper">ADD NEW SCHEDULE FILE</span>-->
-                                <!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-                                <!--                                            <div class="mat-button-focus-overlay"></div>-->
-                                <!--                                        </button>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
+                                <div *ngFor="let role of roles">
+                                    <div *ngIf="role == 'MS_IO_MODIFY'">
+                                        <button *ngIf="loadedData.createdWorkPlan.batchClosed!=true" (click)="onClickCloseBatch()" mat-raised-button=""
+                                                class="btn btn-sm btn-warning mr-2"><span
+                                                class="mat-button-wrapper">CLOSE BATCH</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                    </div>
+                                    <br>
+                                    <div *ngIf="role == 'MS_IO_MODIFY'">
+                                        <button *ngIf="loadedData.createdWorkPlan.batchClosed!=true" (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
+                                                data-target="#workPlanModal"
+                                                class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">ADD NEW WORK-PLAN FILE</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -205,64 +205,65 @@
                     <div *ngIf="(currDiv == 'addNewScheduleDetails')">
                         <form [formGroup]="addNewScheduleForm" class="form">
                             <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="company">Company Name</label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="company" matInput type="text" placeholder="Please Enter Company Name" formControlName="company" name="company"
-                                                   [class.is-invalid]="formNewScheduleForm.company.invalid && formNewScheduleForm.company.touched">
-                                        </mat-form-field>
+<!--                                <div class="form-group">-->
+<!--                                    <div>-->
+<!--                                        <label for="company">Company Name</label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="company" matInput type="text" placeholder="Please Enter Company Name" formControlName="company" name="company"-->
+<!--                                                   [class.is-invalid]="formNewScheduleForm.company.invalid && formNewScheduleForm.company.touched">-->
+<!--                                        </mat-form-field>-->
 
-                                        <label for="stationOwnerEmail">Station Owner Email</label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="stationOwnerEmail" matInput type="text" placeholder="Please Enter Station Owner Email" formControlName="stationOwnerEmail" name="stationOwnerEmail"
-                                                   [class.is-invalid]="formNewScheduleForm.stationOwnerEmail.invalid && formNewScheduleForm.stationOwnerEmail.touched">
-                                        </mat-form-field>
+<!--                                        <label for="stationOwnerEmail">Station Owner Email</label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="stationOwnerEmail" matInput type="text" placeholder="Please Enter Station Owner Email" formControlName="stationOwnerEmail" name="stationOwnerEmail"-->
+<!--                                                   [class.is-invalid]="formNewScheduleForm.stationOwnerEmail.invalid && formNewScheduleForm.stationOwnerEmail.touched">-->
+<!--                                        </mat-form-field>-->
 
-                                        <label for="petroleumProduct">Petroleum Product Name</label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="petroleumProduct" matInput type="text" placeholder="Please Enter Petroleum Product Name" formControlName="petroleumProduct" name="petroleumProduct"
-                                                   [class.is-invalid]="formNewScheduleForm.petroleumProduct.invalid && formNewScheduleForm.petroleumProduct.touched">
-                                        </mat-form-field>
+<!--                                        <label for="petroleumProduct">Petroleum Product Name</label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="petroleumProduct" matInput type="text" placeholder="Please Enter Petroleum Product Name" formControlName="petroleumProduct" name="petroleumProduct"-->
+<!--                                                   [class.is-invalid]="formNewScheduleForm.petroleumProduct.invalid && formNewScheduleForm.petroleumProduct.touched">-->
+<!--                                        </mat-form-field>-->
 
-                                        <label for="physicalLocation">Physical Location Name</label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="physicalLocation" matInput type="text" placeholder="Please Enter Physical Location Name" formControlName="physicalLocation" name="physicalLocation"
-                                                   [class.is-invalid]="formNewScheduleForm.physicalLocation.invalid && formNewScheduleForm.physicalLocation.touched">
-                                        </mat-form-field>
+<!--                                        <label for="physicalLocation">Physical Location Name</label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="physicalLocation" matInput type="text" placeholder="Please Enter Physical Location Name" formControlName="physicalLocation" name="physicalLocation"-->
+<!--                                                   [class.is-invalid]="formNewScheduleForm.physicalLocation.invalid && formNewScheduleForm.physicalLocation.touched">-->
+<!--                                        </mat-form-field>-->
 
-                                        <label for="inspectionDateFrom">Inspection Date From</label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="inspectionDateFrom" matInput type="date" placeholder="Please Enter Inspection Date From" formControlName="inspectionDateFrom" name="inspectionDateFrom"
-                                                   [class.is-invalid]="formNewScheduleForm.inspectionDateFrom.invalid && formNewScheduleForm.inspectionDateFrom.touched">
-                                        </mat-form-field>
+<!--                                        <label for="inspectionDateFrom">Inspection Date From</label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="inspectionDateFrom" matInput type="date" placeholder="Please Enter Inspection Date From" formControlName="inspectionDateFrom" name="inspectionDateFrom"-->
+<!--                                                   [class.is-invalid]="formNewScheduleForm.inspectionDateFrom.invalid && formNewScheduleForm.inspectionDateFrom.touched">-->
+<!--                                        </mat-form-field>-->
 
-                                        <label for="inspectionDateTo">Inspection Date To</label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="inspectionDateTo" matInput type="date" placeholder="Please Enter Inspection Date To" formControlName="inspectionDateTo" name="inspectionDateTo"
-                                                   [class.is-invalid]="formNewScheduleForm.inspectionDateTo.invalid && formNewScheduleForm.inspectionDateTo.touched">
-                                        </mat-form-field>
+<!--                                        <label for="inspectionDateTo">Inspection Date To</label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="inspectionDateTo" matInput type="date" placeholder="Please Enter Inspection Date To" formControlName="inspectionDateTo" name="inspectionDateTo"-->
+<!--                                                   [class.is-invalid]="formNewScheduleForm.inspectionDateTo.invalid && formNewScheduleForm.inspectionDateTo.touched">-->
+<!--                                        </mat-form-field>-->
 
-                                        <label for="remarks">Please write, in detail, your feedback for this fuel inspection schedule:</label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="remarks" matInput type="text"
-                                                      formControlName="remarks"
-                                                      placeholder="Please Enter your feedback for this fuel inspection schedule"
-                                                      name="remarks"
-                                                      [class.is-invalid]="formNewScheduleForm.remarks.invalid && formNewScheduleForm.remarks.touched">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
+<!--                                        <label for="remarks">Please write, in detail, your feedback for this fuel inspection schedule:</label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <textarea id="remarks" matInput type="text"-->
+<!--                                                      formControlName="remarks"-->
+<!--                                                      placeholder="Please Enter your feedback for this fuel inspection schedule"-->
+<!--                                                      name="remarks"-->
+<!--                                                      [class.is-invalid]="formNewScheduleForm.remarks.invalid && formNewScheduleForm.remarks.touched">-->
+<!--                                            </textarea>-->
+<!--                                        </mat-form-field>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                             </div>
                         </form>
                     </div>
+
                     <div *ngIf="(currDiv == 'closeBatchDetails')">
                         <form [formGroup]="closeBatchForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="remarks">Please write, in detail, your feedback for this fuel inspection Batch:</label>
+                                        <label for="remarks">Please write, in detail, your feedback for this Work-Plan Inspection Batch:</label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks" matInput type="text"
                                                       formControlName="remarks"
@@ -298,5 +299,210 @@
         </div>
     </div>
     <!--  End Modal -->
+    <!-- Work Plan Modal -->
+    <div class="modal fade" id="workPlanModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fill in bellow activity Details</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="addNewScheduleForm">
+                        <div class="form-group bmd-form-group is-filled">
+                            <h5 class="mb-3" style="color: #0066B1">Work-Plan Details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Department</b></label>
+                                        <select (change)="onChangeSelectedDepartment()"
+                                                [class.is-invalid]="formNewScheduleForm.complaintDepartment.invalid && formNewScheduleForm.complaintDepartment.touched"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="complaintDepartment" name="complaintDepartment" required>
+                                            <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Division</b></label>
+                                        <select [class.is-invalid]="formNewScheduleForm.divisionId.invalid && formNewScheduleForm.divisionId.touched"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="divisionId" name="divisionId" required>
+                                            <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Name of Activity</b></label>
+                                        <select [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.touched"
+                                                class="form-control two-column-input"
+                                                formControlName="nameActivity" name="nameActivity" required type="text">
+                                            <option  [value]="'Surveillance'">Surveillance</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Date of activity</b> </label>
+                                        <input [class.is-invalid]="formNewScheduleForm.timeActivityDate.invalid && formNewScheduleForm.timeActivityDate.touched"
+                                               class="form-control two-column-input"
+                                               formControlName="timeActivityDate"
+                                               name="timeActivityDate" required type="date">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group" *ngIf="county$ | async as apps">
+                                        <label><b>County</b></label>
+                                        <select (change)="updateSelectedCounty()"
+                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.touched"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="county" name="county" required>
+                                            <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
+                                                    >{{app.county}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group" *ngIf="town$ | async as apps">
+                                        <label><b>Town/Market center</b></label>
+                                        <select (change)="updateSelectedTown()"
+                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.touched"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>
+                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
+                                                    [ngValue]="app.id">{{app.town}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Other</b></label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="locationActivityOther" name="locationActivityOther" required
+                                               [class.is-invalid]="formNewScheduleForm.locationActivityOther.invalid && formNewScheduleForm.locationActivityOther.touched">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select Product Category</b> </label>
+                                        <select (change)="onChangeSelectedProductClassification()"
+                                                 [class.is-invalid]="formNewScheduleForm.standardCategory.invalid && formNewScheduleForm.standardCategory.touched"
+                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                 class="form-control" formControlName="standardCategory" name="standardCategory" required>
+                                        <option *ngFor="let app of standardProductCategory" [value]="app.id">{{app.standardCategory}}</option>
+                                    </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select Broad Product Category</b> </label>
+                                        <select (change)="onChangeSelectedBroadProductCategory()"
+                                                [class.is-invalid]="formNewScheduleForm.broadProductCategory.invalid && formNewScheduleForm.broadProductCategory.touched"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="broadProductCategory" name="broadProductCategory" required>
+                                            <option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select Product Category</b> </label>
+                                        <select (change)="onChangeSelectedProductCategory()"
+                                                [class.is-invalid]="formNewScheduleForm.productCategory.invalid && formNewScheduleForm.productCategory.touched"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
+                                                formControlName="productCategory" id="productCategory" name="productCategory" >
+                                            <option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select Product</b> </label>
+                                        <select (change)="onChangeSelectedMyProduct()"
+                                                [class.is-invalid]="formNewScheduleForm.product.invalid && formNewScheduleForm.product.touched"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
+                                                formControlName="product" id="product" name="product" >
+                                            <option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select Product Sub-Category</b> </label>
+                                        <select (change)="onChangeSelectedProductSubcategory()"
+                                                [class.is-invalid]="formNewScheduleForm.productSubCategory.invalid && formNewScheduleForm.productSubCategory.touched"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
+                                                formControlName="productSubCategory" id="productSubCategory" name="productSubCategory" >
+                                            <option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Resources Required</b> </label>
+                                        <input [class.is-invalid]="formNewScheduleForm.resourcesRequired.invalid && formNewScheduleForm.resourcesRequired.touched"
+                                               class="form-control two-column-input" formControlName="resourcesRequired" name="resourcesRequired" required type="text">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Budget</b> </label>
+                                        <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.touched"
+                                               class="form-control two-column-input" formControlName="budget" name="budget" required type="text">
+                                    </div>
+                                    <div *ngIf="submitted && formNewScheduleForm.budget.errors" class="invalid-feedback">
+                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Field is required</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                        <button mat-raised-button type="button"  data-dismiss="modal" class="btn btn-success" [disabled]="!addNewScheduleForm.valid"
+                                (click)="onClickSaveWorkPlanScheduled(addNewScheduleForm.valid)">SUBMIT
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Work Plan Modal -->
 </div>
 

@@ -26,6 +26,7 @@ data class WorkPlanBatchDetailsDto(
         var referenceNumber: String? = null,
         var userCreated: String? = null,
         var yearName: String? = null,
+        var batchClosed: Boolean? = null,
 )
 
 data class FuelBatchDetailsDto(
@@ -85,11 +86,11 @@ data class FuelInspectionDto(
 
 data class WorkPlanInspectionDto(
         var id: Long? = null,
-        var productCategory: Long? = null,
-        var broadProductCategory: Long? = null,
-        var product: Long? = null,
-        var standardCategory: Long? = null,
-        var productSubCategory: Long? = null,
+        var productCategory: String? = null,
+        var broadProductCategory: String? = null,
+        var product: String? = null,
+        var standardCategory: String? = null,
+        var productSubCategory: String? = null,
         var department: String? = null,
         var divisionId: Long? = null,
         var sampleSubmittedId: Long? = null,
@@ -163,6 +164,7 @@ data class WorkPlanInspectionDto(
         var destructionDocId: Long? = null,
         var complaintDepartment: Long? = null,
         var referenceNumber: String? = null,
+        var batchDetails: WorkPlanBatchDetailsDto? = null,
 )
 
 data class FuelEntityDto(
@@ -212,7 +214,6 @@ data class WorkPlanEntityDto(
         var productSubCategory: Long? = null,
         var resourcesRequired: String? = null,
         var budget: String? = null,
-
         var remarks: String? = null,
 )
 

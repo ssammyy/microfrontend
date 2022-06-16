@@ -887,6 +887,22 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun closeWorkPlanBatchEntry(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceWorkPlanDaoServices.closeWorkPlanBatchCreated(referenceNo,page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+
     fun saveNewWorkPlanSchedule(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
@@ -928,10 +944,25 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun getWorkPlanInspectionDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getWorkPlanScheduleInspectionDetailsBasedOnRefNo(referenceNo, batchReferenceNo)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
 //    fun getAllWorkPlanOnGoingList(req: ServerRequest): ServerResponse {
 //        return try {
 //            val page = commonDaoServices.extractPageRequest(req)
-//            marketSurveillanceWorkPlanDaoServices.msComplaintOnGoingLists(page)
+//            marketSurveillanceWorkPlanDaoServices.msWorPlanInspectionOnGoingLists(page)
 //                .let {
 //                    ServerResponse.ok().body(it)
 //                }

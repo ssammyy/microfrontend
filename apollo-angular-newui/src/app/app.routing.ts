@@ -240,6 +240,7 @@ import {StandardLevySuspensionComponent} from './apollowebs/standards-levy/stand
 import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payments.component';
 import {WorkPlanBatchListComponent} from './apollowebs/market-surveillance/workplan/workplan-batch-list/work-plan-batch-list.component';
 import {WorkPlanListComponent} from './apollowebs/market-surveillance/workplan/work-plan-list/work-plan-list.component';
+import {WorkPlanDetailsComponent} from './apollowebs/market-surveillance/workplan/work-plan-details/work-plan-details.component';
 
 export const routes: Routes = [
     {
@@ -1323,8 +1324,8 @@ export const routes: Routes = [
                 component: WorkPlanListComponent,
             },
             {
-                path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
-                component: ViewFuelSheduledDetailsComponent
+                path: 'workPlan/details/:referenceNumber/:batchReferenceNumber',
+                component: WorkPlanDetailsComponent,
             },
         ],
     },

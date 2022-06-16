@@ -337,6 +337,7 @@ import { EpraMonthlyBatchListComponent } from './apollowebs/market-surveillance/
 import {MatListModule} from "@angular/material/list";
 import { WorkPlanBatchListComponent } from './apollowebs/market-surveillance/workplan/workplan-batch-list/work-plan-batch-list.component';
 import { WorkPlanListComponent } from './apollowebs/market-surveillance/workplan/work-plan-list/work-plan-list.component';
+import { WorkPlanDetailsComponent } from './apollowebs/market-surveillance/workplan/work-plan-details/work-plan-details.component';
 
 
 @NgModule({
@@ -695,7 +696,8 @@ import { WorkPlanListComponent } from './apollowebs/market-surveillance/workplan
         CdGeneralChecklistComponent,
         EpraMonthlyBatchListComponent,
         WorkPlanBatchListComponent,
-        WorkPlanListComponent
+        WorkPlanListComponent,
+        WorkPlanDetailsComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

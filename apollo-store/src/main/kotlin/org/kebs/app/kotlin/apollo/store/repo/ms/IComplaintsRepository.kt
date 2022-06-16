@@ -134,6 +134,8 @@ interface IMsRemarksComplaintRepository : HazelcastRepository<MsRemarksEntity, L
     fun findAllByComplaintIdOrderByIdAsc(complaintId: Long): List<MsRemarksEntity>?
     fun findAllByFuelInspectionId(fuelInspectionId: Long): List<MsRemarksEntity>?
     fun findAllByFuelInspectionIdOrderByIdAsc(fuelInspectionId: Long): List<MsRemarksEntity>?
+    fun findAllByWorkPlanId(workPlanId: Long): List<MsRemarksEntity>?
+    fun findAllByWorkPlanIdOrderByIdAsc(workPlanId: Long): List<MsRemarksEntity>?
 }
 
 @Repository
