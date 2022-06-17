@@ -54,3 +54,33 @@ curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendEntryDetai
 ]
 }
 }'
+
+
+
+curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendPenaltyDetails' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"REQUEST": {
+"HEADER": {
+"loginId": "KEBSUSER",
+"password": "password@1",
+"hash": "469aa954139c9b78dde7488c3f9fb823d865d480c7c14337c15b3512dfa802d5",
+"noOfRecords": "1",
+"transmissionDate ": "21-04-2022T00:39:12"
+},
+"PENALTYINFO": [
+{
+"PenaltyOrderNo": "202205",
+"entryNo": "20220511876226",
+"kraPin": "P051654254J",
+"manufacName": "INGWE PURE WATERS",
+"periodFrom": "31-01-2021",
+"periodTo": "27-02-2021",
+"penaltyGenDate": "21-04-2022T00:39:12",
+"penaltyPayable": "10000"
+}
+]
+}
+}'
+
+

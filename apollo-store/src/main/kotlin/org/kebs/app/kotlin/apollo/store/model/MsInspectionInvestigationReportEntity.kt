@@ -94,7 +94,7 @@ class MsInspectionInvestigationReportEntity: Serializable {
 
     @Column(name = "STATUS")
     @Basic
-    var status: String? = null
+    var status: Int? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -164,50 +164,4 @@ class MsInspectionInvestigationReportEntity: Serializable {
     @ManyToOne
     var workPlanGeneratedID: MsWorkPlanGeneratedEntity? = null
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as MsInspectionInvestigationReportEntity
-        return id == that.id &&
-                reportReference == that.reportReference &&
-                reportTo == that.reportTo &&
-                reportThrough == that.reportThrough &&
-                reportFrom == that.reportFrom &&
-                reportSubject == that.reportSubject &&
-                reportTitle == that.reportTitle &&
-                reportDate == that.reportDate &&
-                reportRegion == that.reportRegion &&
-                reportDepartment == that.reportDepartment &&
-                reportFunction == that.reportFunction &&
-                backgroundInformation == that.backgroundInformation &&
-                objectiveInvestigation == that.objectiveInvestigation &&
-                dateInvestigationInspection == that.dateInvestigationInspection &&
-                kebsInspectors == that.kebsInspectors &&
-                methodologyEmployed == that.methodologyEmployed &&
-                conclusion == that.conclusion &&
-                recommendations == that.recommendations &&
-                statusActivity == that.statusActivity &&
-                finalRemarkHod == that.finalRemarkHod &&
-                status == that.status &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(id, reportReference, reportTo, reportThrough, reportFrom, reportSubject, reportTitle, reportDate, reportRegion, reportDepartment, reportFunction, backgroundInformation, objectiveInvestigation, dateInvestigationInspection, kebsInspectors, methodologyEmployed, conclusion, recommendations, statusActivity, finalRemarkHod, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
-    }
 }

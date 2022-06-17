@@ -388,6 +388,8 @@ export class WorkPlanInspectionDto {
     complaintDepartment: number;
     referenceNumber: string;
     batchDetails: WorkPlanBatchDetailsDto;
+    ksApplicable: StandardDetailsDto;
+    remarksDetails: MSRemarksDto[];
 }
 
 

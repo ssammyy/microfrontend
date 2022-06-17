@@ -66,8 +66,8 @@ interface IOnsiteUploadRepository : HazelcastRepository<MsOnSiteUploadsEntity, L
 
 @Repository
 interface IPreliminaryReportRepository : HazelcastRepository<MsPreliminaryReportEntity, Long> {
-    fun findByWorkPlanGeneratedID(workPlanGeneratedID: MsWorkPlanGeneratedEntity): MsPreliminaryReportEntity?
-    fun findByWorkPlanGeneratedIDAndStatus(workPlanGeneratedID: MsWorkPlanGeneratedEntity, status: Int, pageable: Pageable): Page<MsPreliminaryReportEntity>?
+    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): MsPreliminaryReportEntity?
+    fun findByWorkPlanGeneratedIDAndStatus(workPlanGeneratedID: Long, status: Int, pageable: Pageable): Page<MsPreliminaryReportEntity>?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }

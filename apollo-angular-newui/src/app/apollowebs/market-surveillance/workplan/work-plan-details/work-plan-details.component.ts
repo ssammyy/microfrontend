@@ -868,53 +868,53 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickSavePDFSelected(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataPDFSaveComplianceStatus = {...this.dataPDFSaveComplianceStatus, ...this.pdfSaveComplianceStatusForm.value};
-      this.dataPDFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
-      this.dataPDFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
-      this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      if (this.workPlanInspection.sampleLabResults.savedPDFFiles.length === 0) {
-        this.msService.msFuelInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
-            this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
-            (data: any) => {
-              this.workPlanInspection = data;
-              console.log(data);
-              this.SpinnerService.hide();
-              this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
-            },
-            error => {
-              this.SpinnerService.hide();
-              console.log(error);
-              this.msService.showError('AN ERROR OCCURRED');
-            },
-        );
-      } else {
-        for (const savedPdf of this.workPlanInspection.sampleLabResults.savedPDFFiles) {
-          if (savedPdf.pdfName !== this.selectedPDFFileName) {
-            this.msService.msFuelInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
-                this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
-                (data: any) => {
-                  this.workPlanInspection = data;
-                  console.log(data);
-                  this.SpinnerService.hide();
-                  this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
-                },
-                error => {
-                  this.SpinnerService.hide();
-                  console.log(error);
-                  this.msService.showError('AN ERROR OCCURRED');
-                },
-            );
-          } else {
-            this.SpinnerService.hide();
-            this.msService.showError('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved');
-          }
-        }
-      }
-    }
-  }
+  // onClickSavePDFSelected(valid: boolean) {
+  //   if (valid) {
+  //     this.SpinnerService.show();
+  //     this.dataPDFSaveComplianceStatus = {...this.dataPDFSaveComplianceStatus, ...this.pdfSaveComplianceStatusForm.value};
+  //     this.dataPDFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
+  //     this.dataPDFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
+  //     this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+  //     if (this.workPlanInspection.sampleLabResults.savedPDFFiles.length === 0) {
+  //       this.msService.msFuelInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
+  //           this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+  //           (data: any) => {
+  //             this.workPlanInspection = data;
+  //             console.log(data);
+  //             this.SpinnerService.hide();
+  //             this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
+  //           },
+  //           error => {
+  //             this.SpinnerService.hide();
+  //             console.log(error);
+  //             this.msService.showError('AN ERROR OCCURRED');
+  //           },
+  //       );
+  //     } else {
+  //       for (const savedPdf of this.workPlanInspection.sampleLabResults.savedPDFFiles) {
+  //         if (savedPdf.pdfName !== this.selectedPDFFileName) {
+  //           this.msService.msFuelInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
+  //               this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+  //               (data: any) => {
+  //                 this.workPlanInspection = data;
+  //                 console.log(data);
+  //                 this.SpinnerService.hide();
+  //                 this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
+  //               },
+  //               error => {
+  //                 this.SpinnerService.hide();
+  //                 console.log(error);
+  //                 this.msService.showError('AN ERROR OCCURRED');
+  //               },
+  //           );
+  //         } else {
+  //           this.SpinnerService.hide();
+  //           this.msService.showError('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved');
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   // onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
   //   if (valid) {

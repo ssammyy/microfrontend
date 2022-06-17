@@ -24,6 +24,10 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var fuelInspectionId: Long? = null
 
+    @Column(name = "WORKPLAN_GENERATED_ID")
+    @Basic
+    var workplanGeneratedId: Long? = null
+
     @Column(name = "PERMIT_REF_NUMBER")
     @Basic
     var permitRefNumber: String? = null
@@ -173,82 +177,4 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other  as QaSampleSubmissionEntity
-        return id == that.id &&
-                permitId == that.permitId &&
-                permitRefNumber == that.permitRefNumber &&
-                complianceRemarks == that.complianceRemarks &&
-                cdItemId == that.cdItemId &&
-                ssfNo == that.ssfNo &&
-                ssfSubmissionDate == that.ssfSubmissionDate &&
-                bsNumber == that.bsNumber &&
-                brandName == that.brandName &&
-                productDescription == that.productDescription &&
-                sampleStatus == that.sampleStatus &&
-                resultsDate == that.resultsDate &&
-                resultsAnalysis == that.resultsAnalysis &&
-                labReportFileId == that.labReportFileId &&
-                pdfSelectedName == that.pdfSelectedName &&
-                description == that.description &&
-                status == that.status &&
-                labResultsStatus == that.labResultsStatus &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(
-            id,
-            permitId,
-            permitRefNumber,
-            complianceRemarks,
-            cdItemId,
-            ssfNo,
-            ssfSubmissionDate,
-            labReportFileId,
-            bsNumber,
-            pdfSelectedName,
-            brandName,
-            productDescription,
-            sampleStatus,
-            resultsDate,
-            resultsAnalysis,
-            description,
-            status,
-            labResultsStatus,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
-        )
-    }
 }

@@ -39,105 +39,110 @@
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Company</div>
-                                                <div class="list-text-accordion">{{workPlanInspection?.company}}
+                                                <div class="list-title-accordion">Department</div>
+                                                <div class="list-text-accordion">{{workPlanInspection?.complaintDepartment}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Petroleum Product</div>
+                                                <div class="list-title-accordion">Division</div>
                                                 <div class="list-text-accordion">
-                                                    {{workPlanInspection?.petroleumProduct}}
+                                                    {{workPlanInspection?.divisionId}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Physical Location</div>
+                                                <div class="list-title-accordion">Name of Activity</div>
                                                 <div class="list-text-accordion">
-                                                    {{workPlanInspection?.physicalLocation}}
+                                                    {{workPlanInspection?.nameActivity}}
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Inspection Date From</div>
+                                                <div class="list-title-accordion">Date of activity</div>
                                                 <div class="list-text-accordion">
-                                                    {{workPlanInspection?.inspectionDateFrom |date}}</div>
+                                                    {{workPlanInspection?.timeActivityDate |date}}</div>
+                                            </li>
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">Inspection Date To</div>-->
+<!--                                                <div class="list-text-accordion">{{workPlanInspection?.inspectionDateTo |date}}-->
+<!--                                                </div>-->
+<!--                                            </li>-->
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Resources Required</div>
+                                                <div class="list-text-accordion">
+                                                    {{workPlanInspection?.resourcesRequired}}</div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Inspection Date To</div>
-                                                <div class="list-text-accordion">{{workPlanInspection?.inspectionDateTo |date}}
-                                                </div>
-                                            </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Process Stage</div>
+                                                <div class="list-title-accordion">Budget</div>
                                                 <div class="list-text-accordion">
-                                                    {{workPlanInspection?.processStage}}</div>
+                                                    {{workPlanInspection.budget}}</div>
                                             </li>
-                                            <!--                                            <li class="list-item-accordion">-->
-                                            <!--                                                <div class="list-title-accordion">Closed Status</div>-->
-                                            <!--                                                <div class="list-text-accordion">-->
-                                            <!--                                                    {{workPlanInspection.closedStatus}}</div>-->
-                                            <!--                                            </li>-->
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Region</div>
                                                 <div class="list-text-accordion">
-                                                    {{workPlanInspection?.batchDetails?.region}}</div>
+                                                    {{workPlanInspection?.region}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">County</div>
                                                 <div class="list-text-accordion">
-                                                    {{workPlanInspection?.batchDetails?.county}}</div>
+                                                    {{workPlanInspection?.county}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Town</div>
                                                 <div class="list-text-accordion">
-                                                    {{workPlanInspection?.batchDetails?.town}}</div>
+                                                    {{workPlanInspection?.townMarketCenter}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Other</div>
+                                                <div class="list-text-accordion">
+                                                    {{workPlanInspection?.locationActivityOther}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Year</div>
                                                 <div class="list-text-accordion">
-                                                    {{workPlanInspection?.batchDetails?.batchFileYear}}</div>
+                                                    {{workPlanInspection?.batchDetails?.yearName}}</div>
                                             </li>
                                         </ul>
                                     </mat-tab>
-<!--                                    <mat-tab *ngIf="workPlanInspection?.officersAssigned" label="2">-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Assigned Officer Details-->
-<!--                                        </ng-template>-->
-<!--                                        <b class="text-primary">Assigned Officer Details</b>-->
-<!--                                        <ul class="w-list-unstyled">-->
+                                    <mat-tab *ngIf="workPlanInspection" label="2">
+                                        <ng-template mat-tab-label>Targeted Product Details
+                                        </ng-template>
+                                        <b class="text-primary">Targeted Product Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Standard  Category</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.standardCategory}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Broad Product Category</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.broadProductCategory}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Product Category</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.productCategory}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Product</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.product}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Product Sub-Category</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.productSubCategory}}</div>
+                                            </li>
 <!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">First Name</div>-->
-<!--                                                <div class="list-text-accordion">{{workPlanInspection?.officersAssigned?.firstName}}-->
+<!--                                                <div class="list-title-accordion">Product Brand</div>-->
+<!--                                                <div class="list-text-accordion">{{workPlanInspection?.pro}}-->
 <!--                                                </div>-->
 <!--                                            </li>-->
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Last Name</div>-->
-<!--                                                <div class="list-text-accordion">{{workPlanInspection?.officersAssigned?.lastName}}-->
-<!--                                                </div>-->
-<!--                                            </li>-->
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Email</div>-->
-<!--                                                <div class="list-text-accordion">-->
-<!--                                                    {{workPlanInspection?.officersAssigned?.email}}</div>-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
-<!--                                    </mat-tab>-->
-<!--                                    <mat-tab *ngIf="workPlanInspection?.rapidTestDone" label="3">-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Rapid Test Details-->
-<!--                                        </ng-template>-->
-<!--                                        <b class="text-primary">Rapid Test Details</b>-->
-<!--                                        <ul class="w-list-unstyled">-->
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Test Status</div>-->
-<!--                                                <div class="list-text-accordion">{{workPlanInspection?.rapidTest?.rapidTestStatus}}-->
-<!--                                                </div>-->
-<!--                                            </li>-->
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Test Remarks</div>-->
-<!--                                                <div class="list-text-accordion">{{workPlanInspection?.rapidTest?.rapidTestRemarks}}-->
-<!--                                                </div>-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
-<!--                                    </mat-tab>-->
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Standard Title</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.ksApplicable?.standardTitle}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">KS Number</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.ksApplicable?.standardNumber}}</div>
+                                            </li>
+
+                                        </ul>
+                                    </mat-tab>
 <!--                                    <mat-tab *ngIf="workPlanInspection?.sampleCollected" label="4">-->
 <!--                                        <ng-template mat-tab-label>-->
 <!--                                            Sample Collected Details-->
@@ -497,13 +502,13 @@
 
 <!--                                        </div>-->
 <!--                                    </mat-tab>-->
-                                    <mat-tab *ngIf="workPlanInspection?.remarksDetails.length!=0" label="8">
+                                    <mat-tab *ngIf="workPlanInspection?.remarksDetails?.length!=0" label="8">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             Remarks Details
                                         </ng-template>
                                         <div class="panel" style="max-height: 388px;">
-                                            <div *ngIf="workPlanInspection?.remarksDetails.length!=0">
+                                            <div *ngIf="workPlanInspection?.remarksDetails?.length!=0">
                                                 <div class="form-row">
                                                     <!--                                                    <div class="col-md-12 mb-3">-->
                                                     <!--                                                        <label style="color: #0082f3">Photos/Documents</label>-->

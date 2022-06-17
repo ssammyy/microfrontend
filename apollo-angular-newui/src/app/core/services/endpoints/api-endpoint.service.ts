@@ -564,7 +564,7 @@ export class ApiEndpointService {
         MS_BROAD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/broadProductCategory`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
-      };
+    };
 
     public static MARKET_SURVEILLANCE_COMPLAINT = {
         CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
@@ -583,7 +583,7 @@ export class ApiEndpointService {
         COMPLAINT_DETAILS_ADD_CLASSIFICATION_DETAILS: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/add-classification-details`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
-      };
+    };
     public static MARKET_SURVEILLANCE_WORK_PLAN = {
         ALL_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-list`,
         ADD_NEW_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/add`,
@@ -597,7 +597,7 @@ export class ApiEndpointService {
         CREATE_NEW_WORK_PLAN_SCHEDULE: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/new`,
         INSPECTION_SCHEDULED_DETAILS: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/details`,
 
-      };
+    };
     /**
      * Constructor.
      */

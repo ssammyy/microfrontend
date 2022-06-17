@@ -427,12 +427,12 @@ class MarketSurveillanceFuelDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
-        val savedSampleCollection = fuelSampleCollectAdd(body,fileInspectionDetail, map, loggedInUser)
+        val savedSampleCollection = addSampleCollectAdd(body,fileInspectionDetail,null, map, loggedInUser)
 
         when (savedSampleCollection.first.status) {
                     map.successStatus -> {
                         body.productsList?.forEach { param->
-                            fuelSampleCollectParamAdd(param,savedSampleCollection.second,map,loggedInUser)
+                            addSampleCollectParamAdd(param,savedSampleCollection.second,map,loggedInUser)
                         }
                         with(fileInspectionDetail){
                             msProcessId = applicationMapProperties.mapMSSampleSubmision
@@ -461,12 +461,12 @@ class MarketSurveillanceFuelDaoServices(
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
         val sampleCollected = findSampleCollectedDetailByFuelInspectionID(fileInspectionDetail.id)
-        val savedSampleSubmission = fuelSampleSubmissionAdd(body,fileInspectionDetail,sampleCollected?: throw ExpectedDataNotFound("MISSING SAMPLE COLLECTED FOR FUEL INSPECTION REF NO $referenceNo"), map, loggedInUser)
+        val savedSampleSubmission = addSampleSubmissionAdd(body,fileInspectionDetail,null,sampleCollected?: throw ExpectedDataNotFound("MISSING SAMPLE COLLECTED FOR FUEL INSPECTION REF NO $referenceNo"), map, loggedInUser)
 
         when (savedSampleSubmission.first.status) {
                     map.successStatus -> {
                         body.parametersList?.forEach { param->
-                            fuelSampleSubmissionParamAdd(param,savedSampleSubmission.second,map,loggedInUser)
+                            addSampleSubmissionParamAdd(param,savedSampleSubmission.second,map,loggedInUser)
                         }
                         with(fileInspectionDetail){
                             msProcessId = applicationMapProperties.mapMSBsNumber
@@ -502,7 +502,7 @@ class MarketSurveillanceFuelDaoServices(
             sampleBsNumberRemarks = body.remarks
             labResultsStatus = map.inactiveStatus
         }
-        val updatedSampleSubmission = fuelSampleSubmissionUpDate(sampleSubmission,map, loggedInUser)
+        val updatedSampleSubmission = sampleSubmissionUpdateDetails(sampleSubmission,map, loggedInUser)
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.remarks
@@ -513,7 +513,7 @@ class MarketSurveillanceFuelDaoServices(
 
         when (updatedSampleSubmission.first.status) {
             map.successStatus -> {
-                val savedBsNumber = ssfSaveBSNumber(updatedSampleSubmission.second,fileInspectionDetail,loggedInUser, map)
+                val savedBsNumber = ssfSaveBSNumber(updatedSampleSubmission.second,fileInspectionDetail,null,loggedInUser, map)
                 when (savedBsNumber.first.status) {
                     map.successStatus -> {
                         with(fileInspectionDetail){
@@ -557,7 +557,7 @@ class MarketSurveillanceFuelDaoServices(
         val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
         val fileContent = limsServices.mainFunctionLimsGetPDF(body.bsNumber, body.PDFFileName)
-        val savedPDFLabResultFile = fuelInspectionSaveLIMSPDFSelected(fileContent,body,map,loggedInUser)
+        val savedPDFLabResultFile = addInspectionSaveLIMSPDFSelected(fileContent,body,true,map,loggedInUser)
 
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
@@ -1146,9 +1146,10 @@ class MarketSurveillanceFuelDaoServices(
         return Pair(sr, fuelBatch)
     }
 
-    fun fuelSampleCollectAdd(
+    fun addSampleCollectAdd(
         body: SampleCollectionDto,
-        fileInspectionDetail: MsFuelInspectionEntity,
+        fuelInspectionDetail: MsFuelInspectionEntity?,
+        workPlanInspectionDetail: MsWorkPlanGeneratedEntity?,
         map: ServiceMapsEntity,
         user: UsersEntity
     ): Pair<ServiceRequestsEntity, MsSampleCollectionEntity> {
@@ -1168,7 +1169,12 @@ class MarketSurveillanceFuelDaoServices(
                 nameWitness = body.nameWitness
                 designationWitness = body.designationWitness
                 dateWitness = body.dateWitness
-                msFuelInspectionId = fileInspectionDetail.id
+                if (fuelInspectionDetail !=null){
+                    msFuelInspectionId = fuelInspectionDetail.id
+                }else if (workPlanInspectionDetail != null){
+                    workPlanGeneratedID = workPlanInspectionDetail.id
+                }
+
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
@@ -1198,7 +1204,7 @@ class MarketSurveillanceFuelDaoServices(
         return Pair(sr, fuelSampleCollect)
     }
 
-    fun fuelSampleCollectParamAdd(
+    fun addSampleCollectParamAdd(
         body: SampleCollectionItemsDto,
         fuelSampleCollect: MsSampleCollectionEntity,
         map: ServiceMapsEntity,
@@ -1293,22 +1299,23 @@ class MarketSurveillanceFuelDaoServices(
         return Pair(sr, remarks)
     }
 
-    fun fuelSampleSubmissionAdd(
+    fun addSampleSubmissionAdd(
         body: SampleSubmissionDto,
-        fileInspectionDetail: MsFuelInspectionEntity,
-        sampleCollected: MsSampleCollectionEntity,
+        fuelInspectionDetail: MsFuelInspectionEntity?,
+        workPlanInspectionDetail: MsWorkPlanGeneratedEntity?,
+        sampleCollected: MsSampleCollectionEntity?,
         map: ServiceMapsEntity,
         user: UsersEntity
     ): Pair<ServiceRequestsEntity, MsSampleSubmissionEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
-        var fuelSampleSubmission = MsSampleSubmissionEntity()
+        var sampleSubmission = MsSampleSubmissionEntity()
         try {
-            with(fuelSampleSubmission) {
+            with(sampleSubmission) {
                 nameProduct = body.nameProduct
                 packaging = body.packaging
                 labellingIdentification = body.labellingIdentification
-                fileRefNumber = "REF/SSF/MSFUEL/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                fileRefNumber = "REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
                 referencesStandards = body.referencesStandards
                 sizeTestSample = body.sizeTestSample
                 sizeRefSample = body.sizeRefSample
@@ -1324,16 +1331,24 @@ class MarketSurveillanceFuelDaoServices(
                 invoiceNumber = body.invoiceNumber
                 disposal = body.disposal
                 remarks = body.remarks
-                sampleCollectionNumber = sampleCollected.id
-                msFuelInspectionId = fileInspectionDetail.id
+
+                if (sampleCollected !=null){
+                    sampleCollectionNumber = sampleCollected.id
+                }
+
+                if (fuelInspectionDetail !=null){
+                    msFuelInspectionId = fuelInspectionDetail.id
+                }else if (workPlanInspectionDetail != null){
+                    workPlanGeneratedID = workPlanInspectionDetail.id
+                }
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
             }
-            fuelSampleSubmission = sampleSubmitRepo.save(fuelSampleSubmission)
+            sampleSubmission = sampleSubmitRepo.save(sampleSubmission)
 
-            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(fuelSampleSubmission)} "
-            sr.names = "Fuel Inspection Sample Submission Save file"
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(sampleSubmission)} "
+            sr.names = "Fuel Inspection or WorkPlan Sample Submission Save file"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -1352,10 +1367,10 @@ class MarketSurveillanceFuelDaoServices(
 
         }
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return Pair(sr, fuelSampleSubmission)
+        return Pair(sr, sampleSubmission)
     }
 
-    fun fuelSampleSubmissionParamAdd(
+    fun addSampleSubmissionParamAdd(
         body: SampleSubmissionItemsDto,
         fuelSampleSubmission: MsSampleSubmissionEntity,
         map: ServiceMapsEntity,
@@ -1400,7 +1415,8 @@ class MarketSurveillanceFuelDaoServices(
 
     fun ssfSaveBSNumber(
         sampleSubmission: MsSampleSubmissionEntity,
-        fileInspectionDetail: MsFuelInspectionEntity,
+        fuelInspectionDetail: MsFuelInspectionEntity?,
+        workPlanInspectionDetail: MsWorkPlanGeneratedEntity?,
         user: UsersEntity,
         map: ServiceMapsEntity
     ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
@@ -1418,7 +1434,11 @@ class MarketSurveillanceFuelDaoServices(
                         brandName = sampleSubmission.nameProduct
                         ssfSubmissionDate = sampleSubmission.sendersDate
                         bsNumber = sampleSubmission.bsNumber?.toUpperCase()
-                        fuelInspectionId = fileInspectionDetail.id
+                        if (fuelInspectionDetail !=null){
+                            fuelInspectionId = fuelInspectionDetail.id
+                        }else if (workPlanInspectionDetail != null){
+                            workplanGeneratedId = workPlanInspectionDetail.id
+                        }
                         status = map.activeStatus
                         labResultsStatus = map.inactiveStatus
                         createdBy = commonDaoServices.concatenateName(user)
@@ -1453,23 +1473,23 @@ class MarketSurveillanceFuelDaoServices(
     }
 
 
-    fun fuelSampleSubmissionUpDate(
+    fun sampleSubmissionUpdateDetails(
         sampleSubmission: MsSampleSubmissionEntity,
         map: ServiceMapsEntity,
         user: UsersEntity
     ): Pair<ServiceRequestsEntity, MsSampleSubmissionEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
-        var fuelSampleSubmission = sampleSubmission
+        var UpdateSampleSubmission = sampleSubmission
         try {
-            with(fuelSampleSubmission) {
+            with(UpdateSampleSubmission) {
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
             }
-            fuelSampleSubmission = sampleSubmitRepo.save(fuelSampleSubmission)
+            UpdateSampleSubmission = sampleSubmitRepo.save(UpdateSampleSubmission)
 
-            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(fuelSampleSubmission)} "
-            sr.names = "Fuel Inspection Sample Submission Update file"
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(UpdateSampleSubmission)} "
+            sr.names = "Sample Submission Update file"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -1488,12 +1508,13 @@ class MarketSurveillanceFuelDaoServices(
 
         }
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return Pair(sr, fuelSampleSubmission)
+        return Pair(sr, UpdateSampleSubmission)
     }
 
-    fun fuelInspectionSaveLIMSPDFSelected(
+    fun addInspectionSaveLIMSPDFSelected(
         fileContent: File,
         body: PDFSaveComplianceStatusDto,
+        isFuelInspection: Boolean,
         map: ServiceMapsEntity,
         user: UsersEntity
     ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
@@ -1505,7 +1526,15 @@ class MarketSurveillanceFuelDaoServices(
             val docFile = commonDaoServices.convertFileToMultipartFile(fileContent)
             var upload = MsUploadsEntity()
             with(upload) {
-                msFuelInspectionId = ssfDetails.fuelInspectionId
+                when {
+                    isFuelInspection -> {
+                        msFuelInspectionId = ssfDetails.fuelInspectionId
+                    }
+                    else -> {
+                        msWorkplanGeneratedId= ssfDetails.workplanGeneratedId
+                    }
+                }
+
                 ssfUploads = 1
                 ordinaryStatus = 0
                 versionNumber = 1

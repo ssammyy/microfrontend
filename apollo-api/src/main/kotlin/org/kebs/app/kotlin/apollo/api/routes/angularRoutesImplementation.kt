@@ -606,6 +606,25 @@ class AngularRoutes {
 //                    GET("/list-my-task", handler::getAllWorkPlanMyTaskList)
                     POST("/new", handler::saveNewWorkPlanSchedule)
                     GET("/details", handler::getWorkPlanInspectionDetails)
+                    "/update".nest {
+                        PUT("/approval-schedule", handler::updateWorkPlanScheduleApproval)
+                        "/hof".nest {
+                            PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
+//                            PUT("/approval-schedule", handler::updateWorkPlanScheduleApproval)
+                        }
+                    }
+                    "/add".nest {
+                        POST("/charge-sheet", handler::addWorkPlanScheduleChargeSheet)
+                        POST("/data-report", handler::addWorkPlanDataReportSheet)
+                        POST("/seizure-declaration", handler::addWorkPlanSeizureDeclaration)
+                        POST("/inspection-investigation", handler::addWorkPlanInspectionInvestigationReport)
+                        POST("/sample-collect", handler::addWorkPlanScheduleSampleCollection)
+                        POST("/sample-submission", handler::addWorkPlanScheduleSampleSubmission)
+                        POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
+                        PUT("/sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionBsNumber)
+                        PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
+                        PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
+                    }
                 }
 
 

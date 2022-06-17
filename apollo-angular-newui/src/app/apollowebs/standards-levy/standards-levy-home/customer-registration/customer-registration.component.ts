@@ -262,38 +262,70 @@ export class CustomerRegistrationComponent implements OnInit {
     );
   }
 
-  onClickSaveManufacturing(valid: boolean): void {
-    if (valid) {
-      this.SpinnerService.show();
-      this.levyService.addSL1Details(this.manufacturingInfoForm.value).subscribe(
-          (response) => {
-            console.log(response);
-            this.SpinnerService.hide();
-            this.showToasterSuccess(response.httpStatus, `SL1-C Details Saved..Entry number is ${response.body.entryNumber}`);
-            swal.fire({
-              title:'SLI-C SAVED;',
-              text: 'Entry number is'+ '\xa0\xa0' + response.body.entryNumber + '\xa0\xa0' +'Check your E-mail for registration details.',
-              buttonsStyling: false,
-              customClass: {
-                confirmButton: 'btn btn-success form-wizard-next-btn ',
-              },
-              icon: 'success'
-            });
-            this.router.navigateByUrl('/dashboard').then(r => {});
-          },
-          (error: HttpErrorResponse) => {
-            this.SpinnerService.hide();
-            console.log(error.message);
-          }
-      );
-    } else {
+    onClickSaveManufacturing(valid: boolean): void {
+        if (valid) {
+            this.SpinnerService.show();
+            this.levyService.addSL1Details(this.manufacturingInfoForm.value).subscribe(
+                (response) => {
+                    console.log(response);
+                    this.SpinnerService.hide();
+                    this.showToasterSuccess(response.httpStatus, response.body.responseMessage);
+                    swal.fire({
+                        text: response.body.responseMessage,
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    this.router.navigateByUrl('/dashboard').then(r => {});
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    console.log(error.message);
+                }
+            );
+        } else {
 
-      this.notifyService.showError("Please Fill In All The Fields", "Error");
+            this.notifyService.showError("Please Fill In All The Fields", "Error");
+
+        }
+
 
     }
 
-
-  }
+  // onClickSaveManufacturing(valid: boolean): void {
+  //   if (valid) {
+  //     this.SpinnerService.show();
+  //     this.levyService.addSL1Details(this.manufacturingInfoForm.value).subscribe(
+  //         (response) => {
+  //           console.log(response);
+  //           this.SpinnerService.hide();
+  //           this.showToasterSuccess(response.httpStatus, `SL1-C Details Saved..Entry number is ${response.body.entryNumber}`);
+  //           swal.fire({
+  //             title:'SLI-C SAVED;',
+  //             text: 'Entry number is'+ '\xa0\xa0' + response.body.entryNumber + '\xa0\xa0' +'Check your E-mail for registration details.',
+  //             buttonsStyling: false,
+  //             customClass: {
+  //               confirmButton: 'btn btn-success form-wizard-next-btn ',
+  //             },
+  //             icon: 'success'
+  //           });
+  //           this.router.navigateByUrl('/dashboard').then(r => {});
+  //         },
+  //         (error: HttpErrorResponse) => {
+  //           this.SpinnerService.hide();
+  //           console.log(error.message);
+  //         }
+  //     );
+  //   } else {
+  //
+  //     this.notifyService.showError("Please Fill In All The Fields", "Error");
+  //
+  //   }
+  //
+  //
+  // }
 
 
   onClickAddBranches() {

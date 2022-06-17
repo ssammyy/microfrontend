@@ -1324,7 +1324,7 @@ export const routes: Routes = [
                 component: WorkPlanListComponent,
             },
             {
-                path: 'workPlan/details/:referenceNumber/:batchReferenceNumber',
+                path: 'details/:referenceNumber/:batchReferenceNumber',
                 component: WorkPlanDetailsComponent,
             },
         ],
