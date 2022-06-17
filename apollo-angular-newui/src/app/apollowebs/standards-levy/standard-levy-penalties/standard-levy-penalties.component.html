@@ -151,7 +151,6 @@
                                                             <th class="knw">Amount Paid</th>
                                                             <th class="knw">Amount Due</th>
                                                             <th class="knw">Months Late</th>
-                                                            <th></th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
@@ -165,8 +164,7 @@
                                                             <td>KSH {{penaltiesDetail.paymentAmount}}</td>
                                                             <td>KSH {{penaltiesDetail.amountDue}}</td>
                                                             <td>{{penaltiesDetail.levyDueDate}}</td>
-                                                            <td><button (click)="onOpenModalPending(penaltiesDetail,'generatePdf')"  class="btn btn-success btn-sm"  style="border-radius: 100px;"> Print E-Slip</button>
-                                                            </td>
+
 
                                                         </tr>
                                                         </tbody>
@@ -218,89 +216,6 @@
 <!--                                        </div>-->
 <!--                                    </div>-->
 <!--                                </div>-->
-                                <div class="container bootdey" [hidden]="isShow" #pdfTable id="generatePdf" >
-                                    <div class="row invoice row-printable">
-                                        <div class="col-md-12">
-                                            <div class="panel panel-default plain" id="dash_0">
-                                                <div class="panel-body p30">
-                                                    <div class="row">
-                                                        <div class="col-lg-12">
-                                                            <div class="invoice-items">
-                                                                <div class="table-responsive" style="overflow: hidden; outline: none;" tabindex="0">
-                                                                    <table class="table table-bordered">
-                                                                        <tbody>
-                                                                        <tr>
-                                                                            <td class="text-center" style='border:none; color: #1263d9'>Entry Number:</td>
-                                                                            <td class="text-center" style='border:none; color: #be0909; '>{{pdfRequest?.entryNumber}}</td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none; color: #1263d9'>Kenya Bureau of Standards</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="text-center" style='border:none; color: #1263d9'>Payment Date:</td>
-                                                                            <td class="text-center" style='border:none;color: #be0909; '>{{pdfRequest?.paymentDate}}</td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none; color: #1263d9'>Popo Rd, South-C</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="text-center" style='border:none; color: #1263d9'>Due Date:</td>
-                                                                            <td class="text-center" style='border:none;color: #be0909; '>{{pdfRequest?.levyDueDate}}</td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none; color: #1263d9'>Nairobi, Kenya</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="text-center" style='border:none; color: #1263d9'>Status:</td>
-                                                                            <td class="text-center" style='border:none;'><span class="label label-success">PAID</span></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="text-center" style='border:none;color: #1263d9'>Received From:</td>
-                                                                            <td class="text-center" style='border:none;color: #be0909; '>{{pdfRequest?.companyName}}</td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                            <td class="text-center" style='border:none;'></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="text-center">Period From</td>
-                                                                            <td class="text-center">Period To</td>
-                                                                            <td class="text-center">Penalty</td>
-                                                                            <td class="text-center">Payment Amount</td>
-                                                                            <td class="text-center">Amount Due</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="text-center">{{pdfRequest?.periodFrom}}</td>
-                                                                            <td class="text-center">{{pdfRequest?.periodTo}}</td>
-                                                                            <td class="text-center">Ksh.{{pdfRequest?.penalty}}</td>
-                                                                            <td class="text-center">Ksh.{{pdfRequest?.paymentAmount}}</td>
-                                                                            <td class="text-center">Ksh.{{pdfRequest?.amountDue}}</td>
-                                                                        </tr>
-
-                                                                        </tbody>
-
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                            <div class="invoice-footer mt25">
-                                                                <p class="text-center">Generated on Monday, October 08th, 2015 </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
