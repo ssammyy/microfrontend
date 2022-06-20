@@ -5179,7 +5179,7 @@ class QADaoServices(
             )
 
             //Todo: Payment selection
-            val attachedPermitPlantDetails  = findPlantDetails(permit.attachedPlantId)
+            val attachedPermitPlantDetails  = findPlantDetails(permit.attachedPlantId?: throw Exception("MISSING ATTACHED PLANT ID"))
             val paymentRevenueCode = findPaymentRevenueWithRegionIDAndPermitType(attachedPermitPlantDetails.region ?: throw Exception("MISSING REGION ID"),permitType.id ?: throw Exception("MISSING REGION ID"))
             val manufactureDetails = commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
