@@ -608,9 +608,15 @@ class AngularRoutes {
                     GET("/details", handler::getWorkPlanInspectionDetails)
                     "/update".nest {
                         PUT("/approval-schedule", handler::updateWorkPlanScheduleApproval)
+                        GET("/start-onsite-activities", handler::startWorkPlanInspectionOnsiteDetails)
+                        GET("/end-onsite-activities", handler::endWorkPlanInspectionOnsiteDetails)
                         "/hof".nest {
                             PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
-//                            PUT("/approval-schedule", handler::updateWorkPlanScheduleApproval)
+                            PUT("/approval-final-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
+                        }
+                        "/hod".nest {
+                            PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD)
+                            PUT("/approval-final-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD)
                         }
                     }
                     "/add".nest {
@@ -620,10 +626,10 @@ class AngularRoutes {
                         POST("/inspection-investigation", handler::addWorkPlanInspectionInvestigationReport)
                         POST("/sample-collect", handler::addWorkPlanScheduleSampleCollection)
                         POST("/sample-submission", handler::addWorkPlanScheduleSampleSubmission)
-                        POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
                         PUT("/sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionBsNumber)
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
+                        POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
                     }
                 }
 

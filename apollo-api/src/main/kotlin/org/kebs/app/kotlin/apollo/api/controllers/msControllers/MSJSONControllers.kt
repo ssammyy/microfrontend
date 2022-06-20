@@ -1,17 +1,21 @@
 package org.kebs.app.kotlin.apollo.api.controllers.msControllers
 
+import com.google.gson.Gson
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.common.dto.ms.MSComplaintSubmittedSuccessful
+import org.kebs.app.kotlin.apollo.common.dto.ms.NewComplaintDto
+import org.kebs.app.kotlin.apollo.common.dto.ms.WorkPlanInspectionDto
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelRemediationInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.ISampleCollectionViewRepository
 import org.springframework.core.io.ResourceLoader
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import javax.servlet.http.HttpServletResponse
 
 
@@ -25,10 +29,34 @@ class MSJSONControllers(
     private val commonDaoServices: CommonDaoServices,
     private val msDaoService: MarketSurveillanceFuelDaoServices,
     private val reportsDaoService: ReportsDaoService,
+    private val marketSurveillanceDaoComplaintServices: MarketSurveillanceComplaintProcessDaoServices,
+    private val msWorkPlanDaoService: MarketSurveillanceWorkPlanDaoServices,
     private val limsServices: LimsServices,
     private val resourceLoader: ResourceLoader,
 ){
-    private val importInspection: Int = applicationMapProperties.mapImportInspection
+    private val appId: Int = applicationMapProperties.mapMarketSurveillance
+
+    @PostMapping("/work-plan/file/save")
+    fun uploadFiles(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("docTypeName") docTypeName: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+        docFile.forEach { fileDoc ->
+            if (docTypeName == "ORDINARY_FILE"){
+                msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled)
+            }
+        }
+
+        return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+    }
 
     @GetMapping("/view/attached-lab-pdf")
     fun downloadFileLabResultsDocument(

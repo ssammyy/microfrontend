@@ -14,6 +14,7 @@ interface IWorkPlanCreatedRepository: HazelcastRepository<WorkPlanCreatedEntity,
     fun findByUserCreatedIdAndYearNameId(userCreatedId: UsersEntity, yearNameId: WorkplanYearsCodesEntity) : WorkPlanCreatedEntity?
     fun findByUuid(uuid: String) : WorkPlanCreatedEntity?
     fun findByReferenceNumber(referenceNumber: String) : WorkPlanCreatedEntity?
+    fun findByReferenceNumberAndWorkPlanRegion(referenceNumber: String,workPlanRegion: Long) : WorkPlanCreatedEntity?
     fun findByUserCreatedId(userCreatedId: UsersEntity, pageable: Pageable): Page<WorkPlanCreatedEntity>?
     fun findByWorkPlanRegion(workPlanRegion: Long, pageable: Pageable): Page<WorkPlanCreatedEntity>?
 }

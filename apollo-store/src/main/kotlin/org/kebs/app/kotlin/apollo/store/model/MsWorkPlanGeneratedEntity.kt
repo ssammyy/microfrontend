@@ -30,6 +30,14 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var product: Long? = null
 
+    @Column(name = "HOD_RM_ASSIGNED")
+    @Basic
+    var hodRmAssigned: Long? = null
+
+    @Column(name = "HOF_ASSIGNED")
+    @Basic
+    var hofAssigned: Long? = null
+
     @Column(name = "STANDARD_CATEGORY")
     @Basic
     var standardCategory: Long? = null

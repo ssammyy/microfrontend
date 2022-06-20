@@ -92,8 +92,7 @@ data class WorkPlanInspectionDto(
         var product: String? = null,
         var standardCategory: String? = null,
         var productSubCategory: String? = null,
-        var department: String? = null,
-        var divisionId: Long? = null,
+        var divisionId: String? = null,
         var sampleSubmittedId: Long? = null,
         var division: String? = null,
         var officerName: String? = null,
@@ -144,9 +143,9 @@ data class WorkPlanInspectionDto(
         var approvedRemarks: String? = null,
         var progressValue: Boolean? = null,
         var progressStep: String? = null,
-        var county: Long? = null,
+        var county: String? = null,
         var subcounty: String? = null,
-        var townMarketCenter: Long? = null,
+        var townMarketCenter: String? = null,
         var locationActivityOther: String? = null,
         var timeActivityDate: Date? = null,
         var timeDateReportSubmitted: Date? = null,
@@ -159,15 +158,18 @@ data class WorkPlanInspectionDto(
         var reviewSupervisorDate: Date? = null,
         var reviewSupervisorRemarks: String? = null,
         var destructionClientEmail: String? = null,
-        var region: Long? = null,
+        var region: String? = null,
         var complaintId: Long? = null,
-        var officerId: Long? = null,
+        var officerDetails: MsUsersDto? = null,
+        var hodRmAssignedDetails: MsUsersDto? = null,
+        var hofAssignedDetails: MsUsersDto? = null,
         var destructionDocId: Long? = null,
-        var complaintDepartment: Long? = null,
+        var complaintDepartment: String? = null,
         var referenceNumber: String? = null,
         var batchDetails: WorkPlanBatchDetailsDto? = null,
         var ksApplicable: StandardDetailsDto? = null,
         var remarksDetails: List<MSRemarksDto>? = null,
+        var workPlanFiles: List<WorkPlanFilesFoundDto>? = null,
 )
 
 data class FuelEntityDto(
@@ -497,6 +499,13 @@ data class ComplaintsFilesFoundDto(
         var fileContentType: String? = null,
 )
 
+data class WorkPlanFilesFoundDto(
+        var id: Long? = null,
+        var fileName: String? = null,
+        var documentType: String? = null,
+        var fileContentType: String? = null,
+)
+
 data class PDFSaveComplianceStatusDto(
         @NotNull(message = "Required field")
         var ssfID: Long,
@@ -718,6 +727,7 @@ data class MsUsersDto(
         var lastName: String? = null,
         var userName: String? = null,
         var email: String? = null,
+        var phoneNumber: String? = null,
         val status: Boolean? = null
 )
 

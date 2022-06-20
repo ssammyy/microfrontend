@@ -139,7 +139,7 @@
                                     <div *ngIf="role == 'MS_IO_MODIFY'">
                                         <button *ngIf="loadedData.createdWorkPlan.batchClosed!=true" (click)="onClickCloseBatch()" mat-raised-button=""
                                                 class="btn btn-sm btn-warning mr-2"><span
-                                                class="mat-button-wrapper">CLOSE BATCH</span>
+                                                class="mat-button-wrapper">CLOSE WORK-PLAN</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -319,22 +319,35 @@
                                     <div class="form-group">
                                         <label><b>Department</b></label>
                                         <select (change)="onChangeSelectedDepartment()"
-                                                [class.is-invalid]="formNewScheduleForm.complaintDepartment.invalid && formNewScheduleForm.complaintDepartment.touched"
+                                                [class.is-invalid]="submitted && formNewScheduleForm.complaintDepartment.errors && formNewScheduleForm.complaintDepartment.invalid"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                 class="form-control" formControlName="complaintDepartment" name="complaintDepartment" required>
+                                            <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
                                         </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.complaintDepartment.errors && formNewScheduleForm.complaintDepartment.invalid" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.complaintDepartment.errors.required">Department is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Division</b></label>
-                                        <select [class.is-invalid]="formNewScheduleForm.divisionId.invalid && formNewScheduleForm.divisionId.touched"
+                                        <select [class.is-invalid]="formNewScheduleForm.divisionId.errors && formNewScheduleForm.divisionId.invalid"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                 class="form-control" formControlName="divisionId" name="divisionId" required>
+                                            <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>
                                         </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.divisionId.errors
+                                        && formNewScheduleForm.divisionId.invalid" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.divisionId.errors.required">Division is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -343,21 +356,32 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Name of Activity</b></label>
-                                        <select [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.touched"
+                                        <select [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.errors"
                                                 class="form-control two-column-input"
                                                 formControlName="nameActivity" name="nameActivity" required type="text">
+                                            <option [value]="" selected>Please select</option>
                                             <option  [value]="'Surveillance'">Surveillance</option>
                                         </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.nameActivity.errors && formNewScheduleForm.nameActivity.invalid" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.nameActivity.errors.required">Name of Activity is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Date of activity</b> </label>
-                                        <input [class.is-invalid]="formNewScheduleForm.timeActivityDate.invalid && formNewScheduleForm.timeActivityDate.touched"
+                                        <input [class.is-invalid]="formNewScheduleForm.timeActivityDate.invalid && formNewScheduleForm.timeActivityDate.errors"
                                                class="form-control two-column-input"
                                                formControlName="timeActivityDate"
                                                name="timeActivityDate" required type="date">
+                                        <div *ngIf="submitted && formNewScheduleForm.timeActivityDate.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.timeActivityDate.errors.required">Date of Activity is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -367,12 +391,16 @@
                                     <div class="form-group" *ngIf="county$ | async as apps">
                                         <label><b>County</b></label>
                                         <select (change)="updateSelectedCounty()"
-                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.touched"
+                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                 class="form-control" formControlName="county" name="county" required>
+                                            <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
                                                     >{{app.county}}</option>
                                         </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -380,12 +408,16 @@
                                     <div class="form-group" *ngIf="town$ | async as apps">
                                         <label><b>Town/Market center</b></label>
                                         <select (change)="updateSelectedTown()"
-                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.touched"
+                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                 class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>
+                                            <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
                                                     [ngValue]="app.id">{{app.town}}</option>
                                         </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -396,7 +428,10 @@
                                         <label><b>Other</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="locationActivityOther" name="locationActivityOther" required
-                                               [class.is-invalid]="formNewScheduleForm.locationActivityOther.invalid && formNewScheduleForm.locationActivityOther.touched">
+                                               [class.is-invalid]="formNewScheduleForm.locationActivityOther.invalid && formNewScheduleForm.locationActivityOther.errors">
+                                        <div *ngIf="submitted && formNewScheduleForm.locationActivityOther.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.locationActivityOther.errors.required">Other is required</div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -404,11 +439,15 @@
                                     <div class="form-group">
                                         <label><b>Select Product Category</b> </label>
                                         <select (change)="onChangeSelectedProductClassification()"
-                                                 [class.is-invalid]="formNewScheduleForm.standardCategory.invalid && formNewScheduleForm.standardCategory.touched"
+                                                 [class.is-invalid]="formNewScheduleForm.standardCategory.invalid && formNewScheduleForm.standardCategory.errors"
                                                  aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                  class="form-control" formControlName="standardCategory" name="standardCategory" required>
-                                        <option *ngFor="let app of standardProductCategory" [value]="app.id">{{app.standardCategory}}</option>
-                                    </select>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of standardProductCategory" [value]="app.id">{{app.standardCategory}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.standardCategory.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.standardCategory.errors.required">Product Category is required</div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -418,11 +457,15 @@
                                     <div class="form-group">
                                         <label><b>Select Broad Product Category</b> </label>
                                         <select (change)="onChangeSelectedBroadProductCategory()"
-                                                [class.is-invalid]="formNewScheduleForm.broadProductCategory.invalid && formNewScheduleForm.broadProductCategory.touched"
+                                                [class.is-invalid]="formNewScheduleForm.broadProductCategory.invalid && formNewScheduleForm.broadProductCategory.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                 class="form-control" formControlName="broadProductCategory" name="broadProductCategory" required>
+                                            <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</option>
                                         </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.broadProductCategory.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.broadProductCategory.errors.required">Broad Product Category is required</div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -430,11 +473,15 @@
                                     <div class="form-group">
                                         <label><b>Select Product Category</b> </label>
                                         <select (change)="onChangeSelectedProductCategory()"
-                                                [class.is-invalid]="formNewScheduleForm.productCategory.invalid && formNewScheduleForm.productCategory.touched"
+                                                [class.is-invalid]="formNewScheduleForm.productCategory.invalid && formNewScheduleForm.productCategory.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
                                                 formControlName="productCategory" id="productCategory" name="productCategory" >
+                                            <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</option>
                                         </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.productCategory.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.productCategory.errors.required">Product Category is required</div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -444,11 +491,15 @@
                                     <div class="form-group">
                                         <label><b>Select Product</b> </label>
                                         <select (change)="onChangeSelectedMyProduct()"
-                                                [class.is-invalid]="formNewScheduleForm.product.invalid && formNewScheduleForm.product.touched"
+                                                [class.is-invalid]="formNewScheduleForm.product.invalid && formNewScheduleForm.product.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
                                                 formControlName="product" id="product" name="product" >
+                                            <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</option>
-                                        </select>
+                                        </select><div *ngIf="submitted && formNewScheduleForm.product.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.product.errors.required">Product is required</div>
+                                        </div>
+
                                     </div>
                                 </div>
 
@@ -456,11 +507,16 @@
                                     <div class="form-group">
                                         <label><b>Select Product Sub-Category</b> </label>
                                         <select (change)="onChangeSelectedProductSubcategory()"
-                                                [class.is-invalid]="formNewScheduleForm.productSubCategory.invalid && formNewScheduleForm.productSubCategory.touched"
+                                                [class.is-invalid]="formNewScheduleForm.productSubCategory.invalid && formNewScheduleForm.productSubCategory.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
                                                 formControlName="productSubCategory" id="productSubCategory" name="productSubCategory" >
+                                            <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</option>
                                         </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.productSubCategory.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.productSubCategory.errors.required">Product Sub-Category is required</div>
+                                        </div>
+
                                     </div>
                                 </div>
 
@@ -469,19 +525,22 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Resources Required</b> </label>
-                                        <input [class.is-invalid]="formNewScheduleForm.resourcesRequired.invalid && formNewScheduleForm.resourcesRequired.touched"
+                                        <input [class.is-invalid]="formNewScheduleForm.resourcesRequired.invalid && formNewScheduleForm.resourcesRequired.errors"
                                                class="form-control two-column-input" formControlName="resourcesRequired" name="resourcesRequired" required type="text">
+                                        <div *ngIf="submitted && formNewScheduleForm.resourcesRequired.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.resourcesRequired.errors.required">Resources Required is required</div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Budget</b> </label>
-                                        <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.touched"
+                                        <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"
                                                class="form-control two-column-input" formControlName="budget" name="budget" required type="text">
                                     </div>
                                     <div *ngIf="submitted && formNewScheduleForm.budget.errors" class="invalid-feedback">
-                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Field is required</div>
+                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required</div>
                                     </div>
                                 </div>
 
@@ -494,8 +553,10 @@
                                  data-dismiss="modal">
                             Close
                         </button>
-                        <button mat-raised-button type="button"  data-dismiss="modal" class="btn btn-success" [disabled]="!addNewScheduleForm.valid"
-                                (click)="onClickSaveWorkPlanScheduled(addNewScheduleForm.valid)">SUBMIT
+                        <button *ngIf="addNewScheduleForm.valid" mat-raised-button   data-dismiss="modal"
+                                class="btn btn-success" (click)="onClickSaveWorkPlanScheduled()" type="button" >SUBMIT
+                        </button>
+                        <button *ngIf="addNewScheduleForm.invalid" mat-raised-button  class="btn btn-success" (click)="onClickSaveWorkPlanScheduled()" type="button" >SUBMIT
                         </button>
                     </div>
 

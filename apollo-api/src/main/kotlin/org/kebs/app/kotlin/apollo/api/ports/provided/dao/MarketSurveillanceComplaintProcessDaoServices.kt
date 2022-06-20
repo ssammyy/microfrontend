@@ -1204,6 +1204,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             officer.lastName,
             officer.userName,
             officer.email,
+            officer.cellphone,
             officer.status == 1,
         )
 
@@ -1263,6 +1264,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 it.lastName,
                 it.userName,
                 it.email,
+                it.cellphone,
                 it.status == 1,
             )
         }

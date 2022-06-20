@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {
   AllComplaintsDetailsDto,
-  BSNumberSaveDto,
+  BSNumberSaveDto, ChargeSheetDto,
   ComplaintAdviceRejectDto,
   ComplaintApproveRejectAdviceWhereDto,
   ComplaintAssignDto,
-  ComplaintClassificationDto, CompliantRemediationDto,
+  ComplaintClassificationDto, ComplaintsFilesFoundDto, CompliantRemediationDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
   FuelInspectionDto,
@@ -17,7 +17,7 @@ import {
   SampleCollectionItemsDto,
   SampleSubmissionDto,
   SampleSubmissionItemsDto, SSFSaveComplianceStatusDto,
-  WorkPlanInspectionDto,
+  WorkPlanInspectionDto, WorkPlanScheduleApprovalDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
@@ -45,7 +45,13 @@ export class WorkPlanDetailsComponent implements OnInit {
   selectedPDFFileName: string;
   currDiv!: string;
   currDivLabel!: string;
+  submitted = false;
+  approveScheduleForm!: FormGroup;
+  chargeSheetForm!: FormGroup;
+  // chargeSheetForm!: FormGroup;
+
   assignOfficerForm!: FormGroup;
+
   remarksSavedForm!: FormGroup;
   rapidTestForm!: FormGroup;
   sampleCollectForm!: FormGroup;
@@ -58,6 +64,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   scheduleRemediationForm!: FormGroup;
   notCompliantInvoiceForm!: FormGroup;
   remediationForm!: FormGroup;
+  dataSaveApproveSchedule: WorkPlanScheduleApprovalDto;
+  dataSaveChargeSheet: ChargeSheetDto;
+
   dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
   dataSaveSampleCollect: SampleCollectionDto;
@@ -76,6 +85,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   userLoggedInID: number;
   userProfile: LoggedInUser;
   blob: Blob;
+  uploadedFiles: FileList;
 
   attachments: any[];
   comments: any[];
@@ -455,6 +465,62 @@ export class WorkPlanDetailsComponent implements OnInit {
       perPage: 20,
     },
   };
+  public settingsWorkPlanFiles = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        // {name: 'viewPDFRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
+        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      documentType: {
+        title: 'File NAME',
+        type: 'string',
+        filter: false,
+      },
+      fileName: {
+        title: 'DOCUMENT TYPE',
+        type: 'string',
+        filter: false,
+      },
+      // complianceStatus: {
+      //   title: 'COMPLIANCE STATUS',
+      //   type: 'boolean',
+      //   filter: false
+      // },
+      // sampled: {
+      //   title: 'Sampled',
+      //   type: 'string'
+      // },
+      // inspectionDate: {
+      //   title: 'Inspection Date',
+      //   type: 'date'
+      // },
+      // sampleUpdated: {
+      //   title: 'Sample Updated',
+      //   type: 'custom',
+      //   renderComponent: ConsignmentStatusComponent
+      // }
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
 
   private workPlanInspection: WorkPlanInspectionDto;
 
@@ -480,6 +546,41 @@ export class WorkPlanDetailsComponent implements OnInit {
       assignedUserID: ['', Validators.required],
       remarks: null,
     });
+
+    this.approveScheduleForm = this.formBuilder.group({
+      approvalStatus: ['', Validators.required],
+      remarks: ['', Validators.required],
+    });
+
+    this.chargeSheetForm = this.formBuilder.group({
+      christianName: ['', Validators.required],
+      surname: ['', Validators.required],
+      sex: ['', Validators.required],
+      nationality: ['', Validators.required],
+      age: ['', Validators.required],
+      addressDistrict: ['', Validators.required],
+      addressLocation: ['', Validators.required],
+      firstCount: ['', Validators.required],
+      particularsOffenceOne: ['', Validators.required],
+      secondCount: ['', Validators.required],
+      particularsOffenceSecond: ['', Validators.required],
+      dateArrest: ['', Validators.required],
+      withWarrant: ['', Validators.required],
+      applicationMadeSummonsSue: ['', Validators.required],
+      dateApprehensionCourt: ['', Validators.required],
+      bondBailAmount: ['', Validators.required],
+      remandedAdjourned: ['', Validators.required],
+      complainantName: ['', Validators.required],
+      complainantAddress: ['', Validators.required],
+      prosecutor: ['', Validators.required],
+      witnesses: ['', Validators.required],
+      sentence: ['', Validators.required],
+      finePaid: ['', Validators.required],
+      courtName: ['', Validators.required],
+      courtDate: ['', Validators.required],
+      remarks: ['', Validators.required],
+    });
+
 
 
     this.sampleCollectForm = this.formBuilder.group({
@@ -572,6 +673,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       totalVolume: ['', Validators.required],
     });
 
+    this.remarksSavedForm = this.formBuilder.group({
+      processBy: null,
+      remarksDescription: null,
+    });
+
     this.activatedRoute.paramMap.subscribe(
         rs => {
           this.selectedRefNo = rs.get('referenceNumber');
@@ -583,6 +689,14 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   get formAssignOfficerForm(): any {
     return this.assignOfficerForm.controls;
+  }
+
+  get formApproveScheduleForm(): any {
+    return this.approveScheduleForm.controls;
+  }
+
+  get formChargeSheetForm(): any {
+    return this.chargeSheetForm.controls;
   }
 
   get formRapidTestForm(): any {
@@ -646,11 +760,13 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['scheduleRemediationInvoicePaid',
+    const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails',
+        'scheduleRemediationInvoicePaid',
       'assignOfficer', 'rapidTest', 'addBsNumber',
       'ssfAddComplianceStatus', 'scheduleRemediation',
       'addRemediationDetails', 'notCompliantInvoice'];
-    const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID',
+    const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS',
+        'SCHEDULE REMEDIATION DATE INVOICE PAID',
       'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
       'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED'];
@@ -663,28 +779,6 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.currDiv = divVal;
   }
 
-  viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
-    this.SpinnerService.show();
-    this.msService.loadFileDetailsPDF(pdfId).subscribe(
-        (dataPdf: any) => {
-          this.SpinnerService.hide();
-          this.blob = new Blob([dataPdf], {type: applicationType});
-
-          // tslint:disable-next-line:prefer-const
-          let downloadURL = window.URL.createObjectURL(this.blob);
-          const link = document.createElement('a');
-          link.href = downloadURL;
-          link.download = fileName;
-          link.click();
-          // this.pdfUploadsView = dataPdf;
-        },
-        error => {
-          this.SpinnerService.hide();
-          console.log(error);
-          this.msService.showError('AN ERROR OCCURRED');
-        },
-    );
-  }
 
   viewLabResultsPdfFile(fileName: string, bsNumber: string, applicationType: string): void {
     this.SpinnerService.show();
@@ -755,6 +849,53 @@ export class WorkPlanDetailsComponent implements OnInit {
     );
   }
 
+  onClickSaveApproveScheduleResults(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+      this.msService.msWorkPlanScheduleDetailsApprove(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveApproveSchedule,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('WORK-PLAN DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickStartOnsiteActivities() {
+    // if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+      this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('WORK-PLAN DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    // }
+  }
+
 
   onClickSaveAssignOfficerBatch(valid: boolean) {
     if (valid) {
@@ -776,16 +917,24 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveRapidTestResults(valid: boolean) {
-    if (valid) {
+  onClickSaveFilesResults(docTypeName: string) {
+    if (this.uploadedFiles.length > 0) {
       this.SpinnerService.show();
-      this.dataSaveRapidTest = {...this.dataSaveRapidTest, ...this.rapidTestForm.value};
-      this.msService.msFuelInspectionScheduledRapidTest(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveRapidTest).subscribe(
+      const file = this.uploadedFiles;
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber,);
+      formData.append('docTypeName', docTypeName);
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+      }
+      this.msService.saveWorkPlanFiles(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('RAPID TEST RESULTS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -939,6 +1088,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   //   }
   // }
 
+
   onClickSaveScheduleRemediation(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
@@ -1027,8 +1177,36 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   goBack() {
     console.log('TEST 101' + this.workPlanInspection.batchDetails.referenceNumber);
-    this.router.navigate([`/epra`, this.workPlanInspection.batchDetails.referenceNumber]);
+    this.router.navigate([`/workPlan`, this.workPlanInspection.batchDetails.referenceNumber]);
   }
+
+  viewWorkPlanFileSaved(data: ComplaintsFilesFoundDto) {
+    this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
+  }
+
+  viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadFileDetailsPDF(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
 
   viewLIMSPDFRecord(data: LIMSFilesFoundDto, bsNumber: string) {
     console.log('TEST 101 REF NO VIEW: ' + data.fileName);
@@ -1103,6 +1281,14 @@ export class WorkPlanDetailsComponent implements OnInit {
     switch (event.action) {
       case 'viewSavedRemarks':
         this.viewSavedRemarks(event.data);
+        break;
+    }
+  }
+
+  public onCustomWorkPlanFileViewAction(event: any): void {
+    switch (event.action) {
+      case 'viewPDFRecord':
+        this.viewWorkPlanFileSaved(event.data);
         break;
     }
   }

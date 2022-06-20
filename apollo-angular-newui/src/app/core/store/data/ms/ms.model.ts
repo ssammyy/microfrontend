@@ -111,7 +111,7 @@ export class ApiResponseModel {
 
 export class AllComplaintsDetailsDto {
     complaintsDetails: ComplaintDetailsDto;
-    acceptanceDone: Boolean;
+    acceptanceDone: boolean;
     acceptanceResults: MsComplaintAcceptanceStatusDto;
     officersList: MsUsersDto[];
     hofList: MsUsersDto[];
@@ -257,6 +257,13 @@ export class ComplaintsFilesFoundDto {
     documentType: string;
     fileContentType: string;
 }
+
+export class  WorkPlanFilesFoundDto{
+    id: number;
+    fileName: string;
+    documentType: string;
+    fileContentType: string;
+}
 export class StandardDetailsDto {
     standardTitle: string;
     standardNumber: string;
@@ -314,8 +321,7 @@ export class WorkPlanInspectionDto {
     product: string;
     standardCategory: string;
     productSubCategory: string;
-    department: string;
-    divisionId: number;
+    divisionId: string;
     sampleSubmittedId: number;
     division: string;
     officerName: string;
@@ -366,9 +372,9 @@ export class WorkPlanInspectionDto {
     approvedRemarks: string;
     progressValue: boolean;
     progressStep: string;
-    county: number;
+    county: string;
     subcounty: string;
-    townMarketCenter: number;
+    townMarketCenter: string;
     locationActivityOther: string;
     timeActivityDate: Date;
     timeDateReportSubmitted: Date;
@@ -381,15 +387,18 @@ export class WorkPlanInspectionDto {
     reviewSupervisorDate: Date;
     reviewSupervisorRemarks: string;
     destructionClientEmail: string;
-    region: number;
+    region: string;
     complaintId: number;
-    officerId: number;
+    officerDetails: MsUsersDto;
+    hodRmAssignedDetails: MsUsersDto;
+    hofAssignedDetails: MsUsersDto;
     destructionDocId: number;
-    complaintDepartment: number;
+    complaintDepartment: string;
     referenceNumber: string;
     batchDetails: WorkPlanBatchDetailsDto;
     ksApplicable: StandardDetailsDto;
     remarksDetails: MSRemarksDto[];
+    workPlanFiles: WorkPlanFilesFoundDto[];
 }
 
 
@@ -430,6 +439,41 @@ export class BatchFileFuelSaveDto {
 
 export class FuelEntityAssignOfficerDto {
     assignedUserID: bigint;
+    remarks: string;
+}
+
+export class WorkPlanScheduleApprovalDto {
+    approvalStatus: boolean;
+    remarks: string;
+}
+
+export class ChargeSheetDto {
+    id: number;
+    christianName: string;
+    surname: string;
+    sex: string;
+    nationality: string;
+    age: number;
+    addressDistrict: string;
+    addressLocation: string;
+    firstCount: string;
+    particularsOffenceOne: string;
+    secondCount: string;
+    particularsOffenceSecond: string;
+    dateArrest: Date;
+    withWarrant: string;
+    applicationMadeSummonsSue: string;
+    dateApprehensionCourt: Date;
+    bondBailAmount: number;
+    remandedAdjourned: string;
+    complainantName: string;
+    complainantAddress: string;
+    prosecutor: string;
+    witnesses: string;
+    sentence: string;
+    finePaid: string;
+    courtName: string;
+    courtDate: Date;
     remarks: string;
 }
 
@@ -633,6 +677,7 @@ export class MsUsersDto {
     lastName: string;
     userName: string;
     email: string;
+    phoneNumber: string;
     status: boolean;
 }
 
