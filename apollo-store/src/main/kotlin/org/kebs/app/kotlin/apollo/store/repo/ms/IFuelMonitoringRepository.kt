@@ -160,5 +160,6 @@ interface IMsUploadsRepository : HazelcastRepository<MsUploadsEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsUploadsEntity>
 
     fun findAllByMsComplaintIdAndComplaintUploads(msComplaintId: Long, complaintUploads: Int): List<MsUploadsEntity>?
+    fun findAllByMsWorkplanGeneratedIdAndWorkPlanUploads(msWorkplanGeneratedId: Long, workPlanUploads: Int): List<MsUploadsEntity>?
 
 }

@@ -772,6 +772,7 @@ class StdLevyController(
             manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
             makeRemarks = reportOnSiteVisitDTO.makeRemarks
             userType=reportOnSiteVisitDTO.userType
+            complianceStatus=reportOnSiteVisitDTO.complianceStatus
         }
 
         return ServerResponse(HttpStatus.OK,"Uploaded Report",standardLevyService.reportOnSiteVisit(standardLevyFactoryVisitReportEntity))
@@ -794,6 +795,7 @@ class StdLevyController(
             manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
             makeRemarks = reportOnSiteVisitDTO.makeRemarks
             userType=reportOnSiteVisitDTO.userType
+            complianceStatus=reportOnSiteVisitDTO.complianceStatus
         }
 //        val gson = Gson()
 //        KotlinLogging.logger { }.info { "INT TYPE" + gson.toJson(reportOnSiteVisitDTO) }
@@ -1517,6 +1519,15 @@ class StdLevyController(
     ): MutableList<LevyPayments> {
         return standardLevyService.getManufacturesLevyPaymentsList(companyId)
     }
+
+    @GetMapping("/getLevyPaymentsReceipt")
+    fun getLevyPaymentsReceipt(
+        response: HttpServletResponse,
+        @RequestParam("id") id: Long
+    ): MutableList<LevyPayments> {
+        return standardLevyService.getLevyPaymentsReceipt(id)
+    }
+
 
     @GetMapping("/getLevyPenalty")
     @ResponseBody

@@ -974,6 +974,17 @@
                                                                       placeholder="Remarks" type="text"></textarea>
                                                         </div>
                                                     </div>
+
+                                                    <div class="row col-12">
+                                                        <div  class="form-group col-12">
+                                                            <label>Select Compliance Status</label>
+                                                            <ng-select  formControlName="complianceStatus"  class="form-control"  name="complianceStatus" >
+                                                                <ng-option  [value]="1" >Compliant</ng-option>
+                                                                <ng-option  [value]="0" >Non-Compliant</ng-option>
+                                                            </ng-select>
+                                                        </div>
+
+                                                    </div>
                                                     <div class="row col-12">
                                                         <div class="form-group col-12">
                                                             <label><b>Action Taken</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>

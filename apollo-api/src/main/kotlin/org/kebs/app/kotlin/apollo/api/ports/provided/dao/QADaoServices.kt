@@ -76,6 +76,7 @@ class QADaoServices(
         private val invoiceDetailsRepo: IQaInvoiceDetailsRepository,
         private val invoiceMasterDetailsRepo: IQaInvoiceMasterDetailsRepository,
         private val invoiceQaBatchRepo: IQaBatchInvoiceRepository,
+        private val paymentRevenueCodesRepo: IPaymentRevenueCodesEntityRepository,
         private val invoiceStagingReconciliationRepo: IStagingPaymentReconciliationRepo,
         private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
         private val sta10Repo: IQaSta10EntityRepository,
@@ -252,6 +253,14 @@ class QADaoServices(
                     return it
                 }
                 ?: throw ExpectedDataNotFound("Invoices With [batch ID = ${batchID}], does not Exist")
+    }
+
+    fun findPaymentRevenueWithRegionIDAndPermitType(regionId: Long, permitTypeId: Long): PaymentRevenueCodesEntity {
+        paymentRevenueCodesRepo.findByRegionIdAndPermitTypeId(regionId,permitTypeId)
+                ?.let { it ->
+                    return it
+                }
+                ?: throw ExpectedDataNotFound("Payment Revenue Code For This [Region ID = ${regionId}] and [Permit Type ID = ${permitTypeId}], does not Exist")
     }
 
     fun findBatchInvoicesWithInvoiceBatchIDMapped(invoiceBatchMappedID: Long): QaBatchInvoiceEntity {
@@ -4694,7 +4703,7 @@ class QADaoServices(
             batchID = batchInvoice.id!!
         }
 
-        batchInvoice = permitMultipleInvoiceSubmitInvoice(permitType,map, loggedInUser, newBatchInvoiceDto).second
+        batchInvoice = permitMultipleInvoiceSubmitInvoice(permit,permitType,map, loggedInUser, newBatchInvoiceDto).second
 
         //Update Permit Details
         with(permit) {
@@ -5140,6 +5149,7 @@ class QADaoServices(
 //    }
 
     fun permitMultipleInvoiceSubmitInvoice(
+        permit : PermitApplicationsEntity,
         permitType : PermitTypesEntity,
             s: ServiceMapsEntity,
             user: UsersEntity,
@@ -5169,11 +5179,13 @@ class QADaoServices(
             )
 
             //Todo: Payment selection
+            val attachedPermitPlantDetails  = findPlantDetails(permit.attachedPlantId?: throw Exception("MISSING ATTACHED PLANT ID"))
+            val paymentRevenueCode = findPaymentRevenueWithRegionIDAndPermitType(attachedPermitPlantDetails.region ?: throw Exception("MISSING REGION ID"),permitType.id ?: throw Exception("MISSING REGION ID"))
             val manufactureDetails = commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
             with(myAccountDetails) {
-                reveneCode = permitType.revenueCode
-                revenueDesc = permitType.revenueDesc
+                reveneCode = paymentRevenueCode.revenueCode
+                revenueDesc = paymentRevenueCode.revenueDescription
                 accountName = manufactureDetails.name
                 accountNumber = manufactureDetails.kraPin
                 currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix

@@ -185,6 +185,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.complaint.hof.roleID}")
     val mapMSComplaintWorkPlanMappedHOFROLEID: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.work.plan.rm.roleID}")
+    val mapMSComplaintWorkPlanMappedRMROLEID: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.work.plan.hod.roleID}")
+    val mapMSComplaintWorkPlanMappedHODROLEID: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.manager.petroleum.roleID}")
     val mapMSMappedManagerPetroliumROLEID: Long = 0L
 
@@ -775,6 +781,69 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.fuel.ended}")
     val mapMSFuelInspectionEnded: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.labResultsPDFSave}")
+    val mapMSWorkPlanInspectionLabResultsPDFSave: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.generateWorkPlan}")
+    val mapMSWorkPlanInspectionGenerateWorkPlan: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.submissionApproval}")
+    val mapMSWorkPlanInspectionSubmission: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.approveWorkPlan}")
+    val mapMSWorkPlanInspectionApproveWorkPlan: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.rejectWorkPlan}")
+    val mapMSWorkPlanInspectionRejectWorkPlan: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.startMsOnSite}")
+    val mapMSWorkPlanInspectionStartMsOnSite: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.endMsOnSite}")
+    val mapMSWorkPlanInspectionEndMsOnSite: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.addBsNumber}")
+    val mapMSWorkPlanInspectionAddBsNumber: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.labResults}")
+    val mapMSWorkPlanInspectionLabResults: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.analysesLabResults}")
+    val mapMSWorkPlanInspectionAnalysesLabResults: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.generatePreliminaryReport}")
+    val mapMSWorkPlanInspectionGeneratePreliminaryReport: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.approvePreliminaryReportHOF}")
+    val mapMSWorkPlanInspectionApprovePreliminaryReportHOF: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.rejectPreliminaryReportHOF}")
+    val mapMSWorkPlanInspectionRejectPreliminaryReportHOF: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.approvePreliminaryReportHODRM}")
+    val mapMSWorkPlanInspectionApprovePreliminaryReportHODRM: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.rejectPreliminaryReportHODRM}")
+    val mapMSWorkPlanInspectionRejectPreliminaryReportHODRM: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.generateFinalPreliminaryReport}")
+    val mapMSWorkPlanInspectionGenerateFinalPreliminaryReport: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.approveFinalPreliminaryReportHOF}")
+    val mapMSWorkPlanInspectionApproveFinalPreliminaryReportHOF: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.rejectFinalPreliminaryReportHOF}")
+    val mapMSWorkPlanInspectionRejectFinalPreliminaryReportHOF: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.approveFinalPreliminaryReportHODRM}")
+    val mapMSWorkPlanInspectionApproveFinalPreliminaryReportHODRM: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.rejectFinalPreliminaryReportHODRM}")
+    val mapMSWorkPlanInspectionRejectFinalPreliminaryReportHODRM: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.ENDMSProcess}")
+    val mapMSWorkPlanInspectionENDMSProcess: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.step.save.lab.pdf}")
     val mapMSSaveSelectedLabResults: Long = 0L

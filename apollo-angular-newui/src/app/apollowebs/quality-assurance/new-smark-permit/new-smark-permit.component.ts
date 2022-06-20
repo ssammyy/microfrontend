@@ -17,7 +17,7 @@ import {
 } from '../../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
-import {selectUserInfo} from '../../../core/store';
+import {loadBranchId, loadCompanyId, selectCompanyInfoDtoStateData, selectUserInfo} from '../../../core/store';
 import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 
@@ -30,6 +30,7 @@ declare const $: any;
 })
 export class NewSmarkPermitComponent implements OnInit {
     fullname = '';
+    status: number;
     loading = false;
     SelectedSectionId;
     sta1Form: FormGroup;
@@ -84,112 +85,154 @@ export class NewSmarkPermitComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.store$.select(selectCompanyInfoDtoStateData).subscribe(
+            (d) => {
+                if (d) {
+                  //  console.log(`${d.status}`);
+                    // return this.status = d.status;
+                    if(d.status == 0)
+                    {
+                        console.log("lklklklkl")
+                        swal.fire({
+                            title: 'Cancelled',
+                            text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
+                            icon: 'error',
+                            customClass: {confirmButton: "btn btn-info",},
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.href = "/dashboard";
+                            }
+                        } )
+                    }
+                    else if(d.status==2)
+                    {
+                        swal.fire({
+                            title: 'Cancelled',
+                            text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
+                            icon: 'error',
+                            customClass: {confirmButton: "btn btn-info",},
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.href = "/dashboard";
+                            }
+                        } )
+                    }
+                    else {
 
 
-        this.sta1Form = this.formBuilder.group({
-            commodityDescription: ['', Validators.required],
-            applicantName: [],
-            sectionId: ['', Validators.required],
-            permitForeignStatus: [],
-            attachedPlant: ['', Validators.required],
-            tradeMark: ['', Validators.required],
-            createFmark: [],
-            // inputCountryCode: ['', Validators.required,Validators.pattern("[0-9 ]{11}")]
+                        this.sta1Form = this.formBuilder.group({
+                            commodityDescription: ['', Validators.required],
+                            applicantName: [],
+                            sectionId: ['', Validators.required],
+                            permitForeignStatus: [],
+                            attachedPlant: ['', Validators.required],
+                            tradeMark: ['', Validators.required],
+                            createFmark: [],
+                            // inputCountryCode: ['', Validators.required,Validators.pattern("[0-9 ]{11}")]
 
 
-        });
-        this.sta10Form = this.formBuilder.group({
-            // firmName: ['', Validators.required],
-            // statusCompanyBusinessRegistration: ['', Validators.required],
-            // ownerNameProprietorDirector: ['', Validators.required],
-            // postalAddress: ['', Validators.required],
-            // contactPerson: ['', Validators.required],
-            // telephone: ['', Validators.required],
-            // emailAddress: ['', Validators.required],
-            // physicalLocationMap: ['', Validators.required],
-            // county: ['', Validators.required],
-            // town: ['', Validators.required],
-            totalNumberFemale: ['', Validators.required],
-            totalNumberMale: ['', Validators.required],
-            totalNumberPermanentEmployees: ['', Validators.required],
-            totalNumberCasualEmployees: ['', Validators.required],
-            averageVolumeProductionMonth: ['', Validators.required]
+                        });
+                        this.sta10Form = this.formBuilder.group({
+                            // firmName: ['', Validators.required],
+                            // statusCompanyBusinessRegistration: ['', Validators.required],
+                            // ownerNameProprietorDirector: ['', Validators.required],
+                            // postalAddress: ['', Validators.required],
+                            // contactPerson: ['', Validators.required],
+                            // telephone: ['', Validators.required],
+                            // emailAddress: ['', Validators.required],
+                            // physicalLocationMap: ['', Validators.required],
+                            // county: ['', Validators.required],
+                            // town: ['', Validators.required],
+                            totalNumberFemale: ['', Validators.required],
+                            totalNumberMale: ['', Validators.required],
+                            totalNumberPermanentEmployees: ['', Validators.required],
+                            totalNumberCasualEmployees: ['', Validators.required],
+                            averageVolumeProductionMonth: ['', Validators.required]
 
-        });
+                        });
 
 
-        this.sta10FormA = this.formBuilder.group({
-            personnelName: [],
-            qualificationInstitution: [],
-            dateOfEmployment: []
+                        this.sta10FormA = this.formBuilder.group({
+                            personnelName: [],
+                            qualificationInstitution: [],
+                            dateOfEmployment: []
 
-        });
+                        });
 
-        this.sta10FormB = this.formBuilder.group({
-            productName: [],
-            productBrand: [],
-            // productStandardNumber: [],
-            // available: [],
-            // permitNo: []
-        });
+                        this.sta10FormB = this.formBuilder.group({
+                            productName: [],
+                            productBrand: [],
+                            // productStandardNumber: [],
+                            // available: [],
+                            // permitNo: []
+                        });
 
-        this.sta10FormC = this.formBuilder.group({
-            name: [],
-            origin: [],
-            specifications: [],
-            qualityChecksTestingRecords: []
-        });
+                        this.sta10FormC = this.formBuilder.group({
+                            name: [],
+                            origin: [],
+                            specifications: [],
+                            qualityChecksTestingRecords: []
+                        });
 
-        this.sta10FormD = this.formBuilder.group({
-            typeModel: [],
-            machineName: [],
-            countryOfOrigin: [],
-        });
+                        this.sta10FormD = this.formBuilder.group({
+                            typeModel: [],
+                            machineName: [],
+                            countryOfOrigin: [],
+                        });
 
-        this.sta10FormE = this.formBuilder.group({
-            processFlowOfProduction: [],
-            operations: [],
-            criticalProcessParametersMonitored: [],
-            frequency: [],
-            processMonitoringRecords: []
-        });
-        this.sta10FormG = this.formBuilder.group({});
+                        this.sta10FormE = this.formBuilder.group({
+                            processFlowOfProduction: [],
+                            operations: [],
+                            criticalProcessParametersMonitored: [],
+                            frequency: [],
+                            processMonitoringRecords: []
+                        });
+                        this.sta10FormG = this.formBuilder.group({});
 
-        this.sta10FormF = this.formBuilder.group({
-            handledManufacturingProcessRawMaterials: ['', Validators.required],
-            handledManufacturingProcessInprocessProducts: ['', Validators.required],
-            handledManufacturingProcessFinalProduct: ['', Validators.required],
-            strategyInplaceRecallingProducts: ['', Validators.required],
-            stateFacilityConditionsRawMaterials: ['', Validators.required],
-            stateFacilityConditionsEndProduct: ['', Validators.required],
-            testingFacilitiesExistSpecifyEquipment: ['', Validators.required],
-            testingFacilitiesExistStateParametersTested: ['', Validators.required],
-            testingFacilitiesSpecifyParametersTested: ['', Validators.required],
-            calibrationEquipmentLastCalibrated: ['', Validators.required],
-            handlingConsumerComplaints: ['', Validators.required],
-            companyRepresentative: ['', Validators.required],
-            applicationDate: ['', Validators.required]
-        });
+                        this.sta10FormF = this.formBuilder.group({
+                            handledManufacturingProcessRawMaterials: ['', Validators.required],
+                            handledManufacturingProcessInprocessProducts: ['', Validators.required],
+                            handledManufacturingProcessFinalProduct: ['', Validators.required],
+                            strategyInplaceRecallingProducts: ['', Validators.required],
+                            stateFacilityConditionsRawMaterials: ['', Validators.required],
+                            stateFacilityConditionsEndProduct: ['', Validators.required],
+                            testingFacilitiesExistSpecifyEquipment: ['', Validators.required],
+                            testingFacilitiesExistStateParametersTested: ['', Validators.required],
+                            testingFacilitiesSpecifyParametersTested: ['', Validators.required],
+                            calibrationEquipmentLastCalibrated: ['', Validators.required],
+                            handlingConsumerComplaints: ['', Validators.required],
+                            companyRepresentative: ['', Validators.required],
+                            applicationDate: ['', Validators.required]
+                        });
 
-        this.qaService.loadSectionList().subscribe(
-            (data: any) => {
-                this.sections = data;
-                console.log(data);
+                        this.qaService.loadSectionList().subscribe(
+                            (data: any) => {
+                                this.sections = data;
+                                console.log(data);
+                            }
+                        );
+
+                        this.qaService.loadPlantList().subscribe(
+                            (data: any) => {
+                                this.plants = data;
+                                console.log(data);
+                            }
+                        );
+
+                        this.getSelectedPermit();
+
+                        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+                            return this.fullname = u.fullName;
+                        });
+
+                    }
+                }
             }
         );
 
-        this.qaService.loadPlantList().subscribe(
-            (data: any) => {
-                this.plants = data;
-                console.log(data);
-            }
-        );
 
-        this.getSelectedPermit();
-
-        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            return this.fullname = u.fullName;
-        });
 
     }
 

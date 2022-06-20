@@ -29,9 +29,9 @@
                                 <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTab class="tab-wraps">
                                     <mat-tab *ngIf="workPlanInspection" label="1">
                                         <ng-template mat-tab-label>
-                                            Main Details
+                                            Who, What, From Where
                                         </ng-template>
-                                        <b class="text-primary">Main Details</b>
+                                        <b class="text-primary">Who, What, From Where</b>
                                         <ul class="w-list-unstyled">
                                             <li class="list-item-accordion ">
                                                 <div class="list-title-accordion">Reference Number</div>
@@ -56,16 +56,6 @@
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Date of activity</div>
-                                                <div class="list-text-accordion">
-                                                    {{workPlanInspection?.timeActivityDate |date}}</div>
-                                            </li>
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Inspection Date To</div>-->
-<!--                                                <div class="list-text-accordion">{{workPlanInspection?.inspectionDateTo |date}}-->
-<!--                                                </div>-->
-<!--                                            </li>-->
-                                            <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Resources Required</div>
                                                 <div class="list-text-accordion">
                                                     {{workPlanInspection?.resourcesRequired}}</div>
@@ -75,6 +65,18 @@
                                                 <div class="list-text-accordion">
                                                     {{workPlanInspection.budget}}</div>
                                             </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Year</div>
+                                                <div class="list-text-accordion">
+                                                    {{workPlanInspection?.batchDetails?.yearName}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection" label="2">
+                                        <ng-template mat-tab-label>Location of Activity
+                                        </ng-template>
+                                        <b class="text-primary">Location of Activity</b>
+                                        <ul class="w-list-unstyled">
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Region</div>
                                                 <div class="list-text-accordion">
@@ -95,14 +97,10 @@
                                                 <div class="list-text-accordion">
                                                     {{workPlanInspection?.locationActivityOther}}</div>
                                             </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Year</div>
-                                                <div class="list-text-accordion">
-                                                    {{workPlanInspection?.batchDetails?.yearName}}</div>
-                                            </li>
+
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection" label="2">
+                                    <mat-tab *ngIf="workPlanInspection" label="3">
                                         <ng-template mat-tab-label>Targeted Product Details
                                         </ng-template>
                                         <b class="text-primary">Targeted Product Details</b>
@@ -127,11 +125,6 @@
                                                 <div class="list-title-accordion">Product Sub-Category</div>
                                                 <div class="list-text-accordion" >{{workPlanInspection?.productSubCategory}}</div>
                                             </li>
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Product Brand</div>-->
-<!--                                                <div class="list-text-accordion">{{workPlanInspection?.pro}}-->
-<!--                                                </div>-->
-<!--                                            </li>-->
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Standard Title</div>
                                                 <div class="list-text-accordion" >{{workPlanInspection?.ksApplicable?.standardTitle}}</div>
@@ -142,6 +135,120 @@
                                             </li>
 
                                         </ul>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection" label="4">
+                                        <ng-template mat-tab-label>Time for activity
+                                        </ng-template>
+                                        <b class="text-primary">Time for activity</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Activity Date</div>
+                                                <div class="list-text-accordion">{{workPlanInspection?.timeActivityDate |date}}</div>
+                                            </li>
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">Date report submitted</div>-->
+<!--                                                <div class="list-text-accordion" >{{workPlanInspection?.timeDateReportSubmitted}}</div>-->
+<!--                                            </li>-->
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Created By</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.officerName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Onsite Activity Started Status</div>
+                                                <div class="list-text-accordion">{{workPlanInspection?.onsiteStartStatus}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Onsite Activity Started Date</div>
+                                                <div class="list-text-accordion">{{workPlanInspection?.onsiteStartDate |date}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Onsite Activity Ended Status</div>
+                                                <div class="list-text-accordion">{{workPlanInspection?.onsiteEndStatus}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Onsite Activity Ended Date</div>
+                                                <div class="list-text-accordion">{{workPlanInspection?.onsiteEndDate |date}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.officerDetails" label="5">
+                                        <ng-template mat-tab-label>Officer Details
+                                        </ng-template>
+                                        <b class="text-primary">Officer Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name</div>
+                                                <div class="list-text-accordion">{{workPlanInspection?.officerDetails?.firstName}} {{workPlanInspection?.officerDetails?.lastName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.officerDetails?.email}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Phone Number</div>
+                                                <div class="list-text-accordion" >+{{workPlanInspection?.officerDetails?.phoneNumber}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.hodRmAssignedDetails" label="6">
+                                        <ng-template mat-tab-label>HOD/RM Assigned Details
+                                        </ng-template>
+                                        <b class="text-primary">HOD/RM Assigned Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name</div>
+                                                <div class="list-text-accordion">{{workPlanInspection?.hodRmAssignedDetails?.firstName}} {{workPlanInspection?.hodRmAssignedDetails?.lastName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.hodRmAssignedDetails?.email}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Phone Number</div>
+                                                <div class="list-text-accordion" >+{{workPlanInspection?.hodRmAssignedDetails?.phoneNumber}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.hofAssignedDetails" label="7">
+                                        <ng-template mat-tab-label>HOF Assigned Details
+                                        </ng-template>
+                                        <b class="text-primary">HOF Assigned Details</b>
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name</div>
+                                                <div class="list-text-accordion">{{workPlanInspection?.hofAssignedDetails?.firstName}} {{workPlanInspection?.hofAssignedDetails?.lastName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email</div>
+                                                <div class="list-text-accordion" >{{workPlanInspection?.hofAssignedDetails?.email}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Phone Number</div>
+                                                <div class="list-text-accordion" >+{{workPlanInspection?.hofAssignedDetails?.phoneNumber}}</div>
+                                            </li>
+                                        </ul>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.workPlanFiles?.length!=0" label="8">
+                                        <!--                                    <mat-tab  label="6">-->
+                                        <ng-template mat-tab-label>
+                                            Work-Plan All Photos/Documents Attached
+                                        </ng-template>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <div *ngIf="workPlanInspection?.workPlanFiles.length!=0">
+                                                <div class="form-row">
+                                                    <!--                                                    <div class="col-md-12 mb-3">-->
+                                                    <!--                                                        <label style="color: #0082f3">Photos/Documents</label>-->
+                                                    <!--                                                    </div>-->
+                                                    <div class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsWorkPlanFiles"
+                                                                         [source]="workPlanInspection?.workPlanFiles"
+                                                                         (custom)="onCustomWorkPlanFileViewAction($event)"
+                                                        ></ng2-smart-table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                        </div>
                                     </mat-tab>
 <!--                                    <mat-tab *ngIf="workPlanInspection?.sampleCollected" label="4">-->
 <!--                                        <ng-template mat-tab-label>-->
@@ -529,151 +636,53 @@
                             <div class="col-md-2 p-0">
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
-<!--                                    <div *ngIf="role == 'MS_MP_MODIFY'">-->
-<!--                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection.assignedOfficerStatus ==false" (click)="openModalAddDetails('assignOfficer')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                 data-target="#myModal1"-->
-<!--                                                 class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                class="mat-button-wrapper">ASSIGN OFFICER</span>-->
-<!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                            <div class="mat-button-focus-overlay"></div>-->
-<!--                                        </button>-->
-<!--                                    </div>-->
-<!--                                    <div *ngIf="role == 'MS_IOP_MODIFY' && workPlanInspection?.assignedOfficerStatus && workPlanInspection?.officersAssigned?.id == userLoggedInID">-->
-<!--                                        <button *ngIf="workPlanInspection?.rapidTestDone == false" (click)="openModalAddDetails('rapidTest')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                data-target="#myModal1"-->
-<!--                                                class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                class="mat-button-wrapper">RAPID TEST</span>-->
-<!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                            <div class="mat-button-focus-overlay"></div>-->
-<!--                                        </button>-->
-<!--                                        <button *ngIf="workPlanInspection?.rapidTest?.rapidTestStatus == true && workPlanInspection?.rapidTestDone == true && workPlanInspection?.endInspectionStatus == false"-->
-<!--                                                (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"-->
-<!--                                                class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                class="mat-button-wrapper">END FUEL</span>-->
-<!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                            <div class="mat-button-focus-overlay"></div>-->
-<!--                                        </button>-->
-<!--                                        <button   mat-raised-button="" data-toggle="modal"-->
-<!--                                                  data-target="#sampleCollectModal"-->
-<!--                                                  class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                class="mat-button-wrapper">ADD SAMPLE COLLECTED</span>-->
-<!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                            <div class="mat-button-focus-overlay"></div>-->
-<!--                                        </button>-->
-<!--                                        <div *ngIf="workPlanInspection?.rapidTestDone == true && workPlanInspection.rapidTest.rapidTestStatus==false">-->
+                                    <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
+<!--                                        && workPlanInspection?.batchDetails.endedStatus-->
+                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                        && workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus ==false" (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
+                                                 data-target="#myModal1"
+                                                 class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">APPROVE/REJECT SCHEDULE</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                    </div>
+                                    <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
+<!--                                        && workPlanInspection?.batchDetails.endedStatus-->
+                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                        && workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
+                                                 (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
+                                                 class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">START ONSITE ACTIVITIES</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <div *ngIf="workPlanInspection?.onsiteStartStatus && workPlanInspection?.onsiteEndStatus ==false">
+                                            <button   (click)="openModalAddDetails('uploadFiles')" mat-raised-button="" data-toggle="modal"
+                                                      data-target="#myModal1"
+                                                      class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPLOAD ATTACHMENTS</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="workPlanInspection.chargeSheetStatus ==false" (click)="openModalAddDetails('chargeSheetDetails')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#chargeSheetModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD CHARGE SHEET</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                        </div>
 
-<!--                                            <button *ngIf="workPlanInspection.sampleCollectionStatus == true && workPlanInspection.sampleSubmittedStatus== false" mat-raised-button="" data-toggle="modal"-->
-<!--                                                    data-target="#sampleSubmitModal"-->
-<!--                                                    class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">ADD SAMPLE SUBMITTED</span>-->
-<!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
-<!--                                            <button  *ngIf="workPlanInspection.sampleCollectionStatus && workPlanInspection.sampleSubmittedStatus && workPlanInspection.bsNumberStatus== false" (click)="openModalAddDetails('addBsNumber')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                     data-target="#myModal1"-->
-<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">ADD BS NUMBER</span>-->
-<!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
-<!--                                            <button *ngIf="workPlanInspection.bsNumberStatus && workPlanInspection.compliantStatusAdded && workPlanInspection.remediationScheduledStatus==false-->
-<!--                                            && workPlanInspection.sampleLabResults.ssfResultsList.complianceStatus" (click)="openModalAddDetails('scheduleRemediation')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                    data-target="#myModal1"-->
-<!--                                                    class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">SCHEDULE REMEDIATION DATE</span>-->
-<!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
-<!--                                            <button *ngIf="workPlanInspection.bsNumberStatus && workPlanInspection.compliantStatusAdded && workPlanInspection?.remediationScheduledStatus-->
-<!--                                            && workPlanInspection.sampleLabResults.ssfResultsList.complianceStatus && workPlanInspection.remendiationCompleteStatus == false" (click)="openModalAddDetails('addRemediationDetails')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                    data-target="#myModal1"-->
-<!--                                                    class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">REMEDIATION</span>-->
-<!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
-<!--                                            <button  *ngIf="workPlanInspection.bsNumberStatus && workPlanInspection.compliantStatusAdded &&-->
-<!--                                            workPlanInspection.sampleLabResults.ssfResultsList.complianceStatus == false && workPlanInspection?.fuelRemediation == null"-->
-<!--                                                     (click)="openModalAddDetails('notCompliantInvoice')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                     data-target="#myModal1"-->
-<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">GENERATE REMEDIATION INVOICE</span>-->
-<!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
-<!--                                            <button *ngIf="workPlanInspection.compliantStatusAdded && workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus == false-->
-<!--                                            && workPlanInspection.proFormaInvoiceStatus && workPlanInspection.remediationScheduledStatus==false"-->
-<!--                                                    (click)="openModalAddDetails('scheduleRemediationInvoicePaid')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                    data-target="#myModal1"-->
-<!--                                                    class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">SCHEDULE REMEDIATION DATE</span>-->
-<!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
-<!--                                            <button *ngIf="workPlanInspection.compliantStatusAdded && workPlanInspection.sampleLabResults.ssfResultsList.complianceStatus == false-->
-<!--                                            && workPlanInspection.proFormaInvoiceStatus && workPlanInspection.remediationScheduledStatus && workPlanInspection.remendiationCompleteStatus == false"-->
-<!--                                                    (click)="openModalAddDetails('addRemediationDetails')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                    data-target="#myModal1"-->
-<!--                                                    class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">REMEDIATION</span>-->
-<!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
-<!--                                            <button *ngIf="workPlanInspection.remendiationCompleteStatus && workPlanInspection?.endInspectionStatus == false"-->
-<!--                                                    (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"-->
-<!--                                                    class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">END FUEL</span>-->
-<!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
-<!--                                        </div>-->
-
-<!--                                    </div>-->
+                                    </div>
 
                                 </div>
 
                                 <br/>
                                 <b>Document Details:</b>
-                                <!--                                <div *ngIf="workPlanInspection.ui">-->
-                                <!--                                    <a class="btn btn-sm btn-warning" href="{{workPlanInspection.cd_details.summaryPageURL}}"-->
-                                <!--                                       *ngIf="workPlanInspection.cd_details.summaryPageURL" target="_blank">View on-->
-                                <!--                                        KenTrade</a>-->
-                                <!--                                    <br/>-->
-                                <!--                                    <button *ngIf="workPlanInspection.ui.checklistFilled" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewInspectionChecklists()">VIEW INSPECTION REPORT-->
-                                <!--                                    </button>-->
-                                <!--                                    <button *ngIf="workPlanInspection.ui.corAvailable" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewCoR()">-->
-                                <!--                                        CERTIFICATE OF-->
-                                <!--                                        ROADWORTHINESS-->
-                                <!--                                    </button>-->
-                                <!--                                    <button *ngIf="workPlanInspection.ui.cocAvailable" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewCoC('coc')">CERTIFICATE OF COMPLIANCE-->
-                                <!--                                    </button>-->
-                                <!--                                    <button *ngIf="workPlanInspection.ui.ncrAvailable" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewCoC('ncr')">NCR-->
-                                <!--                                    </button>-->
-                                <!--                                    <button *ngIf="workPlanInspection.ui.coiAvailable" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewCoC('coi')">CERTIFICATE OF Inspection-->
-                                <!--                                    </button>-->
-                                <!--                                    <button *ngIf="workPlanInspection.ui.idfAvailable" class="btn btn-sm btn-primary"-->
-                                <!--                                            (click)="viewIdfDocument()">IDF DOCUMENT-->
-                                <!--                                    </button>-->
-                                <!--                                    <button class="btn btn-sm btn-primary" (click)="viewDeclarationDocument()">-->
-                                <!--                                        DECLARATION DOCUMENT-->
-                                <!--                                    </button>-->
-                                <!--                                </div>-->
                             </div>
                         </div>
                     </div>
-                    <!--                    <ng-template #loadingView>-->
-                    <!--                        <div class="card-body text-center">-->
-                    <!--                            <div class="loader-view text-center spinner-border" style="width: 7rem; height: 7rem;"-->
-                    <!--                                 role="status">-->
-                    <!--                                <span class="sr-only">Loading...</span>-->
-                    <!--                            </div>-->
-                    <!--                        </div>-->
-                    <!--                    </ng-template>-->
                     <!-- end content-->
                 </div>
                 <!--  end card  -->
@@ -694,25 +703,26 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div *ngIf="(currDiv == 'assignOfficer')">
-                        <form [formGroup]="assignOfficerForm" class="form">
+                    <div *ngIf="(currDiv == 'approveSchedule')">
+                        <form [formGroup]="approveScheduleForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="assignedUserID"><b>Select officer</b></label>
+                                        <label for="approvalStatus"><b>Select Status</b></label>
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formAssignOfficerForm.assignedUserID.invalid && formAssignOfficerForm.assignedUserID.touched"
-                                                        formControlName="assignedUserID" id="assignedUserID" name="assignedUserID" >
-                                                <mat-option *ngFor="let app of workPlanInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+                                                        [class.is-invalid]="formApproveScheduleForm.approvalStatus.invalid && formAssignOfficerForm.assignedUserID.touched"
+                                                        formControlName="approvalStatus" id="approvalStatus" name="approvalStatus" >
+                                                <mat-option [value]="true">APPROVE</mat-option>
+                                                <mat-option [value]="false">REJECT</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
+                                        <label for="remarks"><b>Please write, in detail, your feedback for Approving/Rejecting the Work-plan Activity Scheduled:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks" matInput type="text"
                                                       formControlName="remarks"
-                                                      name="remarks">
+                                                      name="remarks" required>
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -720,28 +730,16 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'rapidTest')">
-                        <form [formGroup]="rapidTestForm" class="form">
+                    <div *ngIf="(currDiv == 'uploadFiles')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="rapidTestStatus"><b>Select Test Results</b></label>
-                                        <mat-form-field id="rapidTestStatus">
-                                            <mat-select placeholder="Please Select an option"
-                                                        formControlName="rapidTestStatus"
-                                                        [class.is-invalid]="formRapidTestForm.rapidTestStatus.invalid && formRapidTestForm.rapidTestStatus.touched"
-                                                        name="rapidTestStatus">
-                                                <mat-option [value]="true">PASS</mat-option>
-                                                <mat-option [value]="false">FAIL</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <label for="rapidTestRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="rapidTestRemarks" matInput type="text"
-                                                      formControlName="rapidTestRemarks"
-                                                      name="rapidTestRemarks">
-                                            </textarea>
-                                        </mat-form-field>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files"
+                                                         fileslimit="5" accept=".pdf, .png, .jpg"></file-upload>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -1029,15 +1027,14 @@
 
                     <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
                     </button>
-                    <button *ngIf="(currDiv == 'assignOfficer')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveAssignOfficerBatch(assignOfficerForm.valid);"
-                            [disabled]="!assignOfficerForm.valid"
+                    <button *ngIf="(currDiv == 'approveSchedule')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveApproveScheduleResults(approveScheduleForm.valid);"
+                            [disabled]="!approveScheduleForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'rapidTest')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveRapidTestResults(rapidTestForm.valid);"
-                            [disabled]="!rapidTestForm.valid"
+                    <button *ngIf="(currDiv == 'uploadFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('ORDINARY_FILE');"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -1088,6 +1085,267 @@
         </div>
     </div>
     <!--  End Dynamic Modal -->
+
+    <!-- Charge Sheet Modal -->
+<!--    <div class="modal fade" id="chargeSheetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"-->
+<!--         aria-hidden="true">-->
+<!--        <div class="modal-dialog modal-xl">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h4 class="modal-title">Fill in bellow activity Details</h4>-->
+<!--                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">-->
+<!--                        <i class="material-icons">clear</i>-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <form [formGroup]="chargeSheetForm">-->
+<!--                        <div class="form-group bmd-form-group is-filled">-->
+<!--                            <h5 class="mb-3" style="color: #0066B1">Work-Plan Details</h5>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Names in Full</b> </label>-->
+<!--                                        <input [class.is-invalid]="formChargeSheetForm.christianName.invalid && formChargeSheetForm.christianName.errors"-->
+<!--                                               class="form-control two-column-input"-->
+<!--                                               formControlName="christianName"-->
+<!--                                               name="christianName" required type="date">-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.christianName.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.christianName.errors.required">Names in Full is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Surname</b> </label>-->
+<!--                                        <input [class.is-invalid]="formChargeSheetForm.surname.invalid && formChargeSheetForm.surname.errors"-->
+<!--                                               class="form-control two-column-input"-->
+<!--                                               formControlName="surname"-->
+<!--                                               name="surname" required type="date">-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.surname.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.surname.errors.required">Surname is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Gender</b></label>-->
+<!--                                        <select [class.is-invalid]="formChargeSheetForm.sex.invalid && formChargeSheetForm.sex.errors"-->
+<!--                                                class="form-control two-column-input"-->
+<!--                                                formControlName="sex" name="sex" required type="text">-->
+<!--                                            <option [value]="" selected>Please select Gender</option>-->
+<!--                                            <option  [value]="'Male'">Male</option>-->
+<!--                                            <option  [value]="'Female'">Female</option>-->
+<!--                                        </select>-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.sex.errors && formChargeSheetForm.sex.invalid" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.sex.errors.required">Gender is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Date of activity</b> </label>-->
+<!--                                        <input [class.is-invalid]="formChargeSheetForm.timeActivityDate.invalid && formChargeSheetForm.timeActivityDate.errors"-->
+<!--                                               class="form-control two-column-input"-->
+<!--                                               formControlName="timeActivityDate"-->
+<!--                                               name="timeActivityDate" required type="date">-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.timeActivityDate.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.timeActivityDate.errors.required">Date of Activity is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group" *ngIf="county$ | async as apps">-->
+<!--                                        <label><b>County</b></label>-->
+<!--                                        <select (change)="updateSelectedCounty()"-->
+<!--                                                [class.is-invalid]="formChargeSheetForm.county.invalid && formChargeSheetForm.county.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+<!--                                                class="form-control" formControlName="county" name="county" required>-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"-->
+<!--                                            >{{app.county}}</option>-->
+<!--                                        </select>-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.county.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.county.errors.required">County is required</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group" *ngIf="town$ | async as apps">-->
+<!--                                        <label><b>Town/Market center</b></label>-->
+<!--                                        <select (change)="updateSelectedTown()"-->
+<!--                                                [class.is-invalid]="formChargeSheetForm.townMarketCenter.invalid && formChargeSheetForm.townMarketCenter.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+<!--                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"-->
+<!--                                                    [ngValue]="app.id">{{app.town}}</option>-->
+<!--                                        </select>-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.townMarketCenter.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.townMarketCenter.errors.required">Town/Market center is required</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Other</b></label>-->
+<!--                                        <input type="text" class="form-control two-column-input"-->
+<!--                                               formControlName="locationActivityOther" name="locationActivityOther" required-->
+<!--                                               [class.is-invalid]="formChargeSheetForm.locationActivityOther.invalid && formChargeSheetForm.locationActivityOther.errors">-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.locationActivityOther.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.locationActivityOther.errors.required">Other is required</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Select Product Category</b> </label>-->
+<!--                                        <select (change)="onChangeSelectedProductClassification()"-->
+<!--                                                [class.is-invalid]="formChargeSheetForm.standardCategory.invalid && formChargeSheetForm.standardCategory.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+<!--                                                class="form-control" formControlName="standardCategory" name="standardCategory" required>-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option *ngFor="let app of standardProductCategory" [value]="app.id">{{app.standardCategory}}</option>-->
+<!--                                        </select>-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.standardCategory.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.standardCategory.errors.required">Product Category is required</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Select Broad Product Category</b> </label>-->
+<!--                                        <select (change)="onChangeSelectedBroadProductCategory()"-->
+<!--                                                [class.is-invalid]="formChargeSheetForm.broadProductCategory.invalid && formChargeSheetForm.broadProductCategory.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+<!--                                                class="form-control" formControlName="broadProductCategory" name="broadProductCategory" required>-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</option>-->
+<!--                                        </select>-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.broadProductCategory.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.broadProductCategory.errors.required">Broad Product Category is required</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Select Product Category</b> </label>-->
+<!--                                        <select (change)="onChangeSelectedProductCategory()"-->
+<!--                                                [class.is-invalid]="formChargeSheetForm.productCategory.invalid && formChargeSheetForm.productCategory.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
+<!--                                                formControlName="productCategory" id="productCategory" name="productCategory" >-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</option>-->
+<!--                                        </select>-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.productCategory.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.productCategory.errors.required">Product Category is required</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Select Product</b> </label>-->
+<!--                                        <select (change)="onChangeSelectedMyProduct()"-->
+<!--                                                [class.is-invalid]="formChargeSheetForm.product.invalid && formChargeSheetForm.product.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
+<!--                                                formControlName="product" id="product" name="product" >-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</option>-->
+<!--                                        </select><div *ngIf="submitted && formChargeSheetForm.product.errors" class="invalid-feedback">-->
+<!--                                        <div *ngIf="formChargeSheetForm.product.errors.required">Product is required</div>-->
+<!--                                    </div>-->
+
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Select Product Sub-Category</b> </label>-->
+<!--                                        <select (change)="onChangeSelectedProductSubcategory()"-->
+<!--                                                [class.is-invalid]="formChargeSheetForm.productSubCategory.invalid && formChargeSheetForm.productSubCategory.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
+<!--                                                formControlName="productSubCategory" id="productSubCategory" name="productSubCategory" >-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</option>-->
+<!--                                        </select>-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.productSubCategory.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.productSubCategory.errors.required">Product Sub-Category is required</div>-->
+<!--                                        </div>-->
+
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Resources Required</b> </label>-->
+<!--                                        <input [class.is-invalid]="formChargeSheetForm.resourcesRequired.invalid && formChargeSheetForm.resourcesRequired.errors"-->
+<!--                                               class="form-control two-column-input" formControlName="resourcesRequired" name="resourcesRequired" required type="text">-->
+<!--                                        <div *ngIf="submitted && formChargeSheetForm.resourcesRequired.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formChargeSheetForm.resourcesRequired.errors.required">Resources Required is required</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Budget</b> </label>-->
+<!--                                        <input [class.is-invalid]="formChargeSheetForm.budget.invalid && formChargeSheetForm.budget.errors"-->
+<!--                                               class="form-control two-column-input" formControlName="budget" name="budget" required type="text">-->
+<!--                                    </div>-->
+<!--                                    <div *ngIf="submitted && formChargeSheetForm.budget.errors" class="invalid-feedback">-->
+<!--                                        <div *ngIf="formChargeSheetForm.budget.errors.required">The Budget is required</div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </form>-->
+
+<!--                    <div class="modal-footer">-->
+<!--                        <button  mat-raised-button type="button" class="btn btn-danger"-->
+<!--                                 data-dismiss="modal">-->
+<!--                            Close-->
+<!--                        </button>-->
+<!--                        <button *ngIf="addNewScheduleForm.valid" mat-raised-button   data-dismiss="modal"-->
+<!--                                class="btn btn-success" (click)="onClickSaveWorkPlanScheduled()" type="button" >SUBMIT-->
+<!--                        </button>-->
+<!--                        <button *ngIf="addNewScheduleForm.invalid" mat-raised-button  class="btn btn-success" (click)="onClickSaveWorkPlanScheduled()" type="button" >SUBMIT-->
+<!--                        </button>-->
+<!--                    </div>-->
+
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <!-- End Charge Sheet Modal -->
 
     <!-- Sample collect Modal -->
     <div class="modal fade" id="sampleCollectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"

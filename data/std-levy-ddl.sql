@@ -1418,6 +1418,12 @@ order by ID
 alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
     add visit_date date;
 
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    add COMPLIANCE_STATUS int default 1;
+
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    add CONDUCTED_BY int default 0;
+
 select *
 from CFG_USER_PRIVILEGES
 where NAME = 'SL_SECOND_APPROVE_VISIT_REPORT'
@@ -1995,6 +2001,10 @@ alter table DAT_KEBS_COMPANY_PROFILE_EDIT
 
 alter table DAT_KEBS_USERS
     add SIGNATURE BLOB
+/
+alter table DAT_KEBS_COMPANY_PROFILE
+    add SL_FORM_STATUS int default 0
+
 /
 
 

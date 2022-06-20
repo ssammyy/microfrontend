@@ -855,6 +855,12 @@ interface IQaSmarkFmarkRepository : HazelcastRepository<QaSmarkFmarkEntity, Long
 }
 
 @Repository
+interface IPaymentRevenueCodesEntityRepository : HazelcastRepository<PaymentRevenueCodesEntity, Long> {
+    fun findByRegionId(regionId: Long): List<PaymentRevenueCodesEntity>?
+    fun findByRegionIdAndPermitTypeId(regionId: Long, permitTypeId: Long): PaymentRevenueCodesEntity?
+}
+
+@Repository
 interface IQaWorkplanRepository : HazelcastRepository<QaWorkplanEntity, Long> {
     fun findByPermitNumber(permitNumber: String): List<QaWorkplanEntity>?
     fun findByOfficerId(officerId: Long): List<QaWorkplanEntity>?

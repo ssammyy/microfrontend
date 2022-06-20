@@ -117,6 +117,7 @@ export interface CompanyModel {
     DateOfManufacture: string;
     totalValueOfManufacture: number;
     otherBusinessNatureType: string;
+    slFormStatus: number;
 
 }
 export interface StdLevyScheduleSiteVisitDTO {
@@ -253,6 +254,7 @@ export interface SiteVisitReport {
     manufacturerEntity: number;
     userType: number;
     makeRemarks: string;
+    complianceStatus: number;
 
 }
 export interface ApproveVisitTask {

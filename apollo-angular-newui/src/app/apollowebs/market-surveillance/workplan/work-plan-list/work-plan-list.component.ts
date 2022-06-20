@@ -404,7 +404,7 @@ export class WorkPlanListComponent implements OnInit {
   }
 
   onClickCloseBatch() {
-    this.msService.showSuccessWith2Message('Are you sure your want to close this Batch?', 'You won\'t be able to add new schedule after submission!',
+    this.msService.showSuccessWith2Message('Are you sure your want to close this Work-Plan?', 'You won\'t be able to add new schedule after submission!',
         // tslint:disable-next-line:max-line-length
         'You can click the \'ADD NEW WORK-PLAN FILE\' button to add another Work Plan', 'YEARLY WORK-PLAN SENT FOR APPROVAL SUCCESSFUL', () => {
           this.closeBatch();
@@ -418,15 +418,10 @@ export class WorkPlanListComponent implements OnInit {
     this.msService.closeMSWorkPlanBatch(this.selectedBatchRefNo).subscribe(
         (data: any) => {
           console.log(data);
-          // this.loadedData = data;
-          // this.totalCount = this.loadedData.fuelInspectionDto.length;
-          // this.dataSet.load(this.loadedData.fuelInspectionDto);
           this.SpinnerService.hide();
-          this.msService.reloadCurrentRoute();
-
           resultStatus  = true;
-          // tslint:disable-next-line:max-line-length
-          this.msService.showSuccess('YEARLY WORK-PLAN SENT FOR APPROVAL SUCCESSFUL', this.loadData(this.defaultPage, this.defaultPageSize, this.selectedBatchRefNo, this.activeStatus));
+          this.msService.showSuccess('YEARLY WORK-PLAN SENT FOR APPROVAL SUCCESSFUL');
+          this.router.navigate([`/workPlan`]);
         },
         error => {
           this.SpinnerService.hide();
@@ -462,22 +457,26 @@ export class WorkPlanListComponent implements OnInit {
     this.productSubcategorySelected = this.addNewScheduleForm?.get('productSubcategory')?.value;
   }
 
-  onClickSaveWorkPlanScheduled(valid: boolean) {
-    if (valid) {
+  onClickSaveWorkPlanScheduled() {
+    this.submitted = true;
+    if (this.addNewScheduleForm.invalid) {
+      return;
+    }
+    if (this.addNewScheduleForm.valid) {
       this.SpinnerService.show();
       this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
       // tslint:disable-next-line:max-line-length
       this.msService.msAddWorkPlanScheduleDetails(this.loadedData.createdWorkPlan.referenceNumber, this.dataSaveWorkPlan).subscribe(
           (data: any) => {
             console.log(data);
-            // this.addNewScheduleForm.reset();
             this.SpinnerService.hide();
+            this.addNewScheduleForm.reset();
             this.msService.showSuccess('WORK PLAN SCHEDULED DETAILS, SAVED SUCCESSFULLY');
             this.loadData(this.defaultPage, this.defaultPageSize, this.selectedBatchRefNo , this.activeStatus);
           },
           error => {
             this.SpinnerService.hide();
-            // this.addNewScheduleForm.reset();
+            this.addNewScheduleForm.reset();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
           },

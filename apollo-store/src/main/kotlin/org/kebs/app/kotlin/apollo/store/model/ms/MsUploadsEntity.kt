@@ -72,6 +72,10 @@ class MsUploadsEntity : Serializable {
     var complaintUploads: Int? = null
 
     @Basic
+    @Column(name = "WORK_PLAN_UPLOADS")
+    var workPlanUploads: Int? = null
+
+    @Basic
     @Column(name = "STATUS")
     var status: Int? = null
 

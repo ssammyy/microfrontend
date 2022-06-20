@@ -207,6 +207,15 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
 
     var userType: Long? = null
 
+    @Column(name = "COMPLIANCE_STATUS")
+    @Basic
+    var complianceStatus: Long? = null
+
+    @Column(name = "CONDUCTED_BY")
+    @Basic
+    var conductedBy: Long? = null
+
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
@@ -244,6 +253,8 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
                 kraPin ==that.kraPin &&
                 registrationNumber == that.registrationNumber &&
                 approvalStatus == that.approvalStatus &&
+                complianceStatus == that.complianceStatus &&
+                conductedBy == that.conductedBy &&
                 approvalStatusId == that.approvalStatusId
     }
 
@@ -282,6 +293,8 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
             kraPin,
             registrationNumber,
             approvalStatus,
+            complianceStatus,
+            conductedBy,
             approvalStatusId
 
 

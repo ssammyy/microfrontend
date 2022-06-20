@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Subject} from "rxjs";
+import {Subject, timer} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
 import {
@@ -24,6 +24,7 @@ export class StandardLevyPaidComponent implements OnInit {
   tasks: PaidLevy[] = [];
   paymentDetails: PaymentDetails[] = [];
   paidDetails: PaymentDetails[] = [];
+  pdfDetails: PaymentDetails[] = [];
   public actionRequest: PaymentDetails | undefined;
     public pdfRequest: PaymentDetails | undefined;
 
@@ -75,7 +76,7 @@ export class StandardLevyPaidComponent implements OnInit {
     this.levyService.getLevyPayments().subscribe(
         (response: PaymentDetails[]) => {
           this.paymentDetails = response;
-          console.log(this.paymentDetails);
+          //console.log(this.paymentDetails);
           this.SpinnerService.hide();
           if (this.isDtInitialized) {
             this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -96,6 +97,65 @@ export class StandardLevyPaidComponent implements OnInit {
         }
     );
   }
+    // saveDetails() {
+    //     let resultStatus = false;
+    //     if (this.excelData.SchemesDetails) {
+    //         this.spinnerService.show();
+    //         Promise.all(this.excelData.SchemesDetails.map(async (item: any) => {
+    //             const dataSave = new SchemeMapDto();
+    //             dataSave.polName = item.polName;
+    //             dataSave.smPolId = item.smPolId;
+    //             dataSave.clnPolCode = item.clnPolCode;
+    //             dataSave.countryCode = item.countryCode;
+    //             dataSave.policyCurrencyCode = item.policyCurrencyCode;
+    //             this.dataSaveList.push(dataSave);
+    //         })).then(res => {
+    //             console.log(this.dataSave);
+    //             this.integrationDataService.saveVersionALLSchemeDetails(this.customerIntegID, this.dataSaveList).subscribe(
+    //                 (response: ApiResponseModel) => {
+    //                     this.spinnerService.hide();
+    //                     this.savedData = response.data;
+    //                     this.excelData.SchemesDetails = [];
+    //                     resultStatus = true;
+    //                     // this.integrationDataService.showSuccess(data.message);
+    //                 },
+    //                 (err: HttpErrorResponse) => {
+    //                     this.spinnerService.hide();
+    //                     console.log(err.error);
+    //                     this.integrationDataService.showError(err.error);
+    //                     resultStatus = false;
+    //                 }
+    //             );
+    //         }).catch(error => {
+    //             this.spinnerService.hide();
+    //             this.showExportButtons = true;
+    //             this.integrationDataService.showError(error.message);
+    //         });
+    //     }
+    //     return resultStatus;
+    // }
+
+    getLevyPaymentsReceipt(id: number){
+        this.loadingText = "Generating E-Slip ...."
+        this.SpinnerService.show();
+        this.levyService.getLevyPaymentsReceipt(id).subscribe(
+            (response: PaymentDetails[]) => {
+                this.pdfDetails = response;
+                this.SpinnerService.hide();
+                const doc = new jsPDF();
+                const pdfTable = this.pdfTable.nativeElement;
+                const html = htmlToPdfmake(pdfTable.innerHTML);
+                const documentDefinition = { content: html };
+                pdfMake.createPdf(documentDefinition).open();
+                console.log(this.pdfDetails)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+    }
+
     public downloadAsPDF() {
         const doc = new jsPDF();
 
@@ -117,7 +177,13 @@ export class StandardLevyPaidComponent implements OnInit {
         if (mode === 'generatePdf') {
             this.pdfRequest = paidDetail;
             button.setAttribute('data-target', '#generatePdf');
-            this.downloadAsPDF();
+
+            const doc = new jsPDF();
+            const pdfTable = this.pdfTable.nativeElement;
+            const html = htmlToPdfmake(pdfTable.innerHTML);
+            const documentDefinition = { content: html };
+            pdfMake.createPdf(documentDefinition).open();
+
 
         }
 
@@ -142,7 +208,7 @@ export class StandardLevyPaidComponent implements OnInit {
                 (response: PaymentDetails[]) => {
                     this.paidDetails = response;
                     this.SpinnerService.hide();
-                    console.log(this.paidDetails);
+                    //console.log(this.paidDetails);
                     if (this.isDtInitialized) {
                         this.dtElements.dtInstance.then((dtInstance: DataTables.Api) => {
                             dtInstance.destroy();
@@ -169,21 +235,7 @@ export class StandardLevyPaidComponent implements OnInit {
 
     }
 
-  toggleDisplayLevyPaid(companyId: number){
-    this.loadingText = "Loading ...."
-    this.SpinnerService.show();
-    this.levyService.getManufacturesLevyPaymentsList(companyId).subscribe(
-        (response: PaymentDetails[]) => {
-          this.paidDetails = response;
-          this.SpinnerService.hide();
-          console.log(this.paidDetails)
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          console.log(error.message);
-        }
-    );
-  }
+
     viewPdfFile(): void {
         this.loadingText = "Loading...";
         this.SpinnerService.show();

@@ -133,7 +133,8 @@ data class ReportOnSiteVisitDTO(
     var visitID: Long? = null,
     var assigneeId: Long? = null,
     var manufacturerEntity: Long? = null,
-    var userType: Long? = null
+    var userType: Long? = null,
+    var complianceStatus: Long? = null
 )
 
 class ProcessInstanceResponseValueSite(val savedRowID: Long?,val processId: String, val isEnded: Boolean) {

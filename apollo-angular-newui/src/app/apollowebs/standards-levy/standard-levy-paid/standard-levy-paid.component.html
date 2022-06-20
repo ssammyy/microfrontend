@@ -154,10 +154,10 @@ Tasks <span class="badge badge-primary">{{paymentDetails.length}}</span>
                             <td >{{i+1}} </td>
                             <td>{{paidDetail.entryNumber}}</td>
                             <td>{{paidDetail.companyName}}</td>
-                            <td>{{paidDetail.periodFrom}}-{{paidDetail.periodTo}}</td>
-                            <td>{{paidDetail.paymentDate}}</td>
+                            <td>{{paidDetail.periodFrom | date: 'dd/MM/yyyy'}}-{{paidDetail.periodTo | date: 'dd/MM/yyyy'}}</td>
+                            <td>{{paidDetail.paymentDate | date: 'dd/MM/yyyy'}}</td>
                             <td>KSH {{paidDetail.paymentAmount}}</td>
-                            <td><button (click)="onOpenModalPending(paidDetail,'generatePdf')"  class="btn btn-success btn-sm"  > Print E-Slip</button>
+                            <td><button (click)="getLevyPaymentsReceipt(paidDetail.id)"  class="btn btn-success btn-sm"  > Print E-Slip</button>
                             </td>
                         </tr>
                         </tbody>
@@ -172,7 +172,7 @@ Tasks <span class="badge badge-primary">{{paymentDetails.length}}</span>
 
 </div>
 </div>
-    <div class="container bootdey" [hidden]="isShow" #pdfTable id="generatePdf" >
+    <div *ngFor="let pdfDetail of pdfDetails" class="container bootdey" [hidden]="" #pdfTable  >
         <div class="row invoice row-printable">
             <div class="col-md-12">
                 <div class="panel panel-default plain" id="dash_0">
@@ -185,13 +185,13 @@ Tasks <span class="badge badge-primary">{{paymentDetails.length}}</span>
                                             <tbody>
                                             <tr>
                                                 <td class="text-center" style='border:none; color: #1263d9'>Entry Number:</td>
-                                                <td class="text-center" style='border:none; color: #be0909; '>{{pdfRequest?.entryNumber}}</td>
+                                                <td class="text-center" style='border:none; color: #be0909; '>{{pdfDetail.entryNumber}}</td>
                                                 <td class="text-center" style='border:none;'></td>
                                                 <td class="text-center" style='border:none; color: #1263d9'>Kenya Bureau of Standards</td>
                                             </tr>
                                             <tr>
                                                 <td class="text-center" style='border:none; color: #1263d9'>Received From:</td>
-                                                <td class="text-center" style='border:none;color: #be0909; '>{{pdfRequest?.companyName}}</td>
+                                                <td class="text-center" style='border:none;color: #be0909; '>{{pdfDetail.companyName}}</td>
                                                 <td class="text-center" style='border:none;'></td>
                                                 <td class="text-center" style='border:none; color: #1263d9'>Popo Rd, South-C</td>
                                             </tr>
@@ -210,10 +210,10 @@ Tasks <span class="badge badge-primary">{{paymentDetails.length}}</span>
                                                 <td class="text-center">Payment Amount</td>
                                             </tr>
                                             <tr>
-                                                <td class="text-center">{{pdfRequest?.periodFrom}}</td>
-                                                <td class="text-center">{{pdfRequest?.periodTo}}</td>
-                                                <td class="text-center">{{pdfRequest?.paymentDate}}</td>
-                                                <td class="text-center">Ksh.{{pdfRequest?.paymentAmount}}</td>
+                                                <td class="text-center">{{pdfDetail.periodFrom | date: 'dd/MM/yyyy'}}</td>
+                                                <td class="text-center">{{pdfDetail.periodTo | date: 'dd/MM/yyyy'}}</td>
+                                                <td class="text-center">{{pdfDetail.paymentDate | date: 'dd/MM/yyyy'}}</td>
+                                                <td class="text-center">Ksh.{{pdfDetail.paymentAmount}}</td>
                                             </tr>
 
                                             </tbody>

@@ -84,7 +84,10 @@ export class ApiEndpointService {
     public static REQUEST_STANDARD = `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard/dropdown`;
     public static MS_CONTEXT = '/api/v1/migration/ms';
     public static MS_FUEL_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/fuel`;
+    public static MS_COMMON_VIEW_PDF_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/view/attached`;
     public static MS_WORK_PLAN_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/workPlan`;
+    public static MS_WORK_PLAN_UPDATE_CONTEXT = `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/update`;
+    public static MS_WORK_PLAN_ADD_CONTEXT = `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/add`;
     public static MS_COMPLAINT_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/complaint`;
     public static MS_COMPLAINT_UPDATE_CONTEXT = `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/update`;
     public static MS_COMMON_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/common`;
@@ -457,6 +460,7 @@ export class ApiEndpointService {
         STD_LEVY_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getLevyPayments`,
         STD_LEVY_DEFAULTER_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getLevyDefaulters`,
         STD_LEVY_MANUFACTURE_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPayments`,
+        STD_LEVY_MANUFACTURE_PAYMENT_RECEIPT: `${ApiEndpointService.STL_CONTEXT}/getLevyPaymentsReceipt`,
         STD_LEVY_MANUFACTURES_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPaymentsList`,
         STD_LEVY_PENALTY_DETAIL: `${ApiEndpointService.STL_CONTEXT}/getLevyPenalty`,
         STD_LEVY_MANUFACTURE_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPenalty`,
@@ -596,6 +600,19 @@ export class ApiEndpointService {
         ONGOING_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-on-going`,
         CREATE_NEW_WORK_PLAN_SCHEDULE: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/new`,
         INSPECTION_SCHEDULED_DETAILS: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/details`,
+        INSPECTION_SCHEDULED_APPROVE_DETAILS: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/approval-schedule`,
+        INSPECTION_SCHEDULED_START_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/start-onsite-activities`,
+        UPLOAD_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/file/save`,
+        INSPECTION_SCHEDULED_ADD_CHARGE_SHEET: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/charge-sheet`,
+        INSPECTION_SCHEDULED_ADD_DATA_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/data-report`,
+        INSPECTION_SCHEDULED_ADD_SEIZURE_DECLARATION: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/seizure-declaration`,
+        INSPECTION_SCHEDULED_ADD_INSPECTION_INVESTIGATION: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/inspection-investigation`,
+        INSPECTION_SCHEDULED_ADD_SAMPLE_COLLECT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/sample-collect`,
+        INSPECTION_SCHEDULED_ADD_SAMPLE_SUBMISSION: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/sample-submission`,
+        INSPECTION_SCHEDULED_ADD_SAMPLE_SUBMISSION_BS_NUMBER: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/sample-submission-bs-number`,
+        INSPECTION_SCHEDULED_ADD_LAB_RESULTS_PDF_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/lab-results-pdf-save`,
+        INSPECTION_SCHEDULED_ADD_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/ssf-compliance-status-save`,
+        INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/preliminary-report`,
 
     };
     /**

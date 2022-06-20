@@ -1764,8 +1764,7 @@ class QualityAssuranceHandler(
         return try {
             val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val branchID =
-                req.paramOrNull("branchID")?.toLong() ?: throw ExpectedDataNotFound("Required branch ID, check config")
+            val branchID = req.paramOrNull("branchID")?.toLong() ?: throw ExpectedDataNotFound("Required branch ID, check config")
             val branchEntity = qaDaoServices.findPlantDetails(branchID)
 
             var permitListAllApplications: List<PermitEntityDto> = qaDaoServices.listBranchList(branchID, map)
@@ -3301,7 +3300,7 @@ class QualityAssuranceHandler(
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
             //submit to staging invoices
-            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceSubmitInvoice(permitType,map, loggedInUser, newBatchInvoiceDto).second
+            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceSubmitInvoice(permit,permitType,map, loggedInUser, newBatchInvoiceDto).second
 
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
