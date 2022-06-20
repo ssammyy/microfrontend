@@ -99,3 +99,24 @@ class SageCourierDetailsResponseResult {
     @JsonProperty("response")
     val response: Array<SageCourierResponse>? = null
 }
+
+class RevenueLine {
+    @JsonProperty("RevenueCode")
+    val revenueLineCode: String? = null
+
+    @JsonProperty("RevenueDesc")
+    val description: String? = null
+
+}
+
+
+class SageRevenueLinesResponseResult {
+    @JsonProperty("header")
+    @Valid
+    @NotNull(message = "Header details are required")
+    var header: SageHeader? = null
+
+    @Valid
+    @JsonProperty("response")
+    val response: Array<RevenueLine>? = null
+}

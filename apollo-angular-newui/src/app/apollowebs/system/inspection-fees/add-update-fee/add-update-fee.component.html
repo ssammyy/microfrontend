@@ -1,0 +1,86 @@
+<h2 mat-dialog-title>{{this.data ? "UPDATE" : "Add"}} Inspection Fees</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-6">
+            <label for="name" class="waiver-form-label">Name</label>
+            <input type="text" class="waiver-form-input-master" name="name"
+                   data-name="name" id="name" formControlName="name">
+            <span class="error"
+                  *ngIf="(form.get('name').touched && !form.get('name').value) ||  form.get('name').invalid">Name is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="goodCode" class="waiver-form-label">Product Code</label>
+            <input type="text" class="waiver-form-input-master" name="goodCode"
+                   data-name="goodCode" id="goodCode" formControlName="goodCode">
+            <span class="error"
+                  *ngIf="(form.get('goodCode').touched && !form.get('goodCode').value) ||  form.get('goodCode').invalid">Product code is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="currencyCode" class="waiver-form-label">Fee Currency</label>
+            <select id="currencyCode" class="waiver-form-input-master" formControlName="currencyCode">
+                <option value="" disabled selected>Select Currency</option>
+                <option *ngFor="let d of currencyCodes" [value]="d.name">{{d.description}}</option>
+            </select>
+            <span class="error"
+                  *ngIf="(form.get('currencyCode').touched && !form.get('currencyCode').value) ||  form.get('currencyCode').invalid">Please select currency code</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="rateType" class="waiver-form-label">Rate Type</label>
+            <select id="rateType" class="waiver-form-input-master" formControlName="rateType">
+                <option value="" disabled selected>Select Rate</option>
+                <option *ngFor="let d of rateTypes" [value]="d.name">{{d.description}}</option>
+            </select>
+            <span class="error"
+                  *ngIf="(form.get('rateType').touched && !form.get('rateType').value) ||  form.get('rateType').invalid">Please select rate type</span>
+        </div>
+        <div class="col-sm-12 col-md-6" *ngIf="form.value.rateType!=='RANGE'">
+            <label for="rate" class="waiver-form-label">Rate/Amount</label>
+            <input type="number" class="waiver-form-input-master" name="rate"
+                   data-name="rate" id="rate" formControlName="rate">
+            <span class="error"
+                  *ngIf="(form.get('rate').touched && !form.get('rate').value) ||  form.get('rate').invalid">Rate is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6" *ngIf="form.value.rateType==='RANGE'">
+            <label for="minimumAmount" class="waiver-form-label">Minimum Amount</label>
+            <input type="number" class="waiver-form-input-master" name="minimumAmount"
+                   data-name="minimumAmount" id="minimumAmount" formControlName="minimumAmount">
+            <span class="error"
+                  *ngIf="(form.get('minimumAmount').touched && !form.get('minimumAmount').value) ||  form.get('minimumAmount').invalid">Minimum Amount is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6" *ngIf="form.value.rateType==='RANGE'">
+            <label for="maximumAmount" class="waiver-form-label">Maximum Amount</label>
+            <input type="number" class="waiver-form-input-master" name="maximumAmount"
+                   data-name="maximumAmount" id="maximumAmount" formControlName="maximumAmount">
+            <span class="error"
+                  *ngIf="(form.get('maximumAmount').touched && !form.get('maximumAmount').value) ||  form.get('maximumAmount').invalid">Maximum Amount is required</span>
+        </div>
+
+        <div class="col-sm-12 col-md-6">
+            <label for="status" class="waiver-form-label">Fee Status</label>
+            <select id="status" class="waiver-form-input-master" formControlName="status">
+                <option value="" disabled selected>Select Status</option>
+                <option *ngFor="let d of feeStatuses" [value]="d.name">{{d.description}}</option>
+            </select>
+            <span class="error"
+                  *ngIf="(form.get('status').touched && !form.get('status').value) ||  form.get('status').invalid">Please select client status is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="description" class="waiver-form-label">Description</label>
+            <input type="text" class="waiver-form-input-master" name="description"
+                   data-name="description" id="description" formControlName="description">
+            <span class="error"
+                  *ngIf="(form.get('description').touched && !form.get('description').value) ||  form.get('description').invalid">Description is required</span>
+        </div>
+        <p>{{form.errors}}</p>
+        <mat-error *ngIf="message">{{message}}</mat-error>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="addLaboratory()">
+            {{this.data ? "UPDATE" : "SAVE"}}
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

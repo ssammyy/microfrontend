@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.di
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Timestamp
@@ -7,7 +9,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "CFG_KEBS_DESTINATION_FEE_RANGES")
-class InspectionFeeRanges: Serializable {
+class InspectionFeeRanges : Serializable {
     @Column(name = "ID")
     @SequenceGenerator(name = "CFG_KEBS_DESTINATION_FEE_RANGES_SEQ_GEN", sequenceName = "CFG_KEBS_DESTINATION_FEE_RANGES_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "CFG_KEBS_DESTINATION_FEE_RANGES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
@@ -33,6 +35,7 @@ class InspectionFeeRanges: Serializable {
     @Column(name = "FIXED_AMOUNT")
     @Basic
     var fixedAmount: BigDecimal? = null
+
     @Column(name = "RATE")
     @Basic
     var rate: BigDecimal? = null
@@ -121,5 +124,6 @@ class InspectionFeeRanges: Serializable {
 
     @JoinColumn(name = "INSPECTION_FEE_ID", referencedColumnName = "ID")
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var inspectionFee: DestinationInspectionFeeEntity? = null
 }

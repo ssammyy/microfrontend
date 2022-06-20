@@ -318,6 +318,47 @@ class PostInvoiceToSageServices(
         }
     }
 
+    fun listRevenueLines(map: ServiceMapsEntity): Array<RevenueLine>? {
+        val config = commonDaoServices.findIntegrationConfiguration("SAGE_API_CLIENT")
+        val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
+        return runBlocking {
+
+            val headerBody = Header().apply {
+                serviceName = "Thirdparty"
+                messageID = "ATL/KBES/REF${generateRandomText(4, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+                connectionID = jasyptStringEncryptor.decrypt(config.username)
+                connectionPassword = jasyptStringEncryptor.decrypt(config.password)
+
+            }
+
+            val requestBody = mutableMapOf<String, Any>()
+            requestBody["header"] = headerBody
+            requestBody["request"] = mapOf(Pair("Interface", "T104"))
+
+            // Send and log request
+            val resp = daoService.getHttpResponseFromGetCall(
+                    false,
+                    "$configUrl/bsk/urls/inquiry.php",
+                    config,
+                    requestBody,
+                    null,
+                    null
+            )
+            // Check response code
+            if (resp == null || resp.status.value != 200) {
+                throw ExpectedDataNotFound("Received invalid response[${resp?.status?.value}]:${resp?.status?.description}")
+            }
+            val response: Pair<SageRevenueLinesResponseResult?, io.ktor.client.statement.HttpResponse?> =
+                    daoService.processResponses(resp, configUrl, config)
+            // update response
+            if (response.first?.response?.isNotEmpty() == true) {
+                return@runBlocking response.first?.response
+            } else {
+                throw ExpectedDataNotFound("Revenue lines do not exist")
+            }
+        }
+    }
+
     fun checkTransactionStatus(invoiceDetails: InvoiceBatchDetailsEntity, map: ServiceMapsEntity): PaymentStatusResult {
         val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapSageConfigIntegration)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")

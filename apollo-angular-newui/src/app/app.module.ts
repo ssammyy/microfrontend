@@ -27,7 +27,6 @@ import {FooterModule} from './shared/footer/footer.module';
 import {NavbarModule} from './shared/navbar/navbar.module';
 import {AdminLayoutComponent} from './layouts/admin/admin-layout.component';
 import {AuthLayoutComponent} from './layouts/auth/auth-layout.component';
-
 // import {routes} from './app.routing';
 import {Ng2SmartTableModule} from 'ng2-smart-table';
 import {DashboardComponent} from './apollowebs/dashboard/dashboard.component';
@@ -333,11 +332,21 @@ import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/compla
 import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignment-document/cd-general-checklist/cd-general-checklist.component';
 import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payments.component';
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
-import { EpraMonthlyBatchListComponent } from './apollowebs/market-surveillance/fuel/epra-monthly-batch-list/epra-monthly-batch-list.component';
+import {EpraMonthlyBatchListComponent} from './apollowebs/market-surveillance/fuel/epra-monthly-batch-list/epra-monthly-batch-list.component';
 import {MatListModule} from "@angular/material/list";
-import { WorkPlanBatchListComponent } from './apollowebs/market-surveillance/workplan/workplan-batch-list/work-plan-batch-list.component';
-import { WorkPlanListComponent } from './apollowebs/market-surveillance/workplan/work-plan-list/work-plan-list.component';
-import { WorkPlanDetailsComponent } from './apollowebs/market-surveillance/workplan/work-plan-details/work-plan-details.component';
+import {WorkPlanBatchListComponent} from './apollowebs/market-surveillance/workplan/workplan-batch-list/work-plan-batch-list.component';
+import {WorkPlanListComponent} from './apollowebs/market-surveillance/workplan/work-plan-list/work-plan-list.component';
+import {WorkPlanDetailsComponent} from './apollowebs/market-surveillance/workplan/work-plan-details/work-plan-details.component';
+import {AddCfsComponent} from './apollowebs/system/cfs/add-cfs/add-cfs.component';
+import {CfsComponent} from './apollowebs/system/cfs/cfs.component';
+import {InspectionFeesComponent} from './apollowebs/system/inspection-fees/inspection-fees.component';
+import {AddUpdateFeeComponent} from './apollowebs/system/inspection-fees/add-update-fee/add-update-fee.component';
+import {AddUpdateFeeRangeComponent} from './apollowebs/system/inspection-fees/add-update-fee-range/add-update-fee-range.component';
+import {ViewFeeComponent} from './apollowebs/system/inspection-fees/view-fee/view-fee.component';
+import {CustomsOfficeComponent} from './apollowebs/system/customs-office/customs-office.component';
+import {LaboratoriesComponent} from './apollowebs/system/laboratories/laboratories.component';
+import {AddLaboratoryComponent} from './apollowebs/system/laboratories/add-laboratory/add-laboratory.component';
+import {AddCustomOfficeComponent} from './apollowebs/system/customs-office/add-custom-office/add-custom-office.component';
 
 
 @NgModule({
@@ -697,7 +706,17 @@ import { WorkPlanDetailsComponent } from './apollowebs/market-surveillance/workp
         EpraMonthlyBatchListComponent,
         WorkPlanBatchListComponent,
         WorkPlanListComponent,
-        WorkPlanDetailsComponent
+        WorkPlanDetailsComponent,
+        AddCfsComponent,
+        CfsComponent,
+        InspectionFeesComponent,
+        AddUpdateFeeComponent,
+        AddUpdateFeeRangeComponent,
+        ViewFeeComponent,
+        CustomsOfficeComponent,
+        LaboratoriesComponent,
+        AddLaboratoryComponent,
+        AddCustomOfficeComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

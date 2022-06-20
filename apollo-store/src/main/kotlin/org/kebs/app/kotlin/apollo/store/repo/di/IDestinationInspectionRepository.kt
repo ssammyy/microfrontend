@@ -177,6 +177,7 @@ interface ICustomsOfficeTypeCodesRepository : HazelcastRepository<CustomsOfficeT
 //    fun findByTypeNameAndStatus(typeName: String, status: Long): CfgKebsCdcfsUsercfsEntity?
 
     fun findByStatus(status: Int): List<CustomsOfficeTypeCodesEntity>?
+    fun findByCustomsOfficeCode(code: String): Optional<CustomsOfficeTypeCodesEntity>
 //    fun findAllById(Id: Long): List<ConsignmentDocumentTypesEntity>?
 }
 
@@ -268,6 +269,7 @@ interface IDestinationInspectionFeeRepository : HazelcastRepository<DestinationI
 @Repository
 interface InspectionFeeRangesRepository : HazelcastRepository<InspectionFeeRanges, Long> {
     fun findByInspectionFee(inspectionFee: DestinationInspectionFeeEntity): List<InspectionFeeRanges>
+    fun findByIdAndInspectionFee_Id(rangeId: Long, inspectionFee: Long): Optional<InspectionFeeRanges>
 
     @Query("select * From CFG_KEBS_DESTINATION_FEE_RANGES where (INSPECTION_FEE_ID=:id and  :amount between MINIMUM_KSH and MAXIMUM_KSH and STATUS=1) and (DESCRIPTION=:docType or DESCRIPTION is null )", nativeQuery = true)
     fun findByInspectionFeeAndMinimumKshGreaterThanEqualAndMaximumKshLessThanEqual(@Param("id") inspectionFeeId: Long, @Param("amount") amount: BigDecimal, @Param("docType") documentType: String): List<InspectionFeeRanges>

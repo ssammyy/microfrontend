@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>{{this.data ? "UPDATE" : "Add"}} Custom Office</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-6">
+            <label for="customsOfficeName" class="waiver-form-label">Office Name</label>
+            <input type="text" class="waiver-form-input-master" name="laboratoryName"
+                   data-name="customsOfficeName" id="customsOfficeName" formControlName="customsOfficeName">
+            <span class="error"
+                  *ngIf="(form.get('customsOfficeName').touched && !form.get('customsOfficeName').value) ||  form.get('customsOfficeName').invalid">Custom office name is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="customsOfficeCode" class="waiver-form-label">Office Code</label>
+            <input type="text" class="waiver-form-input-master" name="customsOfficeCode"
+                   data-name="customsOfficeCode" id="customsOfficeCode" formControlName="customsOfficeCode">
+            <span class="error"
+                  *ngIf="(form.get('customsOfficeCode').touched && !form.get('customsOfficeCode').value) ||  form.get('customsOfficeCode').invalid">Custom office code is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="status" class="waiver-form-label">Office Status</label>
+            <select id="status" class="waiver-form-input-master" formControlName="status">
+                <option value="" disabled selected>Select Status</option>
+                <option *ngFor="let d of laboratoryStatuses" [value]="d.name">{{d.description}}</option>
+            </select>
+            <span class="error"
+                  *ngIf="(form.get('status').touched && !form.get('status').value) ||  form.get('status').invalid">Please select status is required</span>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="description" class="waiver-form-label">Description</label>
+            <input type="text" class="waiver-form-input-master" name="description"
+                   data-name="description" id="description" formControlName="description">
+            <span class="error"
+                  *ngIf="(form.get('description').touched && !form.get('description').value) ||  form.get('description').invalid">Description is required</span>
+        </div>
+        <mat-error *ngIf="message">{{message}}</mat-error>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="addLaboratory()">
+            {{this.data ? "UPDATE" : "SAVE"}}
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

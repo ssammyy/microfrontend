@@ -8,4 +8,6 @@ class LaboratoryForm {
 
     @NotEmpty(message = "Laboratory description is required")
     var laboratoryDesc: String? = null
+
+    var status: Int? = null
 }

@@ -10,9 +10,9 @@ import javax.persistence.*
 class PvocPartnersRegionEntity : Serializable {
     
     @Column(name = "ID")
+    @Id
     @SequenceGenerator(name = "CFG_KEBS_PVOC_PARTNERS_REGION_SEQ_GEN", sequenceName = "CFG_KEBS_PVOC_PARTNERS_REGION_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "CFG_KEBS_PVOC_PARTNERS_REGION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    @Id
     var id: Long? = null
 
     @Column(name = "REGION_NAME")

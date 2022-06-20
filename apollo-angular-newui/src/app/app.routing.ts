@@ -241,6 +241,10 @@ import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payment
 import {WorkPlanBatchListComponent} from './apollowebs/market-surveillance/workplan/workplan-batch-list/work-plan-batch-list.component';
 import {WorkPlanListComponent} from './apollowebs/market-surveillance/workplan/work-plan-list/work-plan-list.component';
 import {WorkPlanDetailsComponent} from './apollowebs/market-surveillance/workplan/work-plan-details/work-plan-details.component';
+import {CfsComponent} from "./apollowebs/system/cfs/cfs.component";
+import {InspectionFeesComponent} from "./apollowebs/system/inspection-fees/inspection-fees.component";
+import {LaboratoriesComponent} from "./apollowebs/system/laboratories/laboratories.component";
+import {CustomsOfficeComponent} from "./apollowebs/system/customs-office/customs-office.component";
 
 export const routes: Routes = [
     {
@@ -789,6 +793,22 @@ export const routes: Routes = [
             {
                 path: 'api-clients',
                 component: ViewClientsComponent,
+            },
+            {
+                path: 'cfs',
+                component: CfsComponent,
+            },
+            {
+                path: 'laboratories',
+                component: LaboratoriesComponent,
+            },
+            {
+                path: 'custom/offices',
+                component: CustomsOfficeComponent,
+            },
+            {
+                path: 'inspection/fees',
+                component: InspectionFeesComponent
             },
         ],
     },

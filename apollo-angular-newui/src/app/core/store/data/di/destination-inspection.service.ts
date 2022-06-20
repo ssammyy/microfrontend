@@ -585,8 +585,124 @@ export class DestinationInspectionService {
         })
     }
 
+    showConfirmation(message: string, fn?: Function) {
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            showDenyButton: true,
+            confirmButtonText: 'Confirm',
+            denyButtonText: `Cancel`,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn',
+                denyButton: 'btn btn-danger form-wizard-next-btn',
+            },
+            // icon: 'question'
+        }).then((result) => {
+            if (fn) {
+                fn(result.isConfirmed)
+            }
+        })
+    }
+
 
     listMyCfs(): Observable<any> {
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/port/freight/user-stations"))
     }
+
+    loadCfs(page: number, size: number): Observable<any> {
+        let params = {}
+        if (size) {
+            params['page'] = page
+            params['size'] = size
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/config/cfs/stations"), {
+            params: params
+        })
+    }
+
+    saveCfs(fee: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/config/cfs/station"), fee)
+    }
+
+    updateCfs(fee: any, feeId: any): Observable<any> {
+        return this.client.put(ApiEndpointService.getEndpoint("/api/v1/di/config/cfs/station/" + feeId), fee)
+    }
+
+    deleteCfs(feeId: any): Observable<any> {
+        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/config/cfs/station/" + feeId))
+    }
+
+    loadInspectionFees(page: number, size: number): Observable<any> {
+        let params = {}
+        if (size) {
+            params['page'] = page
+            params['size'] = size
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/config/inspection/fee"), {
+            params: params
+        })
+    }
+
+    saveInspectionFee(fee: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/config/inspection/fee"), fee)
+    }
+
+    updateInspectionFee(fee: any, feeId: any): Observable<any> {
+        return this.client.put(ApiEndpointService.getEndpoint("/api/v1/di/config/inspection/fee/" + feeId), fee)
+    }
+
+    deleteInspectionFee(feeId: any): Observable<any> {
+        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/config/inspection/fee/" + feeId))
+    }
+
+    listRevenueLines(): Observable<any> {
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/config/revenue/lines"))
+    }
+
+    listLaboratories(page: number, size: number): Observable<any> {
+        let params = {}
+        if (size) {
+            params['page'] = page
+            params['size'] = size
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/laboratory/list"), {
+            params: params
+        })
+    }
+
+    saveLaboratory(lab: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/laboratory/add"), lab)
+    }
+
+    updateLaboratory(lab: any, labId: any): Observable<any> {
+        return this.client.put(ApiEndpointService.getEndpoint("/api/v1/laboratory/update/" + labId), lab)
+    }
+
+    deleteLaboratory(labId: any): Observable<any> {
+        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/laboratory/" + labId))
+    }
+
+    listCustomOffices(page: number, size: number): Observable<any> {
+        let params = {}
+        if (size) {
+            params['page'] = page
+            params['size'] = size
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/config/custom/offices"), {
+            params: params
+        })
+    }
+
+    saveCustomOffice(lab: any): Observable<any> {
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di/config/custom/office"), lab)
+    }
+
+    updateCustomOffice(lab: any, labId: any): Observable<any> {
+        return this.client.put(ApiEndpointService.getEndpoint("/api/v1/di/config/custom/office/" + labId), lab)
+    }
+
+    deleteCustomOffice(labId: any): Observable<any> {
+        return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/config/custom/office/" + labId))
+    }
+
 }

@@ -536,3 +536,32 @@ class PvocPartnerTimelinesDataDto : Serializable {
         }
     }
 }
+
+
+class PvocPartnerCountryDao {
+    var countryId: Long? = null
+    var countryName: String? = null
+    var abbreviation: String? = null
+    var regionId: Long? = null
+    var description: String? = null
+
+    companion object {
+        fun fromEntity(country: PvocPartnersCountriesEntity): PvocPartnerCountryDao {
+            return PvocPartnerCountryDao().apply {
+                countryId = country.id
+                countryName = country.countryName
+                abbreviation = country.abbreviation
+                regionId = country.regionId?.id
+                description = country.description
+            }
+        }
+
+        fun fromList(timelines: List<PvocPartnersCountriesEntity>): List<PvocPartnerCountryDao> {
+            val dtos = mutableListOf<PvocPartnerCountryDao>()
+            timelines.forEach {
+                dtos.add(fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}

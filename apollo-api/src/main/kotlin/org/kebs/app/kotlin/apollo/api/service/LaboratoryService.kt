@@ -24,7 +24,7 @@ class LaboratoryService(
             val auth = commonDaoServices.loggedInUserAuthentication()
             lab.modifiedBy = auth.name
             lab.createdBy = auth.name
-            lab.status = 1
+            lab.status = form.status ?: 1
             lab.createdOn = commonDaoServices.getTimestamp()
             lab.modifiedOn = commonDaoServices.getTimestamp()
             this.labRepository.save(lab)
@@ -45,7 +45,7 @@ class LaboratoryService(
             if (labOptional.isPresent) {
                 val lab = labOptional.get()
                 lab.labName = form.laboratoryName
-                lab.status = 1
+                lab.status = form.status ?: 1
                 lab.description = form.laboratoryDesc
                 val auth = commonDaoServices.loggedInUserAuthentication()
                 lab.modifiedBy = auth.name

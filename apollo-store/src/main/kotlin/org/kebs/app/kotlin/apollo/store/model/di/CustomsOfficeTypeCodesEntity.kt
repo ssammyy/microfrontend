@@ -9,9 +9,9 @@ import javax.persistence.*
 @Table(name = "CFG_KEBS_CUSTOMS_OFFICE_TYPE_CODES")
 class CustomsOfficeTypeCodesEntity : Serializable {
     @Column(name = "ID")
+    @Id
     @SequenceGenerator(name = "CFG_KEBS_CUSTOMS_OFFICE_TYPE_CODES_SEQ_GEN", sequenceName = "CFG_KEBS_CUSTOMS_OFFICE_TYPE_CODES_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "CFG_KEBS_CUSTOMS_OFFICE_TYPE_CODES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    @Id
     var id: Long = 0
 
     @Column(name = "CUSTOMS_OFFICE_CODE")

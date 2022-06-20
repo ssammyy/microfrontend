@@ -17,7 +17,50 @@ export class AddUpdatePartnerComponent implements OnInit {
     countries: any[]
     billingTypes: any[]
 
-    constructor(private fb: FormBuilder, private dialog: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any,private fiService: FinanceInvoiceService, private pvocService: PVOCService) {
+    cooporateGroupCodes = [
+        {
+            name: "Trading - Coast Region Customers",
+            code: "TRACRC"
+        },
+        {
+            name: "Trading - Foreign Customers",
+            code: "TRAFOR"
+        },
+        {
+            name: "Trading - Head Office Customers",
+            code: "TRAHQS"
+        },
+        {
+            name: "Trading - Lake Region Customers",
+            code: "TRALRC"
+        },
+        {
+            name: "Trading - Mount Kenya Customers",
+            code: "TRAMKR"
+        },
+        {
+            name: "Trading - North Eastern Customers",
+            code: "TRANER"
+        },
+        {
+            name: "Trading - Nairobi Region Customers",
+            code: "TRANRB"
+        },
+        {
+            name: "Trading - North Rift Customers",
+            code: "TRANRR"
+        },
+        {
+            name: "Trading - Rift Valley Customers",
+            code: "TRARVR"
+        },
+        {
+            name: "Trading - South Rift Region Customers",
+            code: "TRASRR"
+        },
+    ]
+
+    constructor(private fb: FormBuilder, private dialog: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any, private fiService: FinanceInvoiceService, private pvocService: PVOCService) {
     }
 
     ngOnInit(): void {
