@@ -59,7 +59,7 @@ export const initialState: AuthState = {
 
 };
 export const initialCompanyInfoDtoState: CompanyInfoDtoState = {
-    data: {branchCount: 0, branchId: 0, companyId: 0, userId: 0, turnover: 0, countAwarded: 0, countExpired: 0}
+    data: {branchCount: 0, branchId: 0, companyId: 0, userId: 0, turnover: 0, countAwarded: 0, countExpired: 0,status:0}
 
 };
 

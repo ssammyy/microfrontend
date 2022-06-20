@@ -19,7 +19,7 @@
                                 <i class="material-icons">assignment</i>
 
                             </div>
-                            <div class="card-title float-left"><h4 style="color: #0d47a1; font-weight: bold">Payment Details</h4></div>
+                            <div class="card-title float-left"><h4 style="color: #0d47a1; font-weight: bold">Penalty Details</h4></div>
 
                             <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
                                 Tasks <span class="badge badge-primary">{{penaltyDetails.length}}</span>
@@ -130,7 +130,7 @@
                                     <div class="modal-dialog modal-xl" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title" id="paymentDetailsModalLabel"><b>Payment Details for {{actionRequest?.companyName}}</b></h3>
+                                                <h3 class="modal-title" id="paymentDetailsModalLabel"><b>Penalty Details for {{actionRequest?.companyName}}</b></h3>
                                                 <button type="button" class="close" #closeModalCDetails data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -158,12 +158,12 @@
                                                             <td >{{i+1}} </td>
                                                             <td>{{penaltiesDetail.entryNumber}}</td>
                                                             <td>{{penaltiesDetail.companyName}}</td>
-                                                            <td>{{penaltiesDetail.periodFrom}}-{{penaltiesDetail.periodTo}}</td>
+                                                            <td>{{penaltiesDetail.periodFrom | date: 'dd/MM/yyyy'}}-{{penaltiesDetail.periodTo | date: 'dd/MM/yyyy'}}</td>
                                                             <td>{{penaltiesDetail.penalty}}</td>
-                                                            <td>{{penaltiesDetail.paymentDate}}</td>
+                                                            <td>{{penaltiesDetail.paymentDate | date: 'dd/MM/yyyy'}}</td>
                                                             <td>KSH {{penaltiesDetail.paymentAmount}}</td>
                                                             <td>KSH {{penaltiesDetail.amountDue}}</td>
-                                                            <td>{{penaltiesDetail.levyDueDate}}</td>
+                                                            <td>{{penaltiesDetail.levyDueDate | date: 'dd/MM/yyyy'}}</td>
 
 
                                                         </tr>

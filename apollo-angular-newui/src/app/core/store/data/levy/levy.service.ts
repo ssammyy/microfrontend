@@ -591,6 +591,12 @@ export class LevyService {
         return this.http.get<PaymentDetails>(url, {params}).pipe();
     }
 
+    public getLevyPaymentsReceipt(id: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_PAYMENT_RECEIPT);
+        const params = new HttpParams().set('id', id);
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
+    }
+
     public getLevyPenalty(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PENALTY_DETAIL);
         const params = new HttpParams();

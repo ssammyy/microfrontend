@@ -5,6 +5,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import swal from "sweetalert2";
+import {Store} from "@ngrx/store";
+import {selectCompanyInfoDtoStateData} from "../../../core/store";
 
 declare interface DataTable {
     headerRow: string[];
@@ -31,6 +33,7 @@ export class FmarkApplicationComponent implements OnInit {
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
 
     constructor(
+        private store$: Store<any>,
         private router: Router,
         private route: ActivatedRoute,
         private qaService: QaService,
@@ -40,6 +43,37 @@ export class FmarkApplicationComponent implements OnInit {
     }
 
   ngOnInit() {
+
+      this.store$.select(selectCompanyInfoDtoStateData).subscribe(
+          (d) => {
+              if (d) {
+                  //  console.log(`${d.status}`);
+                  // return this.status = d.status;
+                  if (d.status == 0) {
+                      swal.fire({
+                          title: 'Cancelled',
+                          text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
+                          icon: 'error',
+                          customClass: {confirmButton: "btn btn-info",},
+                          buttonsStyling: false
+                      }).then((result) => {
+                          if (result.value) {
+                              window.location.href = "/dashboard";
+                          }
+                      })
+                  } else if (d.status == 2) {
+                      swal.fire({
+                          title: 'Cancelled',
+                          text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
+                          icon: 'error',
+                          customClass: {confirmButton: "btn btn-info",},
+                          buttonsStyling: false
+                      }).then((result) => {
+                          if (result.value) {
+                              window.location.href = "/dashboard";
+                          }
+                      })
+                  } else {
     let formattedArray = [];
     this.dataTable;
 
@@ -64,6 +98,8 @@ export class FmarkApplicationComponent implements OnInit {
 
       });
       //
+                  }}
+              })
   }
 
     get formFmarkForm(): any {

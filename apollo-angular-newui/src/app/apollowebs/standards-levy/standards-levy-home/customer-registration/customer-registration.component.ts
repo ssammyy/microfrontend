@@ -62,9 +62,9 @@ export class CustomerRegistrationComponent implements OnInit {
   ngOnInit(): void {
       this.getCompanyProfile();
       this.getManufacturerStatus();
-      this.getSLNotificationStatus();
+      //this.getSLNotificationStatus();
       this.getCompanySLForm();
-      this.getBranchName();
+      //this.getBranchName();
       this.getCompanyDirectors();
 
     this.manufacturerInfoForm = this.formBuilder.group({
@@ -84,7 +84,8 @@ export class CustomerRegistrationComponent implements OnInit {
       companyProfileID: [],
       registrationNumber: [],
       kraPin: [],
-      manufacture_status: []
+      manufacture_status: [],
+        id:[]
 
 
 
@@ -106,7 +107,8 @@ export class CustomerRegistrationComponent implements OnInit {
       companyProfileID: [],
       registrationNumber: [],
       kraPin: [],
-      manufacture_status: []
+      manufacture_status: [],
+        id:[]
 
     });
 
@@ -162,6 +164,8 @@ export class CustomerRegistrationComponent implements OnInit {
         (response: Branch)=> {
           this.slBranchName = response;
           console.log(this.slBranchName);
+            this.manufacturerInfoForm.patchValue(this.slBranchName);
+            this.manufacturingInfoForm.patchValue(this.slBranchName);
           this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
@@ -179,6 +183,8 @@ export class CustomerRegistrationComponent implements OnInit {
             (response: CompanyModel[])=> {
                 this.companyDetails = response;
                 console.log(this.companyDetails);
+                this.manufacturerInfoForm.patchValue(this.companyDetails);
+                this.manufacturingInfoForm.patchValue(this.companyDetails);
                 this.SpinnerService.hide();
             },
             (error: HttpErrorResponse)=>{

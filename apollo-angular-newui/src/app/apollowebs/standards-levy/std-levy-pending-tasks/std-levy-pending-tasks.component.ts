@@ -384,7 +384,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       visitID: [],
       assigneeId: [],
       manufacturerEntity: [],
-      userType: []
+      userType: [],
+        complianceStatus:[]
 
     });
     this.prepareFeedBackFormGroup = this.formBuilder.group({
@@ -663,6 +664,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
               userType: this.userType
+
           }
       );
 

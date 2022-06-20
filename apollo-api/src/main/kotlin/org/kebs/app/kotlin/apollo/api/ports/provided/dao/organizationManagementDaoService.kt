@@ -31,7 +31,6 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
-import kotlin.text.Typography.section
 
 @Service
 class RegistrationManagementDaoService(
@@ -109,6 +108,7 @@ class RegistrationManagementDaoService(
                     it
                 )
             }
+            val status = companyRepo.findByIdOrNull(user.companyId)?.status
             val turnOver = companyRepo.findByIdOrNull(user.companyId)?.yearlyTurnover
             val countAwarded = user.companyId?.let {
                 permitRepo.countByCompanyIdAndPermitAwardStatus(
@@ -127,7 +127,8 @@ class RegistrationManagementDaoService(
                 turnOver,
                 user.id,
                 countAwarded,
-                countExpired
+                countExpired,
+                status
             )
         }
         return null
