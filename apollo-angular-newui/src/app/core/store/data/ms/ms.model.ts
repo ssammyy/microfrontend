@@ -157,6 +157,24 @@ export class WorkPlanListDto {
     progressStep: string;
 }
 
+export class WorkPlanEntityDto {
+    complaintDepartment: number;
+    divisionId: number;
+    nameActivity: string;
+    timeActivityDate: Date;
+    county: number;
+    townMarketCenter: number;
+    locationActivityOther: string;
+    standardCategory: number;
+    broadProductCategory: number;
+    productCategory: number;
+    product: number;
+    productSubCategory: number;
+    resourcesRequired: string;
+    budget: string;
+    remarks: string;
+}
+
 // export class ComplaintsListDto {
 //     referenceNumber: string;
 //     complaintTitle: string;
@@ -201,7 +219,7 @@ export class ComplaintDetailsDto {
     town: string;
     marketCenter: string;
     buildingName: string;
-    date: Date;
+    Date: Date;
     status: string;
     approvedStatus: boolean;
     assignedIOStatus: boolean;
@@ -286,6 +304,92 @@ export class WorkPlanBatchDetailsDto {
     referenceNumber: string;
     userCreated: string;
     yearName: string;
+    batchClosed: boolean;
+}
+
+export class WorkPlanInspectionDto {
+    id: number;
+    productCategory: string;
+    broadProductCategory: string;
+    product: string;
+    standardCategory: string;
+    productSubCategory: string;
+    department: string;
+    divisionId: number;
+    sampleSubmittedId: number;
+    division: string;
+    officerName: string;
+    nameActivity: string;
+    targetedProducts: string;
+    resourcesRequired: string;
+    budget: string;
+    approvedOn: Date;
+    approvedStatus: boolean;
+    workPlanYearId: number;
+    clientAppealed: boolean;
+    hodRecommendationStatus: boolean;
+    hodRecommendationStart: boolean;
+    hodRecommendation: string;
+    destructionNotificationStatus: boolean;
+    destructionNotificationDate: Date;
+    hodRecommendationRemarks: string;
+    preliminaryParamStatus: boolean;
+    dataReportGoodsStatus: boolean;
+    scfLabparamsStatus: boolean;
+    bsNumberStatus: boolean;
+    ssfLabparamsStatus: boolean;
+    msPreliminaryReportStatus: boolean;
+    preliminaryApprovedStatus: boolean;
+    msFinalReportStatus: boolean;
+    finalApprovedStatus: boolean;
+    chargeSheetStatus: boolean;
+    investInspectReportStatus: boolean;
+    sampleCollectionStatus: boolean;
+    sampleSubmittedStatus: boolean;
+    seizureDeclarationStatus: boolean;
+    dataReportStatus: boolean;
+    approvedBy: string;
+    approved: string;
+    rejectedOn: Date;
+    rejectedStatus: boolean;
+    onsiteStartStatus: boolean;
+    onsiteStartDate: Date;
+    onsiteEndDate: Date;
+    sendSffDate: Date;
+    sendSffStatus: boolean;
+    onsiteEndStatus: boolean;
+    destractionStatus: boolean;
+    rejectedBy: string;
+    rejected: string;
+    msEndProcessRemarks: string;
+    rejectedRemarks: string;
+    approvedRemarks: string;
+    progressValue: boolean;
+    progressStep: string;
+    county: number;
+    subcounty: string;
+    townMarketCenter: number;
+    locationActivityOther: string;
+    timeActivityDate: Date;
+    timeDateReportSubmitted: Date;
+    timeActivityRemarks: string;
+    rescheduledDateNotVisited: Date;
+    rescheduledDateReportSubmitted: Date;
+    rescheduledActivitiesRemarks: string;
+    activityUndertakenPeriod: string;
+    nameHof: string;
+    reviewSupervisorDate: Date;
+    reviewSupervisorRemarks: string;
+    destructionClientEmail: string;
+    region: number;
+    complaintId: number;
+    officerId: number;
+    destructionDocId: number;
+    complaintDepartment: number;
+    referenceNumber: string;
+    batchDetails: WorkPlanBatchDetailsDto;
+    ksApplicable: StandardDetailsDto;
+    remarksDetails: MSRemarksDto[];
 }
 
 

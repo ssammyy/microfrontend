@@ -145,7 +145,7 @@ class MsSeizureDeclarationEntity : Serializable{
 
     @Column(name = "STATUS")
     @Basic
-    var status: String? = null
+    var status: Int? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic

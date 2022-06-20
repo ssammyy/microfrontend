@@ -394,23 +394,6 @@ export class EpraListComponent implements OnInit {
           this.closeBatch();
         });
 
-    // // this.SpinnerService.show();
-    //   this.dataSave = {...this.dataSave, ...this.closeBatchForm.value};
-    //   this.msService.closeMSFuelBatch(this.loadedData.fuelBatchDetailsDto.referenceNumber).subscribe(
-    //       (data: any) => {
-    //         console.log(data);
-    //         this.loadedData = data;
-    //         this.totalCount = this.loadedData.fuelInspectionDto.length;
-    //         this.dataSet.load(this.loadedData.fuelInspectionDto);
-    //         // this.SpinnerService.hide();
-    //         // this.msService.showSuccess('BATCH SENT TO KEBS SUCCESSFUL')
-    //       },
-    //       error => {
-    //         // this.SpinnerService.hide();
-    //         console.log(error)
-    //         // this.msService.showError("AN ERROR OCCURRED")
-    //       }
-    //   );
   }
 
   openModalAddDetails(divVal: string): void {

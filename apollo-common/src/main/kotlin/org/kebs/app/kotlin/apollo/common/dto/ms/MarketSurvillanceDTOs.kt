@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.common.dto.ms
 
 import java.math.BigDecimal
 import java.sql.Date
+import java.sql.Time
 import java.sql.Timestamp
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -26,6 +27,7 @@ data class WorkPlanBatchDetailsDto(
         var referenceNumber: String? = null,
         var userCreated: String? = null,
         var yearName: String? = null,
+        var batchClosed: Boolean? = null,
 )
 
 data class FuelBatchDetailsDto(
@@ -85,11 +87,11 @@ data class FuelInspectionDto(
 
 data class WorkPlanInspectionDto(
         var id: Long? = null,
-        var productCategory: Long? = null,
-        var broadProductCategory: Long? = null,
-        var product: Long? = null,
-        var standardCategory: Long? = null,
-        var productSubCategory: Long? = null,
+        var productCategory: String? = null,
+        var broadProductCategory: String? = null,
+        var product: String? = null,
+        var standardCategory: String? = null,
+        var productSubCategory: String? = null,
         var department: String? = null,
         var divisionId: Long? = null,
         var sampleSubmittedId: Long? = null,
@@ -163,6 +165,9 @@ data class WorkPlanInspectionDto(
         var destructionDocId: Long? = null,
         var complaintDepartment: Long? = null,
         var referenceNumber: String? = null,
+        var batchDetails: WorkPlanBatchDetailsDto? = null,
+        var ksApplicable: StandardDetailsDto? = null,
+        var remarksDetails: List<MSRemarksDto>? = null,
 )
 
 data class FuelEntityDto(
@@ -212,7 +217,18 @@ data class WorkPlanEntityDto(
         var productSubCategory: Long? = null,
         var resourcesRequired: String? = null,
         var budget: String? = null,
+        var remarks: String? = null,
+)
 
+data class WorkPlanScheduleApprovalDto(
+        @NotNull(message = "Required field")
+        var approvalStatus: Boolean,
+        var remarks: String? = null,
+)
+
+data class ApprovalDto(
+        @NotNull(message = "Required field")
+        var approvalStatus: Boolean,
         var remarks: String? = null,
 )
 
@@ -274,6 +290,114 @@ data class RemarksToAddDto(
         var remarksStatus: Int? = null,
         var processID: Long? = null,
         var userId: Long? = null,
+)
+
+data class ChargeSheetDto(
+        var id: Long? = null,
+        var christianName: String? = null,
+        var surname: String? = null,
+        var sex: String? = null,
+        var nationality: String? = null,
+        var age: Long? = null,
+        var addressDistrict: String? = null,
+        var addressLocation: String? = null,
+        var firstCount: String? = null,
+        var particularsOffenceOne: String? = null,
+        var secondCount: String? = null,
+        var particularsOffenceSecond: String? = null,
+        var dateArrest: Date? = null,
+        var withWarrant: String? = null,
+        var applicationMadeSummonsSue: String? = null,
+        var dateApprehensionCourt: Date? = null,
+        var bondBailAmount: Long? = null,
+        var remandedAdjourned: String? = null,
+        var complainantName: String? = null,
+        var complainantAddress: String? = null,
+        var prosecutor: String? = null,
+        var witnesses: String? = null,
+        var sentence: String? = null,
+        var finePaid: String? = null,
+        var courtName: String? = null,
+        var courtDate: Date? = null,
+        var remarks: String?= null,
+)
+
+data class DataReportDto(
+        var id: Long? = null,
+        var referenceNumber: String? = null,
+        var inspectionDate: Date? = null,
+        var inspectorName: String? = null,
+        var function: String? = null,
+        var department: String? = null,
+        var regionName: String? = null,
+        var town: String? = null,
+        var marketCenter: String? = null,
+        var outletDetails: String? = null,
+        var personMet: String? = null,
+        var summaryFindingsActionsTaken: String? = null,
+        var finalActionSeizedGoods: String? = null,
+        var remarks: String? = null,
+)
+
+data class InspectionInvestigationReportDto(
+        var id: Long? = null,
+        var reportReference: String? = null,
+        var reportTo: String? = null,
+        var reportThrough: String? = null,
+        var reportFrom: String? = null,
+        var reportSubject: String? = null,
+        var reportTitle: String? = null,
+        var reportDate: Date? = null,
+        var reportRegion: String? = null,
+        var reportDepartment: String? = null,
+        var reportFunction: String? = null,
+        var backgroundInformation: String? = null,
+        var objectiveInvestigation: String? = null,
+        var dateInvestigationInspection: Time? = null,
+        var kebsInspectors: String? = null,
+        var methodologyEmployed: String? = null,
+        var conclusion: String? = null,
+        var recommendations: String? = null,
+        var statusActivity: String? = null,
+        var finalRemarkHod: String? = null,
+        var remarks: String? = null,
+)
+
+data class SeizureDeclarationDto(
+        var id: Long?= null,
+        var seizureTo: String? = null,
+        var seizurePremises: String? = null,
+        var seizureRequirementsStandards: String? = null,
+        var goodsName: String? = null,
+        var goodsManufactureTrader: String? = null,
+        var goodsAddress: String? = null,
+        var goodsPhysical: String? = null,
+        var goodsLocation: String? = null,
+        var goodsMarkedBranded: String? = null,
+        var goodsPhysicalSeal: String? = null,
+        var descriptionGoods: String? = null,
+        var goodsQuantity: String? = null,
+        var goodsThereforei: String? = null,
+        var nameInspector: String? = null,
+        var designationInspector: String? = null,
+        var dateInspector: Date? = null,
+        var nameManufactureTrader: String? = null,
+        var designationManufactureTrader: String? = null,
+        var dateManufactureTrader: Date? = null,
+        var nameWitness: String? = null,
+        var designationWitness: String? = null,
+        var dateWitness: Date? = null,
+        var declarationTakenBy: String? = null,
+        var declarationOnThe: String? = null,
+        var declarationDayOf: Date? = null,
+        var declarationMyName: String? = null,
+        var declarationIresideAt: String? = null,
+        var declarationIemployeedAs: String? = null,
+        var declarationIemployeedOf: String? = null,
+        var declarationSituatedAt: String? = null,
+        var declarationStateThat: String? = null,
+        var declarationIdNumber: String? = null,
+        var remarks: String? = null,
 )
 
 data class SampleSubmissionDto(
@@ -395,6 +519,23 @@ data class SSFSaveComplianceStatusDto(
         var complianceStatus: Boolean,
         @NotNull(message = "Required field")
         var complianceRemarks: String,
+)
+
+data class PreliminaryReportDto(
+        var id: Long? = 0,
+        var reportTo: String? = null,
+        var reportFrom: String? = null,
+        var reportSubject: String? = null,
+        var reportTitle: String? = null,
+        var reportDate: Date? = null,
+        var surveillanceDateFrom: Date? = null,
+        var surveillanceDateTo: Date? = null,
+        var reportBackground: String? = null,
+        var kebsOfficersName: String? = null,
+        var surveillanceObjective: String? = null,
+        var surveillanceConclusions: String? = null,
+        var surveillanceRecommendation: String? = null,
+        var remarks: String? = null,
 )
 
 data class CompliantRemediationDto(

@@ -588,12 +588,15 @@ export class ApiEndpointService {
     public static MARKET_SURVEILLANCE_WORK_PLAN = {
         ALL_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-list`,
         ADD_NEW_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/add`,
-        ALL_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/list`,
-        COMPLETED_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/list-completed`,
-        NEW_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/list-new`,
-        MY_TASK_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/list-my-task`,
-        ONGOING_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/list-on-going`,
-        // CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
+        CLOSE_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/close`,
+        ALL_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list`,
+        COMPLETED_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-completed`,
+        NEW_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-new`,
+        MY_TASK_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list`,
+        // MY_TASK_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-my-task`,
+        ONGOING_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-on-going`,
+        CREATE_NEW_WORK_PLAN_SCHEDULE: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/new`,
+        INSPECTION_SCHEDULED_DETAILS: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/details`,
 
     };
     /**

@@ -44,7 +44,12 @@ import {
     ComplaintApproveDto,
     ComplaintRejectDto,
     ComplaintAdviceRejectDto,
-    ComplaintAssignDto, MsStandardProductCategory, ComplaintClassificationDto, WorkPlanBatchDetailsDto, WorkPlanScheduleListDetailsDto,
+    ComplaintAssignDto,
+    MsStandardProductCategory,
+    ComplaintClassificationDto,
+    WorkPlanBatchDetailsDto,
+    WorkPlanScheduleListDetailsDto,
+    WorkPlanEntityDto, WorkPlanInspectionDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidatorFn} from '@angular/forms';
@@ -378,6 +383,7 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public loadMSWorkPlanList(page: string, records: string, referenceNo: string, routeTake: string): Observable<WorkPlanScheduleListDetailsDto> {
         // console.log(data);
         let url = null;
@@ -402,6 +408,56 @@ export class MsService {
             .set('records', records);
         return this.http.get<WorkPlanScheduleListDetailsDto>(url, {params}).pipe(
             map(function (response: WorkPlanScheduleListDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public closeMSWorkPlanBatch(referenceNo: string): Observable<WorkPlanBatchDetailsDto[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.CLOSE_BATCH);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanBatchDetailsDto[]>(url, null, {params}).pipe(
+            map(function (response: WorkPlanBatchDetailsDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msAddWorkPlanScheduleDetails(referenceNo: string, data: WorkPlanEntityDto): Observable<WorkPlanScheduleListDetailsDto> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.CREATE_NEW_WORK_PLAN_SCHEDULE);
+        const params = new HttpParams()
+            .set('batchReferenceNo', referenceNo);
+        return this.http.post<WorkPlanScheduleListDetailsDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanScheduleListDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msWorkPlanScheduleDetails(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_DETAILS);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.get<WorkPlanInspectionDto>(url, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

@@ -47,6 +47,14 @@ class WorkPlanCreatedEntity : Serializable {
     @Basic
     var workPlanStatus: Int? = null
 
+    @Column(name = "BATCH_CLOSED")
+    @Basic
+    var batchClosed: Int? = null
+
+    @Column(name = "USER_TASK_ID")
+    @Basic
+    var userTaskId: Long? = null
+
     @Column(name = "REFERENCE_NUMBER")
     @Basic
     var referenceNumber: String? = null

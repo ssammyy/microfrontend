@@ -4,6 +4,12 @@ import {
   BatchFileFuelSaveDto,
   ComplaintsListDto,
   ComplaintsTaskAndAssignedDto,
+  MsBroadProductCategory,
+  MsDepartment,
+  MsDivisionDetails,
+  MsProducts, MsProductSubcategory,
+  MsStandardProductCategory, WorkPlanEntityDto,
+  WorkPlanListDto,
   WorkPlanScheduleListDetailsDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {Observable, Subject, throwError} from 'rxjs';
@@ -13,6 +19,13 @@ import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
+import {
+  BroadProductCategory,
+  ProductCategories,
+  Products,
+  ProductSubcategory,
+  StandardProductCategory
+} from '../../../../core/store/data/master/master.model';
 
 @Component({
   selector: 'app-work-plan-list',
@@ -23,7 +36,7 @@ export class WorkPlanListComponent implements OnInit {
   @ViewChild('editModal') editModal !: TemplateRef<any>;
   currDiv!: string;
   currDivLabel!: string;
-  addNewBatchForm!: FormGroup;
+  addNewScheduleForm!: FormGroup;
   dataSave: BatchFileFuelSaveDto;
   submitted = false;
   selectedCounty = 0;
@@ -33,6 +46,19 @@ export class WorkPlanListComponent implements OnInit {
   loading = false;
 
   roles: string[];
+  msDepartments: MsDepartment[];
+  msDivisions: MsDivisionDetails[];
+  standardProductCategory!: StandardProductCategory[];
+  productCategories!: ProductCategories[];
+  broadProductCategory!: BroadProductCategory[];
+  products!: Products[];
+  productSubcategory!: ProductSubcategory[];
+  standardProductCategorySelected!: number;
+  productCategoriesSelected!: number;
+  broadProductCategorySelected!: number;
+  productsSelected!: number;
+  productSubcategorySelected!: number;
+  departmentSelected!: number;
 
   activeStatus = 'my-tasks';
   previousStatus = 'my-tasks';
@@ -117,7 +143,8 @@ export class WorkPlanListComponent implements OnInit {
   ioUser = false;
   search: Subject<string>;
   loadedListData: ComplaintsTaskAndAssignedDto;
-  loadedData: WorkPlanScheduleListDetailsDto;
+  loadedData!: WorkPlanScheduleListDetailsDto;
+  dataSaveWorkPlan: WorkPlanEntityDto;
 
 
   constructor(private store$: Store<any>,
@@ -148,10 +175,22 @@ export class WorkPlanListComponent implements OnInit {
         },
     );
 
-    this.addNewBatchForm = this.formBuilder.group({
+    this.addNewScheduleForm = this.formBuilder.group({
+      complaintDepartment: ['', Validators.required],
+      divisionId: ['', Validators.required],
+      nameActivity: ['', Validators.required],
+      timeActivityDate: ['', Validators.required],
       county: ['', Validators.required],
-      town: ['', Validators.required],
-      remarks: ['', Validators.required],
+      townMarketCenter: ['', Validators.required],
+      locationActivityOther: ['', Validators.required],
+      standardCategory: ['', Validators.required],
+      broadProductCategory: ['', Validators.required],
+      productCategory: ['', Validators.required],
+      product: ['', Validators.required],
+      productSubCategory: ['', Validators.required],
+      resourcesRequired: ['', Validators.required],
+      budget: ['', Validators.required],
+      // remarks: ['', Validators.required],
     });
   }
 
@@ -164,6 +203,79 @@ export class WorkPlanListComponent implements OnInit {
           this.loadedData = data;
           this.totalCount = this.loadedData.workPlanList.length;
           this.dataSet.load(this.loadedData.workPlanList);
+
+          if (this.loadedData.createdWorkPlan.batchClosed === false) {
+            this.msService.msDepartmentListDetails().subscribe(
+                (dataDep: MsDepartment[]) => {
+                  this.msDepartments = dataDep;
+                  console.log(dataDep);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msDivisionListDetails().subscribe(
+                (dataDiv: MsDivisionDetails[]) => {
+                  this.msDivisions = dataDiv;
+                  console.log(dataDiv);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msProductStandardCategoryListDetails().subscribe(
+                (data1: MsStandardProductCategory[]) => {
+                  this.standardProductCategory = data1;
+                  console.log(data1);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msProductBroadCategoryListDetails().subscribe(
+                (data2: MsBroadProductCategory[]) => {
+                  this.broadProductCategory = data2;
+                  console.log(data2);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msProductCategoryListDetails().subscribe(
+                (data3: MsBroadProductCategory[]) => {
+                  this.productCategories = data3;
+                  console.log(data3);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msProductListDetails().subscribe(
+                (data4: MsProducts[]) => {
+                  this.products = data4;
+                  console.log(data4);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msProductSubCategoryListDetails().subscribe(
+                (data5: MsProductSubcategory[]) => {
+                  this.productSubcategory = data5;
+                  console.log(data5);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+          }
           this.SpinnerService.hide();
 
         },
@@ -173,30 +285,6 @@ export class WorkPlanListComponent implements OnInit {
           this.msService.showError('AN ERROR OCCURRED');
         },
     );
-
-    // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
-    // console.log(this.activeStatus)
-    // // Clear list before loading
-    // this.dataSet.load([])
-    // // Switch
-    // if (this.activeStatus === "completed") {
-    //   data = this.diService.listCompletedCd(documentTypeUuid, page, size)
-    // } else if (this.activeStatus === "ongoing") {
-    //   data = this.diService.listSectionOngoingCd(documentTypeUuid, page, size)
-    // } else if (this.activeStatus === "not-assigned") {
-    //   data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
-    // }
-    // data.subscribe(
-    //     result => {
-    //       if (result.responseCode === "00") {
-    //         let listD: any[] = result.data;
-    //         this.totalCount = result.totalCount
-    //         this.dataSet.load(listD)
-    //       } else {
-    //         console.log(result)
-    //       }
-    //     }
-    // );
   }
 
 
@@ -225,18 +313,18 @@ export class WorkPlanListComponent implements OnInit {
     }
   }
 
-  viewRecord(data: ComplaintsListDto) {
+  viewRecord(data: WorkPlanListDto) {
     console.log('TEST 101 ' + data.referenceNumber);
-    this.router.navigate([`/complaint/details/`, data.referenceNumber]);
+    this.router.navigate([`/workPlan/details/`, data.referenceNumber, this.selectedBatchRefNo]);
   }
 
-  get formNewBatchForm(): any {
-    return this.addNewBatchForm.controls;
+  get formNewScheduleForm(): any {
+    return this.addNewScheduleForm.controls;
   }
 
 
   updateSelectedCounty() {
-    this.selectedCounty = this.addNewBatchForm?.get('county')?.value;
+    this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
     console.log(`county set to ${this.selectedCounty}`);
     this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
     this.store$.select(selectCountyIdData).subscribe(
@@ -253,14 +341,14 @@ export class WorkPlanListComponent implements OnInit {
   }
 
   updateSelectedTown() {
-    this.selectedTown = this.addNewBatchForm?.get('town')?.value;
+    this.selectedTown = this.addNewScheduleForm?.get('town')?.value;
     console.log(`town set to ${this.selectedTown}`);
   }
 
   onClickSaveNewBatch(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
-      this.dataSave = {...this.dataSave, ...this.addNewBatchForm.value};
+      this.dataSave = {...this.dataSave, ...this.addNewScheduleForm.value};
       this.msService.addNewMSFuelBatch(this.dataSave).subscribe(
           (data: any) => {
             console.log(data);
@@ -278,8 +366,8 @@ export class WorkPlanListComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['addNewBatchDetails'];
-    const arrHeadSave = ['ADD NEW BATCH FILE'];
+    const arrHead = ['addNewScheduleDetails'];
+    const arrHeadSave = ['ADD NEW WORK-PLAN SCHEDULE DETAILS FILE'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -304,6 +392,7 @@ export class WorkPlanListComponent implements OnInit {
   //           }
   //       )
   // }
+  
 
 
   pageChange(pageIndex?: any) {
@@ -314,4 +403,86 @@ export class WorkPlanListComponent implements OnInit {
     }
   }
 
+  onClickCloseBatch() {
+    this.msService.showSuccessWith2Message('Are you sure your want to close this Batch?', 'You won\'t be able to add new schedule after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can click the \'ADD NEW WORK-PLAN FILE\' button to add another Work Plan', 'YEARLY WORK-PLAN SENT FOR APPROVAL SUCCESSFUL', () => {
+          this.closeBatch();
+        });
+  }
+
+  closeBatch() {
+    this.SpinnerService.show();
+    let resultStatus = false;
+    console.log(this.loadedData.createdWorkPlan.referenceNumber);
+    this.msService.closeMSWorkPlanBatch(this.selectedBatchRefNo).subscribe(
+        (data: any) => {
+          console.log(data);
+          // this.loadedData = data;
+          // this.totalCount = this.loadedData.fuelInspectionDto.length;
+          // this.dataSet.load(this.loadedData.fuelInspectionDto);
+          this.SpinnerService.hide();
+          this.msService.reloadCurrentRoute();
+
+          resultStatus  = true;
+          // tslint:disable-next-line:max-line-length
+          this.msService.showSuccess('YEARLY WORK-PLAN SENT FOR APPROVAL SUCCESSFUL', this.loadData(this.defaultPage, this.defaultPageSize, this.selectedBatchRefNo, this.activeStatus));
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          resultStatus = false;
+          // this.msService.showError("AN ERROR OCCURRED")
+        },
+    );
+    return resultStatus;
+  }
+
+  onChangeSelectedDepartment() {
+    this.departmentSelected = this.addNewScheduleForm?.get('complaintDepartment')?.value;
+  }
+
+  onChangeSelectedProductClassification() {
+    this.standardProductCategorySelected = this.addNewScheduleForm?.get('productClassification')?.value;
+  }
+
+  onChangeSelectedBroadProductCategory() {
+    this.broadProductCategorySelected = this.addNewScheduleForm?.get('broadProductCategory')?.value;
+  }
+
+  onChangeSelectedProductCategory() {
+    this.productCategoriesSelected = this.addNewScheduleForm?.get('productCategory')?.value;
+  }
+
+  onChangeSelectedMyProduct() {
+    this.productsSelected = this.addNewScheduleForm?.get('myProduct')?.value;
+  }
+
+  onChangeSelectedProductSubcategory() {
+    this.productSubcategorySelected = this.addNewScheduleForm?.get('productSubcategory')?.value;
+  }
+
+  onClickSaveWorkPlanScheduled(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
+      // tslint:disable-next-line:max-line-length
+      this.msService.msAddWorkPlanScheduleDetails(this.loadedData.createdWorkPlan.referenceNumber, this.dataSaveWorkPlan).subscribe(
+          (data: any) => {
+            console.log(data);
+            // this.addNewScheduleForm.reset();
+            this.SpinnerService.hide();
+            this.msService.showSuccess('WORK PLAN SCHEDULED DETAILS, SAVED SUCCESSFULLY');
+            this.loadData(this.defaultPage, this.defaultPageSize, this.selectedBatchRefNo , this.activeStatus);
+          },
+          error => {
+            this.SpinnerService.hide();
+            // this.addNewScheduleForm.reset();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+
+    }
+  }
 }
