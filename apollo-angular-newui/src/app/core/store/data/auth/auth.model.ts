@@ -38,6 +38,7 @@ export class CompanyInfoDto {
     turnover = 0;
     countAwarded = 0;
     countExpired = 0;
+    status=0;
 }
 
 

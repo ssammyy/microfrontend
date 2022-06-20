@@ -270,6 +270,10 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var otherBusinessNatureType: String? = null
 
+    @Column(name = "SL_FORM_STATUS")
+    @Basic
+    var slFormStatus: Int? = 0
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
@@ -333,7 +337,8 @@ class CompanyProfileEntity : Serializable {
                 townName == that.townName &&
                 suspensionStatus == that.suspensionStatus &&
                 closureStatus == that.closureStatus &&
-                otherBusinessNatureType == that.otherBusinessNatureType
+                otherBusinessNatureType == that.otherBusinessNatureType &&
+                slFormStatus == that.slFormStatus
     }
 
     override fun hashCode(): Int {
@@ -395,7 +400,8 @@ class CompanyProfileEntity : Serializable {
             regionName,
             countyName,
             townName,
-            otherBusinessNatureType
+            otherBusinessNatureType,
+            slFormStatus
         )
     }
 }

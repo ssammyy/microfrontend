@@ -376,6 +376,24 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getContactPersonId(@Param("id") id: Long?): Long?
 
     @Query(
+        value = "SELECT NAME  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",
+        nativeQuery = true
+    )
+    fun getComName(@Param("id") id: Long?): String?
+
+    @Query(
+        value = "SELECT REGISTRATION_NUMBER  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",
+        nativeQuery = true
+    )
+    fun getRegNo(@Param("id") id: Long?): String?
+
+    @Query(
+        value = "SELECT KRA_PIN  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",
+        nativeQuery = true
+    )
+    fun getKraPin(@Param("id") id: Long?): String?
+
+    @Query(
         value = "SELECT NAME  FROM DAT_KEBS_COMPANY_PROFILE WHERE ID= :id",
         nativeQuery = true
     )
@@ -406,8 +424,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
     @Query(
         value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount," +
-                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName " +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID " +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo " +
+                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER " +
                 "WHERE p.ENTRY_NUMBER= :entryNumber ORDER BY p.ID DESC",
         nativeQuery = true
     )
@@ -415,8 +433,18 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
     @Query(
         value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount," +
-                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName " +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID " +
+                "c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo" +
+                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
+                "WHERE p.ID= :id",
+        nativeQuery = true
+    )
+    fun getLevyPaymentsReceipt(@Param("id") id: Long?): MutableList<LevyPayments>
+
+
+    @Query(
+        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount," +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
+                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
                 "WHERE c.ID= :companyId ORDER BY p.ID DESC",
         nativeQuery = true
     )
@@ -437,8 +465,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
     @Query(
         value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.LEVY_PENALTY_PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,p.NET_PENALTY_AMT as amountDue,p.PENALTY_APPLIED as penalty,p.LEVY_DUE_DATE as levyDueDate," +
-                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName " +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID " +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
+                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
                 "WHERE p.ENTRY_NUMBER= :entryNumber ORDER BY p.ID DESC",
         nativeQuery = true
     )
@@ -446,8 +474,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
     @Query(
         value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.LEVY_PENALTY_PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,p.NET_PENALTY_AMT as amountDue,p.PENALTY_APPLIED as penalty,p.LEVY_DUE_DATE as levyDueDate," +
-                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,u.FIRST_NAME as firstName,u.LAST_NAME as lastName " +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER JOIN DAT_KEBS_USERS u ON c.USER_ID = u.ID " +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo " +
+                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER " +
                 "WHERE c.ID= :companyId ORDER BY p.ID DESC",
         nativeQuery = true
     )

@@ -457,6 +457,7 @@ export class ApiEndpointService {
         STD_LEVY_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getLevyPayments`,
         STD_LEVY_DEFAULTER_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getLevyDefaulters`,
         STD_LEVY_MANUFACTURE_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPayments`,
+        STD_LEVY_MANUFACTURE_PAYMENT_RECEIPT: `${ApiEndpointService.STL_CONTEXT}/getLevyPaymentsReceipt`,
         STD_LEVY_MANUFACTURES_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPaymentsList`,
         STD_LEVY_PENALTY_DETAIL: `${ApiEndpointService.STL_CONTEXT}/getLevyPenalty`,
         STD_LEVY_MANUFACTURE_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPenalty`,

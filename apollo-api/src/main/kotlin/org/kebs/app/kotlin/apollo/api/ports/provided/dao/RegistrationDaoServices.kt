@@ -1097,6 +1097,7 @@ class RegistrationDaoServices(
                                 assignStatus=0
                                 assignedTo=0
                                 typeOfManufacture=stdLevyNotificationFormDTO.manufacture_status
+                                slFormStatus=1
 
                             }
 

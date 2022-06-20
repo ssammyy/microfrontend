@@ -818,7 +818,9 @@ data class UserCompanyDetailsDto(
         @JsonProperty("countAwarded")
         val countAwarded: Long? = null,
         @JsonProperty("countExpired")
-        val countExpired: Long? = null
+        val countExpired: Long? = null,
+        @JsonProperty("status")
+        val status: Int? = null
 )
 
 class CorItemsEntityDto {

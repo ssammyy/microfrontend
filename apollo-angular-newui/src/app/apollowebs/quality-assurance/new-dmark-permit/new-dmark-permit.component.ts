@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {LoginCredentials, selectUserInfo} from '../../../core/store';
+import {LoginCredentials, selectCompanyInfoDtoStateData, selectUserInfo} from '../../../core/store';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../../core/store/data/qa/qa.service';
@@ -77,90 +77,123 @@ export class NewDmarkPermitComponent implements OnInit {
 
     ngOnInit(): void {
 
-        this.sta1Form = this.formBuilder.group({
-            id: [''],
-            commodityDescription: ['', Validators.required],
-            sectionId: ['', Validators.required],
-            permitForeignStatus: ['', Validators.required],
-            attachedPlant: ['', Validators.required],
-            tradeMark: ['', Validators.required],
-            applicantName: []
+        this.store$.select(selectCompanyInfoDtoStateData).subscribe(
+            (d) => {
+                if (d) {
+                    //  console.log(`${d.status}`);
+                    // return this.status = d.status;
+                    if (d.status == 0) {
+                        swal.fire({
+                            title: 'Cancelled',
+                            text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
+                            icon: 'error',
+                            customClass: {confirmButton: "btn btn-info",},
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.href = "/dashboard";
+                            }
+                        })
+                    } else if (d.status == 2) {
+                        swal.fire({
+                            title: 'Cancelled',
+                            text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
+                            icon: 'error',
+                            customClass: {confirmButton: "btn btn-info",},
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.href = "/dashboard";
+                            }
+                        })
+                    } else {
 
-        });
+                        this.sta1Form = this.formBuilder.group({
+                            id: [''],
+                            commodityDescription: ['', Validators.required],
+                            sectionId: ['', Validators.required],
+                            permitForeignStatus: ['', Validators.required],
+                            attachedPlant: ['', Validators.required],
+                            tradeMark: ['', Validators.required],
+                            applicantName: []
 
-        this.sta3FormA = this.formBuilder.group({
-            id: [''],
-            produceOrdersOrStock: ['', Validators.required],
-            issueWorkOrderOrEquivalent: ['', Validators.required],
-            identifyBatchAsSeparate: ['', Validators.required],
-            productsContainersCarryWorksOrder: ['', Validators.required],
-            isolatedCaseDoubtfulQuality: ['', Validators.required]
+                        });
 
-        });
+                        this.sta3FormA = this.formBuilder.group({
+                            id: [''],
+                            produceOrdersOrStock: ['', Validators.required],
+                            issueWorkOrderOrEquivalent: ['', Validators.required],
+                            identifyBatchAsSeparate: ['', Validators.required],
+                            productsContainersCarryWorksOrder: ['', Validators.required],
+                            isolatedCaseDoubtfulQuality: ['', Validators.required]
 
-        this.sta3FormB = this.formBuilder.group({
-            id: [''],
-            headQaQualificationsTraining: ['', Validators.required],
-            reportingTo: ['', Validators.required],
-            separateQcid: ['', Validators.required],
-            testsRelevantStandard: ['', Validators.required],
-            spoComingMaterials: ['', Validators.required],
-            spoProcessOperations: ['', Validators.required],
-            spoFinalProducts: ['', Validators.required],
-            monitoredQcs: ['', Validators.required],
-            qauditChecksCarried: ['', Validators.required],
-            informationQcso: ['', Validators.required],
+                        });
 
-        });
+                        this.sta3FormB = this.formBuilder.group({
+                            id: [''],
+                            headQaQualificationsTraining: ['', Validators.required],
+                            reportingTo: ['', Validators.required],
+                            separateQcid: ['', Validators.required],
+                            testsRelevantStandard: ['', Validators.required],
+                            spoComingMaterials: ['', Validators.required],
+                            spoProcessOperations: ['', Validators.required],
+                            spoFinalProducts: ['', Validators.required],
+                            monitoredQcs: ['', Validators.required],
+                            qauditChecksCarried: ['', Validators.required],
+                            informationQcso: ['', Validators.required],
 
-        this.sta3FormC = this.formBuilder.group({
-            id: [''],
-            mainMaterialsPurchasedSpecification: ['', Validators.required],
-            adoptedReceiptMaterials: ['', Validators.required],
-            storageFacilitiesExist: ['', Validators.required],
+                        });
 
-        });
+                        this.sta3FormC = this.formBuilder.group({
+                            id: [''],
+                            mainMaterialsPurchasedSpecification: ['', Validators.required],
+                            adoptedReceiptMaterials: ['', Validators.required],
+                            storageFacilitiesExist: ['', Validators.required],
 
-        this.sta3FormD = this.formBuilder.group({
-            id: [''],
-            stepsManufacture: ['', Validators.required],
-            maintenanceSystem: ['', Validators.required],
-            qcsSupplement: ['', Validators.required],
-            qmInstructions: ['', Validators.required],
-            testEquipmentUsed: ['', Validators.required],
-            indicateExternalArrangement: ['', Validators.required],
-            levelDefectivesFound: ['', Validators.required],
-            levelClaimsComplaints: ['', Validators.required],
-            independentTests: ['', Validators.required],
-            indicateStageManufacture: ['', Validators.required],
+                        });
 
-        });
+                        this.sta3FormD = this.formBuilder.group({
+                            id: [''],
+                            stepsManufacture: ['', Validators.required],
+                            maintenanceSystem: ['', Validators.required],
+                            qcsSupplement: ['', Validators.required],
+                            qmInstructions: ['', Validators.required],
+                            testEquipmentUsed: ['', Validators.required],
+                            indicateExternalArrangement: ['', Validators.required],
+                            levelDefectivesFound: ['', Validators.required],
+                            levelClaimsComplaints: ['', Validators.required],
+                            independentTests: ['', Validators.required],
+                            indicateStageManufacture: ['', Validators.required],
 
-        this.sta3FormG = this.formBuilder.group({});
+                        });
+
+                        this.sta3FormG = this.formBuilder.group({});
 
 
-        this.qaService.loadSectionList().subscribe(
-            (data: any) => {
-                this.sections = data;
-                console.log(data);
-            }
-        );
+                        this.qaService.loadSectionList().subscribe(
+                            (data: any) => {
+                                this.sections = data;
+                                console.log(data);
+                            }
+                        );
 
-        this.qaService.loadPlantList().subscribe(
-            (data: any) => {
-                this.plants = data;
-                console.log(data);
-            }
-        );
+                        this.qaService.loadPlantList().subscribe(
+                            (data: any) => {
+                                this.plants = data;
+                                console.log(data);
+                            }
+                        );
 
-        this.getSelectedPermit();
+                        this.getSelectedPermit();
 
-        this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dmark`;
+                        this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dmark`;
 
-        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            return this.fullname = u.fullName;
-        });
-
+                        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+                            return this.fullname = u.fullName;
+                        });
+                    }
+                }
+            })
     }
 
     public getSelectedPermit(): void {

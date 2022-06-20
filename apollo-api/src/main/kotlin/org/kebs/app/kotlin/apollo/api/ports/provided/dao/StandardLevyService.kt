@@ -67,7 +67,8 @@ class StandardLevyService(
     private val standardLevyOperationsSuspensionRepository: StandardLevyOperationsSuspensionRepository,
     private val slWindingUpReportUploadsEntityRepository: SlWindingUpReportUploadsEntityRepository,
     private val emailVerificationTokenEntityRepo: EmailVerificationTokenEntityRepo,
-    private val iUserRepository: IUserRepository
+    private val iUserRepository: IUserRepository,
+    private val companyRepo: ICompanyProfileRepository
 
 
     ) {
@@ -693,6 +694,7 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         standardLevyFactoryVisitReportEntity.userType?.let { variables["userType"] = it }
         standardLevyFactoryVisitReportEntity.makeRemarks?.let { variables["makeRemarks"] = it }
+        standardLevyFactoryVisitReportEntity.complianceStatus?.let { variables["complianceStatus"] = it }
         val userIntType = standardLevyFactoryVisitReportEntity.userType
         val plUserTypes = 61L
         val asManagerUserTypes = 62L
@@ -726,6 +728,7 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         standardLevyFactoryVisitReportEntity.userType?.let { variables["userType"] = it }
         standardLevyFactoryVisitReportEntity.makeRemarks?.let { variables["makeRemarks"] = it }
+        standardLevyFactoryVisitReportEntity.complianceStatus?.let { variables["complianceStatus"] = it }
         val userIntType = standardLevyFactoryVisitReportEntity.userType
         val plUserTypes = 61L
         val asManagerUserTypes = 62L
@@ -742,6 +745,8 @@ return getUserTasks();
                     makeRemarks = standardLevyFactoryVisitReportEntity.makeRemarks
                     status = 1
                     assigneeId = standardLevyFactoryVisitReportEntity.assigneeId
+                    conductedBy = loggedInUser.id
+                    complianceStatus = standardLevyFactoryVisitReportEntity.complianceStatus
 
                 }
                 standardLevyFactoryVisitReportRepo.save(entity)
@@ -1165,6 +1170,7 @@ return getUserTasks();
 
                                 }
                                 ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+
                             if (userIntTypes.equals(61)) {
 
                                 bpmnService.slAssignTask(
@@ -1230,17 +1236,28 @@ return getUserTasks();
 
         return "Saved"
     }
-
-    fun siteVisitReportFeedback(
+    fun siteVisitReportFeedbacksTest(
         standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
-    ): ProcessInstanceResponseValueSite {
+    ): String {
         val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         val variables: MutableMap<String, Any> = java.util.HashMap()
         standardLevyFactoryVisitReportEntity.officersFeedback?.let { variables["officersFeedback"] = it }
         standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
         standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
-
+        val complianceStatus =
+            standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.complianceStatus
+        val companyName = companyRepo.getComName(standardLevyFactoryVisitReportEntity.assigneeId)
+        val registrationNumber = companyRepo.getRegNo(standardLevyFactoryVisitReportEntity.assigneeId)
+        val kraPin = companyRepo.getKraPin(standardLevyFactoryVisitReportEntity.assigneeId)
+        val conductedById =
+            standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.conductedBy
+        val conductedByFName = iUserRepository.findByIdOrNull(conductedById)?.firstName
+        val conductedByLName = iUserRepository.findByIdOrNull(conductedById)?.lastName
+        val dateConducted =
+            standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.visitDate
+        var emailBody = ""
+        var thisMail=""
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
             ?.let { entity ->
                 entity.apply {
@@ -1252,12 +1269,97 @@ return getUserTasks();
                 }
                 standardLevyFactoryVisitReportRepo.save(entity)
             } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
+        if (complianceStatus != null) {
+            if (complianceStatus =="1".toLong()) {
+                emailBody =
+                    "Following a visit  ${companyName},Registration Number ${registrationNumber},and  KRA pin $kraPin on date ${dateConducted} by ${conductedByFName},${conductedByLName}. $companyName  was found to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999. Standards Levy is for the development and promotion of Standardization, Metrology and conformity assessment services.Thank you for the continued cooperation, for any further clarifications do not hesitate to contact us through standardslevy@kebs.org"
+
+                thisMail="Saved"
+            } else if (complianceStatus=="0".toLong()) {
+                emailBody =
+                    "Following a visit  ${companyName}, registration number ${registrationNumber}, and  KRA pin ${kraPin} on date ${dateConducted} by  ${conductedByFName},${conductedByLName}.\n" +
+                            "\n" +
+                            "$companyName was found NOT to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999. \n" +
+                            "\n" +
+                            "The standards levy is payable at the rate of 0.2% of your monthly turnover excluding VAT and discounts where applicable, subject to a minimum of KSh. 1,000 per month and a maximum of KSh. 400,000 per annum. Failure to pay the levy attracts a penalty at a rate of 5% per month cumulatively. \n" +
+                            " \n" +
+                            "In line with the above, you are required to remit all outstanding arrears of XXXXX and penalties of XXXX through the ITAX system to avoid further accrual of penalties. \n" +
+                            "\n" +
+                            "For any clarification, do not hesitate to contact us through standardslevy@kebs.org\n" +
+                            "\n"
+            }
+        }
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "Compliance" + gson.toJson(complianceStatus) }
+        KotlinLogging.logger { }.info { "Company Name" + gson.toJson(companyName) }
+        KotlinLogging.logger { }.info { "Reg No" + gson.toJson(registrationNumber) }
+        KotlinLogging.logger { }.info { "Kra Pin" + gson.toJson(kraPin) }
+        KotlinLogging.logger { }.info { "Email" + gson.toJson(emailBody) }
+        KotlinLogging.logger { }.info { "Conducted By" + gson.toJson(conductedById) }
+        KotlinLogging.logger { }.info { "Conducted By Name" + gson.toJson(conductedByFName) }
+        KotlinLogging.logger { }.info { "Date Conducted" + gson.toJson(dateConducted) }
+        KotlinLogging.logger { }.info { "This Check" + gson.toJson(thisMail) }
 
         val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
         val subject = "Site Visit Report"
-        val messageBody= "Dear Customer, The site visit report has been prepared and uploaded. Kindly login to the KIMS portal to view. Regards,"
         if (recipient != null) {
-            notifications.sendEmail(recipient, subject, messageBody)
+            notifications.sendEmail(recipient, subject, emailBody)
+        }
+        return "Saved"
+    }
+
+    fun siteVisitReportFeedback(
+        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
+    ): ProcessInstanceResponseValueSite {
+        val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
+        val variables: MutableMap<String, Any> = java.util.HashMap()
+        standardLevyFactoryVisitReportEntity.officersFeedback?.let { variables["officersFeedback"] = it }
+        standardLevyFactoryVisitReportEntity.id?.let { variables["visitID"] = it }
+        standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
+        standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
+        val complianceStatus =
+            standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.complianceStatus
+        val companyName = companyRepo.getComName(standardLevyFactoryVisitReportEntity.assigneeId)
+        val registrationNumber = companyRepo.getRegNo(standardLevyFactoryVisitReportEntity.assigneeId)
+        val kraPin = companyRepo.getKraPin(standardLevyFactoryVisitReportEntity.assigneeId)
+        val conductedById= standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.conductedBy
+        val conductedByFName= iUserRepository.findByIdOrNull(conductedById)?.firstName
+        val conductedByLName= iUserRepository.findByIdOrNull(conductedById)?.lastName
+        val dateConducted = standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.visitDate
+        var emailBody =""
+        standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
+            ?.let { entity ->
+                entity.apply {
+                    officersFeedback = standardLevyFactoryVisitReportEntity.officersFeedback
+                    assigneeId = standardLevyFactoryVisitReportEntity.assigneeId
+                    status = 3
+                    slProcessStatus = 1
+
+                }
+                standardLevyFactoryVisitReportRepo.save(entity)
+            } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
+        if (complianceStatus != null) {
+            if (complianceStatus =="1".toLong()) {
+                 emailBody="Following a visit  ${companyName},Registration Number ${registrationNumber},and  KRA pin $kraPin on date ${dateConducted} by ${conductedByFName},${conductedByLName}. $companyName  was found to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999. Standards Levy is for the development and promotion of Standardization, Metrology and conformity assessment services.Thank you for the continued cooperation, for any further clarifications do not hesitate to contact us through standardslevy@kebs.org"
+
+            }else if(complianceStatus =="0".toLong()){
+                 emailBody="Following a visit  ${companyName}, registration number ${registrationNumber}, and  KRA pin ${kraPin} on date ${dateConducted} by  ${conductedByFName},${conductedByLName}.\n" +
+                        "\n" +
+                        "$companyName was found NOT to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999. \n" +
+                        "\n" +
+                        "The standards levy is payable at the rate of 0.2% of your monthly turnover excluding VAT and discounts where applicable, subject to a minimum of KSh. 1,000 per month and a maximum of KSh. 400,000 per annum. Failure to pay the levy attracts a penalty at a rate of 5% per month cumulatively. \n" +
+                        " \n" +
+                        "In line with the above, you are required to remit all outstanding arrears of XXXXX and penalties of XXXX through the ITAX system to avoid further accrual of penalties. \n" +
+                        "\n" +
+                        "For any clarification, do not hesitate to contact us through standardslevy@kebs.org\n" +
+                        "\n"
+            }
+        }
+
+        val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+        val subject = "Site Visit Report"
+        if (recipient != null) {
+            notifications.sendEmail(recipient, subject, emailBody)
         }
 
         companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
@@ -1422,7 +1524,7 @@ return getUserTasks();
                             }
 
                     }
-            } ?: throw NullValueNotAllowedException("User Not Found")
+            } ?: throw ExpectedDataNotFound("User Not Found")
 
     }
 
@@ -1437,7 +1539,7 @@ return getUserTasks();
                             }
 
                     }
-            } ?: throw NullValueNotAllowedException("User Not Found")
+            } ?: throw ExpectedDataNotFound("Branch Not Found")
 
     }
 
@@ -1889,6 +1991,12 @@ return getUserTasks();
     fun getManufacturesLevyPaymentsList(companyId: Long): MutableList<LevyPayments>{
         return companyProfileRepo.getManufacturesLevyPaymentsList(companyId)
     }
+
+    fun getLevyPaymentsReceipt(id: Long): MutableList<LevyPayments>{
+        return companyProfileRepo.getLevyPaymentsReceipt(id)
+    }
+
+
 
     fun getManufacturesLevyPayments(): MutableList<LevyPayments>{
         commonDaoServices.loggedInUserDetailsEmail().id
