@@ -522,7 +522,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     },
   };
 
-  private workPlanInspection: WorkPlanInspectionDto;
+  public workPlanInspection: WorkPlanInspectionDto;
 
 
   constructor(
