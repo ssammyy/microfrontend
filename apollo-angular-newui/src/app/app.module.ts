@@ -347,6 +347,7 @@ import {CustomsOfficeComponent} from './apollowebs/system/customs-office/customs
 import {LaboratoriesComponent} from './apollowebs/system/laboratories/laboratories.component';
 import {AddLaboratoryComponent} from './apollowebs/system/laboratories/add-laboratory/add-laboratory.component';
 import {AddCustomOfficeComponent} from './apollowebs/system/customs-office/add-custom-office/add-custom-office.component';
+import {AddUpdateLimitComponent} from './apollowebs/invoice/limits/add-update-limit/add-update-limit.component';
 
 
 @NgModule({
@@ -716,7 +717,8 @@ import {AddCustomOfficeComponent} from './apollowebs/system/customs-office/add-c
         CustomsOfficeComponent,
         LaboratoriesComponent,
         AddLaboratoryComponent,
-        AddCustomOfficeComponent
+        AddCustomOfficeComponent,
+        AddUpdateLimitComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

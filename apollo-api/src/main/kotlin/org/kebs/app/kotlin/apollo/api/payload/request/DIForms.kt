@@ -145,25 +145,27 @@ class BillingLimitForm {
     @NotEmpty(message = "Bill Date type is required")
     var billDateType: String? = null
 
-    @NotEmpty(message = "Bill start date is required")
     var billStartDate: Int? = null
-
-    @NotEmpty(message = "Bill end date is required")
     var billEndDay: Int? = null
 
-    @NotEmpty(message = "Bill payment date is required")
+    @NotNull(message = "Bill payment date is required")
     var billPaymentDay: Int? = null
 
-    @NotEmpty(message = "Bill penalty is required")
+    @NotNull(message = "Bill penalty is required")
     var penaltyAmount: BigDecimal? = null
 
     @NotEmpty(message = "Bill penalty type is required")
     var penaltyType: String? = null
 
-    @NotEmpty(message = "Max bill amount is required")
+    @NotNull(message = "Max bill amount is required")
     var maxBillAmount: BigDecimal? = null
 
+    @NotNull(message = "Status is required")
+    var status: Int? = null
+
     fun fillEntity(billLimit: BillingLimits) {
+        billLimit.status = status ?: 1
+        billLimit.billPaymentDay = billPaymentDay
         billLimit.corporateType = corporateType
         billLimit.billReceiptPrefix = billReceiptPrefix
         billLimit.billDateType = billDateType

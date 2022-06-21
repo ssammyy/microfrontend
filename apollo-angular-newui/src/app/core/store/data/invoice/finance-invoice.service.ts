@@ -46,7 +46,19 @@ export class FinanceInvoiceService {
     }
 
     loadBillTypes(): Observable<any> {
-        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/bill/limits"))
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/di/config/billing/limits"))
+    }
+
+    saveBillType(fee: any): Observable<any> {
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/di/config/billing/limit"), fee)
+    }
+
+    updateBillType(fee: any, feeId: any): Observable<any> {
+        return this.http.put(ApiEndpointService.getEndpoint("/api/v1/di/config/billing/limit/" + feeId), fee)
+    }
+
+    deleteBillType(feeId: any): Observable<any> {
+        return this.http.delete(ApiEndpointService.getEndpoint("/api/v1/di/config/billing/limit/" + feeId))
     }
 
     loadBills(corporateId: any, page: number, pageSize: number): Observable<any> {
