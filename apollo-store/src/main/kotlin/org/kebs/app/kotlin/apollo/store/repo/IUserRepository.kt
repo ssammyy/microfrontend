@@ -488,6 +488,14 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     )
     fun getLevyDefaulters(): MutableList<LevyPenalty>
 
+    @Query(
+        value = "SELECT COUNT(ENTRY_NUMBER)  FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS WHERE ENTRY_NUMBER=:entryNumber  AND OVERDUE='1'",
+        nativeQuery = true
+    )
+    fun findRecordCount(entryNumber: String): Long
+
+
+
 
 
 
