@@ -1447,7 +1447,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Court Name</b></label>
-                                        <input type="number" class="form-control two-column-input"
+                                        <input type="text" class="form-control two-column-input"
                                                formControlName="courtName" name="courtName" required
                                                [class.is-invalid]="formChargeSheetForm.courtName.invalid && formChargeSheetForm.courtName.errors">
                                         <div *ngIf="submitted && formChargeSheetForm.courtName.errors" class="invalid-feedback">
@@ -1477,7 +1477,7 @@
                             Close
                         </button>
                         <button *ngIf="chargeSheetForm.valid" mat-raised-button   data-dismiss="modal"
-                                class="btn btn-success" (click)="onClickSaveWorkPlanScheduled()" type="button" >SUBMIT
+                                class="btn btn-success" (click)="onClickSaveChargeSheet()" type="button" >SUBMIT
                         </button>
                         <button *ngIf="chargeSheetForm.invalid" mat-raised-button  class="btn btn-success" type="button" >SUBMIT
                         </button>

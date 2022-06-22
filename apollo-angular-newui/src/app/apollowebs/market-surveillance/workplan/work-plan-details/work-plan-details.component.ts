@@ -1316,15 +1316,16 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.chargeSheetForm.valid) {
       this.SpinnerService.show();
       this.dataSaveChargeSheet = {...this.dataSaveChargeSheet, ...this.chargeSheetForm.value};
-      this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
+      this.msService.msWorkPlanScheduleSaveChargeSheet(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
+          this.dataSaveChargeSheet,
       ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('WORK-PLAN DETAILS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('CHARGE SHEET DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();

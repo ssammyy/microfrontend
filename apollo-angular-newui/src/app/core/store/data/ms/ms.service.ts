@@ -49,7 +49,7 @@ import {
     ComplaintClassificationDto,
     WorkPlanBatchDetailsDto,
     WorkPlanScheduleListDetailsDto,
-    WorkPlanEntityDto, WorkPlanInspectionDto, WorkPlanScheduleApprovalDto, CountriesEntityDto,
+    WorkPlanEntityDto, WorkPlanInspectionDto, WorkPlanScheduleApprovalDto, CountriesEntityDto, ChargeSheetDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -475,7 +475,7 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public msWorkPlanScheduleSaveChargeSheet(batchReferenceNo: string, referenceNo: string, data: WorkPlanScheduleApprovalDto): Observable<WorkPlanInspectionDto> {
+    public msWorkPlanScheduleSaveChargeSheet(batchReferenceNo: string, referenceNo: string, data: ChargeSheetDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_DETAILS);
         const params = new HttpParams()
