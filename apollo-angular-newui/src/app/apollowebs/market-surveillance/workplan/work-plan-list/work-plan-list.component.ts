@@ -37,6 +37,7 @@ export class WorkPlanListComponent implements OnInit {
   currDiv!: string;
   currDivLabel!: string;
   addNewScheduleForm!: FormGroup;
+  addChargeSheetForm!: FormGroup;
   dataSave: BatchFileFuelSaveDto;
   submitted = false;
   selectedCounty = 0;
@@ -53,12 +54,12 @@ export class WorkPlanListComponent implements OnInit {
   broadProductCategory!: BroadProductCategory[];
   products!: Products[];
   productSubcategory!: ProductSubcategory[];
-  standardProductCategorySelected!: number;
-  productCategoriesSelected!: number;
-  broadProductCategorySelected!: number;
-  productsSelected!: number;
-  productSubcategorySelected!: number;
-  departmentSelected!: number;
+  standardProductCategorySelected: 0;
+  productCategoriesSelected: 0;
+  broadProductCategorySelected: 0;
+  productsSelected: 0;
+  productSubcategorySelected: 0;
+  departmentSelected: 0;
 
   activeStatus = 'my-tasks';
   previousStatus = 'my-tasks';
@@ -204,7 +205,7 @@ export class WorkPlanListComponent implements OnInit {
           this.totalCount = this.loadedData.workPlanList.length;
           this.dataSet.load(this.loadedData.workPlanList);
 
-          if (this.loadedData.createdWorkPlan.batchClosed === false) {
+          // if (this.loadedData.createdWorkPlan.batchClosed === true) {
             this.msService.msDepartmentListDetails().subscribe(
                 (dataDep: MsDepartment[]) => {
                   this.msDepartments = dataDep;
@@ -275,7 +276,7 @@ export class WorkPlanListComponent implements OnInit {
                   this.msService.showError('AN ERROR OCCURRED');
                 },
             );
-          }
+          // }
           this.SpinnerService.hide();
 
         },
@@ -392,7 +393,7 @@ export class WorkPlanListComponent implements OnInit {
   //           }
   //       )
   // }
-  
+
 
 
   pageChange(pageIndex?: any) {
@@ -435,22 +436,37 @@ export class WorkPlanListComponent implements OnInit {
 
   onChangeSelectedDepartment() {
     this.departmentSelected = this.addNewScheduleForm?.get('complaintDepartment')?.value;
+    this.standardProductCategorySelected = this.addNewScheduleForm?.get('standardCategory')?.value;
+    this.broadProductCategorySelected = this.addNewScheduleForm?.get('broadProductCategory')?.value;
+    this.productCategoriesSelected = this.addNewScheduleForm?.get('productCategory')?.value;
+    this.productsSelected = this.addNewScheduleForm?.get('product')?.value;
+    this.productSubcategorySelected = this.addNewScheduleForm?.get('productSubcategory')?.value;
   }
 
   onChangeSelectedProductClassification() {
-    this.standardProductCategorySelected = this.addNewScheduleForm?.get('productClassification')?.value;
+    this.standardProductCategorySelected = this.addNewScheduleForm?.get('standardCategory')?.value;
+    this.broadProductCategorySelected = this.addNewScheduleForm?.get('broadProductCategory')?.value;
+    this.productCategoriesSelected = this.addNewScheduleForm?.get('productCategory')?.value;
+    this.productsSelected = this.addNewScheduleForm?.get('product')?.value;
+    this.productSubcategorySelected = this.addNewScheduleForm?.get('productSubcategory')?.value;
   }
 
   onChangeSelectedBroadProductCategory() {
     this.broadProductCategorySelected = this.addNewScheduleForm?.get('broadProductCategory')?.value;
+    this.productCategoriesSelected = this.addNewScheduleForm?.get('productCategory')?.value;
+    this.productsSelected = this.addNewScheduleForm?.get('product')?.value;
+    this.productSubcategorySelected = this.addNewScheduleForm?.get('productSubcategory')?.value;
   }
 
   onChangeSelectedProductCategory() {
     this.productCategoriesSelected = this.addNewScheduleForm?.get('productCategory')?.value;
+    this.productsSelected = this.addNewScheduleForm?.get('product')?.value;
+    this.productSubcategorySelected = this.addNewScheduleForm?.get('productSubcategory')?.value;
   }
 
   onChangeSelectedMyProduct() {
-    this.productsSelected = this.addNewScheduleForm?.get('myProduct')?.value;
+    this.productsSelected = this.addNewScheduleForm?.get('product')?.value;
+    this.productSubcategorySelected = this.addNewScheduleForm?.get('productSubcategory')?.value;
   }
 
   onChangeSelectedProductSubcategory() {

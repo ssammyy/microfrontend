@@ -561,6 +561,7 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_COMMON = {
+        MS_COUNTRIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/countries`,
         MS_DEPARTMENTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/departments`,
         MS_DIVISIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/divisions`,
         MS_STANDARD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/standardProductCategory`,

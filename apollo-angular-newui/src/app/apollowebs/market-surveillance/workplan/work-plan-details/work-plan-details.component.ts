@@ -5,7 +5,7 @@ import {
   ComplaintAdviceRejectDto,
   ComplaintApproveRejectAdviceWhereDto,
   ComplaintAssignDto,
-  ComplaintClassificationDto, ComplaintsFilesFoundDto, CompliantRemediationDto,
+  ComplaintClassificationDto, ComplaintsFilesFoundDto, CompliantRemediationDto, CountriesEntityDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
   FuelInspectionDto,
@@ -523,6 +523,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   };
 
   public workPlanInspection: WorkPlanInspectionDto;
+  public msCounties: CountriesEntityDto[];
 
 
   constructor(
@@ -578,7 +579,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       finePaid: ['', Validators.required],
       courtName: ['', Validators.required],
       courtDate: ['', Validators.required],
-      remarks: ['', Validators.required],
+      // remarks: ['', Validators.required],
     });
 
 
@@ -687,6 +688,19 @@ export class WorkPlanDetailsComponent implements OnInit {
     );
   }
 
+  loadDataToBeUsed() {
+    this.msService.msCountriesListDetails().subscribe(
+        (dataCounties: CountriesEntityDto[]) => {
+          this.msCounties = dataCounties;
+          console.log(dataCounties);
+        },
+        error => {
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
   get formAssignOfficerForm(): any {
     return this.assignOfficerForm.controls;
   }
@@ -747,6 +761,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.msService.msWorkPlanScheduleDetails(batchReferenceNumber, referenceNumber).subscribe(
         (data) => {
           this.workPlanInspection = data;
+          this.loadDataToBeUsed();
           this.SpinnerService.hide();
           console.log(data);
         },
@@ -756,7 +771,7 @@ export class WorkPlanDetailsComponent implements OnInit {
           this.msService.showError('AN ERROR OCCURRED');
         },
     );
-    
+
   }
 
   openModalAddDetails(divVal: string): void {
@@ -923,7 +938,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       const file = this.uploadedFiles;
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
-      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber,);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
       formData.append('docTypeName', docTypeName);
       for (let i = 0; i < file.length; i++) {
         console.log(file[i]);
@@ -1290,6 +1305,34 @@ export class WorkPlanDetailsComponent implements OnInit {
       case 'viewPDFRecord':
         this.viewWorkPlanFileSaved(event.data);
         break;
+    }
+  }
+
+  onClickSaveChargeSheet() {
+    this.submitted = true;
+    if (this.chargeSheetForm.invalid) {
+      return;
+    }
+    if (this.chargeSheetForm.valid) {
+      this.SpinnerService.show();
+      this.dataSaveChargeSheet = {...this.dataSaveChargeSheet, ...this.chargeSheetForm.value};
+      this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('WORK-PLAN DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+
     }
   }
 }

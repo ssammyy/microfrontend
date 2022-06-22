@@ -157,6 +157,12 @@ export class WorkPlanListDto {
     progressStep: string;
 }
 
+export class CountriesEntityDto {
+    id: number;
+    country: string;
+    status: boolean;
+}
+
 export class WorkPlanEntityDto {
     complaintDepartment: number;
     divisionId: number;
@@ -258,12 +264,13 @@ export class ComplaintsFilesFoundDto {
     fileContentType: string;
 }
 
-export class  WorkPlanFilesFoundDto{
+export class  WorkPlanFilesFoundDto {
     id: number;
     fileName: string;
     documentType: string;
     fileContentType: string;
 }
+
 export class StandardDetailsDto {
     standardTitle: string;
     standardNumber: string;

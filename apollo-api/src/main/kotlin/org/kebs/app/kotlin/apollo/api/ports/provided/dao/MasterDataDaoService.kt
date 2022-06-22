@@ -31,6 +31,7 @@ class MasterDataDaoService(
     private val userRequestTypesRepo: IUserRequestTypesRepository,
     private val standardCategoryRepo: IStandardCategoryRepository,
     private val productCategoriesRepo: IKebsProductCategoriesRepository,
+    private val countriesRepo: ICountriesRepository,
     private val broadProductCategoryRepo: IBroadProductCategoryRepository,
     private val productSubCategoryRepo: IProductSubcategoryRepository,
     private val productsRepo: IProductsRepository,
@@ -68,6 +69,8 @@ class MasterDataDaoService(
 
     fun getAllUserRequestTypes(): List<UserRequestTypesEntityDto>? = userRequestTypesRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { UserRequestTypesEntityDto(it.id, it.userRequest, it.description, it.status == 1) }
     fun getUserRequestTypesByStatus(status: Int): List<UserRequestTypesEntityDto>? = userRequestTypesRepo.findByStatusOrderByUserRequest(status)?.sortedBy { it.id }?.sortedBy { it.id }?.map { UserRequestTypesEntityDto(it.id, it.userRequest, it.description,  it.status == 1) }
+
+    fun getAllCountries(): List<CountriesEntityDto>? = countriesRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { CountriesEntityDto(it.id, it.country, it.status == 1) }
 
     fun getAllProductCategories(): List<ProductCategoriesEntityDto>? = productCategoriesRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { ProductCategoriesEntityDto(it.id, it.name, it.status == 1, it.broadProductCategoryId) }
     fun getProductCategoriesByStatus(status: Int): List<ProductCategoriesEntityDto>? = productCategoriesRepo.findByStatusOrderByName(status)?.sortedBy { it.id }?.sortedBy { it.id }?.map { ProductCategoriesEntityDto(it.id, it.name, it.status == 1, it.broadProductCategoryId)  }

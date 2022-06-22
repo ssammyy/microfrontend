@@ -49,10 +49,10 @@ import {
     ComplaintClassificationDto,
     WorkPlanBatchDetailsDto,
     WorkPlanScheduleListDetailsDto,
-    WorkPlanEntityDto, WorkPlanInspectionDto, WorkPlanScheduleApprovalDto,
+    WorkPlanEntityDto, WorkPlanInspectionDto, WorkPlanScheduleApprovalDto, CountriesEntityDto,
 } from './ms.model';
 import swal from 'sweetalert2';
-import {AbstractControl, ValidatorFn} from '@angular/forms';
+import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 import Swal from 'sweetalert2';
 import {AllPermitDetailsDto} from '../qa/qa.model';
 
@@ -62,6 +62,13 @@ import {AllPermitDetailsDto} from '../qa/qa.model';
 export class MsService {
 
     constructor(private http: HttpClient) {
+    }
+
+    public notAllowed(input: RegExp): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            const forbidden = input.test(control.value);
+            return forbidden ? {notAllowed: {value: control.value}} : null;
+        };
     }
 
    public fuelBatchDetailsListExamples(): FuelBatchDetailsDto[] {
@@ -468,6 +475,24 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleSaveChargeSheet(batchReferenceNo: string, referenceNo: string, data: WorkPlanScheduleApprovalDto): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_DETAILS);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsApprove(batchReferenceNo: string, referenceNo: string, data: WorkPlanScheduleApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_DETAILS);
@@ -533,6 +558,20 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_DEPARTMENTS);
         return this.http.get<MsDepartment[]>(url).pipe(
             map(function (response: MsDepartment[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msCountriesListDetails(): Observable<CountriesEntityDto[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_DEPARTMENTS);
+        return this.http.get<CountriesEntityDto[]>(url).pipe(
+            map(function (response: CountriesEntityDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

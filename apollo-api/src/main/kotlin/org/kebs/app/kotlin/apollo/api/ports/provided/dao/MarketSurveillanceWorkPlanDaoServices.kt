@@ -613,13 +613,13 @@ class MarketSurveillanceWorkPlanDaoServices(
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val chargeSheetFileSaved = workPlanInspectionDetailsAddChargeSheet(body, workPlanScheduled, map, loggedInUser)
-        val remarksDto = RemarksToAddDto()
-        with(remarksDto){
-            remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
-            processID = workPlanScheduled.msProcessId
-            userId= loggedInUser.id
-        }
+//        val remarksDto = RemarksToAddDto()
+//        with(remarksDto){
+//            remarksDescription= body.remarks
+//            remarksStatus= map.activeStatus
+//            processID = workPlanScheduled.msProcessId
+//            userId= loggedInUser.id
+//        }
 
         when (chargeSheetFileSaved.first.status) {
             map.successStatus -> {
@@ -632,15 +632,16 @@ class MarketSurveillanceWorkPlanDaoServices(
                 when (fileSaved2.first.status) {
                     map.successStatus -> {
                         workPlanScheduled = fileSaved2.second
-                        val remarksSaved = workPlanAddRemarksDetails(fileSaved2.second.id,remarksDto, map, loggedInUser)
-                        when (remarksSaved.first.status) {
-                            map.successStatus -> {
-                                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
-                            }
-                            else -> {
-                                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
-                            }
-                        }
+                        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+//                        val remarksSaved = workPlanAddRemarksDetails(fileSaved2.second.id,remarksDto, map, loggedInUser)
+//                        when (remarksSaved.first.status) {
+//                            map.successStatus -> {
+//                                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+//                            }
+//                            else -> {
+//                                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
+//                            }
+//                        }
                     }
                     else -> {
                         throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
