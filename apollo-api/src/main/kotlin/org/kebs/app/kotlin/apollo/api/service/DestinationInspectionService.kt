@@ -886,9 +886,8 @@ class DestinationInspectionService(
                 approveRejectCdRemarks = remarks
             }
             //updating of Details in DB
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
             consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
-            val updatedCDDetails = daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
+            val updatedCDDetails = daoServices.updateCdDetailsInDB(consignmentDocument, null)
             //Send Approval/Rejection message To Single Window
             consignmentDocument.approveRejectCdRemarks?.let { it1 ->
                 cdStatus.statusCode?.let {
