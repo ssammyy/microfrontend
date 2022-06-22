@@ -1093,7 +1093,7 @@
 
                         <div class="uploadForm">
                             <form id="upload-form" enctype="multipart/form-data" name="upload-form"
-                                  th:action="@{/api/qa/kebs/add/new-opc-details/new-upload/(permitID = ${permit?.id},inspectionReportID = ${QaInspectionReportRecommendationEntity?.id})}"
+                                  th:action="@{/api/qa/kebs/add/new-upload(permitID = ${permit?.id},inspectionReportID = ${QaInspectionReportRecommendationEntity?.id})}"
                                   method="post">
                                 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
                                      aria-labelledby="uploadModalLabel" aria-hidden="true">

@@ -8,11 +8,14 @@ import org.kebs.app.kotlin.apollo.common.dto.qa.PermitDetailsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersSignatureEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaInvoiceMasterDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISampleStandardsRepository
+import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import java.io.ByteArrayInputStream
 import java.util.*
 import javax.servlet.http.HttpServletResponse
 import kotlin.collections.HashMap
@@ -26,8 +29,11 @@ class ReportsController(
     private val reportsDaoService: ReportsDaoService,
     private val commonDaoServices: CommonDaoServices,
     private val resourceLoader: ResourceLoader,
-    private val sampleStandardsRepository: ISampleStandardsRepository
-) {
+    private val sampleStandardsRepository: ISampleStandardsRepository,
+    private val usersSignatureRepository: UserSignatureRepository
+
+
+    ) {
 
     final val dMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapDmarkImagePath)
     val dMarkImageFile = dMarkImageResource.file.toString()
@@ -209,11 +215,21 @@ class ReportsController(
         val s = commonDaoServices.serviceMapDetails(appId)
         val permit = qaDaoServices.findPermitBYID(id)
 
-        val user = permit.qaoId?.let { commonDaoServices.findUserByID(it) }
-//        val imageBase64: String = Base64.getEncoder().encodeToString(user?.signature)
+        val user = permit.varField6?.toLong().let { it?.let { it1 -> commonDaoServices.findUserByID(it1) } }
 
-        println(user)
 
+        if (user != null) {
+            val mySignature: ByteArray?
+            val image: ByteArrayInputStream?
+            println("UserID is" + user.id)
+            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+            if (signatureFromDb != null) {
+                mySignature= signatureFromDb.signature
+                image = ByteArrayInputStream(mySignature)
+                map["Signature"] = image
+
+            }
+        }
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
         var filePath: String? = null
 
@@ -221,7 +237,6 @@ class ReportsController(
         map["PermitNo"] = foundPermitDetails.permitNumber.toString()
         map["PostalAddress"] = foundPermitDetails.postalAddress.toString()
         map["PhysicalAddress"] = foundPermitDetails.physicalAddress.toString()
-       // map["Signature"] = imageBase64
 
         map["DateOfIssue"] =
             foundPermitDetails.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
@@ -327,6 +342,26 @@ class ReportsController(
 
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
         var filePath: String? = null
+        val user = permit.varField6?.toLong().let { it?.let { it1 -> commonDaoServices.findUserByID(it1) } }
+
+
+        if (user != null) {
+            val mySignature: ByteArray?
+            val image: ByteArrayInputStream?
+            println("UserID is" + user.id)
+            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+            if (signatureFromDb != null) {
+               mySignature= signatureFromDb.signature
+                image = ByteArrayInputStream(mySignature)
+                map["Signature"] = image
+
+            }
+        }
+
+//        val imageBase64: String = Base64.getEncoder().encodeToString(mySignature)
+
+
+//        println(imageBase64)
 
         map["FirmName"] = foundPermitDetails.firmName.toString()
         map["PermitNo"] = foundPermitDetails.permitNumber.toString()
