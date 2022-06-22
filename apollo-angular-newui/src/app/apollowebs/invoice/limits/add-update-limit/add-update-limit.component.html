@@ -38,18 +38,22 @@
         </div>
         <div class="col-sm-12 col-md-6" *ngIf="form.value.billDateType=='DATE_RANGE'">
             <label for="billStartDate" class="waiver-form-label">Bill Start date</label>
-            <input id="billStartDate" name="billStartDate" class="waiver-form-input-master"
-                   formControlName="billStartDate" type="number"/>
+            <select id="billStartDate" class="waiver-form-input-master" formControlName="billStartDate">
+                <option value="" disabled selected>Select Date</option>
+                <option *ngFor="let d of dateOptions" [value]="d">{{d}}</option>
+            </select>
         </div>
         <div class="col-sm-12 col-md-6" *ngIf="form.value.billDateType=='DATE_RANGE'">
             <label for="billEndDay" class="waiver-form-label">Bill End date</label>
-            <input id="billEndDay" name="billEndDay" class="waiver-form-input-master"
-                   formControlName="billEndDay" type="number"/>
+            <select id="billEndDay" class="waiver-form-input-master" formControlName="billEndDay">
+                <option value="" disabled selected>Select Date</option>
+                <option *ngFor="let d of dateOptions" [value]="d">{{d}}</option>
+            </select>
         </div>
         <div class="col-sm-12 col-md-6">
             <label for="penaltyType" class="waiver-form-label">Penalty type</label>
             <select id="penaltyType" class="waiver-form-input-master" formControlName="penaltyType">
-                <option value="" disabled selected>Select Status</option>
+                <option value="" disabled selected>Select penalty</option>
                 <option *ngFor="let d of penaltyTypes" [value]="d.name">{{d.description}}</option>
             </select>
             <span class="error"
