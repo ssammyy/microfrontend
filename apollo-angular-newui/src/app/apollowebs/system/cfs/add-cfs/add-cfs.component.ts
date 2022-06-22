@@ -25,7 +25,7 @@ export class AddCfsComponent implements OnInit {
         }
     ]
 
-    constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) private data: any, private diService: DestinationInspectionService) {
+    constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any, private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {

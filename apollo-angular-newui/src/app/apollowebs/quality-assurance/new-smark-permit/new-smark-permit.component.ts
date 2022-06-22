@@ -88,7 +88,7 @@ export class NewSmarkPermitComponent implements OnInit {
         this.store$.select(selectCompanyInfoDtoStateData).subscribe(
             (d) => {
                 if (d) {
-                  //  console.log(`${d.status}`);
+                    console.log(`${d.penaltyStatus}`);
                     // return this.status = d.status;
                     if(d.status == 0)
                     {
@@ -120,8 +120,19 @@ export class NewSmarkPermitComponent implements OnInit {
                         } )
                     }
                     else {
-
-
+                    if(d.penaltyStatus == 1){
+                        swal.fire({
+                            title: 'Pending Levy Remittance',
+                            text: 'Your Company has defaulted on Levy Payment.You are Reminded to Remit your Monthly Payment.',
+                            icon: 'error',
+                            customClass: {confirmButton: "btn btn-info",},
+                            buttonsStyling: false
+                        }).then((result) => {
+                            // if (result.value) {
+                            //     window.location.href = "/dashboard";
+                            // }
+                        } )
+                    }else{
                         this.sta1Form = this.formBuilder.group({
                             commodityDescription: ['', Validators.required],
                             applicantName: [],
@@ -226,6 +237,9 @@ export class NewSmarkPermitComponent implements OnInit {
                         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
                             return this.fullname = u.fullName;
                         });
+                    }
+
+
 
                     }
                 }

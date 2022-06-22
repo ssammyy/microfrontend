@@ -109,10 +109,16 @@ class RegistrationManagementDaoService(
                 )
             }
             val status = companyRepo.findByIdOrNull(user.companyId)?.status
+            val entryNumber= companyRepo.findByIdOrNull(user.companyId)?.entryNumber
             val turnOver = companyRepo.findByIdOrNull(user.companyId)?.yearlyTurnover
             val countAwarded = user.companyId?.let {
                 permitRepo.countByCompanyIdAndPermitAwardStatus(
                     it, 1
+                )
+            }
+            val penaltyStatus= entryNumber?.let {
+                companyRepo.findRecordCount(
+                    it
                 )
             }
             val countExpired = user.companyId?.let {
@@ -128,7 +134,8 @@ class RegistrationManagementDaoService(
                 user.id,
                 countAwarded,
                 countExpired,
-                status
+                status,
+                penaltyStatus
             )
         }
         return null

@@ -820,7 +820,10 @@ data class UserCompanyDetailsDto(
         @JsonProperty("countExpired")
         val countExpired: Long? = null,
         @JsonProperty("status")
-        val status: Int? = null
+        val status: Int? = null,
+        @JsonProperty("penaltyStatus")
+       val penaltyStatus: Long? = null
+
 )
 
 class CorItemsEntityDto {

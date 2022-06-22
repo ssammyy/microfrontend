@@ -39,6 +39,7 @@ export class CompanyInfoDto {
     countAwarded = 0;
     countExpired = 0;
     status=0;
+    penaltyStatus=0;
 }
 
 
