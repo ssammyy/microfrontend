@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.service;
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.payload.*
+import org.kebs.app.kotlin.apollo.api.payload.request.CheckListForm
 import org.kebs.app.kotlin.apollo.api.payload.request.SsfResultForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -77,6 +78,60 @@ class ChecklistService(
     @Lazy
     @Autowired
     lateinit var limsServices: LimsServices
+
+    @Transactional
+    fun saveChecklist(form: CheckListForm, cdItem: ConsignmentDocumentDetailsEntity, loggedInUser: UsersEntity, map: ServiceMapsEntity): ApiResponseModel {
+        val response = ApiResponseModel()
+        //Save the general checklist
+        val generalCheckList = form.generalChecklist()
+        generalCheckList.ucrNumber = cdItem.ucrNumber
+        generalCheckList.description = cdItem.description
+        daoServices.findCDImporterDetails(cdItem.cdImporter ?: 0).let { importer ->
+            generalCheckList.importersName = importer.name
+        }
+        // Manifest details
+        cdItem.manifestNumber?.let { man ->
+            daoServices.findManifest(man)?.let {
+                generalCheckList.declarationNumber = it.manifestNumber
+                generalCheckList.declarationRepresentative = it.receiver.orEmpty()
+            }
+        }
+        generalCheckList.currentChecklist = 1
+        generalCheckList.inspectionDate = Date(java.util.Date().time)
+        generalCheckList.inspectionOfficer = "${loggedInUser.firstName} ${loggedInUser.lastName}".trim()
+        generalCheckList.supervisorName = "${cdItem.assigner?.firstName} ${cdItem.assigner?.lastName}".trim()
+        generalCheckList.cfs = cdItem.freightStation?.cfsName
+        val inspectionGeneral = daoServices.saveInspectionGeneralDetails(generalCheckList, cdItem, loggedInUser, map)
+        if (form.agrochem == null && form.engineering == null && form.vehicle == null && form.others == null) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Validation failed, please select and fill at least one checklist"
+            return response
+        }
+        //Save the respective checklist
+        form.agrochem?.let {
+            val agrochemItemInspectionChecklist = form.agrochemChecklist()
+            addAgrochemChecklist(map, inspectionGeneral, form.agrochemChecklistItems(), agrochemItemInspectionChecklist, loggedInUser)
+        }
+        // Add engineering checklist
+        form.engineering?.let {
+            val engineeringItemInspectionChecklist = form.engineeringChecklist()
+            addEngineeringChecklist(map, inspectionGeneral, form.engineeringChecklistItems(), engineeringItemInspectionChecklist, loggedInUser)
+
+        }
+        // Add vehicle checklist
+        form.vehicle?.let {
+            val motorVehicleItemInspectionChecklist = form.vehicleChecklist()
+            addVehicleChecklist(map, inspectionGeneral, form.vehicleChecklistItems(), motorVehicleItemInspectionChecklist, loggedInUser)
+        }
+        // Add other checklists
+        form.others?.let {
+            val otherItemInspectionChecklist = form.otherChecklist()
+            addOtherChecklist(map, inspectionGeneral, form.otherChecklistItems(), otherItemInspectionChecklist, loggedInUser)
+        }
+        response.message = "Checklist submitted successfully"
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        return response
+    }
 
     fun listLabPdfFiles(ssfId: Long, loggedInUser: UsersEntity): ApiResponseModel {
         val response = ApiResponseModel()
@@ -1134,11 +1189,15 @@ class ChecklistService(
         if (optional.isPresent) {
             val ministryInspection = optional.get()
             commonDaoServices.findAllUsersWithMinistryUserType()?.let { ministryUsers ->
-                ministryUsers.get(Random().nextInt(ministryUsers.size)).let {
-                    ministryInspection.assignedUser = it
-                    data.put("ministryUser", it.userName)
-                    data.put("userId", it.id)
-                    this.motorVehicleItemChecklistRepository.save(ministryInspection)
+                if (ministryUsers.isNotEmpty()) {
+                    ministryUsers[Random().nextInt(ministryUsers.size)].let {
+                        ministryInspection.assignedUser = it
+                        data["ministryUser"] = it.userName
+                        data["userId"] = it.id
+                        this.motorVehicleItemChecklistRepository.save(ministryInspection)
+                    }
+                } else {
+                    throw ExpectedDataNotFound("No ministry user available, please add ministry user and try again")
                 }
             }
         }

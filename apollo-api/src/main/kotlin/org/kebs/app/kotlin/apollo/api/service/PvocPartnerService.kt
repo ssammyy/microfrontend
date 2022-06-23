@@ -83,6 +83,7 @@ class PvocPartnerService(
             corporateIdentifier = form.partnerPin
             corporateName = form.partnerName
             corporateType = "PVOC"
+            groupCode = form.groupCode
             billingLimitId = form.billingLimitId
             corporatePhone = form.partnerTelephoneNumber
             corporateEmail = form.partnerEmail

@@ -16,6 +16,9 @@ class PvocPartnersForms {
     @NotNull(message = "Partner Ref Number is required")
     var partnerRefNo: String? = null
 
+    @NotNull(message = "Group Code Number is required")
+    var groupCode: String? = null
+
     @NotNull(message = "Partner Name Number is required")
     var partnerName: String? = null
 

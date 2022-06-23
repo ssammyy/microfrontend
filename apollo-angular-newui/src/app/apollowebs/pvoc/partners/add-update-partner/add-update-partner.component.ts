@@ -76,9 +76,10 @@ export class AddUpdatePartnerComponent implements OnInit {
             partnerZipcode: [this.data.partner ? this.data.partner.partnerZipcode : null],
             partnerTelephoneNumber: [this.data.partner ? this.data.partner.partnerTelephoneNumber : null, [Validators.required]],
             partnerFaxNumber: [this.data.partner ? this.data.partner.partnerFaxNumber : null],
-            billingContactName: [null,Validators.required],
-            billingContactPhone: [null,Validators.required],
-            billingContactEmail: [null, [Validators.required,Validators.email]],
+            groupCode: [null, Validators.required],
+            billingContactName: [null, Validators.required],
+            billingContactPhone: [null, Validators.required],
+            billingContactEmail: [null, [Validators.required, Validators.email]],
             billingLimitId: [null, Validators.required]
         })
         this.countries = this.data.countries
