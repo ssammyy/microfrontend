@@ -13,6 +13,7 @@ export interface RouteInfo {
     type: string;
     icontype: string;
     privilege: string[];
+    enable?: boolean;
     collapse?: string;
     children?: ChildrenItems[];
 }
@@ -21,6 +22,7 @@ export interface ChildrenItems {
     path: string;
     title: string;
     ab: string;
+    enable?: boolean;
     type?: string;
     privilege?: string[];
 }
@@ -152,29 +154,29 @@ export const ROUTES: RouteInfo[] = [
                 path: 'waiver/applications',
                 title: 'Waiver application',
                 ab: 'WA',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
             },
             {
                 path: 'exemption/applications',
                 title: 'Exemption applications',
                 ab: 'EA',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
             },
             {
                 path: 'complaints',
                 title: 'Complaints',
                 ab: 'CC',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
             },
             {
                 path: 'partners',
                 title: 'Partners',
                 ab: 'PP',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['PVOC_ADMIN', 'PVOC_ADMIN_REALD'],
             },
         ],
         collapse: 'pvoc',
-        privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN', 'PVOC_ADMIN_REALD'],
         icontype: 'diamond',
     },
     {
@@ -194,31 +196,31 @@ export const ROUTES: RouteInfo[] = [
                 path: '',
                 title: 'Import Inspection',
                 ab: 'II',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN_READ'],
             },
             {
                 path: 'auction/view',
                 title: 'Auction Goods',
                 ab: 'AG',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN_READ'],
             },
             {
                 path: 'ism/requests',
                 title: 'ISM Requests',
                 ab: 'SM',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN_READ'],
             },
             {
                 path: 'kentrade/exchange/messages',
                 title: 'KENTRADE Monitoring',
                 ab: 'KM',
-                privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_ADMIN_READ', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
             },
             {
                 path: 'kentrade/idf/documents',
                 title: 'IDF Documents',
                 ab: 'ID',
-                privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_ADMIN_READ', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
             },
         ],
         collapse: 'import-inspection',
@@ -230,31 +232,31 @@ export const ROUTES: RouteInfo[] = [
         title: 'Finance',
         type: 'sub',
         collapse: 'transactions',
-        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        privilege: ['DI_ADMIN', 'DI_ADMIN_READ', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         children: [
             {
                 path: 'demand-notes',
                 title: 'Demand Notes',
                 ab: 'DN',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN', 'DI_ADMIN_READ'],
             },
             {
                 path: 'corporates-customers',
                 title: 'Corporate Customers',
                 ab: 'CC',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
             },
             {
                 path: 'exchange-rates',
                 title: 'Exchange Rates',
                 ab: 'ER',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
             },
             {
                 path: 'limits',
                 title: 'Billing Types',
                 ab: 'BT',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
             },
         ],
         icontype: 'money',
@@ -266,25 +268,35 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'api-clients',
         privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
         children: [
-            {path: 'api-clients', title: 'Api Clients', ab: 'AC'},
-            {path: 'cfs', title: 'CFS codes', ab: 'CC'},
+            {
+                path: 'api-clients',
+                title: 'Api Clients',
+                ab: 'AC',
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
+            },
+            {
+                path: 'cfs',
+                title: 'CFS codes',
+                ab: 'CC',
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
+            },
             {
                 path: 'inspection/fees',
                 title: 'Inspection Fees',
                 ab: 'IF',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
             },
             {
                 path: 'laboratories',
                 title: 'Laboratories',
                 ab: 'LB',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
             },
             {
                 path: 'custom/offices',
                 title: 'Custom Offices',
                 ab: 'CO',
-                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ'],
             }
         ],
         icontype: 'settings',

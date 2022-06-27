@@ -267,15 +267,18 @@ class ChecklistService(
         var engineering: CdInspectionEngineeringChecklist? = engineeringChecklistRepository.findByInspectionGeneral(general)
         if (engineering == null) {
             engineering = engineeringChecklist
-            val checkListType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.ENGINEERING.name)
-            engineering.inspectionChecklistType = checkListType
+            engineering.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.ENGINEERING.name)
             engineering.inspectionGeneral = general
             engineering.createdBy = loggedInUser.userName
             engineering.createdOn = Timestamp.from(Instant.now())
         } else {
+            engineering.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.ENGINEERING.name)
             engineering.inspectionGeneral = general
             // Update details
             engineering.description = engineeringChecklist.description
+        }
+        if (engineering.inspectionChecklistType == null) {
+            throw ExpectedDataNotFound("Engineering checklist type not found, please contact administrator")
         }
         this.engineeringChecklistRepository.save(engineering)
         itemList?.let { items ->
@@ -330,14 +333,17 @@ class ChecklistService(
         var agrochemChecklist: CdInspectionAgrochemChecklist? = agrochemChecklistRepository.findByInspectionGeneral(general)
         if (agrochemChecklist == null) {
             agrochemChecklist = engineeringChecklist
-            val checkListType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.AGROCHEM.name)
-            agrochemChecklist.inspectionChecklistType = checkListType
+            agrochemChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.AGROCHEM.name)
             agrochemChecklist.inspectionGeneral = general
             agrochemChecklist.createdBy = loggedInUser.userName
             agrochemChecklist.createdOn = Timestamp.from(Instant.now())
         } else {
+            agrochemChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.AGROCHEM.name)
             // Update details
             agrochemChecklist.description = engineeringChecklist.description
+        }
+        if (agrochemChecklist.inspectionChecklistType == null) {
+            throw ExpectedDataNotFound("Agrochem Checklist type not found, please contact administrator")
         }
         this.agrochemChecklistRepository.save(agrochemChecklist)
         itemList?.let { items ->
@@ -446,16 +452,19 @@ class ChecklistService(
         var vehicleChecklist: CdInspectionMotorVehicleChecklist? = motorVehicleChecklistRepository.findByInspectionGeneral(general)
         if (vehicleChecklist == null) {
             vehicleChecklist = engineeringChecklist
-            val checkListType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.VEHICLE.name)
-            vehicleChecklist.inspectionChecklistType = checkListType
+            vehicleChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.VEHICLE.name)
             vehicleChecklist.inspectionGeneral = general
             vehicleChecklist.createdBy = loggedInUser.userName
             vehicleChecklist.createdOn = Timestamp.from(Instant.now())
         } else {
+            vehicleChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.VEHICLE.name)
             // Update details
             vehicleChecklist.modifiedBy = loggedInUser.userName
             vehicleChecklist.modifiedOn = Timestamp.from(Instant.now())
             vehicleChecklist.description = engineeringChecklist.description
+        }
+        if (vehicleChecklist.inspectionChecklistType == null) {
+            throw ExpectedDataNotFound("Vehicle Checklist type not found, please contact administrator")
         }
         this.motorVehicleChecklistRepository.save(vehicleChecklist)
         itemList?.let { items ->
@@ -530,15 +539,18 @@ class ChecklistService(
         var otherChecklist: CdInspectionOtherChecklist? = otherChecklistRepository.findByInspectionGeneral(general)
         if (otherChecklist == null) {
             otherChecklist = requestChecklist
-            val checkListType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.OTHER.name)
             otherChecklist.createdBy = loggedInUser.userName
             otherChecklist.createdOn = Timestamp.from(Instant.now())
-            otherChecklist.inspectionChecklistType = checkListType
+            otherChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.OTHER.name)
             otherChecklist.inspectionGeneral = general
             otherChecklist.status = map.activeStatus
         } else {
+            otherChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.OTHER.name)
             // Update details
             otherChecklist.description = requestChecklist.description
+        }
+        if (otherChecklist.inspectionChecklistType == null) {
+            throw ExpectedDataNotFound("Other Checklist type not found, please contact administrator")
         }
         this.otherChecklistRepository.save(otherChecklist)
         itemList?.let { items ->
