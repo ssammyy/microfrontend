@@ -24,7 +24,7 @@ import {
   ProductCategories,
   Products,
   ProductSubcategory,
-  StandardProductCategory
+  StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
 
 @Component({
@@ -288,6 +288,10 @@ export class WorkPlanListComponent implements OnInit {
     );
   }
 
+  goBack() {
+    // console.log('TEST 101' + this.loadedData.createdWorkPlan.referenceNumber);
+    this.router.navigate([`/workPlan`]);
+  }
 
   onManagerPetroleumChange(event: any) {
     if (this.managerPetroleumUser) {

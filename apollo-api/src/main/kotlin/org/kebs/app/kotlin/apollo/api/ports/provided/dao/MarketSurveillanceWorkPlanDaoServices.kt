@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -43,6 +44,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val generateWorkPlanRepo: IWorkPlanGenerateRepository,
     private val chargeSheetRepo: IChargeSheetRepository,
     private val dataReportRepo: IDataReportRepository,
+    private val dataReportParameterRepo: IDataReportParameterRepository,
     private val seizureDeclarationRepo: IMSSeizureDeclarationRepository,
     private val investInspectReportRepo: IMSInvestInspectReportRepository,
     private val preliminaryRepo: IPreliminaryReportRepository,
@@ -666,16 +668,19 @@ class MarketSurveillanceWorkPlanDaoServices(
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val dataReportFileSaved = workPlanInspectionDetailsAddDataReport(body, workPlanScheduled, map, loggedInUser)
-        val remarksDto = RemarksToAddDto()
-        with(remarksDto){
-            remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
-            processID = workPlanScheduled.msProcessId
-            userId= loggedInUser.id
-        }
+//        val remarksDto = RemarksToAddDto()
+//        with(remarksDto){
+//            remarksDescription= body.remarks
+//            remarksStatus= map.activeStatus
+//            processID = workPlanScheduled.msProcessId
+//            userId= loggedInUser.id
+//        }
 
         when (dataReportFileSaved.first.status) {
             map.successStatus -> {
+                body.productsList?.forEach { param->
+                    workPlanInspectionDetailsAddDataReportParams(param, dataReportFileSaved.second, map, loggedInUser)
+                }
                 with(workPlanScheduled) {
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
 //                    msProcessId = applicationMapProperties.mapMSRapidTest
@@ -685,15 +690,16 @@ class MarketSurveillanceWorkPlanDaoServices(
                 when (fileSaved2.first.status) {
                     map.successStatus -> {
                         workPlanScheduled = fileSaved2.second
-                        val remarksSaved = workPlanAddRemarksDetails(fileSaved2.second.id,remarksDto, map, loggedInUser)
-                        when (remarksSaved.first.status) {
-                            map.successStatus -> {
-                                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
-                            }
-                            else -> {
-                                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
-                            }
-                        }
+                        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+//                        val remarksSaved = workPlanAddRemarksDetails(fileSaved2.second.id,remarksDto, map, loggedInUser)
+//                        when (remarksSaved.first.status) {
+//                            map.successStatus -> {
+//                                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+//                            }
+//                            else -> {
+//                                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
+//                            }
+//                        }
                     }
                     else -> {
                         throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
@@ -783,7 +789,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 with(workPlanScheduled) {
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
 //                    msProcessId = applicationMapProperties.mapMSRapidTest
-                    seizureDeclarationStatus = map.activeStatus
+                    investInspectReportStatus = map.activeStatus
                 }
                 val fileSaved2 = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
                 when (fileSaved2.first.status) {
@@ -1401,7 +1407,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 finePaid = body.finePaid
                 courtName = body.courtName
                 courtDate = body.courtDate
-                workPlanGeneratedID = workPlanScheduled
+                workPlanGeneratedID = workPlanScheduled.id
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
@@ -1466,6 +1472,54 @@ class MarketSurveillanceWorkPlanDaoServices(
 
             sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveDataReport)}"
             sr.names = "Save Data Report Details"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, saveDataReport)
+    }
+
+    fun workPlanInspectionDetailsAddDataReportParams(
+        body: DataReportParamsDto,
+        dataReport: MsDataReportEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsDataReportParametersEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveDataReport = MsDataReportParametersEntity()
+        try {
+
+            with(saveDataReport) {
+                typeBrandName= body.typeBrandName
+                localImport= body.localImport
+                complianceInspectionParameter= body.complianceInspectionParameter
+                measurementsResults= body.measurementsResults
+                remarks= body.remarks
+                dataReportId = dataReport.id
+                status = map.activeStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+
+            }
+            saveDataReport = dataReportParameterRepo.save(saveDataReport)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveDataReport)}"
+            sr.names = "Save Data Report params Details"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -1921,6 +1975,39 @@ class MarketSurveillanceWorkPlanDaoServices(
         )
     }
 
+    fun mapChargeSheetDetailsDto(
+        chargeSheet: MsChargeSheetEntity
+    ): ChargeSheetDto {
+        return ChargeSheetDto(
+                    chargeSheet.id,
+                    chargeSheet.christianName,
+                    chargeSheet.surname,
+                    chargeSheet.sex,
+                    chargeSheet.nationality,
+                    chargeSheet.age,
+                    chargeSheet.addressDistrict,
+                    chargeSheet.addressLocation,
+                    chargeSheet.firstCount,
+                    chargeSheet.particularsOffenceOne,
+                    chargeSheet.secondCount,
+                    chargeSheet.particularsOffenceSecond,
+                    chargeSheet.dateArrest,
+                    chargeSheet.withWarrant,
+                    chargeSheet.applicationMadeSummonsSue,
+                    chargeSheet.dateApprehensionCourt,
+                    chargeSheet.bondBailAmount,
+                    chargeSheet.remandedAdjourned,
+                    chargeSheet.complainantName,
+                    chargeSheet.complainantAddress,
+                    chargeSheet.prosecutor,
+                    chargeSheet.witnesses,
+                    chargeSheet.sentence,
+                    chargeSheet.finePaid,
+                    chargeSheet.courtName,
+                    chargeSheet.courtDate,
+        )
+    }
+
     fun findALlWorkPlanDetailsAssociatedWithWorkPlanID(createdWorkPlanID: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity> {
         generateWorkPlanRepo.findByWorkPlanYearId(createdWorkPlanID,pageable)
             ?.let {
@@ -1954,6 +2041,14 @@ class MarketSurveillanceWorkPlanDaoServices(
             ?: throw ExpectedDataNotFound("WorkPlan Activity with [referenceNumber = ${referenceNumber}], does not Exist")
     }
 
+    fun findWorkPlanActivityByID(workPlanID: Long): MsWorkPlanGeneratedEntity {
+        generateWorkPlanRepo.findByIdOrNull(workPlanID)
+            ?.let { activityWorkPlan ->
+                return activityWorkPlan
+            }
+            ?: throw ExpectedDataNotFound("WorkPlan Activity with [ID = ${workPlanID}], does not Exist")
+    }
+
     fun findWorkPlanYearsCodesEntity(currentYear: String, map: ServiceMapsEntity): WorkplanYearsCodesEntity {
         workPlanYearsCodesRepository.findByYearNameAndStatus(currentYear, map.activeStatus)
             ?.let {
@@ -1983,13 +2078,15 @@ class MarketSurveillanceWorkPlanDaoServices(
         val batchDetailsDto = mapWorkPlanBatchDetailsDto(batchDetails, map)
         val workPlanInspectionRemarks = findRemarksForWorkPlan(workPlanScheduledDetails.id)
         val workPlanFiles = findUploadedFileForWorkPlans(workPlanScheduledDetails.id)
+        val chargeSheet = findChargeSheetByWorkPlanInspectionID(workPlanScheduledDetails.id)
 
         return mapWorkPlanInspectionDto(
             workPlanScheduledDetails,
             map,
             batchDetailsDto,
             workPlanInspectionRemarks,
-            workPlanFiles
+            workPlanFiles,
+            chargeSheet,
         )
     }
 
@@ -1998,7 +2095,8 @@ class MarketSurveillanceWorkPlanDaoServices(
         map: ServiceMapsEntity,
         batchDetails: WorkPlanBatchDetailsDto,
         remarksList: List<MsRemarksEntity>?,
-        workPlanFilesSaved: List<MsUploadsEntity>?
+        workPlanFilesSaved: List<MsUploadsEntity>?,
+        chargeSheet: MsChargeSheetEntity?
     ): WorkPlanInspectionDto {
         return WorkPlanInspectionDto(
                     wKP.id,
@@ -2085,6 +2183,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.productSubCategory?.let { commonDaoServices.findSampleStandardsByID(it) }?.let { msComplaintDaoServices.mapStandardDetailsDto(it) },
             remarksList?.let { mapRemarksListDto(it) },
             workPlanFilesSaved?.let { mapFileListDto(it) },
+            chargeSheet?.let { mapChargeSheetDetailsDto(it) },
         )
     }
 
@@ -2117,6 +2216,10 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     fun findUploadedFileForWorkPlans(workPlanInspectionID: Long): List<MsUploadsEntity>? {
         return msUploadRepo.findAllByMsWorkplanGeneratedIdAndWorkPlanUploads(workPlanInspectionID, 1)
+    }
+
+    fun findChargeSheetByWorkPlanInspectionID(workPlanInspectionID: Long): MsChargeSheetEntity? {
+        return  chargeSheetRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
     }
 
     fun findSampleCollectedDetailByWorkPlanInspectionID(workPlanInspectionID: Long): MsSampleCollectionEntity? {

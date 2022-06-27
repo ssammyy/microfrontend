@@ -34,6 +34,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   selectedRefNo: string;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
+  submitted = false;
   fuelInspection: FuelInspectionDto;
   currDiv!: string;
   currDivLabel!: string;
@@ -54,8 +55,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   dataSaveRapidTest: FuelEntityRapidTestDto;
   dataSaveSampleCollect: SampleCollectionDto;
   dataSaveSampleCollectItems: SampleCollectionItemsDto;
+  dataSaveSampleCollectItemsList: SampleCollectionItemsDto[] = [];
   dataSaveSampleSubmit: SampleSubmissionDto;
   dataSaveSampleSubmitParam: SampleSubmissionItemsDto;
+  dataSaveSampleSubmitParamList: SampleSubmissionItemsDto[] = [];
   dataSaveSampleSubmitBSNumber: BSNumberSaveDto;
   dataPDFSaveComplianceStatus: PDFSaveComplianceStatusDto;
   dataSSFSaveComplianceStatus: SSFSaveComplianceStatusDto;
@@ -838,15 +841,16 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveSampleCollected(valid: boolean, valid2: boolean) {
-    if (valid && valid2) {
+  onClickSaveSampleCollected() {
+    this.submitted = true;
+    if (this.sampleCollectForm.invalid) {
+      return;
+    }
+
+    if (this.sampleCollectForm.valid && this.dataSaveSampleCollectItemsList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleCollect = {...this.dataSaveSampleCollect, ...this.sampleCollectForm.value};
-      this.dataSaveSampleCollectItems = {...this.dataSaveSampleCollectItems, ...this.sampleCollectItemsForm.value};
-
-      const sampleCollectionItemsDto: SampleCollectionItemsDto[] = [];
-      sampleCollectionItemsDto.push(this.dataSaveSampleCollectItems);
-      this.dataSaveSampleCollect.productsList = sampleCollectionItemsDto;
+      this.dataSaveSampleCollect.productsList = this.dataSaveSampleCollectItemsList;
 
       this.msService.msFuelInspectionScheduledAddSampleCollection(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
           (data: any) => {
@@ -864,15 +868,15 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveSampleSubmitted(valid: boolean, valid2: boolean) {
-    if (valid && valid2) {
+  onClickSaveSampleSubmitted() {
+    this.submitted = true;
+    if (this.sampleSubmitForm.invalid) {
+      return;
+    }
+    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
-      this.dataSaveSampleSubmitParam = {...this.dataSaveSampleSubmitParam, ...this.sampleSubmitParamsForm.value};
-
-      const sampleSubmissionParamsDto: SampleSubmissionItemsDto[] = [];
-      sampleSubmissionParamsDto.push(this.dataSaveSampleSubmitParam);
-      this.dataSaveSampleSubmit.parametersList = sampleSubmissionParamsDto;
+      this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
 
       this.msService.msFuelInspectionScheduledAddSampleSubmission(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleSubmit).subscribe(
           (data: any) => {
@@ -1059,6 +1063,43 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
           },
       );
     // }
+  }
+
+  onClickAddDataSampleCollectItems() {
+    this.dataSaveSampleCollectItems = this.sampleCollectItemsForm.value;
+    this.dataSaveSampleCollectItemsList.push(this.dataSaveSampleCollectItems);
+    this.sampleCollectItemsForm?.get('productBrandName')?.reset();
+    this.sampleCollectItemsForm?.get('batchNo')?.reset();
+    this.sampleCollectItemsForm?.get('batchSize')?.reset();
+    this.sampleCollectItemsForm?.get('sampleSize')?.reset();
+
+  }
+
+  onClickAddDataSampleSubmitParams() {
+    this.dataSaveSampleSubmitParam = this.sampleSubmitParamsForm.value;
+    this.dataSaveSampleSubmitParamList.push(this.dataSaveSampleSubmitParam);
+    this.sampleSubmitParamsForm?.get('parameters')?.reset();
+    this.sampleSubmitParamsForm?.get('laboratoryName')?.reset();
+  }
+
+  // Remove Form repeater values
+  removeDataSampleSubmitParam(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveSampleSubmitParamList.splice(index, 1);
+    } else {
+      this.dataSaveSampleSubmitParamList.splice(index, index);
+    }
+  }
+
+  // Remove Form repeater values
+  removeDataSampleCollectItems(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveSampleCollectItemsList.splice(index, 1);
+    } else {
+      this.dataSaveSampleCollectItemsList.splice(index, index);
+    }
   }
 
   goBack() {

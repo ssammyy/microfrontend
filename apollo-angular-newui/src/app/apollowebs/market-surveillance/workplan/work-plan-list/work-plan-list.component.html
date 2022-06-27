@@ -17,9 +17,9 @@
                             <i class="material-icons">WP</i>
                         </div>
                         <h4 class="card-title">Work-Plan List Details
-                            <!--                            <button class="btn btn-sm btn-default float-right mr-7"-->
-                            <!--                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back-->
-                            <!--                            </button>-->
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+                            </button>
                         </h4>
 
                         <!--                        <h4 class="card-title">#REGION NAME : {{this.loadedData.fuelBatchDetailsDto.region}}</h4>-->
@@ -137,7 +137,7 @@
                                  aria-label="Applications Status">
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_IO_MODIFY'">
-                                        <button *ngIf="loadedData.createdWorkPlan.batchClosed==false" (click)="onClickCloseBatch()" mat-raised-button=""
+                                        <button *ngIf="loadedData?.createdWorkPlan?.batchClosed==false" (click)="onClickCloseBatch()" mat-raised-button=""
                                                 class="btn btn-sm btn-warning mr-2"><span
                                                 class="mat-button-wrapper">SUBMIT WORK-PLAN FOR APPROVAL</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
@@ -146,7 +146,7 @@
                                     </div>
                                     <br>
                                     <div *ngIf="role == 'MS_IO_MODIFY'">
-                                        <button *ngIf="loadedData.createdWorkPlan.batchClosed==false" (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
+                                        <button *ngIf="loadedData?.createdWorkPlan?.batchClosed==false" (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#workPlanModal"
                                                 class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">ADD NEW WORK-PLAN FILE</span>
@@ -258,35 +258,10 @@
                         </form>
                     </div>
 
-                    <div *ngIf="(currDiv == 'closeBatchDetails')">
-                        <form [formGroup]="closeBatchForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="remarks">Please write, in detail, your feedback for this Work-Plan Inspection Batch:</label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="remarks" matInput type="text"
-                                                      formControlName="remarks"
-                                                      placeholder="Please Enter your feedback for this fuel inspection schedule"
-                                                      name="remarks"
-                                                      [class.is-invalid]="formCloseBatchForm.remarks.invalid && formCloseBatchForm.remarks.touched">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
                 </div>
                 <div class="modal-footer">
 
                     <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
-                    </button>
-                    <button *ngIf="(currDiv == 'addNewScheduleDetails')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveNewSchedule(addNewScheduleForm.valid);"
-                            [disabled]="!addNewScheduleForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
                     </button>
                     <!--                    <button *ngIf="(currDiv == 'closeBatchDetails')" mat-raised-button type="button" class="btn btn-success"-->
                     <!--                            (click)="onClickCloseBatch(closeBatchForm.valid);"-->
@@ -556,7 +531,7 @@
                         <button *ngIf="addNewScheduleForm.valid" mat-raised-button   data-dismiss="modal"
                                 class="btn btn-success" (click)="onClickSaveWorkPlanScheduled()" type="button" >SUBMIT
                         </button>
-                        <button *ngIf="addNewScheduleForm.invalid" mat-raised-button  class="btn btn-success" type="button" >SUBMIT
+                        <button *ngIf="addNewScheduleForm.invalid" mat-raised-button (click)="onClickSaveWorkPlanScheduled()" class="btn btn-success" type="button" >SUBMIT
                         </button>
                     </div>
 

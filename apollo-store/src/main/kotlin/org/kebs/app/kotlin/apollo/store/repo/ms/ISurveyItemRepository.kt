@@ -83,7 +83,7 @@ interface IFinalReportRepository : HazelcastRepository<MsFinalReportEntity, Long
 @Repository
 interface IChargeSheetRepository : HazelcastRepository<MsChargeSheetEntity, Long> {
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
-//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
+    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): MsChargeSheetEntity?
 }
 
 @Repository

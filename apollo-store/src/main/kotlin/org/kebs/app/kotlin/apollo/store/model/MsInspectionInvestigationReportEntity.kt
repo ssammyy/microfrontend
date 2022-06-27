@@ -66,7 +66,7 @@ class MsInspectionInvestigationReportEntity: Serializable {
 
     @Column(name = "DATE_INVESTIGATION_INSPECTION")
     @Basic
-    var dateInvestigationInspection: Time? = null
+    var dateInvestigationInspection: Date? = null
 
     @Column(name = "KEBS_INSPECTORS")
     @Basic

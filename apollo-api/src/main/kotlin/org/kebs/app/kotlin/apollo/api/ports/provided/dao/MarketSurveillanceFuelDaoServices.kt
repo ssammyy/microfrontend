@@ -283,8 +283,13 @@ class MarketSurveillanceFuelDaoServices(
             baseUrl = applicationMapProperties.baseUrlValue
             fullName = fileInspectionDetail.company
             refNumber = fileInspectionDetail.referenceNumber
+            remediationDate= fileInspectionDetail.inspectionDateFrom
         }
-        runBlocking {commonDaoServices.sendEmailWithUserEmail(fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"), applicationMapProperties.mapMsFuelInspectionScheduleEndedNotification, emailValuesStationOwner, map, detailsSaved.first)}
+        runBlocking {commonDaoServices.sendEmailWithUserEmail(
+            fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
+            applicationMapProperties.mapMsFuelInspectionScheduleEndedNotification,
+            emailValuesStationOwner, map, detailsSaved.first)
+        }
 //        val emailValuesEpra = FuelScheduledRemediationEndedDTO()
 //        with(emailValuesEpra) {
 //            baseUrl = applicationMapProperties.baseUrlValue
@@ -635,6 +640,7 @@ class MarketSurveillanceFuelDaoServices(
                 fullName = fileInspectionDetail.company
                 refNumber = fileInspectionDetail.referenceNumber
                 compliantDetails =mapCompliantStatusDto(fileInspectionDetail,map)
+                dateSubmitted = savedSSfComplianceStatus.second.ssfSubmissionDate
             }
 
             val remarksSaved = fuelAddRemarksDetails(fileInspectionDetail.id,remarksDto, map, loggedInUser)

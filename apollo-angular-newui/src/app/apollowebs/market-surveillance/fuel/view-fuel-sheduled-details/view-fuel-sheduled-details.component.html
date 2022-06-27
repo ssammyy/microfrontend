@@ -1103,18 +1103,28 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>NAME MANUFACTURER TRADER</b></label>
-                                        <input [class.is-invalid]="formSampleCollectForm.nameManufacturerTrader.invalid && formSampleCollectForm.nameManufacturerTrader.touched"
+                                        <input [class.is-invalid]="formSampleCollectForm.nameManufacturerTrader.invalid && formSampleCollectForm.nameManufacturerTrader.errors"
                                                class="form-control two-column-input"
                                                formControlName="nameManufacturerTrader" name="nameManufacturerTrader" required type="text">
+                                        <div *ngIf="submitted && formSampleCollectForm.nameManufacturerTrader.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.nameManufacturerTrader.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>ADDRESS MANUFACTURER TRADER</b></label>
-                                        <input [class.is-invalid]="formSampleCollectForm.addressManufacturerTrader.invalid && formSampleCollectForm.addressManufacturerTrader.touched"
+                                        <input [class.is-invalid]="formSampleCollectForm.addressManufacturerTrader.invalid && formSampleCollectForm.addressManufacturerTrader.errors"
                                                class="form-control two-column-input"
                                                formControlName="addressManufacturerTrader" name="addressManufacturerTrader" required type="text">
+                                        <div *ngIf="submitted && formSampleCollectForm.addressManufacturerTrader.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.addressManufacturerTrader.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1123,19 +1133,29 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SAMPLING METHOD</b></label>
-                                        <input [class.is-invalid]="formSampleCollectForm.samplingMethod.invalid && formSampleCollectForm.samplingMethod.touched"
+                                        <input [class.is-invalid]="formSampleCollectForm.samplingMethod.invalid && formSampleCollectForm.samplingMethod.errors"
                                                class="form-control two-column-input"
                                                formControlName="samplingMethod" name="samplingMethod" required type="text">
+                                        <div *ngIf="submitted && formSampleCollectForm.samplingMethod.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.samplingMethod.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>REASONS COLLECTING SAMPLES</b> </label>
-                                        <input [class.is-invalid]="formSampleCollectForm.reasonsCollectingSamples.invalid && formSampleCollectForm.reasonsCollectingSamples.touched"
+                                        <input [class.is-invalid]="formSampleCollectForm.reasonsCollectingSamples.invalid && formSampleCollectForm.reasonsCollectingSamples.errors"
                                                class="form-control two-column-input"
                                                formControlName="reasonsCollectingSamples"
                                                name="reasonsCollectingSamples" required type="text">
+                                        <div *ngIf="submitted && formSampleCollectForm.reasonsCollectingSamples.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.reasonsCollectingSamples.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1147,16 +1167,27 @@
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="anyRemarks" name="anyRemarks"
                                                required
-                                               [class.is-invalid]="formSampleCollectForm.anyRemarks.invalid && formSampleCollectForm.anyRemarks.touched">
+                                               [class.is-invalid]="formSampleCollectForm.anyRemarks.invalid && formSampleCollectForm.anyRemarks.errors">
+                                        <div *ngIf="submitted && formSampleCollectForm.anyRemarks.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.anyRemarks.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>DESIGNATION OFFICER COLLECTING SAMPLE</b> </label>
-                                                    <input type="text" class="form-control two-column-input"
-                                                           formControlName="designationOfficerCollectingSample" name="designationOfficerCollectingSample" required 
-                                                           [class.is-invalid]="formSampleCollectForm.designationOfficerCollectingSample.invalid && formSampleCollectForm.designationOfficerCollectingSample.touched">
+                                        <label><b>DESIGNATION OFFICER COLLECTING SAMPLE</b> </label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="designationOfficerCollectingSample" name="designationOfficerCollectingSample" required
+                                               [class.is-invalid]="formSampleCollectForm.designationOfficerCollectingSample.invalid &&
+                                               formSampleCollectForm.designationOfficerCollectingSample.errors">
+                                        <div *ngIf="submitted && formSampleCollectForm.designationOfficerCollectingSample.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.designationOfficerCollectingSample.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1167,16 +1198,26 @@
                                         <label><b>NAME OF OFFICER COLLECTING SAMPLE</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="nameOfficerCollectingSample" name="nameOfficerCollectingSample" required ngModel="{{userProfile.fullName}}" disabled
-                                               [class.is-invalid]="formSampleCollectForm.nameOfficerCollectingSample.invalid && formSampleCollectForm.nameOfficerCollectingSample.touched">
+                                               [class.is-invalid]="formSampleCollectForm.nameOfficerCollectingSample.invalid && formSampleCollectForm.nameOfficerCollectingSample.errors">
+                                        <div *ngIf="submitted && formSampleCollectForm.nameOfficerCollectingSample.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.nameOfficerCollectingSample.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>DATE OFFICER COLLECTED SAMPLE</b> </label>
-                                                    <input type="date" class="form-control two-column-input"
-                                                           formControlName="dateOfficerCollectingSample" name="dateOfficerCollectingSample" required
-                                                           [class.is-invalid]="formSampleCollectForm.dateOfficerCollectingSample.invalid && formSampleCollectForm.dateOfficerCollectingSample.touched">
+                                        <label><b>DATE OFFICER COLLECTED SAMPLE</b> </label>
+                                        <input type="date" class="form-control two-column-input"
+                                               formControlName="dateOfficerCollectingSample" name="dateOfficerCollectingSample" required
+                                               [class.is-invalid]="formSampleCollectForm.dateOfficerCollectingSample.invalid && formSampleCollectForm.dateOfficerCollectingSample.errors">
+                                        <div *ngIf="submitted && formSampleCollectForm.dateOfficerCollectingSample.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.dateOfficerCollectingSample.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1187,16 +1228,26 @@
                                         <label><b>NAME WITNESS</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="nameWitness" name="nameWitness" required
-                                               [class.is-invalid]="formSampleCollectForm.nameWitness.invalid && formSampleCollectForm.nameWitness.touched">
+                                               [class.is-invalid]="formSampleCollectForm.nameWitness.invalid && formSampleCollectForm.nameWitness.errors">
+                                        <div *ngIf="submitted && formSampleCollectForm.nameWitness.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.nameWitness.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>DESIGNATION OF WITNESS</b> </label>
-                                                    <input type="text" class="form-control two-column-input"
-                                                           formControlName="designationWitness" name="designationWitness" required
-                                                           [class.is-invalid]="formSampleCollectForm.designationWitness.invalid && formSampleCollectForm.designationWitness.touched">
+                                        <label><b>DESIGNATION OF WITNESS</b> </label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="designationWitness" name="designationWitness" required
+                                               [class.is-invalid]="formSampleCollectForm.designationWitness.invalid && formSampleCollectForm.designationWitness.errors">
+                                        <div *ngIf="submitted && formSampleCollectForm.designationWitness.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.designationWitness.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1207,17 +1258,22 @@
                                         <label><b>WITNESS DATE</b></label>
                                         <input type="date" class="form-control two-column-input"
                                                formControlName="dateWitness" name="dateWitness" required
-                                               [class.is-invalid]="formSampleCollectForm.dateWitness.invalid && formSampleCollectForm.dateWitness.touched">
+                                               [class.is-invalid]="formSampleCollectForm.dateWitness.invalid && formSampleCollectForm.dateWitness.errors">
+                                        <div *ngIf="submitted && formSampleCollectForm.dateWitness.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectForm.dateWitness.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
-<!--                                    <div class="form-group">-->
-<!--                                                    <label><b>DESIGNATION OF WITNESS</b> </label>-->
-<!--                                                    <input type="text" class="form-control two-column-input"-->
-<!--                                                           formControlName="designationWitness" name="designationWitness" required-->
-<!--                                                           [class.is-invalid]="formSampleCollectForm.designationWitness.invalid && formSampleCollectForm.designationWitness.touched">-->
-<!--                                    </div>-->
+                                    <!--                                    <div class="form-group">-->
+                                    <!--                                                    <label><b>DESIGNATION OF WITNESS</b> </label>-->
+                                    <!--                                                    <input type="text" class="form-control two-column-input"-->
+                                    <!--                                                           formControlName="designationWitness" name="designationWitness" required-->
+                                    <!--                                                           [class.is-invalid]="formSampleCollectForm.designationWitness.invalid && formSampleCollectForm.designationWitness.errors">-->
+                                    <!--                                    </div>-->
                                 </div>
 
                             </div>
@@ -1232,7 +1288,12 @@
                                         <label><b>PRODUCT BRAND NAME</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="productBrandName" name="productBrandName" required
-                                               [class.is-invalid]="formSampleCollectItemsForm.productBrandName.invalid && formSampleCollectItemsForm.productBrandName.touched">
+                                               [class.is-invalid]="formSampleCollectItemsForm.productBrandName.invalid && formSampleCollectItemsForm.productBrandName.errors">
+                                        <div *ngIf="submitted && formSampleCollectItemsForm.productBrandName.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectItemsForm.productBrandName.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1241,7 +1302,12 @@
                                         <label><b>BATCH NO</b> </label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="batchNo" name="batchNo" required
-                                               [class.is-invalid]="formSampleCollectItemsForm.batchNo.invalid && formSampleCollectItemsForm.batchNo.touched">
+                                               [class.is-invalid]="formSampleCollectItemsForm.batchNo.invalid && formSampleCollectItemsForm.batchNo.errors">
+                                        <div *ngIf="submitted && formSampleCollectItemsForm.batchNo.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectItemsForm.batchNo.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1252,7 +1318,12 @@
                                         <label><b>BATCH SIZE</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="batchSize" name="batchSize" required
-                                               [class.is-invalid]="formSampleCollectItemsForm.batchSize.invalid && formSampleCollectItemsForm.batchSize.touched">
+                                               [class.is-invalid]="formSampleCollectItemsForm.batchSize.invalid && formSampleCollectItemsForm.batchSize.errors">
+                                        <div *ngIf="submitted && formSampleCollectItemsForm.batchSize.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectItemsForm.batchSize.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1261,23 +1332,82 @@
                                         <label><b>SAMPLE SIZE</b> </label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="sampleSize" name="sampleSize" required
-                                               [class.is-invalid]="formSampleCollectItemsForm.sampleSize.invalid && formSampleCollectItemsForm.sampleSize.touched">
+                                               [class.is-invalid]="formSampleCollectItemsForm.sampleSize.invalid && formSampleCollectItemsForm.sampleSize.errors">
+                                        <div *ngIf="submitted && formSampleCollectItemsForm.sampleSize.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleCollectItemsForm.sampleSize.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <button *ngIf="sampleCollectItemsForm.valid" mat-raised-button
+                                                class="btn btn-success" (click)="onClickAddDataSampleCollectItems()" type="button" >SAVE ITEMS
+                                        </button>
                                     </div>
                                 </div>
 
                             </div>
                         </div>
                     </form>
-
-                        <div class="modal-footer">
-                            <button  mat-raised-button type="button" class="btn btn-danger"
-                                    data-dismiss="modal">
-                                Close
-                            </button>
-                            <button mat-raised-button type="button"  data-dismiss="modal" class="btn btn-success" [disabled]="!sampleCollectForm.valid && !sampleCollectItemsForm.valid"
-                                    (click)="onClickSaveSampleCollected(sampleCollectForm.valid,sampleCollectItemsForm.valid)">SUBMIT
-                            </button>
+                    <div>
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <table id="datatablesSampCollectItems"
+                                       class="table table-striped table-bordered table-hover"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th>Product Brand Name</th>
+                                        <th>Batch No</th>
+                                        <th>Batch Size</th>
+                                        <th>Sample Size</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let r of dataSaveSampleCollectItemsList; let i=index">
+                                        <td>{{r.productBrandName}}</td>
+                                        <td>{{r.batchNo}}</td>
+                                        <td>{{r.batchSize}}</td>
+                                        <td>{{r.sampleSize}}</td>
+                                        <td>
+                                            <button (click)="removeDataSampleCollectItems(i)"
+                                                    type="button"
+                                                    class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                        <button  *ngIf="sampleCollectForm.invalid" mat-raised-button type="button"  class="btn btn-success"
+                                 (click)="onClickSaveSampleCollected()">SUBMIT
+                        </button>
+                        <button *ngIf="sampleCollectForm.valid" mat-raised-button type="button"  data-dismiss="modal" class="btn btn-success"
+                                (click)="onClickSaveSampleCollected()">SUBMIT
+                        </button>
+                    </div>
 
                 </div>
             </div>
@@ -1299,23 +1429,33 @@
                 <div class="modal-body">
                     <form [formGroup]="sampleSubmitForm">
                         <div class="form-group bmd-form-group is-filled">
-                            <h5 class="mb-3" style="color: #0066B1">Sample Collect Details</h5>
+                            <h5 class="mb-3" style="color: #0066B1">Sample Submission Details</h5>
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>NAME PRODUCT</b></label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.nameProduct.invalid && formSampleSubmitForm.nameProduct.touched"
-                                               class="form-control two-column-input" ngModel="{{fuelInspection?.sampleCollected?.productsList[0]?.productBrandName}}" disabled
+                                        <input [class.is-invalid]="formSampleSubmitForm.nameProduct.invalid && formSampleSubmitForm.nameProduct.errors"
+                                               class="form-control two-column-input"
                                                formControlName="nameProduct" name="nameProduct" required type="text">
+                                        <div *ngIf="submitted && formSampleSubmitForm.nameProduct.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.nameProduct.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>PACKAGING</b></label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.packaging.invalid && formSampleSubmitForm.packaging.touched"
+                                        <input [class.is-invalid]="formSampleSubmitForm.packaging.invalid && formSampleSubmitForm.packaging.errors"
                                                class="form-control two-column-input"
                                                formControlName="packaging" name="packaging" required type="text">
+                                        <div *ngIf="submitted && formSampleSubmitForm.packaging.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.packaging.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1324,19 +1464,29 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>LABELLING IDENTIFICATION</b></label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.labellingIdentification.invalid && formSampleSubmitForm.labellingIdentification.touched"
+                                        <input [class.is-invalid]="formSampleSubmitForm.labellingIdentification.invalid && formSampleSubmitForm.labellingIdentification.errors"
                                                class="form-control two-column-input"
                                                formControlName="labellingIdentification" name="labellingIdentification" required type="text">
+                                        <div *ngIf="submitted && formSampleSubmitForm.labellingIdentification.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.labellingIdentification.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>FILE REF NUMBER</b> </label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.fileRefNumber.invalid && formSampleSubmitForm.fileRefNumber.touched"
+                                        <input [class.is-invalid]="formSampleSubmitForm.fileRefNumber.invalid && formSampleSubmitForm.fileRefNumber.errors"
                                                class="form-control two-column-input"
                                                formControlName="fileRefNumber"
                                                name="fileRefNumber" required type="text">
+                                        <div *ngIf="submitted && formSampleSubmitForm.fileRefNumber.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.fileRefNumber.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1348,16 +1498,26 @@
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="referencesStandards" name="referencesStandards"
                                                required
-                                               [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.touched">
+                                               [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.referencesStandards.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.referencesStandards.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>SIZE TEST SAMPLE</b> </label>
-                                                    <input type="number" class="form-control two-column-input"
-                                                           formControlName="sizeTestSample" name="sizeTestSample" required
-                                                           [class.is-invalid]="formSampleSubmitForm.sizeTestSample.invalid && formSampleSubmitForm.sizeTestSample.touched">
+                                        <label><b>SIZE TEST SAMPLE</b> </label>
+                                        <input type="number" class="form-control two-column-input"
+                                               formControlName="sizeTestSample" name="sizeTestSample" required
+                                               [class.is-invalid]="formSampleSubmitForm.sizeTestSample.invalid && formSampleSubmitForm.sizeTestSample.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.sizeTestSample.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.sizeTestSample.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1368,16 +1528,26 @@
                                         <label><b>SIZE REF SAMPLE</b></label>
                                         <input type="number" class="form-control two-column-input"
                                                formControlName="sizeRefSample" name="sizeRefSample" required
-                                               [class.is-invalid]="formSampleSubmitForm.sizeRefSample.invalid && formSampleSubmitForm.sizeRefSample.touched">
+                                               [class.is-invalid]="formSampleSubmitForm.sizeRefSample.invalid && formSampleSubmitForm.sizeRefSample.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.sizeRefSample.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.sizeRefSample.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>CONDITION</b> </label>
-                                                    <input type="text" class="form-control two-column-input"
-                                                           formControlName="condition" name="condition" required
-                                                           [class.is-invalid]="formSampleSubmitForm.condition.invalid && formSampleSubmitForm.condition.touched">
+                                        <label><b>CONDITION</b> </label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="condition" name="condition" required
+                                               [class.is-invalid]="formSampleSubmitForm.condition.invalid && formSampleSubmitForm.condition.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.condition.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.condition.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1388,16 +1558,26 @@
                                         <label><b>SAMPLE REFERENCES</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="sampleReferences" name="sampleReferences" required
-                                               [class.is-invalid]="formSampleSubmitForm.sampleReferences.invalid && formSampleSubmitForm.sampleReferences.touched">
+                                               [class.is-invalid]="formSampleSubmitForm.sampleReferences.invalid && formSampleSubmitForm.sampleReferences.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.sampleReferences.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.sampleReferences.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>SENDERS NAME</b> </label>
-                                                    <input type="text" class="form-control two-column-input" ngModel="{{userProfile.fullName}}" disabled
-                                                           formControlName="sendersName" name="sendersName" required
-                                                           [class.is-invalid]="formSampleSubmitForm.sendersName.invalid && formSampleSubmitForm.sendersName.touched">
+                                        <label><b>SENDERS NAME</b> </label>
+                                        <input type="text" class="form-control two-column-input" ngModel="{{userProfile.fullName}}" disabled
+                                               formControlName="sendersName" name="sendersName" required
+                                               [class.is-invalid]="formSampleSubmitForm.sendersName.invalid && formSampleSubmitForm.sendersName.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.sendersName.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.sendersName.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1408,16 +1588,26 @@
                                         <label><b>DESIGNATION</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="designation" name="designation" required
-                                               [class.is-invalid]="formSampleSubmitForm.designation.invalid && formSampleSubmitForm.designation.touched">
+                                               [class.is-invalid]="formSampleSubmitForm.designation.invalid && formSampleSubmitForm.designation.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.designation.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.designation.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>ADDRESS</b> </label>
-                                                    <input type="text" class="form-control two-column-input"
-                                                           formControlName="address" name="address" required
-                                                           [class.is-invalid]="formSampleSubmitForm.address.invalid && formSampleSubmitForm.address.touched">
+                                        <label><b>ADDRESS</b> </label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="address" name="address" required
+                                               [class.is-invalid]="formSampleSubmitForm.address.invalid && formSampleSubmitForm.address.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.address.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.address.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1428,16 +1618,26 @@
                                         <label><b>SENDERS DATE</b></label>
                                         <input type="date" class="form-control two-column-input"
                                                formControlName="sendersDate" name="sendersDate" required
-                                               [class.is-invalid]="formSampleSubmitForm.sendersDate.invalid && formSampleSubmitForm.sendersDate.touched">
+                                               [class.is-invalid]="formSampleSubmitForm.sendersDate.invalid && formSampleSubmitForm.sendersDate.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.sendersDate.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.sendersDate.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>RECEIVERS NAME</b> </label>
-                                                    <input type="text" class="form-control two-column-input"
-                                                           formControlName="receiversName" name="receiversName" required
-                                                           [class.is-invalid]="formSampleSubmitForm.receiversName.invalid && formSampleSubmitForm.receiversName.touched">
+                                        <label><b>RECEIVERS NAME</b> </label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="receiversName" name="receiversName" required
+                                               [class.is-invalid]="formSampleSubmitForm.receiversName.invalid && formSampleSubmitForm.receiversName.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.receiversName.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.receiversName.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1448,16 +1648,26 @@
                                         <label><b>TEST CHARGES KSH</b></label>
                                         <input type="number" class="form-control two-column-input"
                                                formControlName="testChargesKsh" name="testChargesKsh" required
-                                               [class.is-invalid]="formSampleSubmitForm.testChargesKsh.invalid && formSampleSubmitForm.testChargesKsh.touched">
+                                               [class.is-invalid]="formSampleSubmitForm.testChargesKsh.invalid && formSampleSubmitForm.testChargesKsh.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.testChargesKsh.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.testChargesKsh.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>RECEIPT LPO NUMBER</b> </label>
-                                                    <input type="text" class="form-control two-column-input"
-                                                           formControlName="receiptLpoNumber" name="receiptLpoNumber" required
-                                                           [class.is-invalid]="formSampleSubmitForm.receiptLpoNumber.invalid && formSampleSubmitForm.receiptLpoNumber.touched">
+                                        <label><b>RECEIPT LPO NUMBER</b> </label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="receiptLpoNumber" name="receiptLpoNumber" required
+                                               [class.is-invalid]="formSampleSubmitForm.receiptLpoNumber.invalid && formSampleSubmitForm.receiptLpoNumber.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.receiptLpoNumber.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.receiptLpoNumber.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1468,16 +1678,26 @@
                                         <label><b>INVOICE NUMBER</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="invoiceNumber" name="invoiceNumber" required
-                                               [class.is-invalid]="formSampleSubmitForm.invoiceNumber.invalid && formSampleSubmitForm.invoiceNumber.touched">
+                                               [class.is-invalid]="formSampleSubmitForm.invoiceNumber.invalid && formSampleSubmitForm.invoiceNumber.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.invoiceNumber.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.invoiceNumber.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>DISPOSAL</b> </label>
-                                                    <input type="text" class="form-control two-column-input"
-                                                           formControlName="disposal" name="disposal" required
-                                                           [class.is-invalid]="formSampleSubmitForm.disposal.invalid && formSampleSubmitForm.disposal.touched">
+                                        <label><b>DISPOSAL</b> </label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="disposal" name="disposal" required
+                                               [class.is-invalid]="formSampleSubmitForm.disposal.invalid && formSampleSubmitForm.disposal.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.disposal.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.disposal.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1488,16 +1708,26 @@
                                         <label><b>REMARKS</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="remarks" name="remarks" required
-                                               [class.is-invalid]="formSampleSubmitForm.remarks.invalid && formSampleSubmitForm.remarks.touched">
+                                               [class.is-invalid]="formSampleSubmitForm.remarks.invalid && formSampleSubmitForm.remarks.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.remarks.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.remarks.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
-                                                    <label><b>SAMPLE COLLECTION NUMBER</b> </label>
-                                                    <input type="number" class="form-control two-column-input" ngModel="{{fuelInspection?.sampleCollected?.id}}" disabled
-                                                           formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required
-                                                           [class.is-invalid]="formSampleSubmitForm.sampleCollectionNumber.invalid && formSampleSubmitForm.sampleCollectionNumber.touched">
+                                        <label><b>SAMPLE COLLECTION NUMBER</b> </label>
+                                        <input type="number" class="form-control two-column-input"
+                                               formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required
+                                               [class.is-invalid]="formSampleSubmitForm.sampleCollectionNumber.invalid && formSampleSubmitForm.sampleCollectionNumber.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.sampleCollectionNumber.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.sampleCollectionNumber.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1513,40 +1743,92 @@
                                         <label><b>PARAMETERS</b></label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="parameters" name="parameters" required
-                                               [class.is-invalid]="formSampleSubmitParamsForm.parameters.invalid && formSampleSubmitParamsForm.parameters.touched">
+                                               [class.is-invalid]="formSampleSubmitParamsForm.parameters.invalid && formSampleSubmitParamsForm.parameters.errors">
+                                        <div *ngIf="submitted && formSampleSubmitParamsForm.parameters.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitParamsForm.parameters.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>LABORATORY NAME</b> </label>
-<!--                                        <mat-form-field>-->
-<!--                                            <mat-select placeholder="Please Select an option"-->
-<!--                                                        [class.is-invalid]="formSampleSubmitParamsForm.laboratoryName.invalid && formSampleSubmitParamsForm.laboratoryName.touched"-->
-<!--                                                        formControlName="laboratoryName" id="laboratoryName" name="laboratoryName" >-->
-<!--                                                <mat-option *ngFor="let app of labList" [value]="app.id">{{app.labName}}</mat-option>-->
-
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="laboratoryName" name="laboratoryName" required
-                                               [class.is-invalid]="formSampleSubmitParamsForm.laboratoryName.invalid && formSampleSubmitParamsForm.laboratoryName.touched">
+                                               [class.is-invalid]="formSampleSubmitParamsForm.laboratoryName.invalid && formSampleSubmitParamsForm.laboratoryName.errors">
+                                        <div *ngIf="submitted && formSampleSubmitParamsForm.laboratoryName.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitParamsForm.laboratoryName.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <button *ngIf="sampleSubmitParamsForm.valid" mat-raised-button
+                                                class="btn btn-success" (click)="onClickAddDataSampleSubmitParams()" type="button" >SAVE PARAMATERS
+                                        </button>
                                     </div>
                                 </div>
 
                             </div>
                         </div>
                     </form>
-
-                        <div class="modal-footer">
-                            <button  mat-raised-button type="button" class="btn btn-danger"
-                                    data-dismiss="modal">
-                                Close
-                            </button>
-                            <button mat-raised-button type="button" data-dismiss="modal" class="btn btn-success" [disabled]="!sampleSubmitForm.valid && !sampleSubmitParamsForm.valid"
-                                    (click)="onClickSaveSampleSubmitted(sampleSubmitForm.valid,sampleSubmitParamsForm.valid)" >SUBMIT
-                            </button>
+                    <div>
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <table id="datatablesSampleSubmitParam"
+                                       class="table table-striped table-bordered table-hover"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th>Paramaters</th>
+                                        <th>Laboratory Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let r of dataSaveSampleSubmitParamList; let i=index">
+                                        <td>{{r.parameters}}</td>
+                                        <td>{{r.laboratoryName}}</td>
+                                        <td>
+                                            <button (click)="removeDataSampleSubmitParam(i)"
+                                                    type="button"
+                                                    class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                        <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"
+                                 (click)="onClickSaveSampleSubmitted()">SUBMIT
+                        </button>
+                        <button *ngIf="sampleSubmitForm.valid"  mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"
+                                (click)="onClickSaveSampleSubmitted()" >SUBMIT
+                        </button>
+                    </div>
 
                 </div>
             </div>
