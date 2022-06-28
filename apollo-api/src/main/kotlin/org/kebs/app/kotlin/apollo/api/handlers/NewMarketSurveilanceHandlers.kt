@@ -131,6 +131,18 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun msCountries(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllCountries()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Country List found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
     fun msBroadProductCategory(req: ServerRequest): ServerResponse {
         try {
             masterDataDaoService.getAllBroadProductCategory()

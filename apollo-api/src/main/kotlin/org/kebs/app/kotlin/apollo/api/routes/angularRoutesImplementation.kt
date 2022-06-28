@@ -572,6 +572,7 @@ class AngularRoutes {
                 GET("/divisions", handler::msDivisions)
                 GET("/standardProductCategory", handler::msStandardsCategory)
                 GET("/productCategories", handler::msProductCategories)
+                GET("/countries", handler::msCountries)
                 GET("/broadProductCategory", handler::msBroadProductCategory)
                 GET("/products", handler::msProducts)
                 GET("/productSubcategory", handler::msProductSubcategory)

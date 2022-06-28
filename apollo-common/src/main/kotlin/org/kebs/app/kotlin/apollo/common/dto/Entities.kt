@@ -643,6 +643,12 @@ data class ProductCategoriesEntityDto(
         var broadProductCategoryId: Long? = null,
 )
 
+data class CountriesEntityDto(
+        var id: Long? = 0,
+        var country: String? = null,
+        var status: Boolean? = null
+)
+
 data class BroadProductCategoryEntityDto(
         var id: Long? = null,
         var category: String? = null,
