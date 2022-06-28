@@ -266,7 +266,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Configurations',
         type: 'sub',
         collapse: 'api-clients',
-        privilege: ['SYSADMIN_VIEW', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+        privilege: ['DI_ADMIN', 'DI_ADMIN_READ', 'PVOC_ADMIN_READ', 'PVOC_ADMIN'],
         children: [
             {
                 path: 'api-clients',
