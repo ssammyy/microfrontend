@@ -22,6 +22,8 @@ class AngularRoutes {
 //                    GET("/fetch/users/{status}/{criteria}", handler::list)
                     GET("/fetch/users/{status}", handler::listActiveRbacUsers)
                     GET("/fetch/user-roles/{userId}/{status}", handler::listActiveRbacUserRoles)
+                    GET("/fetch/user-type/{userId}", handler::listUserType)
+
                     GET("/fetch/user-section/{userId}/{status}", handler::listActiveRbacUserSections)
                     GET("/fetch/user-cfs/{userProfileId}/{status}", handler::listActiveRbacUserCfs)
                     POST("/role/revoke/{userId}/{roleId}/{status}", handler::revokeRoleFromUser)
@@ -34,6 +36,9 @@ class AngularRoutes {
                         "/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}",
                         handler::assignRoleToUserThroughRequest
                     )
+                    POST("/userType/assign/{userId}/{roleId}/{status}", handler::assignUserTypeToUser)
+                    POST("/userType/revoke/{userId}/{roleId}/{status}", handler::revokeUserTypeToUser)
+
 //                    POST("/user/request/{userId}/{cfsId}/{status}", handler::assignCfsToUser)
 
 

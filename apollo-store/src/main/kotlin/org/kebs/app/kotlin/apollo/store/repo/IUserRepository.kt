@@ -296,6 +296,14 @@ interface IUserTypesEntityRepository : HazelcastRepository<UserTypesEntity, Long
     fun findByStatus(status: Int): List<UserTypesEntity>
     fun findByTypeNameAndStatus(typeName: String, status: Int): UserTypesEntity?
     fun findByDefaultRole(defaultRole: Long): UserTypesEntity?
+    fun findAllAndDefaultRoleIsNotNull()
+
+
+    @Query(
+        "SELECT u.* FROM CFG_USER_TYPES U INNER JOIN DAT_KEBS_USERS P ON U.DEFAULT_ROLE = P.USER_TYPE WHERE P.ID=:userId",
+        nativeQuery = true
+    )
+    fun findAllUserRolesAssignedToUser(@Param("userId") userId: Long): List<UserTypesEntity>?
 
 }
 

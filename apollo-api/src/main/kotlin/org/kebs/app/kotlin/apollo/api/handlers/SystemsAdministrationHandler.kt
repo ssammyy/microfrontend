@@ -5,7 +5,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.*
-import org.kebs.app.kotlin.apollo.common.dto.qa.STA1Dto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -155,6 +154,31 @@ class SystemsAdministrationHandler(
 
 
         } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "Unknown Error")
+
+        }
+    }
+
+    fun listUserType(req: ServerRequest): ServerResponse {
+        val userIdNew = req.pathVariable("userId").toLongOrNull()
+        println(userIdNew)
+        return try {
+
+
+            req.pathVariable("userId").toLongOrNull()
+                ?.let { userId ->
+
+                    daoService.listUserType(userId)
+                        ?.let { ok().body(it) }
+                }
+
+
+                ?: throw InvalidValueException("Valid value for UserId required")
+
+
+        }catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
             badRequest().body(e.message ?: "Unknown Error")
@@ -544,6 +568,64 @@ class SystemsAdministrationHandler(
             badRequest().body(e.message ?: "Unknown Error")
         }
     }
+
+
+    @PreAuthorize("hasAuthority('RBAC_ASSIGN_ROLE')")
+    fun assignUserTypeToUser(req: ServerRequest): ServerResponse {
+        return try {
+            req.pathVariable("status").toIntOrNull()
+                ?.let { status ->
+                    req.pathVariable("userId").toLongOrNull()
+                        ?.let { userId ->
+                            req.pathVariable("roleId").toLongOrNull()
+                                ?.let { roleId ->
+                                    daoService.assignUserTypeToUser(userId, roleId, status)
+                                        ?.let { ok().body(it) }
+                                        ?: throw NullValueNotAllowedException("No records found")
+                                }
+                                ?: throw InvalidValueException("Valid value for roleId required")
+
+                        }
+                        ?: throw InvalidValueException("Valid value for userId required")
+
+                }
+                ?: throw InvalidValueException("Valid value for status required")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('RBAC_ASSIGN_ROLE')")
+    fun revokeUserTypeToUser(req: ServerRequest): ServerResponse {
+        return try {
+            req.pathVariable("status").toIntOrNull()
+                ?.let { status ->
+                    req.pathVariable("userId").toLongOrNull()
+                        ?.let { userId ->
+                            req.pathVariable("roleId").toLongOrNull()
+                                ?.let { roleId ->
+                                    daoService.revokeUserTypeToUser(userId, roleId, status)
+                                        ?.let { ok().body(it) }
+                                        ?: throw NullValueNotAllowedException("No records found")
+                                }
+                                ?: throw InvalidValueException("Valid value for roleId required")
+
+                        }
+                        ?: throw InvalidValueException("Valid value for userId required")
+
+                }
+                ?: throw InvalidValueException("Valid value for status required")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
 
     @PreAuthorize("hasAuthority('RBAC_ASSIGN_SECTION')")
     fun assignSectionToUser(req: ServerRequest): ServerResponse {

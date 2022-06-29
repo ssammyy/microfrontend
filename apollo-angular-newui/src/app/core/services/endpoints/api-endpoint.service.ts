@@ -177,6 +177,8 @@ export class ApiEndpointService {
         LOAD_SUB_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subRegions/load`,
         LOAD_SECTIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/sections/load`,
         LOAD_SECTIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/sections/loads`,
+        LOAD_USER_TYPES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/userTypes/load`,
+
         LOAD_SUB_SECTIONS_L1_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l1/loads`,
         LOAD_SUB_SECTIONS_L1: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l1/load`,
         LOAD_SUB_SECTIONS_L2: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l2/load`,
@@ -225,6 +227,8 @@ export class ApiEndpointService {
         REVOKE_AUTHORIZATION_FROM_ROLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/revoke/`,
         ASSIGN_AUTHORIZATION_TO_ROLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/assign/`,
         LIST_ACTIVE_RBAC_USERS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/users/`,
+        LIST_USER_TYPE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-type/`,
+
         LIST_ACTIVE_RBAC_USERS_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-roles/`,
         LIST_ACTIVE_RBAC_USERS_SECTION: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-section/`,
         LIST_ACTIVE_RBAC_USERS_CFS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-cfs/`,
@@ -234,6 +238,8 @@ export class ApiEndpointService {
         ASSIGN_SECTION_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/section/assign/`,
         REVOKE_CFS_FROM_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/cfs/revoke/`,
         ASSIGN_CFS_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/cfs/assign/`,
+        ASSIGN_USER_TYPE_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/userType/assign/`,
+        REVOKE_USER_TYPE_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/userType/revoke/`,
 
         // tslint:disable-next-line:max-line-length
         /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/

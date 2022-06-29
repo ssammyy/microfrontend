@@ -152,6 +152,12 @@ data class SectionsEntityDto(
         var descriptions: String?,
         var status: Boolean?
 )
+data class UserTypeEntityDto(
+        var id: Long?,
+        var varField1: String?,
+        var descriptions: String?,
+        var status: Boolean?
+)
 
 data class SectionsDto(
         var id: Long? = null,

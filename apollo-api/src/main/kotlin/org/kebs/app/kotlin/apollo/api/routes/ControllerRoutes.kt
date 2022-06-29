@@ -105,6 +105,11 @@ class ControllerRoutes {
                     PUT("/", handler::sectionsUpdate)
                     POST("/", handler::sectionsUpdate)
                 }
+                "/userTypes".nest {
+                    GET("/load", handler::userTypeListing)
+                    PUT("/", handler::sectionsUpdate)
+                    POST("/", handler::sectionsUpdate)
+                }
                 "/subsections".nest {
                     "/l1".nest {
                         GET("/load", handler::subSectionsL1Listing)
