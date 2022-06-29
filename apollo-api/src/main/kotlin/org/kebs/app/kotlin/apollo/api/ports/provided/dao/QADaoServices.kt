@@ -2606,11 +2606,6 @@ class QADaoServices(
             modifiedBy = commonDaoServices.concatenateName(user)
             modifiedOn = commonDaoServices.getTimestamp()
         }
-        //save awarded permit number
-        val awardPermit = QaAwardedPermitTrackerEntity()
-        awardPermit.awardedPermitNumber= permit.awardedPermitNumber?.toLong()
-        awardPermit.createdOn=commonDaoServices.getTimestamp()
-        iQaAwardedPermitTrackerEntityRepository.save(awardPermit)
 
         return permitRepo.save(permit)
     }
@@ -3659,6 +3654,7 @@ class QADaoServices(
                 if (versionNumber==null)
                 {
                     versionNumber=1
+                    varField7 = 5.toString()
                 }
 
             }
@@ -5506,6 +5502,8 @@ class QADaoServices(
 
         var sr = commonDaoServices.createServiceRequest(s)
         var fmarkPermit = PermitApplicationsEntity()
+        val pcmId = user.id
+
         try {
 
             val permitTypeDetails = findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark)
@@ -5522,6 +5520,7 @@ class QADaoServices(
             with(fmarkPermit) {
                 id = null
                 smarkGeneratedFrom = 1
+                varField6 = pcmId.toString()
                 permitType = permitTypeDetails.id
                 permitStatus = applicationMapProperties.mapQaStatusPermitAwarded
                 permitRefNumber = "REF${permitTypeDetails.markNumber}${
@@ -5540,7 +5539,10 @@ class QADaoServices(
 //                            false
 //                    )
 //                }".toUpperCase()
-                awardedPermitNumber = awardedPermitNumberToBeAwarded?.toString()
+
+                val  a =awardedPermitNumberToBeAwarded?.toString()
+                val b = permitTypeDetails.markNumber?.toUpperCase()
+                awardedPermitNumber =b+a
 
 
             }
@@ -6493,8 +6495,7 @@ class QADaoServices(
         }
         try {
 
-            println(permitBeingUpdated)
-            println(sta10IdToBeUpdated)
+
             val productsManufactureSTA10Repo = productsManufactureSTA10Repo.updateProduct(permitBeingUpdated, sta10IdToBeUpdated)
             KotlinLogging.logger { }.info("The response is $productsManufactureSTA10Repo")
 

@@ -30,6 +30,7 @@ import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
@@ -266,7 +267,10 @@ class InvoiceHandlers(
                     demandRequest.entryPoint = it.altCfsCode ?: it.cfsCode
                 } else {
                     demandRequest.courier = ""
-                    demandRequest.entryPoint = it.cfsCode ?: ""
+                    demandRequest.entryPoint = when {
+                        StringUtils.hasLength(it.altCfsCode) -> it.altCfsCode
+                        else -> it.cfsCode
+                    }
                 }
             }
 

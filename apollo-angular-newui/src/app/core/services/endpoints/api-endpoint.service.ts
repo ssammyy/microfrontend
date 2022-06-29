@@ -177,6 +177,8 @@ export class ApiEndpointService {
         LOAD_SUB_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subRegions/load`,
         LOAD_SECTIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/sections/load`,
         LOAD_SECTIONS_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/sections/loads`,
+        LOAD_USER_TYPES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/userTypes/load`,
+
         LOAD_SUB_SECTIONS_L1_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l1/loads`,
         LOAD_SUB_SECTIONS_L1: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l1/load`,
         LOAD_SUB_SECTIONS_L2: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l2/load`,
@@ -225,6 +227,8 @@ export class ApiEndpointService {
         REVOKE_AUTHORIZATION_FROM_ROLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/revoke/`,
         ASSIGN_AUTHORIZATION_TO_ROLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/assign/`,
         LIST_ACTIVE_RBAC_USERS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/users/`,
+        LIST_USER_TYPE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-type/`,
+
         LIST_ACTIVE_RBAC_USERS_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-roles/`,
         LIST_ACTIVE_RBAC_USERS_SECTION: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-section/`,
         LIST_ACTIVE_RBAC_USERS_CFS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-cfs/`,
@@ -234,6 +238,8 @@ export class ApiEndpointService {
         ASSIGN_SECTION_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/section/assign/`,
         REVOKE_CFS_FROM_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/cfs/revoke/`,
         ASSIGN_CFS_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/cfs/assign/`,
+        ASSIGN_USER_TYPE_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/userType/assign/`,
+        REVOKE_USER_TYPE_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/userType/revoke/`,
 
         // tslint:disable-next-line:max-line-length
         /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
@@ -562,6 +568,7 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_COMMON = {
+        MS_COUNTRIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/countries`,
         MS_DEPARTMENTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/departments`,
         MS_DIVISIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/divisions`,
         MS_STANDARD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/standardProductCategory`,
@@ -603,6 +610,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_DETAILS: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/details`,
         INSPECTION_SCHEDULED_APPROVE_DETAILS: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/approval-schedule`,
         INSPECTION_SCHEDULED_START_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/start-onsite-activities`,
+        INSPECTION_SCHEDULED_END_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/end-onsite-activities`,
         UPLOAD_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/file/save`,
         INSPECTION_SCHEDULED_ADD_CHARGE_SHEET: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/charge-sheet`,
         INSPECTION_SCHEDULED_ADD_DATA_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/data-report`,

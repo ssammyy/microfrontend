@@ -170,6 +170,7 @@ data class WorkPlanInspectionDto(
         var ksApplicable: StandardDetailsDto? = null,
         var remarksDetails: List<MSRemarksDto>? = null,
         var workPlanFiles: List<WorkPlanFilesFoundDto>? = null,
+        var chargeSheet: ChargeSheetDto? = null,
 )
 
 data class FuelEntityDto(
@@ -339,6 +340,16 @@ data class DataReportDto(
         var summaryFindingsActionsTaken: String? = null,
         var finalActionSeizedGoods: String? = null,
         var remarks: String? = null,
+        var productsList: List<DataReportParamsDto>? = null,
+)
+
+data class DataReportParamsDto(
+        var id: Long? = null,
+        var typeBrandName: String? = null,
+        var localImport: String? = null,
+        var complianceInspectionParameter: Int? = null,
+        var measurementsResults: String? = null,
+        var remarks: String? = null,
 )
 
 data class InspectionInvestigationReportDto(
@@ -355,7 +366,7 @@ data class InspectionInvestigationReportDto(
         var reportFunction: String? = null,
         var backgroundInformation: String? = null,
         var objectiveInvestigation: String? = null,
-        var dateInvestigationInspection: Time? = null,
+        var dateInvestigationInspection: Date? = null,
         var kebsInspectors: String? = null,
         var methodologyEmployed: String? = null,
         var conclusion: String? = null,

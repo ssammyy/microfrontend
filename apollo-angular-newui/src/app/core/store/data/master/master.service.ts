@@ -10,7 +10,7 @@ import {
     SectionsEntityDto,
     SubSectionsL1EntityDto,
     SubSectionsL2EntityDto, TitlesEntityDto, TownsDto,
-    UserSearchValues
+    UserSearchValues, UserTypeEntityDto
 } from './master.model';
 import {UserEntityDto} from "../users";
 
@@ -55,6 +55,19 @@ export class MasterService {
         const urlAndPathVariables = `${url}/${status}`;
         return this.http.get<DirectoratesEntityDto[]>(urlAndPathVariables).pipe(
             map(function (response: DirectoratesEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    loadUserTypes(status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_USER_TYPES);
+        return this.http.get<UserTypeEntityDto[]>(url).pipe(
+            map(function (response: UserTypeEntityDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -245,6 +258,19 @@ export class MasterService {
             })
         );
     }
+    loadUsersAssignedTypes(userId: bigint, status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LIST_USER_TYPE);
+        const urlAndPathVariables = `${url}${userId}`;
+        return this.http.get<any>(urlAndPathVariables).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 
     loadUsersSectionRoles(userId: bigint, status: number): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LIST_ACTIVE_RBAC_USERS_SECTION);
@@ -364,6 +390,34 @@ export class MasterService {
             })
         );
     }
+    assignUserTypeToUser(userProfileId: bigint, userTypeId: bigint, status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ASSIGN_USER_TYPE_TO_USER);
+        const urlAndPathVariables = `${url}${userProfileId}/${userTypeId}/${status}`;
+        return this.http.post<any>(urlAndPathVariables, null).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    revokeUserTypeFromUser(userProfileId: bigint, userTypeId: string, status: number): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REVOKE_USER_TYPE_TO_USER);
+        const urlAndPathVariables = `${url}${userProfileId}/${userTypeId}/${status}`;
+        return this.http.post<any>(urlAndPathVariables, null).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
 
     loadUserSearch(data: UserSearchValues): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_SEARCH);

@@ -6,11 +6,7 @@ import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PaymentPurpose
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -22,6 +18,7 @@ import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelInspectionRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.IWorkPlanGenerateRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -63,10 +60,16 @@ class SchedulerImpl(
     lateinit var marketSurveillanceDaoServices: MarketSurveillanceFuelDaoServices
 
     @Autowired
+    lateinit var marketSurveillanceWorkPlanDaoServices: MarketSurveillanceWorkPlanDaoServices
+
+    @Autowired
     lateinit var permitRepo: IPermitApplicationsRepository
 
     @Autowired
     lateinit var fuelInspectionRepo: IFuelInspectionRepository
+
+    @Autowired
+    lateinit var generateWorkPlanRepo: IWorkPlanGenerateRepository
 
     final val diAppId = applicationMapProperties.mapImportInspection
 
@@ -430,6 +433,31 @@ class SchedulerImpl(
                                                 runBlocking { commonDaoServices.sendEmailWithUserEntity(
                                                     commonDaoServices.findUserByID(it), applicationMapProperties.mapMsLabResultsIONotification, fileInspectionDetail, map, sr)}
                                             }
+                                        }
+                                    }
+                            }
+                            ssfFound.workplanGeneratedId != null -> {
+                                marketSurveillanceWorkPlanDaoServices.findWorkPlanActivityByID(ssfFound.workplanGeneratedId?: throw Exception("WORK PLAN INSPECTION ID NOT FOUND"))
+                                    .let {  workPlan->
+                                        var sr = commonDaoServices.createServiceRequest(map)
+                                        with(workPlan){
+                                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionLabResults
+                                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                                            modifiedBy = "SYSTEM SCHEDULER"
+                                            modifiedOn = commonDaoServices.getTimestamp()
+                                        }
+                                        generateWorkPlanRepo.save(workPlan).let {fileInspectionDetail->
+                                            sr = commonDaoServices.mapServiceRequestForSuccessUserNotRegistered(map, "${commonDaoServices.createJsonBodyFromEntity(fileInspectionDetail)}", "LAB RESULTS")
+                                            val inspectionOfficer = fileInspectionDetail.officerId?.let {
+                                                commonDaoServices.findUserByID(it)
+                                            }
+                                                runBlocking {
+                                                    if (inspectionOfficer != null) {
+                                                        commonDaoServices.sendEmailWithUserEntity(
+                                                            inspectionOfficer, applicationMapProperties.mapMsLabResultsIONotification, fileInspectionDetail, map, sr)
+                                                    }
+                                                }
+
                                         }
                                     }
                             }

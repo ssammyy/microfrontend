@@ -25,6 +25,8 @@
 	<parameter name="StandardTitle" class="java.lang.String"/>
 	<parameter name="QrCode" class="java.lang.String"/>
 	<parameter name="EffectiveDate" class="java.lang.String"/>
+	<parameter name="Signature" class="java.io.InputStream"/>
+
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -334,8 +336,10 @@
 			</image>
 			<image>
 				<reportElement x="373" y="570" width="138" height="50" uuid="757a26ee-d8e2-4529-a01e-bf8332d078d0"/>
-				<imageExpression>
-					<![CDATA[$P{Signature}]]></imageExpression>
+<!--				<imageExpression class="java.io.InputStream"><![CDATA[$P{Signature}]]></imageExpression>-->
+<!--				<imageExpression><![CDATA[javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(java.util.Base64.getDecoder().decode($P{Signature})))]]></imageExpression>-->
+				<imageExpression><![CDATA[$P{Signature}]]></imageExpression>
+
 			</image>
 		</band>
 		<band height="802">

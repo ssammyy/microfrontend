@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
 
 import mu.KotlinLogging
-import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -14,7 +13,6 @@ import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.NewBatchInvoiceDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.ResubmitApplicationDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
-import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
@@ -1206,7 +1204,7 @@ class QualityAssuranceController(
                 val permitType = permitDetailsDB.permitType?.let { qaDaoServices.findPermitType(it) }
                 val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
                 val awardedPermitNumberToBeAwarded = iQaAwardedPermitTrackerEntityRepository.getMaxId()?.plus(1)
-
+                val pcmId = loggedInUser.id
                 with(permitFromInterface) {
                     if (permitDetailsFromDB.renewalStatus != map.activeStatus) {
 //                        awardedPermitNumber = "${permitType?.markNumber}${
@@ -1217,12 +1215,18 @@ class QualityAssuranceController(
 //                                false
 //                            )
 //                        }".toUpperCase()
-                        awardedPermitNumber = awardedPermitNumberToBeAwarded?.toString()
-
+                        val  a =awardedPermitNumberToBeAwarded?.toString()
+                        val b = permitType?.markNumber?.toUpperCase()
+                        awardedPermitNumber =b+a
+                        varField6 = pcmId.toString()
                         dateOfIssue = commonDaoServices.getCurrentDate()
                         dateOfExpiry = expiryDate
                         effectiveDate = commonDaoServices.getCurrentDate()
-
+                        //save awarded permit number
+                        val awardPermit = QaAwardedPermitTrackerEntity()
+                        awardPermit.awardedPermitNumber= awardedPermitNumberToBeAwarded
+                        awardPermit.createdOn=commonDaoServices.getTimestamp()
+                        iQaAwardedPermitTrackerEntityRepository.save(awardPermit)
                     }
                     else if (permitDetailsFromDB.renewalStatus == map.activeStatus) {
                         val previousPermit = qaDaoServices.findPermitWithPermitRefNumberLatest(

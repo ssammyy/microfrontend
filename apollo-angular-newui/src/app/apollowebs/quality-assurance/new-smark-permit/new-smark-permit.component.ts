@@ -264,6 +264,7 @@ export class NewSmarkPermitComponent implements OnInit {
                         this.qaService.viewSTA10Details(String(this.sta1.id)).subscribe(
                             (data1) => {
                                 this.allSta10Details = data1;
+
                                 console.log('TEST ALL STA10' + this.allSta10Details);
                                 this.sta10Details = this.allSta10Details.sta10FirmDetails;
                                 this.sta10Form.patchValue(this.sta10Details);
@@ -275,6 +276,10 @@ export class NewSmarkPermitComponent implements OnInit {
                                 this.sta10ManufacturingProcessDetails = this.allSta10Details.sta10ManufacturingProcessDetails;
                                 this.sta10FilesList = this.allSta10Details.sta10FilesList;
                                 this.sta10FormF.patchValue(this.allSta10Details.sta10FirmDetails);
+                                // if(this.sta10FilesList.map())
+                                // {
+                                //
+                                // }
                             },
                         );
                     },

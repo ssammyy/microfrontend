@@ -1,23 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import {
   AllComplaintsDetailsDto,
-  BSNumberSaveDto, ChargeSheetDto,
+  BSNumberSaveDto,
+  ChargeSheetDto,
   ComplaintAdviceRejectDto,
   ComplaintApproveRejectAdviceWhereDto,
   ComplaintAssignDto,
-  ComplaintClassificationDto, ComplaintsFilesFoundDto, CompliantRemediationDto,
+  ComplaintClassificationDto,
+  ComplaintsFilesFoundDto,
+  CompliantRemediationDto,
+  CountriesEntityDto,
+  CountryListDto, DataInspectorInvestDto,
+  DataReportDto,
+  DataReportParamsDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
-  FuelInspectionDto,
-  LaboratoryDto, LIMSFilesFoundDto,
+  FuelInspectionDto, InspectionInvestigationReportDto,
+  LaboratoryDto,
+  LIMSFilesFoundDto,
   MsDepartment,
-  MsDivisionDetails, MSRemarksDto, MSSSFPDFListDetailsDto,
-  PDFSaveComplianceStatusDto, RemediationDto,
+  MsDivisionDetails,
+  MSRemarksDto,
+  MSSSFPDFListDetailsDto,
+  PDFSaveComplianceStatusDto,
+  RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
   SampleSubmissionDto,
-  SampleSubmissionItemsDto, SSFSaveComplianceStatusDto,
-  WorkPlanInspectionDto, WorkPlanScheduleApprovalDto,
+  SampleSubmissionItemsDto, SeizureDeclarationDto,
+  SSFSaveComplianceStatusDto,
+  WorkPlanInspectionDto,
+  WorkPlanScheduleApprovalDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
@@ -48,6 +61,11 @@ export class WorkPlanDetailsComponent implements OnInit {
   submitted = false;
   approveScheduleForm!: FormGroup;
   chargeSheetForm!: FormGroup;
+  dataReportForm!: FormGroup;
+  dataReportParamForm!: FormGroup;
+  seizureDeclarationForm!: FormGroup;
+  investInspectReportForm!: FormGroup;
+  investInspectReportInspectorsForm!: FormGroup;
   // chargeSheetForm!: FormGroup;
 
   assignOfficerForm!: FormGroup;
@@ -66,13 +84,22 @@ export class WorkPlanDetailsComponent implements OnInit {
   remediationForm!: FormGroup;
   dataSaveApproveSchedule: WorkPlanScheduleApprovalDto;
   dataSaveChargeSheet: ChargeSheetDto;
+  dataSaveDataReport: DataReportDto;
+  dataSaveDataInspectorInvestList: DataInspectorInvestDto[] = [];
+  dataSaveDataReportParamList: DataReportParamsDto[] = [];
+  dataSaveDataReportParam: DataReportParamsDto;
+  dataSaveDataInspectorInvest: DataInspectorInvestDto;
+  dataSaveSeizureDeclaration: SeizureDeclarationDto;
+  dataSaveInvestInspectReport: InspectionInvestigationReportDto;
 
   dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
   dataSaveSampleCollect: SampleCollectionDto;
   dataSaveSampleCollectItems: SampleCollectionItemsDto;
+  dataSaveSampleCollectItemsList: SampleCollectionItemsDto[] = [];
   dataSaveSampleSubmit: SampleSubmissionDto;
   dataSaveSampleSubmitParam: SampleSubmissionItemsDto;
+  dataSaveSampleSubmitParamList: SampleSubmissionItemsDto[] = [];
   dataSaveSampleSubmitBSNumber: BSNumberSaveDto;
   dataPDFSaveComplianceStatus: PDFSaveComplianceStatusDto;
   dataSSFSaveComplianceStatus: SSFSaveComplianceStatusDto;
@@ -523,7 +550,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   };
 
   public workPlanInspection: WorkPlanInspectionDto;
-  public fuelInspectionDto: FuelInspectionDto;
+  public msCounties: {name: string, code: string}[];
 
 
   constructor(
@@ -579,10 +606,97 @@ export class WorkPlanDetailsComponent implements OnInit {
       finePaid: ['', Validators.required],
       courtName: ['', Validators.required],
       courtDate: ['', Validators.required],
+      // remarks: ['', Validators.required],
+    });
+
+    this.dataReportForm = this.formBuilder.group({
+      referenceNumber: ['', Validators.required],
+      inspectionDate: ['', Validators.required],
+      inspectorName: ['', Validators.required],
+      function: ['', Validators.required],
+      department: ['', Validators.required],
+      regionName: ['', Validators.required],
+      town: ['', Validators.required],
+      marketCenter: ['', Validators.required],
+      outletDetails: ['', Validators.required],
+      personMet: ['', Validators.required],
+      summaryFindingsActionsTaken: ['', Validators.required],
+      finalActionSeizedGoods: ['', Validators.required],
+      // remarks: ['', Validators.required],
+    });
+
+    this.investInspectReportForm = this.formBuilder.group({
+      reportReference: ['', Validators.required],
+      reportTo: ['', Validators.required],
+      reportThrough: ['', Validators.required],
+      reportFrom: ['', Validators.required],
+      reportSubject: ['', Validators.required],
+      reportTitle: ['', Validators.required],
+      reportDate: ['', Validators.required],
+      reportRegion: ['', Validators.required],
+      reportDepartment: ['', Validators.required],
+      reportFunction: ['', Validators.required],
+      backgroundInformation: ['', Validators.required],
+      objectiveInvestigation: ['', Validators.required],
+      dateInvestigationInspection: ['', Validators.required],
+      kebsInspectors: null,
+      methodologyEmployed: ['', Validators.required],
+      conclusion: ['', Validators.required],
+      recommendations: ['', Validators.required],
+      statusActivity: ['', Validators.required],
+      finalRemarkHod: null,
+      // remarks: ['', Validators.required],
+    });
+
+    this.dataReportParamForm = this.formBuilder.group({
+      typeBrandName: ['', Validators.required],
+      localImport: ['', Validators.required],
+      complianceInspectionParameter: ['', Validators.required],
+      measurementsResults: ['', Validators.required],
       remarks: ['', Validators.required],
     });
 
+    this.investInspectReportInspectorsForm = this.formBuilder.group({
+      inspectorName: ['', Validators.required],
+      institution: ['', Validators.required],
+      designation: ['', Validators.required],
+    });
 
+    this.seizureDeclarationForm = this.formBuilder.group({
+      seizureTo: ['', Validators.required],
+      seizurePremises: ['', Validators.required],
+      seizureRequirementsStandards: ['', Validators.required],
+      // goodsName: ['', Validators.required],
+      goodsManufactureTrader: ['', Validators.required],
+      goodsAddress: ['', Validators.required],
+      goodsPhysical: ['', Validators.required],
+      // goodsLocation: ['', Validators.required],
+      goodsMarkedBranded: ['', Validators.required],
+      goodsPhysicalSeal: ['', Validators.required],
+      descriptionGoods: ['', Validators.required],
+      goodsQuantity: ['', Validators.required],
+      goodsThereforei: ['', Validators.required],
+      nameInspector: ['', Validators.required],
+      designationInspector: ['', Validators.required],
+      dateInspector: ['', Validators.required],
+      nameManufactureTrader: ['', Validators.required],
+      designationManufactureTrader: ['', Validators.required],
+      dateManufactureTrader: ['', Validators.required],
+      nameWitness: ['', Validators.required],
+      designationWitness: ['', Validators.required],
+      dateWitness: ['', Validators.required],
+      declarationTakenBy: ['', Validators.required],
+      declarationOnThe: ['', Validators.required],
+      declarationDayOf: ['', Validators.required],
+      declarationMyName: ['', Validators.required],
+      declarationIresideAt: ['', Validators.required],
+      declarationIemployeedAs: ['', Validators.required],
+      declarationIemployeedOf: ['', Validators.required],
+      declarationSituatedAt: ['', Validators.required],
+      declarationStateThat: ['', Validators.required],
+      // declarationIdNumber: ['', Validators.required],
+      // remarks: ['', Validators.required],
+    });
 
     this.sampleCollectForm = this.formBuilder.group({
       nameManufacturerTrader: ['', Validators.required],
@@ -688,6 +802,20 @@ export class WorkPlanDetailsComponent implements OnInit {
     );
   }
 
+  loadDataToBeUsed() {
+    this.msCounties = this.msService.getAllCountriesList();
+    // this.msService.msCountriesListDetails().subscribe(
+    //     (dataCounties: CountriesEntityDto[]) => {
+    //       this.msCounties = dataCounties;
+    //       console.log(dataCounties);
+    //     },
+    //     error => {
+    //       console.log(error);
+    //       this.msService.showError('AN ERROR OCCURRED');
+    //     },
+    // );
+  }
+
   get formAssignOfficerForm(): any {
     return this.assignOfficerForm.controls;
   }
@@ -700,8 +828,24 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.chargeSheetForm.controls;
   }
 
-  get formRapidTestForm(): any {
-    return this.rapidTestForm.controls;
+  get formInvestInspectReportForm(): any {
+    return this.investInspectReportForm.controls;
+  }
+
+  get formInvestInspectReportInspectorsForm(): any {
+    return this.investInspectReportInspectorsForm.controls;
+  }
+
+  get formDataReportForm(): any {
+    return this.dataReportForm.controls;
+  }
+
+  get formDataReportParamForm(): any {
+    return this.dataReportParamForm.controls;
+  }
+
+  get formSeizureDeclarationForm(): any {
+    return this.seizureDeclarationForm.controls;
   }
 
   get formPdfSaveComplianceStatusForm(): any {
@@ -748,6 +892,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.msService.msWorkPlanScheduleDetails(batchReferenceNumber, referenceNumber).subscribe(
         (data) => {
           this.workPlanInspection = data;
+          this.loadDataToBeUsed();
           this.SpinnerService.hide();
           console.log(data);
         },
@@ -757,18 +902,22 @@ export class WorkPlanDetailsComponent implements OnInit {
           this.msService.showError('AN ERROR OCCURRED');
         },
     );
-    
+
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails',
+    const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails',
+       'addBsNumber',
         'scheduleRemediationInvoicePaid',
-      'assignOfficer', 'rapidTest', 'addBsNumber',
+      'assignOfficer', 'rapidTest',
       'ssfAddComplianceStatus', 'scheduleRemediation',
       'addRemediationDetails', 'notCompliantInvoice'];
-    const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS',
+
+    // tslint:disable-next-line:max-line-length
+    const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS',
+      'ADD BS NUMBER',
         'SCHEDULE REMEDIATION DATE INVOICE PAID',
-      'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER',
+      'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
       'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED'];
 
@@ -897,6 +1046,29 @@ export class WorkPlanDetailsComponent implements OnInit {
     // }
   }
 
+  onClickEndOnsiteActivities() {
+    // if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+      this.msService.msWorkPlanScheduleDetailsEndOnsiteActivities(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('WORK-PLAN ON-SITE DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    // }
+  }
+
 
   onClickSaveAssignOfficerBatch(valid: boolean) {
     if (valid) {
@@ -924,7 +1096,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       const file = this.uploadedFiles;
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
-      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber,);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
       formData.append('docTypeName', docTypeName);
       for (let i = 0; i < file.length; i++) {
         console.log(file[i]);
@@ -943,20 +1115,23 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
+    } else {
+      this.msService.showError('NO FILE IS UPLOADED FOR SAVING');
     }
   }
 
-  onClickSaveSampleCollected(valid: boolean, valid2: boolean) {
-    if (valid && valid2) {
+  onClickSaveSampleCollected() {
+    this.submitted = true;
+    if (this.sampleCollectForm.invalid) {
+      return;
+    }
+
+    if (this.sampleCollectForm.valid && this.dataSaveSampleCollectItemsList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleCollect = {...this.dataSaveSampleCollect, ...this.sampleCollectForm.value};
-      this.dataSaveSampleCollectItems = {...this.dataSaveSampleCollectItems, ...this.sampleCollectItemsForm.value};
+      this.dataSaveSampleCollect.productsList = this.dataSaveSampleCollectItemsList;
 
-      const sampleCollectionItemsDto: SampleCollectionItemsDto[] = [];
-      sampleCollectionItemsDto.push(this.dataSaveSampleCollectItems);
-      this.dataSaveSampleCollect.productsList = sampleCollectionItemsDto;
-
-      this.msService.msFuelInspectionScheduledAddSampleCollection(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
+      this.msService.msWorkPlanInspectionScheduledAddSampleCollection(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -969,20 +1144,22 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
+    } else {
+      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
     }
   }
 
-  onClickSaveSampleSubmitted(valid: boolean, valid2: boolean) {
-    if (valid && valid2) {
+  onClickSaveSampleSubmitted() {
+    this.submitted = true;
+    if (this.sampleSubmitForm.invalid) {
+      return;
+    }
+    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
-      this.dataSaveSampleSubmitParam = {...this.dataSaveSampleSubmitParam, ...this.sampleSubmitParamsForm.value};
+      this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
 
-      const sampleSubmissionParamsDto: SampleSubmissionItemsDto[] = [];
-      sampleSubmissionParamsDto.push(this.dataSaveSampleSubmitParam);
-      this.dataSaveSampleSubmit.parametersList = sampleSubmissionParamsDto;
-
-      this.msService.msFuelInspectionScheduledAddSampleSubmission(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmit).subscribe(
+      this.msService.msWorkPlanInspectionScheduledAddSampleSubmission(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmit).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -995,6 +1172,8 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
+    } else {
+      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
     }
   }
 
@@ -1002,7 +1181,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmitBSNumber = {...this.dataSaveSampleSubmitBSNumber, ...this.sampleSubmitBSNumberForm.value};
-      this.msService.msFuelInspectionScheduledAddSampleSubmissionBSNumber(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
+      this.msService.msWorkPlanInspectionScheduledAddSampleSubmissionBSNumber(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1294,11 +1473,198 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
-    
+  onClickSaveChargeSheet() {
+    this.submitted = true;
+    if (this.chargeSheetForm.invalid) {
+      return;
+    }
+    if (this.chargeSheetForm.valid) {
+      this.SpinnerService.show();
+      this.dataSaveChargeSheet = {...this.dataSaveChargeSheet, ...this.chargeSheetForm.value};
+      this.msService.msWorkPlanScheduleSaveChargeSheet(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveChargeSheet,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('CHARGE SHEET DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+
+    }
   }
 
-  onClickSavePDFSelected(valid: boolean) {
-    
+
+  onClickAddDataReportParam() {
+    this.dataSaveDataReportParam = this.dataReportParamForm.value;
+    this.dataSaveDataReportParamList.push(this.dataSaveDataReportParam);
+    this.dataReportParamForm?.get('typeBrandName')?.reset();
+    this.dataReportParamForm?.get('localImport')?.reset();
+    this.dataReportParamForm?.get('complianceInspectionParameter')?.reset();
+    this.dataReportParamForm?.get('measurementsResults')?.reset();
+    this.dataReportParamForm?.get('remarks')?.reset();
+    // this.sta10FormA.reset();
+  }
+
+  onClickAddDataInspectorOfficer() {
+    this.dataSaveDataInspectorInvest = this.investInspectReportInspectorsForm.value;
+    this.dataSaveDataInspectorInvestList.push(this.dataSaveDataInspectorInvest);
+    this.investInspectReportInspectorsForm?.get('inspectorName')?.reset();
+    this.investInspectReportInspectorsForm?.get('institution')?.reset();
+    this.investInspectReportInspectorsForm?.get('designation')?.reset();
+    // this.sta10FormA.reset();
+  }
+
+  onClickAddDataSampleCollectItems() {
+    this.dataSaveSampleCollectItems = this.sampleCollectItemsForm.value;
+    this.dataSaveSampleCollectItemsList.push(this.dataSaveSampleCollectItems);
+    this.sampleCollectItemsForm?.get('productBrandName')?.reset();
+    this.sampleCollectItemsForm?.get('batchNo')?.reset();
+    this.sampleCollectItemsForm?.get('batchSize')?.reset();
+    this.sampleCollectItemsForm?.get('sampleSize')?.reset();
+
+  }
+
+  onClickAddDataSampleSubmitParams() {
+    this.dataSaveSampleSubmitParam = this.sampleSubmitParamsForm.value;
+    this.dataSaveSampleSubmitParamList.push(this.dataSaveSampleSubmitParam);
+    this.sampleSubmitParamsForm?.get('parameters')?.reset();
+    this.sampleSubmitParamsForm?.get('laboratoryName')?.reset();
+  }
+
+  // Remove Form repeater values
+  removeDataReportParam(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveDataReportParamList.splice(index, 1);
+    } else {
+      this.dataSaveDataReportParamList.splice(index, index);
+    }
+  }
+
+  // Remove Form repeater values
+  removeDataSampleSubmitParam(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveSampleSubmitParamList.splice(index, 1);
+    } else {
+      this.dataSaveSampleSubmitParamList.splice(index, index);
+    }
+  }
+
+  // Remove Form repeater values
+  removeDataInvestInspectReportInspectors(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveDataInspectorInvestList.splice(index, 1);
+    } else {
+      this.dataSaveDataInspectorInvestList.splice(index, index);
+    }
+  }
+  // Remove Form repeater values
+  removeDataSampleCollectItems(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveSampleCollectItemsList.splice(index, 1);
+    } else {
+      this.dataSaveSampleCollectItemsList.splice(index, index);
+    }
+  }
+
+  onClickSaveDataReport() {
+    this.submitted = true;
+    if (this.dataReportForm.invalid) {
+      return;
+    }
+    if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
+      this.SpinnerService.show();
+      this.dataSaveDataReport = {...this.dataSaveDataReport, ...this.dataReportForm.value};
+      this.dataSaveDataReport.productsList = this.dataSaveDataReportParamList;
+      this.msService.msWorkPlanScheduleSaveDataReport(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveDataReport,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+
+    }
+  }
+
+  onClickSaveSeizureDeclaration() {
+    this.submitted = true;
+    if (this.seizureDeclarationForm.invalid) {
+      return;
+    }
+    if (this.seizureDeclarationForm.valid) {
+      this.SpinnerService.show();
+      this.dataSaveSeizureDeclaration = {...this.dataSaveSeizureDeclaration, ...this.seizureDeclarationForm.value};
+      this.msService.msWorkPlanScheduleSaveSeizureDeclaration(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveSeizureDeclaration,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+
+    }
+  }
+
+  onClickSaveInvestInspectReport() {
+    this.submitted = true;
+
+    if (this.investInspectReportForm.valid) {
+      this.SpinnerService.show();
+      this.dataSaveInvestInspectReport = {...this.dataSaveInvestInspectReport, ...this.investInspectReportForm.value};
+      this.dataSaveInvestInspectReport.kebsInspectors = JSON.stringify(this.dataSaveDataInspectorInvestList);
+      this.msService.msWorkPlanScheduleSaveInvestInspectReport(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveInvestInspectReport,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('INSPECTION AND INVESTIGATION REPORT DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+
+    } else if (this.investInspectReportForm.invalid) {
+      this.msService.showError('KINDLY FILL IN THE FIELDS REQUIRED');
+    }
   }
 }

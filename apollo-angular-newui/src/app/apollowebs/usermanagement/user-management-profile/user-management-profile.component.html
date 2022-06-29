@@ -26,6 +26,11 @@
                                         <i class="material-icons">assignment_turned_in</i> Section Assigned
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#link15" role="tablist">
+                                        <i class="material-icons">assignment_turned_in</i> User Type Assignment
+                                    </a>
+                                </li>
                                 <li class="nav-item" *ngIf="userDetails?.employeeProfile?.departmentID==diDepartmentID">
                                     <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
                                         <i class="material-icons">assignment_turned_in</i> CFS Assigned
@@ -258,6 +263,56 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="tab-pane" id="link15">
+                                    <h3>User Type Assignment</h3>
+                                    <button (click)="openModalAction('addUserType')"
+                                            mat-raised-button="" data-toggle="modal" data-target="#myModal1"
+                                            class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                            class="mat-button-wrapper">ASSIGN USER TYPE</span>
+                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+                                    <div id="main224">
+                                        <div class="container">
+                                            <div class="table-responsive">
+                                                <table class="table" style="margin: 0 auto;
+  width: 100%;
+  clear: both;
+  border-collapse: collapse;
+  table-layout: fixed;
+  word-wrap:break-word;   ">
+                                                    <thead>
+                                                    <tr style="font-style: normal;
+font-family: ui-monospace;">
+                                                        <th >{{ tableData4?.headerRow[0] }}</th>
+                                                        <th>{{ tableData4?.headerRow[1] }}</th>
+                                                        <th class="text-right">{{ tableData4?.headerRow[2] }}</th>
+
+
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let row of tableData4?.dataRows">
+                                                        <td class="text-left">{{row[0]}}</td>
+                                                        <td>{{row[1]}}</td>
+                                                        <td class="td-actions text-right">
+                                                            <!--                                                            <a href="/permitdetails#{{row[4]}}"><i class="material-icons">remove_red_eye</i></a>-->
+                                                            <button mat-raised-button type="button" data-toggle="modal"
+                                                                    (click)="revokeUserType(row[2], userDetails?.id)"
+                                                                    class="btn btn-danger {{row[2]}}">
+                                                                <!--                                                                <i class="material-icons">visibility</i>-->
+                                                                REMOVE
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="tab-pane" id="link13">
                                     <h3>CFS Assignment</h3>
                                     <button (click)="openModalAction('addCfs')"
@@ -361,6 +416,40 @@
                                     </div>
                                 </form>
                             </div>
+                            <div *ngIf="(currDiv == 'addUserType')">
+                                <form [formGroup]="assignUserTypeForm" class="form">
+                                    <div class="form-body">
+                                        <div class="form-group">
+
+                                            <div>
+                                                <label><b>Select User Type</b></label>
+                                                <!--                                                <select [class.is-invalid]="formUserType.userTypeID.invalid && formUserType.userTypeID.touched"-->
+                                                <!--                                                        class="form-control mt-2" formControlName="userTypeID"-->
+                                                <!--                                                        name="userTypeID">-->
+                                                <!--                                                    <option label="&#45;&#45;select something &#45;&#45;"></option>-->
+                                                <!--                                                    <option *ngFor="let userType of userTypeEntity"-->
+                                                <!--                                                            *ngIf="userType.defaultRoleId != null"-->
+                                                <!--                                                            [value]="userType?.defaultRoleId"> {{ userType?.descriptions }}</option>-->
+                                                <!--                                                </select>-->
+
+                                                <mat-select
+                                                        [class.is-invalid]="formUserType.userTypeID.invalid && formUserType.userTypeID.touched"
+                                                        class="form-control mt-2" formControlName="userTypeID"
+                                                        name="userTypeID">
+                                                    <ng-container *ngFor="let app of userTypeEntity">
+                                                        <mat-option *ngIf="app.defaultRoleId != null"
+                                                                    [value]="app.defaultRoleId">
+                                                            {{app.descriptions}}
+                                                        </mat-option>
+                                                    </ng-container>
+
+                                                </mat-select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                             <div *ngIf="(currDiv == 'addCfs')">
                                 <form [formGroup]="assignCfsForm" class="form">
                                     <div class="form-body">
@@ -406,6 +495,13 @@
                                     [disabled]="!assignCfsForm.valid"
                                     data-dismiss="modal"
                             >SUBMIT CFS
+                            </button>
+                            <button *ngIf="(currDiv == 'addUserType')" mat-raised-button type="button"
+                                    class="btn btn-success"
+                                    (click)="onSubmitAssignedUserType(userDetails?.id);"
+                                    [disabled]="!assignUserTypeForm.valid"
+                                    data-dismiss="modal"
+                            >SUBMIT USER TYPE
                             </button>
                         </div>
                     </div>

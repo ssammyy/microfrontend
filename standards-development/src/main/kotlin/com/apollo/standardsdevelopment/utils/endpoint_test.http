@@ -77,5 +77,6 @@ GET http://localhost:8080/standard/getProducts
 GET http://localhost:8080/standard/process/7fe5cdcf-9e93-11eb-bcc5-2c337a287f07
 
 ###
+GET https://localhost:8006/api/v1/migration/security/rbac/fetch/user-roles/3783/1
 
 

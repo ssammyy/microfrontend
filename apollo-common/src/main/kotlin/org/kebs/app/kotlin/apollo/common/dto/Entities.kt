@@ -152,6 +152,12 @@ data class SectionsEntityDto(
         var descriptions: String?,
         var status: Boolean?
 )
+data class UserTypeEntityDto(
+        var id: Long?,
+        var varField1: String?,
+        var descriptions: String?,
+        var status: Boolean?
+)
 
 data class SectionsDto(
         var id: Long? = null,
@@ -641,6 +647,12 @@ data class ProductCategoriesEntityDto(
         var name: String? = null,
         var status: Boolean? = null,
         var broadProductCategoryId: Long? = null,
+)
+
+data class CountriesEntityDto(
+        var id: Long? = 0,
+        var country: String? = null,
+        var status: Boolean? = null
 )
 
 data class BroadProductCategoryEntityDto(
