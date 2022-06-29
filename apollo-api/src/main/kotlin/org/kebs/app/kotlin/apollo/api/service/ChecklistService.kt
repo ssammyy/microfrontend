@@ -42,7 +42,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 enum class ChecklistType {
-    AGROCHEM, ENGINEERING, VEHICLE, OTHER, NONE
+    AGROCHEM, ENGINEERING, VEHICLES, OTHERS, NONE
 }
 
 @Service("checklistService")
@@ -204,7 +204,7 @@ class ChecklistService(
                             response
                         }
                     }
-                    ChecklistType.OTHER.name -> {
+                    ChecklistType.OTHERS.name -> {
                         otherItemChecklistRepository.findByInspection_InspectionGeneralAndItemId_Id(inspectionGeneral, cdItemID)?.let { checkList ->
                             checkList.compliant = compliant
                             checkList.status = map.activeStatus
@@ -452,12 +452,12 @@ class ChecklistService(
         var vehicleChecklist: CdInspectionMotorVehicleChecklist? = motorVehicleChecklistRepository.findByInspectionGeneral(general)
         if (vehicleChecklist == null) {
             vehicleChecklist = engineeringChecklist
-            vehicleChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.VEHICLE.name)
+            vehicleChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.VEHICLES.name)
             vehicleChecklist.inspectionGeneral = general
             vehicleChecklist.createdBy = loggedInUser.userName
             vehicleChecklist.createdOn = Timestamp.from(Instant.now())
         } else {
-            vehicleChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.VEHICLE.name)
+            vehicleChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.VEHICLES.name)
             // Update details
             vehicleChecklist.modifiedBy = loggedInUser.userName
             vehicleChecklist.modifiedOn = Timestamp.from(Instant.now())
@@ -541,11 +541,11 @@ class ChecklistService(
             otherChecklist = requestChecklist
             otherChecklist.createdBy = loggedInUser.userName
             otherChecklist.createdOn = Timestamp.from(Instant.now())
-            otherChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.OTHER.name)
+            otherChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.OTHERS.name)
             otherChecklist.inspectionGeneral = general
             otherChecklist.status = map.activeStatus
         } else {
-            otherChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.OTHER.name)
+            otherChecklist.inspectionChecklistType = this.iChecklistInspectionTypesRepo.findByTypeName(ChecklistType.OTHERS.name)
             // Update details
             otherChecklist.description = requestChecklist.description
         }
@@ -940,7 +940,7 @@ class ChecklistService(
                     map["batchNo"] = data.batchNoModelTypeRef.orEmpty()
                     map["quantityDeclared"] = data.quantityDeclared.orEmpty()
                 }
-                ChecklistType.OTHER.name -> {
+                ChecklistType.OTHERS.name -> {
                     val data = checklist as CdInspectionOtherItemChecklistEntity
                     map["expiryDate"] = ""
                     map["packaging"] = data.packagingLabelling.orEmpty()
@@ -948,7 +948,7 @@ class ChecklistService(
                     map["conditionOfProduct"] = data.physicalCondition.orEmpty()
                     map["quantityDeclared"] = data.quantityDeclared.orEmpty()
                 }
-                ChecklistType.VEHICLE.name -> {
+                ChecklistType.VEHICLES.name -> {
                     val data = checklist as CdInspectionMotorVehicleItemChecklistEntity
                     map["expiryDate"] = ""
                     map["packaging"] = ""
@@ -1560,15 +1560,15 @@ class ChecklistService(
                             resultData
                         }
                     }
-                    ChecklistType.VEHICLE.name -> {
+                    ChecklistType.VEHICLES.name -> {
                         motorVehicleItemChecklistRepository.findByInspection_InspectionGeneralAndItemId(inspectionGeneral, itemDetails)?.let { checkList ->
-                            resultData = Pair(ChecklistType.VEHICLE.name, checkList)
+                            resultData = Pair(ChecklistType.VEHICLES.name, checkList)
                             resultData
                         }
                     }
-                    ChecklistType.OTHER.name -> {
+                    ChecklistType.OTHERS.name -> {
                         otherItemChecklistRepository.findByInspection_InspectionGeneralAndItemId_Id(inspectionGeneral, itemDetails.id!!)?.let { checkList ->
-                            resultData = Pair(ChecklistType.OTHER.name, checkList)
+                            resultData = Pair(ChecklistType.OTHERS.name, checkList)
                             resultData
                         }
                     }
