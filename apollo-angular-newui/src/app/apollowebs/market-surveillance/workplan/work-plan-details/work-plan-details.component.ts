@@ -908,18 +908,12 @@ export class WorkPlanDetailsComponent implements OnInit {
   openModalAddDetails(divVal: string): void {
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails',
        'addBsNumber',
-        'scheduleRemediationInvoicePaid',
-      'assignOfficer', 'rapidTest',
-      'ssfAddComplianceStatus', 'scheduleRemediation',
-      'addRemediationDetails', 'notCompliantInvoice'];
+      'ssfAddComplianceStatus'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS',
       'ADD BS NUMBER',
-        'SCHEDULE REMEDIATION DATE INVOICE PAID',
-      'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS',
-      'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
-      'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED'];
+      'ADD SSF LAB RESULTS COMPLIANCE STATUS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -1197,76 +1191,76 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  // onClickSavePDFSelected(valid: boolean) {
-  //   if (valid) {
-  //     this.SpinnerService.show();
-  //     this.dataPDFSaveComplianceStatus = {...this.dataPDFSaveComplianceStatus, ...this.pdfSaveComplianceStatusForm.value};
-  //     this.dataPDFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
-  //     this.dataPDFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
-  //     this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-  //     if (this.workPlanInspection.sampleLabResults.savedPDFFiles.length === 0) {
-  //       this.msService.msFuelInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
-  //           this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
-  //           (data: any) => {
-  //             this.workPlanInspection = data;
-  //             console.log(data);
-  //             this.SpinnerService.hide();
-  //             this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
-  //           },
-  //           error => {
-  //             this.SpinnerService.hide();
-  //             console.log(error);
-  //             this.msService.showError('AN ERROR OCCURRED');
-  //           },
-  //       );
-  //     } else {
-  //       for (const savedPdf of this.workPlanInspection.sampleLabResults.savedPDFFiles) {
-  //         if (savedPdf.pdfName !== this.selectedPDFFileName) {
-  //           this.msService.msFuelInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
-  //               this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
-  //               (data: any) => {
-  //                 this.workPlanInspection = data;
-  //                 console.log(data);
-  //                 this.SpinnerService.hide();
-  //                 this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
-  //               },
-  //               error => {
-  //                 this.SpinnerService.hide();
-  //                 console.log(error);
-  //                 this.msService.showError('AN ERROR OCCURRED');
-  //               },
-  //           );
-  //         } else {
-  //           this.SpinnerService.hide();
-  //           this.msService.showError('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved');
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+  onClickSavePDFSelected(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataPDFSaveComplianceStatus = {...this.dataPDFSaveComplianceStatus, ...this.pdfSaveComplianceStatusForm.value};
+      this.dataPDFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
+      this.dataPDFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
+      this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+      if (this.workPlanInspection.sampleLabResults.savedPDFFiles.length === 0) {
+        this.msService.msWorkPlanInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
+            this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+            (data: any) => {
+              this.workPlanInspection = data;
+              console.log(data);
+              this.SpinnerService.hide();
+              this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              console.log(error);
+              this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+      } else {
+        for (const savedPdf of this.workPlanInspection.sampleLabResults.savedPDFFiles) {
+          if (savedPdf.pdfName !== this.selectedPDFFileName) {
+            this.msService.msWorkPlanInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
+                this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+                (data: any) => {
+                  this.workPlanInspection = data;
+                  console.log(data);
+                  this.SpinnerService.hide();
+                  this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
+                },
+                error => {
+                  this.SpinnerService.hide();
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+          } else {
+            this.SpinnerService.hide();
+            this.msService.showError('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved');
+          }
+        }
+      }
+    }
+  }
 
-  // onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
-  //   if (valid) {
-  //     this.SpinnerService.show();
-  //     this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
-  //     this.dataSSFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
-  //     this.dataSSFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
-  //     // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-  //     this.msService.msFuelInspectionScheduledSaveSSFComplianceStatus(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSSFSaveComplianceStatus).subscribe(
-  //         (data: any) => {
-  //           this.workPlanInspection = data;
-  //           console.log(data);
-  //           this.SpinnerService.hide();
-  //           this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY');
-  //         },
-  //         error => {
-  //           this.SpinnerService.hide();
-  //           console.log(error);
-  //           this.msService.showError('AN ERROR OCCURRED');
-  //         },
-  //     );
-  //   }
-  // }
+  onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
+      this.dataSSFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
+      this.dataSSFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
+      // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+      this.msService.msWorkPlanInspectionScheduledSaveSSFComplianceStatus(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSSFSaveComplianceStatus).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
 
 
   onClickSaveScheduleRemediation(valid: boolean) {

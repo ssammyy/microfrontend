@@ -1,6 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO
 
-import org.kebs.app.kotlin.apollo.common.dto.ms.FuelEntityCompliantStatusDto
+import org.kebs.app.kotlin.apollo.common.dto.ms.SSFCompliantStatusDto
 import java.sql.Date
 
 
@@ -124,7 +124,7 @@ class FuelScheduledLabResultsDTO {
 
     var commentRemarks: String? = null
 
-    var compliantDetails: FuelEntityCompliantStatusDto? = null
+    var compliantDetails: SSFCompliantStatusDto? = null
 
     var dateSubmitted: Date? = null
 }

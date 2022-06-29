@@ -490,6 +490,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     });
 
 
+    this.rapidTestForm = this.formBuilder.group({
+      rapidTestStatus: ['', Validators.required],
+      rapidTestRemarks: null,
+    });
+
     this.sampleCollectForm = this.formBuilder.group({
       nameManufacturerTrader: ['', Validators.required],
       addressManufacturerTrader: ['', Validators.required],

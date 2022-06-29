@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.common.dto.ms
 
 import java.math.BigDecimal
 import java.sql.Date
-import java.sql.Time
 import java.sql.Timestamp
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -93,7 +92,7 @@ data class WorkPlanInspectionDto(
         var standardCategory: String? = null,
         var productSubCategory: String? = null,
         var divisionId: String? = null,
-        var sampleSubmittedId: Long? = null,
+//        var sampleSubmittedId: Long? = null,
         var division: String? = null,
         var officerName: String? = null,
         var nameActivity: String? = null,
@@ -171,6 +170,10 @@ data class WorkPlanInspectionDto(
         var remarksDetails: List<MSRemarksDto>? = null,
         var workPlanFiles: List<WorkPlanFilesFoundDto>? = null,
         var chargeSheet: ChargeSheetDto? = null,
+        var sampleCollected: SampleCollectionDto? = null,
+        var sampleSubmitted: SampleSubmissionDto? = null,
+        var sampleLabResults: MSSSFLabResultsDto? = null,
+        var compliantStatusAdded: Boolean? = null,
 )
 
 data class FuelEntityDto(
@@ -257,7 +260,7 @@ data class MsComplaintAcceptanceStatusDto(
         var mandateOGAStatus: Boolean,
 )
 
-data class FuelEntityCompliantStatusDto(
+data class SSFCompliantStatusDto(
         @NotNull(message = "Required field")
         var compliantRemarks: String? = null,
         @NotNull(message = "Required field")

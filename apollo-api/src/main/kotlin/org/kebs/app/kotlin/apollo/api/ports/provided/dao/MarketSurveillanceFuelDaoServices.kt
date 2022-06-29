@@ -2722,17 +2722,17 @@ class MarketSurveillanceFuelDaoServices(
 
     }
 
-    fun mapCompliantStatusDto(compliantDetails: MsFuelInspectionEntity, map: ServiceMapsEntity): FuelEntityCompliantStatusDto? {
+    fun mapCompliantStatusDto(compliantDetails: MsFuelInspectionEntity, map: ServiceMapsEntity): SSFCompliantStatusDto? {
 
         return when {
             compliantDetails.compliantStatus==map.activeStatus -> {
-                FuelEntityCompliantStatusDto(
+                SSFCompliantStatusDto(
                     compliantDetails.compliantStatusRemarks,
                     compliantDetails.compliantStatus==1
                 )
             }
             compliantDetails.notCompliantStatus==map.inactiveStatus -> {
-                FuelEntityCompliantStatusDto(
+                SSFCompliantStatusDto(
                     compliantDetails.notCompliantStatusRemarks,
                     compliantDetails.notCompliantStatus==1
                 )

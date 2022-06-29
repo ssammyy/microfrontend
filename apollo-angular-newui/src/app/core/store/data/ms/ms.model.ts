@@ -430,6 +430,11 @@ export class WorkPlanInspectionDto {
     ksApplicable: StandardDetailsDto;
     remarksDetails: MSRemarksDto[];
     workPlanFiles: WorkPlanFilesFoundDto[];
+    chargeSheet: ChargeSheetDto;
+    sampleCollected: SampleCollectionDto;
+    sampleSubmitted: SampleSubmissionDto;
+    sampleLabResults: MSSSFLabResultsDto;
+    compliantStatusAdded: boolean;
 }
 
 export class CountryListDto {

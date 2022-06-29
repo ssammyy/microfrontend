@@ -348,7 +348,8 @@
                                         <label style="color: #0082f3">Lab Results Details</label>
                                         <div class="panel" style="max-height: 388px;">
                                             <div *ngFor="let role of roles">
-                                                <button  *ngIf="role == 'MS_IOP_MODIFY' && fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded==false && fuelInspection.sampleLabResults.savedPDFFiles.length != 0" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                                <button  *ngIf="role == 'MS_IOP_MODIFY' && fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded==false && fuelInspection?.officersAssigned?.id == userLoggedInID
+                                                && fuelInspection.sampleLabResults.savedPDFFiles.length != 0" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#myModal1"
                                                         class="btn btn-sm btn-primary mr-3"><span
                                                         class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
@@ -548,15 +549,16 @@
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
-                                        <button   mat-raised-button="" data-toggle="modal"
-                                                data-target="#sampleCollectModal"
-                                                class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">ADD SAMPLE COLLECTED</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
+
                                         <div *ngIf="fuelInspection?.rapidTestDone == true && fuelInspection.rapidTest.rapidTestStatus==false">
 
+                                            <button *ngIf="fuelInspection.sampleCollectionStatus == false"  mat-raised-button="" data-toggle="modal"
+                                                    data-target="#sampleCollectModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD SAMPLE COLLECTED</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
                                             <button *ngIf="fuelInspection.sampleCollectionStatus == true && fuelInspection.sampleSubmittedStatus== false" mat-raised-button="" data-toggle="modal"
                                                      data-target="#sampleSubmitModal"
                                                      class="btn btn-sm btn-primary mr-2"><span
@@ -1721,7 +1723,7 @@
                                     <div class="form-group">
                                         <label><b>SAMPLE COLLECTION NUMBER</b> </label>
                                         <input type="number" class="form-control two-column-input"
-                                               formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required
+                                               formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required ngModel="{{fuelInspection.sampleCollected.id}}" disabled
                                                [class.is-invalid]="formSampleSubmitForm.sampleCollectionNumber.invalid && formSampleSubmitForm.sampleCollectionNumber.errors">
                                         <div *ngIf="submitted && formSampleSubmitForm.sampleCollectionNumber.errors" class="invalid-feedback">
                                             <div *ngIf="formSampleSubmitForm.sampleCollectionNumber.errors.required">This field is

@@ -77,9 +77,41 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Transient
     var confirmDivisionId: Long? = 0
 
-    @JoinColumn(name = "SAMPLE_SUBMITTED_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var sampleSubmittedId: CdSampleSubmissionItemsEntity? = null
+//    @JoinColumn(name = "SAMPLE_SUBMITTED_ID", referencedColumnName = "ID")
+//    @ManyToOne
+//    var sampleSubmittedId: CdSampleSubmissionItemsEntity? = null
+
+    @Column(name = "COMPLIANT_STATUS")
+    @Basic
+    var compliantStatus: Int? = null
+
+    @Column(name = "NOT_COMPLIANT_STATUS")
+    @Basic
+    var notCompliantStatus: Int? = null
+
+    @Column(name = "COMPLIANT_STATUS_DATE")
+    @Basic
+    var compliantStatusDate: Date? = null
+
+    @Column(name = "COMPLIANT_STATUS_BY")
+    @Basic
+    var compliantStatusBy: String? = null
+
+    @Column(name = "COMPLIANT_STATUS_REMARKS")
+    @Basic
+    var compliantStatusRemarks: String? = null
+
+    @Column(name = "NOT_COMPLIANT_STATUS_BY")
+    @Basic
+    var notCompliantStatusBy: String? = null
+
+    @Column(name = "NOT_COMPLIANT_STATUS_DATE")
+    @Basic
+    var notCompliantStatusDate: Date? = null
+
+    @Column(name = "NOT_COMPLIANT_STATUS_REMARKS")
+    @Basic
+    var notCompliantStatusRemarks: String? = null
 
     @Column(name = "DIVISION")
     @Basic

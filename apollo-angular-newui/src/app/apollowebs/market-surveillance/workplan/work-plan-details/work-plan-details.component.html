@@ -250,366 +250,282 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-<!--                                    <mat-tab *ngIf="workPlanInspection?.sampleCollected" label="4">-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Sample Collected Details-->
-<!--                                        </ng-template>-->
-<!--                                        <b class="text-primary">Sample Collected Details</b>-->
-<!--                                        <div class="panel" style="max-height: 388px;">-->
-<!--                                            <ul class="w-list-unstyled">-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Name Manufacturer Trader</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.nameManufacturerTrader}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Address Manufacturer Trader</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.addressManufacturerTrader}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Sampling Method</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.samplingMethod}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Reasons Collecting Samples</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.reasonsCollectingSamples}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Any Remarks-->
-<!--                                                    </div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.anyRemarks}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Designation Officer Collecting Sample</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.designationOfficerCollectingSample}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Name Officer Collecting Sample</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.nameOfficerCollectingSample}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Date Officer Collecting Sample</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.dateOfficerCollectingSample|date}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Name Witness</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.nameWitness}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Designation Witness</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.designationWitness}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Date Witness</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleCollected?.dateWitness|date}}</div>-->
-<!--                                                </li>-->
-<!--                                            </ul>-->
-<!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
-<!--                                            <div class="form-row">-->
-<!--                                                <div class="col-md-12 mb-3">-->
-<!--                                                    <label style="color: #0082f3">Items</label>-->
-<!--                                                </div>-->
-<!--                                                <div class="table-striped table-condensed table-responsive">-->
-<!--                                                    <ng2-smart-table [settings]="settingsSampleCollectItems" [source]="workPlanInspection?.sampleCollected?.productsList"></ng2-smart-table>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </mat-tab>-->
-<!--                                    <mat-tab *ngIf="workPlanInspection?.sampleSubmitted" label="5">-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Sample Submitted Details-->
-<!--                                        </ng-template>-->
-<!--                                        <b class="text-primary">Sample Submitted Details</b>-->
-<!--                                        <div class="panel" style="max-height: 388px;">-->
-<!--                                            <ul class="w-list-unstyled">-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Name Product</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.nameProduct}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Packaging</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.packaging}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Labelling Identification</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.labellingIdentification}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">File Ref Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.fileRefNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">References Standards-->
-<!--                                                    </div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.referencesStandards}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Size Test Sample</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.sizeTestSample}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Size Ref Sample</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.sizeRefSample}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Condition</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.condition}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Sample References</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.sampleReferences}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Senders Name</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.sendersName}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Designation</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.designation}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Address</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.address}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Senders Date</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.sendersDate| date}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Receivers Name</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.receiversName}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Test Charges Ksh</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.testChargesKsh}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Receipt Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.receiptLpoNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Invoice Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.invoiceNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Disposal</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.disposal}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Remarks</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.remarks}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Sample Collection Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.sampleCollectionNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Bs Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleSubmitted?.bsNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                            </ul>-->
-<!--                                            &lt;!&ndash;                                            <button class="btn-sm btn-primary" >Download</button>&ndash;&gt;-->
-<!--                                            <div class="form-row">-->
-<!--                                                <div class="col-md-12 mb-3">-->
-<!--                                                    <label style="color: #0082f3">Items</label>-->
-<!--                                                </div>-->
-<!--                                                <div class="table-striped table-condensed table-responsive">-->
-<!--                                                    <ng2-smart-table [settings]="settingsSampleSubmittedItems" [source]="workPlanInspection?.sampleSubmitted?.parametersList"></ng2-smart-table>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <br>-->
-<!--                                        </div>-->
-<!--                                    </mat-tab>-->
-<!--                                    <mat-tab *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested" label="6">-->
-<!--                                        &lt;!&ndash;                                    <mat-tab  label="6">&ndash;&gt;-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Lab Results Details-->
-<!--                                        </ng-template>-->
-<!--                                        &lt;!&ndash;                                        <b class="text-primary">Lab Results Details</b>&ndash;&gt;-->
-<!--                                        <label style="color: #0082f3">Lab Results Details</label>-->
-<!--                                        <div class="panel" style="max-height: 388px;">-->
-<!--                                            <div *ngFor="let role of roles">-->
-<!--                                                <button  *ngIf="role == 'MS_IOP_MODIFY' && workPlanInspection?.bsNumberStatus && workPlanInspection?.compliantStatusAdded==false && workPlanInspection.sampleLabResults.savedPDFFiles.length != 0" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                         data-target="#myModal1"-->
-<!--                                                         class="btn btn-sm btn-primary mr-3"><span-->
-<!--                                                        class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>-->
-<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
-<!--                                            <br>-->
-<!--                                            <ul class="w-list-unstyled">-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">BS Number</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Compliance Remarks</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Compliance Status</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>-->
-<!--                                                </li>-->
-<!--                                            </ul>-->
+                                    <mat-tab *ngIf="workPlanInspection?.sampleCollected" label="9">
+                                        <ng-template mat-tab-label>
+                                            Sample Collected Details
+                                        </ng-template>
+                                        <b class="text-primary">Sample Collected Details</b>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Name Manufacturer Trader</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.nameManufacturerTrader}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Address Manufacturer Trader</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.addressManufacturerTrader}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Sampling Method</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.samplingMethod}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Reasons Collecting Samples</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.reasonsCollectingSamples}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Any Remarks
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.anyRemarks}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Designation Officer Collecting Sample</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.designationOfficerCollectingSample}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Name Officer Collecting Sample</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.nameOfficerCollectingSample}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Date Officer Collecting Sample</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.dateOfficerCollectingSample|date}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Name Witness</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.nameWitness}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Designation Witness</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.designationWitness}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Date Witness</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleCollected?.dateWitness|date}}</div>
+                                                </li>
+                                            </ul>
+                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>
+                                            <div class="form-row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label style="color: #0082f3">Items</label>
+                                                </div>
+                                                <div class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsSampleCollectItems" [source]="workPlanInspection?.sampleCollected?.productsList"></ng2-smart-table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.sampleSubmitted" label="10">
+                                        <ng-template mat-tab-label>
+                                            Sample Submitted Details
+                                        </ng-template>
+                                        <b class="text-primary">Sample Submitted Details</b>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Name Product</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.nameProduct}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Packaging</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.packaging}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Labelling Identification</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.labellingIdentification}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">File Ref Number</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.fileRefNumber}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">References Standards
+                                                    </div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.referencesStandards}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Size Test Sample</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.sizeTestSample}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Size Ref Sample</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.sizeRefSample}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Condition</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.condition}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Sample References</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.sampleReferences}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Senders Name</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.sendersName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Designation</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.designation}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Address</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.address}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Senders Date</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.sendersDate| date}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Receivers Name</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.receiversName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Test Charges Ksh</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.testChargesKsh}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Receipt Number</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.receiptLpoNumber}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Invoice Number</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.invoiceNumber}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Disposal</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.disposal}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Remarks</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.remarks}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Sample Collection Number</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.sampleCollectionNumber}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Bs Number</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleSubmitted?.bsNumber}}</div>
+                                                </li>
+                                            </ul>
+                                            <!--                                            <button class="btn-sm btn-primary" >Download</button>-->
+                                            <div class="form-row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label style="color: #0082f3">Items</label>
+                                                </div>
+                                                <div class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsSampleSubmittedItems" [source]="workPlanInspection?.sampleSubmitted?.parametersList"></ng2-smart-table>
+                                                </div>
+                                            </div>
+                                            <br>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested" label="11">
+                                        <!--                                    <mat-tab  label="6">-->
+                                        <ng-template mat-tab-label>
+                                            Lab Results Details
+                                        </ng-template>
+                                        <!--                                        <b class="text-primary">Lab Results Details</b>-->
+                                        <label style="color: #0082f3">Lab Results Details</label>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <div *ngFor="let role of roles">
+                                                <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus && workPlanInspection?.compliantStatusAdded==false && workPlanInspection?.officerDetails?.id == userLoggedInID
+                                                && workPlanInspection.sampleLabResults.savedPDFFiles.length != 0" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                                         data-target="#myModal1"
+                                                         class="btn btn-sm btn-primary mr-3"><span
+                                                        class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </div>
+                                            <br>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">BS Number</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Compliance Remarks</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Compliance Status</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
+                                                </li>
+                                            </ul>
 
-<!--                                            <div class="form-row">-->
-<!--                                                <div class="col-md-12 mb-3">-->
-<!--                                                    <label style="color: #0082f3">Lab Results Param</label>-->
-<!--                                                </div>-->
-<!--                                                <div class="table-striped table-condensed table-responsive">-->
-<!--                                                    <ng2-smart-table [settings]="settingsLabResultsParam" [source]="workPlanInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested!=null">-->
-<!--                                                <div *ngFor="let role of roles">-->
-<!--                                                    <div  *ngIf="role == 'MS_IOP_MODIFY'" class="form-row">-->
-<!--                                                        <div class="col-md-12 mb-3">-->
-<!--                                                            <label style="color: #0082f3">Lab Results PDF Found</label>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="table-striped table-condensed table-responsive">-->
-<!--                                                            <ng2-smart-table [settings]="settingsLIMSPDFFiles"-->
-<!--                                                                             [source]="workPlanInspection?.sampleLabResults?.limsPDFFiles"-->
-<!--                                                                             (custom)="onCustomLIMSPDFAction($event,workPlanInspection?.sampleLabResults?.ssfResultsList.bsNumber)"-->
-<!--                                                            ></ng2-smart-table>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                                <div class="form-row">-->
-<!--                                                    <div class="col-md-12 mb-3">-->
-<!--                                                        <label style="color: #0082f3">Lab Results PDF SAVED</label>-->
-<!--                                                    </div>-->
-<!--                                                    <div class="table-striped table-condensed table-responsive">-->
-<!--                                                        <ng2-smart-table [settings]="settingsSavedPDFFiles"-->
-<!--                                                                         [source]="workPlanInspection?.sampleLabResults?.savedPDFFiles"-->
-<!--                                                                         (custom)="onCustomLIMSPDFViewAction($event)"-->
-<!--                                                        ></ng2-smart-table>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <br>-->
-<!--                                        </div>-->
-<!--                                    </mat-tab>-->
-<!--                                    <mat-tab *ngIf="workPlanInspection?.fuelRemediation" label="7">-->
-<!--                                        &lt;!&ndash;                                    <mat-tab label="7">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    <mat-tab  label="6">&ndash;&gt;-->
-<!--                                        <ng-template mat-tab-label>-->
-<!--                                            Remediation Details-->
-<!--                                        </ng-template>-->
-<!--                                        &lt;!&ndash;                                        <b class="text-primary">Lab Results Details</b>&ndash;&gt;-->
-<!--                                        <label style="color: #0082f3">Remediation Details</label>-->
-<!--                                        <div class="panel" style="max-height: 388px;">-->
-<!--                                            <ul class="w-list-unstyled">-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Remediation Date</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.fuelRemediation?.dateOfRemediation| date}}</div>-->
-<!--                                                </li>-->
-<!--                                                <div *ngIf="workPlanInspection?.fuelRemediation?.invoiceCreated">-->
-<!--                                                    <li class="list-item-accordion">-->
-<!--                                                        <div class="list-title-accordion">Pro Forma Invoice No</div>-->
-<!--                                                        <div class="list-text-accordion">-->
-<!--                                                            {{workPlanInspection?.fuelRemediation?.proFormaInvoiceNo}}</div>-->
-<!--                                                    </li>-->
-<!--                                                    <li class="list-item-accordion">-->
-<!--                                                        <div class="list-title-accordion">Receipt No</div>-->
-<!--                                                        <div class="list-text-accordion">-->
-<!--                                                            {{workPlanInspection?.fuelRemediation?.feePaidReceiptNo}}</div>-->
-<!--                                                    </li>-->
-<!--                                                    <li class="list-item-accordion">-->
-<!--                                                        <div class="list-title-accordion">Invoice Amount</div>-->
-<!--                                                        <div class="list-text-accordion">-->
-<!--                                                            {{workPlanInspection?.fuelRemediation?.invoiceAmount}}</div>-->
-<!--                                                    </li>-->
-<!--                                                    <li class="list-item-accordion">-->
-<!--                                                        <div class="list-title-accordion">Date Of Payment</div>-->
-<!--                                                        <div class="list-text-accordion">-->
-<!--                                                            {{workPlanInspection?.fuelRemediation?.dateOfPayment| date}}</div>-->
-<!--                                                    </li>-->
-<!--                                                </div>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Product Type</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.fuelRemediation?.productType}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Applicable Kenya Standard</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.fuelRemediation?.applicableKenyaStandard}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Remediation Procedure</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.fuelRemediation?.remediationProcedure}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">volume Of Product Contaminated</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.fuelRemediation?.volumeOfProductContaminated}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Contaminated Fuel Type</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.fuelRemediation?.contaminatedFuelType}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Quantity Of Fuel</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.fuelRemediation?.quantityOfFuel}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Volume Added</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.fuelRemediation?.volumeAdded}}</div>-->
-<!--                                                </li>-->
-<!--                                                <li class="list-item-accordion">-->
-<!--                                                    <div class="list-title-accordion">Total Volume</div>-->
-<!--                                                    <div class="list-text-accordion">-->
-<!--                                                        {{workPlanInspection?.fuelRemediation?.totalVolume}}</div>-->
-<!--                                                </li>-->
-<!--                                            </ul>-->
-<!--                                            <br>-->
-<!--                                            <div *ngIf="workPlanInspection?.fuelRemediation.invoiceCreated">-->
-<!--                                                <button class="btn-sm btn-primary" (click)="viewRemediationInvoicePdfFile(workPlanInspection?.id, workPlanInspection?.referenceNumber,'application/pdf')">VIEW INVOICE</button>-->
-<!--                                            </div>-->
-
-<!--                                        </div>-->
-<!--                                    </mat-tab>-->
-                                    <mat-tab *ngIf="workPlanInspection?.remarksDetails?.length!=0" label="8">
+                                            <div class="form-row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label style="color: #0082f3">Lab Results Param</label>
+                                                </div>
+                                                <div class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsLabResultsParam" [source]="workPlanInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested!=null">
+                                                <div *ngFor="let role of roles">
+                                                    <div  *ngIf="role == 'MS_IO_MODIFY'" class="form-row">
+                                                        <div class="col-md-12 mb-3">
+                                                            <label style="color: #0082f3">Lab Results PDF Found</label>
+                                                        </div>
+                                                        <div class="table-striped table-condensed table-responsive">
+                                                            <ng2-smart-table [settings]="settingsLIMSPDFFiles"
+                                                                             [source]="workPlanInspection?.sampleLabResults?.limsPDFFiles"
+                                                                             (custom)="onCustomLIMSPDFAction($event,workPlanInspection?.sampleLabResults?.ssfResultsList.bsNumber)"
+                                                            ></ng2-smart-table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="col-md-12 mb-3">
+                                                        <label style="color: #0082f3">Lab Results PDF SAVED</label>
+                                                    </div>
+                                                    <div class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsSavedPDFFiles"
+                                                                         [source]="workPlanInspection?.sampleLabResults?.savedPDFFiles"
+                                                                         (custom)="onCustomLIMSPDFViewAction($event)"
+                                                        ></ng2-smart-table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.remarksDetails?.length!=0" label="12">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             Remarks Details
