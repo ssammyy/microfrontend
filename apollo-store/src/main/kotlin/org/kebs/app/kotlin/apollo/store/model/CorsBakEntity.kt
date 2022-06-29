@@ -130,15 +130,15 @@ class CorsBakEntity : Serializable {
     @Basic
     var previousCountryOfRegistration: String? = null
 
-    @Column(name = "TARE_WEIGHT", precision = 15, scale = 2)
+    @Column(name = "TARE_WEIGHT", precision = 17, scale = 2)
     @Basic
     var tareWeight: Double = 0.0
 
-    @Column(name = "LOAD_CAPACITY", precision = 15, scale = 2)
+    @Column(name = "LOAD_CAPACITY", precision = 17, scale = 2)
     @Basic
     var loadCapacity: Double = 0.0
 
-    @Column(name = "GROSS_WEIGHT", scale = 2, precision = 15)
+    @Column(name = "GROSS_WEIGHT", precision = 17, scale = 2)
     @Basic
     var grossWeight: Double = 0.0
 
@@ -170,7 +170,7 @@ class CorsBakEntity : Serializable {
     @Basic
     var fuelType: String? = null
 
-    @Column(name = "INSPECTION_FEE", scale = 2, precision = 15)
+    @Column(name = "INSPECTION_FEE", precision = 17, scale = 2)
     @Basic
     var inspectionFee: Double? = 0.0
 
@@ -198,7 +198,7 @@ class CorsBakEntity : Serializable {
     @Basic
     var partner: Long? = null
 
-    @Column(name = "INSPECTION_FEE_EXCHANGE_RATE", precision = 15, scale = 2)
+    @Column(name = "INSPECTION_FEE_EXCHANGE_RATE", precision = 10, scale = 2)
     @Basic
     var inspectionFeeExchangeRate: Double = 0.0
 

@@ -63,7 +63,7 @@ export class AddUpdateLimitComponent implements OnInit {
             description: 'Other billing'
         }
     ]
-
+    dateOptions: number[]
     constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any, private diService: DestinationInspectionService, private fiService: FinanceInvoiceService) {
     }
 
@@ -81,6 +81,10 @@ export class AddUpdateLimitComponent implements OnInit {
             maxBillAmount: [this.data ? this.data.maxBillAmount : "", [Validators.required]],
             status: [this.data ? this.data.status : "", [Validators.required]]
         })
+        this.dateOptions = []
+        for (let i = 1; i < 28; i++) {
+            this.dateOptions.push(i)
+        }
     }
 
     saveBillLimit() {

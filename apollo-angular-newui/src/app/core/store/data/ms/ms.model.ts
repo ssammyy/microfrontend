@@ -157,6 +157,12 @@ export class WorkPlanListDto {
     progressStep: string;
 }
 
+export class CountriesEntityDto {
+    id: number;
+    country: string;
+    status: boolean;
+}
+
 export class WorkPlanEntityDto {
     complaintDepartment: number;
     divisionId: number;
@@ -258,12 +264,13 @@ export class ComplaintsFilesFoundDto {
     fileContentType: string;
 }
 
-export class  WorkPlanFilesFoundDto{
+export class  WorkPlanFilesFoundDto {
     id: number;
     fileName: string;
     documentType: string;
     fileContentType: string;
 }
+
 export class StandardDetailsDto {
     standardTitle: string;
     standardNumber: string;
@@ -291,6 +298,30 @@ export class ComplaintCustomersDto {
     phoneNumber: string;
     emailAddress: string;
     postalAddress: string;
+}
+
+export class InspectionInvestigationReportDto {
+    id: number;
+    reportReference: string;
+    reportTo: string;
+    reportThrough: string;
+    reportFrom: string;
+    reportSubject: string;
+    reportTitle: string;
+    reportDate: Date;
+    reportRegion: string;
+    reportDepartment: string;
+    reportFunction: string;
+    backgroundInformation: string;
+    objectiveInvestigation: string;
+    dateInvestigationInspection: Date;
+    kebsInspectors: string;
+    methodologyEmployed: string;
+    conclusion: string;
+    recommendations: string;
+    statusActivity: string;
+    finalRemarkHod: string;
+    // remarks: string;
 }
 
 export class ComplaintLocationDto {
@@ -401,6 +432,81 @@ export class WorkPlanInspectionDto {
     workPlanFiles: WorkPlanFilesFoundDto[];
 }
 
+export class CountryListDto {
+    name: string;
+    code: string;
+}
+
+export class SeizureDeclarationDto {
+    id: number;
+    seizureTo: string;
+    seizurePremises: string;
+    seizureRequirementsStandards: string;
+    goodsName: string;
+    goodsManufactureTrader: string;
+    goodsAddress: string;
+    goodsPhysical: string;
+    goodsLocation: string;
+    goodsMarkedBranded: string;
+    goodsPhysicalSeal: string;
+    descriptionGoods: string;
+    goodsQuantity: string;
+    goodsThereforei: string;
+    nameInspector: string;
+    designationInspector: string;
+    dateInspector: Date;
+    nameManufactureTrader: string;
+    designationManufactureTrader: string;
+    dateManufactureTrader: Date;
+    nameWitness: string;
+    designationWitness: string;
+    dateWitness: Date;
+    declarationTakenBy: string;
+    declarationOnThe: string;
+    declarationDayOf: Date;
+    declarationMyName: string;
+    declarationIresideAt: string;
+    declarationIemployeedAs: string;
+    declarationIemployeedOf: string;
+    declarationSituatedAt: string;
+    declarationStateThat: string;
+    declarationIdNumber: string;
+    remarks: string;
+}
+
+export class DataReportDto {
+    id: number;
+    referenceNumber: string;
+    inspectionDate: Date;
+    inspectorName: string;
+    function: string;
+    department: string;
+    regionName: string;
+    town: string;
+    marketCenter: string;
+    outletDetails: string;
+    personMet: string;
+    summaryFindingsActionsTaken: string;
+    finalActionSeizedGoods: string;
+    remarks: string;
+    productsList: DataReportParamsDto[];
+}
+
+
+export class DataReportParamsDto {
+    id: number;
+    typeBrandName: string;
+    localImport: string;
+    complianceInspectionParameter: number;
+    measurementsResults: string;
+    remarks: string;
+}
+
+export class DataInspectorInvestDto {
+    inspectorName: string;
+    institution: string;
+    designation: string;
+}
 
 export class FuelBatchDetailsDto {
     id: number;
