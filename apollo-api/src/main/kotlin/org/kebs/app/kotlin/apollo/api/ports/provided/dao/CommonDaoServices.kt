@@ -103,6 +103,7 @@ import java.net.URLConnection
 import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -254,6 +255,11 @@ class CommonDaoServices(
         return sdf.format(dateChange)
     }
 
+    fun convertDateToKRADate(dateChange: java.util.Date): String {
+        val sdf = SimpleDateFormat("dd-MM-YYYY")
+        return sdf.format(dateChange)
+    }
+
     fun convertDateToString(date: LocalDateTime, format: String): String {
         val format = DateTimeFormatter.ofPattern(format)
         return format.format(date)
@@ -265,6 +271,7 @@ class CommonDaoServices(
             return format.format(date)
         } ?: ""
     }
+
 
     fun convertISO8601DateToTimestamp(dateString: String): Timestamp? {
         try {

@@ -182,6 +182,25 @@ class MasterDataHandler(
 
 
     }
+    @PreAuthorize("hasAuthority('SECTIONS_WRITE')")
+    fun userTypeUpdate(req: ServerRequest): ServerResponse {
+        try {
+            val entity = req.body<SectionsEntityDto>()
+            daoService.updateSection(entity)
+                ?.let {
+                    return ok().body(it)
+                }
+                ?: throw NullValueNotAllowedException("Update failed")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
 
     @PreAuthorize("hasAuthority('SUBSECTIONS_L1_WRITE')")
     fun subSectionsL1Update(req: ServerRequest): ServerResponse {
@@ -769,6 +788,26 @@ class MasterDataHandler(
 
 
 }
+    @PreAuthorize("hasAuthority('SECTIONS_LIST')")
+    fun userTypeListing(req: ServerRequest): ServerResponse {
+        try {
+
+                    daoService.getAllUserTypes()
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No User Types found")
+
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
 
     @PreAuthorize("hasAuthority('TOWNS_LIST')")
     fun townsListingAdmin(req: ServerRequest): ServerResponse {

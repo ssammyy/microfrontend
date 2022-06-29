@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import org.springframework.format.annotation.DateTimeFormat
 import java.util.*
 
 
@@ -91,6 +92,16 @@ interface LevyPayments{
     fun getRegistrationNumber(): String?
     fun getPeriodFrom(): String?
     fun getPeriodTo(): String?
+}
+interface PenaltyDetails{
+    fun getPenaltyOrderNo(): Long?
+    fun getEntryNo(): String?
+    fun getkraPin(): String?
+    fun getManufacName(): String?
+    fun getPeriodFrom(): Date?
+    fun getPeriodTo(): Date?
+    fun getPenaltyGenDate(): String?
+    fun getPenaltyPayable(): Long?
 }
 interface LevyPenalty{
     fun getId(): Long?

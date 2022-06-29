@@ -9,11 +9,6 @@ import {
 import {LevyService} from "../../../core/store/data/levy/levy.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DataTableDirective} from "angular-datatables";
-import jsPDF from 'jspdf';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import htmlToPdfmake from 'html-to-pdfmake';
 
 @Component({
   selector: 'app-standard-levy-paid',
@@ -28,7 +23,6 @@ export class StandardLevyPaidComponent implements OnInit {
   public actionRequest: PaymentDetails | undefined;
     public pdfRequest: PaymentDetails | undefined;
 
-  @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
   dtElements: DataTableDirective;
 
@@ -37,7 +31,8 @@ export class StandardLevyPaidComponent implements OnInit {
   isDtInitialized: boolean = false
   loadingText: string;
     isShow=true;
-    @ViewChild('pdfTable') pdfTable: ElementRef;
+    blob: Blob;
+    uploadedFiles: FileList;
 
   constructor(
       private SpinnerService: NgxSpinnerService,
@@ -134,39 +129,29 @@ export class StandardLevyPaidComponent implements OnInit {
     //     }
     //     return resultStatus;
     // }
-
-    getLevyPaymentsReceipt(id: number){
+    getLevyPaymentsReceipt(id: number, fileName: string, applicationType: string): void {
         this.loadingText = "Generating E-Slip ...."
         this.SpinnerService.show();
         this.levyService.getLevyPaymentsReceipt(id).subscribe(
-            (response: PaymentDetails[]) => {
-                this.pdfDetails = response;
+            (dataPdf: any) => {
                 this.SpinnerService.hide();
-                const doc = new jsPDF();
-                const pdfTable = this.pdfTable.nativeElement;
-                const html = htmlToPdfmake(pdfTable.innerHTML);
-                const documentDefinition = { content: html };
-                pdfMake.createPdf(documentDefinition).open();
-                console.log(this.pdfDetails)
+                this.blob = new Blob([dataPdf], {type: applicationType});
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
             },
-            (error: HttpErrorResponse) => {
+            error => {
                 this.SpinnerService.hide();
-                console.log(error.message);
-            }
+                console.log(error);
+                this.levyService.showError('AN ERROR OCCURRED');
+            },
         );
     }
 
-    public downloadAsPDF() {
-        const doc = new jsPDF();
 
-        const pdfTable = this.pdfTable.nativeElement;
 
-        const html = htmlToPdfmake(pdfTable.innerHTML);
-
-        const documentDefinition = { content: html };
-        pdfMake.createPdf(documentDefinition).open();
-
-    }
 
     public onOpenModalPending(paidDetail: PaymentDetails, mode: string): void {
         const container = document.getElementById('main-container');
@@ -178,11 +163,6 @@ export class StandardLevyPaidComponent implements OnInit {
             this.pdfRequest = paidDetail;
             button.setAttribute('data-target', '#generatePdf');
 
-            const doc = new jsPDF();
-            const pdfTable = this.pdfTable.nativeElement;
-            const html = htmlToPdfmake(pdfTable.innerHTML);
-            const documentDefinition = { content: html };
-            pdfMake.createPdf(documentDefinition).open();
 
 
         }

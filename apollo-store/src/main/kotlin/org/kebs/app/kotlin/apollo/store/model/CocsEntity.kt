@@ -209,17 +209,17 @@ class CocsEntity : Serializable {
     var countryOfSupply: String? = null
 
     @NotNull(message = "Required field")
-    @Column(name = "FINAL_INVOICE_FOB_VALUE", nullable = false, precision = 2)
+    @Column(name = "FINAL_INVOICE_FOB_VALUE", nullable = false, precision = 17, scale = 2)
     @Basic
     var finalInvoiceFobValue: Double = 0.0
 
     //    @NotNull(message = "Required field")
-    @Column(name = "FINAL_INVOICE_NUMBER", nullable = false, precision = 2)
+    @Column(name = "FINAL_INVOICE_NUMBER", nullable = false)
     @Basic
     var finalInvoiceNumber: String? = null
 
     @NotNull(message = "Required field")
-    @Column(name = "FINAL_INVOICE_EXCHANGE_RATE", nullable = false, precision = 2)
+    @Column(name = "FINAL_INVOICE_EXCHANGE_RATE", nullable = false, precision = 10, scale = 2)
     @Basic
     var finalInvoiceExchangeRate: Double = 0.0
 
@@ -235,7 +235,7 @@ class CocsEntity : Serializable {
     var finalInvoiceDate: Timestamp? = null
 
     @NotNull(message = "Required field")
-    @Column(name = "SHIPMENT_PARTIAL_NUMBER", nullable = false, precision = 2)
+    @Column(name = "SHIPMENT_PARTIAL_NUMBER", nullable = false)
     @Basic
     var shipmentPartialNumber: Long = 0
 

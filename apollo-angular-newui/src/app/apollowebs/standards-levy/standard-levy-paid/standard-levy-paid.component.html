@@ -157,7 +157,7 @@ Tasks <span class="badge badge-primary">{{paymentDetails.length}}</span>
                             <td>{{paidDetail.periodFrom | date: 'dd/MM/yyyy'}}-{{paidDetail.periodTo | date: 'dd/MM/yyyy'}}</td>
                             <td>{{paidDetail.paymentDate | date: 'dd/MM/yyyy'}}</td>
                             <td>KSH {{paidDetail.paymentAmount}}</td>
-                            <td><button (click)="getLevyPaymentsReceipt(paidDetail.id)"  class="btn btn-success btn-sm"  > Print E-Slip</button>
+                            <td><button (click)="getLevyPaymentsReceipt(paidDetail.id,'Slip'+paidDetail.id,'application/pdf')"  class="btn btn-success btn-sm"  > Print E-Slip</button>
                             </td>
                         </tr>
                         </tbody>

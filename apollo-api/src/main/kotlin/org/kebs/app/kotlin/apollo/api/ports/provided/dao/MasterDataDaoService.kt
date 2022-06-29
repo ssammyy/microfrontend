@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service
 import java.sql.Timestamp
 import java.time.Instant
 import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @Service
 class MasterDataDaoService(
@@ -38,8 +37,9 @@ class MasterDataDaoService(
     private val businessLinesRepo: IBusinessLinesRepository,
     private val businessNatureRepo: IBusinessNatureRepository,
     private val entityManager: EntityManager,
+    private val iUserTypesEntityRepository: IUserTypesEntityRepository,
 
-) {
+    ) {
     fun getAllDepartments(): List<DepartmentsEntityDto>? = departmentsRepo.findAll()
         .sortedBy { it.id }
         .map { DepartmentsEntityDto(it.id, it.department, it.descriptions, it.directorateId?.id, it.status == 1) }
@@ -579,4 +579,11 @@ class MasterDataDaoService(
         }
 
     }
+
+    fun getAllUserTypes(): List<UserTypeEntityDto>? = iUserTypesEntityRepository.findAll().sortedBy { it.id }
+        .map { UserTypeEntityDto(it.id, it.varField1, it.descriptions, it.status == 1) }
+
+
+
+
 }

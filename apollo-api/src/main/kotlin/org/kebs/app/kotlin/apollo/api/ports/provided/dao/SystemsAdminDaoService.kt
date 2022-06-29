@@ -84,6 +84,7 @@ class SystemsAdminDaoService(
         .map { UserTypesEntityDto(it.id, it.typeName, it.descriptions, it.status == 1, it.defaultRole) }
 
 
+
     fun loggedInUserDetails(): UsersEntity {
         SecurityContextHolder.getContext().authentication?.name
             ?.let { username ->
@@ -885,6 +886,27 @@ class SystemsAdminDaoService(
             ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
     }
 
+
+    fun assignUserTypeToUser(userId: Long, roleId: Long, status: Int): UsersEntity? {
+        return usersRepo.findByIdOrNull(userId)
+            ?.let { user ->
+                user.userTypes = roleId
+                usersRepo.save(user)
+
+
+
+            }
+            ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
+    }
+    fun revokeUserTypeToUser(userId: Long, roleId: Long, status: Int): UsersEntity? {
+        return usersRepo.findByIdOrNull(userId)
+            ?.let { user ->
+                user.userTypes = null
+                usersRepo.save(user)
+
+            }
+            ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
+    }
     fun listRbacUsersByStatus(status: Int): List<UserEntityDto> {
         val userList = mutableListOf<UserEntityDto>()
         usersRepo.findRbacUsersByStatus(status)
@@ -1098,6 +1120,9 @@ class SystemsAdminDaoService(
 
     fun listRbacCfsByUsersProfileIdAndByStatus(userProfileId: Long, status: Int): List<CfsTypeCodesEntity>? =
         iCfsTypeCodesRepo.findRbacCfsByUserProfileID(userProfileId, status)
+
+    fun listUserType(userId: Long): List<UserTypesEntity>? =userTypesRepo.findAllUserRolesAssignedToUser(userId)
+
 
 
     fun userSearchResultListing(search: UserSearchValues): List<UserEntityDto>? {

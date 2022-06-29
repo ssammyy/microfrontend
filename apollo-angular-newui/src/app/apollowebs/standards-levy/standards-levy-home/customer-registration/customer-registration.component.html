@@ -21,7 +21,7 @@ type="ball-scale-multiple"
 </div>
 
 <div *ngFor="let companyDetail of companyDetails">
-    <div class="card-body" *ngIf="companyDetail.slFormStatus==0">
+    <div class="card-body" *ngIf="slStatus==0">
     <div class="toolbar">
 
     </div>
@@ -415,7 +415,7 @@ type="ball-scale-multiple"
 </div>
 </div>
     <div *ngFor="let companyDetail of companyDetails">
- <div class="card-body" *ngIf="companyDetail.slFormStatus==1">
+ <div class="card-body" *ngIf="slStatus==1">
      <div *ngIf="manufacturingStatus?.businessType==1" class="row col-12">
          <div class="card-body text-center">
              <h2 style="color: red; font-weight: bold; font-size: medium">Form Has already been filled</h2>

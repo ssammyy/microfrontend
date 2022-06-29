@@ -15,7 +15,7 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {LevyService} from "../../../../core/store/data/levy/levy.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Store} from "@ngrx/store";
-import {selectUserInfo} from "../../../../core/store";
+import {selectCompanyInfoDtoStateData, selectUserInfo} from "../../../../core/store";
 import swal from "sweetalert2";
 
 declare const $: any;
@@ -48,6 +48,7 @@ export class CustomerRegistrationComponent implements OnInit {
   loadingText: string;
   stepSoFar: | undefined;
   step = 1;
+  slStatus: number;
   constructor(
       private router: Router,
       private formBuilder: FormBuilder,
@@ -63,9 +64,22 @@ export class CustomerRegistrationComponent implements OnInit {
       this.getCompanyProfile();
       this.getManufacturerStatus();
       //this.getSLNotificationStatus();
-      this.getCompanySLForm();
+
       //this.getBranchName();
       this.getCompanyDirectors();
+      this.store$.select(selectCompanyInfoDtoStateData).subscribe(
+          (d) => {
+              if (d) {
+                  console.log(d.countSlForm);
+                  if(d.countSlForm == 0)
+                  {
+                      this.slStatus=0;
+                  }else{
+                      this.getCompanySLForm();
+                      this.slStatus=1;
+                  }
+              }
+          });
 
     this.manufacturerInfoForm = this.formBuilder.group({
       businessCompanyName: [],

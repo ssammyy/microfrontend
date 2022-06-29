@@ -152,6 +152,12 @@ data class SectionsEntityDto(
         var descriptions: String?,
         var status: Boolean?
 )
+data class UserTypeEntityDto(
+        var id: Long?,
+        var varField1: String?,
+        var descriptions: String?,
+        var status: Boolean?
+)
 
 data class SectionsDto(
         var id: Long? = null,
@@ -828,7 +834,11 @@ data class UserCompanyDetailsDto(
         @JsonProperty("status")
         val status: Int? = null,
         @JsonProperty("penaltyStatus")
-       val penaltyStatus: Long? = null
+       val penaltyStatus: Long? = null,
+        @JsonProperty("countSlForm")
+        val countSlForm: Long? = null
+
+
 
 )
 

@@ -3,10 +3,11 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.kra.request
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.OptBoolean
-import org.json.simple.JSONArray
+import org.joda.time.DateTime
+import org.kebs.app.kotlin.apollo.store.model.std.PenaltyDetails
 import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
-import java.time.Instant
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -121,6 +122,76 @@ class KraDetails {
 
     @NotEmpty(message = "Required field")
     var status: String? = null
+
+}
+class PenaltyRequest {
+
+    @JsonProperty("HEADER")
+    @NotNull(message = "Required field")
+    @Valid
+    var HEADER: PenaltyHeader? = null
+
+
+    @JsonProperty("PENALTYINFO")
+    @Valid
+    @NotNull(message = "Required field")
+    var PENALTYINFO: MutableList<KraPenaltyRequest>? = null
+}
+
+class PenaltyHeader {
+
+    companion object {
+        var globalVar = ""
+    }
+
+    @NotNull(message = "Required field")
+    var loginId: String? = null
+
+    @NotNull(message = "Required field")
+    var password: String? = null
+
+    @NotEmpty(message = "Required field")
+    var hash: String? = null
+
+    @NotNull(message = "Required field")
+    var noOfRecords: String? = null
+
+    @NotNull(message = "Required field")
+//    DD-MM-YYYY’T’HH:MM:SS
+    //  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")
+    var transmissionDate: String? = globalVar
+
+
+}
+
+class PenaltyDetail{
+
+    @NotEmpty(message = "Required field")
+    var PenaltyOrderNo: String? = null
+
+    @NotEmpty(message = "Required field")
+    var entryNo: String? = null
+
+    @NotEmpty(message = "Required field")
+    var kraPin: String? = null
+
+    @NotEmpty(message = "Required field")
+    var manufacName: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var periodFrom: Date? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var periodTo: Date? = null
+
+    @NotNull(message = "Required field")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var penaltyGenDate: String? = null
+
+    @NotEmpty(message = "Required field")
+    var penaltyPayable: Long? = null
 
 }
 
@@ -304,3 +375,19 @@ class KraResponse {
 
 }
 
+
+class KraPenaltyRequest {
+    var entryNo: String? = null
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var periodTo: String? = null
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var periodFrom: String? = null
+
+//    @JsonProperty("PenaltyOrderNo")
+    var PenaltyOrderNo: Long?  = null
+    var penaltyPayable : Long? = null
+    var kraPin: String? = null
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")
+    var penaltyGenDate: String? = null
+    var manufacName: String? = null
+}

@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionConfigService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -23,6 +24,7 @@ class ConfigurationsHandler(
         private val commonDaoServices: CommonDaoServices,
         private val properties: ApplicationMapProperties,
 ) {
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN','PVOC_ADMIN_WRITE','PVOC_ADMIN')")
     fun listRevenueLines(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -43,16 +45,19 @@ class ConfigurationsHandler(
         return ServerResponse.ok().body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun listBillLimits(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         return ServerResponse.ok().body(configService.listBillTypes(page))
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun removeBillLimit(req: ServerRequest): ServerResponse {
         val limitId = req.pathVariable("limitId").toLong()
         return ServerResponse.ok().body(configService.removeBillLimit(limitId))
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun addBillingLimit(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -75,6 +80,7 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun updateBillingLimit(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -98,6 +104,7 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun addCfsStations(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -120,6 +127,7 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun updateCfsStation(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -143,26 +151,31 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun removeCfsStation(req: ServerRequest): ServerResponse {
         val cfsId = req.pathVariable("cfsId").toLong()
         return ServerResponse.ok().body(configService.removeCfsStation(cfsId))
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun listCfsStations(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         return ServerResponse.ok().body(configService.listCfsStations(page))
     }
 
+    @PreAuthorize("hasAnyAuthority('PVOC_ADMIN_WRITE','PVOC_ADMIN')")
     fun listPvocRegions(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         return ServerResponse.ok().body(configService.listPvocRegions(page))
     }
 
+    @PreAuthorize("hasAnyAuthority('PVOC_ADMIN_WRITE','PVOC_ADMIN')")
     fun deletePvocRegion(req: ServerRequest): ServerResponse {
         val regionId = req.pathVariable("regionId").toLong()
         return ServerResponse.ok().body(configService.removePvocRegion(regionId))
     }
 
+    @PreAuthorize("hasAnyAuthority('PVOC_ADMIN_WRITE','PVOC_ADMIN')")
     fun addPvocRegion(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -185,6 +198,7 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('PVOC_ADMIN_WRITE','PVOC_ADMIN')")
     fun updatePvocRegion(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -208,16 +222,19 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('PVOC_ADMIN_WRITE','PVOC_ADMIN')")
     fun listPvocCountries(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         return ServerResponse.ok().body(configService.listPvocCountries(page))
     }
 
+    @PreAuthorize("hasAnyAuthority('PVOC_ADMIN_WRITE','PVOC_ADMIN')")
     fun deletePvocCountry(req: ServerRequest): ServerResponse {
         val countryId = req.pathVariable("countryId").toLong()
         return ServerResponse.ok().body(configService.removePvocCountry(countryId))
     }
 
+    @PreAuthorize("hasAnyAuthority('PVOC_ADMIN_WRITE','PVOC_ADMIN')")
     fun addPvocCountry(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -240,6 +257,7 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('PVOC_ADMIN_WRITE','PVOC_ADMIN')")
     fun updatePvocCountry(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -263,24 +281,25 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun listDestinationInspectionFee(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         return ServerResponse.ok().body(configService.listDestinationInspectionFee(page))
     }
 
-    //    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun deleteDestinationInspectionFee(req: ServerRequest): ServerResponse {
         val feeId = req.pathVariable("feeId").toLong()
         return ServerResponse.ok().body(configService.removeDestinationInspectionFee(feeId))
     }
 
-    //    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun destinationInspectionFeeDetails(req: ServerRequest): ServerResponse {
         val feeId = req.pathVariable("feeId").toLong()
         return ServerResponse.ok().body(configService.getDestinationInspectionFee(feeId))
     }
 
-    //    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun addDestinationInspectionFee(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -303,7 +322,7 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
-    //    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun updateDestinationInspectionFee(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -327,7 +346,7 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
-    //    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun addDestinationInspectionFeeRange(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -351,7 +370,7 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
-    //    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun updateDestinationInspectionFeeRange(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -377,17 +396,19 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun listCustomsOffices(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         return ServerResponse.ok().body(configService.listCustomsOffice(page))
     }
 
-    //    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun deleteCustomOffice(req: ServerRequest): ServerResponse {
         val officeId = req.pathVariable("officeId").toLong()
         return ServerResponse.ok().body(configService.removeCustomOffice(officeId))
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun addCustomsOffice(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -410,6 +431,7 @@ class ConfigurationsHandler(
                 .body(response)
     }
 
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
     fun updateCustomsOffice(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {

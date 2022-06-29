@@ -295,7 +295,13 @@ interface IUserSectionAssignmentsRepository : HazelcastRepository<UserSectionAss
 interface IUserTypesEntityRepository : HazelcastRepository<UserTypesEntity, Long> {
     fun findByStatus(status: Int): List<UserTypesEntity>
     fun findByTypeNameAndStatus(typeName: String, status: Int): UserTypesEntity?
-    fun findByDefaultRole(defaultRole: Long): UserTypesEntity?
+
+
+    @Query(
+        "SELECT u.* FROM CFG_USER_TYPES U INNER JOIN DAT_KEBS_USERS P ON U.DEFAULT_ROLE = P.USER_TYPE WHERE P.ID=:userId",
+        nativeQuery = true
+    )
+    fun findAllUserRolesAssignedToUser(@Param("userId") userId: Long): List<UserTypesEntity>?
 
 }
 
@@ -464,6 +470,19 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getLevyPenalty(): MutableList<LevyPenalty>
 
     @Query(
+        value = "SELECT p.ID as PenaltyOrderNo, c.ENTRY_NUMBER as entryNo,c.KRA_PIN as kraPin,c.NAME as manufacName,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,p.LEVY_PENALTY_PAYMENT_DATE as penaltyGenDate,p.PENALTY_APPLIED as penaltyPayable FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
+                "ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE  p.STATUS='1' AND p.LEVY_PENALTY_PAYMENT_DATE IS NOT NULL",
+        nativeQuery = true
+    )
+    fun getPenaltyDetails(): MutableList<PenaltyDetails>
+
+    @Query(
+        value = "SELECT COUNT(c.ENTRY_NUMBER)  FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE p.STATUS='1' AND p.LEVY_PENALTY_PAYMENT_DATE IS NOT NULL",
+        nativeQuery = true
+    )
+    fun findPenaltyCount(): String
+
+    @Query(
         value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.LEVY_PENALTY_PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,p.NET_PENALTY_AMT as amountDue,p.PENALTY_APPLIED as penalty,p.LEVY_DUE_DATE as levyDueDate," +
                 "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
                 " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
@@ -493,6 +512,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun findRecordCount(entryNumber: String): Long
+
+
 
 
 

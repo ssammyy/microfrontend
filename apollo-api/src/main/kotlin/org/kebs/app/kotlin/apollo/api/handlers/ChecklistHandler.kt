@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.ChecklistService
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentAuditService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistCategoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IChecklistInspectionTypesRepository
@@ -18,10 +19,8 @@ import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
-import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
-import javax.transaction.Transactional
 
 @Component
 class ChecklistHandler(
@@ -267,63 +266,16 @@ class ChecklistHandler(
         return ServerResponse.ok().body(response)
     }
 
-    @Transactional
     fun saveChecklist(req: ServerRequest): ServerResponse {
-        val response = ApiResponseModel()
+        var response = ApiResponseModel()
         try {
             val form = req.body(CheckListForm::class.java)
-
             //Get CD item
             req.pathVariable("cdUuid").let { cdUuid ->
                 commonDaoServices.getLoggedInUser()?.let { loggedInUser ->
                     var cdItem = daoServices.findCDWithUuid(cdUuid)
-                    //Save the general checklist
-                    val generalCheckList = form.generalChecklist()
-                    generalCheckList.ucrNumber = cdItem.ucrNumber
-                    generalCheckList.description = cdItem.description
-                    daoServices.findCDImporterDetails(cdItem.cdImporter ?: 0).let { importer ->
-                        generalCheckList.importersName = importer.name
-                    }
-                    // Manifest details
-                    cdItem.manifestNumber?.let { man ->
-                        daoServices.findManifest(man)?.let {
-                            generalCheckList.declarationNumber = it.manifestNumber
-                            generalCheckList.declarationRepresentative = it.receiver.orEmpty()
-                        }
-                    }
-                    generalCheckList.currentChecklist = 1
-                    generalCheckList.inspectionDate = Date(java.util.Date().time)
-                    generalCheckList.inspectionOfficer = "${loggedInUser.firstName} ${loggedInUser.lastName}".trim()
-                    generalCheckList.supervisorName = "${cdItem.assigner?.firstName} ${cdItem.assigner?.lastName}".trim()
-                    generalCheckList.cfs = cdItem.freightStation?.cfsName
                     val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    val inspectionGeneral = daoServices.saveInspectionGeneralDetails(generalCheckList, cdItem, loggedInUser, map)
-                    if (form.agrochem == null && form.engineering == null && form.vehicle == null && form.others == null) {
-                        response.responseCode = ResponseCodes.FAILED_CODE
-                        response.message = "Validation failed, please select and fill at least one checklist"
-                        return ServerResponse.ok().body(response)
-                    }
-                    //Save the respective checklist
-                    form.agrochem?.let {
-                        val agrochemItemInspectionChecklist = form.agrochemChecklist()
-                        checlistService.addAgrochemChecklist(map, inspectionGeneral, form.agrochemChecklistItems(), agrochemItemInspectionChecklist, loggedInUser)
-                    }
-                    // Add engineering checklist
-                    form.engineering?.let {
-                        val engineeringItemInspectionChecklist = form.engineeringChecklist()
-                        checlistService.addEngineeringChecklist(map, inspectionGeneral, form.engineeringChecklistItems(), engineeringItemInspectionChecklist, loggedInUser)
-
-                    }
-                    // Add vehicle checklist
-                    form.vehicle?.let {
-                        val motorVehicleItemInspectionChecklist = form.vehicleChecklist()
-                        checlistService.addVehicleChecklist(map, inspectionGeneral, form.vehicleChecklistItems(), motorVehicleItemInspectionChecklist, loggedInUser)
-                    }
-                    // Add other checklists
-                    form.others?.let {
-                        val otherItemInspectionChecklist = form.otherChecklist()
-                        checlistService.addOtherChecklist(map, inspectionGeneral, form.otherChecklistItems(), otherItemInspectionChecklist, loggedInUser)
-                    }
+                    response = this.checlistService.saveChecklist(form, cdItem, loggedInUser, map)
                     // Update ministry and lab result status of a consignment
                     cdItem = daoServices.findCDWithUuid(cdUuid)
                     cdItem.inspectionChecklist = map.activeStatus
@@ -334,6 +286,10 @@ class ChecklistHandler(
                 response.message = "Checklist submitted successfully"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }
+        } catch (ex: ExpectedDataNotFound) {
+            KotlinLogging.logger { }.error("SAVE CHECKLIST VALIDATION FAILED", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = ex.localizedMessage
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("SAVE CHECKLIST ERR", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

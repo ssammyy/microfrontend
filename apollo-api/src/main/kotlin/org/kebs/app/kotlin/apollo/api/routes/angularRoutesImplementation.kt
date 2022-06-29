@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoFluxService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.function.ServerResponse
@@ -8,7 +9,7 @@ import org.springframework.web.servlet.function.router
 
 
 @Configuration
-class AngularRoutes {
+class AngularRoutes (private val daoService: DaoFluxService) {
 
     @Bean
     fun systemsAdministrationMigrationRoutes(handler: SystemsAdministrationHandler) = router {
@@ -22,6 +23,8 @@ class AngularRoutes {
 //                    GET("/fetch/users/{status}/{criteria}", handler::list)
                     GET("/fetch/users/{status}", handler::listActiveRbacUsers)
                     GET("/fetch/user-roles/{userId}/{status}", handler::listActiveRbacUserRoles)
+                    GET("/fetch/user-type/{userId}", handler::listUserType)
+
                     GET("/fetch/user-section/{userId}/{status}", handler::listActiveRbacUserSections)
                     GET("/fetch/user-cfs/{userProfileId}/{status}", handler::listActiveRbacUserCfs)
                     POST("/role/revoke/{userId}/{roleId}/{status}", handler::revokeRoleFromUser)
@@ -34,6 +37,9 @@ class AngularRoutes {
                         "/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}",
                         handler::assignRoleToUserThroughRequest
                     )
+                    POST("/userType/assign/{userId}/{roleId}/{status}", handler::assignUserTypeToUser)
+                    POST("/userType/revoke/{userId}/{roleId}/{status}", handler::revokeUserTypeToUser)
+
 //                    POST("/user/request/{userId}/{cfsId}/{status}", handler::assignCfsToUser)
 
 
@@ -672,6 +678,26 @@ class AngularRoutes {
 
             }
 //            GET("/background/smark/image", handler::smarkBackGroundImage)
+        }
+    }
+
+    @Bean
+    fun kraApiRoutes(handler: StandardsLevyHandler) = router {
+        "/api/kra".nest {
+//            GET("/receiveSL2Payment", daoService::invalidGetOnPostUrl)
+            POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
+//            "/send".nest {
+////                "/entryNumber".nest {
+////                    POST("{job}/start", handler::processSendEntryNumbers)
+////                }
+////                "/penalty".nest {
+////                    POST("{job}/start", handler::processSendPenalties)
+////                }
+//            }
+//            "/pinValidation".nest {
+////                POST("/validate", handler::processValidatePin)
+//            }
+
         }
     }
 

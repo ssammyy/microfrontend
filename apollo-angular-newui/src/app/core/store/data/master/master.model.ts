@@ -229,3 +229,20 @@ export class UserRequestDetailEntityDto {
     description?: string;
     status?: boolean;
 }
+
+export class UserTypeEntityDto {
+    id?: bigint;
+    typeName?: string;
+    descriptions?: string;
+    status?: boolean;
+    defaultRoleId?: bigint;
+
+}
+export class UserTypeBEntityDto {
+    id?: bigint;
+    typeName?: string;
+    descriptions?: string;
+    status?: boolean;
+    defaultRole?: bigint;
+
+}
