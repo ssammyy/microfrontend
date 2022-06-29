@@ -295,8 +295,6 @@ interface IUserSectionAssignmentsRepository : HazelcastRepository<UserSectionAss
 interface IUserTypesEntityRepository : HazelcastRepository<UserTypesEntity, Long> {
     fun findByStatus(status: Int): List<UserTypesEntity>
     fun findByTypeNameAndStatus(typeName: String, status: Int): UserTypesEntity?
-    fun findByDefaultRole(defaultRole: Long): UserTypesEntity?
-    fun findAllAndDefaultRoleIsNotNull()
 
 
     @Query(
