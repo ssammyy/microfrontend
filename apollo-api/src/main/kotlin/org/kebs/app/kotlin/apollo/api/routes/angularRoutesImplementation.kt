@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoFluxService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.function.ServerResponse
@@ -8,7 +9,7 @@ import org.springframework.web.servlet.function.router
 
 
 @Configuration
-class AngularRoutes {
+class AngularRoutes (private val daoService: DaoFluxService) {
 
     @Bean
     fun systemsAdministrationMigrationRoutes(handler: SystemsAdministrationHandler) = router {
@@ -671,6 +672,26 @@ class AngularRoutes {
 
             }
 //            GET("/background/smark/image", handler::smarkBackGroundImage)
+        }
+    }
+
+    @Bean
+    fun kraApiRoutes(handler: StandardsLevyHandler) = router {
+        "/api/kra".nest {
+//            GET("/receiveSL2Payment", daoService::invalidGetOnPostUrl)
+            POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
+//            "/send".nest {
+////                "/entryNumber".nest {
+////                    POST("{job}/start", handler::processSendEntryNumbers)
+////                }
+////                "/penalty".nest {
+////                    POST("{job}/start", handler::processSendPenalties)
+////                }
+//            }
+//            "/pinValidation".nest {
+////                POST("/validate", handler::processValidatePin)
+//            }
+
         }
     }
 

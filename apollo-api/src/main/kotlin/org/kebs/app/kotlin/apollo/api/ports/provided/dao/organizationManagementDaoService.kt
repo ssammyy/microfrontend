@@ -54,6 +54,7 @@ class RegistrationManagementDaoService(
     private val sidebarChildRepo: ISidebarChildrenRepository,
     private val assignmentsRepository: IUserRoleAssignmentsRepository,
     private val authoritiesRepo: IUserPrivilegesRepository,
+    private val stdLevyNotificationFormRepository: StdLevyNotificationFormRepository
 ) {
 
     /**
@@ -121,6 +122,14 @@ class RegistrationManagementDaoService(
                     it
                 )
             }
+
+            val countSlForm = user.companyId?.let {
+                stdLevyNotificationFormRepository.countByManufacturerId(
+                    it
+                )
+            }
+
+
             val countExpired = user.companyId?.let {
                 permitRepo.countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
                     it, 1, 1
@@ -135,7 +144,8 @@ class RegistrationManagementDaoService(
                 countAwarded,
                 countExpired,
                 status,
-                penaltyStatus
+                penaltyStatus,
+                countSlForm
             )
         }
         return null

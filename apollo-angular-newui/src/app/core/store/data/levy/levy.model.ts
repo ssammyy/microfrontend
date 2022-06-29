@@ -457,6 +457,7 @@ export interface ManufacturePendingTaskData{
     approvalStatusLevelTwo: string;
     rejectStatusLevelTwo: string;
     otherBusinessNatureType: string;
+    complianceStatus: number;
 
 
 }
@@ -525,6 +526,7 @@ export interface ManufactureCompletedTask {
     officersFeedback: string;
     status: number;
     otherBusinessNatureType: string;
+    complianceStatus: string;
 
 }
 export interface UsersEntityList {

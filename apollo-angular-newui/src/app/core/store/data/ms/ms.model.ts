@@ -399,6 +399,7 @@ export class WorkPlanInspectionDto {
     ksApplicable: StandardDetailsDto;
     remarksDetails: MSRemarksDto[];
     workPlanFiles: WorkPlanFilesFoundDto[];
+
 }
 
 

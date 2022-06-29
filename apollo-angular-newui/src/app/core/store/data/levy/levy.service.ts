@@ -29,6 +29,7 @@ import {
     VisitTask
 } from "./levy.model";
 import {UsersEntity} from "../std/std.model";
+import swal from "sweetalert2";
 
 @Injectable({
   providedIn: 'root'
@@ -591,10 +592,26 @@ export class LevyService {
         return this.http.get<PaymentDetails>(url, {params}).pipe();
     }
 
+    // public getLevyPaymentsReceipt(id: any): Observable<any> {
+    //     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_PAYMENT_RECEIPT);
+    //     const params = new HttpParams().set('id', id);
+    //     return this.http.get<PaymentDetails>(url, {params}).pipe();
+    // }
+
     public getLevyPaymentsReceipt(id: any): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_PAYMENT_RECEIPT);
-        const params = new HttpParams().set('id', id);
-        return this.http.get<PaymentDetails>(url, {params}).pipe();
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_VIEW_E_SLIP);
+        const params = new HttpParams()
+            .set('id', id);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
     }
 
     public getLevyPenalty(): any {
@@ -658,6 +675,21 @@ export class LevyService {
                 return throwError(fault);
             })
         );
+    }
+
+    public showError(message: string, fn?: Function) {
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'error',
+        }).then(() => {
+            if (fn) {
+                fn();
+            }
+        });
     }
 
 

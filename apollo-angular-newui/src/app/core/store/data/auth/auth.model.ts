@@ -40,6 +40,7 @@ export class CompanyInfoDto {
     countExpired = 0;
     status=0;
     penaltyStatus=0;
+    countSlForm=0;
 }
 
 

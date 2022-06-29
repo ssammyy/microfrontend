@@ -1568,7 +1568,7 @@
                                     <div class="form-group">
                                         <label><b>NAME PRODUCT</b></label>
                                         <input [class.is-invalid]="formSampleSubmitForm.nameProduct.invalid && formSampleSubmitForm.nameProduct.touched"
-                                               class="form-control two-column-input" ngModel="{{workPlanInspection?.sampleCollected?.productsList[0]?.productBrandName}}" disabled
+                                               class="form-control two-column-input" ngModel="{{fuelInspectionDto?.sampleCollected?.productsList[0]?.productBrandName}}" disabled
                                                formControlName="nameProduct" name="nameProduct" required type="text">
                                     </div>
                                 </div>
@@ -1758,7 +1758,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SAMPLE COLLECTION NUMBER</b> </label>
-                                        <input type="number" class="form-control two-column-input" ngModel="{{workPlanInspection?.sampleCollected?.id}}" disabled
+                                        <input type="number" class="form-control two-column-input" ngModel="{{fuelInspectionDto?.sampleCollected?.id}}" disabled
                                                formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required
                                                [class.is-invalid]="formSampleSubmitForm.sampleCollectionNumber.invalid && formSampleSubmitForm.sampleCollectionNumber.touched">
                                     </div>

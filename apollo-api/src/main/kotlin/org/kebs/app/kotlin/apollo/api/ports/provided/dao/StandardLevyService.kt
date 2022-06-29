@@ -7,6 +7,7 @@ import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
+import org.kebs.app.kotlin.apollo.common.dto.ms.LevyPaymentsDTO
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -1340,14 +1341,22 @@ return getUserTasks();
             } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
         if (complianceStatus != null) {
             if (complianceStatus =="1".toLong()) {
-                 emailBody="Following a visit  ${companyName},Registration Number ${registrationNumber},and  KRA pin $kraPin on date ${dateConducted} by ${conductedByFName},${conductedByLName}. $companyName  was found to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999. Standards Levy is for the development and promotion of Standardization, Metrology and conformity assessment services.Thank you for the continued cooperation, for any further clarifications do not hesitate to contact us through standardslevy@kebs.org"
+                 emailBody="Following a visit  ${companyName},Registration Number ${registrationNumber},and  KRA pin $kraPin on date ${dateConducted} by ${conductedByFName},${conductedByLName}.\n" +
+                         "\n" +
+                         "$companyName  was found to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999.\n" +
+                         "\n" +
+                         " Standards Levy is for the development and promotion of Standardization, Metrology and conformity assessment services.\n" +
+                         "\n" +
+                         "Thank you for the continued cooperation, for any further clarifications do not hesitate to contact us through standardslevy@kebs.org"
 
             }else if(complianceStatus =="0".toLong()){
                  emailBody="Following a visit  ${companyName}, registration number ${registrationNumber}, and  KRA pin ${kraPin} on date ${dateConducted} by  ${conductedByFName},${conductedByLName}.\n" +
                         "\n" +
                         "$companyName was found NOT to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999. \n" +
                         "\n" +
-                        "The standards levy is payable at the rate of 0.2% of your monthly turnover excluding VAT and discounts where applicable, subject to a minimum of KSh. 1,000 per month and a maximum of KSh. 400,000 per annum. Failure to pay the levy attracts a penalty at a rate of 5% per month cumulatively. \n" +
+                        "The standards levy is payable at the rate of 0.2% of your monthly turnover excluding VAT and discounts where applicable, subject to a minimum of KSh. 1,000 per month and a maximum of KSh. 400,000 per annum.\n" +
+                         "\n" +
+                         " Failure to pay the levy attracts a penalty at a rate of 5% per month cumulatively. \n" +
                         " \n" +
                         "In line with the above, you are required to remit all outstanding arrears of XXXXX and penalties of XXXX through the ITAX system to avoid further accrual of penalties. \n" +
                         "\n" +
@@ -2086,9 +2095,30 @@ return getUserTasks();
 
 
     }
+    fun getPenaltyDetails(): MutableList<PenaltyDetails>{
+       return companyProfileRepo.getPenaltyDetails();
+    }
 
     fun getAllCompany(): MutableIterable<CompanyProfileEntity> {
         return companyProfileRepo.findAll()
+    }
+
+    fun mapPaymentDetails(data: List<LevyPayments>): List<LevyPaymentsDTO>{
+        return data.map {
+            LevyPaymentsDTO(
+                it.getId(),
+                it.getEntryNumber(),
+                it.getPaymentDate(),
+                it.getPaymentAmount(),
+                it.getCompanyName(),
+                it.getFirstName(),
+                it.getLastName(),
+                it.getKraPin(),
+                it.getRegistrationNumber(),
+                it.getPeriodFrom(),
+                it.getPeriodTo(),
+            )
+        }
     }
 
 

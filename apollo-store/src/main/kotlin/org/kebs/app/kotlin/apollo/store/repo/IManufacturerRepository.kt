@@ -138,6 +138,7 @@ interface StdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotific
         nativeQuery = true )
     fun findTopByManufactureIdOrderByIdDesc(@Param("id") id: Long?): Long?
   //  fun findFirstByManufactureIdOrderByIdDesc(manufactureId: Long): StdLevyNotificationForm
+  fun countByManufacturerId(manufacturerId: Long): Long
 
 
     @Query(

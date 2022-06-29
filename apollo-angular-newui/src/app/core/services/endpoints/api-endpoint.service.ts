@@ -526,6 +526,7 @@ export class ApiEndpointService {
         CONFIRM_EMAIL_VERIFICATION_STATUS: `${ApiEndpointService.STL_CONTEXT}/confirmEmailAddress`,
         STD_LEVY_COMPANY_STATUS: `${ApiEndpointService.STL_CONTEXT}/getOperationStatus`,
         STD_LEVY_E_SLIP: `${ApiEndpointService.STL_CONTEXT}/generatePdf`,
+        STD_LEVY_VIEW_E_SLIP: `${ApiEndpointService.STL_CONTEXT}/levyPaymentESlip`,
 
 
 

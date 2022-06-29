@@ -523,6 +523,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   };
 
   public workPlanInspection: WorkPlanInspectionDto;
+  public fuelInspectionDto: FuelInspectionDto;
 
 
   constructor(
@@ -1291,5 +1292,13 @@ export class WorkPlanDetailsComponent implements OnInit {
         this.viewWorkPlanFileSaved(event.data);
         break;
     }
+  }
+
+  onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
+    
+  }
+
+  onClickSavePDFSelected(valid: boolean) {
+    
   }
 }

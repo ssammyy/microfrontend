@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.common.dto.ms.MSComplaintSubmittedSuccessful
 import org.kebs.app.kotlin.apollo.common.dto.ms.NewComplaintDto
 import org.kebs.app.kotlin.apollo.common.dto.ms.WorkPlanInspectionDto
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelRemediationInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.ISampleCollectionViewRepository
 import org.springframework.core.io.ResourceLoader
@@ -33,6 +34,7 @@ class MSJSONControllers(
     private val msWorkPlanDaoService: MarketSurveillanceWorkPlanDaoServices,
     private val limsServices: LimsServices,
     private val resourceLoader: ResourceLoader,
+    private val companyProfileRepo: ICompanyProfileRepository
 ){
     private val appId: Int = applicationMapProperties.mapMarketSurveillance
 
@@ -119,33 +121,7 @@ class MSJSONControllers(
         }
     }
 
-    @RequestMapping(value = ["/report/remediation-invoice"], method = [RequestMethod.GET])
-    @Throws(Exception::class)
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun msRemediationInvoicePDF(
-        response: HttpServletResponse,
-        @RequestParam(value = "fuelInspectionId") fuelInspectionId: Long
-    ) {
-        val map = hashMapOf<String, Any>()
-        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
-        val invoiceRemediationDetails = fuelRemediationInvoiceRepo.findFirstByFuelInspectionId(fuelInspectionId)
-        val fuelRemediationDetailsDto = msDaoService.mapFuelRemediationDetails(invoiceRemediationDetails)
-        val pdfReportStream = reportsDaoService.extractReport(
-            map,
-            applicationMapProperties.mapMSFuelInvoiceRemediationPath,
-            fuelRemediationDetailsDto
-        )
-        response.contentType = "text/html"
-        response.contentType = "application/pdf"
-        response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; Remediation-Invoice-${invoiceRemediationDetails[0].fuelInspectionId}.pdf;")
-        response.outputStream.let { responseOutputStream ->
-            responseOutputStream.write(pdfReportStream.toByteArray())
-            responseOutputStream.close()
-            pdfReportStream.close()
-        }
-    }
 
 
 

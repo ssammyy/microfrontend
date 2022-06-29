@@ -577,12 +577,172 @@
 
                                         <div  class="row">
                                             <button (click)=toggleDisplayScheduleForm()  class="btn btn-primary btn-sm">Schedule</button>
-                                            <button type="button" class="btn btn-success btn-sm">Add Remarks</button>
+                                            <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                                     class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
                                             <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
                                             <button type="button" class="btn btn-warning btn-sm">Close Account</button>
 
                                         </div>
+                                        <div class="container col-md-12" [hidden]="isShowSLForm">
+                                            <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
+                                                <div class="col-12" >
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
 
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                            Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                        <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
+                                                            Manufactured(Commodities are comma separated)</div>
+                                                        <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                            <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                KSH</div>
+                                                            <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
+                                                <div class="col-12" >
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                            Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                        <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)</div>
+                                                        <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                            <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                KSH</div>
+                                                            <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class="container col-md-12" [hidden]="isShowScheduleForm">
 
@@ -912,6 +1072,9 @@
                                     <div class="row">
                                         <button (click)=toggleDisplayReportForm()  class="btn btn-primary btn-sm">Prepare Report</button>
                                         <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-danger btn-sm">View Remarks</button>
+                                        <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                                 class="btn btn-info btn-sm">View SL1 Form
+                                        </button>
                                     </div>
 
                                     <div class="col-12 row">
@@ -931,6 +1094,165 @@
                                                 </div>
                                             </div>
 
+                                        </div>
+                                        <div class="container col-md-12" [hidden]="isShowSLForm">
+                                            <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
+                                                <div class="col-12" >
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                            Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                        <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
+                                                            Manufactured(Commodities are comma separated)</div>
+                                                        <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                            <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                KSH</div>
+                                                            <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
+                                                <div class="col-12" >
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                            Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                        <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)</div>
+                                                        <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                            <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                KSH</div>
+                                                            <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="container col-md-12" [hidden]="isShowReportForm">
 
@@ -1639,7 +1961,168 @@
                                                 <button (click)=toggleDisplayRejectForm1()  class="btn btn-danger btn-sm">Reject</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
                                                 <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
+                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                                         class="btn btn-info btn-sm">View SL1 Form
+                                                </button>
+                                            </div>
+                                            <div class="container col-md-12" [hidden]="isShowSLForm">
+                                                <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
+                                                    <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                        </div>
 
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                                Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                            <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
+                                                                Manufactured(Commodities are comma separated)</div>
+                                                            <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                                <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                    KSH</div>
+                                                                <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
+                                                    <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                                Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                            <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)</div>
+                                                            <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                                <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                    KSH</div>
+                                                                <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowRemarksTab">
                                                 <div class="col-12">
@@ -1762,7 +2245,21 @@
                                                     </button>
                                                 </div>
                                             </div>
+
                                             <div class="list-group list-group-flush">
+                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Compliance Status</b></h5>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <p *ngIf="actionRequestPending?.taskData?.complianceStatus==0" class="text-sm mb-0">Non Compliant.</p>
+                                                    <p *ngIf="actionRequestPending?.taskData?.complianceStatus==1" class="text-sm mb-0">Compliant.</p>
+                                                </a>
                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                     <div class="d-flex w-100 justify-content-between">
                                                         <div>
@@ -2142,7 +2639,168 @@
                                                 <button (click)=toggleDisplayRejectForm1()  class="btn btn-danger btn-sm">Reject</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
                                                 <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
+                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                                         class="btn btn-info btn-sm">View SL1 Form
+                                                </button>
+                                            </div>
+                                            <div class="container col-md-12" [hidden]="isShowSLForm">
+                                                <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
+                                                    <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                        </div>
 
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                                Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                            <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
+                                                                Manufactured(Commodities are comma separated)</div>
+                                                            <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                                <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                    KSH</div>
+                                                                <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
+                                                    <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                                Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                            <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)</div>
+                                                            <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                                <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                    KSH</div>
+                                                                <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowRemarksTab">
                                                 <div class="col-12">
@@ -2249,6 +2907,19 @@
                                                 </div>
                                             </div>
                                             <div class="list-group list-group-flush">
+                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Compliance Status</b></h5>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <p *ngIf="actionRequestPending?.taskData?.complianceStatus==0" class="text-sm mb-0">Non Compliant.</p>
+                                                    <p *ngIf="actionRequestPending?.taskData?.complianceStatus==1" class="text-sm mb-0">Compliant.</p>
+                                                </a>
                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                     <div class="d-flex w-100 justify-content-between">
                                                         <div>
@@ -2623,7 +3294,168 @@
                                                 <button (click)=toggleDisplayRejectForm2()  class="btn btn-danger btn-sm">Reject</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
                                                 <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
+                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                                         class="btn btn-info btn-sm">View SL1 Form
+                                                </button>
+                                            </div>
+                                            <div class="container col-md-12" [hidden]="isShowSLForm">
+                                                <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
+                                                    <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                        </div>
 
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                                Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                            <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
+                                                                Manufactured(Commodities are comma separated)</div>
+                                                            <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                                <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                    KSH</div>
+                                                                <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
+                                                    <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                                Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                            <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)</div>
+                                                            <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                                <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                    KSH</div>
+                                                                <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowRemarksTab">
                                                 <div class="col-12">
@@ -2728,6 +3560,19 @@
                                                 </div>
                                             </div>
                                             <div class="list-group list-group-flush">
+                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <div>
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <h5 class="mb-1" style="color: #0d0505"><b>Compliance Status</b></h5>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <p *ngIf="actionRequestPending?.taskData?.complianceStatus==0" class="text-sm mb-0">Non Compliant.</p>
+                                                    <p *ngIf="actionRequestPending?.taskData?.complianceStatus==1" class="text-sm mb-0">Compliant.</p>
+                                                </a>
                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                     <div class="d-flex w-100 justify-content-between">
                                                         <div>
@@ -3109,7 +3954,168 @@
                                                 <button (click)=toggleDisplaySaveFeedBackForm()  class="btn btn-success btn-sm">Draft Report</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
                                                 <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
+                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                                         class="btn btn-info btn-sm">View SL1 Form
+                                                </button>
+                                            </div>
+                                            <div class="container col-md-12" [hidden]="isShowSLForm">
+                                                <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
+                                                    <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                        </div>
 
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                                Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                            <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
+                                                                Manufactured(Commodities are comma separated)</div>
+                                                            <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                                <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                    KSH</div>
+                                                                <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
+                                                    <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                                Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                            <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                                <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)</div>
+                                                            <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                                <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                            </div>
+                                                            <div class="card col-6">
+                                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                    KSH</div>
+                                                                <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="container col-md-12" [hidden]="isShowRemarksTab">
                                                 <div class="col-12">
@@ -3175,6 +4181,19 @@
                                             </div>
                                             <div class="row col-12">
                                                 <div class="list-group list-group-flush">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Compliance Status</b></h5>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <p *ngIf="actionRequestPending?.taskData?.complianceStatus==0" class="text-sm mb-0">Non Compliant.</p>
+                                                        <p *ngIf="actionRequestPending?.taskData?.complianceStatus==1" class="text-sm mb-0">Compliant.</p>
+                                                    </a>
                                                     <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                         <div class="d-flex w-100 justify-content-between">
                                                             <div>
