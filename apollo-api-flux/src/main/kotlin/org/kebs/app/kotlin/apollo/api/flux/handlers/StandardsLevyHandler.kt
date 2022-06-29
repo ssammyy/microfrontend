@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.flux.handlers
 
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.validation.AbstractValidationHandler
@@ -105,8 +106,12 @@ class StandardsLevyHandler(
     suspend fun processReceiveSL2Payment(req: ServerRequest): ServerResponse {
 
         return try {
-            req.awaitBodyOrNull<ReceiveSL2PaymentRequest>()
-                ?.let { body ->
+
+
+            req.awaitBodyOrNull<String>()
+                ?.let { stringData ->
+                    val gson = Gson()
+                    val body = gson.fromJson(stringData, ReceiveSL2PaymentRequest::class.java)
                     val errors: Errors = BeanPropertyBindingResult(body, ReceiveSL2PaymentRequest::class.java.name)
                     validator.validate(body, errors)
                     if (errors.allErrors.isEmpty()) {

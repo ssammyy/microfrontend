@@ -1,8 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
-import org.kebs.app.kotlin.apollo.store.model.CoisEntity
-import org.kebs.app.kotlin.apollo.store.model.KraEntryNumberRequestLogEntity
-import org.kebs.app.kotlin.apollo.store.model.LogKraEntryNumberRequestEntity
+import org.kebs.app.kotlin.apollo.store.model.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -19,5 +17,15 @@ interface IKraEntryNumberRequestLogEntityRepository:HazelcastRepository<KraEntry
 
     @Query("SELECT RESPONSE_RESPONSE_CODE FROM DAT_KEBS_LOG_KRA_ENTRY_NUMBER_REQUEST  WHERE REQUEST_ENTRY_NUMBER=:requestEntryNumber", nativeQuery = true)
     fun findKraResponseCode(requestEntryNumber: String): String
+
+}
+
+@Repository
+interface IKraPaymentDetailsRequestLogEntityRepository:HazelcastRepository<KraPaymentDetailsRequestLogEntity, Long> {
+
+}
+
+@Repository
+interface IKraPenaltyDetailsRequestLogEntityRepository:HazelcastRepository<KraPenaltyDetailsRequestLogEntity, Long> {
 
 }

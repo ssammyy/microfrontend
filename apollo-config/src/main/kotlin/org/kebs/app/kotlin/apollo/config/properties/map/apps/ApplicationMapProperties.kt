@@ -530,6 +530,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kra.config.integration}")
     val mapKraConfigIntegration: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.kra.config.integration.penalty}")
+    val mapKraPenaltyConfigIntegration: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration}")
     val mapLimsConfigIntegration: Long = 0L
 
@@ -640,6 +643,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.sample.collection.path}")
     val mapMSSampleCollectionPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.payment.collection.path}")
+    val mapSLPaymentPath: String = ""
 
     @Value("\${destination.inspection.cd.status.type.coc.generated.and.send}")
     val mapDICdStatusTypeCOCGeneratedAndSendID: Long = 0L

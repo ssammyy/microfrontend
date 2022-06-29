@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 import {UsersEntity} from "../../../core/store/data/std/std.model";
-import {DocumentDTO, ManufacturePendingTask, SiteVisitRemarks} from "../../../core/store/data/levy/levy.model";
+import {DocumentDTO, ManufacturePendingTask, SiteVisitRemarks, SlModel} from "../../../core/store/data/levy/levy.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {Store} from "@ngrx/store";
@@ -51,6 +51,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
   manufacturePendingTasks: ManufacturePendingTask[] = [];
     siteVisitRemarks: SiteVisitRemarks[] = [];
   public actionRequestPending: ManufacturePendingTask | undefined;
+    slFormDetails !: SlModel;
   public scheduleVisitFormGroup!: FormGroup;
   public prepareReportFormGroup!: FormGroup;
   public prepareFeedBackFormGroup!: FormGroup;
@@ -78,6 +79,34 @@ export class StdLevyPendingTasksComponent implements OnInit {
     isShowDocumentsTab= true;
     isShowApproveRequestForm=true;
     isShowRejectRequestForm=true;
+    isShowSLForm = true;
+
+    toggleDisplaySLForm(manufactureId: number) {
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.levyService.getCompanySLForms(manufactureId).subscribe(
+            (response: SlModel)=> {
+                this.slFormDetails = response;
+                //console.log(this.slFormDetails);
+                this.SpinnerService.hide();
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                console.log(error.message)
+                //alert(error.message);
+            }
+        );
+
+        this.isShowSLForm = !this.isShowSLForm;
+        this.isShowApproveRequestForm=true;
+        this.isShowRejectRequestForm=true;
+        this.isShowDocumentsTab=true;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
+        this.isShowApprovalForm1= true;
+        this.isShowRejectForm1= true;
+
+    }
 
 
     toggleDisplayApproveEditRequest(){

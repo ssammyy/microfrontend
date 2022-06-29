@@ -834,7 +834,11 @@ data class UserCompanyDetailsDto(
         @JsonProperty("status")
         val status: Int? = null,
         @JsonProperty("penaltyStatus")
-       val penaltyStatus: Long? = null
+       val penaltyStatus: Long? = null,
+        @JsonProperty("countSlForm")
+        val countSlForm: Long? = null
+
+
 
 )
 

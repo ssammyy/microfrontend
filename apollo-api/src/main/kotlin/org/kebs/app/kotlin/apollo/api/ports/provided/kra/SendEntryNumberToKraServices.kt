@@ -1,28 +1,25 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.kra
 
 import com.google.gson.Gson
-import com.nhaarman.mockitokotlin2.internal.createInstance
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 import org.json.simple.JSONObject
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraDetails
-import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraEntryNumberResponse
-import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader.Companion.globalVar
-import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraRequest
-import org.kebs.app.kotlin.apollo.api.ports.provided.kra.response.KraResponse
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.KraEntryNumberRequestLogEntity
+import org.kebs.app.kotlin.apollo.store.model.KraPenaltyDetailsRequestLogEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
-import org.kebs.app.kotlin.apollo.store.repo.IKraEntryNumberRequestLogEntityRepository
-import org.kebs.app.kotlin.apollo.store.repo.ILogKraEntryNumberRequestEntityRepository
-import org.springframework.data.repository.findByIdOrNull
+import org.kebs.app.kotlin.apollo.store.model.std.PenaltyDetails
+import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -30,6 +27,7 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.collections.set
 
 
@@ -39,8 +37,11 @@ class SendEntryNumberToKraServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val iLogKraEntryNumberRequestRepo: ILogKraEntryNumberRequestEntityRepository,
     private val iKraEntryNumberRequestLogEntityRepository: IKraEntryNumberRequestLogEntityRepository,
+    private val iKraPaymentDetailsRequestLogEntityRepository: IKraPaymentDetailsRequestLogEntityRepository,
+    private val iKraPenaltyDetailsRequestLogEntityRepository: IKraPenaltyDetailsRequestLogEntityRepository,
     private val commonDaoServices: CommonDaoServices,
-    private val daoService: DaoService
+    private val daoService: DaoService,
+    private val companyRepo: ICompanyProfileRepository
 ) {
     fun postEntryNumberTransactionToKra(companyProfileID: Long, user: String, map: ServiceMapsEntity): KraEntryNumberRequestLogEntity? {
         var resultSaved: KraEntryNumberRequestLogEntity? =null
@@ -80,7 +81,6 @@ class SendEntryNumberToKraServices(
                 header = headerBody
                 details = list
             }
-
             val requestBody = JSONObject()
             requestBody["REQUEST"] = rootRequest
 
@@ -98,7 +98,6 @@ class SendEntryNumberToKraServices(
                 createdOn = commonDaoServices.getTimestamp()
             }
 
-
             transactionsRequest = iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
 
 
@@ -115,7 +114,6 @@ class SendEntryNumberToKraServices(
             val gson = Gson()
             val response: Triple<WorkflowTransactionsEntity, KraEntryNumberResponse?, HttpResponse?> =
                 daoService.processResponses(resp, log, configUrl, config)
-            // KotlinLogging.logger { }.trace { "Response ${response.second?.message}" }
             KotlinLogging.logger { }.info { "Request response: ${gson.toJson(response.second)}" }
             if (response.second?.response?.responseCode == "90000") {
 
@@ -141,13 +139,128 @@ class SendEntryNumberToKraServices(
                 resultSaved =   iKraEntryNumberRequestLogEntityRepository.save(transactionsRequest)
             }
 
-
-            // KotlinLogging.logger {  }.info { "Response received: $response" }
         }
 
         return resultSaved
     }
+    fun postPenaltyDetailsToKra( ): KraPenaltyDetailsRequestLogEntity? {
+        var resultSaved: KraPenaltyDetailsRequestLogEntity? =null
+        val config =
+            commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapKraPenaltyConfigIntegration)
+        val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL FOR KRA")
+        //val companyProfile = commonDaoServices.findCompanyProfileWithID(companyProfileID)
+        runBlocking {
+            val recordCount=companyRepo.findPenaltyCount()
+            val transDate = commonDaoServices.getTimestamp()
+            val headerBody = PenaltyHeader().apply {
+                globalVar = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").format(transDate)
+                transmissionDate = globalVar
+                loginId = jasyptStringEncryptor.decrypt(config.username)
+                password = jasyptStringEncryptor.decrypt(config.password)
+                noOfRecords = recordCount
+                val join = recordCount + globalVar
+                hash = kraDataEncryption(join)
+            }
+            val penaltyDetails= mapKraPenaltyDto(companyRepo.getPenaltyDetails())
+            val rootRequest = PenaltyRequest().apply {
+                HEADER = headerBody
+                PENALTYINFO = penaltyDetails
+            }
+            val requestBody = JSONObject()
+            requestBody["REQUEST"] = rootRequest
+            val gson = Gson()
+            KotlinLogging.logger { }.info { "PENALTY REQUEST BODY" + gson.toJson(requestBody) }
 
+            var transactionsRequest = KraPenaltyDetailsRequestLogEntity().apply {
+                requestHash = headerBody.hash
+                requestTransmissionDate = globalVar
+                requestNoOfRecords = headerBody.noOfRecords
+                status = 0
+                createdBy = "System"
+                createdOn = commonDaoServices.getTimestamp()
+            }
+
+            transactionsRequest = iKraPenaltyDetailsRequestLogEntityRepository.save(transactionsRequest)
+            val lodCode= 798348034
+            val log = daoService.createTransactionLog(0, "${lodCode}_1")
+
+            val resp = daoService.getHttpResponseFromPostCall(
+                false,
+                configUrl,
+                null,
+                requestBody,
+                config,
+                null,
+                null
+            )
+            val response: Triple<WorkflowTransactionsEntity, KraEntryNumberResponse?, HttpResponse?> =
+                daoService.processResponses(resp, log, configUrl, config)
+
+            KotlinLogging.logger { }.info { "Request response: ${gson.toJson(response.second)}" }
+            if (response.second?.response?.responseCode == "90000") {
+
+                transactionsRequest.apply {
+                    responseStatus = response.second?.response?.status
+                    responseResponseCode = response.second?.response?.responseCode
+                    responseMessage = response.second?.response?.message
+                    status = 1
+                    updatedOn = commonDaoServices.getTimestamp()
+                }
+                resultSaved=   iKraPenaltyDetailsRequestLogEntityRepository.save(transactionsRequest)
+
+
+            } else {
+                transactionsRequest.apply {
+                    responseStatus = response.second?.response?.status
+                    responseResponseCode = response.second?.response?.responseCode
+                    responseMessage = response.second?.response?.message
+                    updatedOn = commonDaoServices.getTimestamp()
+                }
+                resultSaved =   iKraPenaltyDetailsRequestLogEntityRepository.save(transactionsRequest)
+            }
+
+        }
+        return resultSaved
+    }
+
+ fun mapKraPenaltyDto(penaltyDetails: MutableList<PenaltyDetails>): MutableList<KraPenaltyRequest> {
+     val penaltyDetailsDto = mutableListOf<KraPenaltyRequest>()
+
+     penaltyDetails.forEach { p->
+         val krap = KraPenaltyRequest().apply {
+             entryNo = p.getEntryNo()
+             periodTo = p.getPeriodTo()?.let { commonDaoServices.convertDateToKRADate(it) }
+             periodFrom = p.getPeriodFrom()?.let { commonDaoServices.convertDateToKRADate(it) }
+             PenaltyOrderNo = p.getPenaltyOrderNo()
+             penaltyPayable = p.getPenaltyPayable()
+             kraPin = p.getkraPin()
+             penaltyGenDate = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").format(p.getPenaltyGenDate()
+                 ?.let { convertStringToDate(it) })
+             manufacName = p.getManufacName()
+         }
+         penaltyDetailsDto.add(krap)
+     }
+
+     return penaltyDetailsDto
+ }
+
+
+    fun convertStringToDate(dateTime: String): Date {
+
+//        val dateTimeFormatOut: DateTimeFormatter = DateTimeFormat.forPattern("MM/dd/yyyy")
+//        val dateTime = "11/27/2020 05:35:00"
+//        val datetimeformat: DateTimeFormatter = DateTimeFormat.forPattern("MM/dd/yyyy")
+////
+//        val joda_time: DateTime = datetimeformat.parseDateTime(dateTime)
+////        println("joda_time : $joda_time")
+//
+//        val dateTimeFormatOut: DateTimeFormatter = DateTimeFormat.forPattern("MM-dd-yyyy")
+//        System.out.println("date time format out:  " + dateTimeFormatOut.print(joda_time))
+//        return dateTimeFormatOut.parseDateTime(joda_time.toString())
+
+//        val sDate1 = "31/12/1998"
+        return SimpleDateFormat("dd/MM/yyyy").parse(dateTime)
+    }
 
     fun kraDataEncryption(hashedData: String): String {
         fun encryptThisString(input: String): String {

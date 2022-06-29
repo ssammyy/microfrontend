@@ -840,7 +840,19 @@ data class MSComplaintSubmittedSuccessful(
         var successMessage: String? = null,
         var errorMessage: String? = null
 )
-
+data class LevyPaymentsDTO(
+        var Id: Long? = null,
+        var entryNumber: String?=null,
+        var paymentDate: String?=null,
+        var paymentAmount: String?=null,
+        var companyName: String?=null,
+        var firstName: String?=null,
+        var lastName: String?=null,
+        var kraPin: String?=null,
+        var registrationNumber: String?=null,
+        var periodFrom: String?=null,
+        var periodTo: String?=null,
+)
 
 data class FuelRemediationDetailsDTO(
         var id: String? = null,

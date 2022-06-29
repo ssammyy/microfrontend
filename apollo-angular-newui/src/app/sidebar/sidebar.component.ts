@@ -69,7 +69,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Operations',
         type: 'sub',
         icontype: 'class',
-        privilege: ['SL_IS_PL_OFFICER', 'SL_IS_ASST_MANAGER', 'SL_IS_MANAGER', 'SL_IS_CHIEF_MANAGER'],
+        privilege: ['SL_IS_MANAGER'],
         collapse: 'operations',
         children: [
             {path: 'slCompanySuspension', title: 'Suspend Company', ab: 'SC'},

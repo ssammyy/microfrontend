@@ -7,7 +7,9 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.StandardLevyService
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.PDFGeneratorVehicle
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.CompanySl1DTO
@@ -62,7 +64,9 @@ class StdLevyController(
     private val standardLevyService: StandardLevyService,
     private val daoServices: RegistrationDaoServices,
     private val standardLevyFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
-    private val standardLevyOperationsClosureRepository: StandardLevyOperationsClosureRepository
+    private val standardLevyOperationsClosureRepository: StandardLevyOperationsClosureRepository,
+    private val sendEntryNumberToKraServices : SendEntryNumberToKraServices,
+    private val reportsDaoService: ReportsDaoService,
 
     ) {
 
@@ -1544,6 +1548,9 @@ class StdLevyController(
     }
 
 
+
+
+
     @GetMapping("/getManufacturesLevyPenalty")
     @ResponseBody
     fun getManufacturesLevyPenalty(): MutableList<LevyPenalty>
@@ -1577,6 +1584,51 @@ class StdLevyController(
         generetorUser.setCompanyList(companyList)
         generetorUser.generate(response)
     }
+
+    @GetMapping("/getPenaltyDetails")
+    @ResponseBody
+    fun getPenaltyDetails(): MutableList<PenaltyDetails>
+    {
+        return standardLevyService.getPenaltyDetails()
+    }
+
+    //Delete A Task
+    @PostMapping("/postPenaltyDetailsToKra")
+    fun postPenaltyDetailsToKra(
+    ): KraPenaltyDetailsRequestLogEntity? {
+        KotlinLogging.logger { }.info("Endpoint Hit")
+
+        return sendEntryNumberToKraServices.postPenaltyDetailsToKra( )
+    }
+
+    @RequestMapping(value = ["/levyPaymentESlip"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun levyPaymentESlip(
+        response: HttpServletResponse,
+        @RequestParam(value = "id") id: Long
+    ) {
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val eSlipPaymentDetails = companyProfileRepo.getLevyPaymentsReceipt(id)
+        val levyPaymentsDTO = standardLevyService.mapPaymentDetails(eSlipPaymentDetails)
+        val pdfReportStream = reportsDaoService.extractReport(
+            map,
+            applicationMapProperties.mapSLPaymentPath,
+            levyPaymentsDTO
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; E-slip-${eSlipPaymentDetails[0].getId()}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
 
 
 }

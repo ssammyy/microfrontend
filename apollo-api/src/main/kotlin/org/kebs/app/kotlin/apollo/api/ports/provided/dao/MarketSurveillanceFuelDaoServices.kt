@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestResultsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmittedPdfListDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.std.LevyPayments
 import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
@@ -2452,6 +2453,8 @@ class MarketSurveillanceFuelDaoServices(
             )
         }
     }
+
+
 
     fun mapFuelRemediationDetails(data: List<MsFuelRemedyInvoicesEntity>): List<FuelRemediationDetailsDTO> {
         return data.map {
