@@ -461,7 +461,7 @@
                                         <div class="panel" style="max-height: 388px;">
                                             <div *ngFor="let role of roles">
                                                 <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus && workPlanInspection?.compliantStatusAdded==false && workPlanInspection?.officerDetails?.id == userLoggedInID
-                                                && workPlanInspection.sampleLabResults.savedPDFFiles.length != 0" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                                && workPlanInspection?.sampleLabResults?.savedPDFFiles?.length != null" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-3"><span
                                                         class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
@@ -505,7 +505,7 @@
                                                         <div class="table-striped table-condensed table-responsive">
                                                             <ng2-smart-table [settings]="settingsLIMSPDFFiles"
                                                                              [source]="workPlanInspection?.sampleLabResults?.limsPDFFiles"
-                                                                             (custom)="onCustomLIMSPDFAction($event,workPlanInspection?.sampleLabResults?.ssfResultsList.bsNumber)"
+                                                                             (custom)="onCustomLIMSPDFAction($event,workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber)"
                                                             ></ng2-smart-table>
                                                         </div>
                                                     </div>
