@@ -442,7 +442,7 @@
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="approveEditedDetailsExampleModalLabel"><b>Schedule Site Visit</b></h5>
+                                    <h5 class="modal-title" id="approveEditedDetailsExampleModalLabel"><b>Approve Request to Edit Company Details</b></h5>
                                     <button type="button" class="close" #closeModalA1Details data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -577,7 +577,7 @@
 
                                         <div  class="row">
                                             <button (click)=toggleDisplayScheduleForm()  class="btn btn-primary btn-sm">Schedule</button>
-                                            <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                            <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.manufacturerEntity) type="button"
                                                      class="btn btn-info btn-sm">View SL1 Form
                                             </button>
                                             <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
@@ -1053,7 +1053,7 @@
 
 
                                     </div>
-                                    <input type="hidden" name="companyID" ngModel="{{actionRequestPending?.taskData?.id}}" >
+                                    <input type="hidden" name="companyID" ngModel="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
 
                                 </form>
                             </div>
@@ -1072,7 +1072,7 @@
                                     <div class="row">
                                         <button (click)=toggleDisplayReportForm()  class="btn btn-primary btn-sm">Prepare Report</button>
                                         <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-danger btn-sm">View Remarks</button>
-                                        <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                        <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.manufacturerEntity) type="button"
                                                  class="btn btn-info btn-sm">View SL1 Form
                                         </button>
                                     </div>
@@ -1654,7 +1654,7 @@
 
 
                                 </div>
-                                <input type="hidden" name="companyID" ngModel="{{actionRequestPending?.taskData?.id}}" >
+                                <input type="hidden" name="companyID" ngModel="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
 
 
                             </div>
@@ -1961,7 +1961,7 @@
                                                 <button (click)=toggleDisplayRejectForm1()  class="btn btn-danger btn-sm">Reject</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
                                                 <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
-                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.manufacturerEntity) type="button"
                                                          class="btn btn-info btn-sm">View SL1 Form
                                                 </button>
                                             </div>
@@ -2639,7 +2639,7 @@
                                                 <button (click)=toggleDisplayRejectForm1()  class="btn btn-danger btn-sm">Reject</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
                                                 <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
-                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.manufacturerEntity) type="button"
                                                          class="btn btn-info btn-sm">View SL1 Form
                                                 </button>
                                             </div>
@@ -3294,7 +3294,7 @@
                                                 <button (click)=toggleDisplayRejectForm2()  class="btn btn-danger btn-sm">Reject</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
                                                 <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
-                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.manufacturerEntity) type="button"
                                                          class="btn btn-info btn-sm">View SL1 Form
                                                 </button>
                                             </div>
@@ -3954,7 +3954,7 @@
                                                 <button (click)=toggleDisplaySaveFeedBackForm()  class="btn btn-success btn-sm">Draft Report</button>
                                                 <button type="button" (click)=toggleDisplayRemarksTab(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Remarks</button>
                                                 <button type="button" (click)=toggleDisplayDocuments(actionRequestPending?.taskData?.visitID) class="btn btn-info btn-sm">View Documents</button>
-                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.id) type="button"
+                                                <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.manufacturerEntity) type="button"
                                                          class="btn btn-info btn-sm">View SL1 Form
                                                 </button>
                                             </div>
