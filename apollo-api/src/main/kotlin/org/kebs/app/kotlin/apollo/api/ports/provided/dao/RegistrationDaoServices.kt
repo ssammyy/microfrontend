@@ -1141,17 +1141,17 @@ class RegistrationDaoServices(
 
                 }
                 "90001" -> {
-                    slFormResponse="Form not saved..Syntax Error"
+                    slFormResponse="Form not saved..Form data is in the wrong format"
 
 
                 }
                 "90002" -> {
-                    slFormResponse="Form not saved..Data validation Error"
+                    slFormResponse="Form not saved..KRA Pin used is invalid"
 
 
                 }
                 "90003" -> {
-                    slFormResponse="Form not saved..Hash Code Validation Failed"
+                    slFormResponse="Form not saved..Invalid User access credentials"
 
 
                 }
