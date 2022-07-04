@@ -1723,7 +1723,7 @@
                                     <div class="form-group">
                                         <label><b>SAMPLE COLLECTION NUMBER</b> </label>
                                         <input type="number" class="form-control two-column-input"
-                                               formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required ngModel="{{fuelInspection.sampleCollected.id}}" disabled
+                                               formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required ngModel="{{fuelInspection?.sampleCollected?.id}}" disabled
                                                [class.is-invalid]="formSampleSubmitForm.sampleCollectionNumber.invalid && formSampleSubmitForm.sampleCollectionNumber.errors">
                                         <div *ngIf="submitted && formSampleSubmitForm.sampleCollectionNumber.errors" class="invalid-feedback">
                                             <div *ngIf="formSampleSubmitForm.sampleCollectionNumber.errors.required">This field is

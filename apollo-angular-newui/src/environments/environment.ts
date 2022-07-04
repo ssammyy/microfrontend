@@ -6,11 +6,7 @@
 export const environment = {
     production: false,
     https_enabled: true,
-<<<<<<< HEAD
-    base_url: 'localhost:8006',
-=======
-    //base_url: 'localhost:8006',
->>>>>>> 9be9e108bd3f7b9262e9163073a1b74ff8be1f33
+    // base_url: 'localhost:8006',
     // base_url: `kimsfluxint.kebs.org:8007`,
-    //   base_url: `kimsint.kebs.org:8006`,
+      base_url: `kimsint.kebs.org:8006`,
 };
