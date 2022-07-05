@@ -2312,7 +2312,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     }
 
     fun findSampleSubmittedByWorkPlanGeneratedID(workPlanInspectionID: Long): QaSampleSubmissionEntity? {
-        return sampleSubmissionLabRepo.findByFuelInspectionId(workPlanInspectionID)
+        return sampleSubmissionLabRepo.findByWorkplanGeneratedId(workPlanInspectionID)
     }
 
     fun findPreliminaryReportByWorkPlanGeneratedID(workPlanInspectionID: Long): MsPreliminaryReportEntity {
