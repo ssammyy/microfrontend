@@ -337,12 +337,15 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findCompanyByUserId(userId: Long): MutableList<CompanyProfileEntity>
     fun findAllByFirmCategoryAndStatus(firmCategory: Long, status: Int): List<CompanyProfileEntity>?
 
-    @Query(value = "SELECT c.ID as id,c.NAME as name,c.PHYSICAL_ADDRESS as physicalAddress,c.KRA_PIN as kraPin,c.MANUFACTURE_STATUS as manufactureStatus,c.REGISTRATION_NUMBER as registrationNumber,c.POSTAL_ADDRESS as postalAddress,c.PLOT_NUMBER as plotNumber,c.COMPANY_EMAIL as companyEmail," +
-            "c.COMPANY_TELEPHONE as companyTelephone,c.YEARLY_TURNOVER as yearlyTurnover,l.NAME as businessLineName,n.NAME as businessNatureName,c.BUILDING_NAME as buildingName,c.STREET_NAME as streetName,r.REGION as regionName,s.COUNTY as countyName,c.FIRM_CATEGORY as firmCategory,t.TOWN as townName," +
-            "c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.REGION as region,c.TOWN as town,c.COUNTY as county,c.USER_ID as userId," +
-            "c.DIRECTOR_ID_NUMBER as directorIdNumber,c.ENTRY_NUMBER as entryNumber,c.STATUS as status,c.CLOSED_COMMODITY_MANUFACTURED as closedCommodityManufactured,c.CLOSED_CONTRACTS_UNDERTAKEN as closedContractsUndertaken,c.TASK_TYPE as taskType,c.TASK_ID as taskId,c.OWNERSHIP as ownership,c.BRANCH_NAME as branchName," +
-            "c.CLOSURE_OF_OPERATIONS as closureOfOperations,c.TYPE_OF_MANUFACTURE as typeOfManufacture,c.OTHER_BUSINESS_NATURE_TYPE as otherBusinessNatureType" +
-            " FROM DAT_KEBS_COMPANY_PROFILE c Join CFG_KEBS_BUSINESS_NATURE n ON c.BUSINESS_NATURES = n.ID JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID JOIN CFG_KEBS_REGIONS r ON c.REGION = r.ID JOIN CFG_KEBS_TOWNS t ON c.TOWN = t.ID JOIN CFG_KEBS_COUNTIES s ON c.COUNTY = s.ID   WHERE c.ASSIGN_STATUS='0'", nativeQuery = true)
+    @Query(
+        value = "SELECT c.ID as id,c.NAME as name,c.PHYSICAL_ADDRESS as physicalAddress,c.KRA_PIN as kraPin,c.MANUFACTURE_STATUS as manufactureStatus,c.REGISTRATION_NUMBER as registrationNumber,c.POSTAL_ADDRESS as postalAddress,c.PLOT_NUMBER as plotNumber,c.COMPANY_EMAIL as companyEmail," +
+                "c.COMPANY_TELEPHONE as companyTelephone,c.YEARLY_TURNOVER as yearlyTurnover,l.NAME as businessLineName,n.NAME as businessNatureName,c.BUILDING_NAME as buildingName,c.STREET_NAME as streetName,r.REGION as regionName,s.COUNTY as countyName,c.FIRM_CATEGORY as firmCategory,t.TOWN as townName," +
+                "c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.REGION as region,c.TOWN as town,c.COUNTY as county,c.USER_ID as userId," +
+                "c.DIRECTOR_ID_NUMBER as directorIdNumber,c.ENTRY_NUMBER as entryNumber,c.STATUS as status,c.CLOSED_COMMODITY_MANUFACTURED as closedCommodityManufactured,c.CLOSED_CONTRACTS_UNDERTAKEN as closedContractsUndertaken,c.TASK_TYPE as taskType,c.TASK_ID as taskId,c.OWNERSHIP as ownership,c.BRANCH_NAME as branchName," +
+                "c.CLOSURE_OF_OPERATIONS as closureOfOperations,c.TYPE_OF_MANUFACTURE as typeOfManufacture,c.OTHER_BUSINESS_NATURE_TYPE as otherBusinessNatureType" +
+                " FROM DAT_KEBS_COMPANY_PROFILE c Join CFG_KEBS_BUSINESS_NATURE n ON c.BUSINESS_NATURES = n.ID JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID JOIN CFG_KEBS_REGIONS r ON c.REGION = r.ID JOIN CFG_KEBS_TOWNS t ON c.TOWN = t.ID JOIN CFG_KEBS_COUNTIES s ON c.COUNTY = s.ID   WHERE c.ASSIGN_STATUS='0'",
+        nativeQuery = true
+    )
     fun getManufacturerList(): MutableList<ManufactureListHolder>
 
     @Query(
@@ -419,7 +422,6 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getDistinctManufactureEntryNo(): Long?
 
 
-
     @Query(
         value = "SELECT DISTINCT c.ENTRY_NUMBER as entryNumber,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber FROM DAT_KEBS_COMPANY_PROFILE c, LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
                 "WHERE p.ENTRY_NUMBER=c.ENTRY_NUMBER ",
@@ -470,19 +472,6 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getLevyPenalty(): MutableList<LevyPenalty>
 
     @Query(
-        value = "SELECT p.ID as PenaltyOrderNo, c.ENTRY_NUMBER as entryNo,c.KRA_PIN as kraPin,c.NAME as manufacName,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,p.LEVY_PENALTY_PAYMENT_DATE as penaltyGenDate,p.PENALTY_APPLIED as penaltyPayable FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
-                "ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE  p.STATUS='1' AND p.LEVY_PENALTY_PAYMENT_DATE IS NOT NULL",
-        nativeQuery = true
-    )
-    fun getPenaltyDetails(): MutableList<PenaltyDetails>
-
-    @Query(
-        value = "SELECT COUNT(c.ENTRY_NUMBER)  FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE p.STATUS='1' AND p.LEVY_PENALTY_PAYMENT_DATE IS NOT NULL",
-        nativeQuery = true
-    )
-    fun findPenaltyCount(): String
-
-    @Query(
         value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.LEVY_PENALTY_PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,p.NET_PENALTY_AMT as amountDue,p.PENALTY_APPLIED as penalty,p.LEVY_DUE_DATE as levyDueDate," +
                 "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
                 " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
@@ -513,16 +502,18 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     )
     fun findRecordCount(entryNumber: String): Long
 
+    @Query(
+        value = "SELECT p.ID as PenaltyOrderNo, c.ENTRY_NUMBER as entryNo,c.KRA_PIN as kraPin,c.NAME as manufacName,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,p.LEVY_PENALTY_PAYMENT_DATE as penaltyGenDate,p.PENALTY_APPLIED as penaltyPayable FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
+                "ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE  p.STATUS='1' AND p.LEVY_PENALTY_PAYMENT_DATE IS NOT NULL",
+        nativeQuery = true
+    )
+    fun getPenaltyDetails(): MutableList<PenaltyDetails>
 
-
-
-
-
-
-
-
-
-
+    @Query(
+        value = "SELECT COUNT(c.ENTRY_NUMBER)  FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE p.STATUS='1' AND p.LEVY_PENALTY_PAYMENT_DATE IS NOT NULL",
+        nativeQuery = true
+    )
+    fun findPenaltyCount(): String
 
 }
 
@@ -554,7 +545,10 @@ interface ICompanyProfileContractsUndertakenRepository :
 interface ICompanyProfileDirectorsRepository : HazelcastRepository<CompanyProfileDirectorsEntity, Long> {
     fun findByCompanyProfileId(companyProfileId: Long): List<CompanyProfileDirectorsEntity>?
 
-    @Query(value = "SELECT DIRECTOR_NAME as directorName FROM DAT_KEBS_COMPANY_PROFILE_DIRECTORS WHERE COMPANY_PROFILE_ID = :id", nativeQuery = true)
+    @Query(
+        value = "SELECT DIRECTOR_NAME as directorName FROM DAT_KEBS_COMPANY_PROFILE_DIRECTORS WHERE COMPANY_PROFILE_ID = :id",
+        nativeQuery = true
+    )
     fun getCompanyDirectors(@Param("id") id: Long?): List<DirectorListHolder>?
 
 }
@@ -574,26 +568,26 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
     ): List<UserProfilesEntity>?
 
     fun findByDesignationIdAndSectionIdAndStatus(
-            designationId: DesignationsEntity,
-            sectionId: SectionsEntity,
-            status: Int
+        designationId: DesignationsEntity,
+        sectionId: SectionsEntity,
+        status: Int
     ): UserProfilesEntity?
 
     fun findByIdAndDesignationId_IdAndStatus(
-            id: Long,
-            designationId: Long,
-            status: Int
+        id: Long,
+        designationId: Long,
+        status: Int
     ): Optional<UserProfilesEntity>
 
     fun findByIdInAndDesignationId_IdAndStatus(
-            id: List<Long>,
-            designationId: Long,
-            status: Int
+        id: List<Long>,
+        designationId: Long,
+        status: Int
     ): List<UserProfilesEntity>
 
     fun findByRegionIdAndDesignationId(
-            regionId: RegionsEntity,
-            designationId: DesignationsEntity
+        regionId: RegionsEntity,
+        designationId: DesignationsEntity
     ): List<UserProfilesEntity>?
 
     fun findBySubSectionL1IdAndStatus(subSectionL1Id: SubSectionsLevel1Entity, status: Int): List<UserProfilesEntity>?
@@ -741,6 +735,7 @@ interface IUserVerificationTokensRepositoryB : JpaRepository<UserVerificationTok
     )
     fun findAllByVarField1(@Param("id") id: String?): String?
 }
+
 @Repository
 interface CompanyProfileEditEntityRepository : HazelcastRepository<CompanyProfileEditEntity, Long> {
     fun findAllByManufactureId(manufactureId: Long): CompanyProfileEditEntity
@@ -752,7 +747,6 @@ interface CompanyProfileEditEntityRepository : HazelcastRepository<CompanyProfil
         nativeQuery = true
     )
     fun findStatusByManufactureId(manufactureId: Long): CompanyProfileEditEntity
-
 
 
 }
