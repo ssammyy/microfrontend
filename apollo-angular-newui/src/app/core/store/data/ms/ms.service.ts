@@ -55,7 +55,7 @@ import {
     CountriesEntityDto,
     ChargeSheetDto,
     CountryListDto,
-    DataReportDto, SeizureDeclarationDto, InspectionInvestigationReportDto,
+    DataReportDto, SeizureDeclarationDto, InspectionInvestigationReportDto, PreliminaryReportDto, ApprovalDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -801,9 +801,63 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleSavePreliminaryReport(batchReferenceNo: string, referenceNo: string, data: PreliminaryReportDto): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsApprove(batchReferenceNo: string, referenceNo: string, data: WorkPlanScheduleApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_DETAILS);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleDetailsApprovePreliminaryHOF(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOF_PRELIMINARY_REPORT);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleDetailsApprovePreliminaryHOD(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOD_PRELIMINARY_REPORT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);

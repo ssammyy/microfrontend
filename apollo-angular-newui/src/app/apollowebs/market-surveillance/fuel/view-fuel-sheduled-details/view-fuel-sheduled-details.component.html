@@ -349,7 +349,7 @@
                                         <div class="panel" style="max-height: 388px;">
                                             <div *ngFor="let role of roles">
                                                 <button  *ngIf="role == 'MS_IOP_MODIFY' && fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded==false && fuelInspection?.officersAssigned?.id == userLoggedInID
-                                                && fuelInspection?.sampleLabResults?.savedPDFFiles?.length != null" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                                && fuelInspection?.sampleLabResults?.savedPDFFiles?.length != 0" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#myModal1"
                                                         class="btn btn-sm btn-primary mr-3"><span
                                                         class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>

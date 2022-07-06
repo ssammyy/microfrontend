@@ -161,10 +161,10 @@ interface IComplaintScheduleRepository : HazelcastRepository<MsComplaintSchedule
 interface IPreliminaryOutletsRepository : HazelcastRepository<MsPreliminaryReportOutletsVisitedEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsPreliminaryReportOutletsVisitedEntity>
 
-    fun findByPreliminaryReportID(preliminaryReportID: MsPreliminaryReportEntity, pageable: Pageable): Page<MsPreliminaryReportOutletsVisitedEntity>
-    fun findByPreliminaryReportID(preliminaryReportID: MsPreliminaryReportEntity): List<MsPreliminaryReportOutletsVisitedEntity>
+//    fun findByPreliminaryReportID(preliminaryReportID: Long, pageable: Pageable): Page<MsPreliminaryReportOutletsVisitedEntity>
+    fun findByPreliminaryReportID(preliminaryReportID: Long): List<MsPreliminaryReportOutletsVisitedEntity>
 
-    fun findByPreliminaryReportIDAndStatus(preliminaryReportID: MsPreliminaryReportEntity, status: Int): MsPreliminaryReportOutletsVisitedEntity?
+    fun findByPreliminaryReportIDAndStatus(preliminaryReportID: Long, status: Int): MsPreliminaryReportOutletsVisitedEntity?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
