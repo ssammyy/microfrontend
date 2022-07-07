@@ -350,8 +350,8 @@ curl -k --location --request POST 'https://kimsfluxint.kebs.org/api/kra/receiveS
 }'
 
 
-curl -k --location --request POST 'https://kimsfluxint.kebs.org/api/kra/receiveSL2Payment' \
---header 'Content-Type: application/json' \
+curl -k --location --request POST 'https://kimsfluxint.kebs.org/api/kra/receiveSL2Payment'
+--header 'Content-Type: application/text'
 --data-raw '{
 "REQUEST": {
 "loginId": "vmuriuki",

@@ -490,13 +490,13 @@ class SchedulerImpl(
     fun updateLabResultsWithDetails() {
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         //Find all Sample with Lab results inactive
-        KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
+        KotlinLogging.logger { }.trace { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
         val ssfFoundList = sampleSubmissionRepo.findByLabResultsStatusAndBsNumberIsNotNull(map.inactiveStatus)
         if (ssfFoundList.isNotEmpty()) {
             for (ssfFound in ssfFoundList) {
                 updateLabResultsWithDetails(ssfFound, map)
             }
         }
-        KotlinLogging.logger { }.info { "::::::::::::::::::::::::ENDED LAB RESULTS SCHEDULER::::::::::::::::::" }
+        KotlinLogging.logger { }.trace { "::::::::::::::::::::::::ENDED LAB RESULTS SCHEDULER::::::::::::::::::" }
     }
 }

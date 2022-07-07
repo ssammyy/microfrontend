@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra
 
 import akka.actor.ActorSystem
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoFluxService
@@ -88,6 +89,12 @@ class StandardsLevyDaoService(
         val log = daoService.createTransactionLog(0, daoService.generateTransactionReference())
         try {
             log.integrationRequest = daoService.mapper().writeValueAsString(paymentRequest)
+
+                   val gson = Gson()
+            KotlinLogging.logger { }.info("Endpoint Hit")
+//            KotlinLogging.logger { }.info { "Payment Body$body" }
+//            KotlinLogging.logger { }.info { "Payment Body Request$stringData" }
+ //       KotlinLogging.logger { }.info { "Payment Request" + gson.toJson(paymentRequest) }
             /**
              * Attempt to log in
              */

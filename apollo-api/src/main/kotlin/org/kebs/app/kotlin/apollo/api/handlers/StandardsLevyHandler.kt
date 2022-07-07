@@ -1,11 +1,12 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 import com.google.gson.Gson
+import com.sun.xml.rpc.processor.modeler.j2ee.xml.string
 import mu.KotlinLogging
+import org.json.simple.JSONObject
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.kra.request.ReceiveSL2PaymentRequest
-import org.kebs.app.kotlin.apollo.common.dto.ms.BatchFileFuelSaveDto
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
@@ -13,6 +14,7 @@ import org.springframework.validation.Validator
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.body
+
 
 /**
  *
@@ -107,8 +109,10 @@ class StandardsLevyHandler(
 
             val stringData = req.body<String>()
             val gson = Gson()
+
+            KotlinLogging.logger { }.info { "Payment Body$stringData" }
             val body = gson.fromJson(stringData, ReceiveSL2PaymentRequest::class.java)
-            val errors: Errors = BeanPropertyBindingResult(body, BatchFileFuelSaveDto::class.java.name)
+            val errors: Errors = BeanPropertyBindingResult(body, ReceiveSL2PaymentRequest::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
@@ -121,7 +125,7 @@ class StandardsLevyHandler(
             }
 
         } catch (e: Exception) {
-            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.error(e.message)
             onErrors(e.message)
         }

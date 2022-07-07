@@ -4,6 +4,7 @@ import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoFluxService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.MediaType
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.router
 
@@ -683,20 +684,9 @@ class AngularRoutes (private val daoService: DaoFluxService) {
 
     @Bean
     fun kraApiRoutes(handler: StandardsLevyHandler) = router {
-        "/api/kra".nest {
-//            GET("/receiveSL2Payment", daoService::invalidGetOnPostUrl)
-            POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
-//            "/send".nest {
-////                "/entryNumber".nest {
-////                    POST("{job}/start", handler::processSendEntryNumbers)
-////                }
-////                "/penalty".nest {
-////                    POST("{job}/start", handler::processSendPenalties)
-////                }
-//            }
-//            "/pinValidation".nest {
-////                POST("/validate", handler::processValidatePin)
-//            }
+        "/api/v1/migration/anonymous/kra".nest {
+            POST("/receiveSL2Payment".and(contentType(MediaType.TEXT_PLAIN)), handler::processReceiveSL2Payment)
+
 
         }
     }
