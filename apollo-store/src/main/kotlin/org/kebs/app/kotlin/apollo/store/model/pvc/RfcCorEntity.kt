@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.store.model
+package org.kebs.app.kotlin.apollo.store.model.pvc
 
 import java.io.Serializable
 import java.sql.Date
@@ -7,24 +7,25 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_RFC_GOODS")
-class RfcGoodsEntity : Serializable{
+@Table(name = "DAT_KEBS_RFC_COR_REQUESTS")
+class RfcCorEntity : Serializable {
+
     @Column(name = "ID", nullable = false, precision = 0)
     @Id
-    @SequenceGenerator(name = "DAT_KEBS_RFC_GOODS_SEQ_GEN", sequenceName = "DAT_KEBS_RFC_GOODS_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "DAT_KEBS_RFC_GOODS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "DAT_KEBS_RFC_COR_REQUESTS_SEQ_GEN", sequenceName = "DAT_KEBS_RFC_COR_REQUESTS_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_RFC_COR_REQUESTS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
 
     var id: Long = 0
 
-    @Column(name = "RFC_NUMBER", nullable = false, length = 50)
+    @Column(name = "RFC_NUMBER", unique = true)
     @Basic
     var rfcNumber: String? = null
 
-    @Column(name = "IDF_NUMBER", nullable = true, length = 50)
+    @Column(name = "IDF_NUMBER")
     @Basic
     var idfNumber: String? = null
 
-    @Column(name = "UCR_NUMBER", nullable = false, length = 50)
+    @Column(name = "UCR_NUMBER")
     @Basic
     var ucrNumber: String? = null
 
@@ -35,18 +36,6 @@ class RfcGoodsEntity : Serializable{
     @Column(name = "COUNTRY_OF_DESTINATION", nullable = false, length = 100)
     @Basic
     var countryOfDestination: String? = null
-
-    @Column(name = "APPLICATION_TYPE", nullable = false, length = 50)
-    @Basic
-    var applicationType: String? = null
-
-    @Column(name = "SOR_REFERENCE", nullable = true, length = 100)
-    @Basic
-    var sorReference: String? = null
-
-    @Column(name = "SOL_REFERENCE", nullable = true, length = 100)
-    @Basic
-    var solReference: String? = null
 
     @Column(name = "IMPORTER_NAME", nullable = false, length = 1000)
     @Basic
@@ -128,46 +117,6 @@ class RfcGoodsEntity : Serializable{
     @Basic
     var exporterEmail: String? = null
 
-    @Column(name = "THIRD_PARTY_NAME", nullable = false, length = 1000)
-    @Basic
-    var thirdPartyName: String? = null
-
-    @Column(name = "THIRD_PARTY_PIN", nullable = false, length = 150)
-    @Basic
-    var thirdPartyPin: String? = null
-
-    @Column(name = "THIRD_PARTY_ADDRESS_1", nullable = false, length = 1000)
-    @Basic
-    var thirdPartyAddress1: String? = null
-
-    @Column(name = "THIRD_PARTY_ADDRESS_2", nullable = true, length = 1000)
-    @Basic
-    var thirdPartyAddress2: String? = null
-
-    @Column(name = "THIRD_PARTY_CITY", nullable = false, length = 100)
-    @Basic
-    var thirdPartyCity: String? = null
-
-    @Column(name = "THIRD_PARTY_COUNTRY", nullable = false, length = 100)
-    @Basic
-    var thirdPartyCountry: String? = null
-
-    @Column(name = "THIRD_PARTY_ZIPCODE", nullable = false, length = 100)
-    @Basic
-    var thirdPartyZipcode: String? = null
-
-    @Column(name = "THIRD_PARTY_TELEPHONE_NUMBER", nullable = false, length = 100)
-    @Basic
-    var thirdPartyTelephoneNumber: String? = null
-
-    @Column(name = "THIRD_PARTY_FAX_NUMBER", nullable = true, length = 100)
-    @Basic
-    var thirdPartyFaxNumber: String? = null
-
-    @Column(name = "THIRD_PARTY_EMAIL", nullable = false, length = 150)
-    @Basic
-    var thirdPartyEmail: String? = null
-
     @Column(name = "APPLICANT_NAME", nullable = false, length = 1000)
     @Basic
     var applicantName: String? = null
@@ -240,10 +189,6 @@ class RfcGoodsEntity : Serializable{
     @Basic
     var countryOfSupply: String? = null
 
-    @Column(name = "ROUTE", nullable = false, length = 10)
-    @Basic
-    var route: String? = null
-
     @Column(name = "GOODS_CONDITION", nullable = false, length = 250)
     @Basic
     var goodsCondition: String? = null
@@ -255,6 +200,38 @@ class RfcGoodsEntity : Serializable{
     @Column(name = "LINK_TO_ATTACHED_DOCUMENTS", nullable = true, length = 4000)
     @Basic
     var linkToAttachedDocuments: String? = null
+
+    @Column(name = "PREFERRED_INSPECTION_DATE", nullable = false)
+    @Basic
+    var preferredInspectionDate: Timestamp? = null
+
+    @Column(name = "MAKE", nullable = false, length = 100)
+    @Basic
+    var make: String? = null
+
+    @Column(name = "MODEL", nullable = false, length = 150)
+    @Basic
+    var model: String? = null
+
+    @Column(name = "CHASSIS_NUMBER", nullable = false, length = 100)
+    @Basic
+    var chassisNumber: String? = null
+
+    @Column(name = "ENGINE_NUMBER", nullable = false, length = 100)
+    @Basic
+    var engineNumber: String? = null
+
+    @Column(name = "ENGINE_CAPACITY", nullable = false, length = 10)
+    @Basic
+    var engineCapacity: String? = null
+
+    @Column(name = "YEAR_OF_MANUFACTURE", nullable = false, length = 10)
+    @Basic
+    var yearOfManufacture: String? = null
+
+    @Column(name = "YEAR_OF_FIRST_REGISTRATION", nullable = false, length = 10)
+    @Basic
+    var yearOfFirstRegistration: String? = null
 
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
@@ -331,16 +308,10 @@ class RfcGoodsEntity : Serializable{
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as RfcGoodsEntity
+        val that = other as RfcCorEntity
         return id == that.id &&
-                rfcNumber == that.rfcNumber &&
-                idfNumber == that.idfNumber &&
-                ucrNumber == that.ucrNumber &&
                 rfcDate == that.rfcDate &&
                 countryOfDestination == that.countryOfDestination &&
-                applicationType == that.applicationType &&
-                sorReference == that.sorReference &&
-                solReference == that.solReference &&
                 importerName == that.importerName &&
                 importerPin == that.importerPin &&
                 importerAddress1 == that.importerAddress1 &&
@@ -361,16 +332,6 @@ class RfcGoodsEntity : Serializable{
                 exporterTelephoneNumber == that.exporterTelephoneNumber &&
                 exporterFaxNumber == that.exporterFaxNumber &&
                 exporterEmail == that.exporterEmail &&
-                thirdPartyName == that.thirdPartyName &&
-                thirdPartyPin == that.thirdPartyPin &&
-                thirdPartyAddress1 == that.thirdPartyAddress1 &&
-                thirdPartyAddress2 == that.thirdPartyAddress2 &&
-                thirdPartyCity == that.thirdPartyCity &&
-                thirdPartyCountry == that.thirdPartyCountry &&
-                thirdPartyZipcode == that.thirdPartyZipcode &&
-                thirdPartyTelephoneNumber == that.thirdPartyTelephoneNumber &&
-                thirdPartyFaxNumber == that.thirdPartyFaxNumber &&
-                thirdPartyEmail == that.thirdPartyEmail &&
                 applicantName == that.applicantName &&
                 applicantPin == that.applicantPin &&
                 applicantAddress1 == that.applicantAddress1 &&
@@ -389,10 +350,17 @@ class RfcGoodsEntity : Serializable{
                 portOfDischarge == that.portOfDischarge &&
                 shipmentMethod == that.shipmentMethod &&
                 countryOfSupply == that.countryOfSupply &&
-                route == that.route &&
                 goodsCondition == that.goodsCondition &&
                 assemblyState == that.assemblyState &&
                 linkToAttachedDocuments == that.linkToAttachedDocuments &&
+                preferredInspectionDate == that.preferredInspectionDate &&
+                make == that.make &&
+                model == that.model &&
+                chassisNumber == that.chassisNumber &&
+                engineNumber == that.engineNumber &&
+                engineCapacity == that.engineCapacity &&
+                yearOfManufacture == that.yearOfManufacture &&
+                yearOfFirstRegistration == that.yearOfFirstRegistration &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -416,14 +384,8 @@ class RfcGoodsEntity : Serializable{
     override fun hashCode(): Int {
         return Objects.hash(
             id,
-            rfcNumber,
-            idfNumber,
-            ucrNumber,
             rfcDate,
             countryOfDestination,
-            applicationType,
-            sorReference,
-            solReference,
             importerName,
             importerPin,
             importerAddress1,
@@ -444,16 +406,6 @@ class RfcGoodsEntity : Serializable{
             exporterTelephoneNumber,
             exporterFaxNumber,
             exporterEmail,
-            thirdPartyName,
-            thirdPartyPin,
-            thirdPartyAddress1,
-            thirdPartyAddress2,
-            thirdPartyCity,
-            thirdPartyCountry,
-            thirdPartyZipcode,
-            thirdPartyTelephoneNumber,
-            thirdPartyFaxNumber,
-            thirdPartyEmail,
             applicantName,
             applicantPin,
             applicantAddress1,
@@ -472,10 +424,17 @@ class RfcGoodsEntity : Serializable{
             portOfDischarge,
             shipmentMethod,
             countryOfSupply,
-            route,
             goodsCondition,
             assemblyState,
             linkToAttachedDocuments,
+            preferredInspectionDate,
+            make,
+            model,
+            chassisNumber,
+            engineNumber,
+            engineCapacity,
+            yearOfManufacture,
+            yearOfFirstRegistration,
             status,
             varField1,
             varField2,

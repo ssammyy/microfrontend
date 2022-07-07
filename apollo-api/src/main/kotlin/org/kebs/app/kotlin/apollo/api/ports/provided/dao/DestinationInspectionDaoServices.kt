@@ -879,6 +879,10 @@ class DestinationInspectionDaoServices(
         return corsBakRepository.findByConsignmentDocId(cdId)
     }
 
+    fun findCORByCorNumber(corNumber: String): CorsBakEntity? {
+        return corsBakRepository.findByCorNumber(corNumber)
+    }
+
     fun findCORByChassisNumber(chassisNo: String): CorsBakEntity {
         corsBakRepository.findByChasisNumber(chassisNo)
                 ?.let { corEntity ->

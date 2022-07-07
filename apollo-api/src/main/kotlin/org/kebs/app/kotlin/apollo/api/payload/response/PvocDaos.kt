@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.payload.response
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import org.kebs.app.kotlin.apollo.store.model.RiskProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import java.io.Serializable
 import java.sql.Timestamp
@@ -558,6 +559,139 @@ class PvocPartnerCountryDao {
 
         fun fromList(timelines: List<PvocPartnersCountriesEntity>): List<PvocPartnerCountryDao> {
             val dtos = mutableListOf<PvocPartnerCountryDao>()
+            timelines.forEach {
+                dtos.add(fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
+
+class RiskProfileDao {
+    var hsCode: String? = null
+    var brandName: String? = null
+    var productDescription: String? = null
+    var countryOfSupply: String? = null
+    var manufacturer: String? = null
+    var importerName: String? = null
+    var importerPin: String? = null
+    var exporterName: String? = null
+    var exporterPin: String? = null
+    var riskLevel: String? = null
+    var riskDescription: String? = null
+    var remarks: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var categorizationDate: java.sql.Date? = null
+
+    companion object {
+        fun fromEntity(pvocPartner: RiskProfileEntity): RiskProfileDao {
+            return RiskProfileDao().apply {
+                hsCode = pvocPartner.hsCode
+                brandName = pvocPartner.brandName
+                productDescription = pvocPartner.productDescription
+                countryOfSupply = pvocPartner.countryOfSupply
+                manufacturer = pvocPartner.manufacturer
+                importerName = pvocPartner.importerName
+                importerPin = pvocPartner.importerPin
+                exporterName = pvocPartner.exporterName
+                exporterPin = pvocPartner.exporterPin
+                riskLevel = pvocPartner.riskLevel
+                riskDescription = pvocPartner.riskDescription
+                remarks = pvocPartner.remarks
+                categorizationDate = pvocPartner.categorizationDate
+            }
+        }
+
+        fun fromList(timelines: List<RiskProfileEntity>): List<RiskProfileDao> {
+            val dtos = mutableListOf<RiskProfileDao>()
+            timelines.forEach {
+                dtos.add(fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
+class PvocQueryResponseDao {
+    var serialNumber: String? = null
+    var queryResponse: String? = null
+    var responseFrom: String? = null
+    var linkToUploads: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var responseDate: Timestamp? = null
+
+    companion object {
+        fun fromEntity(pvocPartner: PvocQueryResponseEntity): PvocQueryResponseDao {
+            return PvocQueryResponseDao().apply {
+                serialNumber = pvocPartner.serialNumber
+                responseDate = pvocPartner.createdOn
+                queryResponse = pvocPartner.response
+                linkToUploads = pvocPartner.linkToUploads
+                responseFrom = pvocPartner.responseFrom
+            }
+        }
+
+        fun fromList(timelines: Iterable<PvocQueryResponseEntity>): List<PvocQueryResponseDao> {
+            val dtos = mutableListOf<PvocQueryResponseDao>()
+            timelines.forEach {
+                dtos.add(fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
+class PvocPartnerQueryDao {
+    var rfcNumber: String? = null
+    var idfNumber: String? = null
+    var invoiceNumber: String? = null
+    var ucrNumber: String? = null
+    var documentType: String? = null
+    var certNumber: String? = null
+    var serialNumber: String? = null
+    var query: String? = null
+    var queryOrigin: String? = null
+    var response: String? = null
+    var conclusion: String? = null
+    var conclusionStatus: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var dateOpened: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var dateClosed: Timestamp? = null
+    var responses: List<PvocQueryResponseDao>? = null
+
+    companion object {
+        fun fromEntity(pvocPartner: PvocQueriesEntity): PvocPartnerQueryDao {
+            return PvocPartnerQueryDao().apply {
+                rfcNumber = pvocPartner.rfcNumber
+                idfNumber = pvocPartner.idfNumber
+                invoiceNumber = pvocPartner.invoiceNumber
+                ucrNumber = pvocPartner.ucrNumber
+                documentType = pvocPartner.certType
+                certNumber = pvocPartner.certNumber
+                serialNumber = pvocPartner.serialNumber
+                query = pvocPartner.queryDetails
+                queryOrigin = pvocPartner.queryOrigin
+                response = pvocPartner.queryResponse
+                conclusion = pvocPartner.conclusion
+                conclusionStatus = when (pvocPartner.conclusionStatus) {
+                    1 -> "COMPLETED"
+                    else -> "PENDING"
+                }
+                dateOpened = pvocPartner.createdOn
+                dateClosed = pvocPartner.conclusionDate
+                responses = PvocQueryResponseDao.fromList(pvocPartner.responses.orEmpty())
+
+            }
+        }
+
+        fun fromList(timelines: List<PvocQueriesEntity>): List<PvocPartnerQueryDao> {
+            val dtos = mutableListOf<PvocPartnerQueryDao>()
             timelines.forEach {
                 dtos.add(fromEntity(it))
             }

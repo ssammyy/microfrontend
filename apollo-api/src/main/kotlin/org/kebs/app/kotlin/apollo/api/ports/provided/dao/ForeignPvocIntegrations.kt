@@ -8,11 +8,12 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocSealIssuesEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocTimelinesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import org.springframework.util.StringUtils
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Duration
@@ -26,8 +27,9 @@ class ForeignPvocIntegrations(
         private val cocRepo: ICocsRepository,
         private val iCocItemRepository: ICocItemRepository,
         private val corsBakRepository: ICorsBakRepository,
-        private val rfcCoiRepository: IRfcCoiRepository,
-        private val rfcCoiItemRepository: IRfcCoiItemsRepository,
+        private val rfcRepository: IRfcEntityRepo,
+        private val rfcItemRepository: IRfcItemsRepository,
+        private val rfcCorRepository: IRfcCorRepository,
         private val riskProfileRepository: IRiskProfileRepository,
         private val timelinesConfigurationRepository: IPvocTimelinesConfigurationRepository,
         private val timelinesRepository: IPvocTimelinesDataEntityRepository,
@@ -41,6 +43,7 @@ class ForeignPvocIntegrations(
         private val monitoringService: PvocMonitoringService
 ) {
     private final val YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM")
+    private final val REPORT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd")
 
     @Transactional
     fun foreignCoc(
@@ -674,74 +677,57 @@ class ForeignPvocIntegrations(
 
 
     @Transactional
-    fun foreignRfcCoi(rfc: RfcCoiEntityForm, s: ServiceMapsEntity, user: PvocPartnersEntity): RfcCoiEntity? {
-        val rfcEntity = RfcCoiEntity()
+    fun foreignRfc(rfc: RfcEntityForm, documentType: String, s: ServiceMapsEntity, user: PvocPartnersEntity): RfcEntity? {
+        val rfcEntity = RfcEntity()
         val auth = this.commonDaoServices.loggedInUserAuthentication()
-        this.rfcCoiRepository.findByRfcNumber(rfc.rfcNumber!!)?.let {
+        this.rfcRepository.findByRfcNumber(rfc.rfcNumber!!)?.let {
             return null
         } ?: run {
-            this.cocRepo.findByUcrNumberAndCocType(rfc.ucrNumber!!, "COI")?.let { coi ->
-                rfcEntity.rfcNumber = rfc.rfcNumber
-                rfcEntity.coiId = coi.id
-                rfcEntity.idfNumber = rfc.idfNumber
-                rfcEntity.ucrNumber = rfc.ucrNumber
-                rfcEntity.rfcDate = rfc.rfcDate
-                rfcEntity.countryOfDestination = rfc.countryOfDestination
-                rfcEntity.applicationType = rfc.applicationType
-                rfcEntity.solReference = rfc.solReference
-                rfcEntity.sorReference = rfc.sorReference
-                rfcEntity.importerName = rfc.importerName
-                rfcEntity.importerCountry = rfc.importerCountry
-                rfcEntity.importerAddress1 = rfc.importerAddress1
-                rfcEntity.importerAddress2 = rfc.importerAddress2
-                rfcEntity.importerCity = rfc.importerCity
-                rfcEntity.importerFaxNumber = rfc.importerFaxNumber
-                rfcEntity.importerPin = rfc.importerPin
-                rfcEntity.importerZipcode = rfc.importerZipCode
-                rfcEntity.importerTelephoneNumber = rfc.importerTelephoneNumber
-                rfcEntity.importerEmail = rfc.importerEmail
-                rfcEntity.exporterName = rfc.exporterName
-                rfcEntity.exporterPin = rfc.exporterPin
-                rfcEntity.exporterCity = rfc.exporterCity
-                rfcEntity.exporterAddress1 = rfc.exporterAddress1
-                rfcEntity.exporterAddress2 = rfc.exporterAddress2
-                rfcEntity.exporterCountry = rfc.exporterCountry
-                rfcEntity.exporterEmail = rfc.exporterEmail
-                rfcEntity.exporterFaxNumber = rfc.exporterFaxNumber
-                rfcEntity.exporterTelephoneNumber = rfc.exporterTelephoneNumber
-                rfcEntity.exporterZipcode = rfc.exporterZipCode
-                rfcEntity.placeOfInspection = rfc.placeOfInspection
-                rfcEntity.placeOfInspectionAddress = rfc.placeOfInspectionAddress
-                rfcEntity.placeOfInspectionContacts = rfc.placeOfInspectionContacts
-                rfcEntity.placeOfInspectionEmail = rfc.placeOfInspectionEmail
-                rfcEntity.portOfDischarge = rfc.portOfDischarge
-                rfcEntity.portOfLoading = rfc.portOfLoading
-                rfcEntity.shipmentMethod = rfc.shipmentMethod
-                rfcEntity.countryOfSupply = rfc.countryOfSupply
-                rfcEntity.partner = user.id
-                rfcEntity.route = rfc.route
-                rfcEntity.status = s.activeStatus.toLong()
-                rfcEntity.goodsCondition = rfc.goodsCondition
-                rfcEntity.assemblyState = rfc.assemblyState
-                rfcEntity.linkToAttachedDocuments = rfc.linkToAttachedDocuments
-                val saved = this.rfcCoiRepository.save(rfcEntity)
-                rfc.items?.let { items ->
-                    for (item in items) {
-                        val rfcItem = RfcCoiItemsEntity()
-                        rfcItem.rfcId = saved.id
-                        rfcItem.declaredHsCode = item.declaredHsCode
-                        rfcItem.itemQuantity = item.itemQuantity?.toString() ?: "0"
-                        rfcItem.productDescription = item.productDescription
-                        rfcItem.ownerName = item.ownerName
-                        rfcItem.ownerPin = item.ownerPin
-                        rfcItem.createdBy = auth.name
-                        rfcItem.createdOn = Timestamp.from(Instant.now())
-                        rfcItem.modifiedBy = auth.name
-                        rfcItem.modifiedOn = Timestamp.from(Instant.now())
-                        this.rfcCoiItemRepository.save(rfcItem)
-                    }
-                } ?: throw ExpectedDataNotFound("COI with ucr number not found")
-            }
+            rfc.fillDetails(rfcEntity)
+            rfcEntity.rfcDocumentType = documentType
+            rfcEntity.partner = user.id
+            rfcEntity.status = s.activeStatus.toLong()
+
+            rfcEntity.createdBy = auth.name
+            rfcEntity.createdOn = Timestamp.from(Instant.now())
+            rfcEntity.modifiedBy = auth.name
+            rfcEntity.modifiedOn = Timestamp.from(Instant.now())
+            val saved = this.rfcRepository.save(rfcEntity)
+            rfc.items?.let { items ->
+                for (item in items) {
+                    val rfcItem = RfcItemEntity()
+                    rfcItem.rfcId = saved.id
+                    rfcItem.declaredHsCode = item.declaredHsCode
+                    rfcItem.itemQuantity = item.itemQuantity?.toString() ?: "0"
+                    rfcItem.productDescription = item.productDescription
+                    rfcItem.ownerName = item.ownerName
+                    rfcItem.ownerPin = item.ownerPin
+                    rfcItem.createdBy = auth.name
+                    rfcItem.createdOn = Timestamp.from(Instant.now())
+                    rfcItem.modifiedBy = auth.name
+                    rfcItem.modifiedOn = Timestamp.from(Instant.now())
+                    this.rfcItemRepository.save(rfcItem)
+                }
+            } ?: throw ExpectedDataNotFound("$documentType items are required")
+        }
+        return rfcEntity
+    }
+
+    @Transactional
+    fun foreignRfcCor(rfc: RfcCorForm, s: ServiceMapsEntity, user: PvocPartnersEntity): RfcCorEntity? {
+        val rfcEntity = RfcCorEntity()
+        val auth = this.commonDaoServices.loggedInUserAuthentication()
+        this.rfcCorRepository.findByRfcNumber(rfc.rfcNumber!!)?.let {
+            return null
+        } ?: run {
+            rfc.fillCorRfc(rfcEntity)
+            rfcEntity.partner = user.id
+            rfcEntity.status = s.activeStatus.toLong()
+            rfcEntity.createdBy = auth.name
+            rfcEntity.createdOn = Timestamp.from(Instant.now())
+            rfcEntity.modifiedBy = auth.name
+            rfcEntity.modifiedOn = Timestamp.from(Instant.now())
+            val saved = this.rfcCorRepository.save(rfcEntity)
         }
         return rfcEntity
     }
@@ -834,11 +820,24 @@ class ForeignPvocIntegrations(
         risk.partnerId = user.id
         risk.manufacturer = rfc.manufacturer
         risk.traderName = rfc.traderName
+        risk.productDescription = rfc.productDescription
         risk.status = s.activeStatus.toLong()
         risk.createdBy = auth.name
         risk.createdOn = Timestamp.from(Instant.now())
         risk.modifiedBy = auth.name
         risk.modifiedOn = Timestamp.from(Instant.now())
         return this.riskProfileRepository.save(risk)
+    }
+
+    fun listRiskProfile(clientId: String, dateStr: String?, pg: PageRequest): Page<RiskProfileEntity> {
+        val requestDate = when {
+            StringUtils.hasLength(dateStr) -> {
+                REPORT_DATE_FORMATTER.parse(dateStr.orEmpty())
+                dateStr.orEmpty()
+            }
+            else -> REPORT_DATE_FORMATTER.format(LocalDateTime.now())
+        }
+        KotlinLogging.logger { }.info("Risk Profile: $requestDate")
+        return this.riskProfileRepository.findByCategorizationDateAndCreatedByNotEquals(requestDate, clientId, pg)
     }
 }
