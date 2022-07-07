@@ -444,14 +444,7 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'nwa',
         children: [
             {path: 'nwaJustification', title: 'Prepare Justification', ab: 'PJ'},
-            {path: 'nwaJustificationTasks', title: 'View Justification SPC SEC', ab: 'VJ'},
-            {path: 'nwaKnwSecTasks', title: 'View Justification KNW SEC', ab: 'VJ'},
-            {path: 'nwaDirStTasks', title: 'View DI-SDT Justification', ab: 'VDJ'},
-            {path: 'nwaHopTasks', title: 'Edit Workshop Draft', ab: 'EWD'},
-            {path: 'nwaSacSecTasks', title: 'WorkShop Draft', ab: 'WD'},
-            {path: 'nwaHoSicTasks', title: 'Upload Gazzete Notice', ab: 'UGN'},
-            {path: 'nwaPreparePD', title: 'Prepare Preliminary Draft', ab: 'PPD'},
-            {path: 'nwaTasks', title: 'NWA', ab: 'NWA'},
+            {path: 'nwaTasks', title: 'Workshop Agreement Tasks', ab: 'NWA'},
 
         ],
     },
