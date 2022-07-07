@@ -1066,7 +1066,6 @@ export const routes: Routes = [
         children: [{path: '', component: CreateproductSubCategoryComponent}],
     },
 
-
     /****************************************************************
      * STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
      ***************************************************************/
@@ -1261,10 +1260,7 @@ export const routes: Routes = [
 
 
 
-    {
-        path: 'productSubCategory', component: AdminLayoutComponent,
-        children: [{path: '', component: CreateproductSubCategoryComponent}],
-    },
+
 
     // STANDARDS LEVY
     {
