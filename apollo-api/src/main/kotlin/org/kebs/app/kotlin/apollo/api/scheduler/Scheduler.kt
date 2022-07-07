@@ -89,6 +89,6 @@ class SchedulerDevelopment(
         schedulerImpl.updatePaidDemandNotesStatus()
         //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
 //        msDaoServices.updateRemediationDetailsAfterPaymentDone()
-        KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
+        KotlinLogging.logger { }.trace("DEV: UPDATED DEMAND NOTES on SW")
     }
 }

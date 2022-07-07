@@ -338,6 +338,169 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
         icontype: 'receipt',
     },
+
+    //Standards Development
+    {
+        path: '',
+        title: 'Request Module',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'requestModule',
+        children: [
+            {path: 'ms-standards', title: 'Review Standard Requests', ab: 'RSR'},
+            {path: 'std-tsc-sec-task', title: 'Prepare New Work Item', ab: 'PNWI'},
+            {path: 'std-tc-task', title: 'Vote On New Work Item', ab: 'V'},
+            {path: 'upload-justification', title: 'Upload Justification', ab: 'UJ'},
+            {path: 'decision-justification', title: 'Decision On Justification', ab: 'DOJ'},
+            {path: 'upload-workplan', title: 'Upload Workplan', ab: 'UW'},
+
+
+
+        ],
+    },
+
+    {
+        path: '',
+        title: 'Publishing',
+        type: 'sub',
+        icontype: 'publish',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'publish',
+        children: [
+            {path: 'draftStandard', title: 'Upload Draft Standard', ab: 'UDS'},
+            {path: 'hopTasks', title: 'Review Draft Standards', ab: 'RDS'},
+            {path: 'editorTasks', title: 'Edit Draft Standards', ab: 'EDS'},
+            {path: 'proofReaderTasks', title: 'Proofread Draft Standards', ab: 'PDS'},
+            {path: 'draughtsmanTasks', title: 'Draught Draft Standards', ab: 'DDS'},
+            {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
+
+
+
+        ],
+    },
+    {
+        path: '',
+        title: 'Formation Of A TC',
+        type: 'sub',
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'formation',
+        children: [
+            {path: 'requestForFormationOfTC', title: 'Request For Formation', ab: 'RFF'},
+            {path: 'reviewJustificationOfTC', title: 'TC Justification', ab: 'RDS'},
+            {path: 'reviewFeedbackSPC', title: 'Feedback Review', ab: 'EDS'},
+
+
+
+
+        ],
+    },
+    {
+        path: '',
+        title: 'Membership To A TC',
+        type: 'sub',
+        icontype: 'groups',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'membership',
+        children: [
+            {path: 'callsForApplication', title: 'Create Application', ab: 'CA'},
+            {path: 'reviewApplication', title: 'Review Applications', ab: 'RA'},
+            {path: 'reviewRecommendation', title: 'Review Recommendations', ab: 'RAR'},
+            {path: 'reviewRecommendationOfSpc', title: 'SPC Review', ab: 'SR'},
+            {path: 'reviewAccepted', title: 'Appointment Letter', ab: 'AL'},
+            {path: 'reviewRejected', title: 'Rejected Appointments', ab: 'RA'},
+            {path: 'approvedMembers', title: 'Approved Members', ab: 'AM'},
+            {path: 'createCredentials', title: 'Credentials Creation', ab: 'CC'},
+            {path: 'sendInductionEmail', title: 'Send Induction Email', ab: 'SIE'},
+            {path: 'sendNotice', title: 'Send Notice', ab: 'SN'},
+
+
+
+
+        ],
+    },
+    {
+        path: '',
+        title: 'Adoption of EAS',
+        type: 'sub',
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'adoption',
+        children: [
+            {path: 'uploadSacSummary', title: 'Upload SAC Summary', ab: 'USS'},
+            {path: 'viewSacSummary', title: 'Review SAC Summary', ab: 'RSS'},
+            {path: 'viewSacSummaryApproved', title: 'Feedback Review', ab: 'EDS'},
+
+        ],
+    },
+
+    {
+        path: '',
+        title: 'Workshop Agreement',
+        type: 'sub',
+        icontype: 'handshake',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'nwa',
+        children: [
+            {path: 'nwaJustification', title: 'Prepare Justification', ab: 'PJ'},
+            {path: 'nwaTasks', title: 'Workshop Agreement Tasks', ab: 'NWA'},
+
+        ],
+    },
+    {
+        path: '',
+        title: 'National Enquiry Point',
+        type: 'sub',
+        icontype: 'quiz',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'nep',
+        children: [
+            {path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
+            {path: 'nep_information_received', title: 'Enquiry Manage', ab: 'EM'},
+            {path: 'nep_division_response', title: 'Division Response', ab: 'DR'},
+
+        ],
+    },
+
+    {
+        path: '',
+        title: 'Company Standard',
+        type: 'sub',
+        icontype: 'business',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'cs',
+        children: [
+            {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
+            {path: 'comStdList', title: 'View CSR/Assign PL', ab: 'VC'},
+            {path: 'comStdJustification', title: 'View Justification ', ab: 'V'},
+            {path: 'comAppJustification', title: 'Approve Justification', ab: 'V'},
+            {path: 'comStdJustificationList', title: 'List Justification', ab: 'J'},
+            {path: 'comStdAppJustification', title: 'Approve Justification', ab: 'J'},
+            {path: 'comPlTasks', title: 'Form Joint Committee', ab: 'PL'},
+            {path: 'comPlTasks', title: 'Prepare Company Draft', ab: 'PL'},
+            {path: 'comStdDraft', title: 'View Company Draft', ab: 'PPD'},
+            {path: 'comStdConfirmation', title: 'Approve Company Draft', ab: 'NWA'},
+            {path: 'comStdUpload', title: 'Edit/upload Company Standard', ab: 'NWA'},
+            {path: 'comStdListed', title: 'View uploaded standard', ab: 'NWA'},
+
+        ],
+    },
+    {
+        path: '',
+        title: 'International Standards',
+        type: 'sub',
+        icontype: 'quiz',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'is',
+        children: [
+            {path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
+
+
+        ],
+    },
+
+
 ];
 
 @Component({

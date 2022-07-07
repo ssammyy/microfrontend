@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {selectUserInfo} from "../../../core/store/data/auth";
+import {selectUserInfo} from "../../../core/store";
 import {Store} from "@ngrx/store";
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 
@@ -72,10 +72,12 @@ export class InspectionDashboardComponent implements OnInit {
 
     // Check if role is in required privileges
     hasRole(privileges: string[]): Boolean {
-        for (let role of this.roles) {
-            for (let p of privileges) {
-                if (role == p) {
-                    return true
+        if (this.roles?.length > 0) {
+            for (let role of this.roles) {
+                for (let p of privileges) {
+                    if (role == p) {
+                        return true
+                    }
                 }
             }
         }
