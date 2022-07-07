@@ -300,6 +300,36 @@ export class ComplaintCustomersDto {
     postalAddress: string;
 }
 
+export class PreliminaryReportItemsDto {
+    id: number;
+    marketCenter: string;
+    nameOutlet: string;
+    sector: string;
+    dateVisit: Date;
+    numberProductsPhysicalInspected: number;
+    compliancePhysicalInspection: number;
+    remarks: string;
+    preliminaryReportID: number;
+}
+
+export class PreliminaryReportDto {
+    id: number;
+    reportTo: string;
+    reportFrom: string;
+    reportSubject: string;
+    reportTitle: string;
+    reportDate: Date;
+    surveillanceDateFrom: Date;
+    surveillanceDateTo: Date;
+    reportBackground: string;
+    kebsOfficersName: string;
+    surveillanceObjective: string;
+    surveillanceConclusions: string;
+    surveillanceRecommendation: string;
+    remarks: string;
+    parametersList: PreliminaryReportItemsDto[];
+}
+
 export class InspectionInvestigationReportDto {
     id: number;
     reportReference: string;
@@ -435,6 +465,7 @@ export class WorkPlanInspectionDto {
     sampleSubmitted: SampleSubmissionDto;
     sampleLabResults: MSSSFLabResultsDto;
     compliantStatusAdded: boolean;
+    preliminaryReport: PreliminaryReportDto;
 }
 
 export class CountryListDto {
@@ -554,6 +585,11 @@ export class FuelEntityAssignOfficerDto {
 }
 
 export class WorkPlanScheduleApprovalDto {
+    approvalStatus: boolean;
+    remarks: string;
+}
+
+export class ApprovalDto {
     approvalStatus: boolean;
     remarks: string;
 }

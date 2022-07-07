@@ -49,6 +49,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val seizureDeclarationRepo: IMSSeizureDeclarationRepository,
     private val investInspectReportRepo: IMSInvestInspectReportRepository,
     private val preliminaryRepo: IPreliminaryReportRepository,
+    private val preliminaryOutletRepo: IPreliminaryOutletsRepository,
 
     private val msTypesRepo: IMsTypesRepository,
     private val complaintsRepo: IComplaintRepository,
@@ -908,6 +909,9 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         when (dataFileSaved.first.status) {
             map.successStatus -> {
+                body.parametersList?.forEach { param->
+                    addPreliminaryReportParamAdd(param,dataFileSaved.second,map,loggedInUser)
+                }
                 when (workPlanScheduled.onsiteEndStatus) {
                     map.activeStatus -> {
                         with(workPlanScheduled) {
@@ -1760,6 +1764,54 @@ class MarketSurveillanceWorkPlanDaoServices(
         return Pair(sr, saveData)
     }
 
+    fun addPreliminaryReportParamAdd(
+        body: PreliminaryReportItemsDto,
+        preliminaryReport: MsPreliminaryReportEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsPreliminaryReportOutletsVisitedEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var param = MsPreliminaryReportOutletsVisitedEntity()
+        try {
+            with(param) {
+                marketCenter = body.marketCenter
+                nameOutlet = body.nameOutlet
+                sector = body.sector
+                dateVisit = body.dateVisit
+                numberProductsPhysicalInspected = body.numberProductsPhysicalInspected
+                compliancePhysicalInspection = body.compliancePhysicalInspection
+                remarks = body.remarks
+                preliminaryReportID = preliminaryReport.id
+                status = map.activeStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            param = preliminaryOutletRepo.save(param)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(param)} "
+            sr.names = "Preliminary Report Parameter To be tested Save file"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, param)
+    }
+
     fun saveOnsiteUploadFiles(
         docFile: MultipartFile,
         map: ServiceMapsEntity,
@@ -2109,6 +2161,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val sampleCollectedParamList = sampleCollected?.id?.let { msFuelDaoServices.findAllSampleCollectedParametersBasedOnSampleCollectedID(it) }
         val sampleCollectedDtoValues = sampleCollectedParamList?.let { msFuelDaoServices.mapSampleCollectedParamListDto(it) }?.let { msFuelDaoServices.mapSampleCollectedDto(sampleCollected, it) }
 
+
         val sampleSubmitted = findSampleSubmissionDetailByWorkPlanGeneratedID(workPlanScheduledDetails.id)
         val sampleSubmittedParamList = sampleSubmitted?.id?.let { msFuelDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
         val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { msFuelDaoServices.mapSampleSubmissionParamListDto(it) }?.let { msFuelDaoServices.mapSampleSubmissionDto(sampleSubmitted, it) }
@@ -2126,6 +2179,10 @@ class MarketSurveillanceWorkPlanDaoServices(
             compliantStatusDone = true
         }
 
+        val preliminaryReport  = findPreliminaryReportByWorkPlanGeneratedID(workPlanScheduledDetails.id)
+        val preliminaryReportParamList = preliminaryReport.id?.let { findPreliminaryReportParams(it) }
+        val preliminaryReportDtoValues = preliminaryReportParamList?.let { mapPreliminaryParamListDto(it) }?.let { mapPreliminaryReportDto(preliminaryReport, it) }
+
         return mapWorkPlanInspectionDto(
             workPlanScheduledDetails,
             map,
@@ -2137,6 +2194,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             sampleCollectedDtoValues,
             sampleSubmittedDtoValues,
             labResultsDto,
+            preliminaryReportDtoValues
 
         )
     }
@@ -2152,6 +2210,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         sampleCollected: SampleCollectionDto?,
         sampleSubmitted: SampleSubmissionDto?,
         sampleLabResults: MSSSFLabResultsDto?,
+        preliminaryReport: PreliminaryReportDto?,
 
     ): WorkPlanInspectionDto {
         return WorkPlanInspectionDto(
@@ -2243,7 +2302,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             sampleCollected,
             sampleSubmitted,
             sampleLabResults,
-            compliantStatusDone
+            compliantStatusDone,
+            preliminaryReport
         )
     }
 
@@ -2291,12 +2351,53 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
     }
 
+    fun mapPreliminaryReportDto(data: MsPreliminaryReportEntity, data2:List<PreliminaryReportItemsDto>): PreliminaryReportDto {
+        return PreliminaryReportDto(
+            data.id,
+            data.reportTo,
+            data.reportFrom,
+            data.reportSubject,
+            data.reportTitle,
+            data.reportDate,
+            data.surveillanceDateFrom,
+            data.surveillanceDateTo,
+            data.reportBackground,
+            data.kebsOfficersName,
+            data.surveillanceObjective,
+            data.surveillanceConclusions,
+            data.surveillanceRecommendation,
+            data.remarks,
+            data2
+        )
+    }
+
+    fun mapPreliminaryParamListDto(paramList: List<MsPreliminaryReportOutletsVisitedEntity>): List<PreliminaryReportItemsDto> {
+
+        return paramList.map {
+            PreliminaryReportItemsDto(
+                it.id,
+                it.marketCenter,
+                it.nameOutlet,
+                it.sector,
+                it.dateVisit,
+                it.numberProductsPhysicalInspected,
+                it.compliancePhysicalInspection,
+                it.remarks,
+                it.preliminaryReportID,
+            )
+        }
+    }
+
     fun findRemarksForWorkPlan(workPlanInspectionID: Long): List<MsRemarksEntity>? {
         return remarksRepo.findAllByWorkPlanIdOrderByIdAsc(workPlanInspectionID)
     }
 
     fun findUploadedFileForWorkPlans(workPlanInspectionID: Long): List<MsUploadsEntity>? {
         return msUploadRepo.findAllByMsWorkplanGeneratedIdAndWorkPlanUploads(workPlanInspectionID, 1)
+    }
+
+    fun findPreliminaryReportParams(preliminaryID: Long): List<MsPreliminaryReportOutletsVisitedEntity> {
+        return preliminaryOutletRepo.findByPreliminaryReportID(preliminaryID)
     }
 
     fun findChargeSheetByWorkPlanInspectionID(workPlanInspectionID: Long): MsChargeSheetEntity? {

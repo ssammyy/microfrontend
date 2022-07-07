@@ -174,6 +174,7 @@ data class WorkPlanInspectionDto(
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
         var compliantStatusAdded: Boolean? = null,
+        var preliminaryReport: PreliminaryReportDto? = null,
 )
 
 data class FuelEntityDto(
@@ -447,12 +448,23 @@ data class SampleSubmissionItemsDto(
         var laboratoryName : String? = null,
 )
 
+data class PreliminaryReportItemsDto(
+        var id: Long? = 0,
+        var marketCenter: String? = null,
+        var nameOutlet: String? = null,
+        var sector: String? = null,
+        var dateVisit: Date? = null,
+        var numberProductsPhysicalInspected: Long? = null,
+        var compliancePhysicalInspection: Long? = null,
+        var remarks: String? = null,
+        var preliminaryReportID: Long? = null,
+)
+
 data class BSNumberSaveDto(
         @NotNull(message = "Required field")
         var bsNumber: String,
         @NotNull(message = "Required field")
         var submittedDate: Date,
-
         var remarks: String? = null,
 )
 
@@ -559,6 +571,7 @@ data class PreliminaryReportDto(
         var surveillanceConclusions: String? = null,
         var surveillanceRecommendation: String? = null,
         var remarks: String? = null,
+        var parametersList: List<PreliminaryReportItemsDto>? = null,
 )
 
 data class CompliantRemediationDto(
