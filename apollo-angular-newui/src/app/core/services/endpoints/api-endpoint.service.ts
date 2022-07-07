@@ -610,8 +610,8 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_DETAILS: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/details`,
         INSPECTION_SCHEDULED_APPROVE_DETAILS: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/approval-schedule`,
         INSPECTION_SCHEDULED_APPROVE_HOF_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hof/approval-preliminary-report`,
-        INSPECTION_SCHEDULED_APPROVE_HOF_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hof/approval-preliminary-report`,
-        INSPECTION_SCHEDULED_APPROVE_HOD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/approval-final-preliminary-report`,
+        INSPECTION_SCHEDULED_APPROVE_HOF_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hof/approval-final-preliminary-report`,
+        INSPECTION_SCHEDULED_APPROVE_HOD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/approval-preliminary-report`,
         INSPECTION_SCHEDULED_APPROVE_HOD_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/approval-final-preliminary-report`,
         INSPECTION_SCHEDULED_START_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/start-onsite-activities`,
         INSPECTION_SCHEDULED_END_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/end-onsite-activities`,
@@ -626,6 +626,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_ADD_LAB_RESULTS_PDF_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/lab-results-pdf-save`,
         INSPECTION_SCHEDULED_ADD_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/ssf-compliance-status-save`,
         INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/preliminary-report`,
+        INSPECTION_SCHEDULED_ADD_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-preliminary-report`,
 
     };
     /**

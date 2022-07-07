@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.lang.reflect.Type
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -352,7 +355,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
-        var fetchedPreliminary = findPreliminaryReportByWorkPlanGeneratedID(workPlanScheduled.id)
+        var fetchedPreliminary = findPreliminaryReportByWorkPlanGeneratedID(workPlanScheduled.id)?: throw ExpectedDataNotFound("Missing Preliminary Report For Work Plan with REF NR ${workPlanScheduled.referenceNumber}, do Not Exists")
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
@@ -479,7 +482,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
-        var fetchedPreliminary = findPreliminaryReportByWorkPlanGeneratedID(workPlanScheduled.id)
+        var fetchedPreliminary = findPreliminaryReportByWorkPlanGeneratedID(workPlanScheduled.id) ?: throw ExpectedDataNotFound("Missing Preliminary Report For Work Plan with REF NR ${workPlanScheduled.referenceNumber}, do Not Exists")
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
@@ -570,12 +573,12 @@ class MarketSurveillanceWorkPlanDaoServices(
                         fetchedPreliminary.approvedStatusHod== map.activeStatus -> {
                             msFinalReportStatus = map.inactiveStatus
                             preliminaryApprovedStatus = map.activeStatus
-                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApprovePreliminaryReportHOF
+                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApprovePreliminaryReportHODRM
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                         }
                         fetchedPreliminary.rejectedStatusHod== map.activeStatus -> {
-                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRejectPreliminaryReportHOF
-                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRejectPreliminaryReportHODRM
+                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
                         }
                     }
 
@@ -583,6 +586,60 @@ class MarketSurveillanceWorkPlanDaoServices(
             }
 
         }
+        val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
+
+        when (fileSaved.first.status) {
+            map.successStatus -> {
+                workPlanScheduled = fileSaved.second
+                val remarksSaved = workPlanAddRemarksDetails(fileSaved.second.id,remarksDto, map, loggedInUser)
+                when (remarksSaved.first.status) {
+                    map.successStatus -> {
+                        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+                    }
+                    else -> {
+                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+                    }
+                }
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+            }
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: PreliminaryReportFinalDto
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        var fetchedPreliminary = findPreliminaryReportByWorkPlanGeneratedID(workPlanScheduled.id) ?: throw ExpectedDataNotFound("Missing Preliminary Report For Work Plan with REF NR ${workPlanScheduled.referenceNumber}, do Not Exists")
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.remarks
+            remarksStatus= map.activeStatus
+            processID = workPlanScheduled.msProcessId
+            userId= loggedInUser.id
+        }
+
+        with(fetchedPreliminary){
+            surveillanceConclusions = body.surveillanceConclusions
+            surveillanceRecommendation = body.surveillanceRecommendation
+        }
+
+        fetchedPreliminary =  updatePreliminaryReportDetails(fetchedPreliminary, map, loggedInUser).second
+
+        with(workPlanScheduled){
+            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGenerateFinalPreliminaryReport
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
+        }
+
         val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
 
         when (fileSaved.first.status) {
@@ -1670,7 +1727,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 backgroundInformation =body.backgroundInformation
                 objectiveInvestigation =body.objectiveInvestigation
                 dateInvestigationInspection =body.dateInvestigationInspection
-                kebsInspectors =body.kebsInspectors
+                kebsInspectors = body.kebsInspectors?.let { commonDaoServices.convertClassToJson(it) }
                 methodologyEmployed =body.methodologyEmployed
                 conclusion =body.conclusion
                 recommendations =body.recommendations
@@ -1728,7 +1785,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 surveillanceDateFrom = body.surveillanceDateFrom
                 surveillanceDateTo = body.surveillanceDateTo
                 reportBackground = body.reportBackground
-                kebsOfficersName = body.kebsOfficersName
+                kebsOfficersName = body.kebsOfficersName?.let { commonDaoServices.convertClassToJson(it) }
                 surveillanceObjective = body.surveillanceObjective
                 surveillanceConclusions = body.surveillanceConclusions
                 surveillanceRecommendation = body.surveillanceRecommendation
@@ -2180,7 +2237,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
 
         val preliminaryReport  = findPreliminaryReportByWorkPlanGeneratedID(workPlanScheduledDetails.id)
-        val preliminaryReportParamList = preliminaryReport.id?.let { findPreliminaryReportParams(it) }
+        val preliminaryReportParamList = preliminaryReport?.id?.let { findPreliminaryReportParams(it) }
         val preliminaryReportDtoValues = preliminaryReportParamList?.let { mapPreliminaryParamListDto(it) }?.let { mapPreliminaryReportDto(preliminaryReport, it) }
 
         return mapWorkPlanInspectionDto(
@@ -2351,6 +2408,12 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
     }
 
+    fun mapKEBSOfficersNameListDto(officersName: String): List<KebsOfficersName>? {
+        val gson = Gson()
+        val userListType: Type = object : TypeToken<ArrayList<KebsOfficersName?>?>() {}.type
+        return gson.fromJson(officersName, userListType)
+    }
+
     fun mapPreliminaryReportDto(data: MsPreliminaryReportEntity, data2:List<PreliminaryReportItemsDto>): PreliminaryReportDto {
         return PreliminaryReportDto(
             data.id,
@@ -2362,12 +2425,20 @@ class MarketSurveillanceWorkPlanDaoServices(
             data.surveillanceDateFrom,
             data.surveillanceDateTo,
             data.reportBackground,
-            data.kebsOfficersName,
+            data.kebsOfficersName?.let { mapKEBSOfficersNameListDto(it) },
             data.surveillanceObjective,
             data.surveillanceConclusions,
             data.surveillanceRecommendation,
             data.remarks,
-            data2
+            data2,
+                    data.approvedStatusHofFinal==1,
+                    data.rejectedStatusHofFinal==1,
+                    data.approvedStatus==1,
+                    data.rejectedStatus==1,
+                    data.approvedStatusHodFinal==1,
+                    data.rejectedStatusHodFinal==1,
+                    data.approvedStatusHod==1,
+                    data.rejectedStatusHod==1,
         )
     }
 
@@ -2416,12 +2487,12 @@ class MarketSurveillanceWorkPlanDaoServices(
         return sampleSubmissionLabRepo.findByWorkplanGeneratedId(workPlanInspectionID)
     }
 
-    fun findPreliminaryReportByWorkPlanGeneratedID(workPlanInspectionID: Long): MsPreliminaryReportEntity {
-        preliminaryRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
-            ?.let {
-                return it
-            }
-            ?: throw ExpectedDataNotFound("Missing Preliminary Report For Work Plan with ID ${workPlanInspectionID}, do Not Exists")
+    fun findPreliminaryReportByWorkPlanGeneratedID(workPlanInspectionID: Long): MsPreliminaryReportEntity? {
+        return preliminaryRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
+//            ?.let {
+//                return it
+//            }
+//            ?: throw ExpectedDataNotFound("Missing Preliminary Report For Work Plan with ID ${workPlanInspectionID}, do Not Exists")
     }
 
 }

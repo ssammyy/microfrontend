@@ -55,7 +55,7 @@ import {
     CountriesEntityDto,
     ChargeSheetDto,
     CountryListDto,
-    DataReportDto, SeizureDeclarationDto, InspectionInvestigationReportDto, PreliminaryReportDto, ApprovalDto,
+    DataReportDto, SeizureDeclarationDto, InspectionInvestigationReportDto, PreliminaryReportDto, ApprovalDto, PreliminaryReportFinal,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -858,6 +858,27 @@ export class MsService {
     public msWorkPlanScheduleDetailsApprovePreliminaryHOD(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOD_PRELIMINARY_REPORT);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleDetailsFinalPreliminary(batchReferenceNo: string, referenceNo: string, data: PreliminaryReportFinal): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_FINAL_PRELIMINARY_REPORT
+        );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);

@@ -23,7 +23,7 @@ import {
   MSRemarksDto,
   MSSSFPDFListDetailsDto,
   PDFSaveComplianceStatusDto,
-  PreliminaryReportDto, PreliminaryReportItemsDto,
+  PreliminaryReportDto, PreliminaryReportFinal, PreliminaryReportItemsDto,
   RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
@@ -62,6 +62,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   submitted = false;
   approveScheduleForm!: FormGroup;
   approvePreliminaryForm!: FormGroup;
+  preliminaryRecommendationForm!: FormGroup;
   chargeSheetForm!: FormGroup;
   dataReportForm!: FormGroup;
   dataReportParamForm!: FormGroup;
@@ -88,6 +89,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   remediationForm!: FormGroup;
   dataSaveApproveSchedule: WorkPlanScheduleApprovalDto;
   dataSaveApprovePreliminary: ApprovalDto;
+  dataSaveFinalPreliminary: PreliminaryReportFinal;
   dataSaveChargeSheet: ChargeSheetDto;
   dataSaveDataReport: DataReportDto;
   dataSaveDataInspectorInvestList: DataInspectorInvestDto[] = [];
@@ -557,6 +559,95 @@ export class WorkPlanDetailsComponent implements OnInit {
       perPage: 20,
     },
   };
+  public settingsPreliminaryReportOfficers = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      inspectorName: {
+        title: 'INSPECTOR NAME',
+        type: 'string',
+        filter: false,
+      },
+      institution: {
+        title: 'INSTITUTION',
+        type: 'string',
+        filter: false,
+      },
+      designation: {
+        title: 'DESIGNATION',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsPreliminaryReportOutlets = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      marketCenter: {
+        title: 'MARKET CENTER',
+        type: 'string',
+        filter: false,
+      },
+      nameOutlet: {
+        title: 'NAME OF OUTLET',
+        type: 'string',
+        filter: false,
+      },
+      sector: {
+        title: 'SECTOR',
+        type: 'string',
+        filter: false,
+      },
+      dateVisit: {
+        title: 'DATE OF VISIT',
+        type: 'date',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
 
   public workPlanInspection: WorkPlanInspectionDto;
   public msCounties: {name: string, code: string}[];
@@ -591,6 +682,12 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.approvePreliminaryForm = this.formBuilder.group({
       approvalStatus: ['', Validators.required],
+      remarks: ['', Validators.required],
+    });
+
+    this.preliminaryRecommendationForm = this.formBuilder.group({
+      surveillanceConclusions: ['', Validators.required],
+      surveillanceRecommendation: ['', Validators.required],
       remarks: ['', Validators.required],
     });
 
@@ -787,11 +884,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       surveillanceDateFrom : ['', Validators.required],
       surveillanceDateTo : ['', Validators.required],
       reportBackground : ['', Validators.required],
-      kebsOfficersName : ['', Validators.required],
+      kebsOfficersName : null,
       surveillanceObjective : ['', Validators.required],
-      surveillanceConclusions : ['', Validators.required],
-      surveillanceRecommendation : ['', Validators.required],
-      remarks : ['', Validators.required],
+      // surveillanceConclusions : ['', Validators.required],
+      // surveillanceRecommendation : ['', Validators.required],
+      // remarks : ['', Validators.required],
     });
 
     this.scheduleRemediationForm = this.formBuilder.group({
@@ -863,6 +960,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.preliminaryReportForm.controls;
   }
 
+  get formPreliminaryRecommendationForm(): any {
+    return this.preliminaryRecommendationForm.controls;
+  }
+
   get formPreliminaryReportParamForm(): any {
     return this.preliminaryReportParamForm.controls;
   }
@@ -871,7 +972,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.approveScheduleForm.controls;
   }
 
-  get formApprovePreliminaryHOFForm(): any {
+  get formApprovePreliminaryForm(): any {
     return this.approvePreliminaryForm.controls;
   }
 
@@ -958,12 +1059,12 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   openModalAddDetails(divVal: string): void {
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails',
-       'addBsNumber', 'approvePreliminaryHOF',
+       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation',
       'ssfAddComplianceStatus'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS',
-      'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT',
+      'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD RECOMMENDATION DETAILS',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS'];
 
     for (let h = 0; h < arrHead.length; h++) {
@@ -1072,7 +1173,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveApprovePreliminary = {...this.dataSaveApprovePreliminary, ...this.approvePreliminaryForm.value};
-      this.msService.msWorkPlanScheduleDetailsApprove(
+      this.msService.msWorkPlanScheduleDetailsApprovePreliminaryHOF(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
           this.dataSaveApprovePreliminary,
@@ -1096,7 +1197,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveApprovePreliminary = {...this.dataSaveApprovePreliminary, ...this.approvePreliminaryForm.value};
-      this.msService.msWorkPlanScheduleDetailsApprove(
+      this.msService.msWorkPlanScheduleDetailsApprovePreliminaryHOD(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
           this.dataSaveApprovePreliminary,
@@ -1111,6 +1212,30 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveFinalPreliminary(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveFinalPreliminary = {...this.dataSaveFinalPreliminary, ...this.preliminaryRecommendationForm.value};
+      this.msService.msWorkPlanScheduleDetailsFinalPreliminary(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveFinalPreliminary,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL PRELIMINARY DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR HAS OCCURRED');
           },
       );
     }
@@ -1167,7 +1292,9 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
-      this.msService.msFuelInspectionScheduledAssignOfficer(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
+      this.msService.msFuelInspectionScheduledAssignOfficer(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1224,7 +1351,9 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.dataSaveSampleCollect = {...this.dataSaveSampleCollect, ...this.sampleCollectForm.value};
       this.dataSaveSampleCollect.productsList = this.dataSaveSampleCollectItemsList;
 
-      this.msService.msWorkPlanInspectionScheduledAddSampleCollection(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
+      this.msService.msWorkPlanInspectionScheduledAddSampleCollection(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1252,7 +1381,10 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
       this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
 
-      this.msService.msWorkPlanInspectionScheduledAddSampleSubmission(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmit).subscribe(
+      this.msService.msWorkPlanInspectionScheduledAddSampleSubmission(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveSampleSubmit).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1345,7 +1477,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.dataSSFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
       this.dataSSFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
       // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      this.msService.msWorkPlanInspectionScheduledSaveSSFComplianceStatus(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSSFSaveComplianceStatus).subscribe(
+      this.msService.msWorkPlanInspectionScheduledSaveSSFComplianceStatus(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSSFSaveComplianceStatus,
+      ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1366,7 +1502,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveScheduleRemediation = {...this.dataSaveScheduleRemediation, ...this.scheduleRemediationForm.value};
-      this.msService.msFuelInspectionScheduledRemediation(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveScheduleRemediation).subscribe(
+      this.msService.msFuelInspectionScheduledRemediation(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.dataSaveScheduleRemediation,
+      ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1756,7 +1895,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.investInspectReportForm.valid) {
       this.SpinnerService.show();
       this.dataSaveInvestInspectReport = {...this.dataSaveInvestInspectReport, ...this.investInspectReportForm.value};
-      this.dataSaveInvestInspectReport.kebsInspectors = JSON.stringify(this.dataSaveDataInspectorInvestList);
+      this.dataSaveInvestInspectReport.kebsInspectors = this.dataSaveDataInspectorInvestList;
       this.msService.msWorkPlanScheduleSaveInvestInspectReport(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
@@ -1783,10 +1922,11 @@ export class WorkPlanDetailsComponent implements OnInit {
   onClickSavePreliminaryReport() {
     this.submitted = true;
 
-    if (this.preliminaryReportForm.valid && this.dataSavePreliminaryReportParamList.length!==0) {
+    if (this.preliminaryReportForm.valid && this.dataSavePreliminaryReportParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSavePreliminaryReport = {...this.dataSavePreliminaryReport, ...this.preliminaryReportForm.value};
-      this.dataSavePreliminaryReport.kebsOfficersName = JSON.stringify(this.dataSaveDataInspectorInvestList);
+      this.dataSavePreliminaryReport.kebsOfficersName = this.dataSaveDataInspectorInvestList;
+      this.dataSavePreliminaryReport.parametersList = this.dataSavePreliminaryReportParamList;
       this.msService.msWorkPlanScheduleSavePreliminaryReport(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,

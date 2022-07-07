@@ -637,6 +637,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
+                        PUT("/final-preliminary-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
                 }
 
