@@ -528,7 +528,7 @@
                                     <mat-tab *ngIf="workPlanInspection?.preliminaryReport" label="12">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
-                                            PRELIMINARY REPORT Details
+                                            Preliminary Report Details
                                         </ng-template>
                                         <!--                                        <b class="text-primary">Lab Results Details</b>-->
                                         <label style="color: #0082f3">Preliminary Report Details</label>
@@ -570,42 +570,45 @@
                                                     <div class="list-text-accordion">
                                                         {{workPlanInspection?.preliminaryReport?.surveillanceDateTo}}</div>
                                                 </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">BACKGROUND DETAILS</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.preliminaryReport?.reportBackground}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">OBJECTIVES DETAILS</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.preliminaryReport?.surveillanceObjective}}</div>
+                                                </li>
+                                                <li *ngIf="workPlanInspection?.preliminaryReport?.surveillanceConclusions != null" class="list-item-accordion">
+                                                    <div class="list-title-accordion">CONCLUSIONS DETAILS</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.preliminaryReport?.surveillanceConclusions}}</div>
+                                                </li>
+                                                <li *ngIf="workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null" class="list-item-accordion">
+                                                    <div class="list-title-accordion">RECOMMENDATIONS DETAILS</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.preliminaryReport?.surveillanceRecommendation}}</div>
+                                                </li>
                                             </ul>
-
-<!--                                            <div class="form-row">-->
-<!--                                                <div class="col-md-12 mb-3">-->
-<!--                                                    <label style="color: #0082f3">Outlet Paramaters</label>-->
-<!--                                                </div>-->
-<!--                                                <div class="table-striped table-condensed table-responsive">-->
-<!--                                                    <ng2-smart-table [settings]="settingsLabResultsParam" [source]="workPlanInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested!=null">-->
-<!--                                                <div *ngFor="let role of roles">-->
-<!--                                                    <div  *ngIf="role == 'MS_IO_MODIFY'" class="form-row">-->
-<!--                                                        <div class="col-md-12 mb-3">-->
-<!--                                                            <label style="color: #0082f3">Lab Results PDF Found</label>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="table-striped table-condensed table-responsive">-->
-<!--                                                            <ng2-smart-table [settings]="settingsLIMSPDFFiles"-->
-<!--                                                                             [source]="workPlanInspection?.sampleLabResults?.limsPDFFiles"-->
-<!--                                                                             (custom)="onCustomLIMSPDFAction($event,workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber)"-->
-<!--                                                            ></ng2-smart-table>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                                <div class="form-row">-->
-<!--                                                    <div class="col-md-12 mb-3">-->
-<!--                                                        <label style="color: #0082f3">Lab Results PDF SAVED</label>-->
-<!--                                                    </div>-->
-<!--                                                    <div class="table-striped table-condensed table-responsive">-->
-<!--                                                        <ng2-smart-table [settings]="settingsSavedPDFFiles"-->
-<!--                                                                         [source]="workPlanInspection?.sampleLabResults?.savedPDFFiles"-->
-<!--                                                                         (custom)="onCustomLIMSPDFViewAction($event)"-->
-<!--                                                        ></ng2-smart-table>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
+                                            <div class="form-row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label style="color: #0082f3">Officers Details</label>
+                                                </div>
+                                                <div class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsPreliminaryReportOfficers" [source]="workPlanInspection?.preliminaryReport?.kebsOfficersName"></ng2-smart-table>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                    <div class="col-md-12 mb-3">
+                                                        <label style="color: #0082f3">Outlets visited Details</label>
+                                                    </div>
+                                                    <div class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsPreliminaryReportOutlets"
+                                                                         [source]="workPlanInspection?.preliminaryReport?.parametersList"
+                                                        ></ng2-smart-table>
+                                                    </div>
+                                                </div>
                                             <br>
                                         </div>
                                     </mat-tab>
@@ -643,6 +646,17 @@
                                                  data-target="#myModal1"
                                                  class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">APPROVE/REJECT SCHEDULE</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                        && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                         && workPlanInspection?.preliminaryReport?.rejectedStatus== false
+                                         && workPlanInspection?.preliminaryReport?.approvedStatusHod== false
+                                         && workPlanInspection?.preliminaryReport?.rejectedStatusHod== false" (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
+                                                 data-target="#myModal1"
+                                                 class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -718,7 +732,8 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                         <button  *ngIf="workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus &&
-                                        workPlanInspection?.bsNumberStatus== false" (click)="openModalAddDetails('addBsNumber')" mat-raised-button="" data-toggle="modal"
+                                                    workPlanInspection?.bsNumberStatus== false" (click)="openModalAddDetails('addBsNumber')"
+                                                 mat-raised-button="" data-toggle="modal"
                                                  data-target="#myModal1"
                                                  class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">ADD BS NUMBER</span>
@@ -726,10 +741,25 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                         <button  *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
-                                        workPlanInspection?.msPreliminaryReportStatus == false" (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    workPlanInspection?.msPreliminaryReportStatus == false"
+                                                 (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                  data-target="#preliminaryReportModal"
                                                  class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">CREATE PRELIMINARY</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+
+                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatus== false
+                                            && workPlanInspection?.preliminaryReport?.approvedStatusHod
+                                            && workPlanInspection?.preliminaryReport?.surveillanceRecommendation == null
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod== false"
+                                                 (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
+                                                 data-target="#myModal1"
+                                                 class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">ADD RECOMMENDATION</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -738,10 +768,25 @@
                                     <div *ngIf="role == 'MS_HOF_MODIFY'">
                                         <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
                                         <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                        && workPlanInspection?.msPreliminaryReportStatus" (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
+                                        && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus == false
+                                         && workPlanInspection?.preliminaryReport?.rejectedStatus== false" (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                  data-target="#myModal1"
                                                  class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+
+                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                        && workPlanInspection?.msPreliminaryReportStatus
+                                         && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
+                                         && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
+                                         && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
+                                         && workPlanInspection?.preliminaryReport?.approvedStatus
+                                         && workPlanInspection?.preliminaryReport?.approvedStatusHod" (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
+                                                 data-target="#myModal1"
+                                                 class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">APPROVE/REJECT FINAL PRELIMINARY REPORT</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -783,7 +828,7 @@
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
                                                         [class.is-invalid]="formApproveScheduleForm.approvalStatus.invalid && formAssignOfficerForm.assignedUserID.touched"
-                                                        formControlName="approvalStatus" id="approvalStatus" name="approvalStatus" >
+                                                        formControlName="approvalStatus" id="approvalStatus1" name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
                                                 <mat-option [value]="false">REJECT</mat-option>
 
@@ -791,7 +836,7 @@
                                         </mat-form-field>
                                         <label for="remarks"><b>Please write, in detail, your feedback for Approving/Rejecting the Work-plan Activity Scheduled:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="remarks" matInput type="text"
+                                            <textarea id="remarks1" matInput type="text"
                                                       formControlName="remarks"
                                                       name="remarks" required>
                                             </textarea>
@@ -802,23 +847,85 @@
                         </form>
                     </div>
                     <div *ngIf="(currDiv == 'approvePreliminaryHOF')">
-                        <form [formGroup]="approveScheduleForm" class="form">
+                        <form [formGroup]="approvePreliminaryForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="approvalStatus"><b>Select Status</b></label>
+                                        <label for="approvalStatus2"><b>Select Status</b></label>
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formApprovePreliminaryHOFForm.approvalStatus.invalid && formApprovePreliminaryHOFForm.assignedUserID.touched"
-                                                        formControlName="approvalStatus" id="approvalStatus" name="approvalStatus" >
+                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
+                                                        formControlName="approvalStatus" id="approvalStatus2" name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
                                                 <mat-option [value]="false">REJECT</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks"><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
+                                        <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="remarks" matInput type="text"
+                                            <textarea id="remarks2" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'approvePreliminaryHOD')">
+                        <form [formGroup]="approvePreliminaryForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="approvalStatus2"><b>Select Status</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
+                                                        formControlName="approvalStatus" id="approvalStatus3" name="approvalStatus" >
+                                                <mat-option [value]="true">APPROVE</mat-option>
+                                                <mat-option [value]="false">REJECT</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="remarks3" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'addPreliminaryRecommendation')">
+                        <form [formGroup]="preliminaryRecommendationForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="surveillanceConclusions"><b>Conclusion</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea [class.is-invalid]="formPreliminaryRecommendationForm.surveillanceConclusions.invalid
+                                            && formPreliminaryRecommendationForm.surveillanceConclusions.touched"
+                                                    id="surveillanceConclusions" matInput type="text"
+                                                      formControlName="surveillanceConclusions"
+                                                      name="surveillanceConclusions" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                        <label for="surveillanceRecommendation"><b>Recommendation</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea [class.is-invalid]="formPreliminaryRecommendationForm.surveillanceRecommendation.invalid
+                                            && formPreliminaryRecommendationForm.surveillanceRecommendation.touched"
+                                                    id="surveillanceRecommendation" matInput type="text"
+                                                      formControlName="surveillanceRecommendation"
+                                                      name="surveillanceRecommendation" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                        <label for="remarks4"><b>Please write, in detail, your feedback for the Final Preliminary Report:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="remarks4" matInput type="text"
                                                       formControlName="remarks"
                                                       name="remarks" required>
                                             </textarea>
@@ -939,117 +1046,13 @@
                                             <input id="submittedDate" matInput type="date" placeholder="Please Enter Bs Number received date" formControlName="submittedDate" name="submittedDate"
                                                    [class.is-invalid]="formSampleSubmitBSNumberForm.submittedDate.invalid && formSampleSubmitBSNumberForm.submittedDate.touched">
                                         </mat-form-field>
-                                        <label for="remarks"><b>Please write, in detail, your feedback for Attached BS Number:</b></label>
+                                        <label for="remarksBsNumber"><b>Please write, in detail, your feedback for Attached BS Number:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarksBsNumber" matInput type="text"
                                                       formControlName="remarks"
                                                       name="remarks">
                                             </textarea>
                                         </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'notCompliantInvoice')">
-                        <form [formGroup]="notCompliantInvoiceForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="volumeFuelRemediated"><b>Volume of fuel to remediate, in litres</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="volumeFuelRemediated" matInput type="number" min="1" placeholder="Please Enter Volume of fuel to remediate, in litres" formControlName="volumeFuelRemediated" name="volumeFuelRemediated"
-                                                   [class.is-invalid]="formNotCompliantInvoiceForm.volumeFuelRemediated.invalid && formNotCompliantInvoiceForm.volumeFuelRemediated.touched">
-                                        </mat-form-field>
-                                        <label for="transportAirTicket"><b>Air ticket</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="transportAirTicket" matInput type="number"  min="0" placeholder="Please Enter Air ticket" formControlName="transportAirTicket" name="transportAirTicket"
-                                                   [class.is-invalid]="formNotCompliantInvoiceForm.transportAirTicket.invalid && formNotCompliantInvoiceForm.transportAirTicket.touched">
-                                        </mat-form-field>
-                                        <label for="transportInkm"><b>Km</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="transportInkm" matInput type="number"  min="0" placeholder="Please Enter Km" formControlName="transportInkm" name="transportInkm"
-                                                   [class.is-invalid]="formNotCompliantInvoiceForm.transportInkm.invalid && formNotCompliantInvoiceForm.transportInkm.touched">
-                                        </mat-form-field>
-                                        <label for="subsistenceTotalNights"><b>Subsistence Total Nights</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="subsistenceTotalNights" matInput type="number" min="1"  placeholder="Please Enter Subsistence Total Nights" formControlName="subsistenceTotalNights" name="subsistenceTotalNights"
-                                                   [class.is-invalid]="formNotCompliantInvoiceForm.subsistenceTotalNights.invalid && formNotCompliantInvoiceForm.subsistenceTotalNights.touched">
-                                        </mat-form-field>
-                                        <!--                                        <label for="submittedDate"><b>Received Date</b></label>-->
-                                        <!--                                        <mat-form-field class="example-full-width">-->
-                                        <!--                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Bs Number received date" formControlName="submittedDate" name="submittedDate"-->
-                                        <!--                                                   [class.is-invalid]="formSampleSubmitBSNumberForm.submittedDate.invalid && formSampleSubmitBSNumberForm.submittedDate.touched">-->
-                                        <!--                                        </mat-form-field>-->
-                                        <label for="remarks"><b>Please write, in detail, your feedback:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea id="remarksrmediatVolume" matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'addRemediationDetails')">
-                        <form [formGroup]="remediationForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="productType"><b>Product Type</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="productType" matInput type="text" placeholder="Please Enter Product Type" formControlName="productType" name="productType"
-                                                   [class.is-invalid]="formRemediationForm.productType.invalid && formRemediationForm.productType.touched">
-                                        </mat-form-field>
-                                        <label for="quantityOfFuel"><b>Quantity Of Fuel</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="quantityOfFuel" matInput type="text"  placeholder="Please Enter Quantity Of Fuel" formControlName="quantityOfFuel" name="quantityOfFuel"
-                                                   [class.is-invalid]="formRemediationForm.quantityOfFuel.invalid && formRemediationForm.quantityOfFuel.touched">
-                                        </mat-form-field>
-                                        <label for="contaminatedFuelType"><b>Contaminated Fuel Type</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="contaminatedFuelType" matInput type="text"  placeholder="Please Enter Contaminated Fuel Type" formControlName="contaminatedFuelType" name="contaminatedFuelType"
-                                                   [class.is-invalid]="formRemediationForm.contaminatedFuelType.invalid && formRemediationForm.contaminatedFuelType.touched">
-                                        </mat-form-field>
-                                        <label for="applicableKenyaStandard"><b>Applicable Kenya Standard</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="applicableKenyaStandard" matInput type="text"  placeholder="Please Enter Applicable Kenya Standard" formControlName="applicableKenyaStandard" name="applicableKenyaStandard"
-                                                   [class.is-invalid]="formRemediationForm.applicableKenyaStandard.invalid && formRemediationForm.applicableKenyaStandard.touched">
-                                        </mat-form-field>
-                                        <label for="remediationProcedure"><b>Remediation Procedure</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="remediationProcedure" matInput type="text"  placeholder="Please Enter Remediation Procedure" formControlName="remediationProcedure" name="remediationProcedure"
-                                                   [class.is-invalid]="formRemediationForm.remediationProcedure.invalid && formRemediationForm.remediationProcedure.touched">
-                                        </mat-form-field>
-                                        <label for="volumeOfProductContaminated"><b>Volume Of Product Contaminated</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="volumeOfProductContaminated" matInput type="number"  placeholder="Please Enter Volume Of Product Contaminated" formControlName="volumeOfProductContaminated" name="volumeOfProductContaminated"
-                                                   [class.is-invalid]="formRemediationForm.volumeOfProductContaminated.invalid && formRemediationForm.volumeOfProductContaminated.touched">
-                                        </mat-form-field>
-                                        <label for="volumeAdded"><b>Volume Added</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="volumeAdded" matInput type="number"  placeholder="Please Enter Volume Added" formControlName="volumeAdded" name="volumeAdded"
-                                                   [class.is-invalid]="formRemediationForm.volumeAdded.invalid && formRemediationForm.volumeAdded.touched">
-                                        </mat-form-field>
-                                        <label for="totalVolume"><b>Total Volume</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="totalVolume" matInput type="number" placeholder="Please Enter Total Volume" formControlName="totalVolume" name="totalVolume"
-                                                   [class.is-invalid]="formRemediationForm.totalVolume.invalid && formRemediationForm.totalVolume.touched">
-                                        </mat-form-field>
-                                        <!--                                        <label for="submittedDate"><b>Received Date</b></label>-->
-                                        <!--                                        <mat-form-field class="example-full-width">-->
-                                        <!--                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Bs Number received date" formControlName="submittedDate" name="submittedDate"-->
-                                        <!--                                                   [class.is-invalid]="formSampleSubmitBSNumberForm.submittedDate.invalid && formSampleSubmitBSNumberForm.submittedDate.touched">-->
-                                        <!--                                        </mat-form-field>-->
-                                        <!--                                        <label for="remarks"><b>Please write, in detail, your feedback:</b></label>-->
-                                        <!--                                        <mat-form-field class="example-full-width">-->
-                                        <!--                                            <textarea id="remarksrmediatVolume" matInput type="text"-->
-                                        <!--                                                      formControlName="remarks"-->
-                                        <!--                                                      name="remarks">-->
-                                        <!--                                            </textarea>-->
-                                        <!--                                        </mat-form-field>-->
                                     </div>
                                 </div>
                             </div>
@@ -1065,7 +1068,7 @@
                                             <input id="dateOfRemediation" matInput type="date" placeholder="Please Enter Remediation date" formControlName="dateOfRemediation" name="dateOfRemediation"
                                                    [class.is-invalid]="formScheduleRemediationForm.dateOfRemediation.invalid && formScheduleRemediationForm.dateOfRemediation.touched">
                                         </mat-form-field>
-                                        <label for="remarks"><b>Please write in detail your feedback for scheduling remediation date:</b></label>
+                                        <label for="remarksRemed"><b>Please write in detail your feedback for scheduling remediation date:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarksRemed" matInput type="text"
                                                       formControlName="remarks"
@@ -1087,7 +1090,7 @@
                                             <input id="dateOfRemediation5" matInput type="date" placeholder="Please Enter Remediation date" formControlName="dateOfRemediation" name="dateOfRemediation"
                                                    [class.is-invalid]="formScheduleRemediationForm.dateOfRemediation.invalid && formScheduleRemediationForm.dateOfRemediation.touched">
                                         </mat-form-field>
-                                        <label for="remarks"><b>Please write in detail your feedback for scheduling remediation date:</b></label>
+                                        <label for="remarksRemedPaid"><b>Please write in detail your feedback for scheduling remediation date:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarksRemedPaid" matInput type="text"
                                                       formControlName="remarks"
@@ -1108,7 +1111,7 @@
                                         <mat-form-field class="example-full-width">
                                             <input id="processBy" matInput type="text" readonly formControlName="processBy" name="processBy">
                                         </mat-form-field>
-                                        <label for="remarks"><b>Remarks/ Feed back:</b></label>
+                                        <label for="remarksDescription"><b>Remarks/ Feed back:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea readonly id="remarksDescription" matInput type="text"
                                                       formControlName="remarksDescription"
@@ -1134,6 +1137,18 @@
                     <button *ngIf="(currDiv == 'approvePreliminaryHOF')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveApprovePreliminaryHOF(approvePreliminaryForm.valid);"
                             [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'approvePreliminaryHOD')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveApprovePreliminaryHOD(approvePreliminaryForm.valid);"
+                            [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'addPreliminaryRecommendation')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFinalPreliminary(preliminaryRecommendationForm.valid);"
+                            [disabled]="!preliminaryRecommendationForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -1169,18 +1184,6 @@
                     <button *ngIf="(currDiv == 'scheduleRemediationInvoicePaid')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveScheduleRemediation(scheduleRemediationForm.valid);"
                             [disabled]="!scheduleRemediationForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'addRemediationDetails')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveRemediationForm(remediationForm.valid);"
-                            [disabled]="!remediationForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'notCompliantInvoice')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveNotCompliantInvoice(notCompliantInvoiceForm.valid);"
-                            [disabled]="!notCompliantInvoiceForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -3159,7 +3162,7 @@
                                                 <input [class.is-invalid]="formPreliminaryReportParamForm.sector.invalid && formPreliminaryReportParamForm.sector.errors"
                                                        class="form-control two-column-input"
                                                        formControlName="sector"
-                                                       name="sector" required type="date">
+                                                       name="sector" required type="text">
                                                 <div *ngIf="submitted && formPreliminaryReportParamForm.sector.errors" class="invalid-feedback">
                                                     <div *ngIf="formPreliminaryReportParamForm.sector.errors.required">This field is
                                                         required

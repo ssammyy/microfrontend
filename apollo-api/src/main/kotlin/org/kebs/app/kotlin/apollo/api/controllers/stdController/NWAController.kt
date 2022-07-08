@@ -69,7 +69,7 @@ class NWAController(val nwaService: NWAService,
         return nwaService.getKNWCommittee()
     }
     //********************************************************** process upload Justification **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/prepareJustification")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -206,7 +206,7 @@ class NWAController(val nwaService: NWAService,
     }
 
     //KNW decision on Justification
-    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
+    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnJustificationKNW")
     fun decisionOnJustificationKNW(@RequestBody nwaJustificationDecision: NWAJustificationDecision,
                                    standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
@@ -224,7 +224,7 @@ class NWAController(val nwaService: NWAService,
 
 
     //SPC decision on Justification
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnJustification")
     fun decisionOnJustification(@RequestBody nwaJustificationDecision: NWAJustificationDecision,
                                 standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
@@ -234,7 +234,7 @@ class NWAController(val nwaService: NWAService,
 
 
     //********************************************************** process prepare justification for DI-SDT Approval **********************************************************
-    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
+    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/prepareDiSdtJustification")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     @ResponseBody
@@ -325,7 +325,7 @@ class NWAController(val nwaService: NWAService,
     }
 
     //********************************************************** process prepare Preliminary Draft **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/preparePreliminaryDraft")
     @ResponseBody
     fun preparePreliminaryDraft(@RequestBody nwaPreliminaryDraft: NWAPreliminaryDraft): ServerResponse
@@ -389,7 +389,7 @@ class NWAController(val nwaService: NWAService,
     }
 
     //********************************************************** Decision  on Preliminary Draft **********************************************************
-    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
+    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnPd")
     fun decisionOnPD(@RequestBody nwaPreliminaryDraftDecision: NWAPreliminaryDraftDecision,
                      standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
@@ -406,7 +406,7 @@ class NWAController(val nwaService: NWAService,
 //    }
 
     //********************************************************** process prepare Workshop Draft **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/editWorkshopDraft")
     @ResponseBody
     fun editWorkshopDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft): ServerResponse
@@ -479,7 +479,7 @@ class NWAController(val nwaService: NWAService,
     }
 
     //********************************************************** Decision  on Workshop Draft Approval **********************************************************
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnWd")
     fun decisionOnWd(@RequestBody nwaWorkshopDraftDecision: NWAWorkshopDraftDecision,
                      standardNwaRemarks: StandardNwaRemarks) : List<WorkShopAgreementTasks>
@@ -491,7 +491,7 @@ class NWAController(val nwaService: NWAService,
 
 
     //********************************************************** process upload Standard **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/uploadNwaStandard")
     @ResponseBody
     fun uploadNwaStandard(@RequestBody nWAStandard: NWAStandard): ServerResponse
@@ -563,7 +563,7 @@ class NWAController(val nwaService: NWAService,
     }
 
     //********************************************************** process upload Gazette Notice **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/uploadGazetteNotice")
     @ResponseBody
     fun uploadGazetteNotice(@RequestBody nWAGazetteNotice: NWAGazetteNotice): ServerResponse
@@ -572,7 +572,7 @@ class NWAController(val nwaService: NWAService,
     }
 
     //********************************************************** process upload Gazettement Date **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/updateGazettementDate")
     @ResponseBody
     fun updateGazettementDate(@RequestBody nWAGazettement: NWAGazettement): ServerResponse
@@ -666,7 +666,7 @@ class NWAController(val nwaService: NWAService,
 
     @PreAuthorize("hasAuthority('KNW_SEC_READ') or hasAuthority('SPC_SEC_SD_READ')" +
             " or hasAuthority('DI_SDT_SD_READ') or hasAuthority('HOP_SD_READ') or" +
-            " hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HO_SIC_SD_READ')  ")
+            " hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HO_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')  ")
     @GetMapping("/getUserTasks")
     fun getUserTasks():List<WorkShopAgreementTasks>
     {

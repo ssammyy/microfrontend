@@ -371,13 +371,19 @@ data class InspectionInvestigationReportDto(
         var backgroundInformation: String? = null,
         var objectiveInvestigation: String? = null,
         var dateInvestigationInspection: Date? = null,
-        var kebsInspectors: String? = null,
+        var kebsInspectors: List<KebsOfficersName>? = null,
         var methodologyEmployed: String? = null,
         var conclusion: String? = null,
         var recommendations: String? = null,
         var statusActivity: String? = null,
         var finalRemarkHod: String? = null,
         var remarks: String? = null,
+)
+
+data class KebsOfficersName (
+        var inspectorName: String? = null,
+        var institution: String? = null,
+        var designation: String? = null,
 )
 
 data class SeizureDeclarationDto(
@@ -566,12 +572,21 @@ data class PreliminaryReportDto(
         var surveillanceDateFrom: Date? = null,
         var surveillanceDateTo: Date? = null,
         var reportBackground: String? = null,
-        var kebsOfficersName: String? = null,
+        var kebsOfficersName: List<KebsOfficersName>? = null,
         var surveillanceObjective: String? = null,
         var surveillanceConclusions: String? = null,
         var surveillanceRecommendation: String? = null,
         var remarks: String? = null,
         var parametersList: List<PreliminaryReportItemsDto>? = null,
+        var approvedStatusHofFinal: Boolean? = null,
+        var rejectedStatusHofFinal: Boolean? = null,
+        var approvedStatus: Boolean? = null,
+        var rejectedStatus: Boolean? = null,
+        var approvedStatusHodFinal: Boolean? = null,
+        var rejectedStatusHodFinal: Boolean? = null,
+        var approvedStatusHod: Boolean? = null,
+        var rejectedStatusHod: Boolean? = null,
+
 )
 
 data class CompliantRemediationDto(
@@ -582,6 +597,12 @@ data class CompliantRemediationDto(
         var subsistenceTotalNights: Long?= null,
         var transportAirTicket: Long?= null,
         var transportInkm: Long?= null,
+)
+
+data class PreliminaryReportFinalDto(
+        var remarks: String? = null,
+        var surveillanceConclusions: String? = null,
+        var surveillanceRecommendation: String? = null,
 )
 
 data class RemediationDto(

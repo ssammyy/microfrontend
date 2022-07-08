@@ -312,6 +312,12 @@ export class PreliminaryReportItemsDto {
     preliminaryReportID: number;
 }
 
+export class KebsOfficersName {
+        inspectorName: string;
+        institution: string;
+        designation: string;
+}
+
 export class PreliminaryReportDto {
     id: number;
     reportTo: string;
@@ -322,12 +328,20 @@ export class PreliminaryReportDto {
     surveillanceDateFrom: Date;
     surveillanceDateTo: Date;
     reportBackground: string;
-    kebsOfficersName: string;
+    kebsOfficersName: KebsOfficersName[];
     surveillanceObjective: string;
     surveillanceConclusions: string;
     surveillanceRecommendation: string;
     remarks: string;
     parametersList: PreliminaryReportItemsDto[];
+    approvedStatusHofFinal: boolean;
+    rejectedStatusHofFinal: boolean;
+    approvedStatus: boolean;
+    rejectedStatus: boolean;
+    approvedStatusHodFinal: boolean;
+    rejectedStatusHodFinal: boolean;
+    approvedStatusHod: boolean;
+    rejectedStatusHod: boolean;
 }
 
 export class InspectionInvestigationReportDto {
@@ -345,7 +359,7 @@ export class InspectionInvestigationReportDto {
     backgroundInformation: string;
     objectiveInvestigation: string;
     dateInvestigationInspection: Date;
-    kebsInspectors: string;
+    kebsInspectors: KebsOfficersName[];
     methodologyEmployed: string;
     conclusion: string;
     recommendations: string;
@@ -591,6 +605,12 @@ export class WorkPlanScheduleApprovalDto {
 
 export class ApprovalDto {
     approvalStatus: boolean;
+    remarks: string;
+}
+
+export class PreliminaryReportFinal {
+    surveillanceConclusions: string;
+    surveillanceRecommendation: string;
     remarks: string;
 }
 

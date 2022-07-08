@@ -40,6 +40,7 @@
                                         <th class="referenceMaterial">Reference Material</th>
                                         <th class="referenceMaterial">Requested By</th>
                                         <th class="referenceMaterial" style="width: fit-content">Remarks</th>
+                                        <th class="referenceMaterial" style="width: fit-content">Task</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
@@ -113,6 +114,7 @@
 
                                         <td>{{task.taskData.requestedBy}}</td>
                                         <td style="width: fit-content">{{task.taskData.comments}}</td>
+                                        <td >{{task.name}}</td>
                                         <td *ngIf="task.name ==='Review Justification'"><a  (click)="onOpenModal(task,'reviewJustification')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="reviewJustification">Approve Justification</a></td>
                                         <td *ngIf="task.name ==='View Justification'"><a  (click)="onOpenModal(task,'viewJustification')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="viewJustification">Approve Justification</a></td>
                                         <td *ngIf="task.name ==='Prepare Justification for DI-SDT Approval'"><a  (click)="onOpenModal(task,'prepDiSdt')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="prepareDISDTJustification"> DI-SDT Justification</a></td>
@@ -261,7 +263,7 @@
                                                                                           class="form-control one-column-input" formControlName="comments" name="comments"
                                                                                           placeholder="Comments" type="text"></textarea>
                                                                             </div>
-                                                                            <div class="form-group col-12">
+                                                                            <div class=" col-12">
                                                                                 <label>Select User To Assign To</label>
                                                                                 <ng-select [(ngModel)]="spcSecretary" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
                                                                                     <ng-option *ngFor="let user of spcSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
