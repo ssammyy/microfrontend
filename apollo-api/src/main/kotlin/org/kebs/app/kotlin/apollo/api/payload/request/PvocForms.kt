@@ -137,38 +137,6 @@ class CocItem {
 
 }
 
-class DocumentPaymentDetails {
-
-    @NotNull(message = "Required field")
-    @JsonAlias("INSPECTION_VALUE")
-    var inspectionValue: Double = 0.0
-
-    @NotNull(message = "Required field")
-    @JsonAlias("INSPECTION_PENALTY")
-    var penaltyValue: Double = 0.0
-
-    @NotNull(message = "Required field")
-    @JsonAlias("INSPECTION_TAX")
-    var taxValue: Double = 0.0
-
-    @NotNull(message = "Required field")
-    @JsonAlias("INSPECTION_EXCHANGE_RATE")
-    var innvoiceExchangeRate: Double = 0.0
-
-    @NotEmpty(message = "Required field")
-    @JsonAlias("INSPECTION_CURRENCY")
-    var inspectionCurrency: String? = null
-
-    @NotEmpty(message = "Required field")
-    @JsonAlias("RECEIPT_NUMBER")
-    var receiptNumber: String? = null
-
-    @NotNull(message = "Required field")
-    @JsonAlias("PAYMENT_DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    var paymentDate: Timestamp? = null
-}
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 class CocEntityForm {
 
@@ -356,10 +324,6 @@ class CocEntityForm {
     @NotEmpty(message = "Required field")
     @JsonAlias("PRODUCT")
     var cocItems: List<CocItem>? = null
-
-    @NotNull(message = "Required field")
-    @JsonAlias("INSPECTION_FEE")
-    var inspectionFee: DocumentPaymentDetails? = null
 
     @NotNull(message = "Required field")
     @Min(value = 1, message = "Version should be greater than or equal to one")
@@ -760,10 +724,6 @@ class CoiEntityForm {
     @NotEmpty(message = "Required field")
     @NotNull(message = "Required field")
     var coiItems: List<CoiItem>? = null
-
-    @Valid
-    @NotNull(message = "Required field")
-    var inspectionFee: DocumentPaymentDetails? = null
 
     @NotNull(message = "Required field")
     @Min(value = 1, message = "Version should not be less than one")

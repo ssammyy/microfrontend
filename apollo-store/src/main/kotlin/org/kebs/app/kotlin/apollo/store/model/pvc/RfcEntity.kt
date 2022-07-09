@@ -179,6 +179,14 @@ class RfcEntity : Serializable {
     @Basic
     var linkToAttachedDocuments: String? = null
 
+    @Column(name = "REVIEW_STATUS")
+    @Basic
+    var reviewStatus: Int? = null
+
+    @Column(name = "REVIEW_REMARKS")
+    @Basic
+    var reviewRemarks: String? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Long? = null

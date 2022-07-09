@@ -4,10 +4,8 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.KebsPvocQueryForm
-import org.kebs.app.kotlin.apollo.api.payload.request.KebsQueryResponse
 import org.kebs.app.kotlin.apollo.api.payload.request.KebsQueryResponseForm
 import org.kebs.app.kotlin.apollo.api.payload.request.PvocQueryConclusion
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.PvocAgentService
 import org.springframework.stereotype.Component
@@ -18,7 +16,6 @@ import org.springframework.web.servlet.function.ServerResponse
 class PvocQueryHandler(
         private val pvocService: PvocAgentService,
         private val validatorService: DaoValidatorService,
-        private val diDaoService: DestinationInspectionDaoServices
 ) {
 
     fun pvocPartnerQueryResponse(req: ServerRequest): ServerResponse {
@@ -44,7 +41,7 @@ class PvocQueryHandler(
 
 
     fun pvocPartnerQueryRequest(req: ServerRequest): ServerResponse {
-        val response = ApiResponseModel()
+        var response = ApiResponseModel()
         try {
             val form = req.body(KebsPvocQueryForm::class.java)
             validatorService.validateInputWithInjectedValidator(form)?.let {
@@ -54,12 +51,8 @@ class PvocQueryHandler(
                 response.data = form
                 response
             } ?: run {
-                this.diDaoService.findCdWithUcrNumber(form.ucrNumber!!)?.let {
-                    return ServerResponse.ok().body(pvocService.sendPartnerQuery(form))
-                } ?: run {
-                    response.responseCode = ResponseCodes.NOT_FOUND
-                    response.message = "Invalid consignment does not exist"
-                }
+                response = pvocService.sendPartnerQuery(form)
+                response
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("KEBS Query request failed", ex)

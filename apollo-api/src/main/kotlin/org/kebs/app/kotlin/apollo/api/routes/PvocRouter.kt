@@ -59,8 +59,14 @@ class PvocRouter {
     fun pvocAgentMonitoring(handler: PvocMonitoringHandler) = router {
         "api/v1/pvoc/monitoring".nest {
             GET("/get/{applicationStatus}", handler::listMonitoringIssues)
-//            GET("/details/{exemptionId}", handler::exemptionApplicationDetails)
-//            POST("/status/update/{exemptionId}", handler::updateExemptionStatus)
+            GET("/rfc/{rfcId}", handler::getRfcForCoiOrCoc)
+            GET("/rfc/cocs", handler::listRfcsCoc)
+            GET("/rfc/cois", handler::listRfcsCoi)
+            GET("/foreign/cois", handler::listForeignCoi)
+            GET("/foreign/cocs", handler::listForeignCoc)
+            GET("/foreign/coccoi/{cocCoiId}", handler::getForeignCoiOrCoc)
+            GET("/foreign/cor", handler::listForeignCor)
+            GET("/foreign/cor/{corId}", handler::getForeignCor)
         }
     }
 

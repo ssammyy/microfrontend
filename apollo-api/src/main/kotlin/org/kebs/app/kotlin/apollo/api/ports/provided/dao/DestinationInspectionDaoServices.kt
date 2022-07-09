@@ -2467,6 +2467,10 @@ class DestinationInspectionDaoServices(
         return cocRepo.findByUcrNumberAndCocType(ucrNumber, "COC")
     }
 
+    fun findCoiByUcrNumber(ucrNumber: String): CocsEntity? {
+        return cocRepo.findByUcrNumberAndCocType(ucrNumber, "COI")
+    }
+
     fun findCdTypeDetails(cdTypeID: Long): ConsignmentDocumentTypesEntity {
         cdTypesRepo.findByIdOrNull(cdTypeID)
                 ?.let { cdTypeDetails ->

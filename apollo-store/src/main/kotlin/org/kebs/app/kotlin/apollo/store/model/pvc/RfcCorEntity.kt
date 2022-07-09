@@ -233,6 +233,14 @@ class RfcCorEntity : Serializable {
     @Basic
     var yearOfFirstRegistration: String? = null
 
+    @Column(name = "REVIEW_STATUS", nullable = true, precision = 0)
+    @Basic
+    var reviewStatus: Int? = null
+
+    @Column(name = "REVIEW_REMARKS", nullable = true)
+    @Basic
+    var reviewRemarks: String? = null
+
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
     var status: Long? = null
