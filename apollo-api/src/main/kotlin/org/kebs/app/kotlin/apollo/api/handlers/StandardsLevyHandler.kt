@@ -1,9 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 import com.google.gson.Gson
-import com.sun.xml.rpc.processor.modeler.j2ee.xml.string
 import mu.KotlinLogging
 import org.json.simple.JSONObject
+import org.json.simple.parser.JSONParser
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.kra.request.ReceiveSL2PaymentRequest
@@ -108,10 +108,15 @@ class StandardsLevyHandler(
         return try {
 
             val stringData = req.body<String>()
+
             val gson = Gson()
 
-            KotlinLogging.logger { }.info { "Payment Body$stringData" }
-            val body = gson.fromJson(stringData, ReceiveSL2PaymentRequest::class.java)
+           // val body: ReceiveSL2PaymentRequest = Gson().fromJson(stringData, ReceiveSL2PaymentRequest::class.java)
+           val body = gson.fromJson(stringData, ReceiveSL2PaymentRequest::class.java)
+
+            KotlinLogging.logger { }.info { "Payment Entity" + gson.toJson(body) }
+            KotlinLogging.logger { }.info { "Payment String$stringData" }
+
             val errors: Errors = BeanPropertyBindingResult(body, ReceiveSL2PaymentRequest::class.java.name)
             validator.validate(body, errors)
             when {
