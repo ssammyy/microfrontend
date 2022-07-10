@@ -138,8 +138,7 @@ class ApiAuthenticationHandler(
 //                        val localDate = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
 //                        val timestamp: Timestamp = Timestamp.valueOf(localDate)
 //                        expiry = timestamp
-                        expiry =
-                            LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+                        expiry = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
                         companyID = user.companyId
                         branchID = user.plantId
 

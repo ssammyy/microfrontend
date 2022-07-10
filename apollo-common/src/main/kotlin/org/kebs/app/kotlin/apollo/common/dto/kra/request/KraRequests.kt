@@ -12,6 +12,7 @@ import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
+
 data class PinValidationWebRequest(
 
     @NotEmpty(message = "Required field") val integration: Long,
@@ -212,4 +213,66 @@ class PenaltyRequest {
 
     @JsonProperty("PENALTYINFO")
     var details: List<PenaltyInfo>? = null
+}
+/*::::::::::::::::::::::::::::::::::::::TEST DETAILS:::::::::::::::::::::::::::::::::::::*/
+
+class DECLARATION {
+    var commodityType: String? = null
+    var periodFrom: String? = null
+    var periodTo: String? = null
+    var qtyManf: String? = null
+    var exFactVal: String? = null
+    var levyPaid: String? = null
+}
+
+class DETAILS {
+    @JsonProperty("DECLARATION")
+    var declaration: ArrayList<DECLARATION>? = null
+
+    @JsonProperty("PENALTY")
+    var penalty: ArrayList<PENALTY>? = null
+}
+
+class HEADER {
+    var entryNo: String? = null
+    var kraPin: String? = null
+    var manufacturerName: String? = null
+    var paymentSlipNo: String? = null
+    var paymentSlipDate: String? = null
+    var paymentType: String? = null
+    var paymentDate: String? = null
+    var totalDeclAmt: String? = null
+    var totalPenaltyAmt: String? = null
+
+    @JsonProperty("TotalPaymentAmt")
+    var totalPaymentAmt: String? = null
+
+    @JsonProperty("Bank")
+    var bank: String? = null
+    var bankRefNo: String? = null
+}
+
+class PENALTY {
+    var penaltyOrderNo: String? = null
+    var periodFrom: String? = null
+    var periodTo: String? = null
+    var penaltyPaid: String? = null
+}
+
+class REQUEST {
+    var loginId: String? = null
+    var password: String? = null
+    var hash: String? = null
+    var transmissionDate: String? = null
+
+    @JsonProperty("HEADER")
+    var header: HEADER? = null
+
+    @JsonProperty("DETAILS")
+    var details: DETAILS? = null
+}
+
+class RootKra {
+    @JsonProperty("REQUEST")
+    var request: REQUEST? = null
 }

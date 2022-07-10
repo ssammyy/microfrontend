@@ -4,14 +4,13 @@ import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
-import org.kebs.app.kotlin.apollo.common.dto.ms.MSComplaintSubmittedSuccessful
-import org.kebs.app.kotlin.apollo.common.dto.ms.NewComplaintDto
-import org.kebs.app.kotlin.apollo.common.dto.ms.WorkPlanInspectionDto
+import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelRemediationInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.ISampleCollectionViewRepository
 import org.springframework.core.io.ResourceLoader
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
@@ -39,6 +38,7 @@ class MSJSONControllers(
     private val appId: Int = applicationMapProperties.mapMarketSurveillance
 
     @PostMapping("/work-plan/file/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFiles(
         @RequestParam("referenceNo") referenceNo: String,
         @RequestParam("batchReferenceNo") batchReferenceNo: String,
@@ -48,7 +48,7 @@ class MSJSONControllers(
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
 
         docFile.forEach { fileDoc ->
@@ -56,6 +56,73 @@ class MSJSONControllers(
                 msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled)
             }
         }
+
+        return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+    }
+
+    @PostMapping("/update/destruction-notice-upload")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanDestructionNoticeUpload(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: MultipartFile,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        val gson = Gson()
+        val body = gson.fromJson(data, DestructionNotificationDto::class.java)
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.remarks
+            remarksStatus= map.activeStatus
+            processID = workPlanScheduled.msProcessId
+            userId= loggedInUser.id
+        }
+
+        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"DESTRUCTION NOTICE",workPlanScheduled)
+
+        with(workPlanScheduled){
+            destructionNotificationDocId = fileDoc.second.id
+            destructionClientEmail = body.clientEmail
+            destructionNotificationDate = commonDaoServices.getCurrentDate()
+            destructionNotificationStatus = map.activeStatus
+            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionDestructionAddedPendingAppeal
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+        }
+
+        workPlanScheduled = msWorkPlanDaoService.updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
+        val remarksSaved = msWorkPlanDaoService.workPlanAddRemarksDetails(workPlanScheduled.id,remarksDto, map, loggedInUser)
+        return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+    }
+
+    @PostMapping("/update/destruction-report-upload")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanDestructionReportUpload(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("docFile") docFile: MultipartFile,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"DESTRUCTION REPORT",workPlanScheduled)
+
+        with(workPlanScheduled){
+            destructionDocId = fileDoc.second.id
+            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionDestructionSuccessfullPendingFinalRemarks
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
+        }
+
+        workPlanScheduled = msWorkPlanDaoService.updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
 
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
     }

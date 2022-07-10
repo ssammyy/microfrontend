@@ -174,6 +174,8 @@ data class WorkPlanInspectionDto(
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
         var compliantStatusAdded: Boolean? = null,
+        var destructionRecommended: Boolean? = null,
+        var msProcessEndedStatus: Boolean? = null,
         var preliminaryReport: PreliminaryReportDto? = null,
 )
 
@@ -237,6 +239,18 @@ data class ApprovalDto(
         @NotNull(message = "Required field")
         var approvalStatus: Boolean,
         var remarks: String? = null,
+)
+
+data class WorkPlanFinalRecommendationDto(
+        @NotNull(message = "Required field")
+        var recommendationId: Long,
+        @NotNull(message = "Required field")
+        var hodRecommendationRemarks: String,
+)
+
+data class WorkPlanFeedBackDto(
+        @NotNull(message = "Required field")
+        var hodFeedBackRemarks: String,
 )
 
 data class FuelEntityAssignOfficerDto(
@@ -769,6 +783,13 @@ data class MsDepartmentDto(
         val status: Boolean? = null
 )
 
+data class MsRecommendationDto(
+        val id: Long? = null,
+        var recommendationName: String? = null,
+        var description: String? = null,
+        var status: Boolean? = null,
+)
+
 data class MsUsersDto(
         var id: Long? = null,
         var firstName: String? = null,
@@ -795,10 +816,17 @@ data class MsDivisionDto(
         val departmentId: Long? = null
 )
 
+
 data class NewComplaintDto(
         val complaintDetails: ComplaintDto,
         val customerDetails: ComplaintCustomersDto,
         val locationDetails: ComplaintLocationDto
+//        val complaintFilesDetails: ComplaintFilesDto,
+)
+
+data class DestructionNotificationDto(
+        val clientEmail: String? = null,
+        val remarks: String? = null,
 //        val complaintFilesDetails: ComplaintFilesDto,
 )
 

@@ -701,6 +701,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.market.surveillance.complaint.letter}")
     val mapMsComplaintLetter: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.market.surveillance.workPlanDestrctionID}")
+    val mapMsWorkPlanDestrctionID: Long = 0
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sftp.upload.file.name}")
     val mapSftpUploadName: String = ""
 
@@ -847,6 +850,27 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.rejectFinalPreliminaryReportHODRM}")
     val mapMSWorkPlanInspectionRejectFinalPreliminaryReportHODRM: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalRecommendationPendingDestructionNotice}")
+    val mapMSWorkPlanInspectionFinalRecommendationPendingDestruction: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalRecommendationPendingFinalRemarks}")
+    val mapMSWorkPlanInspectionFinalRecommendationPendingFinalRemarks: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.destructionAddedPendingAppeal}")
+    val mapMSWorkPlanInspectionDestructionAddedPendingAppeal: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.pendingDestractionGoodReport}")
+    val mapMSWorkPlanInspectionPendingDestractionGoodReport: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.clientAppealedWaitingSuccessfull}")
+    val mapMSWorkPlanInspectionClientAppealedAwaitSuccessfull: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.destructionSuccessfulPendingFnalRemarks}")
+    val mapMSWorkPlanInspectionDestructionSuccessfullPendingFinalRemarks: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.pendingFinalRemarksHODRM}")
+    val mapMSWorkPlanInspectionPendingFinalRemarksHODRM: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.ENDMSProcess}")
     val mapMSWorkPlanInspectionENDMSProcess: Long = 0L

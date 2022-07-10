@@ -650,13 +650,59 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                         <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                        && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
-                                         && workPlanInspection?.preliminaryReport?.rejectedStatus== false
-                                         && workPlanInspection?.preliminaryReport?.approvedStatusHod== false
-                                         && workPlanInspection?.preliminaryReport?.rejectedStatusHod== false" (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
+                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatus== false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod== false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHod== false"
+                                                 (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                  data-target="#myModal1"
                                                  class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                 (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
+                                                 data-target="#myModal1"
+                                                 class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">APPROVE/REJECT FINAL PRELIMINARY REPORT</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+
+                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
+                                                && workPlanInspection?.hodRecommendationStatus == false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                 (click)="openModalAddDetails('addFinalRecommendationHOD')" mat-raised-button="" data-toggle="modal"
+                                                 data-target="#myModal1"
+                                                 class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">ADD FINAL RECOMMENDATION</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.destructionDocId != null
+                                                && workPlanInspection?.msEndProcessRemarks == null
+                                                && workPlanInspection?.msProcessEndedStatus == false
+                                                && workPlanInspection?.destructionRecommended"
+                                                 (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"
+                                                 data-target="#myModal1"
+                                                 class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">ADD FINAL REMARKS</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -763,13 +809,69 @@
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
+                                        <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            && workPlanInspection?.msPreliminaryReportStatus
+                                            && workPlanInspection?.hodRecommendationStatus
+                                            && workPlanInspection?.destructionNotificationStatus == false
+                                            && workPlanInspection?.destructionRecommended"
+                                                (click)="openModalAddDetails('uploadDestructionNotificationFile')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal1"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">UPLOAD DESTRUCTION NOTIFICATION</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            && workPlanInspection?.msPreliminaryReportStatus
+                                            && workPlanInspection?.hodRecommendationStatus
+                                            && workPlanInspection?.destructionNotificationStatus
+                                            && workPlanInspection?.clientAppealed == false
+                                            && workPlanInspection?.destructionRecommended"
+                                                (click)="openModalAddDetails('clientAppealed')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal1"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">DID CLIENT APPEAL ?</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            && workPlanInspection?.msPreliminaryReportStatus
+                                            && workPlanInspection?.hodRecommendationStatus
+                                            && workPlanInspection?.destructionNotificationStatus
+                                            && workPlanInspection?.clientAppealed
+                                            && workPlanInspection?.destractionStatus == false
+                                            && workPlanInspection?.msEndProcessRemarks == null
+                                            && workPlanInspection?.destructionRecommended"
+                                                (click)="openModalAddDetails('clientAppealedSuccessfully')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal1"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">WAS APPEAL SUCCESSFULL ?</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            && workPlanInspection?.msPreliminaryReportStatus
+                                            && workPlanInspection?.hodRecommendationStatus
+                                            && workPlanInspection?.destructionNotificationStatus
+                                            && workPlanInspection?.clientAppealed
+                                            && workPlanInspection?.destractionStatus
+                                            && workPlanInspection?.destructionDocId == null
+                                            && workPlanInspection?.destructionRecommended"
+                                                (click)="openModalAddDetails('uploadDestructionReport')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal1"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">UPLOAD DESTRUCTION REPORT</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
 
                                     </div>
                                     <div *ngIf="role == 'MS_HOF_MODIFY'">
                                         <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
                                         <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                        && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus == false
-                                         && workPlanInspection?.preliminaryReport?.rejectedStatus== false" (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
+                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatus== false"
+                                                 (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                  data-target="#myModal1"
                                                  class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
@@ -778,12 +880,13 @@
                                         </button>
 
                                         <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                        && workPlanInspection?.msPreliminaryReportStatus
-                                         && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
-                                         && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
-                                         && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
-                                         && workPlanInspection?.preliminaryReport?.approvedStatus
-                                         && workPlanInspection?.preliminaryReport?.approvedStatusHod" (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
+                                                && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                 (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                  data-target="#myModal1"
                                                  class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">APPROVE/REJECT FINAL PRELIMINARY REPORT</span>
@@ -824,7 +927,7 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="approvalStatus"><b>Select Status</b></label>
+                                        <label for="approvalStatus1"><b>Select Status</b></label>
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
                                                         [class.is-invalid]="formApproveScheduleForm.approvalStatus.invalid && formAssignOfficerForm.assignedUserID.touched"
@@ -834,7 +937,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks"><b>Please write, in detail, your feedback for Approving/Rejecting the Work-plan Activity Scheduled:</b></label>
+                                        <label><b>Please write, in detail, your feedback for Approving/Rejecting the Work-plan Activity Scheduled:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks1" matInput type="text"
                                                       formControlName="remarks"
@@ -855,7 +958,7 @@
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
-                                                        formControlName="approvalStatus" id="approvalStatus2" name="approvalStatus" >
+                                                        formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
                                                 <mat-option [value]="false">REJECT</mat-option>
 
@@ -866,6 +969,140 @@
                                             <textarea id="remarks2" matInput type="text"
                                                       formControlName="remarks"
                                                       name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'clientAppealed')">
+                        <form [formGroup]="approvePreliminaryForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="approvalStatus2"><b>Select Status</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
+                                                        formControlName="approvalStatus"  name="approvalStatus" >
+                                                <mat-option [value]="true">YES</mat-option>
+                                                <mat-option [value]="false">NO</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="remarks2"><b>Please write, in detail, your feedback:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="remarks2" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'clientAppealedSuccessfully')">
+                        <form [formGroup]="approvePreliminaryForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label><b>Select Status</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
+                                                        formControlName="approvalStatus"  name="approvalStatus" >
+                                                <mat-option [value]="true">YES</mat-option>
+                                                <mat-option [value]="false">NO</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label ><b>Please write, in detail, your feedback:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'approveFinalPreliminaryHOF')">
+                        <form [formGroup]="approvePreliminaryForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="approvalStatus2"><b>Select Status</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
+                                                        formControlName="approvalStatus"  name="approvalStatus" >
+                                                <mat-option [value]="true">APPROVE</mat-option>
+                                                <mat-option [value]="false">REJECT</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="remarks2" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'approveFinalPreliminaryHOD')">
+                        <form [formGroup]="approvePreliminaryForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="approvalStatus2"><b>Select Status</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
+                                                        formControlName="approvalStatus"  name="approvalStatus" >
+                                                <mat-option [value]="true">APPROVE</mat-option>
+                                                <mat-option [value]="false">REJECT</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'addFinalRecommendationHOD')">
+                        <form [formGroup]="finalRecommendationForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="recommendationId"><b>Select Status</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formFinalRecommendationForm.recommendationId.invalid && formFinalRecommendationForm.recommendationId.touched"
+                                                        formControlName="recommendationId" id="recommendationId" name="recommendationId" >
+                                                <mat-option [value]="" selected>Please select</mat-option>
+                                                <mat-option  *ngFor="let app of recommendationList| filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="hodRecommendationRemarks"><b>Please write, in detail, your feedback for The Recommendation above:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="hodRecommendationRemarks" matInput type="text"
+                                                      formControlName="hodRecommendationRemarks"
+                                                      name="hodRecommendationRemarks" required>
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -893,6 +1130,26 @@
                                             <textarea id="remarks3" matInput type="text"
                                                       formControlName="remarks"
                                                       name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'addFinalRemarksHOD')">
+                        <form [formGroup]="finalRemarkHODForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="hodFeedBackRemarks"><b>Please write, in detail, your feedback for MS Conducted:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="hodFeedBackRemarks"
+                                                      [class.is-invalid]="formFinalRemarkHODForm.hodFeedBackRemarks.invalid &&
+                                                        formFinalRemarkHODForm.hodFeedBackRemarks.touched"
+                                                      matInput type="text"
+                                                      formControlName="hodFeedBackRemarks"
+                                                      name="hodFeedBackRemarks" required>
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -944,6 +1201,49 @@
                                         <form #demoForm="ngForm">
                                             <file-upload [(ngModel)]="uploadedFiles" name="files" id="files"
                                                          fileslimit="5" accept=".pdf, .png, .jpg"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'uploadDestructionNotificationFile')">
+                        <form  [formGroup]="clientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="clientEmail"><b>Client Email</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="clientEmail" matInput type="text" placeholder="Please Enter Client Email" formControlName="clientEmail" name="clientEmail"
+                                                   [class.is-invalid]="formClientEmailNotificationForm.clientEmail.invalid
+                                                    && formClientEmailNotificationForm.clientEmail.touched">
+                                        </mat-form-field>
+                                        <label for="files"><b>Upload Document Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files4"
+                                                         fileslimit="1" accept=".pdf"></file-upload>
+                                        </form>
+                                        <label><b>Please write, in detail, your feedback for the Destruction Notification:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'uploadDestructionReport')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Document Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files4"
+                                                         fileslimit="1" accept=".pdf"></file-upload>
                                         </form>
                                     </div>
                                 </div>
@@ -1140,9 +1440,45 @@
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
+                    <button *ngIf="(currDiv == 'clientAppealed')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveClientAppealed(approvePreliminaryForm.valid);"
+                            [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'clientAppealedSuccessfully')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveClientAppealedSuccessfully(approvePreliminaryForm.valid);"
+                            [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'approveFinalPreliminaryHOF')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveApproveFinalPreliminaryHOF(approvePreliminaryForm.valid);"
+                            [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'approveFinalPreliminaryHOD')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveApproveFinalPreliminaryHOD(approvePreliminaryForm.valid);"
+                            [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'addFinalRemarksHOD')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFinalRemarksHOD(finalRemarkHODForm.valid);"
+                            [disabled]="!finalRemarkHODForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
                     <button *ngIf="(currDiv == 'approvePreliminaryHOD')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveApprovePreliminaryHOD(approvePreliminaryForm.valid);"
                             [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'addFinalRecommendationHOD')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFinalRecommendationHOD(finalRecommendationForm.valid);"
+                            [disabled]="!finalRecommendationForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -1154,6 +1490,17 @@
                     </button>
                     <button *ngIf="(currDiv == 'uploadFiles')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveFilesResults('ORDINARY_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadDestructionReport')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveUploadedDestructionReport('DESTRUCTION_REPORT_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadDestructionNotificationFile')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesDestructionNotification(clientEmailNotificationForm.valid,'DESTRUCTION_FILE');"
+                            [disabled]="!clientEmailNotificationForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
