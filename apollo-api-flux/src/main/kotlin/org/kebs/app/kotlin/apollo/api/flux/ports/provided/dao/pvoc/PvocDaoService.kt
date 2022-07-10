@@ -9,13 +9,13 @@ import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.integ.PvocIntegrationProperties
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.customdto.*
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueryResponseEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocSealIssuesEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocStdMonitoringDataEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -26,28 +26,28 @@ import java.time.Instant
 
 @Service
 class PvocServiceFlux(
-    private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
-    private val pvocIntegrationProperties: PvocIntegrationProperties,
-    private val cocsRepository: ICocsRepository,
-    private val daoService: DaoService,
-    private val cocItemsRepository: ICocItemsRepository,
-    private val coiItemsRepository: ICoiItemsRepository,
-    private val corsBakRepository: ICorsBakRepository,
-    private val coisRepository: ICoisRepository,
-    private val riskProfileDataRepository: IRiskProfileDataRepository,
-   // private val timelinesDataRepository: IPvocTimelinesDataRepository,
-    private val pvocStdMonitoringDataRepository: IPvocStdMonitoringDataRepository,
-    private val pvocQueriesDataRepository: IPvocQueriesDataRepository,
-    private val idfsRepository: IIdfsRepository,
-    private val idfItemsRepository: IIdfItemsRepository,
-    private val pvocInvoicing: IPvocInvoicingRepository,
-    private val pvocPartnersRepository: IPvocPartnersRepository,
-    private val rfcGoodsRepository: IRfcGoodsRepository,
-    private val rfcCoiRepository: IRfcCoiRepository,
-    private val rfcCoiItemsRepository: IRfcCoiItemsRepository,
-    private val rfcCorRepository: IRfcCorRepository,
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val sftpService: SftpServiceImpl
+        private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
+        private val pvocIntegrationProperties: PvocIntegrationProperties,
+        private val cocsRepository: ICocsRepository,
+        private val daoService: DaoService,
+        private val cocItemsRepository: ICocItemsRepository,
+        private val coiItemsRepository: ICoiItemsRepository,
+        private val corsBakRepository: ICorsBakRepository,
+        private val coisRepository: ICoisRepository,
+        private val riskProfileDataRepository: IRiskProfileDataRepository,
+        // private val timelinesDataRepository: IPvocTimelinesDataRepository,
+        private val pvocStdMonitoringDataRepository: IPvocStdMonitoringDataRepository,
+        private val pvocQueriesDataRepository: IPvocQueriesDataRepository,
+        private val idfsRepository: IIdfsRepository,
+        private val idfItemsRepository: IIdfItemsRepository,
+        private val pvocInvoicing: IPvocInvoicingRepository,
+        private val pvocPartnersRepository: IPvocPartnersRepository,
+        private val rfcGoodsRepository: IRfcGoodsRepository,
+        private val rfcCoiRepository: IRfcCoiRepository,
+        private val rfcItemsRepository: IRfcItemsRepository,
+        private val rfcCorRepository: IRfcCorRepository,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val sftpService: SftpServiceImpl
 ) {
 
     @Autowired
@@ -668,7 +668,7 @@ class PvocServiceFlux(
                 rfcCoiRepository.save(it).id.let { id ->
                     rfcCoiData.rfcCoiItems?.forEach { item ->
                         item.rfcId = id
-                        rfcCoiItemsRepository.save(item)
+                        rfcItemsRepository.save(item)
                     }
                 }
 
@@ -894,7 +894,7 @@ class PvocServiceFlux(
         return generalResponse
     }
 
-    fun savePvocQueriesData(monitoringQueries: PvocQueriesDataEntity): GeneralResponse {
+    fun savePvocQueriesData(monitoringQueries: PvocQueryResponseEntity): GeneralResponse {
         val generalResponse = GeneralResponse()
         val log = WorkflowTransactionsEntity()
         try {
@@ -940,7 +940,7 @@ class PvocServiceFlux(
                             ?.let { ucrNumber ->
                                 monitoringQueries.invoiceNumber
                                     ?.let { invoiceNumber ->
-                                        pvocQueriesDataRepository.findByRfcNumberOrCocNumberOrUcrNumberOrInvoiceNumber(rfcNumber, cocNumber, ucrNumber, invoiceNumber)
+                                        pvocQueriesDataRepository.findAll(PageRequest.of(0, 20))
                                             ?.let { queries ->
                                                 val lists = mutableListOf<PvocQueriesResponse>()
                                                 queries.forEach { query ->
@@ -1319,7 +1319,7 @@ class PvocServiceFlux(
 
         rfcCoiRepository.findByRfcNumber(rfcNumber)
             ?.let { rfc ->
-                rfcCoiItemsRepository.findByRfcId(rfc.id)
+                rfcItemsRepository.findByRfcId(rfc.id)
                     .let { rfcCoiItemsList ->
                         val lists = mutableListOf<RfcCoiItemsResponse>()
                         rfcCoiItemsList.forEach { rfcItems ->

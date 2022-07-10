@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.handlers.pvoc
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.PvocAgentService
@@ -10,6 +11,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.paramOrNull
 
 @Component
 class PvocClientHandler(
@@ -112,7 +114,7 @@ class PvocClientHandler(
     fun foreignCoiRfc(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
-            val form = req.body(RfcCoiEntityForm::class.java)
+            val form = req.body(RfcEntityForm::class.java)
             validatorService.validateInputWithInjectedValidator(form)?.let {
                 response.message = "Request validation failed"
                 response.errors = it
@@ -125,7 +127,49 @@ class PvocClientHandler(
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to decode data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
-            response.message = "Invalid request data"
+            response.message = "Invalid COI request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun foreignCocRfc(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val form = req.body(RfcEntityForm::class.java)
+            validatorService.validateInputWithInjectedValidator(form)?.let {
+                response.message = "Request validation failed"
+                response.errors = it
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.data = form
+                response
+            } ?: run {
+                return ServerResponse.ok().body(pvocService.receiveRfcCoc(form))
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid COC request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun foreignCorRfc(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val form = req.body(RfcCorForm::class.java)
+            validatorService.validateInputWithInjectedValidator(form)?.let {
+                response.message = "Request validation failed"
+                response.errors = it
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.data = form
+                response
+            } ?: run {
+                return ServerResponse.ok().body(pvocService.receiveRfcCor(form))
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid COR request data"
         }
         return ServerResponse.ok().body(response)
     }
@@ -193,6 +237,20 @@ class PvocClientHandler(
         return ServerResponse.ok().body(response)
     }
 
+    fun kebsPartnerQueries(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val pg = extractPage(req)
+            val status = req.paramOrNull("status")?.toIntOrNull()
+            response = pvocService.retrievePartnerQueries(status ?: 0, pg)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Query response failed", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
     fun pvocTimelineIssues(req: ServerRequest): ServerResponse {
         var response = ApiResponseModel()
         try {
@@ -218,6 +276,21 @@ class PvocClientHandler(
             } ?: run {
                 return ServerResponse.ok().body(pvocService.addRiskProfile(form))
             }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Risk profile failed", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun listRiskProfile(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val dateStr = req.paramOrNull("cat_date")
+            val pg = extractPage(req)
+            KotlinLogging.logger { }.info("Risk profile: $dateStr")
+            response = pvocService.getRiskProfile(null, dateStr, pg)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Risk profile failed", ex)
             response.responseCode = ResponseCodes.FAILED_CODE

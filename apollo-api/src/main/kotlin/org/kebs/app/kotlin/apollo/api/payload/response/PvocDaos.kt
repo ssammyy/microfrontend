@@ -1,8 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.payload.response
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import org.kebs.app.kotlin.apollo.api.payload.request.RfcItemForm
+import org.kebs.app.kotlin.apollo.store.model.RiskProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import java.io.Serializable
+import java.sql.Date
 import java.sql.Timestamp
 
 class PvocComplaintDao {
@@ -560,6 +563,399 @@ class PvocPartnerCountryDao {
             val dtos = mutableListOf<PvocPartnerCountryDao>()
             timelines.forEach {
                 dtos.add(fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
+
+class RiskProfileDao {
+    var hsCode: String? = null
+    var brandName: String? = null
+    var productDescription: String? = null
+    var countryOfSupply: String? = null
+    var manufacturer: String? = null
+    var importerName: String? = null
+    var importerPin: String? = null
+    var exporterName: String? = null
+    var exporterPin: String? = null
+    var riskLevel: String? = null
+    var riskDescription: String? = null
+    var remarks: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var categorizationDate: java.sql.Date? = null
+
+    companion object {
+        fun fromEntity(pvocPartner: RiskProfileEntity): RiskProfileDao {
+            return RiskProfileDao().apply {
+                hsCode = pvocPartner.hsCode
+                brandName = pvocPartner.brandName
+                productDescription = pvocPartner.productDescription
+                countryOfSupply = pvocPartner.countryOfSupply
+                manufacturer = pvocPartner.manufacturer
+                importerName = pvocPartner.importerName
+                importerPin = pvocPartner.importerPin
+                exporterName = pvocPartner.exporterName
+                exporterPin = pvocPartner.exporterPin
+                riskLevel = pvocPartner.riskLevel
+                riskDescription = pvocPartner.riskDescription
+                remarks = pvocPartner.remarks
+                categorizationDate = pvocPartner.categorizationDate
+            }
+        }
+
+        fun fromList(timelines: List<RiskProfileEntity>): List<RiskProfileDao> {
+            val dtos = mutableListOf<RiskProfileDao>()
+            timelines.forEach {
+                dtos.add(fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
+class PvocQueryResponseDao {
+    var serialNumber: String? = null
+    var queryResponse: String? = null
+    var responseFrom: String? = null
+    var linkToUploads: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var responseDate: Timestamp? = null
+
+    companion object {
+        fun fromEntity(pvocPartner: PvocQueryResponseEntity): PvocQueryResponseDao {
+            return PvocQueryResponseDao().apply {
+                serialNumber = pvocPartner.serialNumber
+                responseDate = pvocPartner.createdOn
+                queryResponse = pvocPartner.response
+                linkToUploads = pvocPartner.linkToUploads
+                responseFrom = pvocPartner.responseFrom
+            }
+        }
+
+        fun fromList(timelines: Iterable<PvocQueryResponseEntity>): List<PvocQueryResponseDao> {
+            val dtos = mutableListOf<PvocQueryResponseDao>()
+            timelines.forEach {
+                dtos.add(fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
+class PvocPartnerQueryDao {
+    var rfcNumber: String? = null
+    var idfNumber: String? = null
+    var invoiceNumber: String? = null
+    var ucrNumber: String? = null
+    var documentType: String? = null
+    var certNumber: String? = null
+    var serialNumber: String? = null
+    var query: String? = null
+    var queryOrigin: String? = null
+    var response: String? = null
+    var conclusion: String? = null
+    var conclusionStatus: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var dateOpened: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var dateClosed: Timestamp? = null
+    var responses: List<PvocQueryResponseDao>? = null
+
+    companion object {
+        fun fromEntity(pvocPartner: PvocQueriesEntity): PvocPartnerQueryDao {
+            return PvocPartnerQueryDao().apply {
+                rfcNumber = pvocPartner.rfcNumber
+                idfNumber = pvocPartner.idfNumber
+                invoiceNumber = pvocPartner.invoiceNumber
+                ucrNumber = pvocPartner.ucrNumber
+                documentType = pvocPartner.certType
+                certNumber = pvocPartner.certNumber
+                serialNumber = pvocPartner.serialNumber
+                query = pvocPartner.queryDetails
+                queryOrigin = pvocPartner.queryOrigin
+                response = pvocPartner.queryResponse
+                conclusion = pvocPartner.conclusion
+                conclusionStatus = when (pvocPartner.conclusionStatus) {
+                    1 -> "COMPLETED"
+                    else -> "PENDING"
+                }
+                dateOpened = pvocPartner.createdOn
+                dateClosed = pvocPartner.conclusionDate
+                responses = PvocQueryResponseDao.fromList(pvocPartner.responses.orEmpty())
+
+            }
+        }
+
+        fun fromList(timelines: List<PvocQueriesEntity>): List<PvocPartnerQueryDao> {
+            val dtos = mutableListOf<PvocPartnerQueryDao>()
+            timelines.forEach {
+                dtos.add(fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
+class RfcDao {
+    var rfcId: Long? = null
+    var rfcNumber: String? = null
+    var idfNumber: String? = null
+    var ucrNumber: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var rfcDate: Date? = null
+    var countryOfDestination: String? = null
+    var applicationType: String? = null
+    var sorReference: String? = null
+    var solReference: String? = null
+    var importerName: String? = null
+    var importerPin: String? = null
+    var importerAddress1: String? = null
+    var importerAddress2: String? = null
+    var importerCity: String? = null
+    var importerCountry: String? = null
+    var importerZipCode: String? = null
+    var importerTelephoneNumber: String? = null
+    var importerFaxNumber: String? = null
+    var importerEmail: String? = null
+    var exporterName: String? = null
+    var exporterPin: String? = null
+    var exporterAddress1: String? = null
+    var exporterAddress2: String? = null
+    var exporterCity: String? = null
+    var exporterCountry: String? = null
+    var exporterZipCode: String? = null
+    var exporterTelephoneNumber: String? = null
+    var exporterFaxNumber: String? = null
+    var exporterEmail: String? = null
+    var placeOfInspection: String? = null
+    var placeOfInspectionAddress: String? = null
+    var placeOfInspectionEmail: String? = null
+    var placeOfInspectionContacts: String? = null
+    var portOfLoading: String? = null
+    var portOfDischarge: String? = null
+    var shipmentMethod: String? = null
+    var countryOfSupply: String? = null
+    var route: String? = null
+    var goodsCondition: String? = null
+    var assemblyState: String? = null
+    var linkToAttachedDocuments: String? = null
+    var clientId: String? = null
+    var reviewStatus: String? = null
+    var reviewRemarks: String? = null
+    var partnerId: Long? = null
+    var items: List<RfcItemForm>? = null
+
+    companion object {
+        fun fromEntity(rfc: RfcEntity): RfcDao {
+            val rfcEntity = RfcDao()
+            rfcEntity.rfcId = rfc.id
+            rfcEntity.partnerId = rfc.partner
+            rfcEntity.rfcNumber = rfc.rfcNumber
+            rfcEntity.idfNumber = rfc.idfNumber
+            rfcEntity.ucrNumber = rfc.ucrNumber
+            rfcEntity.rfcDate = rfc.rfcDate
+            rfcEntity.countryOfDestination = rfc.countryOfDestination
+            rfcEntity.applicationType = rfc.applicationType
+            rfcEntity.solReference = rfc.solReference
+            rfcEntity.sorReference = rfc.sorReference
+            rfcEntity.importerName = rfc.importerName
+            rfcEntity.importerCountry = rfc.importerCountry
+            rfcEntity.importerAddress1 = rfc.importerAddress1
+            rfcEntity.importerAddress2 = rfc.importerAddress2
+            rfcEntity.importerCity = rfc.importerCity
+            rfcEntity.importerFaxNumber = rfc.importerFaxNumber
+            rfcEntity.importerPin = rfc.importerPin
+            rfcEntity.importerZipCode = rfc.importerZipcode
+            rfcEntity.importerTelephoneNumber = rfc.importerTelephoneNumber
+            rfcEntity.importerEmail = rfc.importerEmail
+            rfcEntity.exporterName = rfc.exporterName
+            rfcEntity.exporterPin = rfc.exporterPin
+            rfcEntity.exporterCity = rfc.exporterCity
+            rfcEntity.exporterAddress1 = rfc.exporterAddress1
+            rfcEntity.exporterAddress2 = rfc.exporterAddress2
+            rfcEntity.exporterCountry = rfc.exporterCountry
+            rfcEntity.exporterEmail = rfc.exporterEmail
+            rfcEntity.exporterFaxNumber = rfc.exporterFaxNumber
+            rfcEntity.exporterTelephoneNumber = rfc.exporterTelephoneNumber
+            rfcEntity.exporterZipCode = rfc.exporterZipcode
+            rfcEntity.placeOfInspection = rfc.placeOfInspection
+            rfcEntity.placeOfInspectionAddress = rfc.placeOfInspectionAddress
+            rfcEntity.placeOfInspectionContacts = rfc.placeOfInspectionContacts
+            rfcEntity.placeOfInspectionEmail = rfc.placeOfInspectionEmail
+            rfcEntity.portOfDischarge = rfc.portOfDischarge
+            rfcEntity.portOfLoading = rfc.portOfLoading
+            rfcEntity.shipmentMethod = rfc.shipmentMethod
+            rfcEntity.countryOfSupply = rfc.countryOfSupply
+            rfcEntity.route = rfc.route
+            rfcEntity.goodsCondition = rfc.goodsCondition
+            rfcEntity.assemblyState = rfc.assemblyState
+            rfcEntity.linkToAttachedDocuments = rfc.linkToAttachedDocuments
+            rfcEntity.clientId = rfc.createdBy
+            rfcEntity.reviewStatus = when (rfc.reviewStatus) {
+                1 -> "REVIEWED"
+                2 -> "REJECTED"
+                else -> "NOT REVIEWED"
+            }
+            rfcEntity.reviewRemarks = rfc.reviewRemarks
+            return rfcEntity
+        }
+
+        fun fromList(rfcs: List<RfcEntity>): List<RfcDao> {
+            val dtos = mutableListOf<RfcDao>()
+            rfcs.forEach {
+                dtos.add(RfcDao.fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
+class RfcCorDao {
+    var rfcId: Long? = null
+    var rfcNumber: String? = null
+    var idfNumber: String? = null
+    var ucrNumber: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var rfcDate: Date? = null
+    var countryOfDestination: String? = null
+    var applicationType: String? = null
+    var importerName: String? = null
+    var importerPin: String? = null
+    var importerAddress1: String? = null
+    var importerAddress2: String? = null
+    var importerCity: String? = null
+    var importerCountry: String? = null
+    var importerZipCode: String? = null
+    var importerTelephoneNumber: String? = null
+    var importerFaxNumber: String? = null
+    var importerEmail: String? = null
+    var exporterName: String? = null
+    var exporterPin: String? = null
+    var exporterAddress1: String? = null
+    var exporterAddress2: String? = null
+    var exporterCity: String? = null
+    var exporterCountry: String? = null
+    var exporterZipCode: String? = null
+    var exporterTelephoneNumber: String? = null
+    var exporterFaxNumber: String? = null
+    var exporterEmail: String? = null
+    var placeOfInspection: String? = null
+    var applicantName: String? = null
+    var applicantPin: String? = null
+    var applicantAddress1: String? = null
+    var applicantAddress2: String? = null
+    var applicantCity: String? = null
+    var applicantCountry: String? = null
+    var applicantZipCode: String? = null
+    var applicantTelephoneNumber: String? = null
+    var applicantFaxNumber: String? = null
+    var applicantEmail: String? = null
+    var placeOfInspectionAddress: String? = null
+    var placeOfInspectionEmail: String? = null
+    var placeOfInspectionContacts: String? = null
+    var portOfLoading: String? = null
+    var portOfDischarge: String? = null
+    var shipmentMethod: String? = null
+    var countryOfSupply: String? = null
+    var goodsCondition: String? = null
+    var assemblyState: String? = null
+    var linkToAttachedDocuments: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var preferredInspectionDate: Timestamp? = null
+    var make: String? = null
+    var model: String? = null
+    var chassisNumber: String? = null
+    var engineNumber: String? = null
+    var engineCapacity: String? = null
+    var yearOfManufacture: String? = null
+    var yearOfFirstRegistration: String? = null
+    var version: Int? = 1
+    var clientId: String? = null
+    var reviewStatus: String? = null
+    var reviewRemarks: String? = null
+    var partnerId: Long? = null
+
+    companion object {
+        fun fromEntity(rfc: RfcCorEntity): RfcCorDao {
+            val rfcEntity = RfcCorDao()
+            rfcEntity.rfcId = rfc.id
+            rfcEntity.partnerId = rfc.partner
+            rfcEntity.rfcNumber = rfc.rfcNumber
+            rfcEntity.idfNumber = rfc.idfNumber
+            rfcEntity.ucrNumber = rfc.ucrNumber
+            rfcEntity.rfcDate = rfc.rfcDate
+            rfcEntity.countryOfDestination = rfc.countryOfDestination
+            rfcEntity.importerName = rfc.importerName
+            rfcEntity.importerCountry = rfc.importerCountry
+            rfcEntity.importerAddress1 = rfc.importerAddress1
+            rfcEntity.importerAddress2 = rfc.importerAddress2
+            rfcEntity.importerCity = rfc.importerCity
+            rfcEntity.importerFaxNumber = rfc.importerFaxNumber
+            rfcEntity.importerPin = rfc.importerPin
+            rfcEntity.importerZipCode = rfc.importerZipcode
+            rfcEntity.importerTelephoneNumber = rfc.importerTelephoneNumber
+            rfcEntity.importerEmail = rfc.importerEmail
+            rfcEntity.exporterName = rfc.exporterName
+            rfcEntity.exporterPin = rfc.exporterPin
+            rfcEntity.exporterCity = rfc.exporterCity
+            rfcEntity.exporterAddress1 = rfc.exporterAddress1
+            rfcEntity.exporterAddress2 = rfc.exporterAddress2
+            rfcEntity.exporterCountry = rfc.exporterCountry
+            rfcEntity.exporterEmail = rfc.exporterEmail
+            rfcEntity.exporterFaxNumber = rfc.exporterFaxNumber
+            rfcEntity.exporterTelephoneNumber = rfc.exporterTelephoneNumber
+            rfcEntity.exporterZipCode = rfc.exporterZipcode
+            rfcEntity.placeOfInspection = rfc.placeOfInspection
+            rfcEntity.placeOfInspectionAddress = rfc.placeOfInspectionAddress
+            rfcEntity.placeOfInspectionContacts = rfc.placeOfInspectionContacts
+            rfcEntity.placeOfInspectionEmail = rfc.placeOfInspectionEmail
+            rfcEntity.portOfDischarge = rfc.portOfDischarge
+            rfcEntity.portOfLoading = rfc.portOfLoading
+            rfcEntity.shipmentMethod = rfc.shipmentMethod
+            rfcEntity.countryOfSupply = rfc.countryOfSupply
+            rfcEntity.applicantName = rfc.applicantName
+            rfcEntity.applicantCity = rfc.applicantCity
+            rfcEntity.applicantCountry = rfc.applicantCountry
+            rfcEntity.applicantAddress1 = rfc.applicantAddress1
+            rfcEntity.applicantAddress2 = rfc.applicantAddress2
+            rfcEntity.applicantEmail = rfc.applicantEmail
+            rfcEntity.applicantFaxNumber = rfc.applicantFaxNumber
+            rfcEntity.applicantZipCode = rfc.applicantZipcode
+            rfcEntity.applicantTelephoneNumber = rfc.applicantTelephoneNumber
+            rfcEntity.applicantPin = rfc.applicantPin
+            rfcEntity.goodsCondition = rfc.goodsCondition
+            rfcEntity.assemblyState = rfc.assemblyState
+            rfcEntity.linkToAttachedDocuments = rfc.linkToAttachedDocuments
+            rfcEntity.clientId = rfc.createdBy
+            rfcEntity.reviewStatus = when (rfc.reviewStatus) {
+                1 -> "REVIEWED"
+                2 -> "REJECTED"
+                else -> "NOT REVIEWED"
+            }
+            rfcEntity.reviewRemarks = rfc.reviewRemarks
+            rfcEntity.engineNumber = rfc.engineNumber
+            rfcEntity.engineCapacity = rfc.engineCapacity
+            rfcEntity.make = rfc.make
+            rfcEntity.model = rfc.model
+            rfcEntity.chassisNumber = rfc.chassisNumber
+            rfcEntity.yearOfFirstRegistration = rfc.yearOfFirstRegistration
+            rfcEntity.yearOfManufacture = rfc.yearOfManufacture
+            return rfcEntity
+        }
+
+        fun fromList(rfcs: List<RfcCorEntity>): List<RfcCorDao> {
+            val dtos = mutableListOf<RfcCorDao>()
+            rfcs.forEach {
+                dtos.add(RfcCorDao.fromEntity(it))
             }
             return dtos
         }

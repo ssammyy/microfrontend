@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.RfcCorEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.RfcEntity
 import java.sql.Date
 import java.sql.Timestamp
 import javax.validation.Valid
-import javax.validation.constraints.Email
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
+import javax.validation.constraints.*
 
 class PvocPartnersForms {
     @NotNull(message = "Partner Ref Number is required")
@@ -136,38 +135,6 @@ class CocItem {
     @JsonAlias("PRODUCT_CATEGORY")
     var productCategory: String? = null
 
-}
-
-class DocumentPaymentDetails {
-
-    @NotNull(message = "Required field")
-    @JsonAlias("INSPECTION_VALUE")
-    var inspectionValue: Double = 0.0
-
-    @NotNull(message = "Required field")
-    @JsonAlias("INSPECTION_PENALTY")
-    var penaltyValue: Double = 0.0
-
-    @NotNull(message = "Required field")
-    @JsonAlias("INSPECTION_TAX")
-    var taxValue: Double = 0.0
-
-    @NotNull(message = "Required field")
-    @JsonAlias("INSPECTION_EXCHANGE_RATE")
-    var innvoiceExchangeRate: Double = 0.0
-
-    @NotEmpty(message = "Required field")
-    @JsonAlias("INSPECTION_CURRENCY")
-    var inspectionCurrency: String? = null
-
-    @NotEmpty(message = "Required field")
-    @JsonAlias("RECEIPT_NUMBER")
-    var receiptNumber: String? = null
-
-    @NotNull(message = "Required field")
-    @JsonAlias("PAYMENT_DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    var paymentDate: Timestamp? = null
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -357,10 +324,6 @@ class CocEntityForm {
     @NotEmpty(message = "Required field")
     @JsonAlias("PRODUCT")
     var cocItems: List<CocItem>? = null
-
-    @NotNull(message = "Required field")
-    @JsonAlias("INSPECTION_FEE")
-    var inspectionFee: DocumentPaymentDetails? = null
 
     @NotNull(message = "Required field")
     @Min(value = 1, message = "Version should be greater than or equal to one")
@@ -762,10 +725,6 @@ class CoiEntityForm {
     @NotNull(message = "Required field")
     var coiItems: List<CoiItem>? = null
 
-    @Valid
-    @NotNull(message = "Required field")
-    var inspectionFee: DocumentPaymentDetails? = null
-
     @NotNull(message = "Required field")
     @Min(value = 1, message = "Version should not be less than one")
     var version: Long? = null
@@ -920,7 +879,7 @@ class CorEntityForm {
     var version: Long? = null
 }
 
-class RfcCoiItem {
+class RfcItemForm {
     @NotEmpty(message = "Required field")
     var declaredHsCode: String? = null
 
@@ -939,7 +898,7 @@ class RfcCoiItem {
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class RfcCoiEntityForm {
+class RfcEntityForm {
 
     @NotEmpty(message = "Required field")
     var rfcNumber: String? = null
@@ -1067,7 +1026,288 @@ class RfcCoiEntityForm {
 
     @Valid
     @NotEmpty(message = "Required field")
-    var items: List<RfcCoiItem>? = null
+    var items: List<RfcItemForm>? = null
+    fun fillDetails(rfcEntity: RfcEntity) {
+        rfcEntity.rfcNumber = rfcNumber
+        rfcEntity.idfNumber = idfNumber
+        rfcEntity.ucrNumber = ucrNumber
+        rfcEntity.rfcDate = rfcDate
+        rfcEntity.countryOfDestination = countryOfDestination
+        rfcEntity.applicationType = applicationType
+        rfcEntity.solReference = solReference
+        rfcEntity.sorReference = sorReference
+        rfcEntity.importerName = importerName
+        rfcEntity.importerCountry = importerCountry
+        rfcEntity.importerAddress1 = importerAddress1
+        rfcEntity.importerAddress2 = importerAddress2
+        rfcEntity.importerCity = importerCity
+        rfcEntity.importerFaxNumber = importerFaxNumber
+        rfcEntity.importerPin = importerPin
+        rfcEntity.importerZipcode = importerZipCode
+        rfcEntity.importerTelephoneNumber = importerTelephoneNumber
+        rfcEntity.importerEmail = importerEmail
+        rfcEntity.exporterName = exporterName
+        rfcEntity.exporterPin = exporterPin
+        rfcEntity.exporterCity = exporterCity
+        rfcEntity.exporterAddress1 = exporterAddress1
+        rfcEntity.exporterAddress2 = exporterAddress2
+        rfcEntity.exporterCountry = exporterCountry
+        rfcEntity.exporterEmail = exporterEmail
+        rfcEntity.exporterFaxNumber = exporterFaxNumber
+        rfcEntity.exporterTelephoneNumber = exporterTelephoneNumber
+        rfcEntity.exporterZipcode = exporterZipCode
+        rfcEntity.placeOfInspection = placeOfInspection
+        rfcEntity.placeOfInspectionAddress = placeOfInspectionAddress
+        rfcEntity.placeOfInspectionContacts = placeOfInspectionContacts
+        rfcEntity.placeOfInspectionEmail = placeOfInspectionEmail
+        rfcEntity.portOfDischarge = portOfDischarge
+        rfcEntity.portOfLoading = portOfLoading
+        rfcEntity.shipmentMethod = shipmentMethod
+        rfcEntity.countryOfSupply = countryOfSupply
+        rfcEntity.route = route
+        rfcEntity.goodsCondition = goodsCondition
+        rfcEntity.assemblyState = assemblyState
+        rfcEntity.linkToAttachedDocuments = linkToAttachedDocuments
+    }
+}
+
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+class RfcCorForm {
+
+    @NotEmpty(message = "Required field")
+    var rfcNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var idfNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var ucrNumber: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var rfcDate: Date? = null
+
+    @NotEmpty(message = "Required field")
+    var countryOfDestination: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicationType: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerPin: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerAddress1: String? = null
+
+
+    @NotEmpty(message = "Required field")
+    var importerAddress2: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerCity: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerCountry: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerZipCode: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerTelephoneNumber: String? = null
+
+
+    @NotEmpty(message = "Required field")
+    var importerFaxNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var importerEmail: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterPin: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterAddress1: String? = null
+
+
+    @NotEmpty(message = "Required field")
+    var exporterAddress2: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterCity: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterCountry: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterZipCode: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterTelephoneNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterFaxNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var exporterEmail: String? = null
+
+    @NotEmpty(message = "Required field")
+    var placeOfInspection: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicantName: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicantPin: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicantAddress1: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicantAddress2: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicantCity: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicantCountry: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicantZipCode: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicantTelephoneNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicantFaxNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var applicantEmail: String? = null
+
+    @NotEmpty(message = "Required field")
+    var placeOfInspectionAddress: String? = null
+
+    @NotEmpty(message = "Required field")
+    var placeOfInspectionEmail: String? = null
+
+    @NotEmpty(message = "Required field")
+    var placeOfInspectionContacts: String? = null
+
+
+    @NotEmpty(message = "Required field")
+    var portOfLoading: String? = null
+
+    @NotEmpty(message = "Required field")
+    var portOfDischarge: String? = null
+
+    @NotEmpty(message = "Required field")
+    var shipmentMethod: String? = null
+
+    @NotEmpty(message = "Required field")
+    var countryOfSupply: String? = null
+
+    @NotEmpty(message = "Required field")
+    var goodsCondition: String? = null
+
+    @NotEmpty(message = "Required field")
+    var assemblyState: String? = null
+
+    var linkToAttachedDocuments: String? = null
+
+    @NotNull(message = "Required field")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var preferredInspectionDate: Timestamp? = null
+
+    @NotEmpty(message = "Required field")
+    var make: String? = null
+
+    @NotEmpty(message = "Required field")
+    var model: String? = null
+
+    @NotEmpty(message = "Required field")
+    var chassisNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var engineNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    var engineCapacity: String? = null
+
+    @NotEmpty(message = "Required field")
+    var yearOfManufacture: String? = null
+
+    @NotEmpty(message = "Required field")
+    var yearOfFirstRegistration: String? = null
+
+    @NotNull(message = "Required field")
+    var version: Int? = 1
+    fun fillCorRfc(rfc: RfcCorEntity) {
+        rfc.rfcDate = rfcDate
+        rfc.countryOfDestination = countryOfDestination
+        rfc.idfNumber = idfNumber
+        rfc.ucrNumber = ucrNumber
+        rfc.rfcNumber = rfcNumber
+        // Importer
+        rfc.importerName = importerName
+        rfc.importerPin = importerPin
+        rfc.importerAddress1 = importerAddress1
+        rfc.importerAddress2 = importerAddress2
+        rfc.importerCity = importerCity
+        rfc.importerCountry = importerCountry
+        rfc.importerZipcode = importerZipCode
+        rfc.importerTelephoneNumber = importerTelephoneNumber
+        rfc.importerFaxNumber = importerFaxNumber
+        rfc.importerEmail = importerEmail
+        // Exporter
+        rfc.exporterName = exporterName
+        rfc.exporterPin = exporterPin
+        rfc.exporterAddress1 = exporterAddress1
+        rfc.exporterAddress2 = exporterAddress2
+        rfc.exporterCity = exporterCity
+        rfc.exporterCountry = exporterCountry
+        rfc.exporterZipcode = exporterZipCode
+        rfc.exporterTelephoneNumber = exporterTelephoneNumber
+        rfc.exporterEmail = exporterEmail
+        // Applicant details
+        rfc.applicantName = applicantName
+        rfc.applicantPin = applicantPin
+        rfc.applicantAddress1 = applicantAddress1
+        rfc.applicantAddress2 = applicantAddress2
+        rfc.applicantCity = applicantCity
+        rfc.applicantCountry = applicantCountry
+        rfc.applicantZipcode = applicantZipCode
+        rfc.applicantTelephoneNumber = applicantTelephoneNumber
+        rfc.applicantFaxNumber = applicantFaxNumber
+        rfc.applicantEmail = applicantEmail
+        // Inspection Details
+        rfc.placeOfInspection = placeOfInspection
+        rfc.placeOfInspectionAddress = placeOfInspectionAddress
+        rfc.placeOfInspectionEmail = placeOfInspectionEmail
+        rfc.placeOfInspectionContacts = placeOfInspectionContacts
+        rfc.portOfLoading = portOfLoading
+        rfc.portOfDischarge = portOfDischarge
+        rfc.shipmentMethod = shipmentMethod
+        rfc.countryOfSupply = countryOfSupply
+        rfc.goodsCondition = goodsCondition
+        rfc.assemblyState = assemblyState
+        rfc.linkToAttachedDocuments = linkToAttachedDocuments
+        rfc.preferredInspectionDate = preferredInspectionDate
+        // Vehicle
+        rfc.make = make
+        rfc.model = model
+        rfc.chassisNumber = chassisNumber
+        rfc.engineCapacity = engineCapacity
+        rfc.engineNumber = engineNumber
+        rfc.yearOfManufacture = yearOfManufacture
+        rfc.yearOfFirstRegistration = yearOfFirstRegistration
+        rfc.varField1 = version?.toString() ?: "1"
+
+    }
 }
 
 class IdfItem {
@@ -1093,6 +1333,7 @@ class IdfItem {
     @NotNull(message = "Required field")
     @Min(value = 0, message = "Item Cost should be greater than or equal to zero")
     var itemCost: Long? = null
+
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -1222,21 +1463,32 @@ class PvocResponseModel {
 
 class PvocKebsQueryForm {
     @NotEmpty(message = "Document type is required")
+    @Size(min = 1, max = 10, message = "Document type should be upto 10 characters")
+    @Pattern(regexp = "coc|cor|coi|ncr", flags = arrayOf(Pattern.Flag.CASE_INSENSITIVE), message = "Document type should be one of COC,COI,COR or NCR")
     var documentType: String? = null
 
     @NotEmpty(message = "Cert number is required")
+    @Size(min = 1, max = 50, message = "Certificate number should be upto 50 characters")
     var certNumber: String? = null
 
     @NotEmpty(message = "RFC number is required")
+    @Size(min = 1, max = 50, message = "RFC Number should be upto 50 characters")
     var rfcNumber: String? = null
 
     @NotEmpty(message = "Invoice number is required")
+    @Size(min = 1, max = 50, message = "Invoice Number should be upto 50 characters")
     var invoiceNumber: String? = null
 
+    @NotEmpty(message = "Invoice number is required")
+    @Size(min = 1, max = 50, message = "Invoice Number should be upto 50 characters")
+    var idfNumber: String? = null
+
     @NotEmpty(message = "UCR number is required")
+    @Size(min = 1, max = 50, message = "IDF Number should be upto 50 characters")
     var ucrNumber: String? = null
 
     @NotEmpty(message = "Query is required")
+    @Size(min = 1, max = 4000, message = "Query should be upto 4000 characters")
     var partnerQuery: String? = null
 }
 
@@ -1252,15 +1504,24 @@ class PvocQueryResponse {
 
     @NotEmpty(message = "Query analysis is required")
     var queryAnalysis: String? = null
+
     var linkToUploads: String? = null
 }
 
 class PvocQueryConclusion {
+    @NotEmpty(message = "Document type is required")
+    var responseType: String? = null
+
+    @NotEmpty(message = "Query analysis is required")
+    var queryAnalysis: String? = null
+
     @NotEmpty(message = "Serial number is required")
     var serialNumber: String? = null
 
     @NotEmpty(message = "Conclusion is required")
-    var conclusion: String? = null
+    var responseData: String? = null
+
+    var linkToUploads: String? = null
 }
 
 class KebsQueryResponseForm {
@@ -1283,6 +1544,7 @@ class KebsQueryResponse {
     var documentType: String? = null
     var certNumber: String? = null
     var serialNumber: String? = null
+    var responseSerialNumber: String? = null
     var rfcNumber: String? = null
     var invoiceNumber: String? = null
     var ucrNumber: String? = null
