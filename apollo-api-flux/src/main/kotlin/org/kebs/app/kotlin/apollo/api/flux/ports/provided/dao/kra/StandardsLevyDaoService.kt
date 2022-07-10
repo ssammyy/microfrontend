@@ -75,30 +75,30 @@ class StandardsLevyDaoService(
     /**
      * Function which saves SL2 payments to the KEBS DB
      *
-     * @param paymentRequest
+     * @param paymentReceiveSL2PaymentRequest
      * <pre>
      * Needs to be transactional as we save data to multiple tables
      * </pre>
      * @return RequestResult
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun processSl2Payments(paymentRequest: ReceiveSL2PaymentRequest): RequestResult {
+    fun processSl2Payments(paymentReceiveSL2PaymentRequest: ReceiveSL2PaymentRequest): RequestResult {
         val result = RequestResult()
         val log = daoService.createTransactionLog(0, daoService.generateTransactionReference())
         try {
-            log.integrationRequest = daoService.mapper().writeValueAsString(paymentRequest)
+            log.integrationRequest = daoService.mapper().writeValueAsString(paymentReceiveSL2PaymentRequest)
             /**
              * Attempt to log in
              */
             try {
                 reactiveAuthenticationManager.authenticate(
                     UsernamePasswordAuthenticationToken(
-                        paymentRequest.loginId,
-                        paymentRequest.password
+                        paymentReceiveSL2PaymentRequest.loginId,
+                        paymentReceiveSL2PaymentRequest.password
                     )
                 ).block()
 
-                validateCredentialsAndLogToDataStore(paymentRequest, log, result)
+                validateCredentialsAndLogToDataStore(paymentReceiveSL2PaymentRequest, log, result)
 
 
             } catch (e: DisabledException) {
@@ -148,7 +148,7 @@ class StandardsLevyDaoService(
     /**
      * Function to validate ingress hash and validate
      *
-     * @param paymentRequest as received on the API
+     * @param paymentReceiveSL2PaymentRequest as received on the API
      * @param log to track processing and persist final status as well as log intermidiary results
      * @param result eventaul response to be supplied as API response
      * <br>
@@ -156,8 +156,8 @@ class StandardsLevyDaoService(
      *
      * @return RequestResult
      */
-    private fun validateCredentialsAndLogToDataStore(paymentRequest: ReceiveSL2PaymentRequest, log: WorkflowTransactionsEntity, result: RequestResult) {
-        when (daoService.validateHash(paymentRequest)) {
+    private fun validateCredentialsAndLogToDataStore(paymentReceiveSL2PaymentRequest: ReceiveSL2PaymentRequest, log: WorkflowTransactionsEntity, result: RequestResult) {
+        when (daoService.validateHash(paymentReceiveSL2PaymentRequest)) {
             false -> throw InvalidInputException("90003,NOK, Hash code validation provided")
             true -> {
                 /**
@@ -165,29 +165,29 @@ class StandardsLevyDaoService(
                  */
                 var header = Sl2PaymentsHeaderEntity()
 
-                header.transactionDate = paymentRequest.transmissionDate
-                header.requestHeaderEntryNo = paymentRequest.header?.entryNo
-                header.requestHeaderKraPin = paymentRequest.header?.kraPin
-                header.requestHeaderManufacturerName = paymentRequest.header?.manufacturerName
-                header.requestHeaderPaymentSlipNo = paymentRequest.header?.paymentSlipNo
-                header.requestHeaderPaymentSlipDate = paymentRequest.header?.paymentSlipDate
-                header.requestHeaderPaymentType = paymentRequest.header?.paymentType
-                header.requestHeaderTotalDeclAmt = paymentRequest.header?.totalDeclAmt
-                header.requestHeaderTotalPenaltyAmt = paymentRequest.header?.totalPenaltyAmt
-                header.requestHeaderTotalPaymentAmt = paymentRequest.header?.totalPaymentAmt
-                header.requestHeaderBank = paymentRequest.header?.bank
-                header.requestBankRefNo = paymentRequest.header?.bankRefNo
-                header.requestHeaderTransmissionDate = paymentRequest.transmissionDate
+                header.transactionDate = paymentReceiveSL2PaymentRequest.transmissionDate
+                header.requestHeaderEntryNo = paymentReceiveSL2PaymentRequest.header?.entryNo
+                header.requestHeaderKraPin = paymentReceiveSL2PaymentRequest.header?.kraPin
+                header.requestHeaderManufacturerName = paymentReceiveSL2PaymentRequest.header?.manufacturerName
+                header.requestHeaderPaymentSlipNo = paymentReceiveSL2PaymentRequest.header?.paymentSlipNo
+                header.requestHeaderPaymentSlipDate = paymentReceiveSL2PaymentRequest.header?.paymentSlipDate
+                header.requestHeaderPaymentType = paymentReceiveSL2PaymentRequest.header?.paymentType
+                header.requestHeaderTotalDeclAmt = paymentReceiveSL2PaymentRequest.header?.totalDeclAmt
+                header.requestHeaderTotalPenaltyAmt = paymentReceiveSL2PaymentRequest.header?.totalPenaltyAmt
+                header.requestHeaderTotalPaymentAmt = paymentReceiveSL2PaymentRequest.header?.totalPaymentAmt
+                header.requestHeaderBank = paymentReceiveSL2PaymentRequest.header?.bank
+                header.requestBankRefNo = paymentReceiveSL2PaymentRequest.header?.bankRefNo
+                header.requestHeaderTransmissionDate = paymentReceiveSL2PaymentRequest.transmissionDate
                 header.transactionDate = Date()
                 header.status = 0
-                header.createdBy = paymentRequest.loginId
+                header.createdBy = paymentReceiveSL2PaymentRequest.loginId
                 header.createdOn = Timestamp.from(Instant.now())
                 header.varField1 = log.transactionReference
                 header.version = 1
                 header = headerRepository.save(header)
 
 
-                paymentRequest.details?.declaration?.forEach { d ->
+                paymentReceiveSL2PaymentRequest.details?.declaration?.forEach { d ->
                     val detail = Sl2PaymentsDetailsEntity()
                     detail.headerId = header.id
                     detail.transactionType = "DECLARATION"
@@ -200,12 +200,12 @@ class StandardsLevyDaoService(
                     detail.levyPaid = d.levyPaid
                     detail.transactionDate = Date()
                     detail.status = 0
-                    detail.createdBy = paymentRequest.loginId
+                    detail.createdBy = paymentReceiveSL2PaymentRequest.loginId
                     detail.createdOn = Timestamp.from(Instant.now())
                     detail.version = 1
                     detailsRepository.save(detail)
                 }
-                paymentRequest.details?.penalty?.forEach { p ->
+                paymentReceiveSL2PaymentRequest.details?.penalty?.forEach { p ->
                     val detail = Sl2PaymentsDetailsEntity()
                     detail.headerId = header.id
                     detail.transactionType = "PENALTY"
@@ -215,7 +215,7 @@ class StandardsLevyDaoService(
                     detail.penaltyPaid = p.penaltyPaid
                     detail.transactionDate = Date()
                     detail.status = 0
-                    detail.createdBy = paymentRequest.loginId
+                    detail.createdBy = paymentReceiveSL2PaymentRequest.loginId
                     detail.createdOn = Timestamp.from(Instant.now())
                     detail.version = 1
                     detailsRepository.save(detail)
