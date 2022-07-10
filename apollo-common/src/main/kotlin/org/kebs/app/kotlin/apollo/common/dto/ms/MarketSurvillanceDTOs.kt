@@ -174,6 +174,8 @@ data class WorkPlanInspectionDto(
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
         var compliantStatusAdded: Boolean? = null,
+        var destructionRecommended: Boolean? = null,
+        var msProcessEndedStatus: Boolean? = null,
         var preliminaryReport: PreliminaryReportDto? = null,
 )
 
@@ -237,6 +239,18 @@ data class ApprovalDto(
         @NotNull(message = "Required field")
         var approvalStatus: Boolean,
         var remarks: String? = null,
+)
+
+data class WorkPlanFinalRecommendationDto(
+        @NotNull(message = "Required field")
+        var recommendationId: Long,
+        @NotNull(message = "Required field")
+        var hodRecommendationRemarks: String,
+)
+
+data class WorkPlanFeedBackDto(
+        @NotNull(message = "Required field")
+        var hodFeedBackRemarks: String,
 )
 
 data class FuelEntityAssignOfficerDto(
@@ -371,13 +385,19 @@ data class InspectionInvestigationReportDto(
         var backgroundInformation: String? = null,
         var objectiveInvestigation: String? = null,
         var dateInvestigationInspection: Date? = null,
-        var kebsInspectors: String? = null,
+        var kebsInspectors: List<KebsOfficersName>? = null,
         var methodologyEmployed: String? = null,
         var conclusion: String? = null,
         var recommendations: String? = null,
         var statusActivity: String? = null,
         var finalRemarkHod: String? = null,
         var remarks: String? = null,
+)
+
+data class KebsOfficersName (
+        var inspectorName: String? = null,
+        var institution: String? = null,
+        var designation: String? = null,
 )
 
 data class SeizureDeclarationDto(
@@ -566,12 +586,21 @@ data class PreliminaryReportDto(
         var surveillanceDateFrom: Date? = null,
         var surveillanceDateTo: Date? = null,
         var reportBackground: String? = null,
-        var kebsOfficersName: String? = null,
+        var kebsOfficersName: List<KebsOfficersName>? = null,
         var surveillanceObjective: String? = null,
         var surveillanceConclusions: String? = null,
         var surveillanceRecommendation: String? = null,
         var remarks: String? = null,
         var parametersList: List<PreliminaryReportItemsDto>? = null,
+        var approvedStatusHofFinal: Boolean? = null,
+        var rejectedStatusHofFinal: Boolean? = null,
+        var approvedStatus: Boolean? = null,
+        var rejectedStatus: Boolean? = null,
+        var approvedStatusHodFinal: Boolean? = null,
+        var rejectedStatusHodFinal: Boolean? = null,
+        var approvedStatusHod: Boolean? = null,
+        var rejectedStatusHod: Boolean? = null,
+
 )
 
 data class CompliantRemediationDto(
@@ -582,6 +611,12 @@ data class CompliantRemediationDto(
         var subsistenceTotalNights: Long?= null,
         var transportAirTicket: Long?= null,
         var transportInkm: Long?= null,
+)
+
+data class PreliminaryReportFinalDto(
+        var remarks: String? = null,
+        var surveillanceConclusions: String? = null,
+        var surveillanceRecommendation: String? = null,
 )
 
 data class RemediationDto(
@@ -748,6 +783,13 @@ data class MsDepartmentDto(
         val status: Boolean? = null
 )
 
+data class MsRecommendationDto(
+        val id: Long? = null,
+        var recommendationName: String? = null,
+        var description: String? = null,
+        var status: Boolean? = null,
+)
+
 data class MsUsersDto(
         var id: Long? = null,
         var firstName: String? = null,
@@ -774,10 +816,17 @@ data class MsDivisionDto(
         val departmentId: Long? = null
 )
 
+
 data class NewComplaintDto(
         val complaintDetails: ComplaintDto,
         val customerDetails: ComplaintCustomersDto,
         val locationDetails: ComplaintLocationDto
+//        val complaintFilesDetails: ComplaintFilesDto,
+)
+
+data class DestructionNotificationDto(
+        val clientEmail: String? = null,
+        val remarks: String? = null,
 //        val complaintFilesDetails: ComplaintFilesDto,
 )
 

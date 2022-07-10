@@ -583,6 +583,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                 GET("/broadProductCategory", handler::msBroadProductCategory)
                 GET("/products", handler::msProducts)
                 GET("/productSubcategory", handler::msProductSubcategory)
+                GET("/recommendation-list", handler::msRecommendationList)
             }
             "/complaint".nest {
                 GET("/list", handler::getAllComplaintList)
@@ -618,6 +619,8 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/approval-schedule", handler::updateWorkPlanScheduleApproval)
                         GET("/start-onsite-activities", handler::startWorkPlanInspectionOnsiteDetails)
                         GET("/end-onsite-activities", handler::endWorkPlanInspectionOnsiteDetails)
+                        PUT("/client-appealed-status", handler::updateWorkPlanClientAppealed)
+                        PUT("/client-appealed-successfully", handler::updateWorkPlanClientAppealSuccesful)
                         "/hof".nest {
                             PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
                             PUT("/approval-final-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
@@ -625,6 +628,8 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         "/hod".nest {
                             PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD)
                             PUT("/approval-final-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD)
+                            PUT("/final-recommendation", handler::addWorkPlanScheduleFinalRecommendationByHOD)
+                            PUT("/feedBack-notification", handler::addWorkPlanScheduleFeedBackByHOD)
                         }
                     }
                     "/add".nest {
@@ -638,6 +643,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
+                        PUT("/final-preliminary-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
                 }
 

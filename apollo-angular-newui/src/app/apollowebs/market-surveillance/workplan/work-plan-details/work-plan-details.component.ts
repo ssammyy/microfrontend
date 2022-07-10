@@ -12,24 +12,24 @@ import {
   CountriesEntityDto,
   CountryListDto, DataInspectorInvestDto,
   DataReportDto,
-  DataReportParamsDto,
+  DataReportParamsDto, DestructionNotificationDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
   FuelInspectionDto, InspectionInvestigationReportDto,
   LaboratoryDto,
   LIMSFilesFoundDto,
   MsDepartment,
-  MsDivisionDetails,
+  MsDivisionDetails, MsRecommendationDto,
   MSRemarksDto,
   MSSSFPDFListDetailsDto,
   PDFSaveComplianceStatusDto,
-  PreliminaryReportDto, PreliminaryReportItemsDto,
+  PreliminaryReportDto, PreliminaryReportFinal, PreliminaryReportItemsDto,
   RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
   SampleSubmissionDto,
   SampleSubmissionItemsDto, SeizureDeclarationDto,
-  SSFSaveComplianceStatusDto,
+  SSFSaveComplianceStatusDto, WorkPlanFeedBackDto, WorkPlanFinalRecommendationDto,
   WorkPlanInspectionDto,
   WorkPlanScheduleApprovalDto,
 } from '../../../../core/store/data/ms/ms.model';
@@ -62,6 +62,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   submitted = false;
   approveScheduleForm!: FormGroup;
   approvePreliminaryForm!: FormGroup;
+  finalRemarkHODForm!: FormGroup;
+  finalRecommendationForm!: FormGroup;
+  preliminaryRecommendationForm!: FormGroup;
   chargeSheetForm!: FormGroup;
   dataReportForm!: FormGroup;
   dataReportParamForm!: FormGroup;
@@ -70,6 +73,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   preliminaryReportForm!: FormGroup;
   preliminaryReportParamForm!: FormGroup;
   investInspectReportInspectorsForm!: FormGroup;
+  clientEmailNotificationForm!: FormGroup;
   // chargeSheetForm!: FormGroup;
 
   assignOfficerForm!: FormGroup;
@@ -88,6 +92,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   remediationForm!: FormGroup;
   dataSaveApproveSchedule: WorkPlanScheduleApprovalDto;
   dataSaveApprovePreliminary: ApprovalDto;
+  dataSaveFinalRemarks: WorkPlanFeedBackDto;
+  dataSaveFinalPreliminary: PreliminaryReportFinal;
   dataSaveChargeSheet: ChargeSheetDto;
   dataSaveDataReport: DataReportDto;
   dataSaveDataInspectorInvestList: DataInspectorInvestDto[] = [];
@@ -99,6 +105,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSavePreliminaryReport: PreliminaryReportDto;
   dataSavePreliminaryReportParamList: PreliminaryReportItemsDto[] = [];
   dataSavePreliminaryReportParam: PreliminaryReportItemsDto;
+  dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
+  dataSaveDestructionNotification: DestructionNotificationDto;
 
 
   dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
@@ -124,6 +132,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   uploadedFiles: FileList;
 
   attachments: any[];
+  recommendationList: MsRecommendationDto[] = [];
   comments: any[];
   consignmentItems: any[];
   paymentFees: any[];
@@ -557,6 +566,95 @@ export class WorkPlanDetailsComponent implements OnInit {
       perPage: 20,
     },
   };
+  public settingsPreliminaryReportOfficers = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      inspectorName: {
+        title: 'INSPECTOR NAME',
+        type: 'string',
+        filter: false,
+      },
+      institution: {
+        title: 'INSTITUTION',
+        type: 'string',
+        filter: false,
+      },
+      designation: {
+        title: 'DESIGNATION',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsPreliminaryReportOutlets = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      marketCenter: {
+        title: 'MARKET CENTER',
+        type: 'string',
+        filter: false,
+      },
+      nameOutlet: {
+        title: 'NAME OF OUTLET',
+        type: 'string',
+        filter: false,
+      },
+      sector: {
+        title: 'SECTOR',
+        type: 'string',
+        filter: false,
+      },
+      dateVisit: {
+        title: 'DATE OF VISIT',
+        type: 'date',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
 
   public workPlanInspection: WorkPlanInspectionDto;
   public msCounties: {name: string, code: string}[];
@@ -584,13 +682,33 @@ export class WorkPlanDetailsComponent implements OnInit {
       remarks: null,
     });
 
+    this.finalRemarkHODForm = this.formBuilder.group({
+      hodFeedBackRemarks: ['', Validators.required],
+    });
+
+    this.clientEmailNotificationForm = this.formBuilder.group({
+      clientEmail: ['', Validators.required],
+      remarks: ['', Validators.required],
+    });
+
     this.approveScheduleForm = this.formBuilder.group({
       approvalStatus: ['', Validators.required],
       remarks: ['', Validators.required],
     });
 
+    this.finalRecommendationForm = this.formBuilder.group({
+      recommendationId: ['', Validators.required],
+      hodRecommendationRemarks: ['', Validators.required],
+    });
+
     this.approvePreliminaryForm = this.formBuilder.group({
       approvalStatus: ['', Validators.required],
+      remarks: ['', Validators.required],
+    });
+
+    this.preliminaryRecommendationForm = this.formBuilder.group({
+      surveillanceConclusions: ['', Validators.required],
+      surveillanceRecommendation: ['', Validators.required],
       remarks: ['', Validators.required],
     });
 
@@ -787,11 +905,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       surveillanceDateFrom : ['', Validators.required],
       surveillanceDateTo : ['', Validators.required],
       reportBackground : ['', Validators.required],
-      kebsOfficersName : ['', Validators.required],
+      kebsOfficersName : null,
       surveillanceObjective : ['', Validators.required],
-      surveillanceConclusions : ['', Validators.required],
-      surveillanceRecommendation : ['', Validators.required],
-      remarks : ['', Validators.required],
+      // surveillanceConclusions : ['', Validators.required],
+      // surveillanceRecommendation : ['', Validators.required],
+      // remarks : ['', Validators.required],
     });
 
     this.scheduleRemediationForm = this.formBuilder.group({
@@ -843,6 +961,22 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   loadDataToBeUsed() {
     this.msCounties = this.msService.getAllCountriesList();
+    switch (this.workPlanInspection?.preliminaryReport?.approvedStatusHodFinal) {
+      case true:
+        this.msService.MsRecommendationListDetails().subscribe(
+            (data) => {
+              this.recommendationList = data;
+              this.SpinnerService.hide();
+              console.log(data);
+            },
+            error => {
+              this.SpinnerService.hide();
+              console.log(error);
+              this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+        break;
+    }
     // this.msService.msCountriesListDetails().subscribe(
     //     (dataCounties: CountriesEntityDto[]) => {
     //       this.msCounties = dataCounties;
@@ -859,8 +993,24 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.assignOfficerForm.controls;
   }
 
+  get formClientEmailNotificationForm(): any {
+    return this.clientEmailNotificationForm.controls;
+  }
+
+  get formFinalRemarkHODForm(): any {
+    return this.finalRemarkHODForm.controls;
+  }
+
   get formPreliminaryReportForm(): any {
     return this.preliminaryReportForm.controls;
+  }
+
+  get formFinalRecommendationForm(): any {
+    return this.finalRecommendationForm.controls;
+  }
+
+  get formPreliminaryRecommendationForm(): any {
+    return this.preliminaryRecommendationForm.controls;
   }
 
   get formPreliminaryReportParamForm(): any {
@@ -871,7 +1021,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.approveScheduleForm.controls;
   }
 
-  get formApprovePreliminaryHOFForm(): any {
+  get formApprovePreliminaryForm(): any {
     return this.approvePreliminaryForm.controls;
   }
 
@@ -958,13 +1108,15 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   openModalAddDetails(divVal: string): void {
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails',
-       'addBsNumber', 'approvePreliminaryHOF',
-      'ssfAddComplianceStatus'];
+       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
+      'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
+    'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS',
-      'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT',
-      'ADD SSF LAB RESULTS COMPLIANCE STATUS'];
+      'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD RECOMMENDATION DETAILS', 'APPROVE/REJECT FINAL PRELIMINARY REPORT', 'APPROVE/REJECT FINAL PRELIMINARY REPORT',
+      'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
+     , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULL OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -1072,7 +1224,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveApprovePreliminary = {...this.dataSaveApprovePreliminary, ...this.approvePreliminaryForm.value};
-      this.msService.msWorkPlanScheduleDetailsApprove(
+      this.msService.msWorkPlanScheduleDetailsApprovePreliminaryHOF(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
           this.dataSaveApprovePreliminary,
@@ -1092,11 +1244,131 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickSaveClientAppealed(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveApprovePreliminary = {...this.dataSaveApprovePreliminary, ...this.approvePreliminaryForm.value};
+      this.msService.msWorkPlanScheduleDetailsClientAppealed(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveApprovePreliminary,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('Client appeal status,Saved successfully');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveClientAppealedSuccessfully(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveApprovePreliminary = {...this.dataSaveApprovePreliminary, ...this.approvePreliminaryForm.value};
+      this.msService.msWorkPlanScheduleDetailsClientAppealedSuccessfully(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveApprovePreliminary,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('Client appeal Successfully status,Saved successfully');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveApproveFinalPreliminaryHOF(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveApprovePreliminary = {...this.dataSaveApprovePreliminary, ...this.approvePreliminaryForm.value};
+      this.msService.msWorkPlanScheduleDetailsApproveFinalPreliminaryHOF(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveApprovePreliminary,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL PRELIMINARY STATUS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveApproveFinalPreliminaryHOD(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveApprovePreliminary = {...this.dataSaveApprovePreliminary, ...this.approvePreliminaryForm.value};
+      this.msService.msWorkPlanScheduleDetailsApproveFinalPreliminaryHOD(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveApprovePreliminary,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL PRELIMINARY STATUS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveFinalRemarksHOD(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveFinalRemarks = {...this.dataSaveFinalRemarks, ...this.finalRemarkHODForm.value};
+      this.msService.msWorkPlanScheduleDetailsFinalRemarksHOD(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveFinalRemarks,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL REMARKS REAMRKS AND STATUS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
   onClickSaveApprovePreliminaryHOD(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveApprovePreliminary = {...this.dataSaveApprovePreliminary, ...this.approvePreliminaryForm.value};
-      this.msService.msWorkPlanScheduleDetailsApprove(
+      this.msService.msWorkPlanScheduleDetailsApprovePreliminaryHOD(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
           this.dataSaveApprovePreliminary,
@@ -1111,6 +1383,54 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveFinalRecommendationHOD(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveFinalRecommendation = {...this.dataSaveFinalRecommendation, ...this.finalRecommendationForm.value};
+      this.msService.msWorkPlanScheduleDetailsFinalRecommendationHOD(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveFinalRecommendation,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL RECOMMENDATION SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveFinalPreliminary(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveFinalPreliminary = {...this.dataSaveFinalPreliminary, ...this.preliminaryRecommendationForm.value};
+      this.msService.msWorkPlanScheduleDetailsFinalPreliminary(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveFinalPreliminary,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL PRELIMINARY DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR HAS OCCURRED');
           },
       );
     }
@@ -1167,7 +1487,9 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
-      this.msService.msFuelInspectionScheduledAssignOfficer(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
+      this.msService.msFuelInspectionScheduledAssignOfficer(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1213,6 +1535,67 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickSaveUploadedDestructionReport(docTypeName: string) {
+    if (this.uploadedFiles.length > 0) {
+      this.SpinnerService.show();
+      const file = this.uploadedFiles;
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+      formData.append('docTypeName', docTypeName);
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+      }
+      this.msService.saveWorkPlanDestructionReportFiles(formData).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('DESTRUCTION REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    } else {
+      this.msService.showError('NO FILE IS UPLOADED FOR SAVING');
+    }
+  }
+
+  onClickSaveFilesDestructionNotification(valid: boolean, docTypeName: string) {
+    if (this.uploadedFiles.length > 0) {
+      this.SpinnerService.show();
+      const file = this.uploadedFiles;
+      this.dataSaveDestructionNotification = {...this.dataSaveDestructionNotification, ...this.clientEmailNotificationForm.value};
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+      formData.append('data', JSON.stringify(this.dataSaveDestructionNotification));
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+      }
+      this.msService.saveWorkPlanDestructionNotificationFiles(formData).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    } else {
+      this.msService.showError('NO FILE IS UPLOADED FOR SAVING');
+    }
+  }
+
   onClickSaveSampleCollected() {
     this.submitted = true;
     if (this.sampleCollectForm.invalid) {
@@ -1224,7 +1607,9 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.dataSaveSampleCollect = {...this.dataSaveSampleCollect, ...this.sampleCollectForm.value};
       this.dataSaveSampleCollect.productsList = this.dataSaveSampleCollectItemsList;
 
-      this.msService.msWorkPlanInspectionScheduledAddSampleCollection(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
+      this.msService.msWorkPlanInspectionScheduledAddSampleCollection(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1252,7 +1637,10 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
       this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
 
-      this.msService.msWorkPlanInspectionScheduledAddSampleSubmission(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmit).subscribe(
+      this.msService.msWorkPlanInspectionScheduledAddSampleSubmission(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveSampleSubmit).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1274,7 +1662,9 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmitBSNumber = {...this.dataSaveSampleSubmitBSNumber, ...this.sampleSubmitBSNumberForm.value};
-      this.msService.msWorkPlanInspectionScheduledAddSampleSubmissionBSNumber(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
+      this.msService.msWorkPlanInspectionScheduledAddSampleSubmissionBSNumber(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1345,7 +1735,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.dataSSFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
       this.dataSSFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
       // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      this.msService.msWorkPlanInspectionScheduledSaveSSFComplianceStatus(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSSFSaveComplianceStatus).subscribe(
+      this.msService.msWorkPlanInspectionScheduledSaveSSFComplianceStatus(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSSFSaveComplianceStatus,
+      ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1366,7 +1760,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveScheduleRemediation = {...this.dataSaveScheduleRemediation, ...this.scheduleRemediationForm.value};
-      this.msService.msFuelInspectionScheduledRemediation(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveScheduleRemediation).subscribe(
+      this.msService.msFuelInspectionScheduledRemediation(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber, this.dataSaveScheduleRemediation,
+      ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -1756,7 +2153,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.investInspectReportForm.valid) {
       this.SpinnerService.show();
       this.dataSaveInvestInspectReport = {...this.dataSaveInvestInspectReport, ...this.investInspectReportForm.value};
-      this.dataSaveInvestInspectReport.kebsInspectors = JSON.stringify(this.dataSaveDataInspectorInvestList);
+      this.dataSaveInvestInspectReport.kebsInspectors = this.dataSaveDataInspectorInvestList;
       this.msService.msWorkPlanScheduleSaveInvestInspectReport(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
@@ -1783,10 +2180,11 @@ export class WorkPlanDetailsComponent implements OnInit {
   onClickSavePreliminaryReport() {
     this.submitted = true;
 
-    if (this.preliminaryReportForm.valid && this.dataSavePreliminaryReportParamList.length!==0) {
+    if (this.preliminaryReportForm.valid && this.dataSavePreliminaryReportParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSavePreliminaryReport = {...this.dataSavePreliminaryReport, ...this.preliminaryReportForm.value};
-      this.dataSavePreliminaryReport.kebsOfficersName = JSON.stringify(this.dataSaveDataInspectorInvestList);
+      this.dataSavePreliminaryReport.kebsOfficersName = this.dataSaveDataInspectorInvestList;
+      this.dataSavePreliminaryReport.parametersList = this.dataSavePreliminaryReportParamList;
       this.msService.msWorkPlanScheduleSavePreliminaryReport(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,

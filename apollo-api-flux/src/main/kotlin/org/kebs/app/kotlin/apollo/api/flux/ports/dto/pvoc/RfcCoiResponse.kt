@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.flux.ports.dto.pvoc
 
-import org.kebs.app.kotlin.apollo.store.model.RfcCoiEntity
-import org.kebs.app.kotlin.apollo.store.model.RfcCoiItemsEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.RfcItemEntity
 import java.sql.Date
 
 
@@ -50,8 +49,8 @@ class RfcCoiResponse {
     var items: MutableList<RfcCoiItemsResponse> = mutableListOf()
 }
 
-class RfcCoiWithItems{
-    var rfcCoi : RfcCoiEntity ? = null
-    var rfcCoiItems : List<RfcCoiItemsEntity> ? = null
+class RfcCoiWithItems {
+    var rfcCoi: RfcCoiEntity? = null
+    var rfcCoiItems: List<RfcItemEntity>? = null
 }
 

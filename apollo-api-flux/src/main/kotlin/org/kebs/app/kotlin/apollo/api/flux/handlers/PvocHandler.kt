@@ -12,7 +12,7 @@ import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
 import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import org.kebs.app.kotlin.apollo.store.model.CoiItemsEntity
 import org.kebs.app.kotlin.apollo.store.model.RiskProfileDataEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesDataEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueryResponseEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocSealIssuesEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocStdMonitoringDataEntity
 import org.springframework.stereotype.Component
@@ -364,9 +364,9 @@ class PvocHandler(
     suspend fun receiveMonitoringQueries(req: ServerRequest): ServerResponse {
 
         return try {
-            req.awaitBodyOrNull<PvocQueriesDataEntity>()
+            req.awaitBodyOrNull<PvocQueryResponseEntity>()
                 ?.let { body ->
-                    val errors: Errors = BeanPropertyBindingResult(body, PvocQueriesDataEntity::class.java.name)
+                    val errors: Errors = BeanPropertyBindingResult(body, PvocQueryResponseEntity::class.java.name)
                     validator.validate(body, errors)
                     if (errors.allErrors.isEmpty()) {
                         ServerResponse.ok().bodyValueAndAwait(service.savePvocQueriesData(body))

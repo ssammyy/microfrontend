@@ -24,14 +24,18 @@ class ExternalRouter {
     fun pvocClientRequests(handler: PvocClientHandler) = router {
         "/api/v1/pvoc/".nest {
             POST("/send/coiWithItems", handler::foreignCoi)
-            POST("/send/rfcCoiWithItems", handler::foreignCoiRfc)
+            POST("/send/rfc/coi", handler::foreignCoiRfc)
+            POST("/send/rfc/coc", handler::foreignCocRfc)
+            POST("/send/rfc/cor", handler::foreignCorRfc)
             POST("/coc", handler::foreignCoc)
             POST("/cor", handler::foreignCor)
             POST("/ncr", handler::foreignNcr)
             POST("/risk/profile", handler::riskProfile)
+            GET("/risk/profiles", handler::listRiskProfile)
             POST("/idf/items", handler::idfDataWithItems)
-            POST("/query/request", handler::pvocPartnerQueryRequest)
-            POST("/query/response", handler::pvocPartnerQueryResponse)
+            POST("/document/query/request", handler::pvocPartnerQueryRequest)
+            POST("/document/query/response", handler::pvocPartnerQueryResponse)
+            GET("/document/queries", handler::kebsPartnerQueries)
             GET("/timeline/issues", handler::pvocTimelineIssues)
         }
     }

@@ -36,7 +36,7 @@ class PvocMonitoringAgents(
         private val iUserRolesRepository: IUserRolesRepository,
         private val iPvocTimelineDataPenaltyInvoiceEntityRepo: PvocTimelineDataPenaltyInvoiceEntityRepo,
         private val iPvocQuerriesRepository: IPvocQuerriesRepository,
-        private val rfcCocEntityRepo: IRfcCocEntityRepo,
+        private val rfcEntityRepo: IRfcEntityRepo,
         private val commonDaoServices: CommonDaoServices,
         private val pvocInvoicingRepository: IPvocInvoicingRepository,
         private val pvocPartnersRepository: IPvocPartnersRepository,
@@ -298,7 +298,7 @@ class PvocMonitoringAgents(
             } ?: throw Exception("User role name does not exist")
             coc.ucrNumber?.let {
                 model.addAttribute("shipmentMode", iCocsRepository.findFirstByCocNumber(it)?.shipmentMode)
-                rfcCocEntityRepo.findByUcrNumber(it).let { rfcDoc ->
+                rfcEntityRepo.findByUcrNumber(it).let { rfcDoc ->
                     model.addAttribute("rfc", rfcDoc)
                     rfcDoc?.partner?.let { it2 ->
                         pvocPartnersRepository.findByIdOrNull(it2).let { partnerDetails ->
@@ -308,7 +308,7 @@ class PvocMonitoringAgents(
                                 val date = LocalDate.now()
                                 val days: Int = Period.between(invoice?.invoiceDate?.toLocalDate(), date).days
                                 if (days > 14) {
-                                    val penaltyMonths : Int = ((days -14)/30)
+                                    val penaltyMonths: Int = ((days - 14) / 30)
                                     //calculate the loyalty amount for the services offered on general goods
                                     partnerDetails?.partnerName?.let { it1 -> pvocAgentContractEntityRepo.findByServiceRenderedIdAndName(2, it1.toUpperCase())
                                     }?.let { pvocAgentContract ->

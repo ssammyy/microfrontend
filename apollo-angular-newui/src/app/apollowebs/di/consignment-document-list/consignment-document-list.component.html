@@ -66,7 +66,7 @@
                                 </button>
                             </div>
                             <div class="btn-group btn-group-sm float-right" role="group"
-                                 aria-label="Applications Status">
+                                 aria-label="Applications Status" *ngIf="isAdmin">
                                 <button type="button" (click)="uploadForeignCoROrCor($event,'coc')"
                                         class="btn btn-sm btn-primary mr-2">Upload Foreign CoC
                                 </button>

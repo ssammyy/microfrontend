@@ -85,6 +85,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var compliantStatus: Int? = null
 
+    @Column(name = "MS_PROCESS_ENDED_STATUS")
+    @Basic
+    var msProcessEndedStatus: Int? = null
+
     @Column(name = "NOT_COMPLIANT_STATUS")
     @Basic
     var notCompliantStatus: Int? = null
@@ -156,6 +160,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "HOD_RECOMMENDATION_STATUS")
     @Basic
     var hodRecommendationStatus: Int? = 0
+
+    @Column(name = "DESTRUCTION_RECOMMENDED")
+    @Basic
+    var destructionRecommended: Int? = 0
 
     @Column(name = "HOD_RECOMMENDATION_START")
     @Basic
@@ -455,6 +463,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "DESTRUCTION_DOC_ID")
     @Basic
     var destructionDocId: Long? = null
+
+    @Column(name = "DESTRUCTION_NOTIFICATION_DOC_ID")
+    @Basic
+    var destructionNotificationDocId: Long? = null
 
     @Column(name = "COMPLAINT_DEPARTMENT")
     @Basic
