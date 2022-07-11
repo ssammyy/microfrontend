@@ -53,6 +53,7 @@ import com.google.common.io.Files
 import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import org.apache.commons.text.StringEscapeUtils
 import org.jasypt.encryption.StringEncryptor
 import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
@@ -103,7 +104,6 @@ import java.net.URLConnection
 import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -248,6 +248,11 @@ class CommonDaoServices(
     fun convertTimestampToKraValidDate(timestamp: Timestamp): String {
         val timeStamp = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").format(timestamp)
         return timeStamp
+    }
+
+    fun removeQuotesAndUnescape(uncleanJson: String): String? {
+        val noQuotes = uncleanJson.replace("^\"|\"$".toRegex(), "")
+        return StringEscapeUtils.unescapeJava(noQuotes)
     }
 
     fun convertDateToSAGEDate(dateChange: Date): String {

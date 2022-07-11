@@ -1,12 +1,17 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
-import com.google.gson.Gson
+import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.introspect.VisibilityChecker
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
-import org.kebs.app.kotlin.apollo.common.dto.kra.request.ReceiveSL2PaymentRequest
+import org.kebs.app.kotlin.apollo.common.dto.kra.request.RootKra
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
@@ -109,28 +114,22 @@ class StandardsLevyHandler(
         return try {
 
             val stringData = req.body<String>()
-            KotlinLogging.logger { }.info { "Payment Body${stringData}" }
 
-//            val jsonObject: JsonObject = JsonParser().parse(stringData).asJsonObject
-//            val convertedObject: JsonObject = Gson().fromJson(stringData, JsonObject::class.java)
-            //create ObjectMapper instance
-
-            //create ObjectMapper instance
-            val objectMapper = ObjectMapper()
-//            objectMapper.enableDefaultTyping()
-
-            //convert json string to object
-
-            //convert json string to object
-            val body: ReceiveSL2PaymentRequest = objectMapper.convertValue(stringData, ReceiveSL2PaymentRequest::class.java)
-//            val emp: ReceiveSL2PaymentRequest = objectMapper.readValue(stringData, ReceiveSL2PaymentRequest::class.java)
-            KotlinLogging.logger { }.info { "Payment Body ${body}" }
-//            val body = gson.fromJson(stringData, ReceiveSL2PaymentRequest::class.java)
-            val errors: Errors = BeanPropertyBindingResult(body, ReceiveSL2PaymentRequest::class.java.name)
+            val mapper = ObjectMapper()
+            mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+//            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+//            mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+            val removedString = commonDaoServices.removeQuotesAndUnescape(stringData)
+            val body: RootKra = mapper.readValue(removedString, RootKra::class.java)
+            KotlinLogging.logger { }.info { "Payment Body 2 ${body}" }
+            val errors: Errors = BeanPropertyBindingResult(body, RootKra::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    val response = service.processSl2Payments(body)
+
+                    val requestBody = body.request?: throw ExpectedDataNotFound("Missing request value")
+                    KotlinLogging.logger { }.info { "Payment Body 4 ${requestBody}" }
+                    val response = service.processSl2Payments(requestBody)
                     ServerResponse.ok().body(response)
                 }
                 else -> {

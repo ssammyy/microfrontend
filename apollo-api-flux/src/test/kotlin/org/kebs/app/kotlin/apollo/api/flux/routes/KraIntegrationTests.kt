@@ -34,7 +34,7 @@ class KraIntegrationTests {
 
     @Test
     fun givenSl2PayloadProcessTheRequest() {
-        val sL2PaymentRequest = ReceiveSL2PaymentRequest()
+        val sL2PaymentReceiveSL2PaymentRequest = ReceiveSL2PaymentRequest()
         val header = ReceiveSL2PaymentHeader()
         header.bank = "test"
         header.manufacturerName = "test"
@@ -49,11 +49,11 @@ class KraIntegrationTests {
         header.kraPin = "1234567"
         header.bankRefNo = "1234567"
         header.paymentDate = Date(java.util.Date().time)
-        sL2PaymentRequest.header = header
-        sL2PaymentRequest.hash = "123445"
-        sL2PaymentRequest.loginId = "vmuriuki"
-        sL2PaymentRequest.password = "password"
-        sL2PaymentRequest.transmissionDate = Timestamp.from(Instant.now())
+        sL2PaymentReceiveSL2PaymentRequest.header = header
+        sL2PaymentReceiveSL2PaymentRequest.hash = "123445"
+        sL2PaymentReceiveSL2PaymentRequest.loginId = "vmuriuki"
+        sL2PaymentReceiveSL2PaymentRequest.password = "password"
+        sL2PaymentReceiveSL2PaymentRequest.transmissionDate = Timestamp.from(Instant.now())
         val detail = ReceiveSL2PaymentDetails()
         val paymentDeclarations = mutableListOf<ReceiveSL2PaymentDeclaration>()
         repeat((0..3).count()) {
@@ -78,9 +78,9 @@ class KraIntegrationTests {
 
         detail.declaration = paymentDeclarations
         detail.penalty = penaltyDeclarations
-        sL2PaymentRequest.details = detail
+        sL2PaymentReceiveSL2PaymentRequest.details = detail
 
-        val payload = daoService.mapper().writeValueAsString(sL2PaymentRequest)
+        val payload = daoService.mapper().writeValueAsString(sL2PaymentReceiveSL2PaymentRequest)
 
         KotlinLogging.logger { }.info(payload)
 

@@ -4,12 +4,11 @@ import akka.actor.ActorSystem
 import com.google.gson.Gson
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoFluxService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.security.service.CustomAuthenticationProvider
-import org.kebs.app.kotlin.apollo.common.dto.kra.request.PinValidationRequest
-import org.kebs.app.kotlin.apollo.common.dto.kra.request.PinValidationWebRequest
-import org.kebs.app.kotlin.apollo.common.dto.kra.request.ReceiveSL2PaymentRequest
+import org.kebs.app.kotlin.apollo.common.dto.kra.request.*
 import org.kebs.app.kotlin.apollo.common.dto.kra.response.PinValidationResponse
 import org.kebs.app.kotlin.apollo.common.dto.kra.response.PinValidationResponseResult
 import org.kebs.app.kotlin.apollo.common.dto.kra.response.RequestResult
@@ -30,6 +29,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.util.*
@@ -67,6 +67,7 @@ class StandardsLevyDaoService(
     private val kraPinValidationsRepo: IKraPinValidationsRepository,
     private val jobsRepo: IBatchJobDetailsRepository,
     private val integRepo: IIntegrationConfigurationRepository,
+    private val commonDaoServices: CommonDaoServices,
 
     private val extension: ActorSpringExtension,
 //    private val actorSystem: ActorSystem,
@@ -84,17 +85,11 @@ class StandardsLevyDaoService(
      * @return RequestResult
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun processSl2Payments(paymentRequest: ReceiveSL2PaymentRequest): RequestResult {
+    fun processSl2Payments(paymentRequest: Request): RequestResult {
         val result = RequestResult()
         val log = daoService.createTransactionLog(0, daoService.generateTransactionReference())
         try {
             log.integrationRequest = daoService.mapper().writeValueAsString(paymentRequest)
-
-                   val gson = Gson()
-            KotlinLogging.logger { }.info("Endpoint Hit")
-//            KotlinLogging.logger { }.info { "Payment Body$body" }
-//            KotlinLogging.logger { }.info { "Payment Body Request$stringData" }
- //       KotlinLogging.logger { }.info { "Payment Request" + gson.toJson(paymentRequest) }
             /**
              * Attempt to log in
              */
@@ -168,7 +163,7 @@ class StandardsLevyDaoService(
      *
      * @return RequestResult
      */
-    private fun validateCredentialsAndLogToDataStore(paymentRequest: ReceiveSL2PaymentRequest, log: WorkflowTransactionsEntity, result: RequestResult) {
+    private fun validateCredentialsAndLogToDataStore(paymentRequest: Request, log: WorkflowTransactionsEntity, result: RequestResult) {
         when (daoService.validateHash(paymentRequest)) {
             false -> throw InvalidInputException("90003,NOK, Hash code validation provided")
             true -> {
@@ -177,19 +172,19 @@ class StandardsLevyDaoService(
                  */
                 var header = Sl2PaymentsHeaderEntity()
 
-                header.transactionDate = paymentRequest.transmissionDate
+                header.transactionDate = SimpleDateFormat("dd-MM-YYYY").parse(paymentRequest.transmissionDate)
                 header.requestHeaderEntryNo = paymentRequest.header?.entryNo
                 header.requestHeaderKraPin = paymentRequest.header?.kraPin
                 header.requestHeaderManufacturerName = paymentRequest.header?.manufacturerName
                 header.requestHeaderPaymentSlipNo = paymentRequest.header?.paymentSlipNo
-                header.requestHeaderPaymentSlipDate = paymentRequest.header?.paymentSlipDate
+                header.requestHeaderPaymentSlipDate = SimpleDateFormat("dd-MM-YYYY").parse(paymentRequest.header?.paymentSlipDate)
                 header.requestHeaderPaymentType = paymentRequest.header?.paymentType
-                header.requestHeaderTotalDeclAmt = paymentRequest.header?.totalDeclAmt
-                header.requestHeaderTotalPenaltyAmt = paymentRequest.header?.totalPenaltyAmt
-                header.requestHeaderTotalPaymentAmt = paymentRequest.header?.totalPaymentAmt
+                header.requestHeaderTotalDeclAmt = paymentRequest.header?.totalDeclAmt?.toBigDecimal()
+                header.requestHeaderTotalPenaltyAmt = paymentRequest.header?.totalPenaltyAmt?.toBigDecimal()
+                header.requestHeaderTotalPaymentAmt = paymentRequest.header?.totalPaymentAmt?.toBigDecimal()
                 header.requestHeaderBank = paymentRequest.header?.bank
                 header.requestBankRefNo = paymentRequest.header?.bankRefNo
-                header.requestHeaderTransmissionDate = paymentRequest.transmissionDate
+                header.requestHeaderTransmissionDate = SimpleDateFormat("dd-MM-YYYY").parse(paymentRequest.transmissionDate)
                 header.transactionDate = Date()
                 header.status = 0
                 header.createdBy = paymentRequest.loginId
@@ -204,12 +199,12 @@ class StandardsLevyDaoService(
                     detail.headerId = header.id
                     detail.transactionType = "DECLARATION"
                     detail.commodityType = d.commodityType
-                    detail.periodFrom = d.periodFrom
-                    detail.periodTo = d.periodTo
-                    detail.periodTo = d.periodTo
-                    detail.qtyManf = d.qtyManf
-                    detail.exFactVal = d.exFactVal
-                    detail.levyPaid = d.levyPaid
+                    detail.periodFrom = SimpleDateFormat("dd-MM-YYYY").parse(d.periodFrom)
+                    detail.periodTo = SimpleDateFormat("dd-MM-YYYY").parse(d.periodTo)
+                    detail.periodTo = SimpleDateFormat("dd-MM-YYYY").parse(d.periodTo)
+                    detail.qtyManf = d.qtyManf?.toBigDecimal()
+                    detail.exFactVal = d.exFactVal?.toBigDecimal()
+                    detail.levyPaid = d.levyPaid?.toBigDecimal()
                     detail.transactionDate = Date()
                     detail.status = 0
                     detail.createdBy = paymentRequest.loginId
@@ -222,9 +217,9 @@ class StandardsLevyDaoService(
                     detail.headerId = header.id
                     detail.transactionType = "PENALTY"
                     detail.penaltyOrderNo = p.penaltyOrderNo
-                    detail.periodFrom = p.periodFrom
-                    detail.periodTo = p.periodTo
-                    detail.penaltyPaid = p.penaltyPaid
+                    detail.periodFrom = SimpleDateFormat("dd-MM-YYYY").parse(p.periodFrom)
+                    detail.periodTo = SimpleDateFormat("dd-MM-YYYY").parse(p.periodTo)
+                    detail.penaltyPaid = p.penaltyPaid?.toBigDecimal()
                     detail.transactionDate = Date()
                     detail.status = 0
                     detail.createdBy = paymentRequest.loginId
