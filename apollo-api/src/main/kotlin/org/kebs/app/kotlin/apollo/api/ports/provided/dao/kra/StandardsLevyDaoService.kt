@@ -90,12 +90,6 @@ class StandardsLevyDaoService(
         val log = daoService.createTransactionLog(0, daoService.generateTransactionReference())
         try {
             log.integrationRequest = daoService.mapper().writeValueAsString(paymentRequest)
-
-                   val gson = Gson()
-            KotlinLogging.logger { }.info("Endpoint Hit")
-//            KotlinLogging.logger { }.info { "Payment Body$body" }
-//            KotlinLogging.logger { }.info { "Payment Body Request$stringData" }
- //       KotlinLogging.logger { }.info { "Payment Request" + gson.toJson(paymentRequest) }
             /**
              * Attempt to log in
              */
@@ -111,7 +105,6 @@ class StandardsLevyDaoService(
                     )
                 ).isAuthenticated
 
-//                val paymentRequestDetails = paymentRequest.receiveSL2PaymentReques
                 validateCredentialsAndLogToDataStore(paymentRequest, log, result)
 
 

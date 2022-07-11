@@ -114,15 +114,6 @@ class StandardsLevyHandler(
         return try {
 
             val stringData = req.body<String>()
-            KotlinLogging.logger { }.info { "Payment Body  1 ${stringData}" }
-
-//            val jsonObject: JsonObject = JsonParser().parse(stringData).asJsonObject
-//            val convertedObject: JsonObject = Gson().fromJson(stringData, JsonObject::class.java)
-            //create ObjectMapper instance
-
-            //create ObjectMapper instance
-//            val objectMapper = ObjectMapper()
-//            objectMapper.enableDefaultTyping()
 
             val mapper = ObjectMapper()
             mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
@@ -130,25 +121,12 @@ class StandardsLevyHandler(
 //            mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
             val removedString = commonDaoServices.removeQuotesAndUnescape(stringData)
             val body: RootKra = mapper.readValue(removedString, RootKra::class.java)
-
-            //convert json string to object
-
-            //convert json string to object
-//            val body: ReceiveSL2PaymentRequest = objectMapper.convertValue(stringData, ReceiveSL2PaymentRequest::class.java)
-//            val emp: ReceiveSL2PaymentRequest = objectMapper.readValue(stringData, ReceiveSL2PaymentRequest::class.java)
-//            KotlinLogging.logger { }.info { "Payment Body ${body}" }
-//            val gson = Gson()
-//            val removedString = commonDaoServices.removeQuotesAndUnescape(stringData)
-            KotlinLogging.logger { }.info { "Payment Body 2 $removedString" }
-//            val body = gson.fromJson(removedString, RootKra::class.java)
-//            val body = body1.receiveSL2PaymentRequest ?: throw ExpectedDataNotFound("Missing request")
             KotlinLogging.logger { }.info { "Payment Body 2 ${body}" }
             val errors: Errors = BeanPropertyBindingResult(body, RootKra::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
 
-                    KotlinLogging.logger { }.info { "Payment Body 3 ${commonDaoServices.convertClassToJson(body)}" }
                     val requestBody = body.request?: throw ExpectedDataNotFound("Missing request value")
                     KotlinLogging.logger { }.info { "Payment Body 4 ${requestBody}" }
                     val response = service.processSl2Payments(requestBody)
