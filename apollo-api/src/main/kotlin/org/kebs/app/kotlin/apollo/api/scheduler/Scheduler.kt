@@ -97,7 +97,7 @@ class SchedulerDevelopment(
         KotlinLogging.logger { }.trace("DEV: UPDATED DEMAND NOTES on SW")
     }
 
-    @Scheduled(cron = "@monthly")
+    @Scheduled(cron = "\${scheduler.cron.monthly}")
     fun runMonthlyScheduler() {
         standardLevyService.sendLevyPaymentReminders()
         sendEntryNumberToKraServices.postPenaltyDetailsToKra()
