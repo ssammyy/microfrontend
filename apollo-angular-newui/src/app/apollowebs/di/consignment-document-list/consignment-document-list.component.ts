@@ -143,6 +143,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     prevRequest: any
     private documentTypeUuid: string
     private documentTypeId: any
+    isAdmin: boolean = false
     supervisorCharge: boolean = false
     inspectionOfficer: boolean = false
     search: Subject<string>
@@ -177,6 +178,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 .subscribe((u) => {
                     this.supervisorCharge = this.diService.hasRole(['DI_OFFICER_CHARGE_READ'], u.roles)
                     this.inspectionOfficer = this.diService.hasRole(['DI_INSPECTION_OFFICER_READ'], u.roles)
+                    this.isAdmin = this.diService.hasRole(['DI_ADMIN'], u.roles)
                 });
         })
     }

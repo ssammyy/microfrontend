@@ -26,19 +26,19 @@ import java.time.format.DateTimeFormatter
 @Controller
 @RequestMapping("/api/di/pvoc/")
 class PvocComplaints(
-    private val iPvocComplaintRepo: IPvocComplaintRepo,
-    private val iUserRepository: IUserRepository,
-    private val commonDaoServices: CommonDaoServices,
-    private val notifications: Notifications,
-    private val iCocsRepository: ICocsRepository,
-    private val iPvocQuerriesRepository: IPvocQuerriesRepository,
-    private val iCocItemRepository: ICocItemRepository,
-    applicationMapProperties: ApplicationMapProperties,
-    private val iPvocComplaintCertificationsSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
-    private val iPvocComplaintCategoryRepo: IPvocComplaintCategoryRepo,
-    private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
-    private val iRfcCocEntityRepo: IRfcCocEntityRepo,
-    private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo
+        private val iPvocComplaintRepo: IPvocComplaintRepo,
+        private val iUserRepository: IUserRepository,
+        private val commonDaoServices: CommonDaoServices,
+        private val notifications: Notifications,
+        private val iCocsRepository: ICocsRepository,
+        private val iPvocQuerriesRepository: IPvocQuerriesRepository,
+        private val iCocItemRepository: ICocItemRepository,
+        applicationMapProperties: ApplicationMapProperties,
+        private val iPvocComplaintCertificationsSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
+        private val iPvocComplaintCategoryRepo: IPvocComplaintCategoryRepo,
+        private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
+        private val iRfcEntityRepo: IRfcEntityRepo,
+        private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo
 ) {
 
     final val appId = applicationMapProperties.mapImportInspection
@@ -205,7 +205,7 @@ class PvocComplaints(
 
     @GetMapping("rfc-details/{rfcNo}")
     fun rfcDetails(model: Model,@PathVariable("rfcNo") rfcNo: String) : String{
-        iRfcCocEntityRepo.findByRfcNumber(rfcNo).let { cocRfc ->
+        iRfcEntityRepo.findByRfcNumber(rfcNo).let { cocRfc ->
             model.addAttribute("cocRfc", cocRfc)
             return "destination-inspection/pvoc/complaint/CocRFC"
         }

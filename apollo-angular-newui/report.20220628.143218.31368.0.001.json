@@ -1,0 +1,331 @@
+{
+  "header": {
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20220628.143218.31368.0.001.json",
+    "dumpEventTime": "2022-06-28T14:32:18Z",
+    "dumpEventTimeStamp": "1656415938895",
+    "processId": 31368,
+    "cwd": "/home/mungai/ep/kotlin/apollo/apollo-angular-newui",
+    "commandLine": [
+      "node",
+      "/home/mungai/.nvm/versions/node/v12.4.0/bin/ng",
+      "serve"
+    ],
+    "nodejsVersion": "v12.4.0",
+    "glibcVersionRuntime": "2.31",
+    "glibcVersionCompiler": "2.17",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "linux",
+    "componentVersions": {
+      "node": "12.4.0",
+      "v8": "7.4.288.27-node.18",
+      "uv": "1.29.1",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.38.0",
+      "napi": "4",
+      "llhttp": "1.1.3",
+      "http_parser": "2.8.0",
+      "openssl": "1.1.1b",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019a",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "headersUrl": "https://nodejs.org/download/release/v12.4.0/node-v12.4.0-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.4.0/node-v12.4.0.tar.gz"
+    },
+    "osName": "Linux",
+    "osRelease": "5.4.0-113-generic",
+    "osVersion": "#127-Ubuntu SMP Wed May 18 14:30:56 UTC 2022",
+    "osMachine": "x86_64",
+    "host": "mungai-local"
+  },
+  "javascriptStack": {
+    "message": "No stack.",
+    "stack": [
+      "Unavailable."
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x0000000000aadaf5",
+      "symbol": "report::TriggerNodeReport(v8::Isolate*, node::Environment*, char const*, char const*, std::string const&, v8::Local<v8::String>) [ng serve]"
+    },
+    {
+      "pc": "0x000000000098fec3",
+      "symbol": "node::OnFatalError(char const*, char const*) [ng serve]"
+    },
+    {
+      "pc": "0x0000000000b1552e",
+      "symbol": "v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, bool) [ng serve]"
+    },
+    {
+      "pc": "0x0000000000b158a9",
+      "symbol": "v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, bool) [ng serve]"
+    },
+    {
+      "pc": "0x0000000000f20105",
+      "symbol": " [ng serve]"
+    },
+    {
+      "pc": "0x0000000000f2aa6b",
+      "symbol": "v8::internal::Heap::PerformGarbageCollection(v8::internal::GarbageCollector, v8::GCCallbackFlags) [ng serve]"
+    },
+    {
+      "pc": "0x0000000000f2b787",
+      "symbol": "v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [ng serve]"
+    },
+    {
+      "pc": "0x0000000000f2e225",
+      "symbol": "v8::internal::Heap::AllocateRawWithRetryOrFail(int, v8::internal::AllocationType, v8::internal::AllocationAlignment) [ng serve]"
+    },
+    {
+      "pc": "0x0000000000ef9250",
+      "symbol": "v8::internal::Factory::NewFillerObject(int, bool, v8::internal::AllocationSpace) [ng serve]"
+    },
+    {
+      "pc": "0x00000000011cb22f",
+      "symbol": "v8::internal::Runtime_AllocateInTargetSpace(int, unsigned long*, v8::internal::Isolate*) [ng serve]"
+    },
+    {
+      "pc": "0x0000000001a93942",
+      "symbol": " [ng serve]"
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 2184785920,
+    "totalCommittedMemory": 2181706872,
+    "usedMemory": 2068847824,
+    "availableMemory": 49202176,
+    "memoryLimit": 2197815296,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 524288,
+        "committedMemory": 32024,
+        "capacity": 523976,
+        "used": 31712,
+        "available": 492264
+      },
+      "new_space": {
+        "memorySize": 33554432,
+        "committedMemory": 31981976,
+        "capacity": 16767232,
+        "used": 14656,
+        "available": 16752576
+      },
+      "old_space": {
+        "memorySize": 1923211264,
+        "committedMemory": 1922949664,
+        "capacity": 1882428080,
+        "used": 1880267352,
+        "available": 2160728
+      },
+      "code_space": {
+        "memorySize": 6455296,
+        "committedMemory": 6086816,
+        "capacity": 5592416,
+        "used": 5592416,
+        "available": 0
+      },
+      "map_space": {
+        "memorySize": 44044288,
+        "committedMemory": 43660040,
+        "capacity": 6384240,
+        "used": 6384240,
+        "available": 0
+      },
+      "large_object_space": {
+        "memorySize": 176373760,
+        "committedMemory": 176373760,
+        "capacity": 176006888,
+        "used": 176006888,
+        "available": 0
+      },
+      "code_large_object_space": {
+        "memorySize": 622592,
+        "committedMemory": 622592,
+        "capacity": 550560,
+        "used": 550560,
+        "available": 0
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 16767232,
+        "used": 0,
+        "available": 16767232
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 256.147,
+    "kernelCpuSeconds": 7.2637,
+    "cpuConsumptionPercent": 102.895,
+    "maxRss": 2449289216,
+    "pageFaults": {
+      "IORequired": 9,
+      "IONotRequired": 1241704
+    },
+    "fsActivity": {
+      "reads": 455888,
+      "writes": 0
+    }
+  },
+  "uvthreadResourceUsage": {
+    "userCpuSeconds": 131.301,
+    "kernelCpuSeconds": 4.51325,
+    "cpuConsumptionPercent": 53.0525,
+    "fsActivity": {
+      "reads": 355320,
+      "writes": 0
+    }
+  },
+  "libuv": [
+  ],
+  "environmentVariables": {
+    "SHELL": "/bin/bash",
+    "SESSION_MANAGER": "local/mungai-local:@/tmp/.ICE-unix/7980,unix/mungai-local:/tmp/.ICE-unix/7980",
+    "QT_ACCESSIBILITY": "1",
+    "XDG_CONFIG_DIRS": "/etc/xdg/xdg-ubuntu:/etc/xdg",
+    "XDG_MENU_PREFIX": "gnome-",
+    "GNOME_DESKTOP_SESSION_ID": "this-is-deprecated",
+    "TERMINAL_EMULATOR": "JetBrains-JediTerm",
+    "MANDATORY_PATH": "/usr/share/gconf/ubuntu.mandatory.path",
+    "LC_ADDRESS": "en_GB.UTF-8",
+    "JAVA_HOME": "/usr/local/share/jdk8_172",
+    "GNOME_SHELL_SESSION_MODE": "ubuntu",
+    "LC_NAME": "en_GB.UTF-8",
+    "SSH_AUTH_SOCK": "/run/user/1000/keyring/ssh",
+    "GRADLE_HOME": "/opt/gradle-5.5",
+    "XMODIFIERS": "@im=ibus",
+    "DESKTOP_SESSION": "ubuntu",
+    "LC_MONETARY": "en_GB.UTF-8",
+    "SSH_AGENT_PID": "7942",
+    "_INTELLIJ_FORCE_SET_GOROOT": "/usr/local/go1_14_9",
+    "GTK_MODULES": "gail:atk-bridge",
+    "PWD": "/home/mungai/ep/kotlin/apollo/apollo-angular-newui",
+    "LOGNAME": "mungai",
+    "XDG_SESSION_DESKTOP": "ubuntu",
+    "XDG_SESSION_TYPE": "x11",
+    "MANPATH": "/home/mungai/.nvm/versions/node/v12.4.0/share/man::/opt/puppetlabs/puppet/share/man",
+    "GPG_AGENT_INFO": "/run/user/1000/gnupg/S.gpg-agent:0:1",
+    "XAUTHORITY": "/run/user/1000/gdm/Xauthority",
+    "GJS_DEBUG_TOPICS": "JS ERROR;JS LOG",
+    "WINDOWPATH": "2",
+    "HOME": "/home/mungai",
+    "USERNAME": "mungai",
+    "IM_CONFIG_PHASE": "1",
+    "LC_PAPER": "en_GB.UTF-8",
+    "LANG": "en_US.UTF-8",
+    "LS_COLORS": "rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:",
+    "XDG_CURRENT_DESKTOP": "ubuntu:GNOME",
+    "DATABASE_USER": "hms_john",
+    "CAMEL_HOME": "/home/mungai/servers/apache-activemq-5.15.9-bin/apache-activemq-5.15.9",
+    "_INTELLIJ_FORCE_PREPEND_PATH": "/usr/local/go1_14_9/bin:/mnt/data/BIG/PROJECTS/sqilab/project-explore-tech/golang/bin:",
+    "INVOCATION_ID": "01647f0645cc4780a43806e2413d2bf5",
+    "MANAGERPID": "7718",
+    "GOROOT": "/usr/local/go1_14_9",
+    "GJS_DEBUG_OUTPUT": "stderr",
+    "NVM_DIR": "/home/mungai/.nvm",
+    "LESSCLOSE": "/usr/bin/lesspipe %s %s",
+    "XDG_SESSION_CLASS": "user",
+    "TERM": "xterm-256color",
+    "LC_IDENTIFICATION": "en_GB.UTF-8",
+    "CATALINA_HOME": "/opt/tomcat9",
+    "DEFAULTS_PATH": "/usr/share/gconf/ubuntu.default.path",
+    "LESSOPEN": "| /usr/bin/lesspipe %s",
+    "LIBVIRT_DEFAULT_URI": "qemu:///system",
+    "USER": "mungai",
+    "SWIFT_HOME": "/home/mungai/swift-5.1.2-RELEASE-ubuntu18.04/usr",
+    "DATABASE_PASSWORD": "4Wow-Ww99",
+    "NETBEANS_HOME": "/opt/netbeans",
+    "DISPLAY": ":0",
+    "SHLVL": "1",
+    "NVM_CD_FLAGS": "",
+    "PUPPET_HOME": "/opt/puppetlabs",
+    "LC_TELEPHONE": "en_GB.UTF-8",
+    "ANDROID_SDK_ROOT": "/home/mungai/Android/Sdk",
+    "QT_IM_MODULE": "ibus",
+    "LC_MEASUREMENT": "en_GB.UTF-8",
+    "PAPERSIZE": "a4",
+    "DATABASE_HOST": "localhost",
+    "LD_LIBRARY_PATH": ":/usr/local/share/idea2019_6636434/jre64/lib/amd64",
+    "XDG_RUNTIME_DIR": "/run/user/1000",
+    "LC_TIME": "en_GB.UTF-8",
+    "_INTELLIJ_FORCE_SET_GOPATH": "/mnt/data/BIG/PROJECTS/sqilab/project-explore-tech/golang",
+    "JOURNAL_STREAM": "9:65580",
+    "XDG_DATA_DIRS": "/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop",
+    "PATH": "/usr/local/go1_14_9/bin:/mnt/data/BIG/PROJECTS/sqilab/project-explore-tech/golang/bin:/home/mungai/.nvm/versions/node/v12.4.0/bin:/home/mungai/ep/kotlin/apollo/node_modules/.bin:/home/mungai/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/opt/puppetlabs/bin:/usr/local/go_1_17/bin:/opt/netbeans/bin:/opt/gradle-5.5/bin:/home/mungai/Android/Sdk/bin:/opt/tomcat9/bin:/home/mungai/servers/apache-activemq-5.15.9-bin/apache-activemq-5.15.9/bin:/home/mungai/swift-5.1.2-RELEASE-ubuntu18.04/usr/bin:/home/mungai/sqilab/project-explore-tech/golang/bin:/opt/ngrok:/opt/puppetlabs/bin",
+    "GDMSESSION": "ubuntu",
+    "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+    "NVM_BIN": "/home/mungai/.nvm/versions/node/v12.4.0/bin",
+    "GIO_LAUNCHED_DESKTOP_FILE_PID": "29988",
+    "GIO_LAUNCHED_DESKTOP_FILE": "/home/mungai/.local/share/applications/jetbrains-idea.desktop",
+    "LC_NUMERIC": "en_GB.UTF-8",
+    "OLDPWD": "/usr/local/share/idea2020.2/bin",
+    "GOPATH": "/mnt/data/BIG/PROJECTS/sqilab/project-explore-tech/golang",
+    "_": "/home/mungai/.nvm/versions/node/v12.4.0/bin/ng",
+    "WEBPACK_DEV_SERVER": "true"
+  },
+  "userLimits": {
+    "core_file_size_blocks": {
+      "soft": 0,
+      "hard": "unlimited"
+    },
+    "data_seg_size_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "file_size_blocks": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_locked_memory_bytes": {
+      "soft": 67108864,
+      "hard": 67108864
+    },
+    "max_memory_size_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "open_files": {
+      "soft": 1048576,
+      "hard": 1048576
+    },
+    "stack_size_bytes": {
+      "soft": 8388608,
+      "hard": "unlimited"
+    },
+    "cpu_time_seconds": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_user_processes": {
+      "soft": 95443,
+      "hard": 95443
+    },
+    "virtual_memory_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    }
+  },
+  "sharedObjects": [
+    "linux-vdso.so.1",
+    "/lib/x86_64-linux-gnu/libdl.so.2",
+    "/lib/x86_64-linux-gnu/librt.so.1",
+    "/usr/lib/x86_64-linux-gnu/libstdc++.so.6",
+    "/lib/x86_64-linux-gnu/libm.so.6",
+    "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+    "/lib/x86_64-linux-gnu/libpthread.so.0",
+    "/lib/x86_64-linux-gnu/libc.so.6",
+    "/lib64/ld-linux-x86-64.so.2",
+    "/lib/x86_64-linux-gnu/libnss_files.so.2"
+  ]
+}

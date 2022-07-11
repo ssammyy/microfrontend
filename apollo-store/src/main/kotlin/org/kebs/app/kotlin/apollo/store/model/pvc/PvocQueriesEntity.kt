@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "DAT_KEBS_PVOC_QUERIES")
-class PvocQueriesEntity:Serializable {
+class PvocQueriesEntity : Serializable {
     @Column(name = "ID", nullable = false, precision = 0)
     @Id
     @SequenceGenerator(name = "DAT_KEBS_PVOC_QUERIES_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_QUERIES_SEQ", allocationSize = 1)
@@ -38,6 +38,10 @@ class PvocQueriesEntity:Serializable {
     @Basic
     var rfcNumber: String? = null
 
+    @Column(name = "IDF_NUMBER", nullable = true, length = 50)
+    @Basic
+    var idfNumber: String? = null
+
     @Column(name = "INVOICE_NUMBER", nullable = true, length = 50)
     @Basic
     var invoiceNumber: String? = null
@@ -65,6 +69,9 @@ class PvocQueriesEntity:Serializable {
     @Column(name = "CONCLUSION", nullable = true, length = 4000)
     @Basic
     var conclusion: String? = null
+
+    @Column(name = "CONCLUSION_DATE", nullable = true)
+    var conclusionDate: Timestamp? = null
 
     @Column(name = "LINK_TO_UPLOADS", nullable = true, length = 4000)
     @Basic
@@ -150,6 +157,8 @@ class PvocQueriesEntity:Serializable {
     @Basic
     var conclusionStatus: Int? = null
 
+    @OneToMany(mappedBy = "queryId")
+    var responses: Set<PvocQueryResponseEntity>? = null
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

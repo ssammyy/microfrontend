@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.store.model
+package org.kebs.app.kotlin.apollo.store.model.pvc
 
 import java.io.Serializable
 import java.sql.Date
@@ -7,254 +7,270 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_RFC_COI")
-class RfcCoiEntity : Serializable {
+@Table(name = "DAT_KEBS_RFC_DOCUMENTS")
+class RfcEntity : Serializable {
+    @Column(name = "ID")
     @Id
-    @Column(name = "ID", nullable = false)
-    @SequenceGenerator(name = "DAT_KEBS_RFC_COI_SEQ_GEN", sequenceName = "DAT_KEBS_RFC_COI_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "DAT_KEBS_RFC_COI_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "DAT_KEBS_RFC_DOCUMENTS_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_RFC_DOCUMENTS_SEQ")
+    @GeneratedValue(generator = "DAT_KEBS_RFC_DOCUMENTS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
-    @Column(name = "COI_ID", nullable = true, precision = 0)
-    @Basic
-    var coiId: Long? = null
-
-    @Column(name = "RFC_NUMBER", nullable = false, length = 50)
+    @Column(name = "RFC_NUMBER", unique = true)
     @Basic
     var rfcNumber: String? = null
 
-    @Column(name = "IDF_NUMBER", nullable = true, length = 50)
+    @Column(name = "IDF_NUMBER")
     @Basic
     var idfNumber: String? = null
 
-    @Column(name = "UCR_NUMBER", nullable = false, length = 50)
+    @Column(name = "UCR_NUMBER")
     @Basic
     var ucrNumber: String? = null
 
-    @Column(name = "RFC_DATE", nullable = true)
+    @Column(name = "RFC_DATE")
     @Basic
     var rfcDate: Date? = null
 
-    @Column(name = "COUNTRY_OF_DESTINATION", nullable = false, length = 100)
+    @Column(name = "RFC_DOCUMENT_TYPE")
+    @Basic
+    var rfcDocumentType: String? = null
+
+    @Column(name = "COUNTRY_OF_DESTINATION")
     @Basic
     var countryOfDestination: String? = null
 
-    @Column(name = "APPLICATION_TYPE", nullable = false, length = 50)
+    @Column(name = "APPLICATION_TYPE")
     @Basic
     var applicationType: String? = null
 
-    @Column(name = "SOR_REFERENCE", nullable = true, length = 100)
+    @Column(name = "SOR_REFERENCE")
     @Basic
     var sorReference: String? = null
 
-    @Column(name = "SOL_REFERENCE", nullable = true, length = 100)
+    @Column(name = "SOL_REFERENCE")
     @Basic
     var solReference: String? = null
 
-    @Column(name = "IMPORTER_NAME", nullable = false, length = 1000)
+    @Column(name = "IMPORTER_NAME")
     @Basic
     var importerName: String? = null
 
-    @Column(name = "IMPORTER_PIN", nullable = false, length = 150)
+    @Column(name = "IMPORTER_PIN")
     @Basic
     var importerPin: String? = null
 
-    @Column(name = "IMPORTER_ADDRESS_1", nullable = false, length = 1000)
+    @Column(name = "IMPORTER_ADDRESS_1")
     @Basic
     var importerAddress1: String? = null
 
-    @Column(name = "IMPORTER_ADDRESS_2", nullable = true, length = 1000)
+    @Column(name = "IMPORTER_ADDRESS_2")
     @Basic
     var importerAddress2: String? = null
 
-    @Column(name = "IMPORTER_CITY", nullable = false, length = 100)
+    @Column(name = "IMPORTER_CITY")
     @Basic
     var importerCity: String? = null
 
-    @Column(name = "IMPORTER_COUNTRY", nullable = false, length = 100)
+    @Column(name = "IMPORTER_COUNTRY")
     @Basic
     var importerCountry: String? = null
 
-    @Column(name = "IMPORTER_ZIPCODE", nullable = false, length = 100)
+    @Column(name = "IMPORTER_ZIPCODE")
     @Basic
     var importerZipcode: String? = null
 
-    @Column(name = "IMPORTER_TELEPHONE_NUMBER", nullable = false, length = 100)
+    @Column(name = "IMPORTER_TELEPHONE_NUMBER")
     @Basic
     var importerTelephoneNumber: String? = null
 
-    @Column(name = "IMPORTER_FAX_NUMBER", nullable = true, length = 100)
+    @Column(name = "IMPORTER_FAX_NUMBER")
     @Basic
     var importerFaxNumber: String? = null
 
-    @Column(name = "IMPORTER_EMAIL", nullable = false, length = 150)
+    @Column(name = "IMPORTER_EMAIL")
     @Basic
     var importerEmail: String? = null
 
-    @Column(name = "EXPORTER_NAME", nullable = false, length = 1000)
+    @Column(name = "EXPORTER_NAME")
     @Basic
     var exporterName: String? = null
 
-    @Column(name = "EXPORTER_PIN", nullable = false, length = 150)
+    @Column(name = "EXPORTER_PIN")
     @Basic
     var exporterPin: String? = null
 
-    @Column(name = "EXPORTER_ADDRESS_1", nullable = false, length = 1000)
+    @Column(name = "EXPORTER_ADDRESS_1")
     @Basic
     var exporterAddress1: String? = null
 
-    @Column(name = "EXPORTER_ADDRESS_2", nullable = true, length = 1000)
+    @Column(name = "EXPORTER_ADDRESS_2")
     @Basic
     var exporterAddress2: String? = null
 
-    @Column(name = "EXPORTER_CITY", nullable = false, length = 100)
+    @Column(name = "EXPORTER_CITY")
     @Basic
     var exporterCity: String? = null
 
-    @Column(name = "EXPORTER_COUNTRY", nullable = false, length = 100)
+    @Column(name = "EXPORTER_COUNTRY")
     @Basic
     var exporterCountry: String? = null
 
-    @Column(name = "EXPORTER_ZIPCODE", nullable = false, length = 100)
+    @Column(name = "EXPORTER_ZIPCODE")
     @Basic
     var exporterZipcode: String? = null
 
-    @Column(name = "EXPORTER_TELEPHONE_NUMBER", nullable = false, length = 100)
+    @Column(name = "EXPORTER_TELEPHONE_NUMBER")
     @Basic
     var exporterTelephoneNumber: String? = null
 
-    @Column(name = "EXPORTER_FAX_NUMBER", nullable = true, length = 100)
+    @Column(name = "EXPORTER_FAX_NUMBER")
     @Basic
     var exporterFaxNumber: String? = null
 
-    @Column(name = "EXPORTER_EMAIL", nullable = false, length = 150)
+    @Column(name = "EXPORTER_EMAIL")
     @Basic
     var exporterEmail: String? = null
 
-    @Column(name = "PLACE_OF_INSPECTION", nullable = false, length = 4000)
+    @Column(name = "PLACE_OF_INSPECTION")
     @Basic
     var placeOfInspection: String? = null
 
-    @Column(name = "PLACE_OF_INSPECTION_ADDRESS", nullable = false, length = 500)
+    @Column(name = "PLACE_OF_INSPECTION_ADDRESS")
     @Basic
     var placeOfInspectionAddress: String? = null
 
-    @Column(name = "PLACE_OF_INSPECTION_EMAIL", nullable = false, length = 500)
+    @Column(name = "PLACE_OF_INSPECTION_EMAIL")
     @Basic
     var placeOfInspectionEmail: String? = null
 
-    @Column(name = "PLACE_OF_INSPECTION_CONTACTS", nullable = false, length = 500)
+    @Column(name = "PLACE_OF_INSPECTION_CONTACTS")
     @Basic
     var placeOfInspectionContacts: String? = null
 
-    @Column(name = "PORT_OF_LOADING", nullable = true, length = 200)
+    @Column(name = "PORT_OF_LOADING")
     @Basic
     var portOfLoading: String? = null
 
-    @Column(name = "PORT_OF_DISCHARGE", nullable = false, length = 200)
+    @Column(name = "PORT_OF_DISCHARGE")
     @Basic
     var portOfDischarge: String? = null
 
-    @Column(name = "SHIPMENT_METHOD", nullable = false, length = 200)
+    @Column(name = "SHIPMENT_METHOD")
     @Basic
     var shipmentMethod: String? = null
 
-    @Column(name = "COUNTRY_OF_SUPPLY", nullable = false, length = 4000)
+    @Column(name = "COUNTRY_OF_SUPPLY")
     @Basic
     var countryOfSupply: String? = null
 
-    @Column(name = "ROUTE", nullable = false, length = 10)
+    @Column(name = "ROUTE")
     @Basic
     var route: String? = null
 
-    @Column(name = "GOODS_CONDITION", nullable = false, length = 250)
+    @Column(name = "GOODS_CONDITION")
     @Basic
     var goodsCondition: String? = null
 
-    @Column(name = "ASSEMBLY_STATE", nullable = true, length = 250)
+    @Column(name = "ASSEMBLY_STATE")
     @Basic
     var assemblyState: String? = null
 
-    @Column(name = "LINK_TO_ATTACHED_DOCUMENTS", nullable = true, length = 4000)
+    @Column(name = "LINK_TO_ATTACHED_DOCUMENTS")
     @Basic
     var linkToAttachedDocuments: String? = null
 
-    @Column(name = "STATUS", nullable = true, precision = 0)
+    @Column(name = "REVIEW_STATUS")
+    @Basic
+    var reviewStatus: Int? = null
+
+    @Column(name = "REVIEW_REMARKS")
+    @Basic
+    var reviewRemarks: String? = null
+
+    @Column(name = "STATUS")
     @Basic
     var status: Long? = null
 
-    @Column(name = "VAR_FIELD_1", nullable = true, length = 350)
+    @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
 
-    @Column(name = "VAR_FIELD_2", nullable = true, length = 350)
+    @Column(name = "VAR_FIELD_2")
     @Basic
     var varField2: String? = null
 
-    @Column(name = "VAR_FIELD_3", nullable = true, length = 350)
+    @Column(name = "VAR_FIELD_3")
     @Basic
     var varField3: String? = null
 
-    @Column(name = "VAR_FIELD_4", nullable = true, length = 350)
+    @Column(name = "VAR_FIELD_4")
     @Basic
     var varField4: String? = null
 
-    @Column(name = "VAR_FIELD_5", nullable = true, length = 350)
+    @Column(name = "VAR_FIELD_5")
     @Basic
     var varField5: String? = null
 
-    @Column(name = "VAR_FIELD_6", nullable = true, length = 350)
+    @Column(name = "VAR_FIELD_6")
     @Basic
     var varField6: String? = null
 
-    @Column(name = "VAR_FIELD_7", nullable = true, length = 350)
+    @Column(name = "VAR_FIELD_7")
     @Basic
     var varField7: String? = null
 
-    @Column(name = "VAR_FIELD_8", nullable = true, length = 350)
+    @Column(name = "VAR_FIELD_8")
     @Basic
     var varField8: String? = null
 
-    @Column(name = "VAR_FIELD_9", nullable = true, length = 350)
+    @Column(name = "VAR_FIELD_9")
     @Basic
     var varField9: String? = null
 
-    @Column(name = "VAR_FIELD_10", nullable = true, length = 350)
+    @Column(name = "VAR_FIELD_10")
     @Basic
     var varField10: String? = null
 
-    @Column(name = "CREATED_BY", nullable = true, length = 100)
+    @Column(name = "CREATED_BY")
     @Basic
     var createdBy: String? = null
 
-    @Column(name = "CREATED_ON", nullable = true)
+    @Column(name = "CREATED_ON")
     @Basic
     var createdOn: Timestamp? = null
 
-    @Column(name = "MODIFIED_BY", nullable = true, length = 100)
+    @Column(name = "MODIFIED_BY")
     @Basic
     var modifiedBy: String? = null
 
-    @Column(name = "MODIFIED_ON", nullable = true)
+    @Column(name = "MODIFIED_ON")
     @Basic
     var modifiedOn: Timestamp? = null
 
-    @Column(name = "DELETE_BY", nullable = true, length = 100)
+    @Column(name = "DELETE_BY")
     @Basic
     var deleteBy: String? = null
 
-    @Column(name = "DELETED_ON", nullable = true)
+    @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
 
-    @Column(name = "PARTNER", nullable = true, precision = 0)
+    @Column(name = "PARTNER")
     @Basic
     var partner: Long? = null
+
+    @Column(name = "COC_NUMBER")
+    @Basic
+    var cocNumber: String? = null
+
+    @Column(name = "PVOC_TIMELINE_DATA_ID")
+    @Basic
+    var pvocTimelineDataId: Long? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as RfcCoiEntity
+        val that = other as RfcEntity
         return id == that.id &&
                 rfcNumber == that.rfcNumber &&
                 idfNumber == that.idfNumber &&
@@ -317,66 +333,10 @@ class RfcCoiEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(
-            id,
-            rfcNumber,
-            idfNumber,
-            ucrNumber,
-            rfcDate,
-            countryOfDestination,
-            applicationType,
-            sorReference,
-            solReference,
-            importerName,
-            importerPin,
-            importerAddress1,
-            importerAddress2,
-            importerCity,
-            importerCountry,
-            importerZipcode,
-            importerTelephoneNumber,
-            importerFaxNumber,
-            importerEmail,
-            exporterName,
-            exporterPin,
-            exporterAddress1,
-            exporterAddress2,
-            exporterCity,
-            exporterCountry,
-            exporterZipcode,
-            exporterTelephoneNumber,
-            exporterFaxNumber,
-            exporterEmail,
-            placeOfInspection,
-            placeOfInspectionAddress,
-            placeOfInspectionEmail,
-            placeOfInspectionContacts,
-            portOfLoading,
-            portOfDischarge,
-            shipmentMethod,
-            countryOfSupply,
-            route,
-            goodsCondition,
-            assemblyState,
-            linkToAttachedDocuments,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn,
-            partner
-        )
+        return Objects.hash(id, rfcNumber, idfNumber, ucrNumber, rfcDate, countryOfDestination, applicationType, sorReference, solReference,
+                importerName, importerPin, importerAddress1, importerAddress2, importerCity, importerCountry, importerZipcode, importerTelephoneNumber, importerFaxNumber, importerEmail,
+                exporterName, exporterPin, exporterAddress1, exporterAddress2, exporterCity, exporterCountry, exporterZipcode, exporterTelephoneNumber, exporterFaxNumber, exporterEmail,
+                placeOfInspection, placeOfInspectionAddress, placeOfInspectionEmail, placeOfInspectionContacts, portOfLoading, portOfDischarge, shipmentMethod, countryOfSupply, route, goodsCondition, assemblyState, linkToAttachedDocuments,
+                status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, partner)
     }
 }

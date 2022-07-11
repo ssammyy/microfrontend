@@ -879,6 +879,10 @@ class DestinationInspectionDaoServices(
         return corsBakRepository.findByConsignmentDocId(cdId)
     }
 
+    fun findCORByCorNumber(corNumber: String): CorsBakEntity? {
+        return corsBakRepository.findByCorNumber(corNumber)
+    }
+
     fun findCORByChassisNumber(chassisNo: String): CorsBakEntity {
         corsBakRepository.findByChasisNumber(chassisNo)
                 ?.let { corEntity ->
@@ -2461,6 +2465,10 @@ class DestinationInspectionDaoServices(
 
     fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {
         return cocRepo.findByUcrNumberAndCocType(ucrNumber, "COC")
+    }
+
+    fun findCoiByUcrNumber(ucrNumber: String): CocsEntity? {
+        return cocRepo.findByUcrNumberAndCocType(ucrNumber, "COI")
     }
 
     fun findCdTypeDetails(cdTypeID: Long): ConsignmentDocumentTypesEntity {
