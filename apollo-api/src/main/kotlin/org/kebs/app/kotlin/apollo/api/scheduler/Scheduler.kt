@@ -5,6 +5,8 @@ import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MarketSurveillanceFuelDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.StandardLevyService
+import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
@@ -74,10 +76,12 @@ class Scheduler(
 @EnableScheduling
 @Profile("default")
 class SchedulerDevelopment(
-        private val msDaoServices: MarketSurveillanceFuelDaoServices,
-        private val schedulerImpl: SchedulerImpl,
-        private val qaDaoServices: QADaoServices,
-        private val invoiceDaoService: InvoiceDaoService
+    private val msDaoServices: MarketSurveillanceFuelDaoServices,
+    private val schedulerImpl: SchedulerImpl,
+    private val qaDaoServices: QADaoServices,
+    private val standardLevyService: StandardLevyService,
+    private val sendEntryNumberToKraServices : SendEntryNumberToKraServices,
+    private val invoiceDaoService: InvoiceDaoService
 ) {
     @Scheduled(fixedDelay = 5_000)//60 Seconds for now
     fun updateDemandNotes() {
@@ -87,8 +91,15 @@ class SchedulerDevelopment(
         schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updateFirmTypeStatus()
         schedulerImpl.updatePaidDemandNotesStatus()
+        standardLevyService.sendLevyPaymentReminders()
         //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
 //        msDaoServices.updateRemediationDetailsAfterPaymentDone()
         KotlinLogging.logger { }.trace("DEV: UPDATED DEMAND NOTES on SW")
+    }
+
+    @Scheduled(cron = "@monthly")
+    fun runMonthlyScheduler() {
+        standardLevyService.sendLevyPaymentReminders()
+        sendEntryNumberToKraServices.postPenaltyDetailsToKra()
     }
 }
