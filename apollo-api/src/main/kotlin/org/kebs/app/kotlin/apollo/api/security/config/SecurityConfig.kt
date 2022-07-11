@@ -73,7 +73,7 @@ class WebSecurityConfig(private val customUserDetailsService: CustomUserDetailsS
     ) : WebSecurityConfigurerAdapter() {
 
         private var exclusions: Array<String> =
-                authenticationProperties.requiresNoAuthenticationApolloApiToken?.split(",")?.toTypedArray()
+            authenticationProperties.requiresNoAuthenticationApolloApiToken?.split(",")?.toTypedArray()
                         ?: arrayOf("")
         private var exclusionsCros: Array<String> =
                 authenticationProperties.requiresNoAuthenticationCros?.split(",")?.toTypedArray() ?: arrayOf("")
