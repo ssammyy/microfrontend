@@ -1,12 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
+import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.kra.request.ReceiveSL2PaymentRequest
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
@@ -32,6 +31,7 @@ import org.springframework.web.servlet.function.body
 class StandardsLevyHandler(
 
     private val validator: Validator,
+    private val commonDaoServices: CommonDaoServices,
     private val service: StandardsLevyDaoService,
 ) : AbstractValidationHandler() {
 
@@ -108,11 +108,23 @@ class StandardsLevyHandler(
         return try {
 
             val stringData = req.body<String>()
-            val gson = Gson()
-            KotlinLogging.logger { }.info { "Payment Body$stringData" }
-            val convertedObject: JsonObject = gson.fromJson(stringData, JsonObject::class.java)
-            KotlinLogging.logger { }.info { "Payment Body${convertedObject}" }
-            val body = gson.fromJson(convertedObject, ReceiveSL2PaymentRequest::class.java)
+            KotlinLogging.logger { }.info { "Payment Body${stringData}" }
+
+//            val jsonObject: JsonObject = JsonParser().parse(stringData).asJsonObject
+//            val convertedObject: JsonObject = Gson().fromJson(stringData, JsonObject::class.java)
+            //create ObjectMapper instance
+
+            //create ObjectMapper instance
+            val objectMapper = ObjectMapper()
+//            objectMapper.enableDefaultTyping()
+
+            //convert json string to object
+
+            //convert json string to object
+            val body: ReceiveSL2PaymentRequest = objectMapper.convertValue(stringData, ReceiveSL2PaymentRequest::class.java)
+//            val emp: ReceiveSL2PaymentRequest = objectMapper.readValue(stringData, ReceiveSL2PaymentRequest::class.java)
+            KotlinLogging.logger { }.info { "Payment Body ${body}" }
+//            val body = gson.fromJson(stringData, ReceiveSL2PaymentRequest::class.java)
             val errors: Errors = BeanPropertyBindingResult(body, ReceiveSL2PaymentRequest::class.java.name)
             validator.validate(body, errors)
             when {

@@ -257,6 +257,15 @@ export class FindWithRefNumber {
     refNumber?: string;
 }
 
+export class WorkPlanFeedBackDto {
+    hodFeedBackRemarks: string;
+}
+
+export class DestructionNotificationDto {
+    clientEmail: string;
+    remarks: string;
+}
+
 export class ComplaintsFilesFoundDto {
     id: number;
     fileName: string;
@@ -479,6 +488,8 @@ export class WorkPlanInspectionDto {
     sampleSubmitted: SampleSubmissionDto;
     sampleLabResults: MSSSFLabResultsDto;
     compliantStatusAdded: boolean;
+    destructionRecommended: boolean;
+    msProcessEndedStatus: boolean;
     preliminaryReport: PreliminaryReportDto;
 }
 
@@ -596,6 +607,18 @@ export class BatchFileFuelSaveDto {
 export class FuelEntityAssignOfficerDto {
     assignedUserID: bigint;
     remarks: string;
+}
+
+export class WorkPlanFinalRecommendationDto {
+    recommendationId: bigint;
+    hodRecommendationRemarks: string;
+}
+
+export class MsRecommendationDto {
+    id: bigint;
+    recommendationName: string;
+    description: string;
+    status: boolean;
 }
 
 export class WorkPlanScheduleApprovalDto {

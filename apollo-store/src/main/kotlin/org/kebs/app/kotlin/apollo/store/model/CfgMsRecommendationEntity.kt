@@ -25,7 +25,7 @@ class CfgMsRecommendationEntity: Serializable {
 
     @Column(name = "STATUS")
     @Basic
-    var status: Long? = null
+    var status: Int? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic

@@ -45,6 +45,7 @@ interface IMsTypesRepository : HazelcastRepository<MsTypesEntity, Long> {
 
 @Repository
 interface ICfgRecommendationRepository : HazelcastRepository<CfgMsRecommendationEntity, Long> {
+    fun findAllByStatus(status: Int): List<CfgMsRecommendationEntity>?
 //    fun findAllByStatus(status: Int, pages: Pageable?): Page<CfgMsRecommendationEntity>?
 
 }
