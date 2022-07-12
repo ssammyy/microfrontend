@@ -109,7 +109,7 @@ class StandardsLevyHandler(
      * Returns:
      * @return ServerResponse with payload as @see RequestResult
      */
-     fun processReceiveSL2Payment(req: ServerRequest): ServerResponse {
+     fun  processReceiveSL2Payment(req: ServerRequest): ServerResponse {
 
         return try {
 
