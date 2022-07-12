@@ -91,7 +91,7 @@ class SchedulerDevelopment(
         schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updateFirmTypeStatus()
         schedulerImpl.updatePaidDemandNotesStatus()
-        standardLevyService.sendLevyPaymentReminders()
+//        standardLevyService.sendLevyPaymentReminders()
         //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
 //        msDaoServices.updateRemediationDetailsAfterPaymentDone()
         KotlinLogging.logger { }.trace("DEV: UPDATED DEMAND NOTES on SW")
