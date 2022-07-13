@@ -60,6 +60,12 @@ export class WorkPlanDetailsComponent implements OnInit {
   currDiv!: string;
   currDivLabel!: string;
   submitted = false;
+  defaultPageSize = 20;
+  defaultPage = 0;
+  currentPage = 0;
+  currentPageInternal = 0;
+  totalCount = 12;
+
   approveScheduleForm!: FormGroup;
   approvePreliminaryForm!: FormGroup;
   finalRemarkHODForm!: FormGroup;
@@ -486,28 +492,10 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      // complianceStatus: {
-      //   title: 'COMPLIANCE STATUS',
-      //   type: 'boolean',
-      //   filter: false
-      // },
-      // sampled: {
-      //   title: 'Sampled',
-      //   type: 'string'
-      // },
-      // inspectionDate: {
-      //   title: 'Inspection Date',
-      //   type: 'date'
-      // },
-      // sampleUpdated: {
-      //   title: 'Sample Updated',
-      //   type: 'custom',
-      //   renderComponent: ConsignmentStatusComponent
-      // }
     },
     pager: {
       display: true,
-      perPage: 20,
+      perPage: 10,
     },
   };
   public settingsWorkPlanFiles = {
@@ -871,7 +859,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       invoiceNumber: ['', Validators.required],
       disposal: ['', Validators.required],
       remarks: ['', Validators.required],
-      sampleCollectionNumber: ['', Validators.required],
+      sampleCollectionNumber: null,
     });
 
 
@@ -2205,6 +2193,13 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     } else if (this.preliminaryReportForm.invalid) {
       this.msService.showError('KINDLY FILL IN THE FIELDS AND OUTLET DETAILS REQUIRED');
+    }
+  }
+
+  pageChange(pageIndex?: any) {
+    if (pageIndex) {
+      this.currentPageInternal = pageIndex - 1;
+      this.currentPage = pageIndex;
     }
   }
 }

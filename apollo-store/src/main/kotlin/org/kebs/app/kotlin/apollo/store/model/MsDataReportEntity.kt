@@ -131,51 +131,9 @@ class MsDataReportEntity  : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "MS_WORKPLAN_GENERATED_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var workPlanGeneratedID: MsWorkPlanGeneratedEntity? = null
+    @Column(name = "MS_WORKPLAN_GENERATED_ID")
+    @Basic
+    var workPlanGeneratedID: Long? = null
 
-//    @OneToMany(mappedBy = "datKebsMsDataReportByDataReportId")
-//    var datKebsMsDataReportParametersById: Collection<MsDataReportParametersEntity>? = null
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as MsDataReportEntity
-        return id == that.id &&
-                referenceNumber == that.referenceNumber &&
-                inspectionDate == that.inspectionDate &&
-                inspectorName == that.inspectorName &&
-                function == that.function &&
-                department == that.department &&
-                regionName == that.regionName &&
-                town == that.town &&
-                marketCenter == that.marketCenter &&
-                outletDetails == that.outletDetails &&
-                personMet == that.personMet &&
-                summaryFindingsActionsTaken == that.summaryFindingsActionsTaken &&
-                finalActionSeizedGoods == that.finalActionSeizedGoods &&
-                status == that.status &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(id, referenceNumber, inspectionDate, inspectorName, function, department, regionName, town, marketCenter, outletDetails, personMet, summaryFindingsActionsTaken, finalActionSeizedGoods, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
-    }
 
 }

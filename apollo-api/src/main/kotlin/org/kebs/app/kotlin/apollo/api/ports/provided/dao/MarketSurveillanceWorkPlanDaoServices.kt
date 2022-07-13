@@ -1231,7 +1231,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val sampleCollected = findSampleCollectedDetailByWorkPlanInspectionID(workPlanScheduled.id)
-        val savedSampleSubmission = msFuelDaoServices.addSampleSubmissionAdd(body,null,workPlanScheduled,sampleCollected?: throw ExpectedDataNotFound("MISSING SAMPLE COLLECTED FOR FUEL INSPECTION REF NO $referenceNo"), map, loggedInUser)
+        val savedSampleSubmission = msFuelDaoServices.addSampleSubmissionAdd(body,null,workPlanScheduled,sampleCollected, map, loggedInUser)
 
         when (savedSampleSubmission.first.status) {
             map.successStatus -> {
@@ -1857,7 +1857,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 personMet = body.personMet
                 summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
                 finalActionSeizedGoods = body.finalActionSeizedGoods
-                workPlanGeneratedID = workPlanScheduled
+                workPlanGeneratedID = workPlanScheduled.id
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
@@ -1980,7 +1980,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 declarationSituatedAt = body.declarationSituatedAt
                 declarationStateThat = body.declarationStateThat
                 declarationIdNumber = body.declarationIdNumber
-                workPlanGeneratedID = workPlanScheduled
+                workPlanGeneratedID = workPlanScheduled.id
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
@@ -2043,7 +2043,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 recommendations =body.recommendations
                 statusActivity =body.statusActivity
                 finalRemarkHod =body.finalRemarkHod
-                workPlanGeneratedID = workPlanScheduled
+                workPlanGeneratedID = workPlanScheduled.id
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
@@ -2451,6 +2451,110 @@ class MarketSurveillanceWorkPlanDaoServices(
         )
     }
 
+    fun mapSeizureDeclarationDetailsDto(
+        seizureDeclaration: MsSeizureDeclarationEntity
+    ): SeizureDeclarationDto {
+        return SeizureDeclarationDto(
+                    seizureDeclaration.id,
+                    seizureDeclaration.seizureTo,
+                    seizureDeclaration.seizurePremises,
+                    seizureDeclaration.seizureRequirementsStandards,
+                    seizureDeclaration.goodsName,
+                    seizureDeclaration.goodsManufactureTrader,
+                    seizureDeclaration.goodsAddress,
+                    seizureDeclaration.goodsPhysical,
+                    seizureDeclaration.goodsLocation,
+                    seizureDeclaration.goodsMarkedBranded,
+                    seizureDeclaration.goodsPhysicalSeal,
+                    seizureDeclaration.descriptionGoods,
+                    seizureDeclaration.goodsQuantity,
+                    seizureDeclaration.goodsThereforei,
+                    seizureDeclaration.nameInspector,
+                    seizureDeclaration.designationInspector,
+                    seizureDeclaration.dateInspector,
+                    seizureDeclaration.nameManufactureTrader,
+                    seizureDeclaration.designationManufactureTrader,
+                    seizureDeclaration.dateManufactureTrader,
+                    seizureDeclaration.nameWitness,
+                    seizureDeclaration.designationWitness,
+                    seizureDeclaration.dateWitness,
+                    seizureDeclaration.declarationTakenBy,
+                    seizureDeclaration.declarationOnThe,
+                    seizureDeclaration.declarationDayOf,
+                    seizureDeclaration.declarationMyName,
+                    seizureDeclaration.declarationIresideAt,
+                    seizureDeclaration.declarationIemployeedAs,
+                    seizureDeclaration.declarationIemployeedOf,
+                    seizureDeclaration.declarationSituatedAt,
+                    seizureDeclaration.declarationStateThat,
+                    seizureDeclaration.declarationIdNumber,
+        )
+    }
+
+    fun mapDataReportDetailsDto(
+        dataReport: MsDataReportEntity,
+        dataReportParam: List<DataReportParamsDto>
+    ): DataReportDto {
+        return DataReportDto(
+                    dataReport.id,
+                    dataReport.referenceNumber,
+                    dataReport.inspectionDate,
+                    dataReport.inspectorName,
+                    dataReport.function,
+                    dataReport.department,
+                    dataReport.regionName,
+                    dataReport.town,
+                    dataReport.marketCenter,
+                    dataReport.outletDetails,
+                    dataReport.personMet,
+                    dataReport.summaryFindingsActionsTaken,
+                    dataReport.finalActionSeizedGoods,
+            null,
+                    dataReportParam,
+        )
+    }
+
+    fun mapInspectionInvestigationDetailsDto(
+        inspectionInvestigation: MsInspectionInvestigationReportEntity
+    ): InspectionInvestigationReportDto {
+        return InspectionInvestigationReportDto(
+                    inspectionInvestigation.id,
+                    inspectionInvestigation.reportReference,
+                    inspectionInvestigation.reportTo,
+                    inspectionInvestigation.reportThrough,
+                    inspectionInvestigation.reportFrom,
+                    inspectionInvestigation.reportSubject,
+                    inspectionInvestigation.reportTitle,
+                    inspectionInvestigation.reportDate,
+                    inspectionInvestigation.reportRegion,
+                    inspectionInvestigation.reportDepartment,
+                    inspectionInvestigation.reportFunction,
+                    inspectionInvestigation.backgroundInformation,
+                    inspectionInvestigation.objectiveInvestigation,
+                    inspectionInvestigation.dateInvestigationInspection,
+                    inspectionInvestigation.kebsInspectors?.let { mapKEBSOfficersNameListDto(it) },
+                    inspectionInvestigation.methodologyEmployed,
+                    inspectionInvestigation.conclusion,
+                    inspectionInvestigation.recommendations,
+                    inspectionInvestigation.statusActivity,
+                    inspectionInvestigation.finalRemarkHod,
+                    null,
+        )
+    }
+
+    fun mapDataReportParamListDto(data: List<MsDataReportParametersEntity>): List<DataReportParamsDto> {
+        return data.map {
+            DataReportParamsDto(
+                it.id,
+                it.typeBrandName,
+                it.localImport,
+                it.complianceInspectionParameter,
+                it.measurementsResults,
+                it.remarks,
+            )
+        }
+    }
+
     fun findALlWorkPlanDetailsAssociatedWithWorkPlanID(createdWorkPlanID: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity> {
         generateWorkPlanRepo.findByWorkPlanYearId(createdWorkPlanID,pageable)
             ?.let {
@@ -2523,6 +2627,18 @@ class MarketSurveillanceWorkPlanDaoServices(
         val workPlanFiles = findUploadedFileForWorkPlans(workPlanScheduledDetails.id)
 
         val chargeSheet = findChargeSheetByWorkPlanInspectionID(workPlanScheduledDetails.id)
+        val chargeSheetDto = chargeSheet?.let { mapChargeSheetDetailsDto(it) }
+
+        val seizureDeclaration  = findSeizureDeclarationByWorkPlanInspectionID(workPlanScheduledDetails.id)
+        val seizureDeclarationDto = seizureDeclaration?.let { mapSeizureDeclarationDetailsDto(it) }
+
+        val dataReport  = findDataReportByWorkPlanInspectionID(workPlanScheduledDetails.id)
+        val dataReportParameters  = findDataReportParamsByWorkPlanInspectionID(workPlanScheduledDetails.id)
+        val dataReportParametersDto = dataReportParameters?.let { mapDataReportParamListDto(it) }
+        val dataReportDto = dataReport?.let { dataReportParametersDto?.let { it1 -> mapDataReportDetailsDto(it, it1) } }
+
+        val inspectionInvestigation  = findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduledDetails.id)
+        val inspectionInvestigationDto = inspectionInvestigation?.let { mapInspectionInvestigationDetailsDto(it) }
 
         val sampleCollected = findSampleCollectedDetailByWorkPlanInspectionID(workPlanScheduledDetails.id)
         val sampleCollectedParamList = sampleCollected?.id?.let { msFuelDaoServices.findAllSampleCollectedParametersBasedOnSampleCollectedID(it) }
@@ -2557,7 +2673,10 @@ class MarketSurveillanceWorkPlanDaoServices(
             compliantStatusDone,
             workPlanInspectionRemarks,
             workPlanFiles,
-            chargeSheet,
+            chargeSheetDto,
+            seizureDeclarationDto,
+            inspectionInvestigationDto,
+            dataReportDto,
             sampleCollectedDtoValues,
             sampleSubmittedDtoValues,
             labResultsDto,
@@ -2573,7 +2692,10 @@ class MarketSurveillanceWorkPlanDaoServices(
         compliantStatusDone: Boolean,
         remarksList: List<MsRemarksEntity>?,
         workPlanFilesSaved: List<MsUploadsEntity>?,
-        chargeSheet: MsChargeSheetEntity?,
+        chargeSheet: ChargeSheetDto?,
+        seizureDeclarationDto: SeizureDeclarationDto?,
+        inspectionInvestigationDto: InspectionInvestigationReportDto?,
+        dataReportDto: DataReportDto?,
         sampleCollected: SampleCollectionDto?,
         sampleSubmitted: SampleSubmissionDto?,
         sampleLabResults: MSSSFLabResultsDto?,
@@ -2581,7 +2703,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     ): WorkPlanInspectionDto {
         return WorkPlanInspectionDto(
-                    wKP.id,
+            wKP.id,
             wKP.productCategory?.let { commonDaoServices.findProductCategoryByID(it).name },
             wKP.broadProductCategory?.let { commonDaoServices.findBroadCategoryByID(it).category },
             wKP.product?.let { commonDaoServices.findProductByID(it).name },
@@ -2665,7 +2787,10 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.productSubCategory?.let { commonDaoServices.findSampleStandardsByID(it) }?.let { msComplaintDaoServices.mapStandardDetailsDto(it) },
             remarksList?.let { mapRemarksListDto(it) },
             workPlanFilesSaved?.let { mapFileListDto(it) },
-            chargeSheet?.let { mapChargeSheetDetailsDto(it) },
+            chargeSheet,
+            seizureDeclarationDto,
+            inspectionInvestigationDto,
+            dataReportDto,
             sampleCollected,
             sampleSubmitted,
             sampleLabResults,
@@ -2785,6 +2910,22 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     fun findChargeSheetByWorkPlanInspectionID(workPlanInspectionID: Long): MsChargeSheetEntity? {
         return  chargeSheetRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
+    }
+
+    fun findSeizureDeclarationByWorkPlanInspectionID(workPlanInspectionID: Long): MsSeizureDeclarationEntity? {
+        return  seizureDeclarationRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
+    }
+
+    fun findDataReportByWorkPlanInspectionID(workPlanInspectionID: Long): MsDataReportEntity? {
+        return  dataReportRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
+    }
+
+    fun findInspectionInvestigationByWorkPlanInspectionID(workPlanInspectionID: Long): MsInspectionInvestigationReportEntity? {
+        return  investInspectReportRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
+    }
+
+    fun findDataReportParamsByWorkPlanInspectionID(dataReportID: Long): List<MsDataReportParametersEntity>? {
+        return  dataReportParameterRepo.findByDataReportId(dataReportID)
     }
 
     fun findSampleCollectedDetailByWorkPlanInspectionID(workPlanInspectionID: Long): MsSampleCollectionEntity? {

@@ -250,7 +250,149 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.sampleCollected" label="9">
+                                    <mat-tab *ngIf="workPlanInspection?.chargeSheet" label="9">
+                                        <ng-template mat-tab-label>
+                                            Charge Sheet Details
+                                        </ng-template>
+                                        <b class="text-primary">Charged Details</b>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <b class="text-primary">Charged User Details</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Name</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.christianName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Surname</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.surname}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Gender</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.sex}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Nationality</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.nationality}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Apparent Age</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.age}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Address(District)</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.addressDistrict}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Address(Location)</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.addressLocation}}</div>
+                                                </li>
+                                            </ul>
+                                            <b class="text-primary">Counts And Particulars of Offence</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">First Count</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.firstCount}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">First Offence</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.particularsOffenceOne}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Second Count</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.secondCount}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Second Offence</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.particularsOffenceSecond}}</div>
+                                                </li>
+                                            </ul>
+                                            <b class="text-primary">If Accused Arrested</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Date of Arrest</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.dateArrest|date}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Without or with warrant</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.withWarrant}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Date Of Apprehension Report To Court</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.dateApprehensionCourt| date}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Bond Or Bail Amount</div>
+                                                    <div class="list-text-accordion">KSH {{workPlanInspection?.chargeSheet?.bondBailAmount| number:'1.2':'en-US'}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Is Application Made For Summons To Sue</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.applicationMadeSummonsSue}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Remanded or adjourned to</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.remandedAdjourned}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Complainant Name</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.complainantName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Complainant Address</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.complainantAddress}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Prosecutor</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.prosecutor}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Witnesses</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.witnesses}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Sentence</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.sentence}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">if fine is paid</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.finePaid}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Court Name</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.courtName}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Court Date</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.chargeSheet?.courtDate| date}}</div>
+                                                </li>
+                                            </ul>
+                                            <!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.sampleCollected" label="10">
                                         <ng-template mat-tab-label>
                                             Sample Collected Details
                                         </ng-template>
@@ -325,7 +467,7 @@
                                             </div>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.sampleSubmitted" label="10">
+                                    <mat-tab *ngIf="workPlanInspection?.sampleSubmitted" label="11">
                                         <ng-template mat-tab-label>
                                             Sample Submitted Details
                                         </ng-template>
@@ -451,7 +593,7 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested" label="11">
+                                    <mat-tab *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested" label="12">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             Lab Results Details
@@ -525,7 +667,7 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport" label="12">
+                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport" label="13">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             Preliminary Report Details
@@ -612,7 +754,7 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.remarksDetails?.length!=0" label="13">
+                                    <mat-tab *ngIf="workPlanInspection?.remarksDetails?.length!=0" label="14">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             Remarks Details
@@ -628,10 +770,175 @@
                                                                          [source]="workPlanInspection?.remarksDetails"
                                                                          (custom)="onCustomRemarksViewAction($event)"
                                                         ></ng2-smart-table>
+                                                        <br/>
+                                                        <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
+                                                                        [collectionSize]="workPlanInspection?.remarksDetails.length"
+                                                                        (pageChange)=pageChange($event)>
+<!--                                                            <ng-template ngbPaginationFirst>First</ng-template>-->
+<!--                                                            <ng-template ngbPaginationLast>Last</ng-template>-->
+<!--&lt;!&ndash;                                                            <ng-template ngbPaginationPrevious>Prev</ng-template>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <ng-template ngbPaginationNext>Next</ng-template>&ndash;&gt;-->
+<!--                                                            <ng-template ngbPaginationEllipsis>...</ng-template>-->
+<!--                                                            <ng-template ngbPaginationNumber let-page>{{ page}}</ng-template>-->
+                                                        </ngb-pagination>
                                                     </div>
                                                 </div>
                                             </div>
                                             <br>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.seizureDeclarationDto" label="15">
+                                        <ng-template mat-tab-label>
+                                            Seizure Notification Details
+                                        </ng-template>
+                                        <b class="text-primary">SEIZURE NOTIFICATION DETAILS</b>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <p class="list-title-accordion">To..<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.seizureTo}}</span>
+                                                ..Whereas I have reason to believe that the stock of goods detailed below which is/are at the premises of..
+                                                <span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.seizurePremises}}</span>..
+                                                Do not meet the requirements of Standard(s)..<span style="color:#0066B1;font-weight:bold">
+                                            {{workPlanInspection?.seizureDeclarationDto?.seizureRequirementsStandards}}</span>....published/approved by the Kenya Bureau of Standards.</p>
+                                            <br/>
+                                            <b class="text-primary">DETAILS OF GOODS</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Name of manufacturer/Trader</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsManufactureTrader}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Address</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsAddress}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Physical location</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsPhysical}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Goods are marked/branded as follows</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsMarkedBranded}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Physical seal</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsPhysicalSeal}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Description of goods</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.descriptionGoods}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Quantity</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsQuantity}}</div>
+                                                </li>
+                                                <br/>
+                                                <p class="list-title-accordion">Now therefore I....<span style="color:blue;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.goodsThereforei}}</span>...
+                                                    as an inspector under the Standards Act Cap 496, Laws of Kenya , hereby seize and detain the said goods under
+                                                    the provisions of the standards Act Cap 496 Laws of Kenya, miscellaneous amendment 2002, No 2</p>
+                                            </ul>
+                                            <br/>
+                                            <b class="text-primary">INSPECTOR DETAILS</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Name</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.nameInspector}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Designation</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.designationInspector}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Date</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.dateInspector}}</div>
+                                                </li>
+                                            </ul>
+                                            <br/>
+                                            <b class="text-primary">MANUFACTURER/TRADER DETAILS</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Name</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.nameManufactureTrader}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Designation</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.designationManufactureTrader}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Date</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.dateManufactureTrader}}</div>
+                                                </li>
+                                            </ul>
+                                            <br/>
+                                            <b class="text-primary">WITNESS DETAILS</b>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Name</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.nameWitness}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Designation</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.designationWitness}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Date</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.seizureDeclarationDto?.dateWitness}}</div>
+                                                </li>
+                                            </ul>
+                                            <!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.seizureDeclarationDto" label="16">
+                                        <ng-template mat-tab-label>
+                                            Declaration Details
+                                        </ng-template>
+                                        <b class="text-primary">DECLARATION DETAILS</b>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <p class="list-title-accordion">DECLARATION taken by....<span style="color:blue;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationTakenBy}}</span></p>
+                                            <br/>
+                                            <p class="list-title-accordion">
+                                                An Inspector, in accordance with section 14 (1) (f) of the Standards Act, Cap 496. <br>
+                                                On the....<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationOnThe}}</span>
+                                                day of.....<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationDayOf}}</span>
+                                            </p>
+                                            <br/>
+                                            <p class="list-title-accordion">MY NAME .....................<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationMyName}}</span><br>
+                                                ......I reside at......<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationIresideAt}}</span><br>
+                                                And I am employed as .....<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationIemployeedAs}}</span>
+                                                ..of......<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationIemployeedOf}}</span>..<br>
+                                            </p>
+                                            <br/>
+                                            <p class="list-title-accordion">Situated at: ....<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationSituatedAt}}</span>
+                                            </p>
+                                            <br/>
+                                            <p class="list-title-accordion">I State that: .......
+                                                <span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationStateThat}}</span><br>
+                                                I declare the above statement to be true.
+                                            </p>
+                                            <b class="text-primary">N/B</b>
+                                            <p class="list-title-accordion">
+                                                The inspector has power to examine any person whom he has reasonable grounds to believe has information <br>
+                                                relevant to his inquiry and to require every such person to be so examined and to sign a declaration of <br>
+                                                the truth of the matters respecting which he is so examined, but no person is required to answer any que-<br>
+                                                stion tending to incriminate himself. <br>
+                                                <br/>
+                                                The penalty for wilfully making or signing a false Declaration is imprisonment for a term not exceeding <br>
+                                                twelve months or a fine not exceeding one million shillings or to both such imprisonment and fine.
+                                            </p>
+                                            <!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
                                         </div>
                                     </mat-tab>
                                 </mat-tab-group>
@@ -1985,7 +2292,7 @@
                                         <label><b>Name of Inspector</b> </label>
                                         <input [class.is-invalid]="formDataReportForm.inspectorName.invalid && formDataReportForm.inspectorName.errors"
                                                class="form-control two-column-input"
-                                               formControlName="inspectorName"
+                                               formControlName="inspectorName" ngModel="{{userProfile.fullName}}" disabled
                                                name="inspectorName" required type="text">
                                         <div *ngIf="submitted && formDataReportForm.inspectorName.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportForm.inspectorName.errors.required">Name of Inspector is
@@ -2016,7 +2323,7 @@
                                         <label><b>Function</b> </label>
                                         <input [class.is-invalid]="formDataReportForm.function.invalid && formDataReportForm.function.errors"
                                                class="form-control two-column-input"
-                                               formControlName="function"
+                                               formControlName="function" ngModel="{{workPlanInspection?.divisionId}}" disabled
                                                name="function" required type="text">
                                         <div *ngIf="submitted && formDataReportForm.function.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportForm.function.errors.required">Function is
@@ -2033,7 +2340,7 @@
                                         <label><b>Department</b> </label>
                                         <input [class.is-invalid]="formDataReportForm.department.invalid && formDataReportForm.department.errors"
                                                class="form-control two-column-input"
-                                               formControlName="department"
+                                               formControlName="department" ngModel="{{workPlanInspection?.complaintDepartment}}" disabled
                                                name="department" required type="text">
                                         <div *ngIf="submitted && formDataReportForm.department.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportForm.department.errors.required">Department is
@@ -2048,7 +2355,7 @@
                                         <label><b>Region</b> </label>
                                         <input [class.is-invalid]="formDataReportForm.regionName.invalid && formDataReportForm.regionName.errors"
                                                class="form-control two-column-input"
-                                               formControlName="regionName"
+                                               formControlName="regionName" ngModel="{{workPlanInspection?.region}}" disabled
                                                name="regionName" required type="text">
                                         <div *ngIf="submitted && formDataReportForm.regionName.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportForm.regionName.errors.required">Region is
@@ -2065,7 +2372,7 @@
                                         <label><b>Town</b> </label>
                                         <input [class.is-invalid]="formDataReportForm.town.invalid && formDataReportForm.town.errors"
                                                class="form-control two-column-input"
-                                               formControlName="town"
+                                               formControlName="town" ngModel="{{workPlanInspection?.townMarketCenter}}" disabled
                                                name="town" required type="text">
                                         <div *ngIf="submitted && formDataReportForm.town.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportForm.town.errors.required">Town is
@@ -2080,7 +2387,7 @@
                                         <label><b>Market Centre</b> </label>
                                         <input [class.is-invalid]="formDataReportForm.marketCenter.invalid && formDataReportForm.marketCenter.errors"
                                                class="form-control two-column-input"
-                                               formControlName="marketCenter"
+                                               formControlName="marketCenter" ngModel="{{workPlanInspection?.locationActivityOther}}" disabled
                                                name="marketCenter" required type="text">
                                         <div *ngIf="submitted && formDataReportForm.marketCenter.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportForm.marketCenter.errors.required">Market Centre is
@@ -2766,7 +3073,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Fill in the Details to generate a Seizure Notification</h4>
+                    <h4 class="modal-title">FILL IN THE INSPECTION AND INVESTIGATION DETAILS</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
@@ -2828,7 +3135,7 @@
                                         <label><b>From</b> </label>
                                         <input [class.is-invalid]="formInvestInspectReportForm.reportFrom.invalid && formInvestInspectReportForm.reportFrom.errors"
                                                class="form-control two-column-input"
-                                               formControlName="reportFrom"
+                                               formControlName="reportFrom" ngModel="{{userProfile.fullName}}" disabled
                                                name="reportFrom" required type="text">
                                         <div *ngIf="submitted && formInvestInspectReportForm.reportFrom.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.reportFrom.errors.required">This field is
@@ -2890,7 +3197,7 @@
                                         <label><b>Region</b> </label>
                                         <input [class.is-invalid]="formInvestInspectReportForm.reportRegion.invalid && formInvestInspectReportForm.reportRegion.errors"
                                                class="form-control two-column-input"
-                                               formControlName="reportRegion"
+                                               formControlName="reportRegion" ngModel="{{workPlanInspection?.region}}" disabled
                                                name="reportRegion" required type="text">
                                         <div *ngIf="submitted && formInvestInspectReportForm.reportRegion.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.reportRegion.errors.required">This field is
@@ -2907,7 +3214,7 @@
                                         <label><b>Department</b> </label>
                                         <input [class.is-invalid]="formInvestInspectReportForm.reportDepartment.invalid && formInvestInspectReportForm.reportDepartment.errors"
                                                class="form-control two-column-input"
-                                               formControlName="reportDepartment"
+                                               formControlName="reportDepartment" ngModel="{{workPlanInspection?.complaintDepartment}}" disabled
                                                name="reportDepartment" required type="text">
                                         <div *ngIf="submitted && formInvestInspectReportForm.reportDepartment.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.reportDepartment.errors.required">This field is
@@ -2921,7 +3228,7 @@
                                         <label><b>Function</b> </label>
                                         <input [class.is-invalid]="formInvestInspectReportForm.reportFunction.invalid && formInvestInspectReportForm.reportFunction.errors"
                                                class="form-control two-column-input"
-                                               formControlName="reportFunction"
+                                               formControlName="reportFunction" ngModel="{{workPlanInspection?.divisionId}}" disabled
                                                name="reportFunction" required type="text">
                                         <div *ngIf="submitted && formInvestInspectReportForm.reportFunction.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.reportFunction.errors.required">This field is
@@ -4235,14 +4542,10 @@
 
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>SAMPLE COLLECTION NUMBER</b> </label>
-                                        <input type="number" class="form-control two-column-input"
-                                               formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required
-                                               [class.is-invalid]="formSampleSubmitForm.sampleCollectionNumber.invalid && formSampleSubmitForm.sampleCollectionNumber.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.sampleCollectionNumber.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.sampleCollectionNumber.errors.required">This field is
-                                                required
-                                            </div>
+                                        <div *ngIf="workPlanInspection?.sampleCollectionStatus" >
+                                            <label><b>SAMPLE COLLECTION NUMBER</b> </label>
+                                            <input type="number" class="form-control two-column-input"
+                                                   formControlName="sampleCollectionNumber" name="sampleCollectionNumber" >
                                         </div>
                                     </div>
                                 </div>

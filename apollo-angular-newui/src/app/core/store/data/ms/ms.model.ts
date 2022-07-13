@@ -484,6 +484,9 @@ export class WorkPlanInspectionDto {
     remarksDetails: MSRemarksDto[];
     workPlanFiles: WorkPlanFilesFoundDto[];
     chargeSheet: ChargeSheetDto;
+    seizureDeclarationDto: SeizureDeclarationDto;
+    inspectionInvestigationDto: InspectionInvestigationReportDto;
+    dataReportDto: DataReportDto;
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto;
     sampleLabResults: MSSSFLabResultsDto;
