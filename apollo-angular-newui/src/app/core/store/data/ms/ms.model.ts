@@ -492,6 +492,7 @@ export class WorkPlanInspectionDto {
     sampleLabResults: MSSSFLabResultsDto;
     compliantStatusAdded: boolean;
     destructionRecommended: boolean;
+    finalReportGenerated: boolean;
     msProcessEndedStatus: boolean;
     preliminaryReport: PreliminaryReportDto;
 }
@@ -541,8 +542,8 @@ export class SeizureDeclarationDto {
 export class DataReportDto {
     id: number;
     referenceNumber: string;
-    inspectionDate: Date;
     inspectorName: string;
+    inspectionDate: Date;
     function: string;
     department: string;
     regionName: string;

@@ -85,6 +85,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var compliantStatus: Int? = null
 
+    @Column(name = "FINAL_REPORT_GENERATED")
+    @Basic
+    var finalReportGenerated: Int? = null
+
     @Column(name = "MS_PROCESS_ENDED_STATUS")
     @Basic
     var msProcessEndedStatus: Int? = null

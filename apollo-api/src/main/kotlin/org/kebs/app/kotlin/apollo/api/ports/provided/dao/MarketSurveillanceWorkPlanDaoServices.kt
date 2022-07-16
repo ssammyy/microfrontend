@@ -350,6 +350,106 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     }
 
+    @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanScheduleAssignHOFStatus(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: ComplaintAssignDto
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+
+        val hofDetailsFound =commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned HOF ID"))
+        with(workPlanScheduled) {
+            hofAssigned = hofDetailsFound.id
+        }
+
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.assignedRemarks
+            remarksStatus= map.activeStatus
+            processID = workPlanScheduled.msProcessId
+            userId= loggedInUser.id
+        }
+
+        val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
+        workPlanScheduled = fileSaved.second
+        when (fileSaved.first.status) {
+            map.successStatus -> {
+
+                val remarksSaved = workPlanAddRemarksDetails(fileSaved.second.id,remarksDto, map, loggedInUser)
+                when (remarksSaved.first.status) {
+                    map.successStatus -> {
+                        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+                    }
+                    else -> {
+                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+                    }
+                }
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+            }
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_HOF_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanScheduleAssignIOStatus(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: ComplaintAssignDto
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+
+        with(workPlanScheduled) {
+            msProcessId = applicationMapProperties.msComplaintProcessAssignOfficer
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+            val usersEntity = commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned IO ID"))
+            officerId = usersEntity.id
+            officerName = commonDaoServices.concatenateName(usersEntity)
+        }
+
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.assignedRemarks
+            remarksStatus= map.activeStatus
+            processID = workPlanScheduled.msProcessId
+            userId= loggedInUser.id
+        }
+
+        val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
+        workPlanScheduled = fileSaved.second
+
+        when (fileSaved.first.status) {
+            map.successStatus -> {
+
+                val remarksSaved = workPlanAddRemarksDetails(fileSaved.second.id,remarksDto, map, loggedInUser)
+                when (remarksSaved.first.status) {
+                    map.successStatus -> {
+                        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+                    }
+                    else -> {
+                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+                    }
+                }
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+            }
+        }
+
+    }
+
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateWorkPlanScheduleInspectionDetailsDestructionNoticeUpload(
@@ -946,6 +1046,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         fetchedPreliminary =  updatePreliminaryReportDetails(fetchedPreliminary, map, loggedInUser).second
 
         with(workPlanScheduled){
+            finalReportGenerated= map.activeStatus
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGenerateFinalPreliminaryReport
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
         }
@@ -2633,7 +2734,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val seizureDeclarationDto = seizureDeclaration?.let { mapSeizureDeclarationDetailsDto(it) }
 
         val dataReport  = findDataReportByWorkPlanInspectionID(workPlanScheduledDetails.id)
-        val dataReportParameters  = findDataReportParamsByWorkPlanInspectionID(workPlanScheduledDetails.id)
+        val dataReportParameters  = dataReport?.id?.let { findDataReportParamsByDataReportID(it) }
         val dataReportParametersDto = dataReportParameters?.let { mapDataReportParamListDto(it) }
         val dataReportDto = dataReport?.let { dataReportParametersDto?.let { it1 -> mapDataReportDetailsDto(it, it1) } }
 
@@ -2796,6 +2897,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             sampleLabResults,
             compliantStatusDone,
             wKP.destructionRecommended == 1,
+            wKP.finalReportGenerated == 1,
             wKP.msProcessEndedStatus == 1,
             preliminaryReport
         )
@@ -2924,7 +3026,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         return  investInspectReportRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
     }
 
-    fun findDataReportParamsByWorkPlanInspectionID(dataReportID: Long): List<MsDataReportParametersEntity>? {
+    fun findDataReportParamsByDataReportID(dataReportID: Long): List<MsDataReportParametersEntity>? {
         return  dataReportParameterRepo.findByDataReportId(dataReportID)
     }
 

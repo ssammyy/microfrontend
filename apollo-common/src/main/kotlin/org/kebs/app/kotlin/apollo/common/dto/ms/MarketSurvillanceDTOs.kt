@@ -178,6 +178,7 @@ data class WorkPlanInspectionDto(
         var sampleLabResults: MSSSFLabResultsDto? = null,
         var compliantStatusAdded: Boolean? = null,
         var destructionRecommended: Boolean? = null,
+        var finalReportGenerated: Boolean? = null,
         var msProcessEndedStatus: Boolean? = null,
         var preliminaryReport: PreliminaryReportDto? = null,
 )

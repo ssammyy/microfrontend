@@ -992,10 +992,10 @@ export class MsService {
 
 
     // tslint:disable-next-line:max-line-length
-    public msWorkPlanScheduleDetailsFinalPreliminary(batchReferenceNo: string, referenceNo: string, data: PreliminaryReportFinal): Observable<WorkPlanInspectionDto> {
+    public msWorkPlanScheduleDetailsFinalReport(batchReferenceNo: string, referenceNo: string, data: PreliminaryReportFinal): Observable<WorkPlanInspectionDto> {
         console.log(data);
         const url = ApiEndpointService.getEndpoint(
-            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_FINAL_PRELIMINARY_REPORT
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_FINAL_REPORT
         );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)

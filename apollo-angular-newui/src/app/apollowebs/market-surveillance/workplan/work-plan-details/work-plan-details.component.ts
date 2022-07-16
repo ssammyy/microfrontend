@@ -99,7 +99,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveApproveSchedule: WorkPlanScheduleApprovalDto;
   dataSaveApprovePreliminary: ApprovalDto;
   dataSaveFinalRemarks: WorkPlanFeedBackDto;
-  dataSaveFinalPreliminary: PreliminaryReportFinal;
+  dataSaveFinalReport: PreliminaryReportFinal;
   dataSaveChargeSheet: ChargeSheetDto;
   dataSaveDataReport: DataReportDto;
   dataSaveDataInspectorInvestList: DataInspectorInvestDto[] = [];
@@ -643,6 +643,58 @@ export class WorkPlanDetailsComponent implements OnInit {
       perPage: 20,
     },
   };
+  public settingsDataReportParams = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'viewSavedDataReportRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      typeBrandName: {
+        title: 'TYPE BRAND NAME',
+        type: 'string',
+        filter: false,
+      },
+      localImport: {
+        title: 'LOCAL/IMPORT',
+        type: 'string',
+        filter: false,
+      },
+      complianceInspectionParameter: {
+        title: 'COMPLIANCE (%Score)',
+        type: 'string',
+        filter: false,
+      },
+      measurementsResults: {
+        title: 'MEASUREMENTS RESULTS',
+        type: 'string',
+        filter: false,
+      },
+      // dateVisit: {
+      //   title: 'REMARKS',
+      //   type: 'date',
+      //   filter: false,
+      // },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
 
   public workPlanInspection: WorkPlanInspectionDto;
   public msCounties: {name: string, code: string}[];
@@ -936,6 +988,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.remarksSavedForm = this.formBuilder.group({
       processBy: null,
       remarksDescription: null,
+      remarks: null,
     });
 
     this.activatedRoute.paramMap.subscribe(
@@ -1102,9 +1155,9 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS',
-      'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD RECOMMENDATION DETAILS', 'APPROVE/REJECT FINAL PRELIMINARY REPORT', 'APPROVE/REJECT FINAL PRELIMINARY REPORT',
+      'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/REJECT FINAL REPORT', 'APPROVE/REJECT FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
-     , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULL OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED'];
+     , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -1293,7 +1346,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('FINAL PRELIMINARY STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FINAL REPORT STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -1317,7 +1370,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('FINAL PRELIMINARY STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FINAL REPORT STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -1400,20 +1453,20 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveFinalPreliminary(valid: boolean) {
+  onClickSaveFinalReport(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
-      this.dataSaveFinalPreliminary = {...this.dataSaveFinalPreliminary, ...this.preliminaryRecommendationForm.value};
-      this.msService.msWorkPlanScheduleDetailsFinalPreliminary(
+      this.dataSaveFinalReport = {...this.dataSaveFinalReport, ...this.preliminaryRecommendationForm.value};
+      this.msService.msWorkPlanScheduleDetailsFinalReport(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
-          this.dataSaveFinalPreliminary,
+          this.dataSaveFinalReport,
       ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('FINAL PRELIMINARY DETAILS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FINAL REPORT DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -1901,6 +1954,14 @@ export class WorkPlanDetailsComponent implements OnInit {
     // this.router.navigate([`/epra/workPlanInspection/details/`,data.referenceNumber]);
   }
 
+  viewSavedDataReportRemarks(data: DataReportParamsDto) {
+    this.currDivLabel = `REMARKS FOR ${data.typeBrandName} BRAND`;
+    this.currDiv = 'viewSavedDataReportRemarks';
+    this.remarksSavedForm.patchValue(data);
+
+    window.$('#myModal1').modal('show');
+  }
+
   saveLIMSPDFRecord(data: LIMSFilesFoundDto) {
     console.log('TEST 101 REF NO SAVE: ' + data.fileName);
     this.selectedPDFFileName = data.fileName;
@@ -1939,6 +2000,9 @@ export class WorkPlanDetailsComponent implements OnInit {
     switch (event.action) {
       case 'viewSavedRemarks':
         this.viewSavedRemarks(event.data);
+        break;
+      case 'viewSavedDataReportRemarks':
+        this.viewSavedDataReportRemarks(event.data);
         break;
     }
   }

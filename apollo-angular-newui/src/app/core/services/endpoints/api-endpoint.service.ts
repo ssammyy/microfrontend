@@ -633,7 +633,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_ADD_LAB_RESULTS_PDF_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/lab-results-pdf-save`,
         INSPECTION_SCHEDULED_ADD_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/ssf-compliance-status-save`,
         INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/preliminary-report`,
-        INSPECTION_SCHEDULED_ADD_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-preliminary-report`,
+        INSPECTION_SCHEDULED_ADD_FINAL_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-report`,
 
     };
     /**
