@@ -456,7 +456,7 @@
                                                         {{workPlanInspection?.sampleCollected?.dateWitness|date}}</div>
                                                 </li>
                                             </ul>
-                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>
+<!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
                                             <div class="form-row">
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Items</label>
@@ -1296,29 +1296,37 @@
                                 <br/>
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
-                                    <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
-<!--                                        && workPlanInspection?.batchDetails.endedStatus-->
-                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                    <div *ngIf="workPlanInspection?.msProcessEndedStatus == false">
+                                        <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
+                                            <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                         && workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus ==false" (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
-                                                 data-target="#myModal1"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">APPROVE/REJECT SCHEDULE</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">APPROVE/REJECT SCHEDULE</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="workPlanInspection?.hofAssignedDetails != null" (click)="openModalAddDetails('reAssignHOF')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#myModal1"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-ASSIGN/ASSIGN HOF</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus== false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod== false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHod== false"
-                                                 (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
-                                                 data-target="#myModal1"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
+                                                     (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
@@ -1327,15 +1335,15 @@
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal == false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod"
-                                                 (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
-                                                 data-target="#myModal1"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">APPROVE/REJECT FINAL PRELIMINARY REPORT</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
+                                                     (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">APPROVE/REJECT FINAL PRELIMINARY REPORT</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
 
-                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
                                                 && workPlanInspection?.hodRecommendationStatus == false
@@ -1343,170 +1351,227 @@
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod"
-                                                 (click)="openModalAddDetails('addFinalRecommendationHOD')" mat-raised-button="" data-toggle="modal"
-                                                 data-target="#myModal1"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">ADD FINAL RECOMMENDATION</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                     (click)="openModalAddDetails('addFinalRecommendationHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD FINAL RECOMMENDATION</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.destructionDocId != null
                                                 && workPlanInspection?.msEndProcessRemarks == null
                                                 && workPlanInspection?.msProcessEndedStatus == false
                                                 && workPlanInspection?.destructionRecommended"
-                                                 (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"
-                                                 data-target="#myModal1"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">ADD FINAL REMARKS</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                    </div>
-                                    <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
-<!--                                        && workPlanInspection?.batchDetails.endedStatus-->
-                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                        && workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
-                                                 (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">START ONSITE ACTIVITIES</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <div *ngIf="workPlanInspection?.onsiteStartStatus && workPlanInspection?.onsiteEndStatus ==false">
-                                            <button   (click)="openModalAddDetails('uploadFiles')" mat-raised-button="" data-toggle="modal"
-                                                      data-target="#myModal1"
-                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">UPLOAD ATTACHMENTS</span>
+                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="workPlanInspection?.chargeSheetStatus ==false"  mat-raised-button="" data-toggle="modal"
-                                                    data-target="#chargeSheetModal"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD CHARGE SHEET</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="workPlanInspection?.sampleCollectionStatus ==false"  mat-raised-button="" data-toggle="modal"
-                                                    data-target="#sampleCollectModal"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD SAMPLE COLLECTION</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="workPlanInspection?.sampleSubmittedStatus ==false"  mat-raised-button="" data-toggle="modal"
-                                                    data-target="#sampleSubmitModal"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD SAMPLE SUBMISSION</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="workPlanInspection?.seizureDeclarationStatus ==false" (click)="openModalAddDetails('seizureDeclarationDetails')" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#seizureDeclarationModal"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD SEIZURE DECLARATION</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="workPlanInspection?.dataReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#dataReportModal"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD DATA REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="workPlanInspection?.investInspectReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#investInspectReportModal"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD INVESTIGATION & INSPECTION REPORT</span>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.appealStatus
+                                                && workPlanInspection?.destructionDocId == null
+                                                && workPlanInspection?.msEndProcessRemarks == null
+                                                && workPlanInspection?.msProcessEndedStatus == false
+                                                && workPlanInspection?.destructionRecommended"
+                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
-                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                        <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
+                                            <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                        && workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
+                                                     (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">START ONSITE ACTIVITIES</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <div *ngIf="workPlanInspection?.onsiteStartStatus && workPlanInspection?.onsiteEndStatus ==false">
+                                                <button   (click)="openModalAddDetails('uploadFiles')" mat-raised-button="" data-toggle="modal"
+                                                          data-target="#myModal1"
+                                                          class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">UPLOAD ATTACHMENTS</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button *ngIf="workPlanInspection?.chargeSheetStatus ==false"  mat-raised-button="" data-toggle="modal"
+                                                        data-target="#chargeSheetModal"
+                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">ADD CHARGE SHEET</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button *ngIf="workPlanInspection?.chargeSheetDocId ==null"   (click)="openModalAddDetails('uploadChargeSheetFiles')" mat-raised-button="" data-toggle="modal"
+                                                        data-target="#myModal1"
+                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">UPLOAD CHARGE SHEET</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button *ngIf="workPlanInspection?.sampleCollectionStatus ==false"  mat-raised-button="" data-toggle="modal"
+                                                        data-target="#sampleCollectModal"
+                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">ADD SAMPLE COLLECTION</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button  *ngIf="workPlanInspection?.scfDocId ==null"  (click)="openModalAddDetails('uploadSCFFiles')" mat-raised-button="" data-toggle="modal"
+                                                         data-target="#myModal1"
+                                                         class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">UPLOAD SAMPLE COLLECTION</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button *ngIf="workPlanInspection?.sampleSubmittedStatus ==false"  mat-raised-button="" data-toggle="modal"
+                                                        data-target="#sampleSubmitModal"
+                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">ADD SAMPLE SUBMISSION</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button  *ngIf="workPlanInspection?.ssfDocId ==null" (click)="openModalAddDetails('uploadSSFFiles')" mat-raised-button="" data-toggle="modal"
+                                                         data-target="#myModal1"
+                                                         class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">UPLOAD SAMPLE SUBMISSION</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button *ngIf="workPlanInspection?.seizureDeclarationStatus ==false" (click)="openModalAddDetails('seizureDeclarationDetails')" mat-raised-button="" data-toggle="modal"
+                                                        data-target="#seizureDeclarationModal"
+                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">ADD SEIZURE DECLARATION</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button   *ngIf="workPlanInspection?.seizureDocId ==null" (click)="openModalAddDetails('uploadSeizureFiles')" mat-raised-button="" data-toggle="modal"
+                                                          data-target="#myModal1"
+                                                          class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">UPLOAD SEIZURE</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button   *ngIf="workPlanInspection?.declarationDocId ==null" (click)="openModalAddDetails('uploadDeclarationFiles')" mat-raised-button="" data-toggle="modal"
+                                                          data-target="#myModal1"
+                                                          class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">UPLOAD DECLARATION</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button *ngIf="workPlanInspection?.dataReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
+                                                        data-target="#dataReportModal"
+                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">ADD DATA REPORT</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button  *ngIf="workPlanInspection?.dataReportDocId ==null" (click)="openModalAddDetails('uploadDataReportFiles')" mat-raised-button="" data-toggle="modal"
+                                                         data-target="#myModal1"
+                                                         class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">UPLOAD DATA REPORT</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                                <button *ngIf="workPlanInspection?.investInspectReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
+                                                        data-target="#investInspectReportModal"
+                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">ADD INVESTIGATION & INSPECTION REPORT</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </div>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                         && workPlanInspection?.approvedStatus && workPlanInspection?.onsiteStartStatus
                                          && workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus ==false"
-                                                 (click)="onClickEndOnsiteActivities()" mat-raised-button="" data-toggle="modal"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">END ONSITE ACTIVITIES</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <button  *ngIf="workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus &&
+                                                     (click)="onClickEndOnsiteActivities()" mat-raised-button="" data-toggle="modal"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">END ONSITE ACTIVITIES</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus &&
                                                     workPlanInspection?.bsNumberStatus== false" (click)="openModalAddDetails('addBsNumber')"
-                                                 mat-raised-button="" data-toggle="modal"
-                                                 data-target="#myModal1"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">ADD BS NUMBER</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <button  *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
+                                                     mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD BS NUMBER</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
                                                     workPlanInspection?.msPreliminaryReportStatus == false"
-                                                 (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
-                                                 data-target="#preliminaryReportModal"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">CREATE PRELIMINARY</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
+                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#preliminaryReportModal"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">CREATE PRELIMINARY</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
 
-                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                             && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
                                             && workPlanInspection?.preliminaryReport?.rejectedStatus== false
                                             && workPlanInspection?.preliminaryReport?.approvedStatusHod
                                             && workPlanInspection?.preliminaryReport?.surveillanceRecommendation == null
                                             && workPlanInspection?.preliminaryReport?.rejectedStatusHod== false"
-                                                 (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
-                                                 data-target="#myModal1"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">ADD FINAL REPORT</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                     (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD FINAL REPORT</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                             && workPlanInspection?.msPreliminaryReportStatus
                                             && workPlanInspection?.hodRecommendationStatus
                                             && workPlanInspection?.destructionNotificationStatus == false
                                             && workPlanInspection?.destructionRecommended"
-                                                (click)="openModalAddDetails('uploadDestructionNotificationFile')" mat-raised-button="" data-toggle="modal"
-                                                  data-target="#myModal1"
-                                                  class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">UPLOAD DESTRUCTION NOTIFICATION</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                      (click)="openModalAddDetails('uploadDestructionNotificationFile')" mat-raised-button="" data-toggle="modal"
+                                                      data-target="#myModal1"
+                                                      class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPLOAD DESTRUCTION NOTIFICATION</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                             && workPlanInspection?.msPreliminaryReportStatus
                                             && workPlanInspection?.hodRecommendationStatus
                                             && workPlanInspection?.destructionNotificationStatus
                                             && workPlanInspection?.clientAppealed == false
                                             && workPlanInspection?.destructionRecommended"
-                                                (click)="openModalAddDetails('clientAppealed')" mat-raised-button="" data-toggle="modal"
-                                                  data-target="#myModal1"
-                                                  class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">DID CLIENT APPEAL ?</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                      (click)="openModalAddDetails('clientAppealed')" mat-raised-button="" data-toggle="modal"
+                                                      data-target="#myModal1"
+                                                      class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">DID CLIENT APPEAL ?</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                             && workPlanInspection?.msPreliminaryReportStatus
                                             && workPlanInspection?.hodRecommendationStatus
                                             && workPlanInspection?.destructionNotificationStatus
                                             && workPlanInspection?.clientAppealed
+                                            && workPlanInspection?.appealStatus==false
                                             && workPlanInspection?.destractionStatus == false
                                             && workPlanInspection?.msEndProcessRemarks == null
                                             && workPlanInspection?.destructionRecommended"
-                                                (click)="openModalAddDetails('clientAppealedSuccessfully')" mat-raised-button="" data-toggle="modal"
-                                                  data-target="#myModal1"
-                                                  class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">WAS APPEAL SUCCESSFULL ?</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                        <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                      (click)="openModalAddDetails('clientAppealedSuccessfully')" mat-raised-button="" data-toggle="modal"
+                                                      data-target="#myModal1"
+                                                      class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">WAS APPEAL SUCCESS ?</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                             && workPlanInspection?.msPreliminaryReportStatus
                                             && workPlanInspection?.hodRecommendationStatus
                                             && workPlanInspection?.destructionNotificationStatus
@@ -1514,48 +1579,92 @@
                                             && workPlanInspection?.destractionStatus
                                             && workPlanInspection?.destructionDocId == null
                                             && workPlanInspection?.destructionRecommended"
-                                                (click)="openModalAddDetails('uploadDestructionReport')" mat-raised-button="" data-toggle="modal"
-                                                  data-target="#myModal1"
-                                                  class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">UPLOAD DESTRUCTION REPORT</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
+                                                      (click)="openModalAddDetails('uploadDestructionReport')" mat-raised-button="" data-toggle="modal"
+                                                      data-target="#myModal1"
+                                                      class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPLOAD DESTRUCTION REPORT</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
 
-                                    </div>
-                                    <div *ngIf="role == 'MS_HOF_MODIFY'">
-                                        <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
-                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                        </div>
+                                        <div *ngIf="role == 'MS_HOF_MODIFY'">
+                                            <button *ngIf="workPlanInspection?.officerDetails != null" (click)="openModalAddDetails('reAssignOfficer')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#myModal1"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-ASSIGN IO</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus== false"
-                                                 (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
-                                                 data-target="#myModal1"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
+                                                     (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
 
-                                        <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod"
-                                                 (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
-                                                 data-target="#myModal1"
-                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">APPROVE/REJECT FINAL REPORT</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
+                                                     (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">APPROVE/REJECT FINAL REPORT</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                        </div>
                                     </div>
+
 
                                 </div>
 
                                 <br/>
                                 <b>Document Details:</b>
+                                <div *ngIf="workPlanInspection.scfDocId != null">
+                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.scfDocId}"
+                                       (click)="viewWorkPlanFileSaved(data)"
+                                       class="btn btn-sm btn-primary">Sample Collection View</i>
+                                </div>
+                                <div *ngIf="workPlanInspection.ssfDocId != null">
+                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.ssfDocId}"
+                                       (click)="viewWorkPlanFileSaved(data)"
+                                       class="btn btn-sm btn-primary">Sample Submission View</i>
+                                </div>
+                                <div *ngIf="workPlanInspection.seizureDocId != null">
+                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.seizureDocId}"
+                                       (click)="viewWorkPlanFileSaved(data)"
+                                       class="btn btn-sm btn-primary">Seizure View</i>
+                                </div>
+                                <div *ngIf="workPlanInspection.declarationDocId != null">
+                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.declarationDocId}"
+                                       (click)="viewWorkPlanFileSaved(data)"
+                                       class="btn btn-sm btn-primary">Declaration View</i>
+                                </div>
+                                <div *ngIf="workPlanInspection.chargeSheetDocId != null">
+                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.chargeSheetDocId}"
+                                       (click)="viewWorkPlanFileSaved(data)"
+                                       class="btn btn-sm btn-primary">Charge Sheet View</i>
+                                </div>
+                                <div *ngIf="workPlanInspection.dataReportDocId != null">
+                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.dataReportDocId}"
+                                       (click)="viewWorkPlanFileSaved(data)"
+                                       class="btn btn-sm btn-primary">Data Report View</i>
+                                </div>
+                                <div *ngIf="workPlanInspection.destructionDocId != null">
+                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.destructionDocId}"
+                                       (click)="viewWorkPlanFileSaved(data)"
+                                       class="btn btn-sm btn-primary">Destruction Report View</i>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -1579,6 +1688,58 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div *ngIf="(currDiv == 'reAssignHOF')">
+                        <form [formGroup]="assignOfficerForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="assignedIo"><b>Select officer</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
+                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >
+                                                <mat-option *ngFor="let app of workPlanInspection.hofList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="assignedRemarks" matInput type="text"
+                                                      formControlName="assignedRemarks"
+                                                      name="assignedRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'reAssignOfficer')">
+                        <form [formGroup]="assignOfficerForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="assignedIo"><b>Select officer</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
+                                                        formControlName="assignedIo" id="assignedIoWork" name="assignedIo" >
+                                                <mat-option *ngFor="let app of workPlanInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="assignedRemarksWork" matInput type="text"
+                                                      formControlName="assignedRemarks"
+                                                      name="assignedRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'approveSchedule')">
                         <form [formGroup]="approveScheduleForm" class="form">
                             <div class="form-body">
@@ -1857,7 +2018,96 @@
                                         <label for="files"><b>Upload Documents Here</b></label>
                                         <form #demoForm="ngForm">
                                             <file-upload [(ngModel)]="uploadedFiles" name="files" id="files"
-                                                         fileslimit="5" accept=".pdf, .png, .jpg"></file-upload>
+                                                         [fileslimit]="6" accept=".pdf, .png, .jpg"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'uploadChargeSheetFiles')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'uploadSCFFiles')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'uploadSSFFiles')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div><div *ngIf="(currDiv == 'uploadFiles')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'uploadSeizureFiles')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'uploadDeclarationFiles')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
                                         </form>
                                     </div>
                                 </div>
@@ -2102,6 +2352,18 @@
 
                     <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
                     </button>
+                    <button *ngIf="(currDiv == 'reAssignOfficer')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveAssignIO(assignOfficerForm.valid);"
+                            [disabled]="!assignOfficerForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'reAssignHOF')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveAssignHof(assignOfficerForm.valid);"
+                            [disabled]="!assignOfficerForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
                     <button *ngIf="(currDiv == 'approveSchedule')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveApproveScheduleResults(approveScheduleForm.valid);"
                             [disabled]="!approveScheduleForm.valid"
@@ -2163,7 +2425,37 @@
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'uploadFiles')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveFilesResults('ORDINARY_FILE');"
+                            (click)="onClickSaveFilesResults('ONSITE_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadSCFFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('SCF_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadSSFFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('SSF_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadSeizureFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('SEIZURE_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadDeclarationFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('DECLARATION_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadChargeSheetFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('CHARGE_SHEET_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadDataReportFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('DATA_REPORT_FILE');"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

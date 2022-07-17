@@ -477,6 +477,12 @@ export class WorkPlanInspectionDto {
     hodRmAssignedDetails: MsUsersDto;
     hofAssignedDetails: MsUsersDto;
     destructionDocId: number;
+    scfDocId: number;
+    ssfDocId: number;
+    seizureDocId: number;
+    declarationDocId: number;
+    chargeSheetDocId: number;
+    dataReportDocId: number;
     complaintDepartment: string;
     referenceNumber: string;
     batchDetails: WorkPlanBatchDetailsDto;
@@ -493,8 +499,11 @@ export class WorkPlanInspectionDto {
     compliantStatusAdded: boolean;
     destructionRecommended: boolean;
     finalReportGenerated: boolean;
+    appealStatus: boolean;
     msProcessEndedStatus: boolean;
     preliminaryReport: PreliminaryReportDto;
+    officersList: MsUsersDto[];
+    hofList: MsUsersDto[];
 }
 
 export class CountryListDto {

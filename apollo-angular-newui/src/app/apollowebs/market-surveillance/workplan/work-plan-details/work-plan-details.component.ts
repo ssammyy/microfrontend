@@ -115,7 +115,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveDestructionNotification: DestructionNotificationDto;
 
 
-  dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
+  dataSaveAssignOfficer: ComplaintAssignDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
   dataSaveSampleCollect: SampleCollectionDto;
   dataSaveSampleCollectItems: SampleCollectionItemsDto;
@@ -718,8 +718,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     });
 
     this.assignOfficerForm = this.formBuilder.group({
-      assignedUserID: ['', Validators.required],
-      remarks: null,
+      assignedRemarks: ['', Validators.required],
+      assignedIo: ['', Validators.required],
     });
 
     this.finalRemarkHODForm = this.formBuilder.group({
@@ -1151,13 +1151,15 @@ export class WorkPlanDetailsComponent implements OnInit {
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails',
        'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
-    'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD'];
+    'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
+    'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS',
       'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/REJECT FINAL REPORT', 'APPROVE/REJECT FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
-     , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED'];
+     , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
+      'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -1321,6 +1323,7 @@ export class WorkPlanDetailsComponent implements OnInit {
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
+            this.approvePreliminaryForm.reset();
             this.SpinnerService.hide();
             this.msService.showSuccess('Client appeal Successfully status,Saved successfully');
           },
@@ -1524,18 +1527,40 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
 
-  onClickSaveAssignOfficerBatch(valid: boolean) {
+  onClickSaveAssignHof(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
-      this.msService.msFuelInspectionScheduledAssignOfficer(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
+      // tslint:disable-next-line:max-line-length
+      this.msService.msWorkPlanInspectionScheduledUpdateAssignHOFDetails(this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,  this.dataSaveAssignOfficer).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY');
+            this.msService.showSuccess('HOF ASSIGNED/RE-ASSISGNED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveAssignIO(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
+      // tslint:disable-next-line:max-line-length
+      this.msService.msWorkPlanInspectionScheduledUpdateAssignIODetails(this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,  this.dataSaveAssignOfficer).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('IO RE-ASSIGNED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -1894,6 +1919,11 @@ export class WorkPlanDetailsComponent implements OnInit {
   viewWorkPlanFileSaved(data: ComplaintsFilesFoundDto) {
     this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
   }
+
+  // viewWorkPlanFileNotOnSiteSaved(fileID: number) {
+  //   const data = this.workPlanInspection.workPlanFiles.filter(function (record) {return record.id === fileID});
+  //   this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
+  // }
 
   viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
     this.SpinnerService.show();

@@ -163,6 +163,12 @@ data class WorkPlanInspectionDto(
         var hodRmAssignedDetails: MsUsersDto? = null,
         var hofAssignedDetails: MsUsersDto? = null,
         var destructionDocId: Long? = null,
+        var scfDocId: Long? = null,
+        var ssfDocId: Long? = null,
+        var seizureDocId: Long? = null,
+        var declarationDocId: Long? = null,
+        var chargeSheetDocId: Long? = null,
+        var dataReportDocId: Long? = null,
         var complaintDepartment: String? = null,
         var referenceNumber: String? = null,
         var batchDetails: WorkPlanBatchDetailsDto? = null,
@@ -179,8 +185,11 @@ data class WorkPlanInspectionDto(
         var compliantStatusAdded: Boolean? = null,
         var destructionRecommended: Boolean? = null,
         var finalReportGenerated: Boolean? = null,
+        var appealStatus: Boolean? = null,
         var msProcessEndedStatus: Boolean? = null,
         var preliminaryReport: PreliminaryReportDto? = null,
+        var officersList: List<MsUsersDto>? = null,
+        var hofList: List<MsUsersDto>? = null,
 )
 
 data class FuelEntityDto(

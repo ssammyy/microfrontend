@@ -599,6 +599,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         if (body.approvalStatus) {
                 with(workPlanScheduled){
                     destractionStatus = map.inactiveStatus
+                    appealStatus = map.activeStatus
                     msProcessId = applicationMapProperties.mapMSWorkPlanInspectionPendingFinalRemarksHODRM
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                 }
@@ -606,6 +607,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         else {
                 with(workPlanScheduled){
                     destractionStatus = map.activeStatus
+                    appealStatus = map.inactiveStatus
                     msProcessId = applicationMapProperties.mapMSWorkPlanInspectionPendingDestractionGoodReport
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                 }
@@ -2305,6 +2307,14 @@ class MarketSurveillanceWorkPlanDaoServices(
                     createdOn = commonDaoServices.getTimestamp()
                 }
                 upload = msUploadRepo.save(upload)
+//                sr.payload = "${commonDaoServices.createJsonBodyFromEntity(workPlanSchedule)}"
+                sr.names = "Upload saved $docTypeName"
+
+                sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                sr.responseMessage = "Success ${sr.payload}"
+                sr.status = map.successStatus
+                sr = serviceRequestsRepo.save(sr)
+                sr.processingEndDate = Timestamp.from(Instant.now())
             } catch (e: Exception) {
                 KotlinLogging.logger { }.error(e.message, e)
                 //            KotlinLogging.logger { }.trace(e.message, e)
@@ -2726,6 +2736,17 @@ class MarketSurveillanceWorkPlanDaoServices(
         val batchDetailsDto = mapWorkPlanBatchDetailsDto(batchDetails, map)
         val workPlanInspectionRemarks = findRemarksForWorkPlan(workPlanScheduledDetails.id)
         val workPlanFiles = findUploadedFileForWorkPlans(workPlanScheduledDetails.id)
+        val officerList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(
+            applicationMapProperties.mapMSComplaintWorkPlanMappedOfficerROLEID,
+            workPlanScheduledDetails.county ?: throw ExpectedDataNotFound("MISSING WORK-PLAN COUNTY ID"),
+            workPlanScheduledDetails.region ?: throw ExpectedDataNotFound("MISSING WORK-PLAN REGION ID")
+        )
+
+        val hofList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(
+            applicationMapProperties.mapMSComplaintWorkPlanMappedHOFROLEID,
+            workPlanScheduledDetails.county ?: throw ExpectedDataNotFound("MISSING WORK-PLAN COUNTY ID"),
+            workPlanScheduledDetails.region ?: throw ExpectedDataNotFound("MISSING WORK-PLAN REGION ID")
+        )
 
         val chargeSheet = findChargeSheetByWorkPlanInspectionID(workPlanScheduledDetails.id)
         val chargeSheetDto = chargeSheet?.let { mapChargeSheetDetailsDto(it) }
@@ -2769,6 +2790,8 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         return mapWorkPlanInspectionDto(
             workPlanScheduledDetails,
+            officerList,
+            hofList,
             map,
             batchDetailsDto,
             compliantStatusDone,
@@ -2788,6 +2811,8 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     fun mapWorkPlanInspectionDto(
         wKP: MsWorkPlanGeneratedEntity,
+        officerList: List<UsersEntity>?,
+        hofList: List<UsersEntity>?,
         map: ServiceMapsEntity,
         batchDetails: WorkPlanBatchDetailsDto,
         compliantStatusDone: Boolean,
@@ -2882,6 +2907,12 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }?.let { msFuelDaoServices.mapOfficerDto(it) },
             wKP.hofAssigned?.let { commonDaoServices.findUserByID(it) }?.let { msFuelDaoServices.mapOfficerDto(it) },
             wKP.destructionDocId,
+            wKP.scfDocId,
+            wKP.ssfDocId,
+            wKP.seizureDocId,
+            wKP.declarationDocId,
+            wKP.chargeSheetDocId,
+            wKP.dataReportDocId,
             wKP.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
             wKP.referenceNumber,
             batchDetails,
@@ -2898,8 +2929,11 @@ class MarketSurveillanceWorkPlanDaoServices(
             compliantStatusDone,
             wKP.destructionRecommended == 1,
             wKP.finalReportGenerated == 1,
+            wKP.appealStatus == 1,
             wKP.msProcessEndedStatus == 1,
-            preliminaryReport
+            preliminaryReport,
+            officerList?.let { msComplaintDaoServices.mapOfficerListDto(it) },
+            hofList?.let { msComplaintDaoServices.mapOfficerListDto(it) },
         )
     }
 
