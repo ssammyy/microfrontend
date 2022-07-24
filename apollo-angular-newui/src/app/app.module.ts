@@ -348,6 +348,14 @@ import {LaboratoriesComponent} from './apollowebs/system/laboratories/laboratori
 import {AddLaboratoryComponent} from './apollowebs/system/laboratories/add-laboratory/add-laboratory.component';
 import {AddCustomOfficeComponent} from './apollowebs/system/customs-office/add-custom-office/add-custom-office.component';
 import {AddUpdateLimitComponent} from './apollowebs/invoice/limits/add-update-limit/add-update-limit.component';
+import {ForeignCorsComponent} from './apollowebs/pvoc/documents/foreign-cors/foreign-cors.component';
+import {ForeignCocsComponent} from './apollowebs/pvoc/documents/foreign-cocs/foreign-cocs.component';
+import {ViewCorComponent} from './apollowebs/pvoc/documents/foreign-cors/view-cor/view-cor.component';
+import {ViewOtherDocumentsComponent} from './apollowebs/pvoc/documents/foreign-cocs/view-other-documents/view-other-documents.component';
+import {CorFragmentComponent} from './apollowebs/di/fragments/cor-fragment/cor-fragment.component';
+import {CocFragmentComponent} from "./apollowebs/di/fragments/coc-fragment/coc-fragment.component";
+import {PvocQueriesComponent} from './apollowebs/pvoc/documents/foreign-cors/pvoc-queries/pvoc-queries.component';
+import {PvocCocQueriesComponent} from './apollowebs/pvoc/documents/foreign-cocs/pvoc-coc-queries/pvoc-coc-queries.component';
 
 
 @NgModule({
@@ -718,7 +726,15 @@ import {AddUpdateLimitComponent} from './apollowebs/invoice/limits/add-update-li
         LaboratoriesComponent,
         AddLaboratoryComponent,
         AddCustomOfficeComponent,
-        AddUpdateLimitComponent
+        AddUpdateLimitComponent,
+        ForeignCorsComponent,
+        ForeignCocsComponent,
+        ViewCorComponent,
+        ViewOtherDocumentsComponent,
+        CocFragmentComponent,
+        CorFragmentComponent,
+        PvocQueriesComponent,
+        PvocCocQueriesComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

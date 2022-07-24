@@ -158,13 +158,14 @@ export class PVOCService {
         })
     }
 
-    getExemptionApplicationDetails(exemptionId: any): Observable<any>{
+    getExemptionApplicationDetails(exemptionId: any): Observable<any> {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/details/" + exemptionId))
     }
 
-    updateExemptionStatus(exemptionId: any, data: any): Observable<any>{
+    updateExemptionStatus(exemptionId: any, data: any): Observable<any> {
         return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/status/update/" + exemptionId), data)
     }
+
     public listComplaintApplications(keywords: string, status: string, page: any, size: any): Observable<any> {
         let params = {}
         params["size"] = size
@@ -181,8 +182,8 @@ export class PVOCService {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/details/" + complaintId))
     }
 
-    updateComplaintStatus(complaintId: any, data): Observable<any>{
-        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/status/update/"+complaintId),data)
+    updateComplaintStatus(complaintId: any, data): Observable<any> {
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/status/update/" + complaintId), data)
     }
 
     public listWaiverApplications(keywords: string, status: string, page: any, size: any): Observable<any> {
@@ -202,4 +203,37 @@ export class PVOCService {
     }
 
 
+    loadCorDocument(keywords: string, reviewStatus: number, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        params['rev_status'] = reviewStatus
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/cor"), {
+            params: params
+        });
+    }
+
+    loadCorDetails(documentId: any): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/cor/" + documentId))
+    }
+
+    loadCocDocument(keywords: string, reviewStatus: number, documentType: string, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        params['rev_status'] = reviewStatus
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/" + documentType.toLowerCase()), {
+            params: params
+        });
+    }
+
+    loadCocDetails(documentId: any): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/cocorcoi/" + documentId))
+    }
 }

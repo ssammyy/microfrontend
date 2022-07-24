@@ -1,0 +1,61 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">{{documentType}}</i>
+                        </div>
+                        <h4 class="card-title">{{documentTitle}}
+                            <button class="btn btn-sm btn-primary ml-2 float-right pull-right"
+                                    *ngIf="documentType=='coc'"
+                                    (click)="uploadForeignDocument(null,'COC')"><i class="fa fa-plus"></i>Upload COC
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
+                                <button type="button" (click)="toggleStatus('under-review')"
+                                        [className]="activeStatus == 'under-review' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    ON REVIEW
+                                </button>
+                                <button type="button" (click)="toggleStatus('new-requests')"
+                                        [className]="activeStatus == 'new-requests' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    NEW REQUESTS
+                                </button>
+                                <button type="button" (click)="toggleStatus('approved-requests')"
+                                        [className]="activeStatus == 'approved-requests' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    APPROVED
+                                </button>
+                                <button type="button" (click)="toggleStatus('rejected-requests')"
+                                        [className]="activeStatus == 'rejected-requests' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    REJECTED
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-responsive table-striped">
+                            <p class="error-message" *ngIf="message">{{message}}</p>
+                            <ng2-smart-table class="table table-hover" [settings]="settings"
+                                             [source]="dataSet"
+                                             (custom)="auctionEvent($event)"
+                            >
+                            </ng2-smart-table>
+                            <ngb-pagination [(page)]="page" [pageSize]="pageSize"
+                                            [collectionSize]="totalCount"
+                                            (pageChange)=pageChange($event)>
+                                <ng-template ngbPaginationFirst>First</ng-template>
+                                <ng-template ngbPaginationLast>Last</ng-template>
+                                <ng-template ngbPaginationPrevious>Prev</ng-template>
+                                <ng-template ngbPaginationNext>Next</ng-template>
+                                <ng-template ngbPaginationEllipsis>...</ng-template>
+                                <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,413 @@
+<div class="row" *ngIf="cocDetails">
+    <div class="col-md-2">
+        <div widget class=" border-0 box-shadow">
+            <div class="text-center pt-2" style="color: green;">
+                CD Standard Details
+            </div>
+            <div class="card-body pt-0 widget-body" *ngIf="cocDetails">
+                <table class="table-responsive" *ngIf="cocDetails.consignment_document_details else basicDetails">
+                    <th>
+                        Application Ref Number
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.applicationRefNo}}</td>
+                    </tr>
+                    <th>
+                        Application Date
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.applicationDate}}</td>
+                    </tr>
+                    <th>
+                        Declaration Number
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.declaraionNumber}}</td>
+                    </tr>
+                    <th>
+                        UCR Number
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.ucrNumber}}</td>
+                    </tr>
+                    <th>
+                        Application Type
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.cdTypeName}}</td>
+                    </tr>
+                    <th>
+                        Document Type
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.cdTypeName}}</td>
+                    </tr>
+                    <th>
+                        Assigned Officer
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.assignedTo}}</td>
+                    </tr>
+                    <th>
+                        Approval Status
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.approvalStatus}}</td>
+                    </tr>
+
+                    <th>
+                        Approval Date
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.approvalStatus}}</td>
+                    </tr>
+                    <th>
+                        Final Approval Date
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.approveRejectCdDate}}</td>
+                    </tr>
+                    <th>
+                        Version No
+                    </th>
+                    <tr>
+                        <td>{{cocDetails.consignment_document_details.version}}</td>
+                    </tr>
+                </table>
+                <ng-template #basicDetails>
+                    <table class="table-responsive">
+                        <th>
+                            COC No
+                        </th>
+                        <tr>
+                            <td>{{cocDetails.certificate_details.cocNumber}}</td>
+                        </tr>
+                        <th>
+                            UCR No
+                        </th>
+                        <tr>
+                            <td>{{cocDetails.certificate_details.ucrNumber}}</td>
+                        </tr>
+                        <th>
+                            Version No
+                        </th>
+                        <tr>
+                            <td>{{cocDetails.certificate_details.version}}</td>
+                        </tr>
+                    </table>
+                </ng-template>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-8">
+
+        <!-- <div class="d-flex"> -->
+        <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true"
+                       appMatMultilineTab
+                       class="tab-wraps">
+            <mat-tab tabindex="1">
+                <ng-template mat-tab-label>
+                    {{documentType}} Details
+                </ng-template>
+                <b class="text-primary">Certificate Of Compliance Details</b>
+                <ul class="w-list-unstyled">
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Certificate Type</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.cocType}}</div>
+                    </li>
+                    <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType!=='COI'">
+                        <div class="list-title-accordion">{{cocDetails.certificate_details.cocType}}NUMBER
+                        </div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.cocNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COI'">
+                        <div class="list-title-accordion">COI NUMBER</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.coiNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">IDF NUMBER</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.idfNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">RFI NUMBER</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.rfiNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">UCR NUMBER</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.ucrNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">RFC DATE</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.rfcDate}}</div>
+                    </li>
+                    <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType!=='COI'">
+                        <div class="list-title-accordion">{{cocDetails.certificate_details.cocType}} ISSUE
+                            DATE
+                        </div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.cocIssueDate}}</div>
+                    </li>
+                    <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COI'">
+                        <div class="list-title-accordion">COI ISSUE DATE</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.coiIssueDate}}</div>
+                    </li>
+                    <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType!=='COI'">
+                        <div class="list-title-accordion">{{cocDetails.certificate_details.cocType}}REMARKS
+                        </div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.cocRemarks}}</div>
+                    </li>
+                    <li class="list-item-accordion" *ngIf="cocDetails.certificate_details.cocType=='COI'">
+                        <div class="list-title-accordion">COI REMARKS</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.coiRemarks}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">ISSUING OFFICE</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.issuingOffice}}</div>
+                    </li>
+                </ul>
+            </mat-tab>
+            <mat-tab tabindex="2">
+                <ng-template mat-tab-label>
+                    Importer Details
+                </ng-template>
+                <b class="text-primary">Importer Details</b>
+                <ul class="w-list-unstyled">
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Name</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.importerName}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">PIN</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.importerPin}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Address 1</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.importerAddress1}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Address 2</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.importerAddress2}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">City</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.importerCity}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Country</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.importerCountry}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">ZipCode</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.importerZipCode}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Telephone</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.importerTelephoneNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Fax</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.importerFaxNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Email</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.importerEmail}}</div>
+                    </li>
+                </ul>
+            </mat-tab>
+            <mat-tab tabindex="3">
+                <ng-template mat-tab-label>
+                    Exporter Details
+                </ng-template>
+                <b class="text-primary">Exporter Details</b>
+                <ul class="w-list-unstyled">
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Name</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.exporterName}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">PIN</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.exporterPin}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Address 1</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.exporterAddress1}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Address 2</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.exporterAddress2}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">City</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.exporterCity}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Country</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.exporterCountry}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">ZipCode</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.exporterZipCode}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Telephone</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.exporterTelephoneNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Fax</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.exporterFaxNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Email</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.exporterEmail}}</div>
+                    </li>
+                </ul>
+            </mat-tab>
+            <mat-tab tabindex="4">
+                <ng-template mat-tab-label>Invoice Details</ng-template>
+                <b class="text-primary">Invoice Details</b>
+                <div class="panel" style="max-height: 388px;">
+                    <ul class="w-list-unstyled">
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">FOB Value</div>
+                            <div class="list-text-accordion">{{cocDetails.certificate_details.finalInvoiceFobValue}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Exchange Rate</div>
+                            <div class="list-text-accordion">{{cocDetails.certificate_details.finalInvoiceExchangeRate}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Date</div>
+                            <div class="list-text-accordion">{{cocDetails.certificate_details.finalInvoiceDate}}</div>
+                        </li>
+                    </ul>
+                </div>
+            </mat-tab>
+
+            <mat-tab tabindex="5">
+                <ng-template mat-tab-label>Shipment Details</ng-template>
+                <b class="text-primary">Shipment Details</b>
+                <div class="panel" style="max-height: 487px;">
+                    <ul class="w-list-unstyled">
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Mode</div>
+                            <div class="list-text-accordion">{{cocDetails.certificate_details.shipmentMode}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Partial Number</div>
+                            <div class="list-text-accordion">{{cocDetails.certificate_details.route}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Seal Number</div>
+                            <div class="list-text-accordion">{{cocDetails.certificate_details.shipmentSealNumbers}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Container Number</div>
+                            <div class="list-text-accordion">{{cocDetails.certificate_details.shipmentContainerNumber}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Gross Weight</div>
+                            <div class="list-text-accordion">{{cocDetails.certificate_details.shipmentGrossWeight}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Quantity Delivered</div>
+                            <div class="list-text-accordion">{{cocDetails.certificate_details.shipmentQuantityDelivered}}</div>
+                        </li>
+                    </ul>
+                </div>
+            </mat-tab>
+            <mat-tab tabindex="6">
+                <ng-template mat-tab-label>Inspection Details</ng-template>
+                <b class="text-primary">Inspection Details</b>
+                <ul class="w-list-unstyled">
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Place Of Inspection</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.placeOfInspection}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Date Of Inspection</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.dateOfInspection}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Route</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.route}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Port Of Destination</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.portOfDestination}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Country Of Supply</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.route}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Product Category</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.productCategory}}</div>
+                    </li>
+                </ul>
+            </mat-tab>
+
+            <mat-tab tabindex="7">
+                <ng-template mat-tab-label>Item Details</ng-template>
+                <b class="text-primary">Item Details</b>
+                <app-di-coc-item-details
+                        [dataSet]="cocDetails.items"></app-di-coc-item-details>
+            </mat-tab>
+            <mat-tab tabindex="8" [disabled]="!cocDetails.pvoc_client">
+                <ng-template mat-tab-label>
+                    Partner Details
+                </ng-template>
+                <b class="text-primary">Partner Details</b>
+                <ul class="w-list-unstyled" *ngIf="cocDetails.pvoc_client">
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">NAME</div>
+                        <div class="list-text-accordion">{{cocDetails.pvoc_client.partnerName}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">PIN</div>
+                        <div class="list-text-accordion">{{cocDetails.pvoc_client.partnerPin}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Partner No.</div>
+                        <div class="list-text-accordion">{{cocDetails.pvoc_client.partnerRefNo}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Region</div>
+                        <div class="list-text-accordion">{{cocDetails.pvoc_client.partnerRegion}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Address 1</div>
+                        <div class="list-text-accordion">{{cocDetails.pvoc_client.partnerAddress1}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Address 2</div>
+                        <div class="list-text-accordion">{{cocDetails.pvoc_client.partnerAddress2}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Phone Number</div>
+                        <div class="list-text-accordion">{{cocDetails.pvoc_client.partnerTelephoneNumber}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Email</div>
+                        <div class="list-text-accordion">{{cocDetails.pvoc_client.partnerEmail}}</div>
+                    </li>
+                    <li class="list-item-accordion">
+                        <div class="list-title-accordion">Uploaded By</div>
+                        <div class="list-text-accordion">{{cocDetails.cor_details.clientId}}</div>
+                    </li>
+                </ul>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+    <div class="col-md-2">
+        <h5>Action:</h5>
+        <button *ngIf="cocDetails.certificate_details.documentsType==='F'"
+                class="btn btn-sm btn-primary" (click)="createQuery()">Query PVOC
+        </button>
+        <h5>Documents:</h5>
+        <button *ngIf="cocDetails.certificate_details.documentsType!=='F'"
+                class="btn btn-sm btn-primary" (click)="downloadCocFile()">
+            DOWNLOAD {{cocDetails.certificate_details.cocType}} File
+        </button>
+
+    </div>
+</div>
