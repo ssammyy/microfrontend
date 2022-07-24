@@ -622,10 +622,12 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/client-appealed-status", handler::updateWorkPlanClientAppealed)
                         PUT("/client-appealed-successfully", handler::updateWorkPlanClientAppealSuccesful)
                         "/hof".nest {
+                            PUT("/assign-io", handler::updateWorkPlanByAssigningIO)
                             PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
                             PUT("/approval-final-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
                         }
                         "/hod".nest {
+                            PUT("/assign-hof", handler::updateWorkPlanByAssigningHof)
                             PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD)
                             PUT("/approval-final-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD)
                             PUT("/final-recommendation", handler::addWorkPlanScheduleFinalRecommendationByHOD)
@@ -643,7 +645,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
-                        PUT("/final-preliminary-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
+                        PUT("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
                 }
 
@@ -690,8 +692,10 @@ class AngularRoutes (private val daoService: DaoFluxService) {
 
     @Bean
     fun kraApiRoutes(handler: StandardsLevyHandler) = router {
-        "/api/v1/migration/anonymous/kra".nest {
+        "/api/v1/kra".nest {
             POST("/receiveSL2Payment".and(contentType(MediaType.TEXT_PLAIN)), handler::processReceiveSL2Payment)
+            //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
+
         }
     }
 

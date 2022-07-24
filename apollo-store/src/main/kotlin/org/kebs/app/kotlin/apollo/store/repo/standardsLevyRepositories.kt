@@ -12,7 +12,23 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
-interface ISl2PaymentsHeaderRepository : HazelcastRepository<Sl2PaymentsHeaderEntity, Long>, JpaSpecificationExecutor<Sl2PaymentsHeaderEntity>
+interface ISl2PaymentsHeaderRepository : HazelcastRepository<Sl2PaymentsHeaderEntity, Long>, JpaSpecificationExecutor<Sl2PaymentsHeaderEntity>{
+    @Query(
+        value = "SELECT DISTINCT c.ENTRY_NUMBER as entryNumber,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,p.STATUS as status  FROM DAT_KEBS_COMPANY_PROFILE c, LOG_SL2_PAYMENTS_HEADER p\n" +
+                "WHERE p.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER AND p.STATUS='1'",
+        nativeQuery = true
+    )
+    fun getLevyPenalty(): MutableList<LevyPenalty>
+
+    @Query(
+        value = "SELECT p.ID as id,p.REQUEST_HEADER_ENTRY_NO as entryNumber,p.TRANSACTION_DATE as paymentDate,p.REQUEST_HEADER_TOTAL_PAYMENT_AMT as paymentAmount,p.REQUEST_HEADER_TOTAL_PENALTY_AMT as amountDue,p.REQUEST_HEADER_TOTAL_PENALTY_AMT as penalty,p.REQUEST_HEADER_PAYMENT_SLIP_DATE as levyDueDate," +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
+                " FROM LOG_SL2_PAYMENTS_HEADER p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
+                "WHERE p.REQUEST_HEADER_ENTRY_NO= :entryNumber ORDER BY p.ID DESC",
+        nativeQuery = true
+    )
+    fun getManufacturesLevyPenalty(@Param("entryNumber") entryNumber: Long?): MutableList<LevyPenalty>
+}
 
 interface ISl2PaymentsDetailsRepository : HazelcastRepository<Sl2PaymentsDetailsEntity, Long>, JpaSpecificationExecutor<Sl2PaymentsDetailsEntity>
 interface ISlVisitUploadsRepository : HazelcastRepository<SlVisitUploadsEntity, Long>, JpaSpecificationExecutor<SlVisitUploadsEntity> {
@@ -25,6 +41,7 @@ interface ISlVisitUploadsRepository : HazelcastRepository<SlVisitUploadsEntity, 
         nativeQuery = true
     )
     fun findAllDocumentId(@Param("id") id: Long?): List<SiteVisitListHolder>
+
 
 }
 interface StandardLevySiteVisitRemarksRepository : HazelcastRepository<StandardLevySiteVisitRemarks, Long> {

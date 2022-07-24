@@ -806,6 +806,8 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+
+
     fun updateComplaintByAssigningIO(req: ServerRequest): ServerResponse {
         return try {
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
@@ -829,6 +831,7 @@ class NewMarketSurveillanceHandler(
             ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
 
     fun updateComplaintByAddingClassificationDetails(req: ServerRequest): ServerResponse {
         return try {
@@ -906,6 +909,56 @@ class NewMarketSurveillanceHandler(
                 .let {
                     ServerResponse.ok().body(it)
                 }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updateWorkPlanByAssigningIO(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
+            val body = req.body<ComplaintAssignDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ComplaintAssignDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleAssignIOStatus(referenceNo,batchReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updateWorkPlanByAssigningHof(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
+            val body = req.body<ComplaintAssignDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ComplaintAssignDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleAssignIOStatus(referenceNo,batchReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)

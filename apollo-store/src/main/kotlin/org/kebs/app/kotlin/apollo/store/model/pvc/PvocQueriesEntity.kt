@@ -166,6 +166,7 @@ class PvocQueriesEntity : Serializable {
         return id == that.id &&
                 certNumber == that.certNumber &&
                 rfcNumber == that.rfcNumber &&
+                idfNumber == that.idfNumber &&
                 invoiceNumber == that.invoiceNumber &&
                 ucrNumber == that.ucrNumber &&
                 partnerResponse == that.partnerResponse &&
@@ -198,6 +199,7 @@ class PvocQueriesEntity : Serializable {
                 id,
                 certNumber,
                 rfcNumber,
+                idfNumber,
                 invoiceNumber,
                 ucrNumber,
                 partnerResponse,

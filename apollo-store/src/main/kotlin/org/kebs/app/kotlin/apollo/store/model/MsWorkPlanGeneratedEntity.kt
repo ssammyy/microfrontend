@@ -85,6 +85,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var compliantStatus: Int? = null
 
+    @Column(name = "FINAL_REPORT_GENERATED")
+    @Basic
+    var finalReportGenerated: Int? = null
+
     @Column(name = "MS_PROCESS_ENDED_STATUS")
     @Basic
     var msProcessEndedStatus: Int? = null
@@ -292,6 +296,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var destractionStatus: Int? = 0
 
+    @Column(name = "APPEAL_STATUS")
+    @Basic
+    var appealStatus: Int? = 0
+
     @Column(name = "REJECTED_BY")
     @Basic
     var rejectedBy: String? = null
@@ -464,6 +472,30 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var destructionDocId: Long? = null
 
+    @Column(name = "SCF_DOC_ID")
+    @Basic
+    var scfDocId: Long? = null
+
+    @Column(name = "SSF_DOC_ID")
+    @Basic
+    var ssfDocId: Long? = null
+
+    @Column(name = "SEIZURE_DOC_ID")
+    @Basic
+    var seizureDocId: Long? = null
+
+    @Column(name = "DECLARATION_DOC_ID")
+    @Basic
+    var declarationDocId: Long? = null
+
+    @Column(name = "CHARGE_SHEET_DOC_ID")
+    @Basic
+    var chargeSheetDocId: Long? = null
+
+    @Column(name = "DATA_REPORT_DOC_ID")
+    @Basic
+    var dataReportDocId: Long? = null
+
     @Column(name = "DESTRUCTION_NOTIFICATION_DOC_ID")
     @Basic
     var destructionNotificationDocId: Long? = null
@@ -472,15 +504,6 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var complaintDepartment: Long? = null
 
-
-
-//    @JoinColumn(name = "DESTRUCTION_DOC_ID", referencedColumnName = "ID")
-//    @ManyToOne
-//    var destractionDocId: MsOnsiteUploadsEntity? = null
-
-//    @JoinColumn(name = "COMPLAINT_DEPARTMENT", referencedColumnName = "ID")
-//    @ManyToOne
-//    var complaintDepartment: DepartmentsEntity? = null
 
     @Column(name = "REFERENCE_NUMBER")
     @Basic

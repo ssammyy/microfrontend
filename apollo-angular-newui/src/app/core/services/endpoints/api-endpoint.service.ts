@@ -614,7 +614,9 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_CLIENT_APPEALED_SUCCESSFULLY: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/client-appealed-successfully`,
         INSPECTION_SCHEDULED_APPROVE_HOF_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hof/approval-preliminary-report`,
         INSPECTION_SCHEDULED_APPROVE_HOF_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hof/approval-final-preliminary-report`,
+        INSPECTION_SCHEDULED_UPDATE_ASSIGN_IO: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hof/assign-io`,
         INSPECTION_SCHEDULED_APPROVE_HOD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/approval-preliminary-report`,
+        INSPECTION_SCHEDULED_UPDATE_ASSIGN_HOF: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/assign-hof`,
         INSPECTION_SCHEDULED_APPROVE_HOD_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/approval-final-preliminary-report`,
         INSPECTION_SCHEDULED_APPROVE_HOD_FINAL_REMARKS: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/feedBack-notification`,
         INSPECTION_SCHEDULED_HOD_ADD_FINAL_RECOMMENDATION: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/final-recommendation`,
@@ -633,7 +635,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_ADD_LAB_RESULTS_PDF_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/lab-results-pdf-save`,
         INSPECTION_SCHEDULED_ADD_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/ssf-compliance-status-save`,
         INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/preliminary-report`,
-        INSPECTION_SCHEDULED_ADD_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-preliminary-report`,
+        INSPECTION_SCHEDULED_ADD_FINAL_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-report`,
 
     };
     /**

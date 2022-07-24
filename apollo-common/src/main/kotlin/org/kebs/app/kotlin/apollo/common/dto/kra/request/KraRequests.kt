@@ -46,13 +46,13 @@ class PinValidationRequest {
 class ReceiveSL2PaymentRequest {
 
     @NotNull(message = "Required field")
-    var loginId: String? = null
+    var loginId: String = ""
 
     @NotNull(message = "Required field")
-    var password: String? = null
+    var password: String= ""
 
     @NotEmpty(message = "Required field")
-    var hash: String? = null
+    var hash: String = ""
 
     @NotNull(message = "Required field")
 //    DD-MM-YYYY’T’HH:MM:SS
@@ -82,19 +82,19 @@ class ReceiveSL2PaymentDetails {
 
 
 class ReceiveSL2PaymentPenalty {
-    var penaltyOrderNo: String? = null
+    var penaltyOrderNo: String = ""
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     var periodFrom: Date? = null
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     var periodTo: Date? = null
-    var penaltyPaid: BigDecimal? = null
+    var penaltyPaid: BigDecimal = BigDecimal.ZERO
 }
 
 class ReceiveSL2PaymentDeclaration {
     @NotEmpty(message = "Required field")
-    var commodityType: String? = null
+    var commodityType: String = ""
 
     @NotNull(message = "Required field")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
@@ -225,7 +225,7 @@ class DECLARATION {
     var levyPaid: String? = null
 }
 
-class DETAILS {
+class Details {
     @JsonProperty("DECLARATION")
     var declaration: ArrayList<DECLARATION>? = null
 
@@ -233,7 +233,7 @@ class DETAILS {
     var penalty: ArrayList<PENALTY>? = null
 }
 
-class HEADER {
+class Header {
     var entryNo: String? = null
     var kraPin: String? = null
     var manufacturerName: String? = null
@@ -259,20 +259,20 @@ class PENALTY {
     var penaltyPaid: String? = null
 }
 
-class REQUEST {
+class Request {
     var loginId: String? = null
     var password: String? = null
     var hash: String? = null
     var transmissionDate: String? = null
 
     @JsonProperty("HEADER")
-    var header: HEADER? = null
+    var header: Header? = null
 
     @JsonProperty("DETAILS")
-    var details: DETAILS? = null
+    var details: Details? = null
 }
 
 class RootKra {
     @JsonProperty("REQUEST")
-    var request: REQUEST? = null
+    var request: Request? = null
 }

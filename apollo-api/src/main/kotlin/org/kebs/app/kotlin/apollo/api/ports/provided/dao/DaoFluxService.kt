@@ -25,22 +25,15 @@ import io.ktor.http.*
 import mu.KotlinLogging
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.jasypt.encryption.StringEncryptor
-import org.kebs.app.kotlin.apollo.common.dto.kra.request.ReceiveSL2PaymentRequest
+import org.kebs.app.kotlin.apollo.common.dto.kra.request.Request
 
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
-import org.kebs.app.kotlin.apollo.config.security.ssl.SslContextFactory
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.repo.IWorkflowTransactionsRepository
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Primary
 import org.springframework.data.jpa.repository.Modifying
-import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.validation.Validator
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.remoteAddressOrNull
@@ -399,7 +392,7 @@ class DaoFluxService(
         return log
     }
 
-    fun validateHash(hash: ReceiveSL2PaymentRequest): Boolean {
+    fun validateHash(hash: Request): Boolean {
         /**
          * TODO: Validate the hash whenever it gets provided
          */

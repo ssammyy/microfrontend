@@ -477,6 +477,12 @@ export class WorkPlanInspectionDto {
     hodRmAssignedDetails: MsUsersDto;
     hofAssignedDetails: MsUsersDto;
     destructionDocId: number;
+    scfDocId: number;
+    ssfDocId: number;
+    seizureDocId: number;
+    declarationDocId: number;
+    chargeSheetDocId: number;
+    dataReportDocId: number;
     complaintDepartment: string;
     referenceNumber: string;
     batchDetails: WorkPlanBatchDetailsDto;
@@ -484,13 +490,20 @@ export class WorkPlanInspectionDto {
     remarksDetails: MSRemarksDto[];
     workPlanFiles: WorkPlanFilesFoundDto[];
     chargeSheet: ChargeSheetDto;
+    seizureDeclarationDto: SeizureDeclarationDto;
+    inspectionInvestigationDto: InspectionInvestigationReportDto;
+    dataReportDto: DataReportDto;
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto;
     sampleLabResults: MSSSFLabResultsDto;
     compliantStatusAdded: boolean;
     destructionRecommended: boolean;
+    finalReportGenerated: boolean;
+    appealStatus: boolean;
     msProcessEndedStatus: boolean;
     preliminaryReport: PreliminaryReportDto;
+    officersList: MsUsersDto[];
+    hofList: MsUsersDto[];
 }
 
 export class CountryListDto {
@@ -538,8 +551,8 @@ export class SeizureDeclarationDto {
 export class DataReportDto {
     id: number;
     referenceNumber: string;
-    inspectionDate: Date;
     inspectorName: string;
+    inspectionDate: Date;
     function: string;
     department: string;
     regionName: string;

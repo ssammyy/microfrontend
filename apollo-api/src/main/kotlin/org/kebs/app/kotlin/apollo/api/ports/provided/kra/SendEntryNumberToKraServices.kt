@@ -145,8 +145,7 @@ class SendEntryNumberToKraServices(
     }
     fun postPenaltyDetailsToKra( ): KraPenaltyDetailsRequestLogEntity? {
         var resultSaved: KraPenaltyDetailsRequestLogEntity? =null
-        val config =
-            commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapKraPenaltyConfigIntegration)
+        val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapKraPenaltyConfigIntegration)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL FOR KRA")
         //val companyProfile = commonDaoServices.findCompanyProfileWithID(companyProfileID)
         runBlocking {
