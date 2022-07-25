@@ -356,6 +356,8 @@ import {CorFragmentComponent} from './apollowebs/di/fragments/cor-fragment/cor-f
 import {CocFragmentComponent} from "./apollowebs/di/fragments/coc-fragment/coc-fragment.component";
 import {PvocQueriesComponent} from './apollowebs/pvoc/documents/foreign-cors/pvoc-queries/pvoc-queries.component';
 import {PvocCocQueriesComponent} from './apollowebs/pvoc/documents/foreign-cocs/pvoc-coc-queries/pvoc-coc-queries.component';
+import {PvocQueryCardComponent} from './apollowebs/di/fragments/pvoc-query-card/pvoc-query-card.component';
+import {PvocQueryViewComponent} from './apollowebs/di/fragments/pvoc-query-view/pvoc-query-view.component';
 
 
 @NgModule({
@@ -734,7 +736,9 @@ import {PvocCocQueriesComponent} from './apollowebs/pvoc/documents/foreign-cocs/
         CocFragmentComponent,
         CorFragmentComponent,
         PvocQueriesComponent,
-        PvocCocQueriesComponent
+        PvocCocQueriesComponent,
+        PvocQueryCardComponent,
+        PvocQueryViewComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

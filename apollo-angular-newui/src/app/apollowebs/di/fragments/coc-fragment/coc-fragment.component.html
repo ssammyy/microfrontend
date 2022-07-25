@@ -2,7 +2,7 @@
     <div class="col-md-2">
         <div widget class=" border-0 box-shadow">
             <div class="text-center pt-2" style="color: green;">
-                CD Standard Details
+                CD Details
             </div>
             <div class="card-body pt-0 widget-body" *ngIf="cocDetails">
                 <table class="table-responsive" *ngIf="cocDetails.consignment_document_details else basicDetails">
@@ -77,7 +77,7 @@
                 <ng-template #basicDetails>
                     <table class="table-responsive">
                         <th>
-                            COC No
+                            {{documentType}} No
                         </th>
                         <tr>
                             <td>{{cocDetails.certificate_details.cocNumber}}</td>
@@ -352,7 +352,19 @@
                 <app-di-coc-item-details
                         [dataSet]="cocDetails.items"></app-di-coc-item-details>
             </mat-tab>
-            <mat-tab tabindex="8" [disabled]="!cocDetails.pvoc_client">
+            <mat-tab tabindex="8">
+                <ng-template mat-tab-label>Queries</ng-template>
+                <b class="text-primary">PVOC Queries for document</b>
+                <div class="row p0 m-0" *ngIf="cocDetails.queries else noQueries">
+                    <app-pvoc-query-card class="col-md-12 p-0 m-0" *ngFor="let q of cocDetails.queries"
+                                         [queryDetails]="q"></app-pvoc-query-card>
+                </div>
+                <ng-template #noQueries>
+                    <p>No Queries have been raised on this document. Use the <b>PVOC Query</b> button to raise a query
+                    </p>
+                </ng-template>
+            </mat-tab>
+            <mat-tab tabindex="9" [disabled]="!cocDetails.pvoc_client">
                 <ng-template mat-tab-label>
                     Partner Details
                 </ng-template>
@@ -392,7 +404,7 @@
                     </li>
                     <li class="list-item-accordion">
                         <div class="list-title-accordion">Uploaded By</div>
-                        <div class="list-text-accordion">{{cocDetails.cor_details.clientId}}</div>
+                        <div class="list-text-accordion">{{cocDetails.certificate_details.createdBy}}</div>
                     </li>
                 </ul>
             </mat-tab>
@@ -400,7 +412,7 @@
     </div>
     <div class="col-md-2">
         <h5>Action:</h5>
-        <button *ngIf="cocDetails.certificate_details.documentsType==='F'"
+        <button *ngIf="cocDetails.certificate_details.documentsType==='F' && isPvocOfficer"
                 class="btn btn-sm btn-primary" (click)="createQuery()">Query PVOC
         </button>
         <h5>Documents:</h5>

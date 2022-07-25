@@ -14,6 +14,7 @@ export class ViewOtherDocumentsComponent implements OnInit {
     cocDetails: any
     documentId: any
     documentType: any
+    documentTypeDesc: any
 
     constructor(private router: Router, private activatedRoute: ActivatedRoute, private pvocService: PVOCService) {
     }
@@ -24,7 +25,20 @@ export class ViewOtherDocumentsComponent implements OnInit {
                 res => {
                     this.documentId = res.get("id")
                     this.documentType = res.get('docType')
-                    this.loadCocDetails()
+                    if (this.documentType) {
+                        switch (this.documentType.toUpperCase()) {
+                            case 'COC':
+                                this.documentTypeDesc = 'Certificate of Compliance'
+                                break
+                            case 'COI':
+                                this.documentTypeDesc = 'Certificate of Inspection'
+                                break
+                            case 'NCR':
+                                this.documentTypeDesc = 'Certificate of Non-Compliance'
+                                break
+                        }
+                        this.loadCocDetails()
+                    }
                 }
             )
     }

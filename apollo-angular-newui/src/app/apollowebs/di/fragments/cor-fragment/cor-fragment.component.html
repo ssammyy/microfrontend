@@ -219,7 +219,19 @@
                     </li>
                 </ul>
             </mat-tab>
-            <mat-tab tabindex="4" [disabled]="!corDetails.pvoc_client">
+            <mat-tab tabindex="4">
+                <ng-template mat-tab-label>Queries</ng-template>
+                <b class="text-primary">PVOC Queries for document</b>
+                <div class="row" *ngIf="corDetails.queries else noQueries">
+                    <app-pvoc-query-card class="col-md-12" *ngFor="let q of corDetails.queries"
+                                         [queryDetails]="q"></app-pvoc-query-card>
+                </div>
+                <ng-template #noQueries>
+                    <p>No Queries have been raised on this document. Use the <b>PVOC Query</b> button to raise a query
+                    </p>
+                </ng-template>
+            </mat-tab>
+            <mat-tab tabindex="5" [disabled]="!corDetails.pvoc_client">
                 <ng-template mat-tab-label>
                     Partner Details
                 </ng-template>
@@ -268,7 +280,7 @@
     </div>
     <div class="col-md-2 pl-0 pr-0">
         <h5>Action:</h5>
-        <button *ngIf="corDetails.cor_details.documentsType==='F'"
+        <button *ngIf="corDetails.cor_details.documentsType==='F' && isPvocOfficer"
                 class="btn btn-sm btn-primary" (click)="createQuery()">Query PVOC
         </button>
         <h5>Documents:</h5>

@@ -28,6 +28,7 @@ class PvocMonitoringService(
         private val cocItemRepository: ICocItemRepository,
         private val corBakRepository: ICorsBakRepository,
         private val cocCoiRepository: ICocsRepository,
+        private val pvocQuerriesRepository: IPvocQuerriesRepository,
         private val partnerService: PvocPartnerService,
 ) {
     fun findMonitoringRecord(yearMonth: String, agent: PvocPartnersEntity): PvocAgentMonitoringStatusEntity {
@@ -169,6 +170,11 @@ class PvocMonitoringService(
                     this.partnerService.getPartner(partnerId)?.let { part -> PvocPartnerDto.fromEntity(part) }
                 }
                 dataMap["items"] = cocItemRepository.findByCocId(foreignId)
+                dataMap["queries"] = pvocQuerriesRepository.findAllByCertNumber(when (data.get().cocType) {
+                    "COC" -> data.get().cocNumber.orEmpty()
+                    "COI" -> data.get().coiNumber.orEmpty()
+                    else -> data.get().cocNumber.orEmpty()
+                })
                 response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -212,6 +218,7 @@ class PvocMonitoringService(
                 dataMap["pvoc_client"] = data.get().partner?.let { partnerId ->
                     this.partnerService.getPartner(partnerId)?.let { part -> PvocPartnerDto.fromEntity(part) }
                 }
+                dataMap["queries"] = pvocQuerriesRepository.findAllByCertNumber(data.get().corNumber.orEmpty())
                 response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE

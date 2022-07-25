@@ -236,4 +236,8 @@ export class PVOCService {
     loadCocDetails(documentId: any): Observable<any> {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/cocorcoi/" + documentId))
     }
+
+    sendPvocQuery(data: any): Observable<any> {
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/kebs/query/request"), data)
+    }
 }
