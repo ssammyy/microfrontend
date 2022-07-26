@@ -285,6 +285,12 @@
                                 </mat-tab-group>
                             </div>
                             <div class="col-md-2 p-0">
+                                <b>STATUS:</b>
+                                <br/>
+                                <div>
+                                    <b class="text-secondary">{{complaintInspection?.complaintsDetails?.status}}</b>
+                                </div>
+                                <br/>
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
@@ -327,7 +333,8 @@
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
-                                        <button  (click)="openModalAddDetails('startMSProcess')" mat-raised-button="" data-toggle="modal"
+                                        <button  *ngIf="complaintInspection?.complaintProcessStatus == false"
+                                                (click)="openModalAddDetails('startMSProcess')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#workPlanModal"
                                                 class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">START MS-PROCESS</span>
@@ -340,7 +347,11 @@
 
                                 <br/>
                                 <b>Document Details:</b>
-
+                                <div *ngIf="complaintInspection?.complaintProcessStatus == true">
+                                    <i
+                                       (click)="viewWorkPlanCreated()"
+                                       class="btn btn-sm btn-primary">VIEW MS PROCESS</i>
+                                </div>
                             </div>
                         </div>
                     </div>

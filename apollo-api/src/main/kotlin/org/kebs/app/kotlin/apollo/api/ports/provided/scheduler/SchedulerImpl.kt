@@ -421,6 +421,8 @@ class SchedulerImpl(
                                     .let {  fuelInspection->
                                         var sr = commonDaoServices.createServiceRequest(map)
                                         with(fuelInspection){
+                                            timelineStartDate = commonDaoServices.getCurrentDate()
+                                            timelineEndDate = applicationMapProperties.mapMSLabResultsAvailabe.let { marketSurveillanceDaoServices.findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                                             msProcessId = applicationMapProperties.mapMSLabResultsAvailabe
                                             userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER
                                             lastModifiedBy = "SYSTEM SCHEDULER"

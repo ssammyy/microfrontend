@@ -617,9 +617,19 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     /*******************************************************************START OF MARKET SURVEILLANCE*****************************************************************************/
 
-    public loadMSWorkPlanBatchList(page: string, records: string): Observable<WorkPlanBatchDetailsDto[]> {
-        // console.log(data);
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ALL_BATCH_LIST);
+    public loadMSWorkPlanBatchList(page: string, records: string, routeTake: string): Observable<WorkPlanBatchDetailsDto[]> {
+        let url = null;
+        switch (routeTake) {
+            case 'all-workPlan-batch':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ALL_BATCH_LIST);
+                break;
+            case 'open-workPlan-batch':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.OPEN_BATCH_LIST);
+                break;
+            case 'close-workPlan-batch':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.CLOSE_BATCH_LIST);
+                break;
+        }
         const params = new HttpParams()
             .set('page', page)
             .set('records', records);
@@ -661,7 +671,10 @@ export class MsService {
             case 'on-going':
                 url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ONGOING_WORK_PLAN_LIST);
                 break;
-            case 'new-complaint':
+            case 'all-list':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ALL_WORK_PLAN_LIST);
+                break;
+            case 'new-workPlan':
                 url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.NEW_WORK_PLAN_LIST);
                 break;
             case 'completed':
@@ -1385,7 +1398,7 @@ export class MsService {
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.CREATE_NEW_WORK_PLAN_SCHEDULE);
         const params = new HttpParams()
-            .set('batchReferenceNo', referenceNo);
+            .set('referenceNo', referenceNo);
         return this.http.post<WorkPlanScheduleListDetailsDto>(url, data, {params}).pipe(
             map(function (response: WorkPlanScheduleListDetailsDto) {
                 return response;

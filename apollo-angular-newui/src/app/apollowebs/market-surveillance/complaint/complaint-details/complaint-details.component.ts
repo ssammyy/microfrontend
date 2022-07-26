@@ -31,7 +31,7 @@ import {
   SampleCollectionItemsDto,
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
-  SSFSaveComplianceStatusDto, WorkPlanEntityDto,
+  SSFSaveComplianceStatusDto, WorkPlanEntityDto, WorkPlanListDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
@@ -813,15 +813,21 @@ export class ComplaintDetailsComponent implements OnInit {
             this.classificationForm.reset();
             this.SpinnerService.hide();
             this.msService.showSuccess('MS-PROCESS DETAILS, SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            this.addNewScheduleForm.reset();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
+          }
+          // ,
+          // error => {
+          //   this.SpinnerService.hide();
+          //   this.addNewScheduleForm.reset();
+          //   console.log(error);
+          //   this.msService.showError('AN ERROR OCCURRED');
+          // },
       );
 
     }
   }
+
+  viewWorkPlanCreated() {
+    this.router.navigate([`/workPlan/details/`, this.complaintInspection.workPlanRefNumber, this.complaintInspection.workPlanBatchRefNumber]);
+  }
+
 }

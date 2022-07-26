@@ -55,6 +55,8 @@ data class FuelInspectionScheduleListDetailsDto(
 
 data class FuelInspectionDto(
         var id: Long? = null,
+        var timelineStartDate: Date? = null,
+        var timelineEndDate: Date? = null,
         var referenceNumber: String? = null,
         var company: String? = null,
         var companyKraPin: String? = null,
@@ -92,6 +94,8 @@ data class WorkPlanInspectionDto(
         var standardCategory: String? = null,
         var productSubCategory: String? = null,
         var divisionId: String? = null,
+        var timelineStartDate: Date? = null,
+        var timelineEndDate: Date? = null,
 //        var sampleSubmittedId: Long? = null,
         var division: String? = null,
         var officerName: String? = null,
@@ -726,6 +730,7 @@ data class MSRemarksDto(
         var processName: String? = null
 )
 
+
 data class AllComplaintsDetailsDto(
         var complaintsDetails: ComplaintsDetailsDto? = null,
         var acceptanceDone : Boolean,
@@ -739,6 +744,8 @@ data class AllComplaintsDetailsDto(
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
         var complaintProcessStatus: Boolean,
+        var workPlanRefNumber: String?= null,
+        var workPlanBatchRefNumber: String?= null
 )
 
 data class ComplaintsDetailsDto(
@@ -763,15 +770,15 @@ data class ComplaintsDetailsDto(
         var buildingName: String? = null,
         var date: Date? = null,
         var status: String? = null,
-//        var officersList: List<MsUsersDto>? = null,
-//        var divisionList: List<MsDivisionDto>? = null,
-//        var msProcessStatus: Boolean? = null,
         var approvedStatus: Boolean? = null,
         var assignedIOStatus: Boolean? = null,
         var rejectedStatus: Boolean? = null,
         var classificationDetailsStatus: Boolean? = null,
         var complaintFiles: List<ComplaintsFilesFoundDto>? = null,
-        var ksApplicable: StandardDetailsDto? = null
+        var ksApplicable: StandardDetailsDto? = null,
+        var timelineStartDate: Date? = null,
+        var timelineEndDate: Date? = null
+
 
 )
 

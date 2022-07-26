@@ -122,6 +122,8 @@ export class AllComplaintsDetailsDto {
     sampleSubmitted: SampleSubmissionDto;
     sampleLabResults: MSSSFLabResultsDto;
     complaintProcessStatus: boolean;
+    workPlanRefNumber: string;
+    workPlanBatchRefNumber: string;
 }
 
 export class MSRemarksDto {
@@ -234,6 +236,8 @@ export class ComplaintDetailsDto {
     classificationDetailsStatus: boolean;
     complaintFiles: ComplaintsFilesFoundDto[];
     ksApplicable: StandardDetailsDto;
+    timelineStartDate: Date;
+    timelineEndDate: Date;
 }
 
 
@@ -407,6 +411,8 @@ export class WorkPlanInspectionDto {
     standardCategory: string;
     productSubCategory: string;
     divisionId: string;
+    timelineStartDate: Date;
+    timelineEndDate: Date;
     sampleSubmittedId: number;
     division: string;
     officerName: string;
@@ -720,6 +726,8 @@ export class FuelInspectionScheduleListDetailsDto {
 
 export class FuelInspectionDto {
     id: number;
+    timelineStartDate: Date;
+    timelineEndDate: Date;
     referenceNumber: string;
     company: string;
     petroleumProduct: string;

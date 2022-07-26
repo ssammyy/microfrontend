@@ -1119,7 +1119,7 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport" label="18">
+                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport && workPlanInspection?.finalReportGenerated" label="18">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             FINAL REPORT
@@ -1252,7 +1252,163 @@
                                             </div>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.remarksDetails?.length!=0" label="19">
+                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport && workPlanInspection?.finalReportGenerated == false && workPlanInspection?.officerDetails?.id == userLoggedInID" label="19">
+                                        <!--                                    <mat-tab  label="6">-->
+                                        <ng-template mat-tab-label>
+                                            FINAL REPORT
+                                        </ng-template>
+                                        <!--                                        <b class="text-primary">Lab Results Details</b>-->
+                                        <label style="color: #0082f3">Final Report Details</label>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <br>
+                                            <div >
+                                                <div class="col-md-12 mb-3">
+                                                    <b class="text-secondary">CONCLUSIONS DETAILS</b>
+                                                    <p class="list-paragraph-accordion"><span>
+                                                        {{workPlanInspection?.preliminaryReport?.surveillanceConclusions}}</span></p>
+                                                    <br/>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="col-md-12 mb-3">
+                                                    <b class="text-secondary">RECOMMENDATIONS DETAILS</b>
+                                                    <p class="list-paragraph-accordion"><span>
+                                                        {{workPlanInspection?.preliminaryReport?.surveillanceRecommendation}}</span></p>
+                                                    <br/>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="workPlanInspection?.hodRecommendationStatus">
+                                                <div class="col-md-12 mb-3">
+                                                    <b class="text-secondary">FINAL RECOMMENDATIONS DETAILS BY HOD/RM</b>
+                                                    <p class="list-paragraph-accordion"><span>
+                                                        {{workPlanInspection?.hodRecommendationRemarks}}</span></p>
+                                                    <br/>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="col-md-12 mb-3">
+                                                    <label style="color: #0082f3">Preliminary Report Details</label>
+                                                    <ul class="w-list-unstyled">
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">TO</div>
+                                                            <div class="list-text-accordion">
+                                                                {{workPlanInspection?.preliminaryReport?.reportTo}}</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">FROM</div>
+                                                            <div class="list-text-accordion">
+                                                                {{workPlanInspection?.preliminaryReport?.reportFrom}}</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">SUBJECT</div>
+                                                            <div class="list-text-accordion">
+                                                                {{workPlanInspection?.preliminaryReport?.reportSubject}}</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">TITLE</div>
+                                                            <div class="list-text-accordion">
+                                                                {{workPlanInspection?.preliminaryReport?.reportTitle}}</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">DATE</div>
+                                                            <div class="list-text-accordion">
+                                                                {{workPlanInspection?.preliminaryReport?.reportDate}}</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">SURVEILLANCE DATE FROM</div>
+                                                            <div class="list-text-accordion">
+                                                                {{workPlanInspection?.preliminaryReport?.surveillanceDateFrom}}</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">SURVEILLANCE DATE TO</div>
+                                                            <div class="list-text-accordion">
+                                                                {{workPlanInspection?.preliminaryReport?.surveillanceDateTo}}</div>
+                                                        </li>
+                                                        <br/>
+                                                        <b class="text-secondary">BACKGROUND DETAILS</b>
+                                                        <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.preliminaryReport?.reportBackground}}</span></p>
+                                                        <br/>
+                                                        <b class="text-secondary">OBJECTIVES DETAILS</b>
+                                                        <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.preliminaryReport?.surveillanceObjective}}</span></p>
+                                                        <br/>
+                                                    </ul>
+                                                    <br>
+                                                    <label style="color: #0082f3">Officers Details</label>
+                                                    <div class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsPreliminaryReportOfficers" [source]="workPlanInspection?.preliminaryReport?.kebsOfficersName"></ng2-smart-table>
+                                                    </div>
+                                                    <br>
+                                                    <label style="color: #0082f3">Outlets visited Details</label>
+                                                    <div class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsPreliminaryReportOutlets"
+                                                                         [source]="workPlanInspection?.preliminaryReport?.parametersList"
+                                                        ></ng2-smart-table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="col-md-12 mb-3">
+                                                    <label style="color: #0082f3">Lab Results Details</label>
+                                                    <ul class="w-list-unstyled">
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">BS Number</div>
+                                                            <div class="list-text-accordion">
+                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Compliance Status</div>
+                                                            <div class="list-text-accordion">
+                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
+                                                        </li>
+                                                        <br/>
+                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>
+                                                        <p class="list-paragraph-accordion"><span>
+                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>
+                                                        <br/>
+                                                    </ul>
+                                                    <br>
+                                                    <label style="color: #0082f3">Lab Results Param</label>
+                                                    <div class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsLabResultsParam" [source]="workPlanInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>
+                                                    </div>
+                                                    <br>
+                                                    <label style="color: #0082f3">Lab Results PDF</label>
+                                                    <div class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsSavedPDFFiles"
+                                                                         [source]="workPlanInspection?.sampleLabResults?.savedPDFFiles"
+                                                                         (custom)="onCustomLIMSPDFViewAction($event)"
+                                                        ></ng2-smart-table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.clientAppealed" label="20">
+                                        <!--                                    <mat-tab  label="6">-->
+                                        <ng-template mat-tab-label>
+                                            APPEALED STATUS
+                                        </ng-template>
+                                        <!--                                        <b class="text-primary">Lab Results Details</b>-->
+                                        <label style="color: #0082f3">Appealed Status</label>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <br>
+                                            <ul class="w-list-unstyled">
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">APPEALED STATUS</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.clientAppealed}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">APPEALED SUCCESSFUL</div>
+                                                    <div class="list-text-accordion">
+                                                        {{workPlanInspection?.appealStatus}}</div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.remarksDetails?.length!=0" label="21">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             REMARKS
@@ -1285,11 +1441,29 @@
                                             <br>
                                         </div>
                                     </mat-tab>
+
                                 </mat-tab-group>
                             </div>
                             <div class="col-md-2 p-0">
                                 <b>STATUS:</b>
                                 <br/>
+                                <div>
+                                    <b class="text-secondary">{{workPlanInspection?.progressStep}}</b>
+                                </div>
+                                <br/>
+                                <b>TIMELINES:</b>
+                                <br/>
+                                <ul class="w-list-unstyled">
+
+                                        <div class="list-title-accordion">Started TimeLine</div>
+                                        <div class="list-text-accordion">{{workPlanInspection?.timelineStartDate| date}}
+                                        </div>
+
+                                        <div class="list-title-accordion">Targeted TimeLine</div>
+                                        <div class="list-text-accordion">{{workPlanInspection?.timelineEndDate| date}}
+                                        </div>
+
+                                </ul>
                                 <div>
                                     <b class="text-secondary">{{workPlanInspection?.progressStep}}</b>
                                 </div>
@@ -1507,7 +1681,7 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
                                                     workPlanInspection?.msPreliminaryReportStatus == false"
                                                      (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#preliminaryReportModal"

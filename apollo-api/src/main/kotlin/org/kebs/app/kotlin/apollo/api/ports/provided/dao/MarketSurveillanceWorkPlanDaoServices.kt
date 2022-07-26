@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsControlle
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.MarketSurveillanceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -132,6 +133,68 @@ class MarketSurveillanceWorkPlanDaoServices(
         return mapWorkPlanBatchListDto(myWorkPlanCreated)
     }
 
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllWorkPlanBatchListClosed(page: PageRequest): List<WorkPlanBatchDetailsDto> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val regionID = commonDaoServices.findUserProfileByUserID(loggedInUser, map.activeStatus).regionId?.id ?: throw ExpectedDataNotFound("Logged IN User Is Missing Region ID")
+
+        val myWorkPlanCreated: Page<WorkPlanCreatedEntity>?
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedIdAndBatchClosed(loggedInUser,map.activeStatus,page)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ" } -> {
+                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.activeStatus,page)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
+                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.activeStatus,page)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_RM_READ" } -> {
+                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.activeStatus,page)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                myWorkPlanCreated = workPlanCreatedRepository.findAllByBatchClosed(map.activeStatus,page)
+            }
+
+            else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+        }
+        return mapWorkPlanBatchListDto(myWorkPlanCreated)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllWorkPlanBatchListOpen(page: PageRequest): List<WorkPlanBatchDetailsDto> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val regionID = commonDaoServices.findUserProfileByUserID(loggedInUser, map.activeStatus).regionId?.id ?: throw ExpectedDataNotFound("Logged IN User Is Missing Region ID")
+
+        val myWorkPlanCreated: Page<WorkPlanCreatedEntity>?
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedIdAndBatchClosed(loggedInUser,map.inactiveStatus,page)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ" } -> {
+                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.inactiveStatus,page)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
+                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.inactiveStatus,page)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_RM_READ" } -> {
+                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.inactiveStatus,page)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                myWorkPlanCreated = workPlanCreatedRepository.findAllByBatchClosed(map.inactiveStatus,page)
+            }
+
+            else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+        }
+        return mapWorkPlanBatchListDto(myWorkPlanCreated)
+    }
+
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun createNewWorkPlanBatch(page: PageRequest): List<WorkPlanBatchDetailsDto> {
@@ -183,6 +246,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 val fileInspectionList = findALlWorkPlanDetailsAssociatedWithWorkPlanID(batchDetail.id,page).toList()
                 fileInspectionList.forEach { it ->
                     with(it) {
+                        timelineStartDate = commonDaoServices.getCurrentDate()
+                        timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionSubmission.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                         msProcessId = applicationMapProperties.mapMSWorkPlanInspectionSubmission
                         userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                     }
@@ -245,7 +310,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val auth = commonDaoServices.loggedInUserAuthentication()
         val loggedInUserProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
         val map = commonDaoServices.serviceMapDetails(appId)
-        var createdWorkPlan: WorkPlanCreatedEntity?
+        val createdWorkPlan: WorkPlanCreatedEntity?
         var workPlanList: List<MsWorkPlanGeneratedEntity>?
         when {
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
@@ -271,6 +336,97 @@ class MarketSurveillanceWorkPlanDaoServices(
         return mapWorkPlanInspectionListDto(workPlanList,mapWorkPlanBatchDetailsDto(createdWorkPlan, map))
     }
 
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllWorPlanInspectionAllCompletedLists(batchReferenceNo: String,page: PageRequest): WorkPlanScheduleListDetailsDto {
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val userProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
+        val createdWorkPlan: WorkPlanCreatedEntity?
+        val workPlanList: List<MsWorkPlanGeneratedEntity>?
+        when {
+            auth.authorities.stream().anyMatch { authority ->
+                authority.authority == "MS_IO_READ"
+                        || authority.authority == "MS_HOD_READ"
+                        || authority.authority == "MS_HOF_READ"
+                        || authority.authority == "MS_DIRECTOR_READ"
+                        || authority.authority == "MS_RM_READ" } -> {
+                createdWorkPlan = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+                workPlanList = generateWorkPlanRepo.findByWorkPlanYearIdAndMsProcessEndedStatus(createdWorkPlan.id,map.activeStatus,page)?.toList()
+            }
+            else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+        }
+
+        return mapWorkPlanInspectionListDto(workPlanList,mapWorkPlanBatchDetailsDto(createdWorkPlan, map))
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllWorPlanInspectionAllNotCompletedLists(batchReferenceNo: String,page: PageRequest): WorkPlanScheduleListDetailsDto {
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val userProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
+        val createdWorkPlan: WorkPlanCreatedEntity?
+        val workPlanList: List<MsWorkPlanGeneratedEntity>?
+        when {
+            auth.authorities.stream().anyMatch { authority ->
+                authority.authority == "MS_IO_READ"
+                        || authority.authority == "MS_HOD_READ"
+                        || authority.authority == "MS_HOF_READ"
+                        || authority.authority == "MS_DIRECTOR_READ"
+                        || authority.authority == "MS_RM_READ" } -> {
+                createdWorkPlan = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+                workPlanList = generateWorkPlanRepo.findByWorkPlanYearIdAndMsProcessEndedStatus(createdWorkPlan.id,map.inactiveStatus,page)?.toList()
+            }
+            else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+        }
+
+        return mapWorkPlanInspectionListDto(workPlanList,mapWorkPlanBatchDetailsDto(createdWorkPlan, map))
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllWorPlanInspectionListMyTask(batchReferenceNo: String,page: PageRequest): WorkPlanScheduleListDetailsDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val loggedInUserProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val createdWorkPlan: WorkPlanCreatedEntity?
+        var workPlanList: List<MsWorkPlanGeneratedEntity>?
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                createdWorkPlan = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+                workPlanList = generateWorkPlanRepo.findByWorkPlanYearIdAndOfficerIdAndUserTaskId(createdWorkPlan.id,loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),
+                    applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO,page)?.toList()
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
+                createdWorkPlan = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+                workPlanList = generateWorkPlanRepo.findByWorkPlanYearIdAndHofAssignedAndUserTaskId(createdWorkPlan.id,loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),
+                    applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof,page)?.toList()
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ"
+                    || authority.authority == "MS_RM_READ"
+            } -> {
+                createdWorkPlan = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+                workPlanList = generateWorkPlanRepo.findByWorkPlanYearIdAndHodRmAssignedAndUserTaskId(createdWorkPlan.id,loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),
+                    applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm,page)?.toList()
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                createdWorkPlan = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+                workPlanList = generateWorkPlanRepo.findByWorkPlanYearIdAndUserTaskId(createdWorkPlan.id,
+                    applicationMapProperties.mapMSCPWorkPlanUserTaskNameDirector,page)?.toList()
+            }
+            else -> {
+                throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+            }
+        }
+
+        return mapWorkPlanInspectionListDto(workPlanList,mapWorkPlanBatchDetailsDto(createdWorkPlan, map))
+    }
+
+
 
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -290,6 +446,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     map.activeStatus -> {
                         with(workPlanScheduled){
                             hodRmAssigned = loggedInUser.id
+                            timelineStartDate = commonDaoServices.getCurrentDate()
+                            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionApproveWorkPlan.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApproveWorkPlan
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                             approved = "APPROVED"
@@ -540,20 +698,23 @@ class MarketSurveillanceWorkPlanDaoServices(
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
 
-        if (body.approvalStatus) {
+        when {
+            body.approvalStatus -> {
                 with(workPlanScheduled){
                     clientAppealed = map.activeStatus
                     msProcessId = applicationMapProperties.mapMSWorkPlanInspectionClientAppealedAwaitSuccessfull
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                 }
-        }
-        else {
+            }
+            else -> {
                 with(workPlanScheduled){
                     clientAppealed = map.inactiveStatus
                     msProcessId = applicationMapProperties.mapMSWorkPlanInspectionPendingDestractionGoodReport
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                 }
+            }
         }
+
         val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
         workPlanScheduled = fileSaved.second
         val remarksDto = RemarksToAddDto()
@@ -735,6 +896,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 else -> {
                     when {
                         fetchedPreliminary.approvedStatus== map.activeStatus -> {
+                            timelineStartDate = commonDaoServices.getCurrentDate()
+                            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionApprovePreliminaryReportHOF.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApprovePreliminaryReportHOF
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                         }
@@ -1385,6 +1548,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 when (workPlanScheduled.onsiteEndStatus) {
                     map.activeStatus -> {
                         with(workPlanScheduled) {
+                            timelineStartDate = commonDaoServices.getCurrentDate()
+                            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionGeneratePreliminaryReport.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGeneratePreliminaryReport
                             msPreliminaryReportStatus = map.activeStatus
@@ -1462,6 +1627,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 when (savedBsNumber.first.status) {
                     map.successStatus -> {
                         with(workPlanScheduled){
+                            timelineStartDate = commonDaoServices.getCurrentDate()
+                            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionAddBsNumber.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionAddBsNumber
                             userTaskId = applicationMapProperties.mapMSUserTaskNameLAB
                             bsNumberStatus = 1
@@ -1557,8 +1724,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                 with(workPlanScheduled){
                     when {
                         body.complianceStatus -> {
-                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionAnalysesLabResults
-                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                             compliantStatus = 1
                             notCompliantStatus =  0
                             compliantStatusDate = commonDaoServices.getCurrentDate()
@@ -1566,8 +1731,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                             compliantStatusRemarks = body.complianceRemarks
                         }
                         else -> {
-                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionAnalysesLabResults
-                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                             notCompliantStatus =  0
                             compliantStatus = 0
                             notCompliantStatusDate = commonDaoServices.getCurrentDate()
@@ -1577,6 +1740,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     }
                 }
                 with(workPlanScheduled){
+                    timelineStartDate = commonDaoServices.getCurrentDate()
+                    timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionAnalysesLabResults.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                     msProcessId = applicationMapProperties.mapMSWorkPlanInspectionAnalysesLabResults
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                 }
@@ -1648,6 +1813,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             onsiteStartStatus = map.activeStatus
             onsiteEndStatus = map.inactiveStatus
             onsiteStartDate = commonDaoServices.getCurrentDate()
+            timelineStartDate = commonDaoServices.getCurrentDate()
+            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionStartMsOnSite.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionStartMsOnSite
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
         }
@@ -1668,6 +1835,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             onsiteEndStatus = map.activeStatus
             onsiteEndDate = commonDaoServices.getCurrentDate()
             sendSffDate = commonDaoServices.getCurrentDate()
+            timelineStartDate = commonDaoServices.getCurrentDate()
+            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionEndMsOnSite.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionEndMsOnSite
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
         }
@@ -2383,6 +2552,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             productSubCategory = body.productSubCategory
             resourcesRequired = body.resourcesRequired
             budget = body.budget
+            msProcessEndedStatus = map.inactiveStatus
             uuid = commonDaoServices.generateUUIDString()
             msTypeId = msType.id
             progressStep = "WorkPlan Generated"
@@ -2776,6 +2946,14 @@ class MarketSurveillanceWorkPlanDaoServices(
             ?: throw ExpectedDataNotFound("Created Work Plan with the following Reference Number = ${referenceNumber}, does not Exist")
     }
 
+    fun findWorkPlanScheduleByComplaintID(complaintID: Long): MsWorkPlanGeneratedEntity? {
+        return generateWorkPlanRepo.findByComplaintId(complaintID)
+    }
+
+    fun findWorkPlanBatchByWorkPlanScheduleID(workPlanScheduleID: Long): WorkPlanCreatedEntity? {
+        return workPlanCreatedRepository.findByIdOrNull(workPlanScheduleID)
+    }
+
     fun findCreatedWorkPlanWIthRefNumberAndRegion(referenceNumber: String, regionID: Long): WorkPlanCreatedEntity {
         workPlanCreatedRepository.findByReferenceNumberAndWorkPlanRegion(referenceNumber, regionID)
             ?.let { createdWorkPlan ->
@@ -2930,6 +3108,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.standardCategory?.let { commonDaoServices.findStandardCategoryByID(it).standardCategory },
             wKP.productSubCategory?.let { commonDaoServices.findProductSubCategoryByID(it).name },
             wKP.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
+            wKP.timelineStartDate,
+                    wKP.timelineEndDate,
 //            wKP.sampleSubmittedId?.id,
             wKP.division,
             wKP.officerName,

@@ -29,8 +29,8 @@ export class WorkPlanBatchListComponent implements OnInit {
 
   roles: string[];
 
-  activeStatus = 'my-tasks';
-  previousStatus = 'my-tasks';
+  activeStatus = 'all-workPlan-batch';
+  previousStatus = 'all-workPlan-batch';
   searchStatus: any;
   personalTasks = 'false';
   defaultPageSize = 20;
@@ -132,12 +132,12 @@ export class WorkPlanBatchListComponent implements OnInit {
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       return this.roles = u.roles;
     });
-    this.loadData(this.defaultPage, this.defaultPageSize);
+    this.loadData(this.defaultPage, this.defaultPageSize, this.activeStatus);
   }
 
-  private loadData(page: number, records: number): any {
+  private loadData(page: number, records: number, routeTake: string): any {
     this.SpinnerService.show();
-    this.msService.loadMSWorkPlanBatchList(String(page), String(records)).subscribe(
+    this.msService.loadMSWorkPlanBatchList(String(page), String(records), routeTake).subscribe(
         (data) => {
           console.log(`TEST DATA===${data}`);
           this.loadedData = data;
@@ -185,14 +185,14 @@ export class WorkPlanBatchListComponent implements OnInit {
     this.searchStatus = null;
     if (status !== this.activeStatus) {
       this.activeStatus = status;
-      this.loadData(this.defaultPage, this.defaultPageSize);
+      this.loadData(this.defaultPage, this.defaultPageSize, this.activeStatus);
     }
   }
 
   onManagerPetroleumChange(event: any) {
     if (this.managerPetroleumUser) {
       this.personalTasks = event.target.value;
-      this.loadData(this.defaultPage, this.defaultPageSize);
+      this.loadData(this.defaultPage, this.defaultPageSize, this.activeStatus);
     }
   }
 
@@ -213,7 +213,7 @@ export class WorkPlanBatchListComponent implements OnInit {
     if (pageIndex) {
       this.currentPageInternal = pageIndex - 1;
       this.currentPage = pageIndex;
-      this.loadData(this.currentPageInternal, this.defaultPageSize);
+      this.loadData(this.currentPageInternal, this.defaultPageSize, this.activeStatus);
     }
   }
 

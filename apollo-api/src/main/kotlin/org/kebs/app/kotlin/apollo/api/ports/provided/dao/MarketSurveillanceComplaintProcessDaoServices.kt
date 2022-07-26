@@ -64,8 +64,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val invoiceDaoService: InvoiceDaoService,
     private val reportsDaoService: ReportsDaoService,
     private val serviceRequestsRepo: IServiceRequestsRepository,
-    private val commonDaoServices: CommonDaoServices,
-    private val msWorkPlanDaoServices: MarketSurveillanceWorkPlanDaoServices
+    private val commonDaoServices: CommonDaoServices
 ) {
     final var complaintSteps: Int = 6
     private final val activeStatus: Int = 1
@@ -75,6 +74,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
     @Lazy
     @Autowired
     lateinit var reportsControllers: ReportsController
+
+    @Lazy
+    @Autowired
+    lateinit var msWorkPlanDaoServices: MarketSurveillanceWorkPlanDaoServices
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -397,6 +400,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                         when (fileSaved.first.status) {
                             map.successStatus -> {
                                 with(complaintFound) {
+                                    msProcessId = applicationMapProperties.msComplaintProcessStarted
+                                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                                     msProcessStatus = map.activeStatus
                                 }
                                 val complaintUpdated = updateComplaintDetailsInDB(complaintFound, map, loggedInUser).second
@@ -555,6 +560,13 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
         val hofDetailsFound =commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned HOF ID"))
         with(complaintFound) {
+            timelineStartDate = commonDaoServices.getCurrentDate()
+            timelineEndDate =
+                applicationMapProperties.msComplaintProcessAssignHOF?.let {
+                    findMsProcessComplaintByID(1, it)?.timelinesDay?.let {
+                        commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it)
+                    }
+                }
             msProcessId = applicationMapProperties.msComplaintProcessAssignHOF
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
             hofAssigned = hofDetailsFound.id
@@ -614,6 +626,12 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val complaintFound = findComplaintByRefNumber(referenceNo)
 
         with(complaintFound) {
+            timelineStartDate = commonDaoServices.getCurrentDate()
+            timelineEndDate = applicationMapProperties.msComplaintProcessAssignOfficer?.let {
+                    findMsProcessComplaintByID(1, it)?.timelinesDay?.let {
+                        commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it)
+                    }
+                }
             msProcessId = applicationMapProperties.msComplaintProcessAssignOfficer
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
             assignedRemarks = body.assignedRemarks
@@ -893,6 +911,13 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 submissionDate = commonDaoServices.getTimestamp()
                 serviceMapsId = map.id
                 msProcessStatus = map.inactiveStatus
+                timelineStartDate = commonDaoServices.getCurrentDate()
+                timelineEndDate =
+                    applicationMapProperties.msComplaintProcessOnlineSubmitted?.let {
+                        findMsProcessComplaintByID(1, it)?.timelinesDay?.let {
+                            commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it)
+                        }
+                    }
                 msProcessId = applicationMapProperties.msComplaintProcessOnlineSubmitted
                 userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                 progressValue = progressSteps(complaintSteps).getInt("step-1")
@@ -1192,6 +1217,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         sampleSubmitted: SampleSubmissionDto?,
         sampleLabResults: MSSSFLabResultsDto?,
     ): AllComplaintsDetailsDto {
+        val workPlanSchedule = complaintsDetails.id?.let { msWorkPlanDaoServices.findWorkPlanScheduleByComplaintID(it) }
         return AllComplaintsDetailsDto(
             complaintsDetails,
             acceptanceDone,
@@ -1204,7 +1230,9 @@ class MarketSurveillanceComplaintProcessDaoServices(
             sampleCollected,
             sampleSubmitted,
             sampleLabResults,
-            msProcessStatus
+            msProcessStatus,
+            workPlanSchedule?.referenceNumber,
+            workPlanSchedule?.workPlanYearId?.let { msWorkPlanDaoServices.findWorkPlanBatchByWorkPlanScheduleID(it)?.referenceNumber }
         )
     }
 
@@ -1300,7 +1328,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             comp.classificationDetailsStatus == 1,
             complaintFilesSaved?.let { mapFileListDto(it) },
             comp.productSubCategory?.let { commonDaoServices.findSampleStandardsByID(it) }?.let { mapStandardDetailsDto(it) },
-//                    comp.msProcessStatus == 1,
+            comp.timelineStartDate,
+            comp.timelineEndDate
         )
 
     }
@@ -1357,6 +1386,14 @@ class MarketSurveillanceComplaintProcessDaoServices(
     }
 
     fun findComplaintCustomerByComplaintID(complaintID: Long): ComplaintCustomersEntity {
+        complaintCustomersRepo.findByComplaintId(complaintID)
+            ?.let { complaintCustomer ->
+                return complaintCustomer
+            }
+            ?: throw ExpectedDataNotFound("Complaint Customer with Complaint [ID = ${complaintID}], does not Exist")
+    }
+
+    fun findWorkPlanScheduleByComplaintID(complaintID: Long): ComplaintCustomersEntity {
         complaintCustomersRepo.findByComplaintId(complaintID)
             ?.let { complaintCustomer ->
                 return complaintCustomer

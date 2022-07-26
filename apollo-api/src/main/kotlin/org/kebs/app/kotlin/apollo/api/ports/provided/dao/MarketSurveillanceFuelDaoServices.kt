@@ -131,6 +131,8 @@ class MarketSurveillanceFuelDaoServices(
             val fileInspectionList = findAllFuelInspectionListBasedOnBatchID(batchDetail.id)
             fileInspectionList.forEach { it ->
                 with(it) {
+                    timelineStartDate = commonDaoServices.getCurrentDate()
+                    timelineEndDate = applicationMapProperties.mapMSAssignOfficer.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                     msProcessId = applicationMapProperties.mapMSAssignOfficer
                     userTaskId = applicationMapProperties.mapMSUserTaskNameMANAGERPETROLEUM
                 }
@@ -441,6 +443,8 @@ class MarketSurveillanceFuelDaoServices(
                             addSampleCollectParamAdd(param,savedSampleCollection.second,map,loggedInUser)
                         }
                         with(fileInspectionDetail){
+                            timelineStartDate = commonDaoServices.getCurrentDate()
+                            timelineEndDate = applicationMapProperties.mapMSSampleSubmision.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                             msProcessId = applicationMapProperties.mapMSSampleSubmision
                             sampleCollectionStatus = map.activeStatus
                         }
@@ -475,6 +479,8 @@ class MarketSurveillanceFuelDaoServices(
                             addSampleSubmissionParamAdd(param,savedSampleSubmission.second,map,loggedInUser)
                         }
                         with(fileInspectionDetail){
+                            timelineStartDate = commonDaoServices.getCurrentDate()
+                            timelineEndDate = applicationMapProperties.mapMSBsNumber.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                             msProcessId = applicationMapProperties.mapMSBsNumber
                             sampleSubmittedStatus = map.activeStatus
                         }
@@ -523,6 +529,8 @@ class MarketSurveillanceFuelDaoServices(
                 when (savedBsNumber.first.status) {
                     map.successStatus -> {
                         with(fileInspectionDetail){
+                            timelineStartDate = commonDaoServices.getCurrentDate()
+                            timelineEndDate = applicationMapProperties.mapMSPendingLabResults.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                             msProcessId = applicationMapProperties.mapMSPendingLabResults
                             userTaskId = applicationMapProperties.mapMSUserTaskNameLAB
                             bsNumberStatus = 1
@@ -613,6 +621,8 @@ class MarketSurveillanceFuelDaoServices(
             with(fileInspectionDetail){
                 when {
                     body.complianceStatus -> {
+                        timelineStartDate = commonDaoServices.getCurrentDate()
+                        timelineEndDate = applicationMapProperties.mapMSRemediationSchedule.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                         msProcessId = applicationMapProperties.mapMSRemediationSchedule
                         compliantStatus = 1
                         notCompliantStatus =  0
@@ -623,6 +633,8 @@ class MarketSurveillanceFuelDaoServices(
                         compliantStatusRemarks = body.complianceRemarks
                     }
                     else -> {
+                        timelineStartDate = commonDaoServices.getCurrentDate()
+                        timelineEndDate = applicationMapProperties.mapMSRemediationInvoice.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                         msProcessId = applicationMapProperties.mapMSRemediationInvoice
                         notCompliantStatus =  0
                         compliantStatus = 0
@@ -855,6 +867,8 @@ class MarketSurveillanceFuelDaoServices(
         when (updatedRemediation.first.status) {
             map.successStatus -> {
                 with(fileInspectionDetail){
+                    timelineStartDate = commonDaoServices.getCurrentDate()
+                    timelineEndDate = applicationMapProperties.mapMSEndFuel.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                     msProcessId = applicationMapProperties.mapMSEndFuel
                     remendiationCompleteStatus = map.activeStatus
                 }
@@ -2111,6 +2125,8 @@ class MarketSurveillanceFuelDaoServices(
 
                     var fuelInspection = findFuelInspectionDetailByID(remediationDetails.fuelInspectionId?: throw ExpectedDataNotFound("MISSING FUEL INSPECTION ID"))
                     with(fuelInspection){
+                        timelineStartDate = commonDaoServices.getCurrentDate()
+                        timelineEndDate = applicationMapProperties.mapMSRemediationSchedule.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                         msProcessId = applicationMapProperties.mapMSRemediationSchedule
                         remediationPaymentStatus = map.activeStatus
                         userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER
@@ -2123,7 +2139,7 @@ class MarketSurveillanceFuelDaoServices(
 
     fun mapFuelInspectionListDto(fuelInspectionList: List<MsFuelInspectionEntity>?, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
         val fuelInspectionScheduledList = mutableListOf<FuelInspectionDto>()
-        fuelInspectionList?.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.referenceNumber, it.company, it.companyKraPin, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo,
+        fuelInspectionList?.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.timelineStartDate,it.timelineEndDate,it.referenceNumber, it.company, it.companyKraPin, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo,
             it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName }, it.assignedOfficerStatus==1, it.inspectionCompleteStatus==1))}
 
 
@@ -2162,6 +2178,8 @@ class MarketSurveillanceFuelDaoServices(
     ): FuelInspectionDto {
         return FuelInspectionDto(
             fuelInspectionList.id,
+            fuelInspectionList.timelineStartDate,
+            fuelInspectionList.timelineEndDate,
             fuelInspectionList.referenceNumber,
             fuelInspectionList.company,
             fuelInspectionList.companyKraPin,

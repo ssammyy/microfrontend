@@ -188,6 +188,14 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var destructionNotificationDate: Date? = null
 
+    @Column(name = "TIMELINE_START_DATE")
+    @Basic
+    var timelineStartDate: Date? = null
+
+    @Column(name = "TIMELINE_END_DATE")
+    @Basic
+    var timelineEndDate: Date? = null
+
     @Column(name = "HOD_RECOMMENDATION_REMARKS")
     @Basic
     var hodRecommendationRemarks: String? = null
