@@ -1380,6 +1380,24 @@ export class MsService {
         );
     }
 
+    public msAddComplaintDetailsToWorkPlanScheduleDetails(referenceNo: string, data: WorkPlanEntityDto): Observable<WorkPlanScheduleListDetailsDto> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.CREATE_NEW_WORK_PLAN_SCHEDULE);
+        const params = new HttpParams()
+            .set('batchReferenceNo', referenceNo);
+        return this.http.post<WorkPlanScheduleListDetailsDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanScheduleListDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
     public saveComplaintFiles(data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.UPLOAD_COMPLIANT_FILE);
         // const params = new HttpParams()
@@ -1528,7 +1546,10 @@ export class MsService {
         );
     }
 
-    public msComplaintUpdateSaveClassificationDetails(referenceNo: string, data: ComplaintClassificationDto): Observable<AllComplaintsDetailsDto> {
+    public msComplaintUpdateSaveClassificationDetails(
+        referenceNo: string,
+        data: ComplaintClassificationDto
+    ): Observable<AllComplaintsDetailsDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_ADD_CLASSIFICATION_DETAILS);

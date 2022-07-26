@@ -738,7 +738,7 @@ data class AllComplaintsDetailsDto(
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
-//        var fuelRemediation: FuelRemediationDto? = null,
+        var complaintProcessStatus: Boolean,
 )
 
 data class ComplaintsDetailsDto(
@@ -765,6 +765,7 @@ data class ComplaintsDetailsDto(
         var status: String? = null,
 //        var officersList: List<MsUsersDto>? = null,
 //        var divisionList: List<MsDivisionDto>? = null,
+//        var msProcessStatus: Boolean? = null,
         var approvedStatus: Boolean? = null,
         var assignedIOStatus: Boolean? = null,
         var rejectedStatus: Boolean? = null,

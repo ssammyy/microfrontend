@@ -121,6 +121,7 @@ export class AllComplaintsDetailsDto {
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto;
     sampleLabResults: MSSSFLabResultsDto;
+    complaintProcessStatus: boolean;
 }
 
 export class MSRemarksDto {

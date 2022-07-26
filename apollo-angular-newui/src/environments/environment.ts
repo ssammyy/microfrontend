@@ -10,3 +10,5 @@ export const environment = {
     base_url: `kimsint.kebs.org:8006`,
     // base_url: `kimsfluxint.kebs.org:8007`,
 };
+
+// *ngIf="complaintInspection?.complaintProcessStatus == false"

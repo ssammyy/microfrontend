@@ -580,6 +580,7 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_COMPLAINT = {
+        CREATE_NEW_WORK_PLAN_SCHEDULE: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/add/complaint-work-plan`,
         CREATE_NEW_COMPLAINT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/new`,
         UPLOAD_COMPLIANT_FILE: `${ApiEndpointService.ANONYMOUS_CONTEXT}/complaint/file/save`,
         ALL_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list`,
@@ -597,6 +598,7 @@ export class ApiEndpointService {
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
     };
+
     public static MARKET_SURVEILLANCE_WORK_PLAN = {
         ALL_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-list`,
         ADD_NEW_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/add`,

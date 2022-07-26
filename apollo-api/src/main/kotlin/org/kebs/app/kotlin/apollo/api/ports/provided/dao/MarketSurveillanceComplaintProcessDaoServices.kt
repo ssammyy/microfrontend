@@ -64,7 +64,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val invoiceDaoService: InvoiceDaoService,
     private val reportsDaoService: ReportsDaoService,
     private val serviceRequestsRepo: IServiceRequestsRepository,
-    private val commonDaoServices: CommonDaoServices
+    private val commonDaoServices: CommonDaoServices,
+    private val msWorkPlanDaoServices: MarketSurveillanceWorkPlanDaoServices
 ) {
     final var complaintSteps: Int = 6
     private final val activeStatus: Int = 1
@@ -93,7 +94,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             val complaintLocation = saveNewComplaintLocation(body.locationDetails, body.complaintDetails, map, complaint.second)
             payload += "${commonDaoServices.createJsonBodyFromEntity(complaintLocation)}"
 
-            val uploads = saveComplaintFiles(docFile, map, complaint.second)
+            saveComplaintFiles(docFile, map, complaint.second)
 
 
             val designationsEntity = commonDaoServices.findDesignationByID(applicationMapProperties.mapMsComplaintAndWorkPlanDesignationHOD)
@@ -373,6 +374,49 @@ class MarketSurveillanceComplaintProcessDaoServices(
         }
 
     }
+
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun createNewWorkPlanScheduleFromComplaint(referenceNo: String,body: WorkPlanEntityDto): AllComplaintsDetailsDto {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val msType = findMsTypeDetailsWithUuid(applicationMapProperties.mapMsWorkPlanTypeUuid)
+        val complaintFound = findComplaintByRefNumber(referenceNo)
+        val currentYear = msWorkPlanDaoServices.getCurrentYear()
+        val workPlanYearCodes = msWorkPlanDaoServices.findWorkPlanYearsCodesEntity(currentYear, map)
+        val userWorkPlan = msWorkPlanDaoServices.findWorkPlanCreatedEntity(loggedInUser, workPlanYearCodes)
+//        val checkCreationDate = msWorkPlanDaoServices.isWithinRange(commonDaoServices.getCurrentDate(), workPlanYearCodes)
+        when {
+            userWorkPlan != null -> {
+                when (userWorkPlan.batchClosed) {
+                    activeStatus -> {
+                        throw ExpectedDataNotFound("The WorkPlan Batch Detail was closed for this current year, you can't add a new Work-Plan Schedule")
+                    }
+                    else -> {
+                        val fileSaved = msWorkPlanDaoServices.saveNewWorkPlanActivityFromComplaint(body,complaintFound,msType, userWorkPlan, map, loggedInUser)
+                        when (fileSaved.first.status) {
+                            map.successStatus -> {
+                                with(complaintFound) {
+                                    msProcessStatus = map.activeStatus
+                                }
+                                val complaintUpdated = updateComplaintDetailsInDB(complaintFound, map, loggedInUser).second
+
+                                return complaintInspectionMappingCommonDetails(complaintUpdated, map)
+                            }
+                            else -> {
+                                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+                            }
+                        }
+                    }
+                }
+            }
+            else -> {
+                throw ExpectedDataNotFound("Create a new Work-Plan Batch for this Year First before adding this Complaint")
+            }
+        }
+
+    }
+
 
 
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
@@ -1121,6 +1165,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         return mapComplaintInspectionDto(
             mapComplaintDto(comp, complaintCustomersDetails, complaintLocationDetails, complaintFilesSaved, map),
             acceptanceDone,
+            comp.msProcessStatus==1,
             officerList,
             hofList,
             complaintRemarks,
@@ -1136,6 +1181,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
     fun mapComplaintInspectionDto(
         complaintsDetails: ComplaintsDetailsDto,
         acceptanceDone : Boolean,
+        msProcessStatus : Boolean,
         officerList: List<UsersEntity>?,
         hofList: List<UsersEntity>?,
         remarksList: List<MsRemarksEntity>?,
@@ -1157,7 +1203,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             remarksList?.let { mapRemarksListDto(it) },
             sampleCollected,
             sampleSubmitted,
-            sampleLabResults
+            sampleLabResults,
+            msProcessStatus
         )
     }
 
@@ -1246,12 +1293,14 @@ class MarketSurveillanceComplaintProcessDaoServices(
             comp.msProcessId?.let { findMsProcessComplaintByID(1, it)?.processName },
 //            msInspectionOfficer,
 //            msDivisionList,
+
             comp.approved == 1,
             comp.assignedIoStatus == 1,
             comp.rejected == 1,
             comp.classificationDetailsStatus == 1,
             complaintFilesSaved?.let { mapFileListDto(it) },
-            comp.productSubCategory?.let { commonDaoServices.findSampleStandardsByID(it) }?.let { mapStandardDetailsDto(it) }
+            comp.productSubCategory?.let { commonDaoServices.findSampleStandardsByID(it) }?.let { mapStandardDetailsDto(it) },
+//                    comp.msProcessStatus == 1,
         )
 
     }
@@ -1301,7 +1350,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         return remarksRepo.findAllByComplaintIdOrderByIdAsc(complaintID)
     }
 
-    private fun complaintDetails( comp: ComplaintEntity): Triple<ComplaintEntity, ComplaintCustomersEntity, ComplaintLocationEntity> {
+    fun complaintDetails( comp: ComplaintEntity): Triple<ComplaintEntity, ComplaintCustomersEntity, ComplaintLocationEntity> {
         val complaintCustomersDetails = findComplaintCustomerByComplaintID(comp.id?: throw ExpectedDataNotFound("Missing complaint ID"))
         val complaintLocationDetails = findComplaintLocationByComplaintID(comp.id?: throw ExpectedDataNotFound("Missing complaint ID"))
         return Triple(comp, complaintCustomersDetails, complaintLocationDetails)

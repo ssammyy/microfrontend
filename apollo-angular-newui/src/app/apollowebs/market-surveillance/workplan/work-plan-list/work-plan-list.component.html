@@ -335,8 +335,8 @@
                                         <select [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.errors"
                                                 class="form-control two-column-input"
                                                 formControlName="nameActivity" name="nameActivity" required type="text">
-                                            <option [value]="" selected>Please select</option>
-                                            <option  [value]="'Surveillance'">Surveillance</option>
+<!--                                            <option [value]="" selected>Please select</option>-->
+                                            <option  [value]="'Surveillance'" selected>Surveillance</option>
                                         </select>
                                         <div *ngIf="submitted && formNewScheduleForm.nameActivity.errors && formNewScheduleForm.nameActivity.invalid" class="invalid-feedback">
                                             <div *ngIf="formNewScheduleForm.nameActivity.errors.required">Name of Activity is
