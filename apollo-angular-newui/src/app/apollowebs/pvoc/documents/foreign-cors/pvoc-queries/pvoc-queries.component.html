@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Raise COC/NCR/COI Query</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="kebsQuery" class="waiver-form-label">Please write, in detailed </label>
+            <textarea id="kebsQuery" class="waiver-form-input-master"
+                      formControlName="kebsQuery"></textarea>
+            <mat-error *ngIf="errorMessages && errorMessages.kebsQuery">{{errorMessages.kebsQuery}}</mat-error>
+            <mat-error *ngIf="message">{{message}}</mat-error>
+        </div>
+
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

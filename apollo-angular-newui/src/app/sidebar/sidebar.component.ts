@@ -169,6 +169,30 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
             },
             {
+                path: 'foreign/cors',
+                title: 'Foreign COR',
+                ab: 'CO',
+                privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
+            },
+            {
+                path: 'foreign/documents/coc',
+                title: 'Foreign COC',
+                ab: 'CN',
+                privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
+            },
+            {
+                path: 'foreign/documents/coi',
+                title: 'Foreign COI',
+                ab: 'CI',
+                privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
+            },
+            {
+                path: 'foreign/documents/ncr',
+                title: 'Foreign NCR',
+                ab: 'CN',
+                privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
+            },
+            {
                 path: 'partners',
                 title: 'Partners',
                 ab: 'PP',

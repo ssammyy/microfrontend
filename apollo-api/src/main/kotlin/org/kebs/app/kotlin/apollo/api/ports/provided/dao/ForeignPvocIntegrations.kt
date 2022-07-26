@@ -112,6 +112,7 @@ class ForeignPvocIntegrations(
                         cocRemarks = coc.cocRemarks ?: "UNKNOWN"
                         route = coc.route ?: "Z"
                         partner = user.id
+                        reviewStatus = 0
                         version = coc.version ?: 1
                         cocType = "COC"
                         documentsType = "F"
@@ -197,6 +198,7 @@ class ForeignPvocIntegrations(
                         cocIssueDate = ncr.ncrIssueDate
                         route = ncr.route ?: "Z"
                         partner = user.id
+                        reviewStatus = 0
                         version = ncr.version ?: 1
                         cocType = "NCR"
                         documentsType = "F"
@@ -316,6 +318,7 @@ class ForeignPvocIntegrations(
                     documentsType = "F"
                     productCategory = "UNKNOWN"
                     partner = user.id
+                    reviewStatus = 0
                     createdBy = commonDaoServices.loggedInUserAuthentication().name
                     createdOn = commonDaoServices.getTimestamp()
                 }

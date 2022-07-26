@@ -419,6 +419,7 @@ class CamelSftpDownload(
     private lateinit var fromFtpUrl: URI
 
     init {
+        KotlinLogging.logger { }.info("Loading Camel SFT Download router")
         ftpBuilder
                 .addParameter("username", properties.userName)
                 .addParameter("password", properties.password)
@@ -577,12 +578,13 @@ class CamelSftpUpload(
     val documentTypeHeader = "documentDirection"
 
     init {
+        KotlinLogging.logger { }.info("Loading Camel SFT Uploading router")
         ftpBuilder.addParameter("autoCreate", "false")
         uploadURI = ftpBuilder.build()
     }
 
     override fun configure() {
-        // Upload file manualy
+        // Upload file manually
         from(directUploadEndpoint)
                 .setHeader(documentTypeHeader, constant("OUT"))
                 .log("Manual: Uploading file to FTP server: \${in.headers.CamelFileName}")

@@ -245,6 +245,10 @@ import {CfsComponent} from "./apollowebs/system/cfs/cfs.component";
 import {InspectionFeesComponent} from "./apollowebs/system/inspection-fees/inspection-fees.component";
 import {LaboratoriesComponent} from "./apollowebs/system/laboratories/laboratories.component";
 import {CustomsOfficeComponent} from "./apollowebs/system/customs-office/customs-office.component";
+import {ForeignCorsComponent} from "./apollowebs/pvoc/documents/foreign-cors/foreign-cors.component";
+import {ForeignCocsComponent} from "./apollowebs/pvoc/documents/foreign-cocs/foreign-cocs.component";
+import {ViewCorComponent} from "./apollowebs/pvoc/documents/foreign-cors/view-cor/view-cor.component";
+import {ViewOtherDocumentsComponent} from "./apollowebs/pvoc/documents/foreign-cocs/view-other-documents/view-other-documents.component";
 
 export const routes: Routes = [
     {
@@ -580,6 +584,27 @@ export const routes: Routes = [
                     },
                 ],
 
+            },
+            {
+                path: 'foreign',
+                children: [
+                    {
+                        path: 'cors',
+                        component: ForeignCorsComponent,
+                    },
+                    {
+                        path: 'documents/:docType',
+                        component: ForeignCocsComponent,
+                    },
+                    {
+                        path: 'documents/:docType/:id',
+                        component: ViewOtherDocumentsComponent,
+                    },
+                    {
+                        path: 'document/cor/:id',
+                        component: ViewCorComponent,
+                    },
+                ],
             },
             {
                 path: 'partners',
