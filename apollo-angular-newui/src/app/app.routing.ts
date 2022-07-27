@@ -245,6 +245,21 @@ import {CfsComponent} from "./apollowebs/system/cfs/cfs.component";
 import {InspectionFeesComponent} from "./apollowebs/system/inspection-fees/inspection-fees.component";
 import {LaboratoriesComponent} from "./apollowebs/system/laboratories/laboratories.component";
 import {CustomsOfficeComponent} from "./apollowebs/system/customs-office/customs-office.component";
+import {
+    ReviewPreliminaryDraftComponent
+} from "./apollowebs/standards-development/committee-module/review-preliminary-draft/review-preliminary-draft.component";
+import {
+    PrepareCommitteeDraftComponent
+} from "./apollowebs/standards-development/committee-module/prepare-committee-draft/prepare-committee-draft.component";
+import {
+    ReviewCommitteeDraftComponent
+} from "./apollowebs/standards-development/committee-module/review-committee-draft/review-committee-draft.component";
+import {
+    PreparePublicReviewDraftComponent
+} from "./apollowebs/standards-development/committee-module/prepare-public-review-draft/prepare-public-review-draft.component";
+import {
+    PublicReviewDraftComponent
+} from "./apollowebs/standards-development/committee-module/public-review-draft/public-review-draft.component";
 import {ForeignCorsComponent} from "./apollowebs/pvoc/documents/foreign-cors/foreign-cors.component";
 import {ForeignCocsComponent} from "./apollowebs/pvoc/documents/foreign-cocs/foreign-cocs.component";
 import {ViewCorComponent} from "./apollowebs/pvoc/documents/foreign-cors/view-cor/view-cor.component";
@@ -1100,8 +1115,34 @@ export const routes: Routes = [
         path: 'preparePd', component: AdminLayoutComponent,
         children: [{path: '', component: PreparePreliminaryDraftComponent}],
     },
+    {
+        // review Preliminary Draft
+        path: 'reviewPd', component: AdminLayoutComponent,
+        children: [{path: '', component: ReviewPreliminaryDraftComponent}],
+    },
+    {
+        // prepare Committee Draft
+        path: 'prepareCd', component: AdminLayoutComponent,
+        children: [{path: '', component: PrepareCommitteeDraftComponent}],
+    },
+    {
+        // review Committee Draft
+        path: 'reviewCd', component: AdminLayoutComponent,
+        children: [{path: '', component: ReviewCommitteeDraftComponent}],
+    },
+
+    {
+        // prepare Public Review Draft
+        path: 'preparePrd', component: AdminLayoutComponent,
+        children: [{path: '', component: PreparePublicReviewDraftComponent}],
+    },
 
 
+    {
+        // view Public Review Draft
+        path: 'viewPrd', component: AdminLayoutComponent,
+        children: [{path: '', component: PublicReviewDraftComponent}],
+    },
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
      ***************************************************************/

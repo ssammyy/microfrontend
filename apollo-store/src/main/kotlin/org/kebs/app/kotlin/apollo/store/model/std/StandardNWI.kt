@@ -99,6 +99,9 @@ class StandardNWI {
     @Basic
     var deletedOn:Timestamp? =null
 
+    @Column(name="STATUS")
+    @Basic
+    var status:String? =null
 
 
     override fun equals(other: Any?): Boolean {
