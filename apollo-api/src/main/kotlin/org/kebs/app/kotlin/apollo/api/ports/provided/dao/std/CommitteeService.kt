@@ -1,20 +1,31 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
 
+import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.errors.std.ResourceNotFoundException
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.WorkplanEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.multipart.MultipartFile
+import java.sql.Timestamp
 
 @Service
 class CommitteeService(
@@ -28,6 +39,11 @@ class CommitteeService(
     private val committeePdDraftsRepository: CommitteePdDraftsRepository,
     private val committeeCDRepository: CommitteeCDRepository,
     private val standardWorkPlanRepository: StandardWorkPlanRepository,
+    private val standardNWIRepository: StandardNWIRepository,
+    private val commentsRepository: CommentsRepository,
+
+    val commonDaoServices: CommonDaoServices,
+    private val sdDocumentsRepository: StandardsDocumentsRepository,
 
 
     ) {
@@ -43,6 +59,146 @@ class CommitteeService(
             .createDeployment()
             .addClasspathResource("processes/std/committee_stage.bpmn20.xml")
             .deploy()
+    }
+
+    //get all NWIs
+    fun getAllNWIs(): MutableList<StandardNWI> {
+        return standardNWIRepository.findAll()
+    }
+
+    fun getWorkPlan(referenceNumber: String): MutableList<StandardWorkPlan> {
+        return standardWorkPlanRepository.findByReferenceNo(referenceNumber)
+    }
+
+
+    //upload Preliminary Draft
+    fun uploadPD(
+        committeePD: CommitteePD,
+        nwIId: Long
+    ): ProcessInstanceResponseValue {
+        //Save Preliminary Draft
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        committeePD.pdName?.let { variable.put("pdName", it) }
+        committeePD.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = committeePD.createdOn!!
+        committeePD.nwiID = nwIId.toString()
+        variable["nwiID"] = committeePD.nwiID ?: throw ExpectedDataNotFound("No NWI ID  Found")
+        committeePD.pdBy = loggedInUser.id.toString()
+        variable["pdBy"] = committeePD.pdBy ?: throw ExpectedDataNotFound("No USER ID Found")
+        committeePDRepository.save(committeePD)
+
+        committeePD.id.let { variable.put("id", it) }
+
+        //update documents with PDId
+        try {
+            val updateDocuments = sdDocumentsRepository.updateDocsWithPDid(committeePD.id, nwIId)
+            KotlinLogging.logger { }.info("The response is $updateDocuments")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+        }
+
+
+        //update NWI with Pd Status
+        val b: StandardNWI = standardNWIRepository.findById(nwIId).orElse(null);
+        b.status = "Preliminary Draft Uploaded";
+        standardNWIRepository.save(b)
+
+        return ProcessInstanceResponseValue(committeePD.id, "Complete", true, "committeePD.id")
+
+    }
+
+
+    //get all Preliminary Drafts
+    fun getAllPd(): MutableList<CommitteePD> {
+        return committeePDRepository.findAll()
+    }
+
+    // make a comment on Preliminary Draft
+    fun makeComment(comments: Comments) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        comments.title?.let { variable.put("title", it) }
+        comments.documentType?.let { variable.put("documentType", it) }
+        comments.circulationDate?.let { variable.put("circulationDate", it) }
+        comments.closingDate?.let { variable.put("closingDate", it) }
+        comments.recipientId.let { variable.put("recipientId", it) }
+        comments.organization?.let { variable.put("organization", it) }
+        comments.clause?.let { variable.put("clause", it) }
+        comments.paragraph?.let { variable.put("paragraph", it) }
+        comments.commentType?.let { variable.put("commentType", it) }
+        comments.commentsMade?.let { variable.put("commentsMade", it) }
+        comments.proposedChange?.let { variable.put("proposedChange", it) }
+        comments.observation?.let { variable.put("observation", it) }
+        comments.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = comments.createdOn!!
+        comments.pdId.let { variable.put("pdId", it) }
+        comments.createdBy = loggedInUser.id.toString()
+        variable["createdBy"] = comments.createdBy ?: throw ExpectedDataNotFound("No USER ID Found")
+        comments.status = 1.toString()
+        variable["status"] = comments.status!!
+
+        commentsRepository.save(comments)
+
+    }
+
+    //get all user Comments on Pd
+    fun getAllCommentsOnPd(): List<Comments> {
+        return commentsRepository.findAll()
+    }
+
+    //get comments made by logged in user on Pd
+    fun getUserLoggedInCommentsOnPD(@PathVariable(value = "pdId") preliminaryDraftId: Long): List<Comments> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return loggedInUser.id?.let {
+            commentsRepository.findByUserIdAndPdIdAndStatus(
+                it, preliminaryDraftId,
+                1.toString()
+            )
+        }!!
+    }
+
+    //edit comment
+    fun editComment(comments: Comments) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val commentToEdit =
+            commentsRepository.findById(comments.id).orElseThrow { RuntimeException("No comment found") }
+
+        commentToEdit.title?.let { variable.put("title", it) }
+        commentToEdit.documentType?.let { variable.put("documentType", it) }
+        commentToEdit.circulationDate?.let { variable.put("circulationDate", it) }
+        commentToEdit.closingDate?.let { variable.put("closingDate", it) }
+        commentToEdit.recipientId.let { variable.put("recipientId", it) }
+        commentToEdit.organization?.let { variable.put("organization", it) }
+        commentToEdit.clause?.let { variable.put("clause", it) }
+        commentToEdit.paragraph?.let { variable.put("paragraph", it) }
+        commentToEdit.commentType?.let { variable.put("commentType", it) }
+        commentToEdit.commentsMade?.let { variable.put("commentsMade", it) }
+        commentToEdit.proposedChange?.let { variable.put("proposedChange", it) }
+        commentToEdit.observation?.let { variable.put("observation", it) }
+        commentToEdit.modifiedOn = Timestamp(System.currentTimeMillis())
+        variable["modifiedOn"] = commentToEdit.modifiedOn!!
+        commentToEdit.modifiedBy = loggedInUser.id.toString()
+        variable["modifiedBy"] = commentToEdit.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
+        commentsRepository.save(commentToEdit)
+
+    }
+
+
+    //delete comment
+    fun deleteComment(comments: Comments) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val commentToDelete =
+            commentsRepository.findById(comments.id).orElseThrow { RuntimeException("No comment found") }
+
+        commentToDelete.status = 0.toString()
+        variable["status"] = commentToDelete.status!!
+        commentToDelete.deletedOn = Timestamp(System.currentTimeMillis())
+        variable["deletedOn"] = commentToDelete.deletedOn!!
+        commentToDelete.deleteBy = loggedInUser.id.toString()
+        variable["deleteBy"] = commentToDelete.deleteBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
+        commentsRepository.save(commentToDelete)
+
     }
 
     fun prepareNWI(committeeNWI: CommitteeNWI): ProcessInstanceResponse {
@@ -182,6 +338,45 @@ class CommitteeService(
         val pd: CommitteePD = committeePDRepository.findById(preliminaryDraftId)
             .orElseThrow { ResourceNotFoundException("PD not found for this id :: $preliminaryDraftId") }
         return ResponseEntity.ok().body<CommitteePD?>(pd)
+    }
+
+
+    fun uploadSDFileCommittee(
+        uploads: DatKebsSdStandardsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        nwi: Long,
+        DocDescription: String
+    ): DatKebsSdStandardsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            sdDocumentId = nwi
+            createdBy = commonDaoServices.concatenateName(commonDaoServices.loggedInUserDetails())
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        if (DocDescription == "Minutes For PD") {
+            //update documents with PDId
+            val u: StandardNWI = standardNWIRepository.findById(nwi).orElse(null);
+            u.status = "Minutes Uploaded";
+            standardNWIRepository.save(u)
+        }
+        if (DocDescription == "Draft Documents For PD") {
+            //update documents with PDId
+            val u: StandardNWI = standardNWIRepository.findById(nwi).orElse(null);
+            u.status = "Draft Documents For PD Uploaded";
+            standardNWIRepository.save(u)
+        }
+        return sdDocumentsRepository.save(uploads)
     }
 
 }

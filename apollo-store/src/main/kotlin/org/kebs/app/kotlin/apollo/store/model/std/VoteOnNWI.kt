@@ -15,6 +15,10 @@ class VoteOnNWI {
     @Basic
     var userId: Long= 1
 
+    @Column(name = "NWI_ID")
+    @Basic
+    var nwiId: Long= 1
+
     @Transient
     @JsonProperty("taskId")
     var taskId:String?=null

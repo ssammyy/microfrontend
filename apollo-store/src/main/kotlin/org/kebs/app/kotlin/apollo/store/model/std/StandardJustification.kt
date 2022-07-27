@@ -76,6 +76,10 @@ class StandardJustification {
     @Basic
     var deletedOn: Timestamp? =null
 
+    @Column(name = "NWI_ID")
+    @Basic
+    var nwiId: Long= 1
+
 
 
 

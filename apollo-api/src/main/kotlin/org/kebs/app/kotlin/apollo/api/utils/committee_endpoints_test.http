@@ -48,6 +48,7 @@ GET https://api/v1/committee/getPds
 
 #####
 POST https://api/v1/committee/prepareCD
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY1ODgyMTAzMiwiZXhwIjoxNjU4ODI3MDMyLCJhZGRyZXNzIjoiMDowOjA6MDowOjA6MDoxIiwidXNlckFnZW50IjoiW01vemlsbGEvNS4wIChNYWNpbnRvc2g7IEludGVsIE1hYyBPUyBYIDEwXzE1XzcpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xMDMuMC4wLjAgU2FmYXJpLzUzNy4zNl0iLCJmdWxsTmFtZSI6IkphbWVzIE11Z2FuZGEiLCJyb2xlcyI6IlNUQU5EQVJEU19ERVZFTE9QTUVOVF9GVUxMX0FETUlOIn0.K_BTJjaCY9hEUUcl9RbvGNWh0CLbMjRM4-A6eeI0Zws6ptqxayfrguX2RtpuRy5Wy-FlJpd8CTzkBXJNrWFSUA
 Content-Type: application/json
 
 {
@@ -60,5 +61,14 @@ Content-Type: application/json
 ###
 GET https://api/v1/committee/getCds
 
+#####
+POST https://localhost:8006/api/v1/migration/committee/uploadPd?nwIId=65
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY1ODgyNzMzMiwiZXhwIjoxNjU4ODMzMzMyLCJhZGRyZXNzIjoiMDowOjA6MDowOjA6MDoxIiwidXNlckFnZW50IjoiW01vemlsbGEvNS4wIChNYWNpbnRvc2g7IEludGVsIE1hYyBPUyBYIDEwXzE1XzcpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xMDMuMC4wLjAgU2FmYXJpLzUzNy4zNl0iLCJmdWxsTmFtZSI6IkphbWVzIE11Z2FuZGEiLCJyb2xlcyI6IlNUQU5EQVJEU19ERVZFTE9QTUVOVF9GVUxMX0FETUlOIn0.9UK53g59_BvHXb46Uild1H-bHe_ljKJQaAaIlxpCGnllQFkBr0TwWCgAJLGZSuQKxApK1kCuiL8DSRKBJD3r_Q
+Content-Type: application/json
+
+{
+  "pdName": "Preliminary Draft One"
+
+}
 
 
