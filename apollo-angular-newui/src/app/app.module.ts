@@ -743,7 +743,7 @@ import {PvocQueryViewComponent} from './apollowebs/di/fragments/pvoc-query-view/
         PvocQueriesComponent,
         PvocCocQueriesComponent,
         PvocQueryCardComponent,
-        PvocQueryViewComponent
+        PvocQueryViewComponent,
         AddUpdateLimitComponent,
         ReviewPreliminaryDraftComponent,
         PrepareCommitteeDraftComponent,
