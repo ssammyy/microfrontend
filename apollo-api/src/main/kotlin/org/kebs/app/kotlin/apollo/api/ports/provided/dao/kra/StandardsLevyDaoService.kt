@@ -170,6 +170,7 @@ class StandardsLevyDaoService(
                 /**
                  * DONE: Pick up the data validate and pass it on to KIMS for processing
                  */
+
                 var header = Sl2PaymentsHeaderEntity()
 
                 header.transactionDate = SimpleDateFormat("dd-MM-YYYY").parse(paymentRequest.transmissionDate)
