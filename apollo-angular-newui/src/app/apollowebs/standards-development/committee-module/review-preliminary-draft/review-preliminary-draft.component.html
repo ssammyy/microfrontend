@@ -1,574 +1,574 @@
-<div class="container-fluid" style="margin-top: 5%" id="main-container">
-    <div class="loading-spinner ">
-        <ngx-spinner
-                bdColor="rgba(51,51,51,0.8)"
-                size="medium"
-                color="#fff"
-                type="ball-scale-multiple"
-        >
-            <p style="font-size: 20px; color: white">Loading...</p>
-        </ngx-spinner>
-    </div>
-    <div class="main-content">
-        <div class="container-fluid">
-            <div class="row">
-                    <div class="card ">
-                        <div class="card-header ">
-                            <h4 class="card-title">Review Preliminary Drafts -
-                                <small class="description">Comment and Review</small>
-                            </h4>
-                        </div>
-                        <div class="card-body ">
-                            <div class="row">
-                                <div class="col-lg-1 col-md-4">
-                                    <!--
-                                                      color-classes: "nav-pills-primary", "nav-pills-info", "nav-pills-success", "nav-pills-warning","nav-pills-danger"
-                                                  -->
-                                    <ul class="nav nav-pills nav-pills-rose nav-pills-icons flex-column" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="tab" href="#link10" role="tablist">
-                                                <i class="material-icons">assignment</i> Review
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
-                                                <i class="material-icons">schedule</i> Previous Comments
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-11">
-                                    <div class="tab-content">
-                                        <div class="tab-pane active" id="link10">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="card">
-                                                        <div class="card-header card-header-primary card-header-icon">
-                                                            <div class="card-icon">
-                                                                <i class="material-icons">assignment</i>
-                                                            </div>
-                                                            <h4 class="card-title">Review Preliminary Draft
-                                                            </h4>
+<!--<div class="container-fluid" style="margin-top: 5%" id="main-container">-->
+<!--    <div class="loading-spinner ">-->
+<!--        <ngx-spinner-->
+<!--                bdColor="rgba(51,51,51,0.8)"-->
+<!--                size="medium"-->
+<!--                color="#fff"-->
+<!--                type="ball-scale-multiple"-->
+<!--        >-->
+<!--            <p style="font-size: 20px; color: white">Loading...</p>-->
+<!--        </ngx-spinner>-->
+<!--    </div>-->
+<!--    <div class="main-content">-->
+<!--        <div class="container-fluid">-->
+<!--            <div class="row">-->
+<!--                    <div class="card ">-->
+<!--                        <div class="card-header ">-->
+<!--                            <h4 class="card-title">Review Preliminary Drafts - -->
+<!--                                <small class="description">Comment and Review</small>-->
+<!--                            </h4>-->
+<!--                        </div>-->
+<!--                        <div class="card-body ">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-lg-1 col-md-4">-->
+<!--                                    &lt;!&ndash;-->
+<!--                                                      color-classes: "nav-pills-primary", "nav-pills-info", "nav-pills-success", "nav-pills-warning","nav-pills-danger"-->
+<!--                                                  &ndash;&gt;-->
+<!--                                    <ul class="nav nav-pills nav-pills-rose nav-pills-icons flex-column" role="tablist">-->
+<!--                                        <li class="nav-item">-->
+<!--                                            <a class="nav-link active" data-toggle="tab" href="#link10" role="tablist">-->
+<!--                                                <i class="material-icons">assignment</i> Review-->
+<!--                                            </a>-->
+<!--                                        </li>-->
+<!--                                        <li class="nav-item">-->
+<!--                                            <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">-->
+<!--                                                <i class="material-icons">schedule</i> Previous Comments-->
+<!--                                            </a>-->
+<!--                                        </li>-->
+<!--                                    </ul>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-11">-->
+<!--                                    <div class="tab-content">-->
+<!--                                        <div class="tab-pane active" id="link10">-->
+<!--                                            <div class="row">-->
+<!--                                                <div class="col-md-12">-->
+<!--                                                    <div class="card">-->
+<!--                                                        <div class="card-header card-header-primary card-header-icon">-->
+<!--                                                            <div class="card-icon">-->
+<!--                                                                <i class="material-icons">assignment</i>-->
+<!--                                                            </div>-->
+<!--                                                            <h4 class="card-title">Review Preliminary Draft-->
+<!--                                                            </h4>-->
 
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <div class="toolbar">
+<!--                                                        </div>-->
+<!--                                                        <div class="card-body">-->
+<!--                                                            <div class="toolbar">-->
 
-                                                            </div>
+<!--                                                            </div>-->
 
-                                                            <h4 class="card-title">All Preliminary Drafts
-                                                            </h4>
-                                                            <div class="material-datatables">
-                                                                <table class="table table-striped table-bordered table-hover" datatable
-                                                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                                                                    <thead>
-                                                                    <tr>
-                                                                        <th class="id">Preliminary Draft ID</th>
-                                                                        <th class="task">Preliminary Draft Name</th>
-                                                                        <th class="action">View</th>
-                                                                        <th class="action">Action</th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    <!--                                    <tr *ngFor="let approvedNwi of approvedNwiS let i= index; ">-->
-                                                                    <!--                                        <td>{{i + 1}}</td>-->
-                                                                    <!--                                        <td>{{approvedNwi.request_No}}</td>-->
-                                                                    <!--                                        <td>{{approvedNwi.proposal_Title}}</td>-->
-                                                                    <!--                                        <td>{{approvedNwi.name_Of_Tc}}</td>-->
-                                                                    <!--                                        <td><span class="badge badge-primary">{{approvedNwi.status}}</span></td>-->
+<!--                                                            <h4 class="card-title">All Preliminary Drafts-->
+<!--                                                            </h4>-->
+<!--                                                            <div class="material-datatables">-->
+<!--                                                                <table class="table table-striped table-bordered table-hover" datatable-->
+<!--                                                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">-->
+<!--                                                                    <thead>-->
+<!--                                                                    <tr>-->
+<!--                                                                        <th class="id">Preliminary Draft ID</th>-->
+<!--                                                                        <th class="task">Preliminary Draft Name</th>-->
+<!--                                                                        <th class="action">View</th>-->
+<!--                                                                        <th class="action">Action</th>-->
+<!--                                                                    </tr>-->
+<!--                                                                    </thead>-->
+<!--                                                                    <tbody>-->
+<!--                                                                    &lt;!&ndash;                                    <tr *ngFor="let approvedNwi of approvedNwiS let i= index; ">&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td>{{i + 1}}</td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td>{{approvedNwi.request_No}}</td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td>{{approvedNwi.proposal_Title}}</td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td>{{approvedNwi.name_Of_Tc}}</td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td><span class="badge badge-primary">{{approvedNwi.status}}</span></td>&ndash;&gt;-->
 
-                                                                    <!--                                        <td>-->
-                                                                    <!--                                            <a (click)="onOpenModal(approvedNwi,'edit')" class="btn btn-info tooltips"-->
-                                                                    <!--                                               data-placement="top"-->
-                                                                    <!--                                               data-original-title="Upload NWI">View More Details</a>-->
-                                                                    <!--                                            <br>-->
-                                                                    <!--                                            <a (click)="onOpenModal(approvedNwi,'workPlan')"-->
-                                                                    <!--                                               class="btn btn-info tooltips"-->
-                                                                    <!--                                               data-placement="top"-->
-                                                                    <!--                                               data-original-title="Upload NWI">View Workplan</a>-->
-                                                                    <!--                                            <br></td>-->
-                                                                    <!--                                        <td>-->
-                                                                    <!--                                            <a (click)="onOpenModal(approvedNwi,'uploadMinutes')"-->
-                                                                    <!--                                               class="btn btn-success tooltips"-->
-                                                                    <!--                                               data-placement="top"-->
-                                                                    <!--                                               data-original-title="Upload NWI">Upload Minutes</a>-->
+<!--                                                                    &lt;!&ndash;                                        <td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                            <a (click)="onOpenModal(approvedNwi,'edit')" class="btn btn-info tooltips"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-placement="top"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-original-title="Upload NWI">View More Details</a>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                            <br>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                            <a (click)="onOpenModal(approvedNwi,'workPlan')"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               class="btn btn-info tooltips"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-placement="top"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-original-title="Upload NWI">View Workplan</a>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                            <br></td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                            <a (click)="onOpenModal(approvedNwi,'uploadMinutes')"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               class="btn btn-success tooltips"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-placement="top"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-original-title="Upload NWI">Upload Minutes</a>&ndash;&gt;-->
 
-                                                                    <!--                                            <a (click)="onOpenModal(approvedNwi,'preparePd')"-->
-                                                                    <!--                                               class="btn btn-success tooltips"-->
-                                                                    <!--                                               data-placement="top"-->
-                                                                    <!--                                               data-original-title="Upload NWI">Prepare Preliminary Draft</a>-->
+<!--                                                                    &lt;!&ndash;                                            <a (click)="onOpenModal(approvedNwi,'preparePd')"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               class="btn btn-success tooltips"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-placement="top"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-original-title="Upload NWI">Prepare Preliminary Draft</a>&ndash;&gt;-->
 
-                                                                    <!--                                        </td>-->
+<!--                                                                    &lt;!&ndash;                                        </td>&ndash;&gt;-->
 
-                                                                    <!--                                    </tr>-->
-                                                                    <tr>
-                                                                        <td>1</td>
-                                                                        <td>Pd1</td>
-                                                                        <td><span class="badge badge-primary">Download PD</span></td>
-                                                                        <td>
-                                                                            <a (click)="onOpenModal(approvedNwi,'edit')" class="btn btn-info tooltips"
-                                                                               data-placement="top"
-                                                                               data-original-title="Upload NWI">Add Comment</a>
-                                                                            <br>
+<!--                                                                    &lt;!&ndash;                                    </tr>&ndash;&gt;-->
+<!--                                                                    <tr>-->
+<!--                                                                        <td>1</td>-->
+<!--                                                                        <td>Pd1</td>-->
+<!--                                                                        <td><span class="badge badge-primary">Download PD</span></td>-->
+<!--                                                                        <td>-->
+<!--                                                                            <a (click)="onOpenModal(approvedNwi,'edit')" class="btn btn-info tooltips"-->
+<!--                                                                               data-placement="top"-->
+<!--                                                                               data-original-title="Upload NWI">Add Comment</a>-->
+<!--                                                                            <br>-->
 
-                                                                        </td>
-
-
-                                                                    </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                            <div class="modal fade " id="updateNWIModal" tabindex="-1" role="dialog"
-                                                                 aria-labelledby="updateExampleModalLabel"
-                                                                 aria-hidden="true">
-                                                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title" id="updateExampleModalLabel">View NWI Details</h5>
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <form #editForm="ngForm">
-                                                                            <div class="modal-body">
-                                                                                <div class="row col-12">
-                                                                                    <label><b>Title of Proposal</b></label>
-                                                                                    <input
-                                                                                            oninput="this.value = this.value.toUpperCase()"
-                                                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                            class="form-control one-column-input"
-                                                                                            name="name"
-                                                                                            type="text">
-                                                                                </div>
-                                                                                <div class="row col-12">
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Scope</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="abbreviations"
-
-                                                                                                type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Purpose & application</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="codes"
-                                                                                                type="text">
-                                                                                    </div>
-
-                                                                                </div>
-                                                                                <div class="row col-12">
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Target Date</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="abbreviations"
-
-                                                                                                type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Similar Standards/Subject of
-                                                                                            Standardization</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="codes"
-                                                                                                type="text">
-                                                                                    </div>
-
-                                                                                </div>
-                                                                                <div class="row col-12">
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Liaison Organizations/or interested
-                                                                                            parties</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="abbreviations"
-
-                                                                                                type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Preparatory Work</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="codes"
-                                                                                                type="text">
-                                                                                    </div>
-
-                                                                                </div>
-                                                                                <div class="row col-12">
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Name of Proposer</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="abbreviations"
-
-                                                                                                type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Organization</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="codes"
-                                                                                                type="text">
-                                                                                    </div>
-
-                                                                                </div>
-                                                                                <div class="row col-12">
-                                                                                    <div class="form-group col-12">
-                                                                                        <label><b>Relevant Documents</b></label>
-                                                                                        <div class="material-datatables">
-                                                                                            <table class="table table-striped table-bordered table-hover"
-                                                                                                   datatable
-                                                                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                                                                                                <thead>
-                                                                                                <tr>
-                                                                                                    <th class="id">Document Id</th>
-                                                                                                    <th class="id">Document Name</th>
-                                                                                                    <th class="action">Action</th>
-                                                                                                </tr>
-                                                                                                </thead>
-                                                                                                <tbody>
-                                                                                                <tr *ngFor="let approvedNwi of approvedNwiS let i= index; ">
-                                                                                                    <td>{{i + 1}}</td>
-                                                                                                    <td>{{approvedNwi.request_No}}</td>
-                                                                                                    <td>
-                                                                                                        <a (click)="onOpenModal(approvedNwi,'edit')"
-                                                                                                           class="btn btn-info tooltips"
-                                                                                                           data-placement="top"
-                                                                                                           data-original-title="Upload NWI">Download</a>
-                                                                                                    </td>
-
-                                                                                                </tr>
-                                                                                                </tbody>
-                                                                                            </table>
-                                                                                        </div>
-                                                                                    </div>
+<!--                                                                        </td>-->
 
 
-                                                                                </div>
+<!--                                                                    </tr>-->
+<!--                                                                    </tbody>-->
+<!--                                                                </table>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="modal fade " id="updateNWIModal" tabindex="-1" role="dialog"-->
+<!--                                                                 aria-labelledby="updateExampleModalLabel"-->
+<!--                                                                 aria-hidden="true">-->
+<!--                                                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">-->
+<!--                                                                    <div class="modal-content">-->
+<!--                                                                        <div class="modal-header">-->
+<!--                                                                            <h5 class="modal-title" id="updateExampleModalLabel">View NWI Details</h5>-->
+<!--                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                                                                                <span aria-hidden="true">&times;</span>-->
+<!--                                                                            </button>-->
+<!--                                                                        </div>-->
+<!--                                                                        <form #editForm="ngForm">-->
+<!--                                                                            <div class="modal-body">-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <label><b>Title of Proposal</b></label>-->
+<!--                                                                                    <input-->
+<!--                                                                                            oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                                                                            class="form-control one-column-input"-->
+<!--                                                                                            name="name"-->
+<!--                                                                                            type="text">-->
+<!--                                                                                </div>-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Scope</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="abbreviations"-->
+
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Purpose & application</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="codes"-->
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+
+<!--                                                                                </div>-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Target Date</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="abbreviations"-->
+
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Similar Standards/Subject of-->
+<!--                                                                                            Standardization</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="codes"-->
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+
+<!--                                                                                </div>-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Liaison Organizations/or interested-->
+<!--                                                                                            parties</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="abbreviations"-->
+
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Preparatory Work</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="codes"-->
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+
+<!--                                                                                </div>-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Name of Proposer</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="abbreviations"-->
+
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Organization</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="codes"-->
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+
+<!--                                                                                </div>-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <div class="form-group col-12">-->
+<!--                                                                                        <label><b>Relevant Documents</b></label>-->
+<!--                                                                                        <div class="material-datatables">-->
+<!--                                                                                            <table class="table table-striped table-bordered table-hover"-->
+<!--                                                                                                   datatable-->
+<!--                                                                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">-->
+<!--                                                                                                <thead>-->
+<!--                                                                                                <tr>-->
+<!--                                                                                                    <th class="id">Document Id</th>-->
+<!--                                                                                                    <th class="id">Document Name</th>-->
+<!--                                                                                                    <th class="action">Action</th>-->
+<!--                                                                                                </tr>-->
+<!--                                                                                                </thead>-->
+<!--                                                                                                <tbody>-->
+<!--                                                                                                <tr *ngFor="let approvedNwi of approvedNwiS let i= index; ">-->
+<!--                                                                                                    <td>{{i + 1}}</td>-->
+<!--                                                                                                    <td>{{approvedNwi.request_No}}</td>-->
+<!--                                                                                                    <td>-->
+<!--                                                                                                        <a (click)="onOpenModal(approvedNwi,'edit')"-->
+<!--                                                                                                           class="btn btn-info tooltips"-->
+<!--                                                                                                           data-placement="top"-->
+<!--                                                                                                           data-original-title="Upload NWI">Download</a>-->
+<!--                                                                                                    </td>-->
+
+<!--                                                                                                </tr>-->
+<!--                                                                                                </tbody>-->
+<!--                                                                                            </table>-->
+<!--                                                                                        </div>-->
+<!--                                                                                    </div>-->
 
 
-                                                                            </div>
+<!--                                                                                </div>-->
 
 
-                                                                            <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" #closeModal
-                                                                                        (click)="hideModel()" data-dismiss="modal">Close
-                                                                                </button>
-                                                                                <button class="btn btn-info"
-                                                                                        (click)="updateDepartment(editForm.value)">Submit
-                                                                                </button>
-
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <div class="tab-pane" id="link11">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="card">
-                                                        <div class="card-header card-header-primary card-header-icon">
-                                                            <div class="card-icon">
-                                                                <i class="material-icons">schedule</i>
-                                                            </div>
-                                                            <h4 class="card-title">Previous Comments
-                                                            </h4>
-
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <div class="toolbar">
-
-                                                            </div>
-
-                                                            <h4 class="card-title">All Comments
-                                                            </h4>
-                                                            <div class="material-datatables">
-                                                                <table class="table table-striped table-bordered table-hover" datatable
-                                                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                                                                    <thead>
-                                                                    <tr>
-                                                                        <th class="id">Preliminary Draft ID</th>
-                                                                        <th class="task">Preliminary Draft Name</th>
-                                                                        <th class="action">Comments</th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    <!--                                    <tr *ngFor="let approvedNwi of approvedNwiS let i= index; ">-->
-                                                                    <!--                                        <td>{{i + 1}}</td>-->
-                                                                    <!--                                        <td>{{approvedNwi.request_No}}</td>-->
-                                                                    <!--                                        <td>{{approvedNwi.proposal_Title}}</td>-->
-                                                                    <!--                                        <td>{{approvedNwi.name_Of_Tc}}</td>-->
-                                                                    <!--                                        <td><span class="badge badge-primary">{{approvedNwi.status}}</span></td>-->
-
-                                                                    <!--                                        <td>-->
-                                                                    <!--                                            <a (click)="onOpenModal(approvedNwi,'edit')" class="btn btn-info tooltips"-->
-                                                                    <!--                                               data-placement="top"-->
-                                                                    <!--                                               data-original-title="Upload NWI">View More Details</a>-->
-                                                                    <!--                                            <br>-->
-                                                                    <!--                                            <a (click)="onOpenModal(approvedNwi,'workPlan')"-->
-                                                                    <!--                                               class="btn btn-info tooltips"-->
-                                                                    <!--                                               data-placement="top"-->
-                                                                    <!--                                               data-original-title="Upload NWI">View Workplan</a>-->
-                                                                    <!--                                            <br></td>-->
-                                                                    <!--                                        <td>-->
-                                                                    <!--                                            <a (click)="onOpenModal(approvedNwi,'uploadMinutes')"-->
-                                                                    <!--                                               class="btn btn-success tooltips"-->
-                                                                    <!--                                               data-placement="top"-->
-                                                                    <!--                                               data-original-title="Upload NWI">Upload Minutes</a>-->
-
-                                                                    <!--                                            <a (click)="onOpenModal(approvedNwi,'preparePd')"-->
-                                                                    <!--                                               class="btn btn-success tooltips"-->
-                                                                    <!--                                               data-placement="top"-->
-                                                                    <!--                                               data-original-title="Upload NWI">Prepare Preliminary Draft</a>-->
-
-                                                                    <!--                                        </td>-->
-
-                                                                    <!--                                    </tr>-->
-                                                                    <tr>
-                                                                        <td>1</td>
-                                                                        <td>Pd1</td>
-                                                                        <td>
-                                                                            <div class="timeline-body">
-                                                                            <p>Lines From Great Russian Literature? Or E-mails From My Boss?</p>
-                                                                            <button mat-raised-button type="button"  class="btn btn-primary btn-link btn-sm">
-                                                                                <i class="material-icons">edit</i>
-                                                                            </button>
-                                                                            <button mat-raised-button type="button"  class="btn btn-danger btn-link btn-sm">
-                                                                                <i class="material-icons">close</i>
-                                                                            </button>
-                                                                            </div>
-                                                                            <div class="timeline-body">
-                                                                                <p>Lines From Great Russian Literature? Or E-mails From My Boss?</p>
-                                                                                <button mat-raised-button type="button"  class="btn btn-primary btn-link btn-sm">
-                                                                                    <i class="material-icons">edit</i>
-                                                                                </button>
-                                                                                <button mat-raised-button type="button"  class="btn btn-danger btn-link btn-sm">
-                                                                                    <i class="material-icons">close</i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </td>
-
-                                                                    </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                            <div class="modal fade " id="updateNWIModal" tabindex="-1" role="dialog"
-                                                                 aria-labelledby="updateExampleModalLabel"
-                                                                 aria-hidden="true">
-                                                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title" id="updateExampleModalLabel">View NWI Details</h5>
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <form #editForm="ngForm">
-                                                                            <div class="modal-body">
-                                                                                <div class="row col-12">
-                                                                                    <label><b>Title of Proposal</b></label>
-                                                                                    <input
-                                                                                            oninput="this.value = this.value.toUpperCase()"
-                                                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                            class="form-control one-column-input"
-                                                                                            name="name"
-                                                                                            type="text">
-                                                                                </div>
-                                                                                <div class="row col-12">
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Scope</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="abbreviations"
-
-                                                                                                type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Purpose & application</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="codes"
-                                                                                                type="text">
-                                                                                    </div>
-
-                                                                                </div>
-                                                                                <div class="row col-12">
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Target Date</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="abbreviations"
-
-                                                                                                type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Similar Standards/Subject of
-                                                                                            Standardization</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="codes"
-                                                                                                type="text">
-                                                                                    </div>
-
-                                                                                </div>
-                                                                                <div class="row col-12">
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Liaison Organizations/or interested
-                                                                                            parties</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="abbreviations"
-
-                                                                                                type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Preparatory Work</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="codes"
-                                                                                                type="text">
-                                                                                    </div>
-
-                                                                                </div>
-                                                                                <div class="row col-12">
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Name of Proposer</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="abbreviations"
-
-                                                                                                type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Organization</b></label>
-                                                                                        <input
-                                                                                                oninput="this.value = this.value.toUpperCase()"
-                                                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                                                aria-label="Small"
-                                                                                                class="form-control one-column-input"
-                                                                                                name="codes"
-                                                                                                type="text">
-                                                                                    </div>
-
-                                                                                </div>
-                                                                                <div class="row col-12">
-                                                                                    <div class="form-group col-12">
-                                                                                        <label><b>Relevant Documents</b></label>
-                                                                                        <div class="material-datatables">
-                                                                                            <table class="table table-striped table-bordered table-hover"
-                                                                                                   datatable
-                                                                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                                                                                                <thead>
-                                                                                                <tr>
-                                                                                                    <th class="id">Document Id</th>
-                                                                                                    <th class="id">Document Name</th>
-                                                                                                    <th class="action">Action</th>
-                                                                                                </tr>
-                                                                                                </thead>
-                                                                                                <tbody>
-                                                                                                <tr *ngFor="let approvedNwi of approvedNwiS let i= index; ">
-                                                                                                    <td>{{i + 1}}</td>
-                                                                                                    <td>{{approvedNwi.request_No}}</td>
-                                                                                                    <td>
-                                                                                                        <a (click)="onOpenModal(approvedNwi,'edit')"
-                                                                                                           class="btn btn-info tooltips"
-                                                                                                           data-placement="top"
-                                                                                                           data-original-title="Upload NWI">Download</a>
-                                                                                                    </td>
-
-                                                                                                </tr>
-                                                                                                </tbody>
-                                                                                            </table>
-                                                                                        </div>
-                                                                                    </div>
+<!--                                                                            </div>-->
 
 
-                                                                                </div>
+<!--                                                                            <div class="modal-footer">-->
+<!--                                                                                <button type="button" class="btn btn-secondary" #closeModal-->
+<!--                                                                                        (click)="hideModel()" data-dismiss="modal">Close-->
+<!--                                                                                </button>-->
+<!--                                                                                <button class="btn btn-info"-->
+<!--                                                                                        (click)="updateDepartment(editForm.value)">Submit-->
+<!--                                                                                </button>-->
+
+<!--                                                                            </div>-->
+<!--                                                                        </form>-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+
+<!--                                        </div>-->
+<!--                                        <div class="tab-pane" id="link11">-->
+<!--                                            <div class="row">-->
+<!--                                                <div class="col-md-12">-->
+<!--                                                    <div class="card">-->
+<!--                                                        <div class="card-header card-header-primary card-header-icon">-->
+<!--                                                            <div class="card-icon">-->
+<!--                                                                <i class="material-icons">schedule</i>-->
+<!--                                                            </div>-->
+<!--                                                            <h4 class="card-title">Previous Comments-->
+<!--                                                            </h4>-->
+
+<!--                                                        </div>-->
+<!--                                                        <div class="card-body">-->
+<!--                                                            <div class="toolbar">-->
+
+<!--                                                            </div>-->
+
+<!--                                                            <h4 class="card-title">All Comments-->
+<!--                                                            </h4>-->
+<!--                                                            <div class="material-datatables">-->
+<!--                                                                <table class="table table-striped table-bordered table-hover" datatable-->
+<!--                                                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">-->
+<!--                                                                    <thead>-->
+<!--                                                                    <tr>-->
+<!--                                                                        <th class="id">Preliminary Draft ID</th>-->
+<!--                                                                        <th class="task">Preliminary Draft Name</th>-->
+<!--                                                                        <th class="action">Comments</th>-->
+<!--                                                                    </tr>-->
+<!--                                                                    </thead>-->
+<!--                                                                    <tbody>-->
+<!--                                                                    &lt;!&ndash;                                    <tr *ngFor="let approvedNwi of approvedNwiS let i= index; ">&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td>{{i + 1}}</td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td>{{approvedNwi.request_No}}</td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td>{{approvedNwi.proposal_Title}}</td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td>{{approvedNwi.name_Of_Tc}}</td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td><span class="badge badge-primary">{{approvedNwi.status}}</span></td>&ndash;&gt;-->
+
+<!--                                                                    &lt;!&ndash;                                        <td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                            <a (click)="onOpenModal(approvedNwi,'edit')" class="btn btn-info tooltips"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-placement="top"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-original-title="Upload NWI">View More Details</a>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                            <br>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                            <a (click)="onOpenModal(approvedNwi,'workPlan')"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               class="btn btn-info tooltips"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-placement="top"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-original-title="Upload NWI">View Workplan</a>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                            <br></td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                        <td>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                            <a (click)="onOpenModal(approvedNwi,'uploadMinutes')"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               class="btn btn-success tooltips"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-placement="top"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-original-title="Upload NWI">Upload Minutes</a>&ndash;&gt;-->
+
+<!--                                                                    &lt;!&ndash;                                            <a (click)="onOpenModal(approvedNwi,'preparePd')"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               class="btn btn-success tooltips"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-placement="top"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                               data-original-title="Upload NWI">Prepare Preliminary Draft</a>&ndash;&gt;-->
+
+<!--                                                                    &lt;!&ndash;                                        </td>&ndash;&gt;-->
+
+<!--                                                                    &lt;!&ndash;                                    </tr>&ndash;&gt;-->
+<!--                                                                    <tr>-->
+<!--                                                                        <td>1</td>-->
+<!--                                                                        <td>Pd1</td>-->
+<!--                                                                        <td>-->
+<!--                                                                            <div class="timeline-body">-->
+<!--                                                                            <p>Lines From Great Russian Literature? Or E-mails From My Boss?</p>-->
+<!--                                                                            <button mat-raised-button type="button"  class="btn btn-primary btn-link btn-sm">-->
+<!--                                                                                <i class="material-icons">edit</i>-->
+<!--                                                                            </button>-->
+<!--                                                                            <button mat-raised-button type="button"  class="btn btn-danger btn-link btn-sm">-->
+<!--                                                                                <i class="material-icons">close</i>-->
+<!--                                                                            </button>-->
+<!--                                                                            </div>-->
+<!--                                                                            <div class="timeline-body">-->
+<!--                                                                                <p>Lines From Great Russian Literature? Or E-mails From My Boss?</p>-->
+<!--                                                                                <button mat-raised-button type="button"  class="btn btn-primary btn-link btn-sm">-->
+<!--                                                                                    <i class="material-icons">edit</i>-->
+<!--                                                                                </button>-->
+<!--                                                                                <button mat-raised-button type="button"  class="btn btn-danger btn-link btn-sm">-->
+<!--                                                                                    <i class="material-icons">close</i>-->
+<!--                                                                                </button>-->
+<!--                                                                            </div>-->
+<!--                                                                        </td>-->
+
+<!--                                                                    </tr>-->
+<!--                                                                    </tbody>-->
+<!--                                                                </table>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="modal fade " id="updateNWIModal" tabindex="-1" role="dialog"-->
+<!--                                                                 aria-labelledby="updateExampleModalLabel"-->
+<!--                                                                 aria-hidden="true">-->
+<!--                                                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">-->
+<!--                                                                    <div class="modal-content">-->
+<!--                                                                        <div class="modal-header">-->
+<!--                                                                            <h5 class="modal-title" id="updateExampleModalLabel">View NWI Details</h5>-->
+<!--                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                                                                                <span aria-hidden="true">&times;</span>-->
+<!--                                                                            </button>-->
+<!--                                                                        </div>-->
+<!--                                                                        <form #editForm="ngForm">-->
+<!--                                                                            <div class="modal-body">-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <label><b>Title of Proposal</b></label>-->
+<!--                                                                                    <input-->
+<!--                                                                                            oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                                                                            class="form-control one-column-input"-->
+<!--                                                                                            name="name"-->
+<!--                                                                                            type="text">-->
+<!--                                                                                </div>-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Scope</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="abbreviations"-->
+
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Purpose & application</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="codes"-->
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+
+<!--                                                                                </div>-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Target Date</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="abbreviations"-->
+
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Similar Standards/Subject of-->
+<!--                                                                                            Standardization</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="codes"-->
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+
+<!--                                                                                </div>-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Liaison Organizations/or interested-->
+<!--                                                                                            parties</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="abbreviations"-->
+
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Preparatory Work</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="codes"-->
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+
+<!--                                                                                </div>-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Name of Proposer</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="abbreviations"-->
+
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+<!--                                                                                    <div class="form-group col-6">-->
+<!--                                                                                        <label><b>Organization</b></label>-->
+<!--                                                                                        <input-->
+<!--                                                                                                oninput="this.value = this.value.toUpperCase()"-->
+<!--                                                                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                                                                aria-label="Small"-->
+<!--                                                                                                class="form-control one-column-input"-->
+<!--                                                                                                name="codes"-->
+<!--                                                                                                type="text">-->
+<!--                                                                                    </div>-->
+
+<!--                                                                                </div>-->
+<!--                                                                                <div class="row col-12">-->
+<!--                                                                                    <div class="form-group col-12">-->
+<!--                                                                                        <label><b>Relevant Documents</b></label>-->
+<!--                                                                                        <div class="material-datatables">-->
+<!--                                                                                            <table class="table table-striped table-bordered table-hover"-->
+<!--                                                                                                   datatable-->
+<!--                                                                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">-->
+<!--                                                                                                <thead>-->
+<!--                                                                                                <tr>-->
+<!--                                                                                                    <th class="id">Document Id</th>-->
+<!--                                                                                                    <th class="id">Document Name</th>-->
+<!--                                                                                                    <th class="action">Action</th>-->
+<!--                                                                                                </tr>-->
+<!--                                                                                                </thead>-->
+<!--                                                                                                <tbody>-->
+<!--                                                                                                <tr *ngFor="let approvedNwi of approvedNwiS let i= index; ">-->
+<!--                                                                                                    <td>{{i + 1}}</td>-->
+<!--                                                                                                    <td>{{approvedNwi.request_No}}</td>-->
+<!--                                                                                                    <td>-->
+<!--                                                                                                        <a (click)="onOpenModal(approvedNwi,'edit')"-->
+<!--                                                                                                           class="btn btn-info tooltips"-->
+<!--                                                                                                           data-placement="top"-->
+<!--                                                                                                           data-original-title="Upload NWI">Download</a>-->
+<!--                                                                                                    </td>-->
+
+<!--                                                                                                </tr>-->
+<!--                                                                                                </tbody>-->
+<!--                                                                                            </table>-->
+<!--                                                                                        </div>-->
+<!--                                                                                    </div>-->
 
 
-                                                                            </div>
+<!--                                                                                </div>-->
 
 
-                                                                            <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" #closeModal
-                                                                                        (click)="hideModel()" data-dismiss="modal">Close
-                                                                                </button>
-                                                                                <button class="btn btn-info"
-                                                                                        (click)="updateDepartment(editForm.value)">Submit
-                                                                                </button>
+<!--                                                                            </div>-->
 
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
+<!--                                                                            <div class="modal-footer">-->
+<!--                                                                                <button type="button" class="btn btn-secondary" #closeModal-->
+<!--                                                                                        (click)="hideModel()" data-dismiss="modal">Close-->
+<!--                                                                                </button>-->
+<!--                                                                                <button class="btn btn-info"-->
+<!--                                                                                        (click)="updateDepartment(editForm.value)">Submit-->
+<!--                                                                                </button>-->
 
-        </div>
-    </div>
-</div>
+<!--                                                                            </div>-->
+<!--                                                                        </form>-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--            </div>-->
+
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
