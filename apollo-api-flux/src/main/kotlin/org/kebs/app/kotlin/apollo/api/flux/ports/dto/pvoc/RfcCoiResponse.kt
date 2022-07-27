@@ -50,7 +50,7 @@ class RfcCoiResponse {
 }
 
 class RfcCoiWithItems {
-    var rfcCoi: RfcCoiEntity? = null
+//    var rfcCoi: RfcCoiEntity? = null
     var rfcCoiItems: List<RfcItemEntity>? = null
 }
 

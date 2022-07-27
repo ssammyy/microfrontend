@@ -2,7 +2,10 @@ package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
+import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocumentDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.response.CorEntityDao
+import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerDto
 import org.kebs.app.kotlin.apollo.api.payload.response.RfcCorDao
 import org.kebs.app.kotlin.apollo.api.payload.response.RfcDao
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocAgentMonitoringStatusEntity
@@ -22,8 +25,11 @@ class PvocMonitoringService(
         private val iPvocAgentMonitoringStatusEntityRepo: IPvocAgentMonitoringStatusEntityRepo,
         private val rfcRepository: IRfcEntityRepo,
         private val rfcCorRepository: IRfcCorRepository,
+        private val cocItemRepository: ICocItemRepository,
         private val corBakRepository: ICorsBakRepository,
-        private val cocCoiRepository: ICocsRepository
+        private val cocCoiRepository: ICocsRepository,
+        private val pvocQuerriesRepository: IPvocQuerriesRepository,
+        private val partnerService: PvocPartnerService,
 ) {
     fun findMonitoringRecord(yearMonth: String, agent: PvocPartnersEntity): PvocAgentMonitoringStatusEntity {
         val monitoringOptional = this.iPvocAgentMonitoringStatusEntityRepo.findFirstByPartnerIdAndYearMonthAndStatus(agent, yearMonth, MonitoringStatus.OPEN.status)
@@ -157,7 +163,19 @@ class PvocMonitoringService(
                 response.message = "Record not found"
                 response.responseCode = ResponseCodes.NOT_FOUND
             } else {
-                response.data = data.get()
+                val dataMap = mutableMapOf<String, Any?>()
+                dataMap["certificate_details"] = data.get()
+                dataMap["cd_details"] = data.get().consignmentDocId?.let { ConsignmentDocumentDao.fromEntity(it) }
+                dataMap["pvoc_client"] = data.get().partner?.let { partnerId ->
+                    this.partnerService.getPartner(partnerId)?.let { part -> PvocPartnerDto.fromEntity(part) }
+                }
+                dataMap["items"] = cocItemRepository.findByCocId(foreignId)
+                dataMap["queries"] = pvocQuerriesRepository.findAllByCertNumber(when (data.get().cocType) {
+                    "COC" -> data.get().cocNumber.orEmpty()
+                    "COI" -> data.get().coiNumber.orEmpty()
+                    else -> data.get().cocNumber.orEmpty()
+                })
+                response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }
@@ -173,7 +191,7 @@ class PvocMonitoringService(
         val response = ApiResponseModel()
         try {
             val data = this.corBakRepository.findByDocumentsTypeAndReviewStatus("F", reviewStatus, page)
-            response.data = data.toList()
+            response.data = CorEntityDao.fromList(data.toList())
             response.message = "Success"
             response.pageNo = data.number
             response.totalCount = data.totalElements
@@ -194,7 +212,14 @@ class PvocMonitoringService(
                 response.message = "Record not found"
                 response.responseCode = ResponseCodes.NOT_FOUND
             } else {
-                response.data = data.get()
+                val dataMap = mutableMapOf<String, Any?>()
+                dataMap["cor_details"] = CorEntityDao.fromEntity(data.get())
+                dataMap["cd_details"] = data.get().consignmentDocId?.let { ConsignmentDocumentDao.fromEntity(it) }
+                dataMap["pvoc_client"] = data.get().partner?.let { partnerId ->
+                    this.partnerService.getPartner(partnerId)?.let { part -> PvocPartnerDto.fromEntity(part) }
+                }
+                dataMap["queries"] = pvocQuerriesRepository.findAllByCertNumber(data.get().corNumber.orEmpty())
+                response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }

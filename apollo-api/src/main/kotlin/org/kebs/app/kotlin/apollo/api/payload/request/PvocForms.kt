@@ -1556,13 +1556,24 @@ class KebsQueryResponse {
 }
 
 class KebsPvocQueryForm {
+    @NotNull(message = "Document partner is required")
     var partnerId: Long? = null
     var serialNumber: String? = null
+
+    @NotEmpty(message = "document type is required")
     var documentType: String? = null
+
+    @NotEmpty(message = "Certificate number is required")
     var certNumber: String? = null
+
+    @NotEmpty(message = "RFC Number is required")
     var rfcNumber: String? = null
     var invoiceNumber: String? = null
+
+    @NotEmpty(message = "UCR number is required")
     var ucrNumber: String? = null
+
+    @NotEmpty(message = "Query details cannot be empty")
     var kebsQuery: String? = null
 }
 

@@ -23,6 +23,10 @@ class MsProcessNamesEntity : Serializable {
     var processName: String? = null
 
     @Basic
+    @Column(name = "TIMELINES_DAY")
+    var timelinesDay: Long? = null
+
+    @Basic
     @Column(name = "DESCRIPTION")
     var description: String? = null
 

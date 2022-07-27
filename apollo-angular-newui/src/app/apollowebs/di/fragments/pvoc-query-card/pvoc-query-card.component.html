@@ -1,0 +1,18 @@
+<div class="card border" style="width: 98%">
+    <div class="card-header" [className]="queryDetails.queryOrigin==='KEBS'?'bg-primary':'bg-success'">
+        <h4 class="pull-right">
+            {{queryDetails.serialNumber}} - {{queryDetails.queryOrigin}}
+            <span class="font-small pull-right float-right">Created by {{queryDetails.createdBy}}
+                on {{queryDetails.createdOn | date: 'dd-MM-yyyy'}} at {{queryDetails.createdOn | date: 'HH:mm'}}</span>
+        </h4>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Query from <b>{{queryDetails.queryOrigin}}</b></h5>
+        <div class="card-text">{{queryDetails.queryDetails}}</div>
+        <h5 class="card-title" *ngIf="queryDetails.conclusion">Conclusions</h5>
+        <div class="card-text" *ngIf="queryDetails.conclusion">{{queryDetails.conclusion}}</div>
+        <span class="text-break"></span>
+        <a class="float-right pull-right btn btn-primary pt-3 pl-3" href="/pvoc/foreign/queries/{{queryDetails.id}}">View
+            More</a>
+    </div>
+</div>

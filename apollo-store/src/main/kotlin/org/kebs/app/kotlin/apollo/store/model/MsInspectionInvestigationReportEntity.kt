@@ -160,8 +160,8 @@ class MsInspectionInvestigationReportEntity: Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "MS_WORKPLAN_GENERATED_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var workPlanGeneratedID: MsWorkPlanGeneratedEntity? = null
+    @Column(name = "MS_WORKPLAN_GENERATED_ID")
+    @Basic
+    var workPlanGeneratedID: Long? = null
 
 }

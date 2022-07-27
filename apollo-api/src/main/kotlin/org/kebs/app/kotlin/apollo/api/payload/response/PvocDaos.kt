@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.payload.response
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import org.kebs.app.kotlin.apollo.api.payload.request.RfcItemForm
+import org.kebs.app.kotlin.apollo.store.model.CorsBakEntity
 import org.kebs.app.kotlin.apollo.store.model.RiskProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import java.io.Serializable
@@ -956,6 +957,149 @@ class RfcCorDao {
             val dtos = mutableListOf<RfcCorDao>()
             rfcs.forEach {
                 dtos.add(RfcCorDao.fromEntity(it))
+            }
+            return dtos
+        }
+    }
+}
+
+class CorEntityDao {
+    var recordId: Long? = null
+    var corNumber: String? = null
+    var ucrNumber: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var acceptableDocDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalDocDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var corIssueDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var rfcDate: Timestamp? = null
+    var countryOfSupply: String? = null
+    var inspectionCenter: String? = null
+    var exporterName: String? = null
+    var exporterAddress1: String? = null
+    var exporterAddress2: String? = null
+    var exporterEmail: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var applicationBookingDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var inspectionDate: Timestamp? = null
+    var make: String? = null
+    var model: String? = null
+    var chassisNumber: String? = null
+    var engineNumber: String? = null
+    var engineCapacity: String? = null
+    var yearOfManufacture: String? = null
+    var yearOfFirstRegistration: String? = null
+    var inspectionMileage: String? = null
+    var unitsOfMileage: String? = null
+    var inspectionRemarks: String? = null
+    var previousRegistrationNumber: String? = null
+    var previousCountryOfRegistration: String? = null
+    var tareWeight: Double? = null
+    var loadCapacity: Double? = null
+    var grossWeight: Double? = null
+    var numberOfAxles: Long? = null
+    var typeOfVehicle: String? = null
+    var numberOfPassengers: Long? = null
+    var typeOfBody: String? = null
+    var bodyColor: String? = null
+    var fuelType: String? = null
+    var inspectionFee: Double? = null
+    var inspectionFeeReceipt: String? = null
+    var transmission: String? = null
+    var inspectionOfficer: String? = null
+    var inspectionFeeCurrency: String? = null
+    var inspectionFeeExchangeRate: Double? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var inspectionFeePaymentDate: Timestamp? = null
+    var route: String? = null
+    var partnerId: Long? = null
+    var reviewStatus: Int? = null
+    var reviewStatusDesc: String? = null
+    var clientId: String? = null
+    var documentsType: String? = null
+    var cdReference: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var createdOn: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    var timeCreated: Timestamp? = null
+    var version: Long? = null
+
+    companion object {
+        fun fromEntity(rfc: CorsBakEntity): CorEntityDao {
+            val rfcEntity = CorEntityDao()
+            rfcEntity.recordId = rfc.id
+            rfcEntity.cdReference = rfc.consignmentDocId?.uuid
+            rfcEntity.partnerId = rfc.partner
+            rfcEntity.corNumber = rfc.corNumber ?: rfc.consignmentDocId?.ucrNumber
+            rfcEntity.acceptableDocDate = rfc.acceptableDocDate
+            rfcEntity.ucrNumber = rfc.ucrNumber
+            rfcEntity.finalDocDate = rfc.finalDocDate
+            rfcEntity.corIssueDate = rfc.corIssueDate
+            rfcEntity.countryOfSupply = rfc.countryOfSupply
+            rfcEntity.inspectionCenter = rfc.inspectionCenter
+            rfcEntity.exporterName = rfc.exporterName
+            rfcEntity.exporterAddress1 = rfc.exporterAddress1
+            rfcEntity.exporterAddress2 = rfc.exporterAddress2
+            rfcEntity.exporterEmail = rfc.exporterEmail
+            rfcEntity.inspectionFeeExchangeRate = rfc.inspectionFeeExchangeRate
+            rfcEntity.applicationBookingDate = rfc.applicationBookingDate
+            rfcEntity.inspectionDate = rfc.inspectionDate
+            rfcEntity.inspectionFee = rfc.inspectionFee
+            rfcEntity.inspectionFeeCurrency = rfc.inspectionFeeCurrency
+            rfcEntity.inspectionFeeReceipt = rfc.inspectionFeeReceipt
+            rfcEntity.inspectionFeePaymentDate = rfc.inspectionFeePaymentDate
+            rfcEntity.inspectionRemarks = rfc.inspectionRemarks
+            rfcEntity.inspectionOfficer = rfc.inspectionOfficer
+            rfcEntity.inspectionMileage = rfc.inspectionMileage
+            rfcEntity.clientId = rfc.createdBy
+            rfcEntity.reviewStatusDesc = when (rfc.reviewStatus) {
+                1 -> "REVIEWED"
+                2 -> "REJECTED"
+                else -> "NOT REVIEWED"
+            }
+            rfcEntity.reviewStatus = rfc.reviewStatus
+            rfcEntity.numberOfPassengers = rfc.numberOfPassangers
+            rfcEntity.numberOfAxles = rfc.numberOfAxles
+            rfcEntity.bodyColor = rfc.bodyColor
+            rfcEntity.typeOfVehicle = rfc.typeOfVehicle
+            rfcEntity.unitsOfMileage = rfc.unitsOfMileage
+            rfcEntity.inspectionMileage = rfc.inspectionMileage
+            rfcEntity.engineNumber = rfc.engineNumber
+            rfcEntity.engineCapacity = rfc.engineCapacity
+            rfcEntity.make = rfc.make
+            rfcEntity.model = rfc.model
+            rfcEntity.fuelType = rfc.fuelType
+            rfcEntity.loadCapacity = rfc.loadCapacity
+            rfcEntity.tareWeight = rfc.tareWeight
+            rfcEntity.chassisNumber = rfc.chasisNumber
+            rfcEntity.previousCountryOfRegistration = rfc.previousCountryOfRegistration
+            rfcEntity.previousRegistrationNumber = rfc.previousRegistrationNumber
+            rfcEntity.yearOfFirstRegistration = rfc.yearOfFirstRegistration
+            rfcEntity.yearOfManufacture = rfc.yearOfManufacture
+            rfcEntity.route = rfc.route
+            rfcEntity.createdOn = rfc.createdOn
+            rfcEntity.timeCreated = rfc.createdOn
+            rfcEntity.documentsType = rfc.documentsType
+            rfcEntity.version = rfc.version
+            return rfcEntity
+        }
+
+        fun fromList(rfcs: List<CorsBakEntity>): List<CorEntityDao> {
+            val dtos = mutableListOf<CorEntityDao>()
+            rfcs.forEach {
+                dtos.add(fromEntity(it))
             }
             return dtos
         }

@@ -211,67 +211,8 @@ class MsSeizureDeclarationEntity : Serializable{
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "MS_WORKPLAN_GENERATED_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var workPlanGeneratedID: MsWorkPlanGeneratedEntity? = null
+    @Column(name = "MS_WORKPLAN_GENERATED_ID")
+    @Basic
+    var workPlanGeneratedID: Long? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as MsSeizureDeclarationEntity
-        return id == that.id &&
-                seizureTo == that.seizureTo &&
-                seizurePremises == that.seizurePremises &&
-                seizureRequirementsStandards == that.seizureRequirementsStandards &&
-                goodsName == that.goodsName &&
-                goodsManufactureTrader == that.goodsManufactureTrader &&
-                goodsAddress == that.goodsAddress &&
-                goodsPhysical == that.goodsPhysical &&
-                goodsLocation == that.goodsLocation &&
-                goodsMarkedBranded == that.goodsMarkedBranded &&
-                goodsPhysicalSeal == that.goodsPhysicalSeal &&
-                descriptionGoods == that.descriptionGoods &&
-                goodsQuantity == that.goodsQuantity &&
-                goodsThereforei == that.goodsThereforei &&
-                nameInspector == that.nameInspector &&
-                designationInspector == that.designationInspector &&
-                dateInspector == that.dateInspector &&
-                nameManufactureTrader == that.nameManufactureTrader &&
-                designationManufactureTrader == that.designationManufactureTrader &&
-                dateManufactureTrader == that.dateManufactureTrader &&
-                nameWitness == that.nameWitness &&
-                designationWitness == that.designationWitness &&
-                dateWitness == that.dateWitness &&
-                declarationTakenBy == that.declarationTakenBy &&
-                declarationOnThe == that.declarationOnThe &&
-                declarationDayOf == that.declarationDayOf &&
-                declarationMyName == that.declarationMyName &&
-                declarationIresideAt == that.declarationIresideAt &&
-                declarationIemployeedAs == that.declarationIemployeedAs &&
-                declarationIemployeedOf == that.declarationIemployeedOf &&
-                declarationSituatedAt == that.declarationSituatedAt &&
-                declarationStateThat == that.declarationStateThat &&
-                declarationIdNumber == that.declarationIdNumber &&
-                status == that.status &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(id, seizureTo, seizurePremises, seizureRequirementsStandards, goodsName, goodsManufactureTrader, goodsAddress, goodsPhysical, goodsLocation, goodsMarkedBranded, goodsPhysicalSeal, descriptionGoods, goodsQuantity, goodsThereforei, nameInspector, designationInspector, dateInspector, nameManufactureTrader, designationManufactureTrader, dateManufactureTrader, nameWitness, designationWitness, dateWitness, declarationTakenBy, declarationOnThe, declarationDayOf, declarationMyName, declarationIresideAt, declarationIemployeedAs, declarationIemployeedOf, declarationSituatedAt, declarationStateThat, declarationIdNumber, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
-    }
 }

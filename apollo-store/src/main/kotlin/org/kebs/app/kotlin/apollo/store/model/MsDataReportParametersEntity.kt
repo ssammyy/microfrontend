@@ -14,9 +14,6 @@ class MsDataReportParametersEntity : Serializable{
     @Id
     var id: Long? = 0
 
-//    @Column(name = "DATA_REPORT_ID")
-//    @Basic
-//    var dataReportId: Long? = null
 
     @Column(name = "TYPE_BRAND_NAME")
     @Basic

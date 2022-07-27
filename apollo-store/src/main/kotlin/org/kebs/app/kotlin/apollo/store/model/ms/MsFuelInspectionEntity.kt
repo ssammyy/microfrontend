@@ -27,6 +27,14 @@ class MsFuelInspectionEntity : Serializable{
     @Basic
     var batchId: Long? = null
 
+    @Column(name = "TIMELINE_START_DATE")
+    @Basic
+    var timelineStartDate: Date? = null
+
+    @Column(name = "TIMELINE_END_DATE")
+    @Basic
+    var timelineEndDate: Date? = null
+
     @Column(name = "USER_TASK_ID")
     @Basic
     var userTaskId: Long? = null

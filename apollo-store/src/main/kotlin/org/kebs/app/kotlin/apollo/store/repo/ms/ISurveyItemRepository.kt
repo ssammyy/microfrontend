@@ -92,8 +92,38 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
     override fun findAll( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
     fun findByWorkPlanYearId(workPlanYearId: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+    fun findByWorkPlanYearIdAndMsProcessEndedStatus(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+
+    fun findByWorkPlanYearIdAndOfficerIdAndUserTaskId(
+        workPlanYearId: Long,
+        officerId: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
+    fun findByWorkPlanYearIdAndHofAssignedAndUserTaskId(
+        workPlanYearId: Long,
+        hofAssigned: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
+    fun findByWorkPlanYearIdAndHodRmAssignedAndUserTaskId(
+        workPlanYearId: Long,
+        hodRmAssigned: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
+    fun findByWorkPlanYearIdAndUserTaskId(
+        workPlanYearId: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
     fun findByUuid(uuid: String): MsWorkPlanGeneratedEntity?
     fun findByReferenceNumber(referenceNumber: String): MsWorkPlanGeneratedEntity?
+    fun findByComplaintId(complaintId: Long): MsWorkPlanGeneratedEntity?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
 
@@ -173,6 +203,8 @@ interface IPreliminaryOutletsRepository : HazelcastRepository<MsPreliminaryRepor
 @Repository
 interface IMSInvestInspectReportRepository : HazelcastRepository<MsInspectionInvestigationReportEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsInspectionInvestigationReportEntity>
+
+    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long):MsInspectionInvestigationReportEntity?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
@@ -180,6 +212,8 @@ interface IMSInvestInspectReportRepository : HazelcastRepository<MsInspectionInv
 @Repository
 interface IMSSeizureDeclarationRepository : HazelcastRepository<MsSeizureDeclarationEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsSeizureDeclarationEntity>
+
+    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): MsSeizureDeclarationEntity?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
@@ -188,7 +222,7 @@ interface IMSSeizureDeclarationRepository : HazelcastRepository<MsSeizureDeclara
 interface IDataReportRepository : HazelcastRepository<MsDataReportEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsDataReportEntity>
 
-    fun findByWorkPlanGeneratedID(workPlanGeneratedID: MsWorkPlanGeneratedEntity): MsDataReportEntity?
+    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): MsDataReportEntity?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
@@ -206,8 +240,9 @@ interface ISampleCollectionViewRepository : HazelcastRepository<MsSampleCollecti
 interface IDataReportParameterRepository : HazelcastRepository<MsDataReportParametersEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsDataReportParametersEntity>
 
-    fun findByDataReportId(dataReportId: MsDataReportEntity, pageable: Pageable): Page<MsDataReportParametersEntity>
-    fun findByDataReportId(dataReportId: MsDataReportEntity): List<MsDataReportParametersEntity>?
+    fun findByDataReportId(dataReportId: Long, pageable: Pageable): Page<MsDataReportParametersEntity>
+
+    fun findByDataReportId(dataReportId: Long): List<MsDataReportParametersEntity>?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }

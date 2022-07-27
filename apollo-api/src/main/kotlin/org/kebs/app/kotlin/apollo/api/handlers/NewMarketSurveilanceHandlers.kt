@@ -806,6 +806,8 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+
+
     fun updateComplaintByAssigningIO(req: ServerRequest): ServerResponse {
         return try {
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
@@ -830,6 +832,7 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+
     fun updateComplaintByAddingClassificationDetails(req: ServerRequest): ServerResponse {
         return try {
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
@@ -853,6 +856,31 @@ class NewMarketSurveillanceHandler(
             ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+    fun addComplaintToWorkPlanDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val body = req.body<WorkPlanEntityDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, WorkPlanEntityDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.createNewWorkPlanScheduleFromComplaint(referenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
 
     fun updateComplaintByStartingMsProcess(req: ServerRequest): ServerResponse {
         return try {
@@ -899,6 +927,34 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun getAllWorkPlanBatchListClosed(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceWorkPlanDaoServices.getAllWorkPlanBatchListClosed(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getAllWorkPlanBatchListOpen(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceWorkPlanDaoServices.getAllWorkPlanBatchListOpen(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun saveNewWorkPlanBatch(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
@@ -906,6 +962,56 @@ class NewMarketSurveillanceHandler(
                 .let {
                     ServerResponse.ok().body(it)
                 }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updateWorkPlanByAssigningIO(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
+            val body = req.body<ComplaintAssignDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ComplaintAssignDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleAssignIOStatus(referenceNo,batchReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updateWorkPlanByAssigningHof(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
+            val body = req.body<ComplaintAssignDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ComplaintAssignDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleAssignIOStatus(referenceNo,batchReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
@@ -969,6 +1075,66 @@ class NewMarketSurveillanceHandler(
             ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+        fun getAllWorkPlanOnGoingList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllNotCompletedLists(batchReferenceNo,page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+//    fun getAllWorkPlanNewList(req: ServerRequest): ServerResponse {
+//        return try {
+//            val page = commonDaoServices.extractPageRequest(req)
+//            marketSurveillanceWorkPlanDaoServices.msComplaintNewLists(page)
+//                .let {
+//                    ServerResponse.ok().body(it)
+//                }
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+//        }
+//    }
+
+    fun getAllWorkPlanCompletedList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllCompletedLists(batchReferenceNo,page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getAllWorkPlanMyTaskList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionListMyTask(batchReferenceNo,page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
 
     fun getWorkPlanInspectionDetails(req: ServerRequest): ServerResponse {
         return try {
@@ -1464,61 +1630,6 @@ class NewMarketSurveillanceHandler(
         }
     }
 
-//    fun getAllWorkPlanOnGoingList(req: ServerRequest): ServerResponse {
-//        return try {
-//            val page = commonDaoServices.extractPageRequest(req)
-//            marketSurveillanceWorkPlanDaoServices.msWorPlanInspectionOnGoingLists(page)
-//                .let {
-//                    ServerResponse.ok().body(it)
-//                }
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error(e.message)
-//            KotlinLogging.logger { }.debug(e.message, e)
-//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
-//        }
-//    }
-//
-//    fun getAllWorkPlanNewList(req: ServerRequest): ServerResponse {
-//        return try {
-//            val page = commonDaoServices.extractPageRequest(req)
-//            marketSurveillanceWorkPlanDaoServices.msComplaintNewLists(page)
-//                .let {
-//                    ServerResponse.ok().body(it)
-//                }
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error(e.message)
-//            KotlinLogging.logger { }.debug(e.message, e)
-//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
-//        }
-//    }
-//
-//    fun getAllWorkPlanCompletedList(req: ServerRequest): ServerResponse {
-//        return try {
-//            val page = commonDaoServices.extractPageRequest(req)
-//            marketSurveillanceWorkPlanDaoServices.msComplaintAllCompletedLists(page)
-//                .let {
-//                    ServerResponse.ok().body(it)
-//                }
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error(e.message)
-//            KotlinLogging.logger { }.debug(e.message, e)
-//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
-//        }
-//    }
-//
-//    fun getAllWorkPlanMyTaskList(req: ServerRequest): ServerResponse {
-//        return try {
-//            val page = commonDaoServices.extractPageRequest(req)
-//            marketSurveillanceWorkPlanDaoServices.msComplaintMyTaskLists(page)
-//                .let {
-//                    ServerResponse.ok().body(it)
-//                }
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error(e.message)
-//            KotlinLogging.logger { }.debug(e.message, e)
-//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
-//        }
-//    }
 
 
 }

@@ -81,6 +81,7 @@ class HibernateJpaConfiguration(private val jcp: JpaConnectionProperties) {
             config.jdbcUrl = jcp.jdbcUrl
             config.username = jcp.jdbcUser
             config.password = jcp.jdbcPass
+            config.driverClassName = jcp.jdbcDriverClassName
 //            config.schema = jcp.jdbcSchema
 
             config.connectionTimeout = jcp.hikariConnectionTimeout
@@ -98,7 +99,7 @@ class HibernateJpaConfiguration(private val jcp: JpaConnectionProperties) {
             hc = HikariDataSource(config)
         } catch (e: Exception) {
 
-            KotlinLogging.logger { }.error { e }
+            KotlinLogging.logger { }.error("Failed to initialize database", e)
 
         }
 

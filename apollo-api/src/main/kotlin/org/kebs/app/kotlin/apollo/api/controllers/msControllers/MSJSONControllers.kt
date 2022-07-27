@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.ms.MsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelRemediationInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.ISampleCollectionViewRepository
@@ -38,6 +39,7 @@ class MSJSONControllers(
     private val appId: Int = applicationMapProperties.mapMarketSurveillance
 
     @PostMapping("/work-plan/file/save")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFiles(
         @RequestParam("referenceNo") referenceNo: String,
@@ -48,13 +50,42 @@ class MSJSONControllers(
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        val workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-
+        var fileDocSaved: MsUploadsEntity? = null
         docFile.forEach { fileDoc ->
-            if (docTypeName == "ORDINARY_FILE"){
-                msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled)
+            with(workPlanScheduled){
+                when (docTypeName) {
+                    "ONSITE_FILE" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                    }
+                    "SCF_FILE" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        scfDocId = fileDocSaved!!.id
+                    }
+                    "SSF_FILE" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        ssfDocId = fileDocSaved!!.id
+                    }
+                    "SEIZURE_FILE" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        seizureDocId = fileDocSaved!!.id
+                    }
+                    "DECLARATION_FILE" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        declarationDocId = fileDocSaved!!.id
+                    }
+                    "CHARGE_SHEET_FILE" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        chargeSheetDocId = fileDocSaved!!.id
+                    }
+                    "DATA_REPORT_FILE" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        dataReportDocId = fileDocSaved!!.id
+                    }
+                }
             }
+            workPlanScheduled = msWorkPlanDaoService.updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
         }
 
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)

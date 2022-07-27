@@ -1241,6 +1241,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.mandate}")
     val msComplaintProcessMandate: Long? = null
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.msProcessStated}")
+    val msComplaintProcessStarted: Long? = null
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.not.mandate}")
     val msComplaintProcessNotMandate: Long? = null
 

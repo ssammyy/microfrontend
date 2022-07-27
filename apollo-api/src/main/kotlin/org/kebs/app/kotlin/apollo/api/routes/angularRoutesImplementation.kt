@@ -601,18 +601,20 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                     PUT("/add-classification-details", handler::updateComplaintByAddingClassificationDetails)
                     PUT("/start-ms-process", handler::updateComplaintByAddingClassificationDetails)
                 }
-//                POST("/new", handler::saveNewComplaint)
+                POST("/add/complaint-work-plan", handler::addComplaintToWorkPlanDetails)
             }
             "/workPlan".nest {
                 GET("/all-batch-list", handler::getAllWorkPlanBatchList)
+                GET("/all-batch-closed", handler::getAllWorkPlanBatchListClosed)
+                GET("/all-batch-open", handler::getAllWorkPlanBatchListOpen)
                 POST("/add", handler::saveNewWorkPlanBatch)
                 PUT("/close", handler::closeWorkPlanBatchEntry)
                 "/inspection".nest {
                     GET("/list", handler::getAllWorkPlanList)
-//                    GET("/list-completed", handler::getAllWorkPlanCompletedList)
+                    GET("/list-completed", handler::getAllWorkPlanCompletedList)
 //                    GET("/list-new", handler::getAllWorkPlanNewList)
-//                    GET("/list-on-going", handler::getAllWorkPlanOnGoingList)
-//                    GET("/list-my-task", handler::getAllWorkPlanMyTaskList)
+                    GET("/list-on-going", handler::getAllWorkPlanOnGoingList)
+                    GET("/list-my-task", handler::getAllWorkPlanMyTaskList)
                     POST("/new", handler::saveNewWorkPlanSchedule)
                     GET("/details", handler::getWorkPlanInspectionDetails)
                     "/update".nest {
@@ -622,10 +624,12 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/client-appealed-status", handler::updateWorkPlanClientAppealed)
                         PUT("/client-appealed-successfully", handler::updateWorkPlanClientAppealSuccesful)
                         "/hof".nest {
+                            PUT("/assign-io", handler::updateWorkPlanByAssigningIO)
                             PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
                             PUT("/approval-final-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
                         }
                         "/hod".nest {
+                            PUT("/assign-hof", handler::updateWorkPlanByAssigningHof)
                             PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD)
                             PUT("/approval-final-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD)
                             PUT("/final-recommendation", handler::addWorkPlanScheduleFinalRecommendationByHOD)
@@ -643,7 +647,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
-                        PUT("/final-preliminary-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
+                        PUT("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
                 }
 

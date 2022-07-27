@@ -55,6 +55,8 @@ data class FuelInspectionScheduleListDetailsDto(
 
 data class FuelInspectionDto(
         var id: Long? = null,
+        var timelineStartDate: Date? = null,
+        var timelineEndDate: Date? = null,
         var referenceNumber: String? = null,
         var company: String? = null,
         var companyKraPin: String? = null,
@@ -92,6 +94,8 @@ data class WorkPlanInspectionDto(
         var standardCategory: String? = null,
         var productSubCategory: String? = null,
         var divisionId: String? = null,
+        var timelineStartDate: Date? = null,
+        var timelineEndDate: Date? = null,
 //        var sampleSubmittedId: Long? = null,
         var division: String? = null,
         var officerName: String? = null,
@@ -163,6 +167,12 @@ data class WorkPlanInspectionDto(
         var hodRmAssignedDetails: MsUsersDto? = null,
         var hofAssignedDetails: MsUsersDto? = null,
         var destructionDocId: Long? = null,
+        var scfDocId: Long? = null,
+        var ssfDocId: Long? = null,
+        var seizureDocId: Long? = null,
+        var declarationDocId: Long? = null,
+        var chargeSheetDocId: Long? = null,
+        var dataReportDocId: Long? = null,
         var complaintDepartment: String? = null,
         var referenceNumber: String? = null,
         var batchDetails: WorkPlanBatchDetailsDto? = null,
@@ -170,13 +180,20 @@ data class WorkPlanInspectionDto(
         var remarksDetails: List<MSRemarksDto>? = null,
         var workPlanFiles: List<WorkPlanFilesFoundDto>? = null,
         var chargeSheet: ChargeSheetDto? = null,
+        var seizureDeclarationDto: SeizureDeclarationDto? = null,
+        var inspectionInvestigationDto: InspectionInvestigationReportDto? = null,
+        var dataReportDto: DataReportDto? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
         var compliantStatusAdded: Boolean? = null,
         var destructionRecommended: Boolean? = null,
+        var finalReportGenerated: Boolean? = null,
+        var appealStatus: Boolean? = null,
         var msProcessEndedStatus: Boolean? = null,
         var preliminaryReport: PreliminaryReportDto? = null,
+        var officersList: List<MsUsersDto>? = null,
+        var hofList: List<MsUsersDto>? = null,
 )
 
 data class FuelEntityDto(
@@ -713,6 +730,7 @@ data class MSRemarksDto(
         var processName: String? = null
 )
 
+
 data class AllComplaintsDetailsDto(
         var complaintsDetails: ComplaintsDetailsDto? = null,
         var acceptanceDone : Boolean,
@@ -725,7 +743,9 @@ data class AllComplaintsDetailsDto(
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
-//        var fuelRemediation: FuelRemediationDto? = null,
+        var complaintProcessStatus: Boolean,
+        var workPlanRefNumber: String?= null,
+        var workPlanBatchRefNumber: String?= null
 )
 
 data class ComplaintsDetailsDto(
@@ -750,14 +770,15 @@ data class ComplaintsDetailsDto(
         var buildingName: String? = null,
         var date: Date? = null,
         var status: String? = null,
-//        var officersList: List<MsUsersDto>? = null,
-//        var divisionList: List<MsDivisionDto>? = null,
         var approvedStatus: Boolean? = null,
         var assignedIOStatus: Boolean? = null,
         var rejectedStatus: Boolean? = null,
         var classificationDetailsStatus: Boolean? = null,
         var complaintFiles: List<ComplaintsFilesFoundDto>? = null,
-        var ksApplicable: StandardDetailsDto? = null
+        var ksApplicable: StandardDetailsDto? = null,
+        var timelineStartDate: Date? = null,
+        var timelineEndDate: Date? = null
+
 
 )
 

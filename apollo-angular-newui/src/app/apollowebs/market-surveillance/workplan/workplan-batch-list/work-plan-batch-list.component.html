@@ -41,13 +41,17 @@
                                 </div>
                             </div>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
-                                <button type="button" (click)="toggleStatus('my-tasks')"
-                                        [className]="activeStatus == 'my-tasks' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
-                                    My Tasks
+                                <button type="button" (click)="toggleStatus('all-workPlan-batch')"
+                                        [className]="activeStatus == 'all-workPlan-batch' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    ALL-WORK-PLAN-BATCH
                                 </button>
-                                <button type="button" (click)="toggleStatus('ongoing')"
-                                        [className]="activeStatus == 'ongoing' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
-                                    ONGOING
+                                <button type="button" (click)="toggleStatus('open-workPlan-batch')"
+                                        [className]="activeStatus == 'open-workPlan-batch' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    OPEN-WORK-PLAN-BATCH
+                                </button>
+                                <button type="button" (click)="toggleStatus('close-workPlan-batch')"
+                                        [className]="activeStatus == 'close-workPlan-batch' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    CLOSE-WORK-PLAN-BATCH
                                 </button>
                                 <!--                                <button type="button" (click)="toggleStatus('not-assigned')"-->
                                 <!--                                        [className]="activeStatus == 'not-assigned' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">-->

@@ -121,6 +121,9 @@ export class AllComplaintsDetailsDto {
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto;
     sampleLabResults: MSSSFLabResultsDto;
+    complaintProcessStatus: boolean;
+    workPlanRefNumber: string;
+    workPlanBatchRefNumber: string;
 }
 
 export class MSRemarksDto {
@@ -233,6 +236,8 @@ export class ComplaintDetailsDto {
     classificationDetailsStatus: boolean;
     complaintFiles: ComplaintsFilesFoundDto[];
     ksApplicable: StandardDetailsDto;
+    timelineStartDate: Date;
+    timelineEndDate: Date;
 }
 
 
@@ -406,6 +411,8 @@ export class WorkPlanInspectionDto {
     standardCategory: string;
     productSubCategory: string;
     divisionId: string;
+    timelineStartDate: Date;
+    timelineEndDate: Date;
     sampleSubmittedId: number;
     division: string;
     officerName: string;
@@ -477,6 +484,12 @@ export class WorkPlanInspectionDto {
     hodRmAssignedDetails: MsUsersDto;
     hofAssignedDetails: MsUsersDto;
     destructionDocId: number;
+    scfDocId: number;
+    ssfDocId: number;
+    seizureDocId: number;
+    declarationDocId: number;
+    chargeSheetDocId: number;
+    dataReportDocId: number;
     complaintDepartment: string;
     referenceNumber: string;
     batchDetails: WorkPlanBatchDetailsDto;
@@ -484,13 +497,20 @@ export class WorkPlanInspectionDto {
     remarksDetails: MSRemarksDto[];
     workPlanFiles: WorkPlanFilesFoundDto[];
     chargeSheet: ChargeSheetDto;
+    seizureDeclarationDto: SeizureDeclarationDto;
+    inspectionInvestigationDto: InspectionInvestigationReportDto;
+    dataReportDto: DataReportDto;
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto;
     sampleLabResults: MSSSFLabResultsDto;
     compliantStatusAdded: boolean;
     destructionRecommended: boolean;
+    finalReportGenerated: boolean;
+    appealStatus: boolean;
     msProcessEndedStatus: boolean;
     preliminaryReport: PreliminaryReportDto;
+    officersList: MsUsersDto[];
+    hofList: MsUsersDto[];
 }
 
 export class CountryListDto {
@@ -538,8 +558,8 @@ export class SeizureDeclarationDto {
 export class DataReportDto {
     id: number;
     referenceNumber: string;
-    inspectionDate: Date;
     inspectorName: string;
+    inspectionDate: Date;
     function: string;
     department: string;
     regionName: string;
@@ -706,6 +726,8 @@ export class FuelInspectionScheduleListDetailsDto {
 
 export class FuelInspectionDto {
     id: number;
+    timelineStartDate: Date;
+    timelineEndDate: Date;
     referenceNumber: string;
     company: string;
     petroleumProduct: string;

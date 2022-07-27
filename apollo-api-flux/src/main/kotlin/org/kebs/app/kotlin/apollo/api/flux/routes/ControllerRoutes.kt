@@ -99,106 +99,106 @@ class ControllerRoutes(private val daoService: DaoService) {
 
     }
 
-    @Bean
-    fun pvocPartnerRoutes(handler: PvocHandler) = coRouter {
-        "/api/pvoc".nest {
-            "/send".nest {
-                GET("/coc", daoService::invalidGetOnPostUrl)
-                POST("/coc", handler::receiveCoc)
-                POST("/cocWithItems/v2", handler::receiveCocWithItems)
-                POST("/coiWithItems/v2", handler::receiveCOIWithItems)
-                POST("/rfcCoiWithItems/v2", handler::receiveRfcCOIWithItems)
-                POST("/idfWithItems/v2", handler::receiveIdfWithItems)
-                GET("/cocItems", daoService::invalidGetOnPostUrl)
-                POST("/cocItems", handler::receiveCOCItems)
-                GET("/cor", daoService::invalidGetOnPostUrl)
-             //   POST("/cor", handler::receiveCOR)
-                GET("/coi", daoService::invalidGetOnPostUrl)
-              //  POST("/coi", handler::receiveCOI)
-                //POST("/coiWithItems/v2", handler::receiveCOIWithItems)
-                GET("/coiItems", daoService::invalidGetOnPostUrl)
-                POST("/coiItems", handler::receiveCOIItems)
-                GET("/riskProfile", daoService::invalidGetOnPostUrl)
-                POST("/riskProfile", handler::receiveRiskProfile)
-
-
-                "/monitoring".nest {
-                    GET("/timelines", daoService::invalidGetOnPostUrl)
-                    POST("/timelines", handler::receiveMonitoringTimelines)
-                    GET("/standards", daoService::invalidGetOnPostUrl)
-                    POST("/standards", handler::receiveMonitoringStandards)
-                    GET("/queries", daoService::invalidGetOnPostUrl)
-                    POST("/queries", handler::receiveMonitoringQueries)
-
-                }
-
-            }
-            "/get".nest {
-                "/monitoring".nest {
-                    GET("/queries", handler::getMonitoringQueriesData)
-                    POST("/queries", daoService::invalidGetOnPostUrl)
-
-                }
-                "/idf".nest {
-                    GET("/{country}", handler::getIdfData)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-                "/idfs".nest {
-                    GET("/{country}", handler::getIdfsData)
-                    POST("/{country}", daoService::invalidGetOnPostUrl)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-                "/idfsWithItems".nest {
-                    GET("/{country}", handler::getIdfsDataAndItems)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-                "/idfItems".nest {
-                    GET("/idfItems/{idfNumber}", handler::getIdfItemsData)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-                "/invoice".nest {
-                    GET("/{invoiceDate}/{soldTo}", handler::getInvoiceData)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-                "/riskProfile".nest {
-                    GET("/{categorizationDate}", handler::getRiskProfileData)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-                "/goodsRfc".nest {
-                    GET("/{partnerRef}/{rfcDate}", handler::getGoodsRfcData)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-                "/coiRfc".nest {
-                    GET("/{partnerRef}/{rfcDate}", handler::getCoiRfcData)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-                "/coiRfcWithItems".nest {
-                    GET("/{partnerRef}/{rfcDate}", handler::getCoiRfcDataAndItems)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-                "/coiRfcItems".nest {
-                    GET("/{rfcNumber}", handler::getCoiRfcItemsData)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-                "/corRfc".nest {
-                    GET("/{partnerRef}/{rfcDate}", handler::getCorRfcData)
-                    POST("/", daoService::invalidGetOnPostUrl)
-
-                }
-            }
-        }
-    }
-        .thenLog()
+//    @Bean
+//    fun pvocPartnerRoutes(handler: PvocHandler) = coRouter {
+//        "/api/pvoc".nest {
+//            "/send".nest {
+//                GET("/coc", daoService::invalidGetOnPostUrl)
+//                POST("/coc", handler::receiveCoc)
+//                POST("/cocWithItems/v2", handler::receiveCocWithItems)
+//                POST("/coiWithItems/v2", handler::receiveCOIWithItems)
+//                POST("/rfcCoiWithItems/v2", handler::receiveRfcCOIWithItems)
+//                POST("/idfWithItems/v2", handler::receiveIdfWithItems)
+//                GET("/cocItems", daoService::invalidGetOnPostUrl)
+//                POST("/cocItems", handler::receiveCOCItems)
+//                GET("/cor", daoService::invalidGetOnPostUrl)
+//             //   POST("/cor", handler::receiveCOR)
+//                GET("/coi", daoService::invalidGetOnPostUrl)
+//              //  POST("/coi", handler::receiveCOI)
+//                //POST("/coiWithItems/v2", handler::receiveCOIWithItems)
+//                GET("/coiItems", daoService::invalidGetOnPostUrl)
+//                POST("/coiItems", handler::receiveCOIItems)
+//                GET("/riskProfile", daoService::invalidGetOnPostUrl)
+//                POST("/riskProfile", handler::receiveRiskProfile)
+//
+//
+//                "/monitoring".nest {
+//                    GET("/timelines", daoService::invalidGetOnPostUrl)
+//                    POST("/timelines", handler::receiveMonitoringTimelines)
+//                    GET("/standards", daoService::invalidGetOnPostUrl)
+//                    POST("/standards", handler::receiveMonitoringStandards)
+//                    GET("/queries", daoService::invalidGetOnPostUrl)
+//                    POST("/queries", handler::receiveMonitoringQueries)
+//
+//                }
+//
+//            }
+//            "/get".nest {
+//                "/monitoring".nest {
+//                    GET("/queries", handler::getMonitoringQueriesData)
+//                    POST("/queries", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/idf".nest {
+//                    GET("/{country}", handler::getIdfData)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/idfs".nest {
+//                    GET("/{country}", handler::getIdfsData)
+//                    POST("/{country}", daoService::invalidGetOnPostUrl)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/idfsWithItems".nest {
+//                    GET("/{country}", handler::getIdfsDataAndItems)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/idfItems".nest {
+//                    GET("/idfItems/{idfNumber}", handler::getIdfItemsData)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/invoice".nest {
+//                    GET("/{invoiceDate}/{soldTo}", handler::getInvoiceData)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/riskProfile".nest {
+//                    GET("/{categorizationDate}", handler::getRiskProfileData)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/goodsRfc".nest {
+//                    GET("/{partnerRef}/{rfcDate}", handler::getGoodsRfcData)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/coiRfc".nest {
+//                    GET("/{partnerRef}/{rfcDate}", handler::getCoiRfcData)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/coiRfcWithItems".nest {
+//                    GET("/{partnerRef}/{rfcDate}", handler::getCoiRfcDataAndItems)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/coiRfcItems".nest {
+//                    GET("/{rfcNumber}", handler::getCoiRfcItemsData)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//                "/corRfc".nest {
+//                    GET("/{partnerRef}/{rfcDate}", handler::getCorRfcData)
+//                    POST("/", daoService::invalidGetOnPostUrl)
+//
+//                }
+//            }
+//        }
+//    }
+//        .thenLog()
 
     fun <T : ServerResponse> RouterFunction<T>.thenLog(): RouterFunction<T> {
         return this.filter { request, next ->
