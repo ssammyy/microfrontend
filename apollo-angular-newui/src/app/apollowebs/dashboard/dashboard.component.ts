@@ -113,8 +113,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             }
         );
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            //console.log(u.roles)
             this.roles = u.roles;
             return this.roles = u.roles;
+
         });
 
 
