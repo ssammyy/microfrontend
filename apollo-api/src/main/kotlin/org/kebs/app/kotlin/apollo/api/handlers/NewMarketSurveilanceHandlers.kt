@@ -1180,6 +1180,23 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun submitWorkPlanScheduleEntry(req: ServerRequest): ServerResponse {
+        return try {
+
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceWorkPlanDaoServices.submitWorkPlanScheduleCreated(batchReferenceNo,referenceNo,page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun updateWorkPlanScheduleApproval(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")

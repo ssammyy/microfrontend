@@ -15,7 +15,6 @@ import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestResultsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmittedPdfListDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.std.LevyPayments
 import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
@@ -960,6 +959,12 @@ class MarketSurveillanceFuelDaoServices(
             rapidTestDone = true
         }
 
+        var timelineOverDue =false
+        if (fileInspectionDetail.timelineEndDate!= null){
+        if (fileInspectionDetail.timelineEndDate!!>commonDaoServices.getCurrentDate()){
+            timelineOverDue = true
+        }}
+
         val compliantDetailsStatus = mapCompliantStatusDto(fileInspectionDetail, map)
         var compliantStatusDone = false
         if (compliantDetailsStatus!=null){
@@ -992,6 +997,7 @@ class MarketSurveillanceFuelDaoServices(
             batchDetailsDto,
             rapidTestDone,
             compliantStatusDone,
+            timelineOverDue,
             officerList,
             fuelInspectionRemarks,
             fuelInspectionOfficer?.assignedIo?.let { commonDaoServices.findUserByID(it) },
@@ -2139,7 +2145,7 @@ class MarketSurveillanceFuelDaoServices(
 
     fun mapFuelInspectionListDto(fuelInspectionList: List<MsFuelInspectionEntity>?, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
         val fuelInspectionScheduledList = mutableListOf<FuelInspectionDto>()
-        fuelInspectionList?.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.timelineStartDate,it.timelineEndDate,it.referenceNumber, it.company, it.companyKraPin, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo,
+        fuelInspectionList?.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.timelineStartDate,it.timelineEndDate,null,it.referenceNumber, it.company, it.companyKraPin, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo,
             it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName }, it.assignedOfficerStatus==1, it.inspectionCompleteStatus==1))}
 
 
@@ -2167,9 +2173,10 @@ class MarketSurveillanceFuelDaoServices(
         batchDetails: FuelBatchDetailsDto,
         rapidTestDone: Boolean,
         compliantStatusDone: Boolean,
+        timelineOverDue: Boolean,
         officerList: List<UsersEntity>?,
         remarksList: List<MsRemarksEntity>?,
-        officersAssigned : UsersEntity?,
+        officersAssigned: UsersEntity?,
         rapidTestResults: FuelEntityRapidTestDto?,
         sampleCollected: SampleCollectionDto?,
         sampleSubmitted: SampleSubmissionDto?,
@@ -2180,6 +2187,7 @@ class MarketSurveillanceFuelDaoServices(
             fuelInspectionList.id,
             fuelInspectionList.timelineStartDate,
             fuelInspectionList.timelineEndDate,
+            timelineOverDue,
             fuelInspectionList.referenceNumber,
             fuelInspectionList.company,
             fuelInspectionList.companyKraPin,

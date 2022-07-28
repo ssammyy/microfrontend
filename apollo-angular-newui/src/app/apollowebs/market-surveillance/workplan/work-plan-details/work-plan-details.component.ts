@@ -1503,6 +1503,28 @@ export class WorkPlanDetailsComponent implements OnInit {
     // }
   }
 
+  onClickSubmitForApproval() {
+    // if (valid) {
+      this.SpinnerService.show();
+      this.msService.msWorkPlanScheduleDetailsSubmitForApproval(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            // console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('WORK-PLAN DETAILS SUBMITTED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    // }
+  }
+
   onClickEndOnsiteActivities() {
     // if (valid) {
       this.SpinnerService.show();

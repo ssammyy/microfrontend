@@ -57,6 +57,7 @@ data class FuelInspectionDto(
         var id: Long? = null,
         var timelineStartDate: Date? = null,
         var timelineEndDate: Date? = null,
+        var timelineOverDue: Boolean? = null,
         var referenceNumber: String? = null,
         var company: String? = null,
         var companyKraPin: String? = null,
@@ -96,6 +97,7 @@ data class WorkPlanInspectionDto(
         var divisionId: String? = null,
         var timelineStartDate: Date? = null,
         var timelineEndDate: Date? = null,
+        var timelineOverDue: Boolean? = null,
 //        var sampleSubmittedId: Long? = null,
         var division: String? = null,
         var officerName: String? = null,
@@ -777,7 +779,8 @@ data class ComplaintsDetailsDto(
         var complaintFiles: List<ComplaintsFilesFoundDto>? = null,
         var ksApplicable: StandardDetailsDto? = null,
         var timelineStartDate: Date? = null,
-        var timelineEndDate: Date? = null
+        var timelineEndDate: Date? = null,
+        var timelineOverDue: Boolean? = null
 
 
 )

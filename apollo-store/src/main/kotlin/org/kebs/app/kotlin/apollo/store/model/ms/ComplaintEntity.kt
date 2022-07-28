@@ -78,6 +78,10 @@ class ComplaintEntity : Serializable {
     @Basic
     var timelineEndDate: Date? = null
 
+//    @Column(name = "TIMELINE_OVER_DUE")
+//    @Basic
+//    var timelineOverDue: Int? = null
+
 
 //    @Transient
 //    var confirmDivisionId: Long? = 0

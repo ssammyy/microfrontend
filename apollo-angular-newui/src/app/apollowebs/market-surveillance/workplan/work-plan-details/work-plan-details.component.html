@@ -1451,30 +1451,31 @@
                                     <b class="text-secondary">{{workPlanInspection?.progressStep}}</b>
                                 </div>
                                 <br/>
-                                <b>TIMELINES:</b>
-                                <br/>
-                                <ul class="w-list-unstyled">
-
-                                        <div class="list-title-accordion">Started TimeLine</div>
-                                        <div class="list-text-accordion">{{workPlanInspection?.timelineStartDate| date}}
-                                        </div>
-
-                                        <div class="list-title-accordion">Targeted TimeLine</div>
-                                        <div class="list-text-accordion">{{workPlanInspection?.timelineEndDate| date}}
-                                        </div>
-
-                                </ul>
-                                <div>
-                                    <b class="text-secondary">{{workPlanInspection?.progressStep}}</b>
+                                <div *ngIf="workPlanInspection?.timelineEndDate!=null">
+                                    <b>TIMELINES STATUS:</b>
+                                    <div>
+                                        <b *ngIf="workPlanInspection?.timelineOverDue" class="text-success">IN-TIME</b>
+                                        <b *ngIf="workPlanInspection?.timelineOverDue==false" class="text-danger">OVER-DUE</b>
+                                    </div>
+                                    <b>Started TimeLine</b>
+                                    <div>
+                                        <b class="text-secondary">{{workPlanInspection?.timelineStartDate| date}}</b>
+                                    </div>
+                                    <b>Targeted TimeLine</b>
+                                    <div>
+                                        <b class="text-secondary">{{workPlanInspection?.timelineEndDate| date}}</b>
+                                    </div>
+                                    <br/>
                                 </div>
-                                <br/>
+
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="workPlanInspection?.msProcessEndedStatus == false">
                                         <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                        && workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus ==false" (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
+                                                && workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus ==false"
+                                                     (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT SCHEDULE</span>
@@ -1562,6 +1563,14 @@
                                         </div>
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.complaintId!= null
+                                        && workPlanInspection?.approvedStatus ==false && workPlanInspection?.onsiteStartStatus ==false"
+                                                     (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">SUBMIT FOR APPROVAL</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                         && workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
                                                      (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
@@ -1922,7 +1931,7 @@
                                         <label for="approvalStatus1"><b>Select Status</b></label>
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formApproveScheduleForm.approvalStatus.invalid && formAssignOfficerForm.assignedUserID.touched"
+                                                        [class.is-invalid]="formApproveScheduleForm.approvalStatus.invalid && formApproveScheduleForm.approvalStatus.touched"
                                                         formControlName="approvalStatus" id="approvalStatus1" name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
                                                 <mat-option [value]="false">REJECT</mat-option>
@@ -1946,7 +1955,7 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="approvalStatus2"><b>Select Status</b></label>
+                                        <label ><b>Select Status</b></label>
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
@@ -1958,7 +1967,7 @@
                                         </mat-form-field>
                                         <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="remarks2" matInput type="text"
+                                            <textarea matInput type="text"
                                                       formControlName="remarks"
                                                       name="remarks" required>
                                             </textarea>
@@ -1973,7 +1982,7 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="approvalStatus2"><b>Select Status</b></label>
+                                        <label ><b>Select Status</b></label>
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
@@ -1985,7 +1994,7 @@
                                         </mat-form-field>
                                         <label for="remarks2"><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="remarks2" matInput type="text"
+                                            <textarea matInput type="text"
                                                       formControlName="remarks"
                                                       name="remarks" required>
                                             </textarea>
@@ -2039,7 +2048,7 @@
                                         </mat-form-field>
                                         <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="remarks2" matInput type="text"
+                                            <textarea  matInput type="text"
                                                       formControlName="remarks"
                                                       name="remarks" required>
                                             </textarea>

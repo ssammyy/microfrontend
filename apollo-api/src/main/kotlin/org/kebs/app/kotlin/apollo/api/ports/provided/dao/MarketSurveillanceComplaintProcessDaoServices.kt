@@ -154,13 +154,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                     val complaintReceivedEmailComposed = hd.userId?.let { complaintReceivedDTOEmailCompose(updatedComplaint, it) }
                     hd.userId?.let {
                         if (complaintReceivedEmailComposed != null) {
-                            commonDaoServices.sendEmailWithUserEntity(
-                                it,
-                                applicationMapProperties.mapMsComplaintSubmittedHodNotification,
-                                complaintReceivedEmailComposed,
-                                map,
-                                sr
-                            )
+                            commonDaoServices.sendEmailWithUserEntity(it, applicationMapProperties.mapMsComplaintSubmittedHodNotification, complaintReceivedEmailComposed, map, sr)
                         }
                     }
                 }
@@ -391,11 +385,11 @@ class MarketSurveillanceComplaintProcessDaoServices(
 //        val checkCreationDate = msWorkPlanDaoServices.isWithinRange(commonDaoServices.getCurrentDate(), workPlanYearCodes)
         when {
             userWorkPlan != null -> {
-                when (userWorkPlan.batchClosed) {
-                    activeStatus -> {
-                        throw ExpectedDataNotFound("The WorkPlan Batch Detail was closed for this current year, you can't add a new Work-Plan Schedule")
-                    }
-                    else -> {
+//                when (userWorkPlan.batchClosed) {
+//                    activeStatus -> {
+//                        throw ExpectedDataNotFound("The WorkPlan Batch Detail was closed for this current year, you can't add a new Work-Plan Schedule")
+//                    }
+//                    else -> {
                         val fileSaved = msWorkPlanDaoServices.saveNewWorkPlanActivityFromComplaint(body,complaintFound,msType, userWorkPlan, map, loggedInUser)
                         when (fileSaved.first.status) {
                             map.successStatus -> {
@@ -412,8 +406,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
                             }
                         }
-                    }
-                }
+//                    }
+//                }
             }
             else -> {
                 throw ExpectedDataNotFound("Create a new Work-Plan Batch for this Year First before adding this Complaint")
@@ -1159,6 +1153,12 @@ class MarketSurveillanceComplaintProcessDaoServices(
         if (acceptanceStatus!=null){
             acceptanceDone = true
         }
+
+        var timelineOverDue =false
+        if (comp.timelineEndDate!= null){
+        if (comp.timelineEndDate!!>commonDaoServices.getCurrentDate()){
+            timelineOverDue = true
+        }}
 //
 //        val compliantDetailsStatus = mapCompliantStatusDto(fileInspectionDetail, map)
 //        var compliantStatusDone = false
@@ -1188,7 +1188,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
 //        }
 //        val fuelRemediationDto = remediationDetails?.let { mapFuelRemediationDto(it,invoiceCreatedStatus) }
         return mapComplaintInspectionDto(
-            mapComplaintDto(comp, complaintCustomersDetails, complaintLocationDetails, complaintFilesSaved, map),
+            mapComplaintDto(comp, complaintCustomersDetails, complaintLocationDetails, complaintFilesSaved, map, timelineOverDue),
             acceptanceDone,
             comp.msProcessStatus==1,
             officerList,
@@ -1296,7 +1296,14 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
     }
 
-    fun mapComplaintDto(comp: ComplaintEntity, complaintCustomersDetails: ComplaintCustomersEntity, complaintLocationDetails: ComplaintLocationEntity, complaintFilesSaved: List<MsUploadsEntity>?, map: ServiceMapsEntity): ComplaintsDetailsDto {
+    fun mapComplaintDto(
+        comp: ComplaintEntity,
+        complaintCustomersDetails: ComplaintCustomersEntity,
+        complaintLocationDetails: ComplaintLocationEntity,
+        complaintFilesSaved: List<MsUploadsEntity>?,
+        map: ServiceMapsEntity,
+        timelineOverDue: Boolean
+    ): ComplaintsDetailsDto {
         return  ComplaintsDetailsDto(
             comp.id,
             comp.referenceNumber,
@@ -1329,7 +1336,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             complaintFilesSaved?.let { mapFileListDto(it) },
             comp.productSubCategory?.let { commonDaoServices.findSampleStandardsByID(it) }?.let { mapStandardDetailsDto(it) },
             comp.timelineStartDate,
-            comp.timelineEndDate
+            comp.timelineEndDate,
+            timelineOverDue
         )
 
     }

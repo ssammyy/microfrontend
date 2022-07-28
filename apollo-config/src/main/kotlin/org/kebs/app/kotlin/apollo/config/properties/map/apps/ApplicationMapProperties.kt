@@ -896,6 +896,15 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.scheduled.notification}")
     val mapMsFuelScheduleMPNotification: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.hodRMApprovalEmail}")
+    val mapMsWorkPlanScheduleSubmitedForApproval: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerWorkPlanRejectedEmail}")
+    val mapMsWorkPlanScheduleSubmitedApprovalRejected: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerWorkPlanApprovedEmail}")
+    val mapMsWorkPlanScheduleSubmitedApprovalApproved: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.approved.notification.hof}")
     val mapMsComplaintApprovedHofNotification: String = ""
 

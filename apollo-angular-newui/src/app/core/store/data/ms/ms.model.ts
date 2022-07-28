@@ -238,6 +238,7 @@ export class ComplaintDetailsDto {
     ksApplicable: StandardDetailsDto;
     timelineStartDate: Date;
     timelineEndDate: Date;
+    timelineOverDue: boolean;
 }
 
 
@@ -413,6 +414,7 @@ export class WorkPlanInspectionDto {
     divisionId: string;
     timelineStartDate: Date;
     timelineEndDate: Date;
+    timelineOverDue: boolean;
     sampleSubmittedId: number;
     division: string;
     officerName: string;
@@ -728,6 +730,7 @@ export class FuelInspectionDto {
     id: number;
     timelineStartDate: Date;
     timelineEndDate: Date;
+    timelineOverDue: boolean;
     referenceNumber: string;
     company: string;
     petroleumProduct: string;
