@@ -1,5 +1,5 @@
 export interface ApprovedNwiS {
-    workplan_Id: bigint;
+    workplan_id: bigint;
     stage_Code: string;
     stage_Date: string;
     stage_Month: string;
@@ -8,7 +8,6 @@ export interface ApprovedNwiS {
     title: string;
     request_No: string;
     status: string;
-
     id: string;
     created_On: string;
     deleted_On: string;

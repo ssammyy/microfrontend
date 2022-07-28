@@ -17,7 +17,6 @@ export class AdoptionOfEaStdsService {
   }
 
   public uploadSACSummary(sacSummary: SACSummary): Observable<any> {
-    console.log(sacSummary);
     return this.http.post<SACSummary>(`${this.apiAdoptionToEAStandardUrl}` + 'submitSACSummary', sacSummary)
   }
 

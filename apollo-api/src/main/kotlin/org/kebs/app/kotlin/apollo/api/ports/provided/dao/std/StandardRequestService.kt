@@ -257,6 +257,9 @@ class StandardRequestService(
         standardNWI.liaisonOrganisation = allOrganization
         standardNWI.liaisonOrganisation?.let { variable.put("liaisonOrganisation", it) }
 
+        standardNWI.status="Vote ON NWI"
+        standardNWI.status?.let { variable.put("statud", it) }
+
         standardNWIRepository.save(standardNWI)
 
         taskService.complete(standardNWI.taskId, variable)
@@ -274,6 +277,9 @@ class StandardRequestService(
 
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["approved"] = voteOnNWI.decision.toBoolean()
+        val u: StandardNWI = standardNWIRepository.findById(voteOnNWI.nwiId).orElse(null);
+        u.status = "Upload Justification";
+        standardNWIRepository.save(u)
         taskService.complete(voteOnNWI.taskId, variables)
     }
 
@@ -298,7 +304,9 @@ class StandardRequestService(
 
         println(standardJustification.toString())
         standardJustificationRepository.save(standardJustification)
-
+        val u: StandardNWI = standardNWIRepository.findById(standardJustification.nwiId).orElse(null);
+        u.status = "Approve/Reject Justification";
+        standardNWIRepository.save(u)
         taskService.complete(standardJustification.taskId, variable)
         println("TC-SEC has uploaded Justification")
 
@@ -322,11 +330,13 @@ class StandardRequestService(
 
         variables["cdNumber"] = cdNumber
 
-        var standardJustification = standardJustificationRepository.findByRequestNo(decisionJustification.referenceNo)
-
+        val standardJustification = standardJustificationRepository.findByRequestNo(decisionJustification.referenceNo)
         standardJustification[0].cdNumber = cdNumber
 
         standardJustificationRepository.saveAll(standardJustification)
+        val u: StandardNWI = standardNWIRepository.findById(standardJustification[0].nwiId).orElse(null);
+        u.status = "Prepare Workplan";
+        standardNWIRepository.save(u)
 
         taskService.complete(decisionJustification.taskId, variables)
     }
@@ -339,9 +349,12 @@ class StandardRequestService(
     fun uploadWorkPlan(standardWorkPlan: StandardWorkPlan) {
         val variable: MutableMap<String, Any> = HashMap()
         standardWorkPlan.targetDate?.let { variable.put("targetDate", it) }
-        standardWorkPlan.status = "Prepare Preliminary Draft"
+        standardWorkPlan.status = "Prepare Minutes and Drafts For Preliminary Draft"
         variable["status"] = standardWorkPlan.status!!
         standardWorkPlanRepository.save(standardWorkPlan)
+        val u: StandardNWI = standardNWIRepository.findById(standardWorkPlan.id).orElse(null);
+        u.status = "Prepare Minutes and Drafts For Preliminary Draft";
+        standardNWIRepository.save(u)
         taskService.complete(standardWorkPlan.taskId)
         println("TC-SEC has uploaded workplan")
 
