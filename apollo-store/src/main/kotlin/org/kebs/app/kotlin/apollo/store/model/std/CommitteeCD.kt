@@ -4,33 +4,24 @@ import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
-@Table(name = "CommitteeCD")
+@Table(name = "SD_COMMITTEE_CD")
 class CommitteeCD {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     var id: Long = 0
 
-    @Column(name = "NWI_ID")
+    @Column(name = "APPROVED")
     @Basic
-    var nwiID: String? = null
+    var approved: String? = null
 
-    @Column(name = "PD_ID")
+    @Column(name = "CD_BY")
     @Basic
-    var pdID: String? = null
+    var cdBy: Long = 0
 
     @Column(name = "CD_NAME")
     @Basic
     var cdName: String? = null
-
-
-    @Column(name = "CD_BY")
-    @Basic
-    var cdBy: String? = null
-
-    @Column(name = "APPROVED")
-    @Basic
-    var approved: String? = null
 
 
     @Column(name = "CREATED_ON")
@@ -44,44 +35,68 @@ class CommitteeCD {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
 
-        other as CommitteeCD
 
-        if (id != other.id) return false
-        if (nwiID != other.nwiID) return false
-        if (pdID != other.pdID) return false
+    @Column(name = "PD_ID")
+    @Basic
+    var pdID: Long = 0
 
-        if (cdName != other.cdName) return false
-        if (cdBy != other.cdBy) return false
-        if (approved != other.approved) return false
-        if (createdOn != other.createdOn) return false
-        if (modifiedOn != other.modifiedOn) return false
-        if (deletedOn != other.deletedOn) return false
+    @Column(name = "STATUS")
+    @Basic
+    var status: String? = null
 
-        return true
-    }
 
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + (nwiID?.hashCode() ?: 0)
-        result = 31 * result + (pdID?.hashCode() ?: 0)
+    @Column(name = "CREATED_BY")
+    @Basic
+    var createdBy: String? = null
 
-        result = 31 * result + (cdName?.hashCode() ?: 0)
-        result = 31 * result + (cdBy?.hashCode() ?: 0)
-        result = 31 * result + (approved?.hashCode() ?: 0)
+    @Column(name = "MODIFIED_BY")
+    @Basic
+    var modifiedBy: String? = null
 
-        result = 31 * result + (createdOn?.hashCode() ?: 0)
-        result = 31 * result + (modifiedOn?.hashCode() ?: 0)
-        result = 31 * result + (deletedOn?.hashCode() ?: 0)
-        return result
-    }
+    @Column(name = "DELETE_BY")
+    @Basic
+    var deleteBy: String? = null
 
-    override fun toString(): String {
-        return "CommitteeCD(id=$id, nwiID=$nwiID,pdID=$pdID,cdName=$cdName, cdBy=$cdBy, approved=$approved" +
-                "createdOn=$createdOn, modifiedOn=$modifiedOn, deletedOn=$deletedOn)"
-    }
+    @Column(name = "VAR_FIELD_1")
+    @Basic
+    var varField1: String? = null
+
+    @Column(name = "VAR_FIELD_2")
+    @Basic
+    var varField2: String? = null
+
+    @Column(name = "VAR_FIELD_3")
+    @Basic
+    var varField3: String? = null
+
+    @Column(name = "VAR_FIELD_4")
+    @Basic
+    var varField4: String? = null
+
+    @Column(name = "VAR_FIELD_5")
+    @Basic
+    var varField5: String? = null
+
+    @Column(name = "VAR_FIELD_6")
+    @Basic
+    var varField6: String? = null
+
+    @Column(name = "VAR_FIELD_7")
+    @Basic
+    var varField7: String? = null
+
+    @Column(name = "VAR_FIELD_8")
+    @Basic
+    var varField8: String? = null
+
+    @Column(name = "VAR_FIELD_9")
+    @Basic
+    var varField9: String? = null
+
+    @Column(name = "VAR_FIELD_10")
+    @Basic
+    var varField10: String? = null
+
 
 }

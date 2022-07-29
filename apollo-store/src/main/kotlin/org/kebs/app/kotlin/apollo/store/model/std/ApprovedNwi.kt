@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import java.sql.Timestamp
+
 
 //class DataHolder {
 //    @NotNull
@@ -74,3 +76,88 @@ interface ApprovedNwi {
 
 
 }
+
+interface CommentsWithPdId {
+    fun getCommentsId(): Long?
+    fun getTitle(): String?
+    fun getDocument_type(): String?
+
+    fun getCIRCULATION_date(): String?
+
+    fun getCLOSING_date(): String?
+    fun getSTATUS(): Long?
+    fun getORGANIZATION(): String?
+    fun getCLAUSE(): String?
+    fun getPARAGRAPH(): String?
+    fun getCOMMENT_type(): String?
+    fun getPROPOSED_change(): String?
+    fun getOBSERVATION(): String?
+    fun getCREATED_on(): String?
+    fun getCOMMENTS_made(): String?
+    fun getPD_name(): String?
+    fun getCOMMENT_by(): String?
+    fun getRECEIVED_by(): String?
+
+    fun getRECIPIENT_id(): Long?
+
+}
+
+interface PdWithUserName {
+    fun getId(): Long?
+    fun getNWI_Id(): String?
+    fun getPD_by(): String?
+
+    fun getPD_name(): String?
+
+    fun getCREATED_on(): String?
+
+    fun getSTATUS(): String?
+
+    fun getNUMBER_OF_COMMENTS(): String?
+
+
+}
+
+interface CdWithUserName {
+    fun getCDID(): Long
+    fun getPDID(): Long
+    fun getCDBY(): String?
+
+    fun getCDNAME(): String?
+
+    fun getCREATEDON(): String?
+
+    fun getSTATUS(): String?
+
+    fun getAPPROVALSTATUS(): String?
+
+
+    fun getNUMBEROFCOMMENTS(): String?
+
+
+}
+interface CommentsWithCdId {
+    fun getCommentsId(): Long?
+    fun getTitle(): String?
+    fun getDocument_type(): String?
+
+    fun getCIRCULATION_date(): String?
+
+    fun getCLOSING_date(): String?
+    fun getSTATUS(): Long?
+    fun getORGANIZATION(): String?
+    fun getCLAUSE(): String?
+    fun getPARAGRAPH(): String?
+    fun getCOMMENT_type(): String?
+    fun getPROPOSED_change(): String?
+    fun getOBSERVATION(): String?
+    fun getCREATED_on(): String?
+    fun getCOMMENTS_made(): String?
+    fun getCD_name(): String?
+    fun getCOMMENT_by(): String?
+    fun getRECEIVED_by(): String?
+
+    fun getRECIPIENT_id(): Long?
+
+}
+

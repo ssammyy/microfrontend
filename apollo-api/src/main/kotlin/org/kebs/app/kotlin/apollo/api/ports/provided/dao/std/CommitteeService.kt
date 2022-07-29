@@ -9,6 +9,7 @@ import org.flowable.engine.TaskService
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.errors.std.ResourceNotFoundException
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.qa.CommonPermitDto
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
@@ -16,7 +17,9 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkplanEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
@@ -41,6 +44,7 @@ class CommitteeService(
     private val standardWorkPlanRepository: StandardWorkPlanRepository,
     private val standardNWIRepository: StandardNWIRepository,
     private val commentsRepository: CommentsRepository,
+    private val usersRepo: IUserRepository,
 
     val commonDaoServices: CommonDaoServices,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
@@ -85,6 +89,8 @@ class CommitteeService(
         variable["nwiID"] = committeePD.nwiID ?: throw ExpectedDataNotFound("No NWI ID  Found")
         committeePD.pdBy = loggedInUser.id.toString()
         variable["pdBy"] = committeePD.pdBy ?: throw ExpectedDataNotFound("No USER ID Found")
+        committeePD.status = "Commenting By TC"
+        variable["status"] = committeePD.status!!
         committeePDRepository.save(committeePD)
 
         committeePD.id.let { variable.put("id", it) }
@@ -109,12 +115,17 @@ class CommitteeService(
 
 
     //get all Preliminary Drafts
-    fun getAllPd(): MutableList<CommitteePD> {
-        return committeePDRepository.findAll()
+    fun getAllPd(): MutableList<PdWithUserName> {
+        return committeePDRepository.findPreliminaryDraft()
+    }
+
+    //get all Docs On PDs
+    fun getAllPdDocuments(preliminaryDraftId: Long): Collection<DatKebsSdStandardsEntity?>? {
+        return sdDocumentsRepository.findStandardDocumentPdId(preliminaryDraftId)
     }
 
     // make a comment on Preliminary Draft
-    fun makeComment(comments: Comments) {
+    fun makeComment(comments: Comments, docType: String) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         comments.title?.let { variable.put("title", it) }
         comments.documentType?.let { variable.put("documentType", it) }
@@ -130,9 +141,18 @@ class CommitteeService(
         comments.observation?.let { variable.put("observation", it) }
         comments.createdOn = Timestamp(System.currentTimeMillis())
         variable["createdOn"] = comments.createdOn!!
-        comments.pdId.let { variable.put("pdId", it) }
+
+        if (docType == "PD") {
+            comments.pdId.let { variable.put("pdId", it) }
+        } else if (docType == "CD") {
+            comments.cdId.let { variable.put("cdId", it) }
+
+        }
+
         comments.createdBy = loggedInUser.id.toString()
         variable["createdBy"] = comments.createdBy ?: throw ExpectedDataNotFound("No USER ID Found")
+        comments.userId = loggedInUser.id!!
+        variable["userId"] = comments.userId ?: throw ExpectedDataNotFound("No USER ID Found")
         comments.status = 1.toString()
         variable["status"] = comments.status!!
 
@@ -140,20 +160,21 @@ class CommitteeService(
 
     }
 
-    //get all user Comments on Pd
-    fun getAllCommentsOnPd(): List<Comments> {
-        return commentsRepository.findAll()
+    //get all user Comments on Pd based on PdId
+    fun getAllCommentsOnPd(preliminaryDraftId: Long): List<CommentsWithPdId> {
+        return commentsRepository.findByPdId(preliminaryDraftId)
+    }
+
+    //get all comments and with PDName on PdId
+    fun getAllCommentsOnPdWithPdName(): List<CommentsWithPdId> {
+        return commentsRepository.getAllCommentsOnPreliminaryDraft()
     }
 
     //get comments made by logged in user on Pd
-    fun getUserLoggedInCommentsOnPD(@PathVariable(value = "pdId") preliminaryDraftId: Long): List<Comments> {
+    fun getUserLoggedInCommentsOnPD(): List<CommentsWithPdId> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        return loggedInUser.id?.let {
-            commentsRepository.findByUserIdAndPdIdAndStatus(
-                it, preliminaryDraftId,
-                1.toString()
-            )
-        }!!
+        return loggedInUser.id?.let { commentsRepository.getUserLoggedInCommentsOnPreliminaryDraft(it) }!!
+
     }
 
     //edit comment
@@ -162,18 +183,30 @@ class CommitteeService(
         val commentToEdit =
             commentsRepository.findById(comments.id).orElseThrow { RuntimeException("No comment found") }
 
-        commentToEdit.title?.let { variable.put("title", it) }
-        commentToEdit.documentType?.let { variable.put("documentType", it) }
-        commentToEdit.circulationDate?.let { variable.put("circulationDate", it) }
-        commentToEdit.closingDate?.let { variable.put("closingDate", it) }
-        commentToEdit.recipientId.let { variable.put("recipientId", it) }
-        commentToEdit.organization?.let { variable.put("organization", it) }
-        commentToEdit.clause?.let { variable.put("clause", it) }
-        commentToEdit.paragraph?.let { variable.put("paragraph", it) }
-        commentToEdit.commentType?.let { variable.put("commentType", it) }
-        commentToEdit.commentsMade?.let { variable.put("commentsMade", it) }
-        commentToEdit.proposedChange?.let { variable.put("proposedChange", it) }
-        commentToEdit.observation?.let { variable.put("observation", it) }
+        commentToEdit.title = comments.title
+        variable["title"] = commentToEdit.title!!
+        commentToEdit.documentType = comments.documentType
+        variable["documentType"] = commentToEdit.documentType!!
+        commentToEdit.circulationDate = comments.circulationDate
+        variable["circulationDate"] = commentToEdit.circulationDate!!
+        commentToEdit.closingDate = comments.closingDate
+        variable["closingDate"] = commentToEdit.closingDate!!
+        commentToEdit.recipientId = comments.recipientId
+        variable["recipientId"] = commentToEdit.recipientId
+        commentToEdit.organization = comments.organization
+        variable["organization"] = commentToEdit.organization!!
+        commentToEdit.clause = comments.clause
+        variable["clause"] = commentToEdit.clause!!
+        commentToEdit.paragraph = comments.paragraph
+        variable["paragraph"] = commentToEdit.paragraph!!
+        commentToEdit.commentType = comments.commentType
+        variable["commentType"] = commentToEdit.commentType!!
+        commentToEdit.proposedChange = comments.proposedChange
+        variable["proposedChange"] = commentToEdit.proposedChange!!
+        commentToEdit.observation = comments.observation
+        variable["observation"] = commentToEdit.observation!!
+        commentToEdit.commentsMade = comments.commentsMade
+        variable["commentsMade"] = commentToEdit.commentsMade!!
         commentToEdit.modifiedOn = Timestamp(System.currentTimeMillis())
         variable["modifiedOn"] = commentToEdit.modifiedOn!!
         commentToEdit.modifiedBy = loggedInUser.id.toString()
@@ -199,6 +232,63 @@ class CommitteeService(
 
         commentsRepository.save(commentToDelete)
 
+    }
+
+    //upload Committee Draft
+    fun uploadCD(
+        committeeCD: CommitteeCD,
+        pdID: Long
+    ): ProcessInstanceResponseValue {
+        //Save Committee Draft
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        committeeCD.cdName?.let { variable.put("cdName", it) }
+        committeeCD.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = committeeCD.createdOn!!
+        committeeCD.pdID = pdID
+        variable["pdID"] = committeeCD.pdID ?: throw ExpectedDataNotFound("No pdID ID  Found")
+        committeeCD.cdBy = loggedInUser.id!!
+        variable["cdBy"] = committeeCD.cdBy ?: throw ExpectedDataNotFound("No USER ID Found")
+        committeeCD.status = "Commenting By TC. Awaiting Approval"
+        variable["status"] = committeeCD.status!!
+        committeeCD.approved = "Not Approved"
+        variable["approved"] = committeeCD.approved!!
+        committeeCDRepository.save(committeeCD)
+
+        committeeCD.id.let { variable.put("id", it) }
+
+        //update documents with CDId
+        try {
+            val updateDocuments = sdDocumentsRepository.updateDocsWithCDid(committeeCD.id, pdID)
+            KotlinLogging.logger { }.info("The response is $updateDocuments")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+        }
+
+
+        //update PD with CD Status
+        val b: CommitteePD = committeePDRepository.findById(pdID).orElse(null);
+        b.status = "Committee Draft Uploaded";
+        committeePDRepository.save(b)
+
+        return ProcessInstanceResponseValue(committeeCD.id, "Complete", true, "committeePD.id")
+
+    }
+
+
+    // get all CDs
+    fun getAllCd(): MutableList<CdWithUserName> {
+        return committeeCDRepository.findCommitteeDraft()
+    }
+
+
+    //get comments made by logged in user on Cd
+    fun getUserLoggedInCommentsOnCD(): List<CommentsWithCdId> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return loggedInUser.id?.let {
+            commentsRepository.getUserLoggedInCommentsOnCommitteeDraft(
+                it
+            )
+        }!!
     }
 
     fun prepareNWI(committeeNWI: CommitteeNWI): ProcessInstanceResponse {
@@ -280,7 +370,6 @@ class CommitteeService(
     }
 
     fun prepareCD(committeeCD: CommitteeCD): ProcessInstanceResponse {
-        committeeCD.nwiID?.let { variable.put("nwiID", it) }
         committeeCD.pdID?.let { variable.put("pdID", it) }
         committeeCD.cdName?.let { variable.put("cdName", it) }
         committeeCD.cdBy?.let { variable.put("cdBy", it) }
@@ -375,6 +464,18 @@ class CommitteeService(
             val u: StandardNWI = standardNWIRepository.findById(nwi).orElse(null);
             u.status = "Draft Documents For PD Uploaded";
             standardNWIRepository.save(u)
+        }
+        if (DocDescription == "Minutes For CD") {
+            //update documents with CDId
+            val u: CommitteePD = committeePDRepository.findById(nwi).orElse(null);
+            u.status = "Minutes Uploaded";
+            committeePDRepository.save(u)
+        }
+        if (DocDescription == "Draft Documents For CD") {
+            //update documents with CDId
+            val u: CommitteePD = committeePDRepository.findById(nwi).orElse(null);
+            u.status = "Draft Documents For CD Uploaded";
+            committeePDRepository.save(u)
         }
         return sdDocumentsRepository.save(uploads)
     }

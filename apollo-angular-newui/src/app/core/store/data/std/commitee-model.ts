@@ -38,8 +38,16 @@ export interface Preliminary_Draft {
     slNo: number;
     pdName: string;
     pdBy: string;
+    commentsNo: string;
+}
 
-
+export interface Preliminary_Draft_With_Name {
+    id: number;
+    nwi_Id: number;
+    pd_name: string;
+    pd_by: string;
+    status: string;
+    number_OF_COMMENTS: string;
 }
 
 export interface TaskData {
@@ -75,6 +83,17 @@ export interface Committee_Draft {
 
 }
 
+export interface Committee_Draft_With_Name {
+    cdid: number;
+    pdid: number;
+    cdname: string;
+    cdby: string;
+    status: string;
+    createdon: string;
+    approvalstatus: string;
+    numberofcomments: string;
+}
+
 export interface PublicReviewDraft {
     id: number;
     prdName: string;
@@ -107,4 +126,60 @@ export interface TCTasks {
     taskId: string;
     name: string;
     taskData: PublicReviewDraft;
+}
+
+export interface CommentMade {
+    id: number;
+    userId: number;
+    pdId: number;
+    cdId: number;
+    recipientId: number;
+    title: string;
+    documentType: string;
+    circulationDate: Date;
+    closingDate: Date;
+    organization: string;
+    clause: string;
+    paragraph: string;
+    commentType: string;
+    proposedChange: string;
+    observation: string;
+    status: string;
+    createdOn: Date;
+    commentsMade: string;
+
+
+}
+
+export interface CommentMadeRetrieved {
+    title: string,
+    commentsId: number,
+    document_type: string,
+    circulation_date: string,
+    closing_date: string,
+    organization: string,
+    paragraph: string,
+    comment_type: string,
+    proposed_change: string,
+    observation: string,
+    created_on: string,
+    comments_made: string,
+    comment_by: string,
+    received_by: string,
+    status: number,
+    clause: string,
+    pd_name: string
+    recipient_id: number;
+    cd_name: string;
+
+
+}
+
+export interface StandardDocuments {
+    id: number,
+    documentType: string,
+    description: string,
+    sdDocumentId: number,
+    name: string,
+    documentTypeDef: string
 }

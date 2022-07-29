@@ -583,18 +583,18 @@
                                                                    formControlName="pdName" name="pdName">
 
                                                         </div>
-                                                    <label><b>Please Upload The Preliminary Draft</b> <a
-                                                            href="https://www.w3schools.com/"> (Download Preliminary
-                                                        Draft Template Here)</a></label>
-                                                    <form>
-                                                        <file-upload [(ngModel)]="uploadedFilesC"
-                                                                     name="uploadedFiles" fileslimit="1"
-                                                                     required
-                                                                     accept=".pdf"></file-upload>
-                                                        <input class="form-control one-column-input"
-                                                               ngModel="EACGazette"
-                                                               name="DocDescription" type="hidden">
-                                                    </form>
+                                                        <label><b>Please Upload The Preliminary Draft</b> <a
+                                                                href="https://www.w3schools.com/"> (Download Preliminary
+                                                            Draft Template Here)</a></label>
+                                                        <form>
+                                                            <file-upload [(ngModel)]="uploadedFilesC"
+                                                                         name="uploadedFiles" fileslimit="1"
+                                                                         required
+                                                                         accept=".pdf"></file-upload>
+                                                            <input class="form-control one-column-input"
+                                                                   ngModel="EACGazette"
+                                                                   name="DocDescription" type="hidden">
+                                                        </form>
                                                     </form>
                                                 </div>
                                             </div>
@@ -604,7 +604,8 @@
                                                     (click)="hideModel()" data-dismiss="modal">Close
                                             </button>
                                             <button class="btn btn-primary" mat-raised-button
-                                                    *ngIf="preliminary_draftFormGroup.valid" (click)="uploadPreliminaryDraft()"
+                                                    *ngIf="preliminary_draftFormGroup.valid"
+                                                    (click)="uploadPreliminaryDraft()"
                                                     type="button">SUBMIT
                                             </button>
                                         </div>
