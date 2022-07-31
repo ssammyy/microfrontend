@@ -129,6 +129,7 @@ export class AllComplaintsDetailsDto {
 export class MSRemarksDto {
     id: number;
     remarksDescription: string;
+    remarksStatus: string;
     processBy: string;
     processName: string;
 }
@@ -451,6 +452,7 @@ export class WorkPlanInspectionDto {
     approved: string;
     rejectedOn: Date;
     rejectedStatus: boolean;
+    submittedForApprovalStatus: boolean;
     onsiteStartStatus: boolean;
     onsiteStartDate: Date;
     onsiteEndDate: Date;

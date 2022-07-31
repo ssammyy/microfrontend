@@ -134,6 +134,7 @@ data class WorkPlanInspectionDto(
         var approved: String? = null,
         var rejectedOn: Date? = null,
         var rejectedStatus: Boolean? = null,
+        var submittedForApprovalStatus: Boolean? = null,
         var onsiteStartStatus: Boolean? = null,
         var onsiteStartDate: Date? = null,
         var onsiteEndDate: Date? = null,
@@ -327,7 +328,7 @@ data class SampleCollectionItemsDto(
 
 data class RemarksToAddDto(
         var remarksDescription: String? = null,
-        var remarksStatus: Int? = null,
+        var remarksStatus: String? = null,
         var processID: Long? = null,
         var userId: Long? = null,
 )
@@ -728,6 +729,7 @@ data class ComplaintClassificationDto(
 data class MSRemarksDto(
         var id: Long? = null,
         var remarksDescription: String? = null,
+        var remarksStatus: String? = null,
         var processBy: String? = null,
         var processName: String? = null
 )

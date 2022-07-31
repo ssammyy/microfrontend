@@ -344,7 +344,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.approvedRemarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "APPROVED"
             processID = complaintFound.msProcessId
             userId= loggedInUser.id
         }
@@ -442,7 +442,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.rejectedRemarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "REJECTED"
             processID = complaintFound.msProcessId
             userId= loggedInUser.id
         }
@@ -505,7 +505,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.rejectedRemarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "REJECTED/OGA MANDATE"
             processID = complaintFound.msProcessId
             userId= loggedInUser.id
         }
@@ -555,8 +555,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val hofDetailsFound =commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned HOF ID"))
         with(complaintFound) {
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate =
-                applicationMapProperties.msComplaintProcessAssignHOF?.let {
+            timelineEndDate = applicationMapProperties.msComplaintProcessAssignHOF?.let {
                     findMsProcessComplaintByID(1, it)?.timelinesDay?.let {
                         commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it)
                     }
@@ -571,7 +570,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.assignedRemarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = complaintFound.msProcessId
             userId= loggedInUser.id
         }
@@ -638,7 +637,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.assignedRemarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = complaintFound.msProcessId
             userId= loggedInUser.id
         }
@@ -689,7 +688,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.classificationRemarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = complaintFound.msProcessId
             userId= loggedInUser.id
         }

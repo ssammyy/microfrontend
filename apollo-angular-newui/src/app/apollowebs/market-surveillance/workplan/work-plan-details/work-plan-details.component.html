@@ -607,7 +607,7 @@
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-3"><span
                                                         class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                             </div>
@@ -1252,7 +1252,9 @@
                                             </div>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport && workPlanInspection?.finalReportGenerated == false && workPlanInspection?.officerDetails?.id == userLoggedInID" label="19">
+                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport && workPlanInspection?.finalReportGenerated == false
+                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
+                                                && workPlanInspection?.officerDetails?.id == userLoggedInID" label="19">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             FINAL REPORT
@@ -1428,12 +1430,12 @@
                                                         <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
                                                                         [collectionSize]="workPlanInspection?.remarksDetails.length"
                                                                         (pageChange)=pageChange($event)>
-                                                            <!--                                                            <ng-template ngbPaginationFirst>First</ng-template>-->
-                                                            <!--                                                            <ng-template ngbPaginationLast>Last</ng-template>-->
-                                                            <!--&lt;!&ndash;                                                            <ng-template ngbPaginationPrevious>Prev</ng-template>&ndash;&gt;-->
-                                                            <!--&lt;!&ndash;                                                            <ng-template ngbPaginationNext>Next</ng-template>&ndash;&gt;-->
-                                                            <!--                                                            <ng-template ngbPaginationEllipsis>...</ng-template>-->
-                                                            <!--                                                            <ng-template ngbPaginationNumber let-page>{{ page}}</ng-template>-->
+<!--                                                                                                                        <ng-template ngbPaginationFirst>First</ng-template>-->
+<!--                                                                                                                        <ng-template ngbPaginationLast>Last</ng-template>-->
+<!--                                                            &lt;!&ndash;                                                            <ng-template ngbPaginationPrevious>Prev</ng-template>&ndash;&gt;-->
+<!--                                                            &lt;!&ndash;                                                            <ng-template ngbPaginationNext>Next</ng-template>&ndash;&gt;-->
+<!--                                                                                                                        <ng-template ngbPaginationEllipsis>...</ng-template>-->
+<!--                                                                                                                        <ng-template ngbPaginationNumber let-page>{{ page}}</ng-template>-->
                                                         </ngb-pagination>
                                                     </div>
                                                 </div>
@@ -1479,14 +1481,13 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT SCHEDULE</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="workPlanInspection?.hofAssignedDetails != null" (click)="openModalAddDetails('reAssignHOF')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">RE-ASSIGN/ASSIGN HOF</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1498,7 +1499,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1514,7 +1515,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT FINAL PRELIMINARY REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -1530,7 +1531,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL RECOMMENDATION</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1543,7 +1544,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL REMARKS</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1557,14 +1558,14 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL REMARKS</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.complaintId!= null
-                                        && workPlanInspection?.approvedStatus ==false && workPlanInspection?.onsiteStartStatus ==false"
+                                                && workPlanInspection?.approvedStatus ==false && workPlanInspection?.submittedForApprovalStatus ==false && workPlanInspection?.onsiteStartStatus ==false"
                                                      (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">SUBMIT FOR APPROVAL</span>
@@ -1572,11 +1573,10 @@
                                             </button>
 
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                        && workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
+                                                && workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
                                                      (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">START ONSITE ACTIVITIES</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <div *ngIf="workPlanInspection?.onsiteStartStatus && workPlanInspection?.onsiteEndStatus ==false">
@@ -1584,101 +1584,88 @@
                                                           data-target="#myModal1"
                                                           class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD ATTACHMENTS</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.chargeSheetStatus ==false"  mat-raised-button="" data-toggle="modal"
                                                         data-target="#chargeSheetModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD CHARGE SHEET</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button *ngIf="workPlanInspection?.chargeSheetDocId ==null"   (click)="openModalAddDetails('uploadChargeSheetFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button *ngIf="workPlanInspection?.chargeSheetDocId ==null && workPlanInspection?.chargeSheetStatus"   (click)="openModalAddDetails('uploadChargeSheetFiles')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#myModal1"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD CHARGE SHEET</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.sampleCollectionStatus ==false"  mat-raised-button="" data-toggle="modal"
                                                         data-target="#sampleCollectModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD SAMPLE COLLECTION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button  *ngIf="workPlanInspection?.scfDocId ==null"  (click)="openModalAddDetails('uploadSCFFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button  *ngIf="workPlanInspection?.scfDocId ==null && workPlanInspection?.sampleCollectionStatus"  (click)="openModalAddDetails('uploadSCFFiles')" mat-raised-button="" data-toggle="modal"
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD SAMPLE COLLECTION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.sampleSubmittedStatus ==false"  mat-raised-button="" data-toggle="modal"
                                                         data-target="#sampleSubmitModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD SAMPLE SUBMISSION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button  *ngIf="workPlanInspection?.ssfDocId ==null" (click)="openModalAddDetails('uploadSSFFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button  *ngIf="workPlanInspection?.ssfDocId ==null && workPlanInspection?.sampleSubmittedStatus" (click)="openModalAddDetails('uploadSSFFiles')" mat-raised-button="" data-toggle="modal"
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD SAMPLE SUBMISSION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.seizureDeclarationStatus ==false" (click)="openModalAddDetails('seizureDeclarationDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#seizureDeclarationModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD SEIZURE DECLARATION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button   *ngIf="workPlanInspection?.seizureDocId ==null" (click)="openModalAddDetails('uploadSeizureFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button   *ngIf="workPlanInspection?.seizureDocId ==null && workPlanInspection?.seizureDeclarationStatus" (click)="openModalAddDetails('uploadSeizureFiles')" mat-raised-button="" data-toggle="modal"
                                                           data-target="#myModal1"
                                                           class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD SEIZURE</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button   *ngIf="workPlanInspection?.declarationDocId ==null" (click)="openModalAddDetails('uploadDeclarationFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button   *ngIf="workPlanInspection?.declarationDocId ==null && workPlanInspection?.seizureDeclarationStatus" (click)="openModalAddDetails('uploadDeclarationFiles')" mat-raised-button="" data-toggle="modal"
                                                           data-target="#myModal1"
                                                           class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD DECLARATION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.dataReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#dataReportModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD DATA REPORT</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button  *ngIf="workPlanInspection?.dataReportDocId ==null" (click)="openModalAddDetails('uploadDataReportFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button  *ngIf="workPlanInspection?.dataReportDocId ==null && workPlanInspection?.dataReportStatus" (click)="openModalAddDetails('uploadDataReportFiles')" mat-raised-button="" data-toggle="modal"
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD DATA REPORT</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.investInspectReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#investInspectReportModal"
-                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="btn btn-sm btn-primary"><span
                                                         class="mat-button-wrapper">ADD INVESTIGATION & INSPECTION REPORT</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                             </div>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                        && workPlanInspection?.approvedStatus && workPlanInspection?.onsiteStartStatus
-                                         && workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus ==false"
+                                                && workPlanInspection?.approvedStatus && workPlanInspection?.onsiteStartStatus
+                                                && workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus ==false"
                                                      (click)="onClickEndOnsiteActivities()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END ONSITE ACTIVITIES</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus &&
@@ -1687,7 +1674,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD BS NUMBER</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
@@ -1696,7 +1683,7 @@
                                                      data-target="#preliminaryReportModal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">CREATE PRELIMINARY</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -1710,7 +1697,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1722,7 +1709,7 @@
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">UPLOAD DESTRUCTION NOTIFICATION</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1735,7 +1722,7 @@
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">DID CLIENT APPEAL ?</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1751,7 +1738,7 @@
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">WAS APPEAL SUCCESS ?</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1766,7 +1753,7 @@
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">UPLOAD DESTRUCTION REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -1776,7 +1763,7 @@
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">RE-ASSIGN IO</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1786,7 +1773,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -1801,7 +1788,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT FINAL REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
@@ -2252,20 +2239,6 @@
                                 </div>
                             </div>
                         </form>
-                    </div><div *ngIf="(currDiv == 'uploadFiles')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Documents Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
-                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
                     </div>
                     <div *ngIf="(currDiv == 'uploadSeizureFiles')">
                         <form  action="" class="form" enctype="multipart/form-data" method="post">
@@ -2500,6 +2473,10 @@
                                         <label for="processBy"><b>ADD BY</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="processBy" matInput type="text" readonly formControlName="processBy" name="processBy">
+                                        </mat-form-field>
+                                        <label for="remarksStatus"><b>Remarks Status:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="remarksStatus" matInput type="text" readonly formControlName="remarksStatus" name="remarksStatus">
                                         </mat-form-field>
                                         <label for="remarksDescription"><b>Remarks/ Feed back:</b></label>
                                         <mat-form-field class="example-full-width">

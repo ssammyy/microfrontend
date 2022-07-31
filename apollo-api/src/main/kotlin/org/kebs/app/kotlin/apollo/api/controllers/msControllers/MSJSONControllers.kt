@@ -110,7 +110,7 @@ class MSJSONControllers(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = workPlanScheduled.msProcessId
             userId= loggedInUser.id
         }
