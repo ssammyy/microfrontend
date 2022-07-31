@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
+import java.util.*
 import java.util.stream.Stream
 
 
@@ -48,6 +49,10 @@ class DraftDocumentService(
     fun findUploadedDIFileBYIdAndByType(diDocumentId: Long, doctype: String): DatKebsSdStandardsEntity {
         return standardsDocumentsRepository.findBySdDocumentIdAndDocumentTypeDef(diDocumentId,doctype)
             ?: throw ExpectedDataNotFound("No File found with the following [ id=$diDocumentId]")
+    }
+
+    fun findFile(documentId: Long): DatKebsSdStandardsEntity {
+        return standardsDocumentsRepository.findSDocumentId(documentId)
     }
 
 }

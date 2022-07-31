@@ -24,6 +24,10 @@ class CommitteePD {
     @Basic
     var pdBy: String? = null
 
+    @Column(name = "STATUS")
+    @Basic
+    var status: String? = null
+
 
     @Column(name = "CREATED_ON")
     @Basic
@@ -46,6 +50,8 @@ class CommitteePD {
         if (nwiID != other.nwiID) return false
         if (pdName != other.pdName) return false
         if (pdBy != other.pdBy) return false
+        if (status != other.status) return false
+
         if (createdOn != other.createdOn) return false
         if (modifiedOn != other.modifiedOn) return false
         if (deletedOn != other.deletedOn) return false
@@ -58,6 +64,7 @@ class CommitteePD {
         result = 31 * result + (nwiID?.hashCode() ?: 0)
         result = 31 * result + (pdName?.hashCode() ?: 0)
         result = 31 * result + (pdBy?.hashCode() ?: 0)
+        result = 31 * result + (status?.hashCode() ?: 0)
         result = 31 * result + (createdOn?.hashCode() ?: 0)
         result = 31 * result + (modifiedOn?.hashCode() ?: 0)
         result = 31 * result + (deletedOn?.hashCode() ?: 0)
@@ -65,7 +72,7 @@ class CommitteePD {
     }
 
     override fun toString(): String {
-        return "CommitteePD(id=$id, nwiID=$nwiID,pdName=$pdName, pdBy=$pdBy" +
+        return "CommitteePD(id=$id, nwiID=$nwiID,pdName=$pdName, pdBy=$pdBy,status=$status" +
                 "createdOn=$createdOn, modifiedOn=$modifiedOn, deletedOn=$deletedOn)"
     }
 
