@@ -83,6 +83,8 @@ class WorkPlanScheduledDTO {
 
     var approvalStatus: String? = null
 
+    var remarksDetails: String? = null
+
     var yearCodeName: String? = null
 
     var dateSubmitted: Date? = null

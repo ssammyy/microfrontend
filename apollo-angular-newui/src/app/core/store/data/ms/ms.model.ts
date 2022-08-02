@@ -269,6 +269,7 @@ export class WorkPlanFeedBackDto {
 }
 
 export class DestructionNotificationDto {
+    clientFullName: string;
     clientEmail: string;
     remarks: string;
 }

@@ -935,6 +935,21 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerWorkPlanApprovedEmail}")
     val mapMsWorkPlanScheduleSubmitedApprovalApproved: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerWorkPlanDestructionEmail}")
+    val mapMsOfficerWorkPlanDestructionEmail: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerWorkPlanNotDestructionEmail}")
+    val mapMsOfficerWorkPlanNotDestructionEmail: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerSendDestructionNotificationEmail}")
+    val mapMsOfficerSendDestructionNotificationEmail: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerSendDestructionNotificationHODEmail}")
+    val mapMsOfficerSendDestructionNotificationHODEmail: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.hodFinalFeedBackNotificationEmail}")
+    val mapMsHodFinalFeedBackNotificationEmail: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.approved.notification.hof}")
     val mapMsComplaintApprovedHofNotification: String = ""
 

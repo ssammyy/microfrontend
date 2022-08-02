@@ -727,6 +727,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     });
 
     this.clientEmailNotificationForm = this.formBuilder.group({
+      clientFullName: ['', Validators.required],
       clientEmail: ['', Validators.required],
       remarks: ['', Validators.required],
     });

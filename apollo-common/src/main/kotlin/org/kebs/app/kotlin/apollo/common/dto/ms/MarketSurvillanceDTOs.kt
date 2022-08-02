@@ -851,6 +851,7 @@ data class NewComplaintDto(
 )
 
 data class DestructionNotificationDto(
+        val clientFullName: String? = null,
         val clientEmail: String? = null,
         val remarks: String? = null,
 //        val complaintFilesDetails: ComplaintFilesDto,
