@@ -1,9 +1,7 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
-    ApprovedNwiS,
     CommentMadeRetrieved,
-    Preliminary_Draft,
-    Preliminary_Draft_With_Name
+    PublicReviewDraftWithName,
 } from "../../../../core/store/data/std/commitee-model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
@@ -13,28 +11,28 @@ import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {HttpErrorResponse} from "@angular/common/http";
-import {DatePipe} from '@angular/common';
 import {formatDate} from "@angular/common";
+import {HttpErrorResponse} from "@angular/common/http";
 import Swal from "sweetalert2";
-import {AllPermitDetailsDto} from "../../../../core/store/data/qa/qa.model";
 import swal from "sweetalert2";
+import {PublicReviewService} from "../../../../core/store/data/std/publicReview.service";
 
 declare const $: any;
 
 @Component({
-    selector: 'app-review-preliminary-draft',
-    templateUrl: './review-preliminary-draft.component.html',
-    styleUrls: ['./review-preliminary-draft.component.css']
+    selector: 'app-comment-on-public-review-draft',
+    templateUrl: './comment-on-public-review-draft.component.html',
+    styleUrls: ['./comment-on-public-review-draft.component.css']
 })
-export class ReviewPreliminaryDraftComponent implements OnInit {
-    preliminary_draft: Preliminary_Draft_With_Name | undefined;
-    preliminary_drafts !: Preliminary_Draft_With_Name[];
-    preliminary_draftsB !: Preliminary_Draft_With_Name | undefined;
+
+export class CommentOnPublicReviewDraftComponent implements OnInit {
+
+    publicReviewDraft: PublicReviewDraftWithName | undefined;
+    public publicReviewDrafts !: PublicReviewDraftWithName[];
+    publicReviewDraftsB !: PublicReviewDraftWithName | undefined;
 
     commentMadeRetrievedS !: CommentMadeRetrieved[];
     commentMadeRetrievedB !: CommentMadeRetrieved | undefined;
-
 
     dateFormat = "yyyy-MM-dd";
     language = "en";
@@ -50,21 +48,23 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
 
+
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
                 private store$: Store<any>,
                 private router: Router,
+                private publicReviewService: PublicReviewService,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService) {
     }
 
     ngOnInit(): void {
-        this.getAllPds();
-        this.getAllCommentsMade();
+        this.getAllPrds();
+        this.getAllUserLoggedInCommentsMadeOnPd();
 
 
         this.commentFormGroup = this.formBuilder.group({
-            pdId: ['', Validators.required],
+            prdId: ['', Validators.required],
             recipientId: ['', Validators.required],
             title: ['', Validators.required],
             documentType: ['', Validators.required],
@@ -117,32 +117,30 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
     }
 
 
-    public getAllPds(): void {
-        this.committeeService.getAllPreliminaryDrafts().subscribe(
-            (response: Preliminary_Draft_With_Name[]) => {
+    public getAllPrds(): void {
+        this.publicReviewService.getAllPublicReviewDrafts().subscribe(
+            (response: PublicReviewDraftWithName[]) => {
                 console.log(response);
 
-                this.preliminary_drafts = response;
+                this.publicReviewDrafts = response;
                 this.rerender()
-
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
             }
         );
-
     }
 
     saveComment(): void {
         this.SpinnerService.show();
-        this.committeeService.makeComment(this.commentFormGroup.value,"PD").subscribe(
+        this.committeeService.makeComment(this.commentFormGroup.value, "PRD").subscribe(
             (response) => {
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, 'Successfully Submitted Comment');
                 this.commentFormGroup.reset()
                 this.hideModel()
-                this.getAllCommentsMade();
-                this.getAllPds();
+                this.getAllUserLoggedInCommentsMadeOnPd();
+                this.getAllPrds();
 
             },
             (error: HttpErrorResponse) => {
@@ -159,7 +157,7 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, 'Successfully Edited Comment');
                 this.hideModelB()
-                this.getAllCommentsMade();
+                this.getAllUserLoggedInCommentsMadeOnPd();
 
             },
             (error: HttpErrorResponse) => {
@@ -199,7 +197,7 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
                         );
                         this.SpinnerService.hide();
                         this.showToasterSuccess(response.httpStatus, 'Successfully Deleted Comment');
-                        this.getAllCommentsMade();
+                        this.getAllUserLoggedInCommentsMadeOnPd();
                     },
                 );
             } else if (
@@ -215,8 +213,8 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
         });
     }
 
-    public getAllCommentsMade(): void {
-        this.committeeService.retrieveComment().subscribe(
+    public getAllUserLoggedInCommentsMadeOnPd(): void {
+        this.publicReviewService.retrieveComment().subscribe(
             (response: CommentMadeRetrieved[]) => {
                 console.log(response);
 
@@ -232,7 +230,7 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
     }
 
 
-    public onOpenModal(preliminaryDraft: Preliminary_Draft_With_Name, mode: string): void {
+    public onOpenModal(publicReviewDraft: PublicReviewDraftWithName, mode: string): void {
 
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
@@ -240,7 +238,7 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
         if (mode === 'makeComment') {
-            this.preliminary_draftsB = preliminaryDraft;
+            this.publicReviewDraftsB = publicReviewDraft;
             button.setAttribute('data-target', '#makeComment');
         }
 
@@ -359,6 +357,5 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
         this.dtTrigger1.unsubscribe();
         this.dtTrigger2.unsubscribe();
     }
-
 
 }

@@ -1,8 +1,8 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
-    CommentMadeRetrieved,
-    Preliminary_Draft_With_Name,
-    StandardDocuments
+    ApprovedNwiS, CommentMadeRetrieved, Committee_Draft_With_Name,
+    Preliminary_Draft,
+    Preliminary_Draft_With_Name, StandardDocuments
 } from "../../../../core/store/data/std/commitee-model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Subject} from "rxjs";
@@ -13,36 +13,31 @@ import {Router} from "@angular/router";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
-import {formatDate} from "@angular/common";
 import swal from "sweetalert2";
+import {formatDate} from "@angular/common";
+import Swal from "sweetalert2";
+import {PublicReviewService} from "../../../../core/store/data/std/publicReview.service";
 
 declare const $: any;
 
 @Component({
-    selector: 'app-prepare-committee-draft',
-    templateUrl: './prepare-committee-draft.component.html',
-    styleUrls: ['./prepare-committee-draft.component.css']
+    selector: 'app-prepare-public-review-draft',
+    templateUrl: './prepare-public-review-draft.component.html',
+    styleUrls: ['./prepare-public-review-draft.component.css']
 })
+export class PreparePublicReviewDraftComponent implements OnInit {
 
-export class PrepareCommitteeDraftComponent implements OnInit {
 
-    preliminary_draft: Preliminary_Draft_With_Name | undefined;
-    preliminary_drafts !: Preliminary_Draft_With_Name[];
-    preliminary_draftsB !: Preliminary_Draft_With_Name | undefined;
-    public committee_draftFormGroup!: FormGroup;
-
+    public publicReview_draftFormGroup!: FormGroup;
+    committee_draft: Committee_Draft_With_Name | undefined;
+    committee_drafts !: Committee_Draft_With_Name[];
+    committee_draftsB !: Committee_Draft_With_Name | undefined;
     standardDocuments !: StandardDocuments[];
 
     commentMadeRetrievedS !: CommentMadeRetrieved[];
     commentMadeRetrievedB !: CommentMadeRetrieved | undefined;
 
-    dtOptions: DataTables.Settings = {};
-    dtTrigger: Subject<any> = new Subject<any>();
-    @ViewChild(DataTableDirective, {static: false})
-    dtElement: DataTableDirective;
-    isDtInitialized: boolean = false
-    @ViewChild(DataTableDirective, {static: false})
-    dtElementB: DataTableDirective;
+
 
     dateFormat = "yyyy-MM-dd";
     language = "en";
@@ -52,6 +47,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
     public uploadedFilesB: FileList;
     public uploadedFilesC: FileList;
 
+    dtOptions: DataTables.Settings = {};
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger1: Subject<any> = new Subject<any>();
@@ -61,6 +57,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,
+                private publicReviewService: PublicReviewService,
                 private store$: Store<any>,
                 private router: Router,
                 private notifyService: NotificationService,
@@ -68,18 +65,20 @@ export class PrepareCommitteeDraftComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.getAllPds();
-        this.committee_draftFormGroup = this.formBuilder.group({
-            cdName: ['', Validators.required]
+        this.getAllCds();
+        this.publicReview_draftFormGroup = this.formBuilder.group({
+            prdName: ['', Validators.required],
+            ksNumber:['', Validators.required]
         });
 
     }
 
-    public getAllPds(): void {
-        this.committeeService.getAllPreliminaryDrafts().subscribe(
-            (response: Preliminary_Draft_With_Name[]) => {
+    public getAllCds(): void {
+        this.publicReviewService.getAllApprovedCommitteeDrafts().subscribe(
+            (response: Committee_Draft_With_Name[]) => {
+                console.log(response);
 
-                this.preliminary_drafts = response;
+                this.committee_drafts = response;
                 this.rerender()
 
             },
@@ -90,8 +89,8 @@ export class PrepareCommitteeDraftComponent implements OnInit {
 
     }
 
-    public getAllPdDocs(pdID: number) {
-        this.committeeService.getDocsOnPd(pdID).subscribe(
+    public getAllCdDocs(pdID: number) {
+        this.committeeService.getDocsOnCd(pdID).subscribe(
             (response: StandardDocuments[]) => {
 
                 this.standardDocuments = response;
@@ -105,7 +104,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
     }
 
     public getAllComments(pdID: number) {
-        this.committeeService.getCommentsOnPd(pdID).subscribe(
+        this.committeeService.getCommentsOnCd(pdID).subscribe(
             (response: CommentMadeRetrieved[]) => {
 
                 this.commentMadeRetrievedS = response;
@@ -118,7 +117,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
         );
     }
 
-    public uploadMinutesForCd(pdID: number) {
+    public uploadMinutesForPrd(cdId: number) {
         if (this.uploadedFiles.length > 0) {
             const file = this.uploadedFiles;
             const formData = new FormData();
@@ -127,7 +126,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
                 formData.append('docFile', file[i], file[i].name);
             }
             this.SpinnerService.show();
-            this.committeeService.uploadMinutesForCd(String(pdID), formData, "Minutes CD", "Minutes CD").subscribe(
+            this.publicReviewService.uploadMinutesForPrd(String(cdId), formData, "Minutes PRD", "Minutes PRD").subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.uploadedFiles = null;
@@ -141,7 +140,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
                         icon: 'success'
                     });
                     this.hideModelE()
-                    this.getAllPds();
+                    this.getAllCds();
 
                     // this.router.navigate(['/draftStandard']);
                     // this.getSACTasks();
@@ -151,7 +150,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
         }
     }
 
-    public uploadDraftsAndOtherDocs(pdID: number) {
+    public uploadDraftsAndOtherDocs(cdId: number) {
         if (this.uploadedFilesB.length > 0) {
             const file = this.uploadedFilesB;
             const formData = new FormData();
@@ -160,7 +159,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
                 formData.append('docFile', file[i], file[i].name);
             }
             this.SpinnerService.show();
-            this.committeeService.uploadCdDraftDocuments(String(pdID), formData, "Drafts And Other Relevant Documents CD", "Drafts And Other Relevant Documents CD").subscribe(
+            this.publicReviewService.uploadPrdDraftDocuments(String(cdId), formData, "Drafts And Other Relevant Documents PRD", "Drafts And Other Relevant Documents PRD").subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.uploadedFilesB = null;
@@ -174,7 +173,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
                         },
                         icon: 'success'
                     });
-                    this.getAllPds();
+                    this.getAllCds();
 
                     // this.router.navigate(['/draftStandard']);
                     // this.getSACTasks();
@@ -185,16 +184,16 @@ export class PrepareCommitteeDraftComponent implements OnInit {
     }
 
 
-    uploadCommitteeDraft(): void {
+    uploadPublicReviewDraft(): void {
         if (this.uploadedFilesC != null) {
             this.SpinnerService.show();
-            this.committeeService.prepareCommitteeDraft(this.committee_draftFormGroup.value, String(this.preliminary_draftsB.id)).subscribe(
+            this.publicReviewService.preparePublicReviewDraft(this.publicReview_draftFormGroup.value, String(this.committee_draftsB.cdid)).subscribe(
                 (response) => {
                     console.log(response)
                     this.SpinnerService.hide();
-                    this.showToasterSuccess(response.httpStatus, `Successfully Submitted Committee Draft`);
-                    this.uploadCDDoc(response.body.savedRowID)
-                    this.committee_draftFormGroup.reset();
+                    this.showToasterSuccess(response.httpStatus, `Successfully Submitted Public Review Draft`);
+                    this.uploadPrDDoc(response.body.savedRowID)
+                    this.publicReview_draftFormGroup.reset();
                 },
                 (error: HttpErrorResponse) => {
                     this.SpinnerService.hide();
@@ -206,7 +205,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
         }
     }
 
-    public uploadCDDoc(cdId: string) {
+    public uploadPrDDoc(prdId: string) {
         if (this.uploadedFilesC.length > 0) {
             const file = this.uploadedFilesC;
             const formData = new FormData();
@@ -215,29 +214,75 @@ export class PrepareCommitteeDraftComponent implements OnInit {
                 formData.append('docFile', file[i], file[i].name);
             }
             this.SpinnerService.show();
-            this.committeeService.uploadCDDocument(cdId, formData, "CD Document", "CD Document").subscribe(
+            this.publicReviewService.uploadPRDDocument(prdId, formData, "PRD Document", "PRD Document").subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.uploadedFilesC = null;
                     console.log(data);
                     this.hideModelC()
                     swal.fire({
-                        title: 'Committee Draft Document Uploaded Successfully.',
+                        title: 'Public Review Draft Document Uploaded Successfully.',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
                         },
                         icon: 'success'
                     });
-                    this.getAllPds();
+                    this.getAllCds();
 
                 },
             );
         }
     }
+    approveCD(committeeDraft): void {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-success'
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure your want to approve this committee draft?',
+            text: 'You won\'t be able to reverse this!',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.SpinnerService.show();
+                this.committeeService.approveCommitteeDraft(committeeDraft).subscribe(
+                    (response) => {
+                        this.SpinnerService.hide();
+                        swalWithBootstrapButtons.fire(
+                            'Approved!',
+                            'Committee Draft Successfully Approved!',
+                            'success'
+                        );
+                        this.SpinnerService.hide();
+                        this.showToasterSuccess(response.httpStatus, 'Committee Draft Successfully Approved');
+                        this.getAllCds();
+                    },
+                );
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'You have cancelled this operation',
+                    'error'
+                );
+            }
+        });
+    }
 
 
-    public onOpenModal(preliminaryDraft: Preliminary_Draft_With_Name, mode: string): void {
+
+    public onOpenModal(committeeDraft: Committee_Draft_With_Name, mode: string): void {
 
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
@@ -245,25 +290,25 @@ export class PrepareCommitteeDraftComponent implements OnInit {
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
         if (mode === 'comments') {
-            this.preliminary_draftsB = preliminaryDraft;
+            this.committee_draftsB = committeeDraft;
             button.setAttribute('data-target', '#comments');
-            this.getAllComments(preliminaryDraft.id)
+            this.getAllComments(committeeDraft.cdid)
         }
         if (mode === 'prepareCd') {
-            this.preliminary_draftsB = preliminaryDraft;
+            this.committee_draftsB = committeeDraft;
             button.setAttribute('data-target', '#prepareCd');
         }
         if (mode === 'uploadMinutes') {
-            this.preliminary_draftsB = preliminaryDraft;
+            this.committee_draftsB = committeeDraft;
             button.setAttribute('data-target', '#uploadMinutes');
         }
         if (mode === 'moreDetails') {
-            this.preliminary_draftsB = preliminaryDraft;
+            this.committee_draftsB = committeeDraft;
             button.setAttribute('data-target', '#moreDetails');
-            this.getAllPdDocs(preliminaryDraft.id)
+            this.getAllCdDocs(committeeDraft.cdid)
         }
         if (mode === 'uploadDraftsAndOtherRelevantDocuments') {
-            this.preliminary_draftsB = preliminaryDraft;
+            this.committee_draftsB = committeeDraft;
             button.setAttribute('data-target', '#uploadDraftsAndOtherRelevantDocuments');
         }
         // @ts-ignore

@@ -58,9 +58,9 @@ class CommitteeCD {
     @Basic
     var deleteBy: String? = null
 
-    @Column(name = "VAR_FIELD_1")
+    @Column(name = "KS_NUMBER")
     @Basic
-    var varField1: String? = null
+    var ksNumber: String? = null
 
     @Column(name = "VAR_FIELD_2")
     @Basic

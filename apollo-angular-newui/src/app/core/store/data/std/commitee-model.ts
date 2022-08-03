@@ -92,13 +92,27 @@ export interface Committee_Draft_With_Name {
     createdon: string;
     approvalstatus: string;
     numberofcomments: string;
+    ks_NUMBER: string;
+
 }
 
 export interface PublicReviewDraft {
     id: number;
     prdName: string;
-    prdraftBy: string;
-    prdpath: string;
+    prdBy: string;
+    status: string;
+}
+
+export interface PublicReviewDraftWithName {
+    id: number;
+    cd_Id: number;
+    prd_name: string;
+    prd_by: string;
+    status: string;
+    created_on: string;
+    number_OF_COMMENTS: string;
+    ks_NUMBER: string;
+    var_FIELD_1: string;
 
 
 }
@@ -133,6 +147,7 @@ export interface CommentMade {
     userId: number;
     pdId: number;
     cdId: number;
+    prdId: number;
     recipientId: number;
     title: string;
     documentType: string;
@@ -171,7 +186,7 @@ export interface CommentMadeRetrieved {
     pd_name: string
     recipient_id: number;
     cd_name: string;
-
+    prd_name: string;
 
 }
 

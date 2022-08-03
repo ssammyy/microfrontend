@@ -1,8 +1,7 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
     CommentMadeRetrieved,
-    Committee_Draft_With_Name,
-    Preliminary_Draft_With_Name
+    Committee_Draft_With_Name
 } from "../../../../core/store/data/std/commitee-model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
@@ -33,13 +32,7 @@ export class ReviewCommitteeDraftComponent implements OnInit {
     commentMadeRetrievedS !: CommentMadeRetrieved[];
     commentMadeRetrievedB !: CommentMadeRetrieved | undefined;
 
-    dtOptions: DataTables.Settings = {};
-    dtTrigger: Subject<any> = new Subject<any>();
-    @ViewChild(DataTableDirective, {static: false})
-    dtElement: DataTableDirective;
-    isDtInitialized: boolean = false
-    @ViewChild(DataTableDirective, {static: false})
-    dtElementB: DataTableDirective;
+
 
     dateFormat = "yyyy-MM-dd";
     language = "en";
@@ -48,10 +41,12 @@ export class ReviewCommitteeDraftComponent implements OnInit {
     public commentFormGroup!: FormGroup;
     public editCommentFormGroup!: FormGroup;
 
+    dtOptions: DataTables.Settings = {};
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
+    dtTrigger3: Subject<any> = new Subject<any>();
 
 
     constructor(private formBuilder: FormBuilder,

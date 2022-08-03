@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -102,9 +101,9 @@ class Comments {
     @Basic
     var commentsMade: String? = null
 
-    @Column(name = "VAR_FIELD_4")
+    @Column(name = "PRD_ID")
     @Basic
-    var varField4: String? = null
+    var prdId: String? = null
 
     @Column(name = "VAR_FIELD_5")
     @Basic

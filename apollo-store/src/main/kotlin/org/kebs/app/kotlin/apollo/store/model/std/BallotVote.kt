@@ -28,6 +28,10 @@ class BallotVote {
     @Basic
     var comment: String? = null
 
+    @Column(name = "STATUS")
+    @Basic
+    var status: Long? = 0
+
 
     @Column(name = "CREATED_ON")
     @Basic
@@ -40,39 +44,6 @@ class BallotVote {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
 
-        other as BallotVote
-
-        if (id != other.id) return false
-        if (ballotId != other.ballotId) return false
-        if (userId != other.userId) return false
-        if (approvalStatus != other.approvalStatus) return false
-        if (comment != other.comment) return false
-        if (createdOn != other.createdOn) return false
-        if (modifiedOn != other.modifiedOn) return false
-        if (deletedOn != other.deletedOn) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + (ballotId.hashCode())
-        result = 31 * result + (userId?.hashCode() ?: 0)
-        result = 31 * result + (approvalStatus?.hashCode() ?: 0)
-        result = 31 * result + (comment?.hashCode() ?: 0)
-        result = 31 * result + (createdOn?.hashCode() ?: 0)
-        result = 31 * result + (modifiedOn?.hashCode() ?: 0)
-        result = 31 * result + (deletedOn?.hashCode() ?: 0)
-        return result
-    }
-
-    override fun toString(): String {
-        return "BallotVote(id=$id, ballotId=$ballotId,userId=$userId,approvalStatus=$approvalStatus,comment=$comment" +
-                "createdOn=$createdOn, modifiedOn=$modifiedOn, deletedOn=$deletedOn)"
-    }
 
 }
