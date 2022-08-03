@@ -291,21 +291,22 @@
                                     <b class="text-secondary">{{complaintInspection?.complaintsDetails?.status}}</b>
                                 </div>
                                 <br/>
-                                <b>TIMELINES STATUS:</b>
-                                <div>
-                                    <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue" class="bg-success">OVER-DUE</b>
-                                    <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue==false" class="bg-danger">OVER-DUE</b>
+                                <div *ngIf="complaintInspection?.complaintsDetails?.timelineEndDate!=null">
+                                    <b>TIMELINES STATUS:</b>
+                                    <div>
+                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue" class="text-success">IN-TIME</b>
+                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue==false" class="text-danger">OVER-DUE</b>
+                                    </div>
+                                    <b>Started TimeLine</b>
+                                    <div>
+                                        <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineStartDate| date}}</b>
+                                    </div>
+                                    <b>Targeted TimeLine</b>
+                                    <div>
+                                        <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineEndDate| date}}</b>
+                                    </div>
+                                    <br/>
                                 </div>
-                                <br/>
-                                <b>Started TimeLine</b>
-                                <div>
-                                    <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineStartDate| date}}</b>
-                                </div>
-                                <b>Targeted TimeLine</b>
-                                <div>
-                                    <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineEndDate| date}}</b>
-                                </div>
-                                <br/>
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">

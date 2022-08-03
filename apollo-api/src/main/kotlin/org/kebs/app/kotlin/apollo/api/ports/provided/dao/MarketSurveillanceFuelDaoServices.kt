@@ -96,7 +96,7 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
         remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = applicationMapProperties.mapMSCreateBatch
             userId= loggedInUser.id
         }
@@ -176,7 +176,7 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = fileSaved.second.msProcessId
             userId= loggedInUser.id
         }
@@ -317,7 +317,7 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = fileInspectionDetail.msProcessId
             userId= loggedInUser.id
         }
@@ -377,11 +377,11 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.rapidTestRemarks
-            remarksStatus= map.activeStatus
             processID = fileInspectionDetail.msProcessId
             userId= loggedInUser.id
         }
 
+        var remarksStatusAdded = "N/A"
         when {
             body.rapidTestStatus -> {
                 //Rapid Test Passed
@@ -391,6 +391,7 @@ class MarketSurveillanceFuelDaoServices(
                     rapidTestPassedOn = commonDaoServices.getCurrentDate()
                     rapidTestPassedBy = commonDaoServices.concatenateName(loggedInUser)
                     rapidTestPassedRemarks = body.rapidTestRemarks
+                    remarksStatusAdded = "PASSED"
                 }
 
             }
@@ -402,6 +403,7 @@ class MarketSurveillanceFuelDaoServices(
                     rapidTestFailedOn = commonDaoServices.getCurrentDate()
                     rapidTestFailedBy = commonDaoServices.concatenateName(loggedInUser)
                     rapidTestFailedRemarks = body.rapidTestRemarks
+                    remarksStatusAdded = "FAILED"
                 }
             }
         }
@@ -409,6 +411,7 @@ class MarketSurveillanceFuelDaoServices(
 
         if (fileSaved.first.status == map.successStatus) {
             fileInspectionDetail = fileSaved.second
+            remarksDto.remarksStatus = remarksStatusAdded
             val remarksSaved = fuelAddRemarksDetails(fileSaved.second.id,remarksDto, map, loggedInUser)
             if (remarksSaved.first.status == map.successStatus){
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
@@ -517,7 +520,7 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = fileInspectionDetail.msProcessId
             userId= loggedInUser.id
         }
@@ -575,7 +578,14 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.complianceRemarks
-            remarksStatus= map.activeStatus
+            remarksStatus = when {
+                body.complianceStatus -> {
+                    "COMPLIANT"
+                }
+                else -> {
+                    "NON-COMPLIANT"
+                }
+            }
             processID = applicationMapProperties.mapMSSaveSelectedLabResults
             userId= loggedInUser.id
         }
@@ -611,7 +621,14 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.complianceRemarks
-            remarksStatus= map.activeStatus
+            remarksStatus = when {
+                body.complianceStatus -> {
+                    "COMPLIANT"
+                }
+                else -> {
+                    "NON-COMPLIANT"
+                }
+            }
             processID = fileInspectionDetail.msProcessId
             userId= loggedInUser.id
         }
@@ -727,7 +744,7 @@ class MarketSurveillanceFuelDaoServices(
                 val remarksDto = RemarksToAddDto()
                 with(remarksDto){
                     remarksDescription= body.remarks
-                    remarksStatus= map.activeStatus
+                    remarksStatus= "N/A"
                     processID = fileInspectionDetail.msProcessId
                     userId= loggedInUser.id
                 }
@@ -801,7 +818,7 @@ class MarketSurveillanceFuelDaoServices(
                 val remarksDto = RemarksToAddDto()
                 with(remarksDto){
                     remarksDescription= body.remarks
-                    remarksStatus= map.activeStatus
+                    remarksStatus= "N/A"
                     processID = fileInspectionDetail.msProcessId
                     userId= loggedInUser.id
                 }

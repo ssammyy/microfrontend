@@ -456,7 +456,7 @@ class SchedulerImpl(
                                                 runBlocking {
                                                     if (inspectionOfficer != null) {
                                                         commonDaoServices.sendEmailWithUserEntity(
-                                                            inspectionOfficer, applicationMapProperties.mapMsLabResultsIONotification, fileInspectionDetail, map, sr)
+                                                            inspectionOfficer, applicationMapProperties.mapMsLabResultNotificationEmail, fileInspectionDetail, map, sr)
                                                     }
                                                 }
 

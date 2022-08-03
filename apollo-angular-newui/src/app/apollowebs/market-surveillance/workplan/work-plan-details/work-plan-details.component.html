@@ -145,10 +145,10 @@
                                                 <div class="list-title-accordion">Activity Date</div>
                                                 <div class="list-text-accordion">{{workPlanInspection?.timeActivityDate |date}}</div>
                                             </li>
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Date report submitted</div>-->
-<!--                                                <div class="list-text-accordion" >{{workPlanInspection?.timeDateReportSubmitted}}</div>-->
-<!--                                            </li>-->
+                                            <!--                                            <li class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">Date report submitted</div>-->
+                                            <!--                                                <div class="list-text-accordion" >{{workPlanInspection?.timeDateReportSubmitted}}</div>-->
+                                            <!--                                            </li>-->
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Created By</div>
                                                 <div class="list-text-accordion" >{{workPlanInspection?.officerName}}</div>
@@ -456,7 +456,7 @@
                                                         {{workPlanInspection?.sampleCollected?.dateWitness|date}}</div>
                                                 </li>
                                             </ul>
-<!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
+                                            <!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
                                             <div class="form-row">
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Items</label>
@@ -607,7 +607,7 @@
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-3"><span
                                                         class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                             </div>
@@ -720,9 +720,9 @@
                                                 </li>
                                                 <br/>
                                                 <div class="list-paragraph-accordion">
-                                                <p>Now therefore I....<span style="color:blue;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.goodsThereforei}}</span>...
-                                                    as an inspector under the Standards Act Cap 496, Laws of Kenya , hereby seize and detain the said goods under
-                                                    the provisions of the standards Act Cap 496 Laws of Kenya, miscellaneous amendment 2002, No 2</p></div>
+                                                    <p>Now therefore I....<span style="color:blue;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.goodsThereforei}}</span>...
+                                                        as an inspector under the Standards Act Cap 496, Laws of Kenya , hereby seize and detain the said goods under
+                                                        the provisions of the standards Act Cap 496 Laws of Kenya, miscellaneous amendment 2002, No 2</p></div>
                                             </ul>
                                             <br/>
 
@@ -820,7 +820,7 @@
                                                     relevant to his inquiry and to require every such person to be so examined and to sign a declaration of
                                                     the truth of the matters respecting which he is so examined, but no person is required to answer any question
                                                     tending to incriminate himself.</p>
-                                                    <br/>
+                                                <br/>
                                                 <p class="list-paragraph-accordion">
                                                     The penalty for wilfully making or signing a false Declaration is imprisonment for a term not exceeding
                                                     twelve months or a fine not exceeding one million shillings or to both such imprisonment and fine.
@@ -932,16 +932,16 @@
 
                                             </ul>
 
-<!--                                            <div class="form-row">-->
-<!--                                                <div class="col-md-12 mb-3">-->
-<!--                                                    <label style="color: #0082f3">Outlets visited Details</label>-->
-<!--                                                </div>-->
-<!--                                                <div class="table-striped table-condensed table-responsive">-->
-<!--                                                    <ng2-smart-table [settings]="settingsPreliminaryReportOutlets"-->
-<!--                                                                     [source]="workPlanInspection?.preliminaryReport?.parametersList"-->
-<!--                                                    ></ng2-smart-table>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
+                                            <!--                                            <div class="form-row">-->
+                                            <!--                                                <div class="col-md-12 mb-3">-->
+                                            <!--                                                    <label style="color: #0082f3">Outlets visited Details</label>-->
+                                            <!--                                                </div>-->
+                                            <!--                                                <div class="table-striped table-condensed table-responsive">-->
+                                            <!--                                                    <ng2-smart-table [settings]="settingsPreliminaryReportOutlets"-->
+                                            <!--                                                                     [source]="workPlanInspection?.preliminaryReport?.parametersList"-->
+                                            <!--                                                    ></ng2-smart-table>-->
+                                            <!--                                                </div>-->
+                                            <!--                                            </div>-->
                                             <br>
                                         </div>
                                     </mat-tab>
@@ -1252,7 +1252,9 @@
                                             </div>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport && workPlanInspection?.finalReportGenerated == false && workPlanInspection?.officerDetails?.id == userLoggedInID" label="19">
+                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport && workPlanInspection?.finalReportGenerated == false
+                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
+                                                && workPlanInspection?.officerDetails?.id == userLoggedInID" label="19">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             FINAL REPORT
@@ -1428,12 +1430,12 @@
                                                         <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
                                                                         [collectionSize]="workPlanInspection?.remarksDetails.length"
                                                                         (pageChange)=pageChange($event)>
-                                                            <!--                                                            <ng-template ngbPaginationFirst>First</ng-template>-->
-                                                            <!--                                                            <ng-template ngbPaginationLast>Last</ng-template>-->
-                                                            <!--&lt;!&ndash;                                                            <ng-template ngbPaginationPrevious>Prev</ng-template>&ndash;&gt;-->
-                                                            <!--&lt;!&ndash;                                                            <ng-template ngbPaginationNext>Next</ng-template>&ndash;&gt;-->
-                                                            <!--                                                            <ng-template ngbPaginationEllipsis>...</ng-template>-->
-                                                            <!--                                                            <ng-template ngbPaginationNumber let-page>{{ page}}</ng-template>-->
+                                                            <!--                                                                                                                        <ng-template ngbPaginationFirst>First</ng-template>-->
+                                                            <!--                                                                                                                        <ng-template ngbPaginationLast>Last</ng-template>-->
+                                                            <!--                                                            &lt;!&ndash;                                                            <ng-template ngbPaginationPrevious>Prev</ng-template>&ndash;&gt;-->
+                                                            <!--                                                            &lt;!&ndash;                                                            <ng-template ngbPaginationNext>Next</ng-template>&ndash;&gt;-->
+                                                            <!--                                                                                                                        <ng-template ngbPaginationEllipsis>...</ng-template>-->
+                                                            <!--                                                                                                                        <ng-template ngbPaginationNumber let-page>{{ page}}</ng-template>-->
                                                         </ngb-pagination>
                                                     </div>
                                                 </div>
@@ -1479,14 +1481,13 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT SCHEDULE</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="workPlanInspection?.hofAssignedDetails != null" (click)="openModalAddDetails('reAssignHOF')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">RE-ASSIGN/ASSIGN HOF</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1498,7 +1499,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1514,7 +1515,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT FINAL PRELIMINARY REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -1530,7 +1531,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL RECOMMENDATION</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1543,7 +1544,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL REMARKS</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1557,14 +1558,14 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL REMARKS</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.complaintId!= null
-                                        && workPlanInspection?.approvedStatus ==false && workPlanInspection?.onsiteStartStatus ==false"
+                                                && workPlanInspection?.approvedStatus ==false && workPlanInspection?.submittedForApprovalStatus ==false && workPlanInspection?.onsiteStartStatus ==false"
                                                      (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">SUBMIT FOR APPROVAL</span>
@@ -1572,11 +1573,10 @@
                                             </button>
 
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                        && workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
+                                                && workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
                                                      (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">START ONSITE ACTIVITIES</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <div *ngIf="workPlanInspection?.onsiteStartStatus && workPlanInspection?.onsiteEndStatus ==false">
@@ -1584,101 +1584,88 @@
                                                           data-target="#myModal1"
                                                           class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD ATTACHMENTS</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.chargeSheetStatus ==false"  mat-raised-button="" data-toggle="modal"
                                                         data-target="#chargeSheetModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD CHARGE SHEET</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button *ngIf="workPlanInspection?.chargeSheetDocId ==null"   (click)="openModalAddDetails('uploadChargeSheetFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button *ngIf="workPlanInspection?.chargeSheetDocId ==null && workPlanInspection?.chargeSheetStatus"   (click)="openModalAddDetails('uploadChargeSheetFiles')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#myModal1"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD CHARGE SHEET</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.sampleCollectionStatus ==false"  mat-raised-button="" data-toggle="modal"
                                                         data-target="#sampleCollectModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD SAMPLE COLLECTION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button  *ngIf="workPlanInspection?.scfDocId ==null"  (click)="openModalAddDetails('uploadSCFFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button  *ngIf="workPlanInspection?.scfDocId ==null && workPlanInspection?.sampleCollectionStatus"  (click)="openModalAddDetails('uploadSCFFiles')" mat-raised-button="" data-toggle="modal"
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD SAMPLE COLLECTION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.sampleSubmittedStatus ==false"  mat-raised-button="" data-toggle="modal"
                                                         data-target="#sampleSubmitModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD SAMPLE SUBMISSION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button  *ngIf="workPlanInspection?.ssfDocId ==null" (click)="openModalAddDetails('uploadSSFFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button  *ngIf="workPlanInspection?.ssfDocId ==null && workPlanInspection?.sampleSubmittedStatus" (click)="openModalAddDetails('uploadSSFFiles')" mat-raised-button="" data-toggle="modal"
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD SAMPLE SUBMISSION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.seizureDeclarationStatus ==false" (click)="openModalAddDetails('seizureDeclarationDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#seizureDeclarationModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD SEIZURE DECLARATION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button   *ngIf="workPlanInspection?.seizureDocId ==null" (click)="openModalAddDetails('uploadSeizureFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button   *ngIf="workPlanInspection?.seizureDocId ==null && workPlanInspection?.seizureDeclarationStatus" (click)="openModalAddDetails('uploadSeizureFiles')" mat-raised-button="" data-toggle="modal"
                                                           data-target="#myModal1"
                                                           class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD SEIZURE</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button   *ngIf="workPlanInspection?.declarationDocId ==null" (click)="openModalAddDetails('uploadDeclarationFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button   *ngIf="workPlanInspection?.declarationDocId ==null && workPlanInspection?.seizureDeclarationStatus" (click)="openModalAddDetails('uploadDeclarationFiles')" mat-raised-button="" data-toggle="modal"
                                                           data-target="#myModal1"
                                                           class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD DECLARATION</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.dataReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#dataReportModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD DATA REPORT</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button  *ngIf="workPlanInspection?.dataReportDocId ==null" (click)="openModalAddDetails('uploadDataReportFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button  *ngIf="workPlanInspection?.dataReportDocId ==null && workPlanInspection?.dataReportStatus" (click)="openModalAddDetails('uploadDataReportFiles')" mat-raised-button="" data-toggle="modal"
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD DATA REPORT</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button *ngIf="workPlanInspection?.investInspectReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#investInspectReportModal"
-                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="btn btn-sm btn-primary"><span
                                                         class="mat-button-wrapper">ADD INVESTIGATION & INSPECTION REPORT</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                             </div>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                        && workPlanInspection?.approvedStatus && workPlanInspection?.onsiteStartStatus
-                                         && workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus ==false"
+                                                && workPlanInspection?.approvedStatus && workPlanInspection?.onsiteStartStatus
+                                                && workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus ==false"
                                                      (click)="onClickEndOnsiteActivities()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END ONSITE ACTIVITIES</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus &&
@@ -1687,16 +1674,16 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD BS NUMBER</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
                                                     workPlanInspection?.msPreliminaryReportStatus == false"
-                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#preliminaryReportModal"
-                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#preliminaryReportModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">CREATE PRELIMINARY</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -1710,7 +1697,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1722,7 +1709,7 @@
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">UPLOAD DESTRUCTION NOTIFICATION</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1735,7 +1722,7 @@
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">DID CLIENT APPEAL ?</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1751,7 +1738,7 @@
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">WAS APPEAL SUCCESS ?</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1766,7 +1753,7 @@
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">UPLOAD DESTRUCTION REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -1776,7 +1763,7 @@
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">RE-ASSIGN IO</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1786,7 +1773,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -1801,7 +1788,7 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT FINAL REPORT</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
@@ -2049,8 +2036,8 @@
                                         <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea  matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks" required>
+                                                       formControlName="remarks"
+                                                       name="remarks" required>
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -2167,7 +2154,7 @@
                                         <mat-form-field class="example-full-width">
                                             <textarea [class.is-invalid]="formPreliminaryRecommendationForm.surveillanceConclusions.invalid
                                             && formPreliminaryRecommendationForm.surveillanceConclusions.touched"
-                                                    id="surveillanceConclusions" matInput type="text"
+                                                      id="surveillanceConclusions" matInput type="text"
                                                       formControlName="surveillanceConclusions"
                                                       name="surveillanceConclusions" required>
                                             </textarea>
@@ -2176,7 +2163,7 @@
                                         <mat-form-field class="example-full-width">
                                             <textarea [class.is-invalid]="formPreliminaryRecommendationForm.surveillanceRecommendation.invalid
                                             && formPreliminaryRecommendationForm.surveillanceRecommendation.touched"
-                                                    id="surveillanceRecommendation" matInput type="text"
+                                                      id="surveillanceRecommendation" matInput type="text"
                                                       formControlName="surveillanceRecommendation"
                                                       name="surveillanceRecommendation" required>
                                             </textarea>
@@ -2252,20 +2239,6 @@
                                 </div>
                             </div>
                         </form>
-                    </div><div *ngIf="(currDiv == 'uploadFiles')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Documents Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
-                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
                     </div>
                     <div *ngIf="(currDiv == 'uploadSeizureFiles')">
                         <form  action="" class="form" enctype="multipart/form-data" method="post">
@@ -2297,11 +2270,32 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'uploadDataReportFiles')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'uploadDestructionNotificationFile')">
                         <form  [formGroup]="clientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
+                                        <label for="clientFullName"><b>Client Full Name</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="clientFullName" matInput type="text" placeholder="Please Enter Client Full Name" formControlName="clientFullName" name="clientFullName"
+                                                   [class.is-invalid]="formClientEmailNotificationForm.clientFullName.invalid
+                                                    && formClientEmailNotificationForm.clientFullName.touched">
+                                        </mat-form-field>
                                         <label for="clientEmail"><b>Client Email</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="clientEmail" matInput type="text" placeholder="Please Enter Client Email" formControlName="clientEmail" name="clientEmail"
@@ -2500,6 +2494,10 @@
                                         <label for="processBy"><b>ADD BY</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="processBy" matInput type="text" readonly formControlName="processBy" name="processBy">
+                                        </mat-form-field>
+                                        <label for="remarksStatus"><b>Remarks Status:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="remarksStatus" matInput type="text" readonly formControlName="remarksStatus" name="remarksStatus">
                                         </mat-form-field>
                                         <label for="remarksDescription"><b>Remarks/ Feed back:</b></label>
                                         <mat-form-field class="example-full-width">
@@ -2813,7 +2811,7 @@
 
                                 <div class="col">
                                     <div class="form-group">
-<!--                                        <-->
+                                        <!--                                        <-->
                                     </div>
                                 </div>
                             </div>
@@ -2863,7 +2861,7 @@
                                     <div class="form-group">
                                         <label><b>Particulars of offence second</b></label>
                                         <textarea type="text" class="form-control two-column-input"
-                                               formControlName="particularsOffenceSecond" name="particularsOffenceSecond" required
+                                                  formControlName="particularsOffenceSecond" name="particularsOffenceSecond" required
                                                   [class.is-invalid]="formChargeSheetForm.particularsOffenceSecond.invalid && formChargeSheetForm.particularsOffenceSecond.errors"></textarea>
                                         <div *ngIf="submitted && formChargeSheetForm.particularsOffenceSecond.errors" class="invalid-feedback">
                                             <div *ngIf="formChargeSheetForm.particularsOffenceSecond.errors.required">Particulars of offence is required</div>
@@ -2949,13 +2947,13 @@
 
                                 <div class="col">
                                     <div class="form-group">
-<!--                                        <label><b>Bond Or Bail Amount</b></label>-->
-<!--                                        <input type="number" min="1" class="form-control two-column-input"-->
-<!--                                               formControlName="bondBailAmount" name="bondBailAmount" required-->
-<!--                                               [class.is-invalid]="formChargeSheetForm.bondBailAmount.invalid && formChargeSheetForm.bondBailAmount.errors">-->
-<!--                                        <div *ngIf="submitted && formChargeSheetForm.bondBailAmount.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formChargeSheetForm.bondBailAmount.errors.required">bondBailAmount is required</div>-->
-<!--                                        </div>-->
+                                        <!--                                        <label><b>Bond Or Bail Amount</b></label>-->
+                                        <!--                                        <input type="number" min="1" class="form-control two-column-input"-->
+                                        <!--                                               formControlName="bondBailAmount" name="bondBailAmount" required-->
+                                        <!--                                               [class.is-invalid]="formChargeSheetForm.bondBailAmount.invalid && formChargeSheetForm.bondBailAmount.errors">-->
+                                        <!--                                        <div *ngIf="submitted && formChargeSheetForm.bondBailAmount.errors" class="invalid-feedback">-->
+                                        <!--                                            <div *ngIf="formChargeSheetForm.bondBailAmount.errors.required">bondBailAmount is required</div>-->
+                                        <!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -2965,16 +2963,16 @@
                             <h5 class="mb-3" style="color: black">Fill in the below the details</h5>
                             <div class="row">
                                 <div class="col">
-                                <div class="form-group">
-                                    <label><b>Remanded or adjourned to</b></label>
-                                    <input type="text" class="form-control two-column-input"
-                                           formControlName="remandedAdjourned" name="remandedAdjourned" required
-                                           [class.is-invalid]="formChargeSheetForm.remandedAdjourned.invalid && formChargeSheetForm.remandedAdjourned.errors">
-                                    <div *ngIf="submitted && formChargeSheetForm.remandedAdjourned.errors" class="invalid-feedback">
-                                        <div *ngIf="formChargeSheetForm.remandedAdjourned.errors.required">Remanded or adjourned to is required</div>
+                                    <div class="form-group">
+                                        <label><b>Remanded or adjourned to</b></label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="remandedAdjourned" name="remandedAdjourned" required
+                                               [class.is-invalid]="formChargeSheetForm.remandedAdjourned.invalid && formChargeSheetForm.remandedAdjourned.errors">
+                                        <div *ngIf="submitted && formChargeSheetForm.remandedAdjourned.errors" class="invalid-feedback">
+                                            <div *ngIf="formChargeSheetForm.remandedAdjourned.errors.required">Remanded or adjourned to is required</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Complainant Name</b></label>
@@ -3397,8 +3395,8 @@
                                     <div class="form-group">
                                         <label><b>Remarks</b> </label>
                                         <textarea [class.is-invalid]="formDataReportParamForm.remarks.invalid && formDataReportParamForm.remarks.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="remarks"
+                                                  class="form-control two-column-input"
+                                                  formControlName="remarks"
                                                   name="remarks" required type="text"></textarea>
                                         <div *ngIf="submitted && formDataReportParamForm.remarks.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportParamForm.remarks.errors.required">Remarks
@@ -3504,7 +3502,7 @@
                                             Do not meet the requirements of Standard(s)..<span style="color:blue;font-weight:bold">
                                             <input [class.is-invalid]="formSeizureDeclarationForm.seizureRequirementsStandards.invalid &&
                                             formSeizureDeclarationForm.seizureRequirementsStandards.errors" class="form-control two-column-input"
-                                           placeholder="e.g Do not meet the requirements of Standard(s)" formControlName="seizureRequirementsStandards" name="seizureRequirementsStandards" required type="text">
+                                                   placeholder="e.g Do not meet the requirements of Standard(s)" formControlName="seizureRequirementsStandards" name="seizureRequirementsStandards" required type="text">
                                             </span>....published/approved by the Kenya Bureau of Standards.</p>
                                     </div>
                                 </div>
@@ -3622,7 +3620,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                            <!--test-->
+                                        <!--test-->
                                     </div>
                                 </div>
 
@@ -3632,10 +3630,10 @@
                                     <div class="form-group">
                                         <p>Now therefore I.......................................................................................
                                             <span style="color:blue;font-weight:bold"><input
-                                                [class.is-invalid]="formSeizureDeclarationForm.goodsThereforei.invalid &&
+                                                    [class.is-invalid]="formSeizureDeclarationForm.goodsThereforei.invalid &&
                                                 formSeizureDeclarationForm.goodsThereforei.errors"
-                                                class="form-control two-column-input" placeholder="e.g john doe"
-                                                formControlName="goodsThereforei" name="goodsThereforei" required type="text"></span>...
+                                                    class="form-control two-column-input" placeholder="e.g john doe"
+                                                    formControlName="goodsThereforei" name="goodsThereforei" required type="text"></span>...
                                             as an inspector under the Standards Act Cap 496, Laws of Kenya , hereby seize and detain the said goods under
                                             the provisions of the standards Act Cap 496 Laws of Kenya, miscellaneous amendment 2002, No 2</p>
                                     </div>
@@ -3693,7 +3691,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                       <!--test-->
+                                        <!--test-->
                                     </div>
                                 </div>
 
@@ -3877,9 +3875,9 @@
                                     <div class="form-group">
                                         <p>I State that: ..................................................................................................................................................
                                             <span style="color:blue;font-weight:bold"><textarea
-                                                [class.is-invalid]="formSeizureDeclarationForm.declarationStateThat.invalid && formSeizureDeclarationForm.declarationStateThat.errors"
-                                                class="form-control two-column-input" placeholder="e.g situated at"
-                                                formControlName="declarationStateThat" name="declarationStateThat" required type="text"></textarea></span>
+                                                    [class.is-invalid]="formSeizureDeclarationForm.declarationStateThat.invalid && formSeizureDeclarationForm.declarationStateThat.errors"
+                                                    class="form-control two-column-input" placeholder="e.g situated at"
+                                                    formControlName="declarationStateThat" name="declarationStateThat" required type="text"></textarea></span>
                                             I declare the above statement to be true.
                                         </p>
                                     </div>
@@ -4086,8 +4084,8 @@
                                     <div class="form-group">
                                         <label><b>Background Information</b> </label>
                                         <textarea [class.is-invalid]="formInvestInspectReportForm.backgroundInformation.invalid && formInvestInspectReportForm.backgroundInformation.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="backgroundInformation"
+                                                  class="form-control two-column-input"
+                                                  formControlName="backgroundInformation"
                                                   name="backgroundInformation" required type="text"></textarea>
                                         <div *ngIf="submitted && formInvestInspectReportForm.backgroundInformation.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.backgroundInformation.errors.required">This field is
@@ -4238,8 +4236,8 @@
                                     <div class="form-group">
                                         <label><b>Methodology Employed</b> </label>
                                         <textarea [class.is-invalid]="formInvestInspectReportForm.methodologyEmployed.invalid && formInvestInspectReportForm.methodologyEmployed.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="methodologyEmployed"
+                                                  class="form-control two-column-input"
+                                                  formControlName="methodologyEmployed"
                                                   name="methodologyEmployed" required type="text"></textarea>
                                         <div *ngIf="submitted && formInvestInspectReportForm.methodologyEmployed.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.methodologyEmployed.errors.required">This field is
@@ -5066,7 +5064,7 @@
                             Close
                         </button>
                         <button  *ngIf="sampleCollectForm.invalid" mat-raised-button type="button"  class="btn btn-success"
-                                (click)="onClickSaveSampleCollected()">SUBMIT
+                                 (click)="onClickSaveSampleCollected()">SUBMIT
                         </button>
                         <button *ngIf="sampleCollectForm.valid" mat-raised-button type="button"  data-dismiss="modal" class="btn btn-success"
                                 (click)="onClickSaveSampleCollected()">SUBMIT

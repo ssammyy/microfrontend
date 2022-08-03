@@ -727,6 +727,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     });
 
     this.clientEmailNotificationForm = this.formBuilder.group({
+      clientFullName: ['', Validators.required],
       clientEmail: ['', Validators.required],
       remarks: ['', Validators.required],
     });
@@ -988,6 +989,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.remarksSavedForm = this.formBuilder.group({
       processBy: null,
       remarksDescription: null,
+      remarksStatus: null,
       remarks: null,
     });
 
@@ -1522,7 +1524,6 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
-    // }
   }
 
   onClickEndOnsiteActivities() {
@@ -1608,6 +1609,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.saveWorkPlanFiles(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
+            this.uploadedFiles = null;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');
@@ -1638,6 +1640,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.saveWorkPlanDestructionReportFiles(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
+            this.uploadedFiles = null;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('DESTRUCTION REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
@@ -1669,6 +1672,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.saveWorkPlanDestructionNotificationFiles(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
+            this.uploadedFiles = null;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');

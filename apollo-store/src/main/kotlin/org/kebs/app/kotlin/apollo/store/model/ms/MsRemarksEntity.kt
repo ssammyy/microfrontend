@@ -20,7 +20,7 @@ class MsRemarksEntity : Serializable {
 
     @Basic
     @Column(name = "REMARKS_STATUS")
-    var remarksStatus: Int? = null
+    var remarksStatus: String? = null
 
     @Basic
     @Column(name = "PROCESS_BY")
