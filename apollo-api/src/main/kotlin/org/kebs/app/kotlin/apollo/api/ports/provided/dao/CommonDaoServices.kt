@@ -191,6 +191,7 @@ class CommonDaoServices(
     @Value("\${destination.inspection.division.id}")
     lateinit var pointOfEntries: String
 
+    val replaceNonAlphanumeric = Regex("[^a-zA-Z0-9]")
     val successLink = "redirect:/api/auth/signup/notification/success/message"
     fun resolveAbsoluteFilePath(fileName: String): String {
         try {
@@ -318,7 +319,7 @@ class CommonDaoServices(
         //TODO: Add static fields to config file
         var finalFileName = filePrefix
                 .plus("-")
-                .plus(documentIdentifier)
+                .plus(documentIdentifier.replace(replaceNonAlphanumeric, ""))
                 .plus("-")
                 .plus(version)
                 .plus("-B-")
