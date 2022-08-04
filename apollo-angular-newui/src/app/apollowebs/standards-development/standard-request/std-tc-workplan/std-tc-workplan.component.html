@@ -47,7 +47,7 @@
                                         <td>{{secTask.name}}</td>
                                         <td>CD/{{secTask.taskData.requestNo}}</td>
                                         <td>{{secTask.taskData.title}}</td>
-                                        <td><a (click)="onOpenModal(secTask,'edit')" class="btn btn-primary tooltips"
+                                        <td><a (click)="onOpenModal(secTask,'edit')" class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">Upload Workplan</a></td>
 
@@ -260,6 +260,10 @@
                                                             aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                             class="form-control one-column-input" hidden type="text"
                                                             name="taskId" ngModel="{{tscsecRequest?.taskId}}">
+                                                    <input
+                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                            class="form-control one-column-input" hidden type="text"
+                                                            name="id" ngModel="{{tscsecRequest?.taskData.id}}">
                                                 </div>
 
                                             </div>
