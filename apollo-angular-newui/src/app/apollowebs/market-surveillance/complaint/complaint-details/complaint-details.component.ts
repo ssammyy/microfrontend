@@ -31,10 +31,19 @@ import {
   SampleCollectionItemsDto,
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
-  SSFSaveComplianceStatusDto,
+  SSFSaveComplianceStatusDto, WorkPlanEntityDto, WorkPlanListDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoggedInUser, selectUserInfo} from '../../../../core/store';
+import {
+  County,
+  CountyService,
+  loadCountyId,
+  LoggedInUser,
+  selectCountyIdData,
+  selectUserInfo,
+  Town,
+  TownService,
+} from '../../../../core/store';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {Store} from '@ngrx/store';
 import {NgxSpinnerService} from 'ngx-spinner';
@@ -46,6 +55,7 @@ import {
   ProductSubcategory,
   StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
+import {Observable, throwError} from 'rxjs';
 
 declare global {
   interface Window {
@@ -61,9 +71,14 @@ declare global {
 export class ComplaintDetailsComponent implements OnInit {
 
   active: Number = 0;
+  submitted = false;
   selectedRefNo: string;
+  county$: Observable<County[]>;
+  town$: Observable<Town[]>;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
+  selectedCounty = 0;
+  selectedTown = 0;
   complaintInspection: AllComplaintsDetailsDto;
   currDiv!: string;
   currDivLabel!: string;
@@ -74,6 +89,7 @@ export class ComplaintDetailsComponent implements OnInit {
   adviceComplaintForm!: FormGroup;
   assignOfficerForm!: FormGroup;
   classificationForm!: FormGroup;
+  addNewScheduleForm!: FormGroup;
 
 
   rapidTestForm!: FormGroup;
@@ -111,6 +127,7 @@ export class ComplaintDetailsComponent implements OnInit {
   roles: string[];
   userLoggedInID: number;
   userProfile: LoggedInUser;
+  dataSaveWorkPlan: WorkPlanEntityDto;
   blob: Blob;
 
   attachments: any[];
@@ -245,7 +262,12 @@ export class ComplaintDetailsComponent implements OnInit {
       private store$: Store<any>,
       private SpinnerService: NgxSpinnerService,
       private activatedRoute: ActivatedRoute,
+      private countyService: CountyService,
+      private townService: TownService,
       private router: Router) {
+    this.county$ = countyService.entities$;
+    this.town$ = townService.entities$;
+    countyService.getAll().subscribe();
   }
 
   ngOnInit(): void {
@@ -293,6 +315,24 @@ export class ComplaintDetailsComponent implements OnInit {
       classificationRemarks: ['', Validators.required],
     });
 
+    this.addNewScheduleForm = this.formBuilder.group({
+      complaintDepartment: null,
+      divisionId: null,
+      nameActivity: ['', Validators.required],
+      timeActivityDate: ['', Validators.required],
+      county: null,
+      townMarketCenter: null,
+      locationActivityOther: null,
+      standardCategory: null,
+      broadProductCategory: null,
+      productCategory: null,
+      product: null,
+      productSubCategory: null,
+      resourcesRequired: ['', Validators.required],
+      budget: ['', Validators.required],
+      // remarks: ['', Validators.required],
+    });
+
 
     this.remarksSavedForm = this.formBuilder.group({
       processBy: null,
@@ -316,6 +356,9 @@ export class ComplaintDetailsComponent implements OnInit {
     return this.classificationForm.controls;
   }
 
+  get formNewScheduleForm(): any {
+    return this.addNewScheduleForm.controls;
+  }
 
   private loadData(referenceNumber: string): any {
     this.SpinnerService.show();
@@ -350,6 +393,29 @@ export class ComplaintDetailsComponent implements OnInit {
                 },
             );
           }
+
+
+            this.msService.msDepartmentListDetails().subscribe(
+                (dataDep: MsDepartment[]) => {
+                  this.msDepartments = dataDep;
+                  console.log(dataDep);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msDivisionListDetails().subscribe(
+                (dataDiv: MsDivisionDetails[]) => {
+                  this.msDivisions = dataDiv;
+                  console.log(dataDiv);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+
 
           // tslint:disable-next-line:max-line-length
           if (this.complaintInspection.complaintsDetails.assignedIOStatus === true && this.complaintInspection.complaintsDetails.classificationDetailsStatus === false) {
@@ -417,6 +483,28 @@ export class ComplaintDetailsComponent implements OnInit {
         },
     );
 
+  }
+
+  updateSelectedCounty() {
+    this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
+    console.log(`county set to ${this.selectedCounty}`);
+    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
+    this.store$.select(selectCountyIdData).subscribe(
+        (d) => {
+          if (d) {
+            console.log(`Select county inside is ${d}`);
+            return this.townService.getAll();
+          } else {
+            return throwError('Invalid request, County id is required');
+          }
+        },
+    );
+
+  }
+
+  updateSelectedTown() {
+    this.selectedTown = this.addNewScheduleForm?.get('town')?.value;
+    console.log(`town set to ${this.selectedTown}`);
   }
 
   openModalAddDetails(divVal: string): void {
@@ -708,4 +796,38 @@ export class ComplaintDetailsComponent implements OnInit {
   onChangeSelectedProductSubcategory() {
     this.productSubcategorySelected = this.classificationForm?.get('productSubcategory')?.value;
   }
+
+  onClickSaveWorkPlanScheduled() {
+    this.submitted = true;
+    if (this.addNewScheduleForm.invalid) {
+      return;
+    }
+    if (this.addNewScheduleForm.valid) {
+      this.SpinnerService.show();
+      this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
+      // tslint:disable-next-line:max-line-length
+      this.msService.msAddComplaintDetailsToWorkPlanScheduleDetails(this.complaintInspection.complaintsDetails.refNumber, this.dataSaveWorkPlan).subscribe(
+          (data: any) => {
+            this.complaintInspection = data;
+            console.log(data);
+            this.classificationForm.reset();
+            this.SpinnerService.hide();
+            this.msService.showSuccess('MS-PROCESS DETAILS, SAVED SUCCESSFULLY');
+          }
+          // ,
+          // error => {
+          //   this.SpinnerService.hide();
+          //   this.addNewScheduleForm.reset();
+          //   console.log(error);
+          //   this.msService.showError('AN ERROR OCCURRED');
+          // },
+      );
+
+    }
+  }
+
+  viewWorkPlanCreated() {
+    this.router.navigate([`/workPlan/details/`, this.complaintInspection.workPlanRefNumber, this.complaintInspection.workPlanBatchRefNumber]);
+  }
+
 }

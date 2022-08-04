@@ -55,6 +55,9 @@ data class FuelInspectionScheduleListDetailsDto(
 
 data class FuelInspectionDto(
         var id: Long? = null,
+        var timelineStartDate: Date? = null,
+        var timelineEndDate: Date? = null,
+        var timelineOverDue: Boolean? = null,
         var referenceNumber: String? = null,
         var company: String? = null,
         var companyKraPin: String? = null,
@@ -92,6 +95,9 @@ data class WorkPlanInspectionDto(
         var standardCategory: String? = null,
         var productSubCategory: String? = null,
         var divisionId: String? = null,
+        var timelineStartDate: Date? = null,
+        var timelineEndDate: Date? = null,
+        var timelineOverDue: Boolean? = null,
 //        var sampleSubmittedId: Long? = null,
         var division: String? = null,
         var officerName: String? = null,
@@ -128,6 +134,7 @@ data class WorkPlanInspectionDto(
         var approved: String? = null,
         var rejectedOn: Date? = null,
         var rejectedStatus: Boolean? = null,
+        var submittedForApprovalStatus: Boolean? = null,
         var onsiteStartStatus: Boolean? = null,
         var onsiteStartDate: Date? = null,
         var onsiteEndDate: Date? = null,
@@ -321,7 +328,7 @@ data class SampleCollectionItemsDto(
 
 data class RemarksToAddDto(
         var remarksDescription: String? = null,
-        var remarksStatus: Int? = null,
+        var remarksStatus: String? = null,
         var processID: Long? = null,
         var userId: Long? = null,
 )
@@ -722,9 +729,11 @@ data class ComplaintClassificationDto(
 data class MSRemarksDto(
         var id: Long? = null,
         var remarksDescription: String? = null,
+        var remarksStatus: String? = null,
         var processBy: String? = null,
         var processName: String? = null
 )
+
 
 data class AllComplaintsDetailsDto(
         var complaintsDetails: ComplaintsDetailsDto? = null,
@@ -738,7 +747,9 @@ data class AllComplaintsDetailsDto(
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
-//        var fuelRemediation: FuelRemediationDto? = null,
+        var complaintProcessStatus: Boolean,
+        var workPlanRefNumber: String?= null,
+        var workPlanBatchRefNumber: String?= null
 )
 
 data class ComplaintsDetailsDto(
@@ -763,14 +774,16 @@ data class ComplaintsDetailsDto(
         var buildingName: String? = null,
         var date: Date? = null,
         var status: String? = null,
-//        var officersList: List<MsUsersDto>? = null,
-//        var divisionList: List<MsDivisionDto>? = null,
         var approvedStatus: Boolean? = null,
         var assignedIOStatus: Boolean? = null,
         var rejectedStatus: Boolean? = null,
         var classificationDetailsStatus: Boolean? = null,
         var complaintFiles: List<ComplaintsFilesFoundDto>? = null,
-        var ksApplicable: StandardDetailsDto? = null
+        var ksApplicable: StandardDetailsDto? = null,
+        var timelineStartDate: Date? = null,
+        var timelineEndDate: Date? = null,
+        var timelineOverDue: Boolean? = null
+
 
 )
 
@@ -838,6 +851,7 @@ data class NewComplaintDto(
 )
 
 data class DestructionNotificationDto(
+        val clientFullName: String? = null,
         val clientEmail: String? = null,
         val remarks: String? = null,
 //        val complaintFilesDetails: ComplaintFilesDto,

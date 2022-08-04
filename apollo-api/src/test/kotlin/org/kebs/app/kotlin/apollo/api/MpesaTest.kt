@@ -68,7 +68,7 @@ class MpesaTest {
 
     @Test
     fun hashString() {
-        val plainText = listOf("Kim@1234")
+        val plainText = listOf("67IxURQe-AI2Gml8")
 
         plainText.forEach {
             val hashed = jasyptStringEncryptor.encrypt(it)

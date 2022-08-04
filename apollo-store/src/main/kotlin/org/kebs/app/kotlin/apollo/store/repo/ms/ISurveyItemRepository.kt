@@ -92,8 +92,39 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
     override fun findAll( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
     fun findByWorkPlanYearId(workPlanYearId: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+    fun findByWorkPlanYearIdAndApproved(workPlanYearId: Long,approvedStatus: Int, pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+    fun findByWorkPlanYearIdAndMsProcessEndedStatus(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+
+    fun findByWorkPlanYearIdAndOfficerIdAndUserTaskId(
+        workPlanYearId: Long,
+        officerId: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
+    fun findByWorkPlanYearIdAndHofAssignedAndUserTaskId(
+        workPlanYearId: Long,
+        hofAssigned: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
+    fun findByWorkPlanYearIdAndHodRmAssignedAndUserTaskId(
+        workPlanYearId: Long,
+        hodRmAssigned: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
+    fun findByWorkPlanYearIdAndUserTaskId(
+        workPlanYearId: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
     fun findByUuid(uuid: String): MsWorkPlanGeneratedEntity?
     fun findByReferenceNumber(referenceNumber: String): MsWorkPlanGeneratedEntity?
+    fun findByComplaintId(complaintId: Long): MsWorkPlanGeneratedEntity?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
 

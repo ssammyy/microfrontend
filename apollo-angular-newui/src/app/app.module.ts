@@ -348,6 +348,11 @@ import {LaboratoriesComponent} from './apollowebs/system/laboratories/laboratori
 import {AddLaboratoryComponent} from './apollowebs/system/laboratories/add-laboratory/add-laboratory.component';
 import {AddCustomOfficeComponent} from './apollowebs/system/customs-office/add-custom-office/add-custom-office.component';
 import {AddUpdateLimitComponent} from './apollowebs/invoice/limits/add-update-limit/add-update-limit.component';
+import { ReviewPreliminaryDraftComponent } from './apollowebs/standards-development/committee-module/review-preliminary-draft/review-preliminary-draft.component';
+import { PrepareCommitteeDraftComponent } from './apollowebs/standards-development/committee-module/prepare-committee-draft/prepare-committee-draft.component';
+import { ReviewCommitteeDraftComponent } from './apollowebs/standards-development/committee-module/review-committee-draft/review-committee-draft.component';
+import { PreparePublicReviewDraftComponent } from './apollowebs/standards-development/publicReview/prepare-public-review-draft/prepare-public-review-draft.component';
+import { PublicReviewDraftComponent } from './apollowebs/standards-development/publicReview/public-review-draft/public-review-draft.component';
 import {ForeignCorsComponent} from './apollowebs/pvoc/documents/foreign-cors/foreign-cors.component';
 import {ForeignCocsComponent} from './apollowebs/pvoc/documents/foreign-cocs/foreign-cocs.component';
 import {ViewCorComponent} from './apollowebs/pvoc/documents/foreign-cors/view-cor/view-cor.component';
@@ -358,6 +363,10 @@ import {PvocQueriesComponent} from './apollowebs/pvoc/documents/foreign-cors/pvo
 import {PvocCocQueriesComponent} from './apollowebs/pvoc/documents/foreign-cocs/pvoc-coc-queries/pvoc-coc-queries.component';
 import {PvocQueryCardComponent} from './apollowebs/di/fragments/pvoc-query-card/pvoc-query-card.component';
 import {PvocQueryViewComponent} from './apollowebs/di/fragments/pvoc-query-view/pvoc-query-view.component';
+import { ApproveCommitteeDraftComponent } from './apollowebs/standards-development/committee-module/approve-committee-draft/approve-committee-draft.component';
+import { CommentOnPublicReviewDraftComponent } from './apollowebs/standards-development/publicReview/comment-on-public-review-draft/comment-on-public-review-draft.component';
+import { PrepareBallotingDraftComponent } from './apollowebs/standards-development/balloting/prepare-balloting-draft/prepare-balloting-draft.component';
+import { VoteOnBallotDraftComponent } from './apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component';
 
 
 @NgModule({
@@ -738,7 +747,17 @@ import {PvocQueryViewComponent} from './apollowebs/di/fragments/pvoc-query-view/
         PvocQueriesComponent,
         PvocCocQueriesComponent,
         PvocQueryCardComponent,
-        PvocQueryViewComponent
+        PvocQueryViewComponent,
+        AddUpdateLimitComponent,
+        ReviewPreliminaryDraftComponent,
+        PrepareCommitteeDraftComponent,
+        ReviewCommitteeDraftComponent,
+        PreparePublicReviewDraftComponent,
+        PublicReviewDraftComponent,
+        ApproveCommitteeDraftComponent,
+        CommentOnPublicReviewDraftComponent,
+        PrepareBallotingDraftComponent,
+        VoteOnBallotDraftComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

@@ -350,16 +350,14 @@ curl -k --location --request POST 'https://kimsfluxint.kebs.org/api/kra/receiveS
 }'
 
 
-curl -k --location --request POST 'https://kimsfluxint.kebs.org/api/kra/receiveSL2Payment'
---header 'Content-Type: application/text'
---data-raw '{
+curl -k --location --request POST 'https://kimsint.kebs.org:8006/api/v1/kra/receiveSL2Payment' --header 'Content-Type: text/plain' --data-raw '{
 "REQUEST": {
 "loginId": "vmuriuki",
 "password": "password",
 "hash": "cddca83b2d54cdd2cf42adae146e9b4ed6de67ebaae4ddbcf8dcfb285a60478c",
 "transmissionDate ": "31-03-2021T16:31:25",
 "HEADER": {
-"entryNo": "3",
+"entryNo": "2020210002968981",
 "kraPin": "A001559909F",
 "manufacturerName": "DAISY LINES",
 "paymentSlipNo": "2020210002968981",
@@ -408,6 +406,59 @@ curl -k --location --request POST 'https://kimsfluxint.kebs.org/api/kra/receiveS
 }
 }
 }'
+
+
+
+curl -k --location --request POST 'https://kimsint.kebs.org:8006/api/v1/kra/receiveSL2Payment' --header 'Content-Type: text/plain' --data-raw '{
+"REQUEST": {
+"loginId": "vmuriuki",
+"password": "password",
+"hash": "1f27c4ea6dac5215e7639bd2ecead6fc87f93802560dbae99e3a250a81004a69",
+"transmissionDate": "31-03-2021T16:31:25",
+"HEADER": {
+"entryNo": "7890087",
+"kraPin": "P051510365Z",
+"manufacturerName": "ENAPE 051510TEST",
+"paymentSlipNo": "2020210001919154",
+"paymentSlipDate": "06-07-2021",
+"paymentType": "Cheque",
+"paymentDate": "06-07-2021T09:01:39",
+"totalDeclAmt": "27265",
+"totalPenaltyAmt": "0",
+"Bank": "VICTORIA COMMERCIAL BANK LIMITED",
+"bankRefNo": "2020210001919154",
+"TotalPaymentAmt": "27265"
+},
+"DETAILS": {
+"DECLARATION": [
+{
+"commodityType": "Containers",
+"periodFrom": "01-06-2022",
+"periodTo": "30-06-2022",
+"qtyManf": "1",
+"exFactVal": "13632215",
+"levyPaid": "27265"
+}
+],
+"PENALTY": [
+{
+"penaltyOrderNo": "4",
+"periodFrom": "01-01-2022",
+"periodTo": "31-01-2022",
+"penaltyPaid": "100"
+},
+{
+"penaltyOrderNo": "5",
+"periodFrom": "01-02-2022",
+"periodTo": "28-02-2022",
+"penaltyPaid": "200"
+}
+]
+}
+}
+}'
+
+
 
 
 

@@ -508,6 +508,28 @@
                                 </mat-tab-group>
                             </div>
                             <div class="col-md-2 p-0">
+                                <b>STATUS:</b>
+                                <br/>
+                                <div>
+                                    <b class="text-secondary">{{fuelInspection?.processStage}}</b>
+                                </div>
+                                <br/>
+                                <div *ngIf="fuelInspection?.timelineEndDate!=null">
+                                    <b>TIMELINES STATUS:</b>
+                                    <div>
+                                        <b *ngIf="fuelInspection?.timelineOverDue" class="text-success">IN-TIME</b>
+                                        <b *ngIf="fuelInspection?.timelineOverDue==false" class="text-danger">OVER-DUE</b>
+                                    </div>
+                                    <b>Started TimeLine</b>
+                                    <div>
+                                        <b class="text-secondary">{{fuelInspection?.timelineStartDate| date}}</b>
+                                    </div>
+                                    <b>Targeted TimeLine</b>
+                                    <div>
+                                        <b class="text-secondary">{{fuelInspection?.timelineEndDate| date}}</b>
+                                    </div>
+                                    <br/>
+                                </div>
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_MP_MODIFY'">

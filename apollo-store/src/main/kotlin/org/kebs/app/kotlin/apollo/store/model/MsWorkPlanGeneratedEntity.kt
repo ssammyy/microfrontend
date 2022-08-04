@@ -38,6 +38,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var hofAssigned: Long? = null
 
+    @Column(name = "DIRECTOR_ASSIGNED")
+    @Basic
+    var directorAssigned: Long? = null
+
     @Column(name = "STANDARD_CATEGORY")
     @Basic
     var standardCategory: Long? = null
@@ -84,6 +88,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "COMPLIANT_STATUS")
     @Basic
     var compliantStatus: Int? = null
+
+    @Column(name = "SUBMITTED_FOR_APPROVAL_STATUS")
+    @Basic
+    var submittedForApprovalStatus: Int? = null
 
     @Column(name = "FINAL_REPORT_GENERATED")
     @Basic
@@ -187,6 +195,14 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "DESTRUCTION_NOTIFICATION_DATE")
     @Basic
     var destructionNotificationDate: Date? = null
+
+    @Column(name = "TIMELINE_START_DATE")
+    @Basic
+    var timelineStartDate: Date? = null
+
+    @Column(name = "TIMELINE_END_DATE")
+    @Basic
+    var timelineEndDate: Date? = null
 
     @Column(name = "HOD_RECOMMENDATION_REMARKS")
     @Basic
@@ -387,6 +403,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "DESTRUCTION_CLIENT_EMAIL")
     @Basic
     var destructionClientEmail: String? = null
+
+    @Column(name = "DESTRUCTION_CLIENT_FULL_NAME")
+    @Basic
+    var destructionClientFullName: String? = null
 
     @Column(name = "STATUS")
     @Basic

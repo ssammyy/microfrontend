@@ -70,6 +70,17 @@ class ComplaintEntity : Serializable {
     @Basic
     var complaintTitle: String? = null
 
+    @Column(name = "TIMELINE_START_DATE")
+    @Basic
+    var timelineStartDate: Date? = null
+
+    @Column(name = "TIMELINE_END_DATE")
+    @Basic
+    var timelineEndDate: Date? = null
+
+//    @Column(name = "TIMELINE_OVER_DUE")
+//    @Basic
+//    var timelineOverDue: Int? = null
 
 
 //    @Transient

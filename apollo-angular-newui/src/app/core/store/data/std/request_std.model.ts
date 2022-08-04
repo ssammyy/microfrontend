@@ -39,7 +39,11 @@ export interface ProductSubCategory {
 
 
 }
+export interface DataHolderB {
+    department: string;
+    departmentData: LiaisonOrganization;
 
+}
 export interface Department {
     id: number;
     name: string;
@@ -147,6 +151,7 @@ export interface Stdtsectask {
     nameOfTC: string;
     taskData:StandardRequest;
 }
+
 
 export interface StdJustification{
     taskId: string;

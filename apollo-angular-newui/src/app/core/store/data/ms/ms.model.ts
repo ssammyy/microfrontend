@@ -121,11 +121,15 @@ export class AllComplaintsDetailsDto {
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto;
     sampleLabResults: MSSSFLabResultsDto;
+    complaintProcessStatus: boolean;
+    workPlanRefNumber: string;
+    workPlanBatchRefNumber: string;
 }
 
 export class MSRemarksDto {
     id: number;
     remarksDescription: string;
+    remarksStatus: string;
     processBy: string;
     processName: string;
 }
@@ -233,6 +237,9 @@ export class ComplaintDetailsDto {
     classificationDetailsStatus: boolean;
     complaintFiles: ComplaintsFilesFoundDto[];
     ksApplicable: StandardDetailsDto;
+    timelineStartDate: Date;
+    timelineEndDate: Date;
+    timelineOverDue: boolean;
 }
 
 
@@ -262,6 +269,7 @@ export class WorkPlanFeedBackDto {
 }
 
 export class DestructionNotificationDto {
+    clientFullName: string;
     clientEmail: string;
     remarks: string;
 }
@@ -406,6 +414,9 @@ export class WorkPlanInspectionDto {
     standardCategory: string;
     productSubCategory: string;
     divisionId: string;
+    timelineStartDate: Date;
+    timelineEndDate: Date;
+    timelineOverDue: boolean;
     sampleSubmittedId: number;
     division: string;
     officerName: string;
@@ -442,6 +453,7 @@ export class WorkPlanInspectionDto {
     approved: string;
     rejectedOn: Date;
     rejectedStatus: boolean;
+    submittedForApprovalStatus: boolean;
     onsiteStartStatus: boolean;
     onsiteStartDate: Date;
     onsiteEndDate: Date;
@@ -719,6 +731,9 @@ export class FuelInspectionScheduleListDetailsDto {
 
 export class FuelInspectionDto {
     id: number;
+    timelineStartDate: Date;
+    timelineEndDate: Date;
+    timelineOverDue: boolean;
     referenceNumber: string;
     company: string;
     petroleumProduct: string;

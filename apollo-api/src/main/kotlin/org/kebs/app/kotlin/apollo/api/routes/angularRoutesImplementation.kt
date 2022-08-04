@@ -601,21 +601,24 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                     PUT("/add-classification-details", handler::updateComplaintByAddingClassificationDetails)
                     PUT("/start-ms-process", handler::updateComplaintByAddingClassificationDetails)
                 }
-//                POST("/new", handler::saveNewComplaint)
+                POST("/add/complaint-work-plan", handler::addComplaintToWorkPlanDetails)
             }
             "/workPlan".nest {
                 GET("/all-batch-list", handler::getAllWorkPlanBatchList)
+                GET("/all-batch-closed", handler::getAllWorkPlanBatchListClosed)
+                GET("/all-batch-open", handler::getAllWorkPlanBatchListOpen)
                 POST("/add", handler::saveNewWorkPlanBatch)
                 PUT("/close", handler::closeWorkPlanBatchEntry)
                 "/inspection".nest {
                     GET("/list", handler::getAllWorkPlanList)
-//                    GET("/list-completed", handler::getAllWorkPlanCompletedList)
+                    GET("/list-completed", handler::getAllWorkPlanCompletedList)
 //                    GET("/list-new", handler::getAllWorkPlanNewList)
-//                    GET("/list-on-going", handler::getAllWorkPlanOnGoingList)
-//                    GET("/list-my-task", handler::getAllWorkPlanMyTaskList)
+                    GET("/list-on-going", handler::getAllWorkPlanOnGoingList)
+                    GET("/list-my-task", handler::getAllWorkPlanMyTaskList)
                     POST("/new", handler::saveNewWorkPlanSchedule)
                     GET("/details", handler::getWorkPlanInspectionDetails)
                     "/update".nest {
+                        PUT("/submit-for-approval", handler::submitWorkPlanScheduleEntry)
                         PUT("/approval-schedule", handler::updateWorkPlanScheduleApproval)
                         GET("/start-onsite-activities", handler::startWorkPlanInspectionOnsiteDetails)
                         GET("/end-onsite-activities", handler::endWorkPlanInspectionOnsiteDetails)
