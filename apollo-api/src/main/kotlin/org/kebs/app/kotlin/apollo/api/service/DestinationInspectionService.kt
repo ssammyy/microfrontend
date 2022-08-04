@@ -1034,6 +1034,7 @@ class DestinationInspectionService(
                                         cocType = documentType
                                         productCategory = coc.productCategory ?: "UNDEFINED"
                                         status = 1L
+                                        reviewStatus = 0
                                         createdBy = loggedInUser.userName
                                         createdOn = Timestamp.from(Instant.now())
                                         partner = partnerId
@@ -1128,6 +1129,7 @@ class DestinationInspectionService(
                             previousRegistrationNumber = "UNKNOWN"
                             documentsType = "F"
                             status = 1
+                            reviewStatus = 0
                             createdBy = loggedInUser.userName
                             createdOn = Timestamp.from(Instant.now())
                             partner = partnerId
