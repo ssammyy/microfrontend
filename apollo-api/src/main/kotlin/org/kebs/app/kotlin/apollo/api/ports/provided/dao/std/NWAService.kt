@@ -347,6 +347,7 @@ class NWAService(private val runtimeService: RuntimeService,
         variables["No"] = nwaJustificationDecision.accentTo
         loggedInUser.id?.let { variables["originator"] = it }
         nwaJustificationDecision.comments.let { variables.put("comments", it) }
+        nwaJustificationDecision.taskId?.let { variables.put("taskId", it) }
 
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
@@ -435,6 +436,7 @@ class NWAService(private val runtimeService: RuntimeService,
         variables["Yes"] = nwaJustificationDecision.accentTo
         variables["No"] = nwaJustificationDecision.accentTo
         nwaJustificationDecision.comments.let { variables.put("comments", it) }
+        nwaJustificationDecision.taskId.let { variables.put("taskId", it) }
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
@@ -551,6 +553,8 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaDiSdtJustification.assignedTo?.let{variable.put("assignedTo", it)}
         nwaDiSdtJustification.datePrepared = commonDaoServices.getTimestamp()
         nwaDiSdtJustification.datePrepared?.let{variable.put("datePrepared", it)}
+        nwaDiSdtJustification.taskId?.let{variable.put("taskId", it)}
+        nwaDiSdtJustification.processId?.let{variable.put("processId", it)}
         loggedInUser.id?.let { variable["diOriginator"] = it }
 
         //print(nwaDiSdtJustification.toString())
@@ -644,6 +648,7 @@ class NWAService(private val runtimeService: RuntimeService,
         variables["Yes"] = workshopAgreement.accentTo
         variables["No"] = workshopAgreement.accentTo
         workshopAgreement.comments.let { variables.put("comments", it) }
+        workshopAgreement.taskId.let { variables.put("taskId", it) }
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
@@ -750,7 +755,10 @@ class NWAService(private val runtimeService: RuntimeService,
 
 
     // Prepare Preliminary Draft
-    fun preparePreliminaryDraft(nwaPreliminaryDraft: NWAPreliminaryDraft) : ProcessInstancePD
+    fun preparePreliminaryDraft(
+        nwaPreliminaryDraft: NWAPreliminaryDraft,
+        standardNwaRemarks: StandardNwaRemarks
+       ) : ProcessInstancePD
     {
         val variable:MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -760,10 +768,12 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaPreliminaryDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
         nwaPreliminaryDraft.clause?.let{variable.put("clause", it)}
         nwaPreliminaryDraft.special?.let{variable.put("special", it)}
+        nwaPreliminaryDraft.taskId?.let{variable.put("taskId", it)}
         nwaPreliminaryDraft.diJNumber?.let{variable.put("diJNumber", it)}
         nwaPreliminaryDraft.datePdPrepared = commonDaoServices.getTimestamp()
         variable["datePdPrepared"] = nwaPreliminaryDraft.datePdPrepared!!
         loggedInUser.id?.let { variable["pdOriginator"] = it }
+        standardNwaRemarks.processId= nwaPreliminaryDraft.processId
 
 
         val nwaDetails = nwaPreliminaryDraftRepository.save(nwaPreliminaryDraft)
@@ -842,6 +852,7 @@ class NWAService(private val runtimeService: RuntimeService,
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         variables["Yes"] = nwaPreliminaryDraftDecision.accentTo
         nwaPreliminaryDraftDecision.comments.let { variables.put("comments", it) }
+        nwaPreliminaryDraftDecision.taskId.let { variables.put("taskId", it) }
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
@@ -950,7 +961,8 @@ class NWAService(private val runtimeService: RuntimeService,
 //    }
 
     // Edit Workshop  Draft
-    fun editWorkshopDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
+    fun editWorkshopDraft(nwaWorkShopDraft: NWAWorkShopDraft,
+                          standardNwaRemarks: StandardNwaRemarks) : ProcessInstanceWD
     {
         val variable:MutableMap<String, Any> = HashMap()
         nwaWorkShopDraft.title?.let{variable.put("title", it)}
@@ -959,6 +971,8 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaWorkShopDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
         nwaWorkShopDraft.clause?.let{variable.put("clause", it)}
         nwaWorkShopDraft.special?.let{variable.put("special", it)}
+        nwaWorkShopDraft.taskId?.let{variable.put("taskId", it)}
+        nwaWorkShopDraft.processId?.let{variable.put("processId", it)}
         nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
         variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
 
@@ -1049,6 +1063,7 @@ class NWAService(private val runtimeService: RuntimeService,
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         variables["Yes"] = nwaWorkshopDraftDecision.accentTo
         nwaWorkshopDraftDecision.comments.let { variables.put("comments", it) }
+        nwaWorkshopDraftDecision.taskId.let { variables.put("taskId", it) }
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
@@ -1156,7 +1171,10 @@ class NWAService(private val runtimeService: RuntimeService,
     }
 
     // Upload NWA Standard
-    fun uploadNwaStandard(nWAStandard: NWAStandard) : ProcessInstanceUS
+    fun uploadNwaStandard(
+        nWAStandard: NWAStandard,
+        standardNwaRemarks: StandardNwaRemarks
+        ) : ProcessInstanceUS
     {
         val variable:MutableMap<String, Any> = HashMap()
         nWAStandard.title?.let{variable.put("title", it)}
@@ -1166,12 +1184,14 @@ class NWAService(private val runtimeService: RuntimeService,
         nWAStandard.clause?.let{variable.put("clause", it)}
         nWAStandard.special?.let{variable.put("special", it)}
         nWAStandard.ksNumber?.let{variable.put("ksNumber", it)}
+        nWAStandard.taskId?.let{variable.put("taskId", it)}
         nWAStandard.dateSdUploaded = commonDaoServices.getTimestamp()
         variable["dateSdUploaded"] = nWAStandard.dateSdUploaded!!
+        standardNwaRemarks.processId= nWAStandard.processId
 
         //print(nWAStandard.toString())
         val nwaDetails = nwaStandardRepository.save(nWAStandard)
-        val recipient= "Ashraf.Mohammed@bskglobaltech.com"
+        val recipient= "stephenmuganda@gmail.com"
         val subject = "New Standard"+  nWAStandard.ksNumber
         val messageBody= "New standard has been approved and uploaded"
         notifications.sendEmail(recipient, subject, messageBody)
@@ -1252,16 +1272,29 @@ class NWAService(private val runtimeService: RuntimeService,
     }
 
     // Upload NWA Gazette notice on Website
-    fun uploadGazetteNotice(nWAGazetteNotice: NWAGazetteNotice)
+    fun uploadGazetteNotice(
+        nWAGazetteNotice: NWAGazetteNotice,
+        standardNwaRemarks: StandardNwaRemarks
+    )
     {
         val variable:MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
         nWAGazetteNotice.ksNumber?.let{variable.put("ksNumber", it)}
         //nWAGazetteNotice.dateUploaded?.let{variable.put("dateUploaded", it)}
         nWAGazetteNotice.description?.let{variable.put("description", it)}
+        nWAGazetteNotice.taskId?.let{variable.put("taskId", it)}
         nWAGazetteNotice.dateUploaded = commonDaoServices.getTimestamp()
         variable["dateUploaded"] = nWAGazetteNotice.dateUploaded!!
+        standardNwaRemarks.processId= nWAGazetteNotice.processId
+        standardNwaRemarks.status = 1.toString()
+        standardNwaRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        val fname=loggedInUser.firstName
+        val sname=loggedInUser.lastName
+        val usersName= "$fname  $sname"
+        standardNwaRemarks.remarkBy = usersName
 
         print(nWAGazetteNotice.toString())
+        standardNwaRemarksRepository.save(standardNwaRemarks)
         val nwaDetails = nwaGazetteNoticeRepository.save(nWAGazetteNotice)
         variable["ID"] = nwaDetails.id
         runtimeService.createProcessInstanceQuery()
@@ -1298,12 +1331,15 @@ class NWAService(private val runtimeService: RuntimeService,
     }
 
     // Upload NWA Gazette date
-    fun updateGazettementDate(nWAGazettement: NWAGazettement)
+    fun updateGazettementDate(nWAGazettement: NWAGazettement,
+                              standardNwaRemarks: StandardNwaRemarks )
     {
         val variable:MutableMap<String, Any> = HashMap()
         nWAGazettement.ksNumber?.let{variable.put("ksNumber", it)}
         //nWAGazettement.dateOfGazettement?.let{variable.put("dateOfGazettement", it)}
         nWAGazettement.description?.let{variable.put("description", it)}
+        nWAGazettement.taskId?.let{variable.put("taskId", it)}
+        standardNwaRemarks.processId= nWAGazettement.processId
 
         nWAGazettement.dateOfGazettement = Timestamp(System.currentTimeMillis())
         variable["dateOfGazettement"] = nWAGazettement.dateOfGazettement!!

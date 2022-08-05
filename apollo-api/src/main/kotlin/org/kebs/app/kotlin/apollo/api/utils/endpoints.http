@@ -410,7 +410,7 @@ POST https://localhost:8006/api/v1/login
 Content-Type: application/json
 
 {
-  "username": "juma.andrew@bskglobaltech.com",
+  "username": "spcsecsd@kebs.com",
   "password": "password"}
 
 > {%
@@ -658,6 +658,11 @@ Content-Type: application/json
 
 
   "{\"REQUEST\":{\"loginId\":\"vmuriuki\",\"password\":\"password\",\"hash\":\"cddca83b2d54cdd2cf42adae146e9b4ed6de67ebaae4ddbcf8dcfb285a60478c\",\"transmissionDate\":\"31-03-2021T16:31:25\",\"HEADER\":{\"entryNo\":\"3\",\"kraPin\":\"A001559909F\",\"manufacturerName\":\"DAISYLINES\",\"paymentSlipNo\":\"2020210002968981\",\"paymentSlipDate\":\"16-03-2022\",\"paymentType\":\"CASH\",\"paymentDate\":\"16-03-2022\",\"totalDeclAmt\":\"1\",\"totalPenaltyAmt\":\"0\",\"TotalPaymentAmt\":\"1\",\"Bank\":\"FAMILYBANKLTD\",\"bankRefNo\":\"123\"},\"DETAILS\":{\"DECLARATION\":[{\"commodityType\":\"COTTON\",\"periodFrom\":\"01-01-2022\",\"periodTo\":\"31-01-2022\",\"qtyManf\":\"1000\",\"exFactVal\":\"100\",\"levyPaid\":\"10\"},{\"commodityType\":\"BRASS\",\"periodFrom\":\"01-02-2022\",\"periodTo\":\"28-02-2022\",\"qtyManf\":\"2000\",\"exFactVal\":\"200\",\"levyPaid\":\"20\"}],\"PENALTY\":[{\"penaltyOrderNo\":\"4\",\"periodFrom\":\"01-01-2022\",\"periodTo\":\"31-01-2022\",\"penaltyPaid\":\"100\"},{\"penaltyOrderNo\":\"5\",\"periodFrom\":\"01-02-2022\",\"periodTo\":\"28-02-2022\",\"penaltyPaid\":\"200\"}]}}}"
+
+###
+GET https://localhost:8006/api/v1/migration/nwa/getUserTasks
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzcGNzZWNzZEBrZWJzLmNvbSIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2NTk2NDgyNDgsImV4cCI6MTY1OTY1NDI0OCwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTMgKEphdmEvMTEuMC4xMildIiwiZnVsbE5hbWUiOiJMb2NhdGkgTSIsInJvbGVzIjoiU1BDX1NFQ19TRF9NT0RJRlksU1BDX1NFQ19TRF9SRUFEIn0.T_o6Ichtk3YT1Ypm6hT9-KJkdgzx_uMbfZPqk5R5ZOGrVOaPK9BQgXQ8R6S0WtLuFVLhfpc3HguwaYHCDN9quA
+###
 
 
 

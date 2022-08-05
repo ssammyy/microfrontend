@@ -70,6 +70,13 @@
 
                                         </button>
                                         </td>
+                                        <td *ngIf="task.name ==='View Justification For DiSDT Approval'"><button mat-raised-button type="button" data-toggle="modal"
+                                                                                                                     (click)="viewDIJustificationPDF( task.taskData.ID,'Justification'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                            <i class="material-icons">visibility</i>
+
+                                        </button>
+                                        </td>
+
                                         <td *ngIf="task.name ==='Prepare Preliminary Draft'"><button mat-raised-button type="button" data-toggle="modal"
                                                                                                                      (click)="viewDIJustificationPDF( task.taskData.ID,'Justification'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
                                             <i class="material-icons">visibility</i>
@@ -118,12 +125,12 @@
                                         <td *ngIf="task.name ==='Review Justification'"><a  (click)="onOpenModal(task,'reviewJustification')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="reviewJustification">Approve Justification</a></td>
                                         <td *ngIf="task.name ==='View Justification'"><a  (click)="onOpenModal(task,'viewJustification')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="viewJustification">Approve Justification</a></td>
                                         <td *ngIf="task.name ==='Prepare Justification for DI-SDT Approval'"><a  (click)="onOpenModal(task,'prepDiSdt')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="prepareDISDTJustification"> DI-SDT Justification</a></td>
-                                        <td *ngIf="task.name==='View Justification For DiSDT Approval'"><a  (click)="onOpenModal(task,'approveDiJustification')" class="btn btn-info btn-sm " data-placement="top"  data-original-title="Approve"> Approve</a></td>
-                                        <td *ngIf="task.name ==='Prepare Preliminary Draft'"><a  (click)="onOpenModal(task,'preparePD')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="preparePD">Prepare Preliminary Draft</a></td>
+                                        <td *ngIf="task.name==='View Justification For DiSDT Approval'"><a  (click)="onOpenModal(task,'approveDiJustification')" class="btn btn-info btn-sm " data-placement="top"  style="width: 160px; color: white;" data-original-title="Approve"> Approve DI Justification</a></td>
+                                        <td *ngIf="task.name==='Prepare Preliminary Draft'"><a  (click)="onOpenModal(task,'preparePD')" class="btn btn-info btn-sm " data-placement="top"  style="width: 160px; color: white;" data-original-title="preparePD"> Prepare Preliminary Draft</a></td>
                                         <td *ngIf="task.name ==='View and Edit Preliminary Draft'"><a  (click)="onOpenModal(task,'approvePd')" class="btn btn-warning btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="approvePD"> Approve PD</a></td>
-                                        <td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'"><a  (click)="onOpenModal(task,'editPreliminaryDraft')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 162px; " data-original-title="Edit"> Edit Workshop Draft</a></td>
-                                        <td *ngIf="task.name ==='View Workshop Draft'"><a  (click)="onOpenModal(task,'approveWorkshopDraft')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Approve</a></td>
-                                        <td *ngIf="task.name ==='Upload on  KNWA Standards Database'"><button (click)="onOpenModal(task,'uploadStandard')" type="submit" class="btn btn-info btn-sm">Upload Standard</button></td>
+                                        <td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'"><a  (click)="onOpenModal(task,'editPreliminaryDraft')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px; " data-original-title="editPd"> Edit Workshop Draft</a></td>
+                                        <td *ngIf="task.name ==='View Workshop Draft'"><a  (click)="onOpenModal(task,'approveWorkshopDraft')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="Approve"> Approve Draft</a></td>
+                                        <td *ngIf="task.name ==='Upload on  KNWA Standards Database'"><button (click)="onOpenModal(task,'uploadStandard')" type="submit" style="width: 160px; color: white;" class="btn btn-info btn-sm">Upload Standard</button></td>
                                         <td *ngIf="task.name ==='Upload Gazzette notice on the Website'"><a  (click)="onOpenModal(task,'notice')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="Edit">Upload Gazette Notice</a></td>
                                         <td *ngIf="task.name ==='Update Gazzzettement Date'"><a  (click)="onOpenModal(task,'gazetteDate')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 160px; " data-original-title="Edit">Update Gazette Date</a></td>
                                     </tr>
@@ -265,9 +272,17 @@
                                                                             </div>
                                                                             <div class=" col-12">
                                                                                 <label>Select User To Assign To</label>
-                                                                                <ng-select [(ngModel)]="spcSecretary" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+<!--                                                                                <select formControlName="assignedTo" class="form-control" name="assignedTo">-->
+<!--                                                                                    <option>Select User</option>-->
+<!--                                                                                    <option *ngFor="let user of spcSecretary" [value]="user.id">{{user.firstName}} {{user.lastName}}</option>-->
+<!--                                                                                </select>-->
+                                                                                <ng-select  formControlName="assignedTo"  class="form-control"  name="assignedTo" >
                                                                                     <ng-option *ngFor="let user of spcSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                                 </ng-select>
+
+<!--                                                                                <ng-select [(ngModel)]="spcSecretary" formControlName="assignedTo"  class="form-control"  name="assignedTo" >-->
+<!--                                                                                    <ng-option *ngFor="let user of spcSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>-->
+<!--                                                                                </ng-select>-->
                                                                             </div>
 
                                                                             <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
@@ -649,9 +664,12 @@
                                                                     <div class="row col-12">
                                                                         <div class="form-group col-12">
                                                                             <label>Select User To Assign To</label>
-                                                                            <ng-select [(ngModel)]="diDirector" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+                                                                            <ng-select  formControlName="assignedTo"  class="form-control"  name="assignedTo" >
                                                                                 <ng-option *ngFor="let user of diDirector" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                             </ng-select>
+<!--                                                                            <ng-select [(ngModel)]="diDirector" formControlName="assignedTo"  class="form-control"  name="assignedTo" >-->
+<!--                                                                                <ng-option *ngFor="let user of diDirector" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>-->
+<!--                                                                            </ng-select>-->
                                                                         </div>
                                                                     </div>
                                                                     <input type="hidden" value="{{actionRequest?.processId}}" formControlName="processId" name="processId" >
@@ -877,7 +895,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="modal fade" id="prepPd" tabindex="-1" role="dialog" aria-labelledby="PdExampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="preparePD" tabindex="-1" role="dialog" aria-labelledby="PdExampleModalLabel" aria-hidden="true">a
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -1059,7 +1077,7 @@
                                                                     <div class="row col-12">
                                                                         <div class="form-group col-12">
                                                                             <label>Select User To Assign To</label>
-                                                                            <ng-select [(ngModel)]="knwSecretary" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
+                                                                            <ng-select  formControlName="assignedTo"  class="form-control"  name="assignedTo" >
                                                                                 <ng-option *ngFor="let user of knwSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                             </ng-select>
                                                                         </div>
@@ -1108,10 +1126,10 @@
                                             <div class="row col-12" >
                                                 <div class="col-12 ">
                                                     <nav>
-                                                        <div class="nav nav-tabs nav-fill" id="nav-tab-five" role="tablist">
-                                                            <a class="nav-item nav-link active" id="nav-viewPreliminaryDraft-tab" data-toggle="tab" href="#nav-viewPreliminaryDraft" role="tab" aria-controls="nav-viewPreliminaryDraft" aria-selected="true">View Preliminary Draft</a>
-                                                            <a class="nav-item nav-link" id="nav-approvePreliminaryDraft-tab" data-toggle="tab" href="#nav-approvePreliminaryDraft" role="tab" aria-controls="nav-approvePreliminaryDraft" aria-selected="false">Approve Preliminary Draft</a>
-                                                            <a class="nav-item nav-link" id="nav-rejectPreliminaryDraft-tab" data-toggle="tab" href="#nav-rejectPreliminaryDraft" role="tab" aria-controls="nav-rejectPreliminaryDraft" aria-selected="false">Reject Preliminary Draft</a>
+                                                        <div class="nav nav-tabs nav-fill col-12" id="nav-tab-five" role="tablist">
+                                                            <a class="nav-item nav-link active col-4" id="nav-viewPreliminaryDraft-tab" data-toggle="tab" href="#nav-viewPreliminaryDraft" role="tab" aria-controls="nav-viewPreliminaryDraft" aria-selected="true">View Preliminary Draft</a>
+                                                            <a class="nav-item nav-link col-4" id="nav-approvePreliminaryDraft-tab" data-toggle="tab" href="#nav-approvePreliminaryDraft" role="tab" aria-controls="nav-approvePreliminaryDraft" aria-selected="false">Approve Preliminary Draft</a>
+                                                            <a class="nav-item nav-link col-4" id="nav-rejectPreliminaryDraft-tab" data-toggle="tab" href="#nav-rejectPreliminaryDraft" role="tab" aria-controls="nav-rejectPreliminaryDraft" aria-selected="false">Reject Preliminary Draft</a>
 
                                                         </div>
                                                     </nav>
@@ -1204,7 +1222,7 @@
                                                                     <div class="row col-12">
                                                                         <div class="form-group col-12">
                                                                             <label>Select User To Assign To</label>
-                                                                            <ng-select [(ngModel)]="headOfPublishing" formControlName="assignedTo"    class="form-control"  name="assignedTo" >
+                                                                            <ng-select  formControlName="assignedTo"    class="form-control"  name="assignedTo" >
                                                                                 <ng-option *ngFor="let user of headOfPublishing" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                             </ng-select>
                                                                         </div>
@@ -1229,9 +1247,9 @@
                                                                             <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                         </div>
                                                                     </div>
-                                                                    <input type="text" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
-                                                                    <input type="text" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
-                                                                    <input type="text" formControlName="assignedTo" value="{{actionRequest?.taskData?.originator}}" name="assignedTo" >
+                                                                    <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
+                                                                    <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
+                                                                    <input type="hidden" formControlName="assignedTo" value="{{actionRequest?.taskData?.originator}}" name="assignedTo" >
                                                                     <input type="hidden" formControlName="accentTo" value="{{reject}}" name="accentTo"  >
                                                                     <input type="hidden" formControlName="jstNumber" value="{{actionRequest?.taskData.diJNumber}}"  name="jstNumber"  >
                                                                 </div>
@@ -1248,7 +1266,8 @@
                                     </div>
                                 </div>
 
-                                <div class="modal fade" id="editPreliminaryDraft" tabindex="-1" role="dialog" aria-labelledby="editPreliminaryDraftModalLabel" aria-hidden="true">
+
+                                <div class="modal fade" id="editPreliminaryDraft" tabindex="-1" role="dialog" aria-labelledby="editPreliminaryDraftExampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -1388,7 +1407,7 @@
                                                                     <div class="row col-12">
                                                                         <div class="form-group col-12">
                                                                             <label>Select User To Assign To</label>
-                                                                            <ng-select [(ngModel)]="sacSecretary" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
+                                                                            <ng-select  formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
                                                                                 <ng-option *ngFor="let user of sacSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                             </ng-select>
                                                                         </div>
@@ -1523,7 +1542,7 @@
                                                                     <div class="row col-12">
                                                                         <div class="form-group col-12">
                                                                             <label>Select User To Assign To</label>
-                                                                            <ng-select [(ngModel)]="headOfPublishing"  class="form-control"  name="assignedTo" >
+                                                                            <ng-select  class="form-control"  name="assignedTo" >
                                                                                 <ng-option *ngFor="let user of headOfPublishing" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                             </ng-select>
                                                                         </div>
@@ -1704,7 +1723,7 @@
                                                                     <div class="row col-12">
                                                                         <div class="form-group col-12">
                                                                             <label>Select User To Assign To</label>
-                                                                            <ng-select [(ngModel)]="headOfSic" formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
+                                                                            <ng-select  formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
                                                                                 <ng-option *ngFor="let user of headOfSic" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
                                                                             </ng-select>
                                                                         </div>
