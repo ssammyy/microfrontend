@@ -128,7 +128,7 @@
                                         <td *ngIf="task.name==='View Justification For DiSDT Approval'"><a  (click)="onOpenModal(task,'approveDiJustification')" class="btn btn-info btn-sm " data-placement="top"  style="width: 160px; color: white;" data-original-title="Approve"> Approve DI Justification</a></td>
                                         <td *ngIf="task.name==='Prepare Preliminary Draft'"><a  (click)="onOpenModal(task,'preparePD')" class="btn btn-info btn-sm " data-placement="top"  style="width: 160px; color: white;" data-original-title="preparePD"> Prepare Preliminary Draft</a></td>
                                         <td *ngIf="task.name ==='View and Edit Preliminary Draft'"><a  (click)="onOpenModal(task,'approvePd')" class="btn btn-warning btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="approvePD"> Approve PD</a></td>
-                                        <td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'"><a  (click)="onOpenModal(task,'editPreliminaryDraft')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px; " data-original-title="editPd"> Edit Workshop Draft</a></td>
+                                        <td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'"><a  (click)="onOpenModal(task,'editPreliminaryDraft')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="editPreliminary">Edit Workshop Draft</a></td>
                                         <td *ngIf="task.name ==='View Workshop Draft'"><a  (click)="onOpenModal(task,'approveWorkshopDraft')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="Approve"> Approve Draft</a></td>
                                         <td *ngIf="task.name ==='Upload on  KNWA Standards Database'"><button (click)="onOpenModal(task,'uploadStandard')" type="submit" style="width: 160px; color: white;" class="btn btn-info btn-sm">Upload Standard</button></td>
                                         <td *ngIf="task.name ==='Upload Gazzette notice on the Website'"><a  (click)="onOpenModal(task,'notice')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="Edit">Upload Gazette Notice</a></td>
@@ -1265,9 +1265,9 @@
                                         </div>
                                     </div>
                                 </div>
+                                </div>
 
-
-                                <div class="modal fade" id="editPreliminaryDraft" tabindex="-1" role="dialog" aria-labelledby="editPreliminaryDraftExampleModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="editPreliminaryDraft" tabindex="-1" role="dialog" aria-labelledby="editPreliminaryDraftExampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -1452,10 +1452,10 @@
                                             <div class="row col-12" >
                                                 <div class="col-12 ">
                                                     <nav>
-                                                        <div class="nav nav-tabs nav-fill" id="nav-tab-seven" role="tablist">
-                                                            <a class="nav-item nav-link active" id="nav-viewWorkshopDraft-tab" data-toggle="tab" href="#nav-viewWorkshopDraft" role="tab" aria-controls="nav-viewWorkshopDraft" aria-selected="true">View Work-Shop Draft</a>
-                                                            <a class="nav-item nav-link" id="nav-approveWorkshopDraft-tab" data-toggle="tab" href="#nav-approveWorkshopDraft" role="tab" aria-controls="nav-approveWorkshopDraft" aria-selected="false">Approve Work-Shop Draft Draft</a>
-                                                            <a class="nav-item nav-link" id="nav-rejectWorkshopDraft-tab" data-toggle="tab" href="#nav-rejectWorkshopDraft" role="tab" aria-controls="nav-rejectWorkshopDraft" aria-selected="false">Reject Work-Shop Draft Draft</a>
+                                                        <div class="nav nav-tabs nav-fill col-12" id="nav-tab-seven" role="tablist">
+                                                            <a class="nav-item nav-link active col-4" id="nav-viewWorkshopDraft-tab" data-toggle="tab" href="#nav-viewWorkshopDraft" role="tab" aria-controls="nav-viewWorkshopDraft" aria-selected="true">View Work-Shop Draft</a>
+                                                            <a class="nav-item nav-link col-4" id="nav-approveWorkshopDraft-tab" data-toggle="tab" href="#nav-approveWorkshopDraft" role="tab" aria-controls="nav-approveWorkshopDraft" aria-selected="false">Approve Work-Shop Draft Draft</a>
+                                                            <a class="nav-item nav-link col-4" id="nav-rejectWorkshopDraft-tab" data-toggle="tab" href="#nav-rejectWorkshopDraft" role="tab" aria-controls="nav-rejectWorkshopDraft" aria-selected="false">Reject Work-Shop Draft Draft</a>
 
                                                         </div>
                                                     </nav>
@@ -1753,10 +1753,6 @@
 
                                                     </div>
                                                 </div>
-
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="noticeExampleModalLabel" aria-hidden="true">a
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
@@ -2003,3 +1999,5 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
