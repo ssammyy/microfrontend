@@ -301,4 +301,11 @@ class PublicReviewController(
     }
 
 
+    @GetMapping("/getAllApprovedPrds")
+    fun getApprovedPrs(): MutableList<PrdWithUserName> {
+        return publicReviewService.getAllPrdApproved()
+    }
+
+
+
 }

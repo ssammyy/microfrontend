@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-import javassist.compiler.ast.Variable
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
@@ -8,22 +7,19 @@ import org.flowable.engine.TaskService
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.errors.std.ResourceNotFoundException
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
+import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.PathVariable
 import java.sql.Timestamp
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.format.DateTimeFormatter
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.List
@@ -76,7 +72,7 @@ class BallotService(
         variable["ballotDraftBy"] = ballot.ballotDraftBy ?: throw ExpectedDataNotFound("No USER ID Found")
         ballot.createdBy = loggedInUser.id.toString()
         variable["createdBy"] = ballot.createdBy ?: throw ExpectedDataNotFound("No USER ID Found")
-        ballot.status = "Ballot Draft Created Submitted For voting"
+        ballot.status = "Created & Submitted For Voting"
         variable["status"] = ballot.status!!
 
         ballotRepository.save(ballot)
@@ -96,28 +92,51 @@ class BallotService(
     }
 
 
-    fun voteForBallot(ballotVote: BallotVote) {
+    fun voteForBallot(ballotVote: BallotVote): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        ballotVote.ballotId.let { variable.put("ballotId", it) }
-        ballotVote.userId.let { variable.put("userId", it) }
-        ballotVote.userId = loggedInUser.id!!
-        variable["ballotDraftBy"] = ballotVote.userId
+
 
         ballotVote.approvalStatus.let { variable.put("approvalStatus", it) }
         ballotVote.comment?.let { variable.put("comment", it) }
+        ballotVote.ballotId.let { variable.put("ballotId", it) }
 
-        ballotVote.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = ballotVote.createdOn!!
+        ballotVote.userId = loggedInUser.id!!
+        variable["userId"] = ballotVote.userId
 
-        ballotVote.status = 1
-        variable["status"] = ballotVote.status!!
-        ballotvoteRepository.save(ballotVote)
 
+//        //check if person has voted
+        ballotvoteRepository.findByUserIdAndAndBallotIdAndStatus(ballotVote.userId, ballotVote.ballotId, 1)
+            ?.let {
+                // throw InvalidValueException("You Have Already Voted")
+                return ServerResponse(
+                    HttpStatus.OK,
+                    "Voted", "You Have Already Voted"
+                )
+
+            }
+            ?: run {
+                ballotVote.createdOn = Timestamp(System.currentTimeMillis())
+                variable["createdOn"] = ballotVote.createdOn!!
+                ballotVote.status = 1
+                variable["status"] = ballotVote.status!!
+                ballotvoteRepository.save(ballotVote)
+                return ServerResponse(
+                    HttpStatus.OK,
+                    "Voted", "You Have Voted"
+                )
+
+            }
     }
 
-    fun getBallots(): MutableList<Ballot> {
-        return ballotRepository.findAll()
+    fun getUserLoggedInBallots(): List<VotesWithBallotId>? {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return loggedInUser.id?.let { ballotvoteRepository.getUserLoggedInVotes(it) }
+    }
+
+    fun getAllVotesOnBallot(ballotID: Long): List<VotesWithBallotId> {
+        return ballotvoteRepository.getBallotVotes(ballotID)
     }
 
     //request task list retrieval

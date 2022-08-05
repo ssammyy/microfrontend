@@ -377,6 +377,18 @@ class CommitteeService(
             u.status = "Draft Documents For PRD Uploaded";
             committeeCDRepository.save(u)
         }
+        if (DocDescription == "Minutes For Ballot") {
+            //update documents with PRDId
+            val u: PublicReviewDraft = publicReviewDraftRepository.findById(nwi).orElse(null);
+            u.status = "Minutes For Ballot Uploaded";
+            publicReviewDraftRepository.save(u)
+        }
+        if (DocDescription == "Draft Documents For Ballot") {
+            //update documents with PRDId
+            val u: PublicReviewDraft = publicReviewDraftRepository.findById(nwi).orElse(null);
+            u.status = "Draft Documents For Ballot Uploaded";
+            publicReviewDraftRepository.save(u)
+        }
         return sdDocumentsRepository.save(uploads)
     }
 
