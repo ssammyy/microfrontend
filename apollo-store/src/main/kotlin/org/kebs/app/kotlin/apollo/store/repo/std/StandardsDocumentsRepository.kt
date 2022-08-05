@@ -21,13 +21,61 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
     fun findBySdDocumentId(id: Long): DatKebsSdStandardsEntity
     fun findBySdDocumentIdAndDocumentTypeDef(id: Long, documentTypeDef: String): DatKebsSdStandardsEntity
 
+    //retrieve PD Drafts Doc
+    @Query(
+        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE ID = :sdDocumentId",
+        nativeQuery = true
+    )
+    fun findSDocumentId(@Param("sdDocumentId") sdDocumentId: Long): DatKebsSdStandardsEntity
+
+
+
+    //retrieve PD Drafts Docs
+    @Query(
+        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE VAR_FIELD_1 = :sdDocumentId",
+        nativeQuery = true
+    )
+    fun findStandardDocumentPdId(@Param("sdDocumentId") sdDocumentId: Long?): Collection<DatKebsSdStandardsEntity?>?
 
     @Transactional
     @Modifying
     @Query(
-        value = "UPDATE DAT_KEBS_SD_STANDARDS_UPLOADS t1 SET t1.VAR_FIELD_1 = :pdId WHERE t1.STANDARD_DOCUMENT_ID=:nwiID",
+        value = "UPDATE DAT_KEBS_SD_STANDARDS_UPLOADS t1 SET t1.VAR_FIELD_1 = :pdId WHERE t1.STANDARD_DOCUMENT_ID=:nwiID AND DOCUMENT_TYPE='MINUTES FOR PD' OR DOCUMENT_TYPE='DRAFT DOCUMENTS FOR PD'",
         nativeQuery = true
     )
     fun updateDocsWithPDid(@Param("pdId") pdId: Long, @Param("nwiID") nwiID: Long): Int
+
+    @Transactional
+    @Modifying
+    @Query(
+        value = "UPDATE DAT_KEBS_SD_STANDARDS_UPLOADS t1 SET t1.VAR_FIELD_2 = :cdId WHERE t1.STANDARD_DOCUMENT_ID=:pdID AND DOCUMENT_TYPE='MINUTES FOR CD' OR DOCUMENT_TYPE='DRAFT DOCUMENTS FOR CD'",
+        nativeQuery = true
+    )
+    fun updateDocsWithCDid(@Param("cdId") cdId: Long, @Param("pdID") pdID: Long): Int
+
+
+    //retrieve CD Drafts Docs
+    @Query(
+        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE VAR_FIELD_2 = :sdDocumentId",
+        nativeQuery = true
+    )
+    fun findStandardDocumentCdId(@Param("sdDocumentId") sdDocumentId: Long?): Collection<DatKebsSdStandardsEntity?>?
+
+
+    @Transactional
+    @Modifying
+    @Query(
+        value = "UPDATE DAT_KEBS_SD_STANDARDS_UPLOADS t1 SET t1.VAR_FIELD_3 = :prdId WHERE t1.STANDARD_DOCUMENT_ID=:cdId AND DOCUMENT_TYPE='MINUTES FOR PRD' OR DOCUMENT_TYPE='DRAFT DOCUMENTS FOR PRD'",
+        nativeQuery = true
+    )
+    fun updateDocsWithPRDid(@Param("cdId") cdId: Long, @Param("prdId") prdId: Long): Int
+
+
+    //retrieve PRD Drafts Docs
+    @Query(
+        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE VAR_FIELD_3 = :sdDocumentId",
+        nativeQuery = true
+    )
+    fun findStandardDocumentPrdId(@Param("sdDocumentId") sdDocumentId: Long?): Collection<DatKebsSdStandardsEntity?>?
 
 }

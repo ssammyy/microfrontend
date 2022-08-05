@@ -129,6 +129,7 @@ export class AllComplaintsDetailsDto {
 export class MSRemarksDto {
     id: number;
     remarksDescription: string;
+    remarksStatus: string;
     processBy: string;
     processName: string;
 }
@@ -238,6 +239,7 @@ export class ComplaintDetailsDto {
     ksApplicable: StandardDetailsDto;
     timelineStartDate: Date;
     timelineEndDate: Date;
+    timelineOverDue: boolean;
 }
 
 
@@ -267,6 +269,7 @@ export class WorkPlanFeedBackDto {
 }
 
 export class DestructionNotificationDto {
+    clientFullName: string;
     clientEmail: string;
     remarks: string;
 }
@@ -413,6 +416,7 @@ export class WorkPlanInspectionDto {
     divisionId: string;
     timelineStartDate: Date;
     timelineEndDate: Date;
+    timelineOverDue: boolean;
     sampleSubmittedId: number;
     division: string;
     officerName: string;
@@ -449,6 +453,7 @@ export class WorkPlanInspectionDto {
     approved: string;
     rejectedOn: Date;
     rejectedStatus: boolean;
+    submittedForApprovalStatus: boolean;
     onsiteStartStatus: boolean;
     onsiteStartDate: Date;
     onsiteEndDate: Date;
@@ -728,6 +733,7 @@ export class FuelInspectionDto {
     id: number;
     timelineStartDate: Date;
     timelineEndDate: Date;
+    timelineOverDue: boolean;
     referenceNumber: string;
     company: string;
     petroleumProduct: string;

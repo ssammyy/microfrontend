@@ -4,9 +4,11 @@ package org.kebs.app.kotlin.apollo.api.controllers.stdController
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.BallotService
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.ResponseMessage
+import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.store.model.std.Ballot
 import org.kebs.app.kotlin.apollo.store.model.std.BallotVote
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -14,7 +16,8 @@ import org.springframework.web.bind.annotation.*
 @CrossOrigin(origins = ["http://localhost:4200"])
 
 @RestController
-@RequestMapping("api/v1/ballot")
+@RequestMapping("api/v1/migration/ballot")
+
 
 class BallotController(val ballotService: BallotService) {
 
@@ -25,13 +28,17 @@ class BallotController(val ballotService: BallotService) {
     }
 
     @PostMapping("/prepareballot")
-    fun preparePublicReview(@RequestBody ballot: Ballot): ProcessInstanceResponse {
-        return ballotService.prepareBallot(ballot)
+    fun prepareBallot(@RequestBody ballot: Ballot, @RequestParam("prdId") prdId: Long): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "ballot Draft Prepared",
+            ballotService.prepareBallot(ballot, prdId)
+        )
     }
 
 
     @PostMapping("/voteBallot")
-    fun makeCommentOnDraft(@RequestBody ballotVote: BallotVote): ProcessInstanceResponse {
+    fun voteDorBallot(@RequestBody ballotVote: BallotVote) {
         return ballotService.voteForBallot(ballotVote)
     }
 

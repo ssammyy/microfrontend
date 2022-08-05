@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -14,7 +13,7 @@ class Comments {
 
     @Column(name = "USER_ID")
     @Basic
-    val userId: Long = 0
+    var userId: Long = 0
 
     @Column(name = "PD_ID")
     @Basic
@@ -26,35 +25,35 @@ class Comments {
 
     @Column(name = "RECIPIENT_ID")
     @Basic
-    val recipientId: Long = 0
+    var recipientId: Long = 0
 
     @Column(name = "TITLE")
     @Basic
-    val title: String? = null
+    var title: String? = null
 
     @Column(name = "DOCUMENT_TYPE")
     @Basic
-    val documentType: String? = null
+    var documentType: String? = null
 
     @Column(name = "CIRCULATION_DATE")
     @Basic
-    val circulationDate: Timestamp? = null
+    var circulationDate: Timestamp? = null
 
     @Column(name = "CLOSING_DATE")
     @Basic
-    val closingDate: Timestamp? = null
+    var closingDate: Timestamp? = null
 
     @Column(name = "ORGANIZATION")
     @Basic
-    val organization: String? = null
+    var organization: String? = null
 
     @Column(name = "CLAUSE")
     @Basic
-    val clause: String? = null
+    var clause: String? = null
 
     @Column(name = "PARAGRAPH")
     @Basic
-    val paragraph: String? = null
+    var paragraph: String? = null
 
     @Column(name = "COMMENT_TYPE")
     @Basic
@@ -102,9 +101,9 @@ class Comments {
     @Basic
     var commentsMade: String? = null
 
-    @Column(name = "VAR_FIELD_4")
+    @Column(name = "PRD_ID")
     @Basic
-    var varField4: String? = null
+    var prdId: String? = null
 
     @Column(name = "VAR_FIELD_5")
     @Basic

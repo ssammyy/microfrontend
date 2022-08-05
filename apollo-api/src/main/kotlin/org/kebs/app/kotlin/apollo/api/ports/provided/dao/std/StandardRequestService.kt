@@ -252,8 +252,6 @@ class StandardRequestService(
             }
         }
 
-        println(allOrganization)
-
         standardNWI.liaisonOrganisation = allOrganization
         standardNWI.liaisonOrganisation?.let { variable.put("liaisonOrganisation", it) }
 
@@ -261,6 +259,8 @@ class StandardRequestService(
         standardNWI.status?.let { variable.put("statud", it) }
 
         standardNWIRepository.save(standardNWI)
+        standardNWI.id.let { variable.put("id", it) }
+
 
         taskService.complete(standardNWI.taskId, variable)
 
@@ -304,7 +304,7 @@ class StandardRequestService(
 
         println(standardJustification.toString())
         standardJustificationRepository.save(standardJustification)
-        val u: StandardNWI = standardNWIRepository.findById(standardJustification.nwiId).orElse(null);
+        val u: StandardNWI = standardNWIRepository.findById(standardJustification.nwiId!!.toLong()).orElse(null);
         u.status = "Approve/Reject Justification";
         standardNWIRepository.save(u)
         taskService.complete(standardJustification.taskId, variable)
@@ -331,10 +331,10 @@ class StandardRequestService(
         variables["cdNumber"] = cdNumber
 
         val standardJustification = standardJustificationRepository.findByRequestNo(decisionJustification.referenceNo)
-        standardJustification[0].cdNumber = cdNumber
+        standardJustification.cdNumber = cdNumber
 
-        standardJustificationRepository.saveAll(standardJustification)
-        val u: StandardNWI = standardNWIRepository.findById(standardJustification[0].nwiId).orElse(null);
+        standardJustificationRepository.save(standardJustification)
+        val u: StandardNWI = standardNWIRepository.findById(standardJustification.nwiId!!.toLong()).orElse(null);
         u.status = "Prepare Workplan";
         standardNWIRepository.save(u)
 

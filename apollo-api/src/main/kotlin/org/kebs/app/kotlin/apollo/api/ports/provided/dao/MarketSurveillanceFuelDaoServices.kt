@@ -15,7 +15,6 @@ import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestResultsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmittedPdfListDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.std.LevyPayments
 import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
@@ -97,7 +96,7 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
         remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = applicationMapProperties.mapMSCreateBatch
             userId= loggedInUser.id
         }
@@ -177,7 +176,7 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = fileSaved.second.msProcessId
             userId= loggedInUser.id
         }
@@ -318,7 +317,7 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = fileInspectionDetail.msProcessId
             userId= loggedInUser.id
         }
@@ -378,11 +377,11 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.rapidTestRemarks
-            remarksStatus= map.activeStatus
             processID = fileInspectionDetail.msProcessId
             userId= loggedInUser.id
         }
 
+        var remarksStatusAdded = "N/A"
         when {
             body.rapidTestStatus -> {
                 //Rapid Test Passed
@@ -392,6 +391,7 @@ class MarketSurveillanceFuelDaoServices(
                     rapidTestPassedOn = commonDaoServices.getCurrentDate()
                     rapidTestPassedBy = commonDaoServices.concatenateName(loggedInUser)
                     rapidTestPassedRemarks = body.rapidTestRemarks
+                    remarksStatusAdded = "PASSED"
                 }
 
             }
@@ -403,6 +403,7 @@ class MarketSurveillanceFuelDaoServices(
                     rapidTestFailedOn = commonDaoServices.getCurrentDate()
                     rapidTestFailedBy = commonDaoServices.concatenateName(loggedInUser)
                     rapidTestFailedRemarks = body.rapidTestRemarks
+                    remarksStatusAdded = "FAILED"
                 }
             }
         }
@@ -410,6 +411,7 @@ class MarketSurveillanceFuelDaoServices(
 
         if (fileSaved.first.status == map.successStatus) {
             fileInspectionDetail = fileSaved.second
+            remarksDto.remarksStatus = remarksStatusAdded
             val remarksSaved = fuelAddRemarksDetails(fileSaved.second.id,remarksDto, map, loggedInUser)
             if (remarksSaved.first.status == map.successStatus){
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
@@ -518,7 +520,7 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
+            remarksStatus= "N/A"
             processID = fileInspectionDetail.msProcessId
             userId= loggedInUser.id
         }
@@ -576,7 +578,14 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.complianceRemarks
-            remarksStatus= map.activeStatus
+            remarksStatus = when {
+                body.complianceStatus -> {
+                    "COMPLIANT"
+                }
+                else -> {
+                    "NON-COMPLIANT"
+                }
+            }
             processID = applicationMapProperties.mapMSSaveSelectedLabResults
             userId= loggedInUser.id
         }
@@ -612,7 +621,14 @@ class MarketSurveillanceFuelDaoServices(
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.complianceRemarks
-            remarksStatus= map.activeStatus
+            remarksStatus = when {
+                body.complianceStatus -> {
+                    "COMPLIANT"
+                }
+                else -> {
+                    "NON-COMPLIANT"
+                }
+            }
             processID = fileInspectionDetail.msProcessId
             userId= loggedInUser.id
         }
@@ -728,7 +744,7 @@ class MarketSurveillanceFuelDaoServices(
                 val remarksDto = RemarksToAddDto()
                 with(remarksDto){
                     remarksDescription= body.remarks
-                    remarksStatus= map.activeStatus
+                    remarksStatus= "N/A"
                     processID = fileInspectionDetail.msProcessId
                     userId= loggedInUser.id
                 }
@@ -802,7 +818,7 @@ class MarketSurveillanceFuelDaoServices(
                 val remarksDto = RemarksToAddDto()
                 with(remarksDto){
                     remarksDescription= body.remarks
-                    remarksStatus= map.activeStatus
+                    remarksStatus= "N/A"
                     processID = fileInspectionDetail.msProcessId
                     userId= loggedInUser.id
                 }
@@ -960,6 +976,12 @@ class MarketSurveillanceFuelDaoServices(
             rapidTestDone = true
         }
 
+        var timelineOverDue =false
+        if (fileInspectionDetail.timelineEndDate!= null){
+        if (fileInspectionDetail.timelineEndDate!!>commonDaoServices.getCurrentDate()){
+            timelineOverDue = true
+        }}
+
         val compliantDetailsStatus = mapCompliantStatusDto(fileInspectionDetail, map)
         var compliantStatusDone = false
         if (compliantDetailsStatus!=null){
@@ -992,6 +1014,7 @@ class MarketSurveillanceFuelDaoServices(
             batchDetailsDto,
             rapidTestDone,
             compliantStatusDone,
+            timelineOverDue,
             officerList,
             fuelInspectionRemarks,
             fuelInspectionOfficer?.assignedIo?.let { commonDaoServices.findUserByID(it) },
@@ -2139,7 +2162,7 @@ class MarketSurveillanceFuelDaoServices(
 
     fun mapFuelInspectionListDto(fuelInspectionList: List<MsFuelInspectionEntity>?, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
         val fuelInspectionScheduledList = mutableListOf<FuelInspectionDto>()
-        fuelInspectionList?.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.timelineStartDate,it.timelineEndDate,it.referenceNumber, it.company, it.companyKraPin, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo,
+        fuelInspectionList?.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.timelineStartDate,it.timelineEndDate,null,it.referenceNumber, it.company, it.companyKraPin, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo,
             it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName }, it.assignedOfficerStatus==1, it.inspectionCompleteStatus==1))}
 
 
@@ -2167,9 +2190,10 @@ class MarketSurveillanceFuelDaoServices(
         batchDetails: FuelBatchDetailsDto,
         rapidTestDone: Boolean,
         compliantStatusDone: Boolean,
+        timelineOverDue: Boolean,
         officerList: List<UsersEntity>?,
         remarksList: List<MsRemarksEntity>?,
-        officersAssigned : UsersEntity?,
+        officersAssigned: UsersEntity?,
         rapidTestResults: FuelEntityRapidTestDto?,
         sampleCollected: SampleCollectionDto?,
         sampleSubmitted: SampleSubmissionDto?,
@@ -2180,6 +2204,7 @@ class MarketSurveillanceFuelDaoServices(
             fuelInspectionList.id,
             fuelInspectionList.timelineStartDate,
             fuelInspectionList.timelineEndDate,
+            timelineOverDue,
             fuelInspectionList.referenceNumber,
             fuelInspectionList.company,
             fuelInspectionList.companyKraPin,

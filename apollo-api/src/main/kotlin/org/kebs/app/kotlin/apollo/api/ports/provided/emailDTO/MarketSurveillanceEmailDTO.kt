@@ -79,6 +79,12 @@ class WorkPlanScheduledDTO {
 
     var refNumber: String? = null
 
+    var batchRefNumber: String? = null
+
+    var approvalStatus: String? = null
+
+    var remarksDetails: String? = null
+
     var yearCodeName: String? = null
 
     var dateSubmitted: Date? = null

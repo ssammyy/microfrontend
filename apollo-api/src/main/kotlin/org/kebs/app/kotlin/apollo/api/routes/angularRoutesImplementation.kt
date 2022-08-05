@@ -618,6 +618,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                     POST("/new", handler::saveNewWorkPlanSchedule)
                     GET("/details", handler::getWorkPlanInspectionDetails)
                     "/update".nest {
+                        PUT("/submit-for-approval", handler::submitWorkPlanScheduleEntry)
                         PUT("/approval-schedule", handler::updateWorkPlanScheduleApproval)
                         GET("/start-onsite-activities", handler::startWorkPlanInspectionOnsiteDetails)
                         GET("/end-onsite-activities", handler::endWorkPlanInspectionOnsiteDetails)

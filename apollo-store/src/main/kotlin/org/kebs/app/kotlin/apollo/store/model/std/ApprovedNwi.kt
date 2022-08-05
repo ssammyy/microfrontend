@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import java.sql.Timestamp
+
 
 //class DataHolder {
 //    @NotNull
@@ -72,5 +74,155 @@ interface ApprovedNwi {
     fun getTarget_Dateb(): String?
     fun getLiason_Organizationb(): String?
 
+
+}
+
+interface CommentsWithPdId {
+    fun getCommentsId(): Long?
+    fun getTitle(): String?
+    fun getDocument_type(): String?
+
+    fun getCIRCULATION_date(): String?
+
+    fun getCLOSING_date(): String?
+    fun getSTATUS(): Long?
+    fun getORGANIZATION(): String?
+    fun getCLAUSE(): String?
+    fun getPARAGRAPH(): String?
+    fun getCOMMENT_type(): String?
+    fun getPROPOSED_change(): String?
+    fun getOBSERVATION(): String?
+    fun getCREATED_on(): String?
+    fun getCOMMENTS_made(): String?
+    fun getPD_name(): String?
+    fun getCOMMENT_by(): String?
+    fun getRECEIVED_by(): String?
+
+    fun getRECIPIENT_id(): Long?
+
+}
+
+interface PdWithUserName {
+    fun getId(): Long?
+    fun getNWI_Id(): String?
+    fun getPD_by(): String?
+
+    fun getPD_name(): String?
+
+    fun getCREATED_on(): String?
+
+    fun getSTATUS(): String?
+
+    fun getNUMBER_OF_COMMENTS(): String?
+
+
+}
+
+interface CdWithUserName {
+    fun getCDID(): Long
+    fun getPDID(): Long
+    fun getCDBY(): String?
+    fun getCDNAME(): String?
+    fun getCREATEDON(): String?
+    fun getSTATUS(): String?
+    fun getAPPROVALSTATUS(): String?
+
+    fun getNUMBEROFCOMMENTS(): String?
+    fun getKS_NUMBER(): String?
+
+}
+
+interface CommentsWithCdId {
+    fun getCommentsId(): Long?
+    fun getTitle(): String?
+    fun getDocument_type(): String?
+
+    fun getCIRCULATION_date(): String?
+
+    fun getCLOSING_date(): String?
+    fun getSTATUS(): Long?
+    fun getORGANIZATION(): String?
+    fun getCLAUSE(): String?
+    fun getPARAGRAPH(): String?
+    fun getCOMMENT_type(): String?
+    fun getPROPOSED_change(): String?
+    fun getOBSERVATION(): String?
+    fun getCREATED_on(): String?
+    fun getCOMMENTS_made(): String?
+    fun getCD_name(): String?
+    fun getCOMMENT_by(): String?
+    fun getRECEIVED_by(): String?
+
+    fun getRECIPIENT_id(): Long?
+
+
+
+}
+
+interface PrdWithUserName {
+    fun getId(): Long?
+    fun getCD_Id(): String?
+    fun getPRD_by(): String?
+
+    fun getPRD_name(): String?
+
+    fun getCREATED_on(): String?
+
+    fun getSTATUS(): String?
+
+    fun getNUMBER_OF_COMMENTS(): String?
+    fun getKS_NUMBER(): String?
+
+    fun getVAR_FIELD_1(): String?
+
+}
+
+interface CommentsWithPrdId {
+    fun getCommentsId(): Long?
+    fun getTitle(): String?
+    fun getDocument_type(): String?
+
+    fun getCIRCULATION_date(): String?
+
+    fun getCLOSING_date(): String?
+    fun getSTATUS(): Long?
+    fun getORGANIZATION(): String?
+    fun getCLAUSE(): String?
+    fun getPARAGRAPH(): String?
+    fun getCOMMENT_type(): String?
+    fun getPROPOSED_change(): String?
+    fun getOBSERVATION(): String?
+    fun getCREATED_on(): String?
+    fun getCOMMENTS_made(): String?
+    fun getPRD_name(): String?
+    fun getCOMMENT_by(): String?
+    fun getRECEIVED_by(): String?
+
+    fun getRECIPIENT_id(): Long?
+
+    fun getUNLOGGEDINUSEREMAIL(): String?
+
+    fun getUNLOGGEDINUSERNAMES(): String?
+
+    fun getUNLOGGEDINUSERPHONE(): String?
+
+
+}
+
+interface BallotWithUserName {
+    fun getId(): Long?
+    fun getPRD_id(): String?
+
+    fun getBallot_name(): String?
+
+    fun getBallot_Draft_By(): String?
+
+    fun getCREATED_on(): String?
+
+    fun getSTATUS(): String?
+
+    fun getNUMBER_OF_COMMENTS(): String?
+
+    fun getVAR_FIELD_1(): String?
 
 }

@@ -4,26 +4,20 @@ import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
-@Table(name = "PUBLIC_REVIEW_DRAFT")
+@Table(name = "SD_PUBLIC_REVIEW_DRAFTS")
 class PublicReviewDraft {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     var id: Long = 0
 
+    @Column(name = "PRD_BY")
+    @Basic
+    var prdBy: Long = 0
+
     @Column(name = "PRD_NAME")
     @Basic
     var prdName: String? = null
-
-
-    @Column(name = "PRD_DRAFT_BY")
-    @Basic
-    var prdraftBy: String? = null
-
-
-    @Column(name = "PRD_PATH")
-    @Basic
-    var prdpath: String? = null
 
 
     @Column(name = "CREATED_ON")
@@ -38,38 +32,67 @@ class PublicReviewDraft {
     @Basic
     var deletedOn: Timestamp? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
 
-        other as PublicReviewDraft
+    @Column(name = "CD_ID")
+    @Basic
+    var cdID: Long = 0
 
-        if (id != other.id) return false
-        if (prdName != other.prdName) return false
-        if (prdraftBy != other.prdraftBy) return false
-        if (prdpath != other.prdpath) return false
-        if (createdOn != other.createdOn) return false
-        if (modifiedOn != other.modifiedOn) return false
-        if (deletedOn != other.deletedOn) return false
+    @Column(name = "STATUS")
+    @Basic
+    var status: String? = null
 
-        return true
-    }
 
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + (prdName?.hashCode() ?: 0)
-        result = 31 * result + (prdraftBy?.hashCode() ?: 0)
-        result = 31 * result + (prdpath?.hashCode() ?: 0)
+    @Column(name = "CREATED_BY")
+    @Basic
+    var createdBy: String? = null
 
-        result = 31 * result + (createdOn?.hashCode() ?: 0)
-        result = 31 * result + (modifiedOn?.hashCode() ?: 0)
-        result = 31 * result + (deletedOn?.hashCode() ?: 0)
-        return result
-    }
+    @Column(name = "MODIFIED_BY")
+    @Basic
+    var modifiedBy: String? = null
 
-    override fun toString(): String {
-        return "PublicReviewDraft(id=$id, prdName=$prdName, prdraftBy=$prdraftBy" +
-                "prdpath=$prdpath,createdOn=$createdOn, modifiedOn=$modifiedOn, deletedOn=$deletedOn)"
-    }
+    @Column(name = "DELETE_BY")
+    @Basic
+    var deleteBy: String? = null
+
+    @Column(name = "VAR_FIELD_1")
+    @Basic
+    var varField1: String? = null
+
+    @Column(name = "VAR_FIELD_2")
+    @Basic
+    var varField2: String? = null
+
+    @Column(name = "VAR_FIELD_3")
+    @Basic
+    var varField3: String? = null
+
+    @Column(name = "VAR_FIELD_4")
+    @Basic
+    var varField4: String? = null
+
+    @Column(name = "VAR_FIELD_5")
+    @Basic
+    var varField5: String? = null
+
+    @Column(name = "VAR_FIELD_6")
+    @Basic
+    var varField6: String? = null
+
+    @Column(name = "VAR_FIELD_7")
+    @Basic
+    var previousVersion: String? = null
+
+    @Column(name = "VAR_FIELD_8")
+    @Basic
+    var versionNumber: String? = null
+
+    @Column(name = "VAR_FIELD_9")
+    @Basic
+    var originalVersion: String? = null
+
+    @Column(name = "KS_NUMBER")
+    @Basic
+    var ksNumber: String? = null
+
 
 }

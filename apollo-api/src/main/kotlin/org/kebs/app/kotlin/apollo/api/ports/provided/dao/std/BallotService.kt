@@ -1,21 +1,24 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
+import javassist.compiler.ast.Variable
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.errors.std.ResourceNotFoundException
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
-import org.kebs.app.kotlin.apollo.store.model.std.Ballot
-import org.kebs.app.kotlin.apollo.store.model.std.BallotVote
-import org.kebs.app.kotlin.apollo.store.repo.std.BallotVoteRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.BallotingRepository
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.PathVariable
+import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -37,7 +40,12 @@ class BallotService(
     private val processEngine: ProcessEngine,
     private val repositoryService: RepositoryService,
     private val ballotRepository: BallotingRepository,
-    private val ballotvoteRepository: BallotVoteRepository
+    private val ballotvoteRepository: BallotVoteRepository,
+    private val publicReviewDraftRepository: PublicReviewDraftRepository,
+    private val publicReviewDraftCommentsRepository: PublicReviewDraftCommentsRepository,
+    val commonDaoServices: CommonDaoServices,
+    private val commentsRepository: CommentsRepository,
+    private val sdDocumentsRepository: StandardsDocumentsRepository
 ) {
     val PROCESS_DEFINITION_KEY = "Balloting"
     val TASK_CANDIDATE_GROUP_TC_SEC = "TC-Sec"
@@ -51,34 +59,61 @@ class BallotService(
             .deploy()
     }
 
-    fun prepareBallot(ballot: Ballot): ProcessInstanceResponse {
-        ballot.prID.let { variable.put("prID", it) }
+    fun prepareBallot(
+        ballot: Ballot, prdId: Long
+    ): ProcessInstanceResponseValue {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
         ballot.ballotName?.let { variable.put("ballotName", it) }
-        ballot.ballotDraftBy?.let { variable.put("ballotDraftBy", it) }
-        ballot.ballotPath?.let { variable.put("ballotPath", it) }
-//        val date = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
-//        println(date)
-        ballot.createdOn?.let { variable.put("createdOn", it) }
+        ballot.prdID = prdId
+        variable["prdID"] = ballot.prdID
+
+
+        ballot.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = ballot.createdOn!!
+
+        ballot.ballotDraftBy = loggedInUser.id.toString()
+        variable["ballotDraftBy"] = ballot.ballotDraftBy ?: throw ExpectedDataNotFound("No USER ID Found")
+        ballot.createdBy = loggedInUser.id.toString()
+        variable["createdBy"] = ballot.createdBy ?: throw ExpectedDataNotFound("No USER ID Found")
+        ballot.status = "Ballot Draft Created Submitted For voting"
+        variable["status"] = ballot.status!!
+
         ballotRepository.save(ballot)
-        sendNotification(ballot.id)
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+
+        //get prd Draft and update
+        val publicReviewDraft: PublicReviewDraft = publicReviewDraftRepository.findById(prdId).orElse(null);
+        publicReviewDraft.status = "Ballot Draft Uploaded";
+        publicReviewDraftRepository.save(publicReviewDraft)
+
+        return ProcessInstanceResponseValue(ballot.id, "Complete", true, "ballot.id")
 
     }
 
-    private fun sendNotification(id: Long) {
-        print("Notification sent To TC members ")
-
+    //get all Ballot With Votes
+    fun getAllBallotDrafts(): MutableList<BallotWithUserName> {
+        return ballotRepository.findBallotDraft()
     }
 
-    fun voteForBallot(ballotVote: BallotVote): ProcessInstanceResponse {
+
+    fun voteForBallot(ballotVote: BallotVote) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
         ballotVote.ballotId.let { variable.put("ballotId", it) }
         ballotVote.userId.let { variable.put("userId", it) }
+        ballotVote.userId = loggedInUser.id!!
+        variable["ballotDraftBy"] = ballotVote.userId
+
         ballotVote.approvalStatus.let { variable.put("approvalStatus", it) }
         ballotVote.comment?.let { variable.put("comment", it) }
+
+        ballotVote.createdOn = Timestamp(System.currentTimeMillis())
+        variable["createdOn"] = ballotVote.createdOn!!
+
+        ballotVote.status = 1
+        variable["status"] = ballotVote.status!!
         ballotvoteRepository.save(ballotVote)
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+
     }
 
     fun getBallots(): MutableList<Ballot> {
@@ -137,6 +172,7 @@ class BallotService(
         }
         return taskDetails
     }
+
     fun closeTask(taskId: String) {
         taskService.complete(taskId)
     }

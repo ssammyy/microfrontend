@@ -1023,6 +1023,24 @@ export class MsService {
             }),
         );
     }
+    
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleDetailsSubmitForApproval(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_SUBMIT_FOR_APPROVAL);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, null, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
 
      // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsStartOnsiteActivities(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {

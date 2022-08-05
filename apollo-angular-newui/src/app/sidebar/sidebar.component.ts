@@ -383,6 +383,59 @@ export const ROUTES: RouteInfo[] = [
 
         ],
     },
+    {
+        path: '',
+        title: 'Committee Module',
+        type: 'sub',
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'committeeModule',
+        children: [
+            {path: 'preparePd', title: 'Prepare Preliminary Draft', ab: 'PRD'},
+            {path: 'reviewPd', title: 'Review Preliminary Draft', ab: 'RPD'},
+            {path: 'prepareCd', title: 'Prepare Committee Draft', ab: 'V'},
+            {path: 'reviewCd', title: 'Review Committee Draft', ab: 'UJ'},
+            {path: 'approveCD', title: 'Approve Committee Draft', ab: 'UW'},
+
+
+
+        ],
+    },
+
+    {
+        path: '',
+        title: 'Public Review Module',
+        type: 'sub',
+        icontype: 'public',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'publicReviewModule',
+        children: [
+            {path: 'preparePrd', title: 'Prepare Public Review Draft', ab: 'PRD'},
+            {path: 'commentOnPrd', title: 'Review Public Review Draft', ab: 'RPD'},
+            {path: 'viewPrd', title: 'Review Public Review Draft', ab: 'V'},
+
+
+
+
+        ],
+    },
+
+    {
+        path: '',
+        title: 'Balloting Module',
+        type: 'sub',
+        icontype: 'ballot',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'ballotingModule',
+        children: [
+            {path: 'prepareBallot', title: 'Prepare Ballot Draft', ab: 'PBD'},
+            {path: 'voteOnBallot', title: 'Vote On Ballot Draft', ab: 'RPD'},
+
+
+
+
+        ],
+    },
 
     {
         path: '',

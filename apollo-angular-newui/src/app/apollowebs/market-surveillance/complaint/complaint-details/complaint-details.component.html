@@ -291,6 +291,22 @@
                                     <b class="text-secondary">{{complaintInspection?.complaintsDetails?.status}}</b>
                                 </div>
                                 <br/>
+                                <div *ngIf="complaintInspection?.complaintsDetails?.timelineEndDate!=null">
+                                    <b>TIMELINES STATUS:</b>
+                                    <div>
+                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue" class="text-success">IN-TIME</b>
+                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue==false" class="text-danger">OVER-DUE</b>
+                                    </div>
+                                    <b>Started TimeLine</b>
+                                    <div>
+                                        <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineStartDate| date}}</b>
+                                    </div>
+                                    <b>Targeted TimeLine</b>
+                                    <div>
+                                        <b class="text-secondary">{{complaintInspection?.complaintsDetails?.timelineEndDate| date}}</b>
+                                    </div>
+                                    <br/>
+                                </div>
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
@@ -326,19 +342,20 @@
                                         </button>
                                     </div>
                                     <div *ngIf="role == 'MS_IO_MODIFY' && userLoggedInID == complaintInspection?.officersAssigned?.id">
-                                        <button *ngIf="complaintInspection?.complaintsDetails?.classificationDetailsStatus == false " (click)="openModalAddDetails('addClassificationDetails')" mat-raised-button="" data-toggle="modal"
+                                        <button *ngIf="complaintInspection?.complaintsDetails?.classificationDetailsStatus == false "
+                                                (click)="openModalAddDetails('addClassificationDetails')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#myModal1"
                                                 class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">ADD CLASSIFICATION DETAILS</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
-                                        <button  *ngIf="complaintInspection?.complaintProcessStatus == false"
+                                        <button  *ngIf="complaintInspection?.complaintProcessStatus == false && complaintInspection?.complaintsDetails?.classificationDetailsStatus"
                                                 (click)="openModalAddDetails('startMSProcess')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#workPlanModal"
                                                 class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">START MS-PROCESS</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div  class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                     </div>

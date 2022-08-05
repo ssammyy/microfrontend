@@ -1,10 +1,13 @@
 package org.kebs.app.kotlin.apollo.api.controllers.msControllers
 
 import com.google.gson.Gson
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.WorkPlanScheduledDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ms.MsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
@@ -107,19 +110,13 @@ class MSJSONControllers(
         val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val gson = Gson()
         val body = gson.fromJson(data, DestructionNotificationDto::class.java)
-        val remarksDto = RemarksToAddDto()
-        with(remarksDto){
-            remarksDescription= body.remarks
-            remarksStatus= map.activeStatus
-            processID = workPlanScheduled.msProcessId
-            userId= loggedInUser.id
-        }
 
         val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"DESTRUCTION NOTICE",workPlanScheduled)
 
         with(workPlanScheduled){
             destructionNotificationDocId = fileDoc.second.id
             destructionClientEmail = body.clientEmail
+            destructionClientFullName = body.clientFullName
             destructionNotificationDate = commonDaoServices.getCurrentDate()
             destructionNotificationStatus = map.activeStatus
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionDestructionAddedPendingAppeal
@@ -127,7 +124,31 @@ class MSJSONControllers(
         }
 
         workPlanScheduled = msWorkPlanDaoService.updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.remarks
+            remarksStatus= "N/A"
+            processID = workPlanScheduled.msProcessId
+            userId= loggedInUser.id
+        }
         val remarksSaved = msWorkPlanDaoService.workPlanAddRemarksDetails(workPlanScheduled.id,remarksDto, map, loggedInUser)
+        runBlocking {
+            val scheduleEmailDetails =  WorkPlanScheduledDTO()
+            with(scheduleEmailDetails){
+                baseUrl= applicationMapProperties.baseUrlValue
+                fullName = workPlanScheduled.destructionClientFullName
+                refNumber = referenceNo
+                batchRefNumber = batchReferenceNo
+                yearCodeName = batchDetails.yearNameId?.yearName
+                dateSubmitted = commonDaoServices.getCurrentDate()
+
+            }
+            workPlanScheduled.destructionClientEmail?.let {
+                commonDaoServices.sendEmailWithUserEmail(it,
+                    applicationMapProperties.mapMsOfficerSendDestructionNotificationEmail,
+                scheduleEmailDetails, map, remarksSaved.first,docFile.inputStream.toString())
+            }
+        }
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
     }
 
@@ -154,6 +175,21 @@ class MSJSONControllers(
         }
 
         workPlanScheduled = msWorkPlanDaoService.updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
+        runBlocking {
+            val hodRmDetails = workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+            val scheduleEmailDetails =  WorkPlanScheduledDTO()
+            with(scheduleEmailDetails){
+                baseUrl= applicationMapProperties.baseUrlValue
+                fullName = hodRmDetails?.let { commonDaoServices.concatenateName(it) }
+                refNumber = referenceNo
+                batchRefNumber = batchReferenceNo
+                yearCodeName = batchDetails.yearNameId?.yearName
+                dateSubmitted = commonDaoServices.getCurrentDate()
+
+            }
+
+            hodRmDetails?.email?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsOfficerSendDestructionNotificationHODEmail, scheduleEmailDetails, map, fileDoc.first) }
+        }
 
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
     }
