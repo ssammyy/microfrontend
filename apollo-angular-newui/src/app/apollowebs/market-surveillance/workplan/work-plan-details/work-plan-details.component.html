@@ -1571,6 +1571,7 @@
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.hodRecommendationStatus
                                                 && workPlanInspection?.destructionDocId != null
                                                 && workPlanInspection?.msEndProcessRemarks == null
                                                 && workPlanInspection?.msProcessEndedStatus == false
@@ -1584,6 +1585,7 @@
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.hodRecommendationStatus
                                                 && workPlanInspection?.appealStatus
                                                 && workPlanInspection?.destructionDocId == null
                                                 && workPlanInspection?.msEndProcessRemarks == null
@@ -1593,7 +1595,19 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL REMARKS</span>
-
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.hodRecommendationStatus
+                                                && workPlanInspection?.destructionDocId == null
+                                                && workPlanInspection?.msEndProcessRemarks == null
+                                                && workPlanInspection?.msProcessEndedStatus == false
+                                                && workPlanInspection?.destructionRecommended == false"
+                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
