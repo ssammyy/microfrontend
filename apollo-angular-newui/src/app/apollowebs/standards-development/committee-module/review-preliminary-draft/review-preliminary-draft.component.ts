@@ -35,13 +35,6 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
     commentMadeRetrievedS !: CommentMadeRetrieved[];
     commentMadeRetrievedB !: CommentMadeRetrieved | undefined;
 
-    dtOptions: DataTables.Settings = {};
-    dtTrigger: Subject<any> = new Subject<any>();
-    @ViewChild(DataTableDirective, {static: false})
-    dtElement: DataTableDirective;
-    isDtInitialized: boolean = false
-    @ViewChild(DataTableDirective, {static: false})
-    dtElementB: DataTableDirective;
 
     dateFormat = "yyyy-MM-dd";
     language = "en";
@@ -50,11 +43,12 @@ export class ReviewPreliminaryDraftComponent implements OnInit {
     public commentFormGroup!: FormGroup;
     public editCommentFormGroup!: FormGroup;
 
+    dtOptions: DataTables.Settings = {};
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
-
+    dtTrigger3: Subject<any> = new Subject<any>();
 
     constructor(private formBuilder: FormBuilder,
                 private committeeService: CommitteeService,

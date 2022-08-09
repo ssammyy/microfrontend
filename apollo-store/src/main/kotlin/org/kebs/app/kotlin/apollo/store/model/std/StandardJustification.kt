@@ -78,7 +78,7 @@ class StandardJustification {
 
     @Column(name = "NWI_ID")
     @Basic
-    var nwiId: Long= 1
+    var nwiId: String?=null
 
 
 

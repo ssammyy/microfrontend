@@ -1,0 +1,657 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title">Prepare Ballot Draft
+                            </h4>
+
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+
+                            <h4 class="card-title">All Public Review Drafts
+                            </h4>
+                            <div class="material-datatables table-responsive">
+                                <table class="table table-striped table-bordered table-hover" datatable
+                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
+                                    <thead>
+                                    <tr>
+                                        <th class="id">No</th>
+                                        <th class="id">KsNo</th>
+                                        <th class="task">Public Review Draft Name</th>
+                                        <th class="action">Public Review Draft Details</th>
+                                        <th class="action">Status</th>
+                                        <th class="action">Comments</th>
+                                        <th class="action">Action</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let publicReviewDraft of publicReviewDrafts let i= index; ">
+                                        <td>{{i + 1}}</td>
+                                        <td>{{publicReviewDraft.ks_NUMBER}}</td>
+                                        <td>{{publicReviewDraft.prd_name}}</td>
+                                        <td>
+                                            <a (click)="onOpenModal(publicReviewDraft,'moreDetails')"
+                                               class="btn btn-info tooltips"
+                                               data-placement="top"
+                                               data-original-title="More Details">More Details</a>
+                                        </td>
+                                        <td><span class="badge badge-info">{{publicReviewDraft.status}}</span></td>
+                                        <td><span class="badge badge-orange"><a
+                                                (click)="onOpenModal(publicReviewDraft,'comments')"
+                                                class="btn btn-info tooltips"
+                                                data-placement="top"
+                                                data-original-title="View Comments"> {{publicReviewDraft.number_OF_COMMENTS}}
+                                            Comment(s)</a></span></td>
+
+                                        <td>
+                                            <a (click)="onOpenModal(publicReviewDraft,'uploadMinutes')"
+                                               class="btn btn-success tooltips"
+                                               data-placement="top" style="width: max-content"
+                                               data-original-title="Upload NWI">Upload Minutes</a>
+                                            <a (click)="onOpenModal(publicReviewDraft,'uploadDraftsAndOtherRelevantDocuments')"
+                                               class="btn btn-success tooltips"
+                                               data-placement="top" style="width: max-content"
+                                               data-original-title="Upload NWI">Upload Drafts and Documents </a>
+                                            <br>
+                                            <a (click)="onOpenModal(publicReviewDraft,'prepareBallot')"
+                                               class="btn btn-success tooltips"
+                                               data-placement="top"
+                                               data-original-title="Upload NWI">Prepare Ballot Draft</a>
+
+
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal fade " id="moreDetails" tabindex="-1" role="dialog"
+                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateExampleModalLabel">View Public Review
+                                                Draft
+                                                Details</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form #editForm="ngForm">
+                                            <div class="modal-body">
+                                                <div class="row col-12">
+                                                    <div class="form-group col-6">
+                                                        <label><b>Public Review Draft Name</b></label>
+                                                        <input
+                                                                readonly
+                                                                aria-describedby="inputGroup-sizing-sm"
+                                                                aria-label="Small"
+                                                                class="form-control one-column-input"
+                                                                value="{{publicReviewDraftsB?.prd_name}}"
+                                                                type="text">
+                                                    </div>
+                                                    <div class="form-group col-6">
+                                                        <label><b>Prepared By</b></label>
+                                                        <input
+                                                                readonly
+                                                                aria-describedby="inputGroup-sizing-sm"
+                                                                aria-label="Small"
+                                                                class="form-control one-column-input"
+                                                                value="{{publicReviewDraftsB?.prd_by}}"
+                                                                type="text">
+                                                    </div>
+
+                                                </div>
+                                                <div class="row col-12">
+                                                    <div class="form-group col-10">
+                                                        <label><b>KS Number</b></label>
+                                                        <input
+                                                                readonly
+                                                                aria-describedby="inputGroup-sizing-sm"
+                                                                aria-label="Small"
+                                                                class="form-control one-column-input"
+                                                                value="{{publicReviewDraftsB?.ks_NUMBER}}"
+                                                                type="text">
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="row col-12">
+                                                    <div class="col-md-6 ml-auto mr-auto">
+                                                        <br>
+                                                        <button class="btn btn-success tooltips" style="width: inherit"
+                                                                (click)="
+                                                                viewPdfFile( publicReviewDraftsB?.id,publicReviewDraftsB?.prd_name, 'application/pdf','PRD Document')"
+                                                                data-placement="top"
+                                                                data-original-title="Upload NWI"><i
+                                                                class="fa fa-download"></i> Download
+                                                            Public Review Draft
+                                                        </button>
+                                                        <br>
+                                                    </div>
+                                                </div>
+                                                <div class="row col-12">
+                                                    <div class="form-group col-12">
+                                                        <label><b>Draft Documents Including Minutes</b></label>
+                                                        <div class="material-datatables">
+                                                            <table class="table table-striped table-bordered table-hover"
+                                                                   datatable
+                                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th class="id">Document Name</th>
+                                                                    <th class="action">Action</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr *ngFor="let standardDocument of standardDocuments let i= index; ">
+                                                                    <td>{{standardDocument.description}}</td>
+                                                                    <td>
+                                                                        <a
+                                                                                (click)="viewPdfFileById(standardDocument.id,standardDocument.description, 'application/pdf',standardDocument.description)"
+
+                                                                                class="btn btn-info tooltips"
+                                                                                data-placement="top"
+                                                                                data-original-title="Upload NWI">Download</a>
+                                                                    </td>
+
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+
+
+                                            </div>
+
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" #closeModal
+                                                        (click)="hideModel()" data-dismiss="modal">Close
+                                                </button>
+
+
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade " id="comments" tabindex="-1" role="dialog"
+                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateExampleModalLabel">View Comments</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row col-12">
+                                                <div class="form-group col-12">
+                                                    <label><b>Comments</b></label>
+                                                    <div class="material-datatables">
+                                                        <table class="table table-striped table-bordered table-hover"
+                                                               datatable
+                                                               [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3">
+                                                            <thead>
+                                                            <tr>
+                                                                <th class="id">No</th>
+                                                                <th class="action">Comment</th>
+                                                                <th class="action">Made by</th>
+                                                                <th class="action">Comment Date</th>
+                                                                <th class="action">Action</th>
+
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr *ngFor="let commentMadeRetrieved of commentMadeRetrievedS let i= index; ">
+                                                                <td>{{i + 1}}</td>
+                                                                <td>{{commentMadeRetrieved.comments_made}}</td>
+                                                                <td>{{commentMadeRetrieved.comment_by}}</td>
+                                                                <td>{{commentMadeRetrieved.created_on}}</td>
+                                                                <td>
+                                                                    <a (click)="onOpenModalB(commentMadeRetrieved,'viewComment')"
+                                                                       class="btn btn-info tooltips"
+                                                                       data-placement="top"
+                                                                       data-original-title="More Details">More
+                                                                        Details</a></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    (click)="hideModel()" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade " id="viewComment" tabindex="-1"
+                                 role="dialog" aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-xl" role="document"
+                                     style="width: 100%">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title"
+                                                id="updateExampleModalLabel">
+                                                View Comment On Committee Draft</h5>
+                                            <button type="button" class="close"
+                                                    data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row col-12">
+                                                <div class="form-group col-12">
+
+                                                    <div class="form-body">
+
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label><b>Title</b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <input
+                                                                        readonly
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="title"
+                                                                        ngModel="{{this.commentMadeRetrievedB?.title}}"
+                                                                        placeholder="Title"
+                                                                        type="text">
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label><b>Document
+                                                                    Type</b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <input
+                                                                        readonly
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="documentType"
+                                                                        ngModel="{{this.commentMadeRetrievedB?.document_type}}"
+                                                                        placeholder="Document Type"
+                                                                        type="text">
+                                                            </div>
+
+
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label><b>Circulation
+                                                                    Date</b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <input
+                                                                        readonly
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="circulationDate"
+                                                                        ngModel="{{formatFormDate(this.commentMadeRetrievedB?.circulation_date.toString().split(' ')[0])}}"
+                                                                        placeholder="Circulation Date"
+                                                                        type="date">
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label><b>Closing
+                                                                    Date</b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <input
+                                                                        readonly
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="closingDate"
+                                                                        ngModel="{{formatFormDate(this.commentMadeRetrievedB?.closing_date.toString().split(' ')[0])}}"
+                                                                        placeholder="Closing Date"
+                                                                        type="date">
+                                                            </div>
+
+
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label><b>Organization
+                                                                </b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <input
+                                                                        readonly
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="organization"
+                                                                        placeholder="Organization"
+                                                                        ngModel="{{this.commentMadeRetrievedB?.organization}}"
+
+                                                                        type="text">
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label><b>Clause
+                                                                </b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <input
+                                                                        readonly
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="clause"
+                                                                        ngModel="{{this.commentMadeRetrievedB?.clause}}"
+
+                                                                        placeholder="Clause"
+                                                                        type="text">
+                                                            </div>
+
+
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label><b>Paragraph/Figure/Table
+                                                                </b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <input
+                                                                        readonly
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="paragraph"
+                                                                        placeholder="Paragraph"
+                                                                        ngModel="{{this.commentMadeRetrievedB?.paragraph}}"
+
+                                                                        type="text">
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label><b>Type Of
+                                                                    Comment
+                                                                </b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <select aria-label="Small"
+                                                                        aria-describedby="inputGroup-sizing-lg"
+                                                                        class="form-control"
+                                                                        required
+                                                                        name="commentType"
+                                                                        ngModel="{{this.commentMadeRetrievedB?.comment_type}}"
+                                                                        readonly="">
+                                                                    <option selected>
+                                                                        {{this.commentMadeRetrievedB?.comment_type}}
+                                                                    </option>
+
+                                                                </select>
+                                                            </div>
+
+
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label><b>Comment</b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <input
+                                                                        readonly
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="commentsMade"
+                                                                        placeholder="Comment"
+                                                                        ngModel="{{this.commentMadeRetrievedB?.comments_made}}"
+
+                                                                        type="text">
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label><b>Proposed
+                                                                    Change</b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <input
+                                                                        readonly
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="proposedChange"
+                                                                        placeholder="Proposed Change"
+                                                                        ngModel="{{this.commentMadeRetrievedB?.proposed_change}}"
+
+                                                                        type="text">
+                                                            </div>
+
+
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label><b>TC
+                                                                    Observation</b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <input
+                                                                        readonly
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        class="form-control one-column-input"
+                                                                        name="observation"
+                                                                        placeholder="TC Observation"
+                                                                        ngModel="{{this.commentMadeRetrievedB?.observation}}"
+
+                                                                        type="text">
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label><b>Recipient</b><span
+                                                                        style="font-size: xx-small; color: red;"> (*)Required</span></label>
+                                                                <select aria-label="Small"
+                                                                        aria-describedby="inputGroup-sizing-lg"
+                                                                        class="form-control"
+                                                                        required
+                                                                        name="recipientId"
+                                                                        ngModel="{{this.commentMadeRetrievedB?.recipient_id}}"
+                                                                        readonly="">
+                                                                    <option selected
+                                                                            value="{{this.commentMadeRetrievedB?.recipient_id}}">
+                                                                        {{this.commentMadeRetrievedB?.received_by}}
+                                                                    </option>
+
+                                                                </select>
+                                                            </div>
+
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade " id="uploadMinutes" tabindex="-1" role="dialog"
+                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateExampleModalLabel">Upload Minutes</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form>
+                                            <div class="modal-body">
+                                                <div class="row col-12">
+                                                    <div class="form-group col-12">
+
+                                                        <label><b>Please Upload The Minutes For The Discussion</b> <a
+                                                                href="https://www.w3schools.com/"> (Download Minutes
+                                                            Template Here)</a></label>
+
+                                                        <form>
+                                                            <file-upload [(ngModel)]="uploadedFiles"
+                                                                         name="uploadedFiles" fileslimit="1"
+                                                                         required
+                                                                         accept=".pdf"></file-upload>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" #closeModalE
+                                                        (click)="hideModel()" data-dismiss="modal">Close
+                                                </button>
+                                                <button class="btn btn-primary"
+                                                        (click)="uploadMinutesForBallot(publicReviewDraftsB.id)"
+                                                        type="submit">SUBMIT
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade " id="uploadDraftsAndOtherRelevantDocuments" tabindex="-1"
+                                 role="dialog"
+                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateExampleModalLabel">Upload Drafts And Other
+                                                Relevant Documents</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form>
+                                            <div class="modal-body">
+                                                <div class="row col-12">
+                                                    <div class="form-group col-12">
+
+                                                        <label><b>Please Upload Drafts And Other Relevant Documents From
+                                                            The Discussion</b> </label>
+
+                                                        <form>
+                                                            <file-upload [(ngModel)]="uploadedFilesB"
+                                                                         name="uploadedFiles"
+                                                                         required
+                                                                         accept=".pdf"></file-upload>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" #closeModalD
+                                                        (click)="hideModel()" data-dismiss="modal">Close
+                                                </button>
+                                                <button class="btn btn-primary"
+                                                        (click)="uploadDraftsAndOtherDocsBallot(publicReviewDraftsB.id)"
+                                                        type="submit">UPLOAD
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade " id="prepareBallot" tabindex="-1" role="dialog"
+                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateExampleModalLabel">Prepare Ballot
+                                                Draft</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row col-12">
+                                                <div class="form-group col-12">
+
+                                                    <form (ngSubmit)="uploadBallotDraft()"
+                                                          [formGroup]="publicReview_draftFormGroup" class="form">
+
+                                                        <div class="form-group">
+                                                            <label for="ksNumber">KS Number</label>
+                                                            <input type="text" class="form-control" id="ksNumber"
+                                                                   readonly
+                                                                   formControlName="ksNumber" name="ksNumber"
+                                                                   ngModel="{{this.publicReviewDraftsB?.ks_NUMBER}}">
+
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="ballotName">Ballot Draft Name</label>
+                                                            <input type="text" class="form-control" id="ballotName"
+                                                                   required
+                                                                   formControlName="ballotName" name="ballotName">
+
+                                                        </div>
+                                                        <label><b>Please Upload The Ballot Draft</b> <a
+                                                                href="https://www.w3schools.com/"> (Download Public
+                                                            Review
+                                                            Draft Template Here)</a></label>
+                                                        <form>
+                                                            <file-upload [(ngModel)]="uploadedFilesC"
+                                                                         name="uploadedFiles" fileslimit="1"
+                                                                         required
+                                                                         accept=".pdf"></file-upload>
+                                                            <input class="form-control one-column-input"
+                                                                   ngModel="EACGazette"
+                                                                   name="DocDescription" type="hidden">
+                                                        </form>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button #closeModalC
+                                                    type="button" class="btn btn-secondary"
+                                                    (click)="hideModelC()" data-dismiss="modal">Close
+                                            </button>
+                                            <button class="btn btn-primary" mat-raised-button
+                                                    *ngIf="publicReview_draftFormGroup.valid"
+                                                    (click)="uploadBallotDraft()"
+                                                    type="button">SUBMIT
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -39,7 +39,7 @@ class StandardReviewController(
     }
 
     //**********************************************************Get Standards**********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/reviewedStandards")
     @ResponseBody
     fun reviewedStandards(): MutableList<Standard>
@@ -48,7 +48,7 @@ class StandardReviewController(
     }
 
     //********************************************************** Start Review Process **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/standardReviewForm")
     @ResponseBody
     fun standardReviewForm(@RequestBody standardReview: StandardReview): ServerResponse
@@ -57,7 +57,7 @@ class StandardReviewController(
     }
 
     //********************************************************** get Stakeholders Tasks **********************************************************
-    @PreAuthorize("hasAuthority('STAKEHOLDERS_SD_READ')")
+    @PreAuthorize("hasAuthority('STAKEHOLDERS_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getReviewForms")
     fun getReviewForms():List<TaskDetails>
     {
@@ -65,7 +65,7 @@ class StandardReviewController(
     }
 
     //********************************************************** Submit Review Comments **********************************************************
-    @PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/commentsOnReview")
     @ResponseBody
     fun commentsOnReview(@RequestBody standardReviewComments: StandardReviewComments): ServerResponse
@@ -74,7 +74,7 @@ class StandardReviewController(
     }
 
     //********************************************************** get TSC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getReviewTasks")
     fun getReviewTasks():List<TaskDetails>
     {
@@ -82,7 +82,7 @@ class StandardReviewController(
     }
 
     //********************************************************** Make Recommendations **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/reviewRecommendations")
     @ResponseBody
     fun reviewRecommendations(@RequestBody standardReviewRecommendations: StandardReviewRecommendations): ServerResponse
@@ -91,7 +91,7 @@ class StandardReviewController(
     }
 
     //********************************************************** get SPC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getRecommendations")
     fun getRecommendations():List<TaskDetails>
     {
@@ -99,7 +99,7 @@ class StandardReviewController(
     }
 
     //decision on Adoption Recommendation
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnRecommendation")
     fun decisionOnRecommendation(@RequestBody standardReviewRecommendations: StandardReviewRecommendations)
     {
@@ -107,7 +107,7 @@ class StandardReviewController(
     }
 
     //********************************************************** get SAC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getSacList")
     fun getSacList():List<TaskDetails>
     {
@@ -115,7 +115,7 @@ class StandardReviewController(
     }
 
     //decision on Adoption Recommendation
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOfSac")
     fun decisionOfSac(@RequestBody standardReviewRecommendations: StandardReviewRecommendations)
     {
@@ -123,7 +123,7 @@ class StandardReviewController(
     }
 
     //********************************************************** get HOP Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_READ')")
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getPublishingTasks")
     fun getPublishingTasks():List<TaskDetails>
     {

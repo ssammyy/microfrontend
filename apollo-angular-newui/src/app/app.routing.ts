@@ -14,7 +14,9 @@ import {LoginComponent} from './views/registration/login.component';
 import {PermitReportComponent} from './apollowebs/permit-report/permit-report.component';
 import {NewSmarkPermitComponent} from './apollowebs/quality-assurance/new-smark-permit/new-smark-permit.component';
 import {NewDmarkPermitComponent} from './apollowebs/quality-assurance/new-dmark-permit/new-dmark-permit.component';
-import {DmarkApplicationsAllComponent} from './apollowebs/quality-assurance/dmark-applications-all/dmark-applications-all.component';
+import {
+    DmarkApplicationsAllComponent
+} from './apollowebs/quality-assurance/dmark-applications-all/dmark-applications-all.component';
 import {InvoiceComponent} from './apollowebs/quality-assurance/invoice/invoice.component';
 import {InvoiceDetailsComponent} from './apollowebs/quality-assurance/invoice-details/invoice-details.component';
 import {CompaniesList} from './apollowebs/company/companies.list';
@@ -23,7 +25,9 @@ import {BranchComponent} from './apollowebs/company/branch/branch.component';
 import {BranchList} from './apollowebs/company/branch/branch.list';
 import {UserComponent} from './apollowebs/company/branch/users/user.component';
 import {UserList} from './apollowebs/company/branch/users/user.list';
-import {SmarkApplicationsAllComponent} from './apollowebs/quality-assurance/smark-applications-all/smark-applications-all.component';
+import {
+    SmarkApplicationsAllComponent
+} from './apollowebs/quality-assurance/smark-applications-all/smark-applications-all.component';
 import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
 import {AddBranchComponent} from './apollowebs/company/branch/add-branch/add-branch.component';
 import {OtpComponent} from './views/registration/otp/otp.component';
@@ -31,96 +35,228 @@ import {PdfViewComponent} from './pdf-view/pdf-view.component';
 import {TaskManagerComponent} from './apollowebs/task-manager/task-manager.component';
 import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
 import {ImportInspectionComponent} from './apollowebs/pvoc/import-inspection/import-inspection.component';
-import {ExceptionsApplicationComponent} from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
+import {
+    ExceptionsApplicationComponent
+} from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
 import {ImportationWaiverComponent} from './apollowebs/pvoc/importation-waiver/importation-waiver.component';
-import {ConsignmentDocumentListComponent} from './apollowebs/di/consignment-document-list/consignment-document-list.component';
-import {ViewSingleConsignmentDocumentComponent} from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
-import {MinistryInspectionHomeComponent} from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
-import {MotorVehicleInspectionSingleViewComponent} from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
-import {NwaJustificationFormComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component';
-import {NwaJustificationTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
-import {NwaKnwSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
-import {NwaDiSdtTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
-import {SacSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/sac-sec-tasks/sac-sec-tasks.component';
-import {HoSicTasksComponent} from './apollowebs/standards-development/workshop-agreement/ho-sic-tasks/ho-sic-tasks.component';
-import {NwaHopTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
-import {IsProposalFormComponent} from './apollowebs/standards-development/international-standard/international-standard-proposal/is-proposal-form/is-proposal-form.component';
-import {ReviewStandardsComponent} from './apollowebs/standards-development/systemic-review/request-standard-review/review-standards/review-standards.component';
-import {CsRequestFormComponent} from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
-import {InformationcheckComponent} from './apollowebs/standards-development/informationcheck/informationcheck.component';
-import {DivisionresponseComponent} from './apollowebs/standards-development/divisionresponse/divisionresponse.component';
-import {MakeEnquiryComponent} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
-import {ComStdRequestListComponent} from './apollowebs/standards-development/company-standard/com-std-request-list/com-std-request-list.component';
-import {IntStdResponsesListComponent} from './apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component';
-import {ComStdJcJustificationComponent} from './apollowebs/standards-development/company-standard/com-std-jc-justification/com-std-jc-justification.component';
-import {IntStdJustificationListComponent} from './apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component';
-import {IntStdCommentsComponent} from './apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component';
-import {ComStdJcJustificationListComponent} from './apollowebs/standards-development/company-standard/com-std-jc-justification-list/com-std-jc-justification-list.component';
-import {SystemicReviewCommentsComponent} from './apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component';
-import {IntStdJustificationAppComponent} from './apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component';
-import {SystemicAnalyseCommentsComponent} from './apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component';
+import {
+    ConsignmentDocumentListComponent
+} from './apollowebs/di/consignment-document-list/consignment-document-list.component';
+import {
+    ViewSingleConsignmentDocumentComponent
+} from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
+import {
+    MinistryInspectionHomeComponent
+} from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
+import {
+    MotorVehicleInspectionSingleViewComponent
+} from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
+import {
+    NwaJustificationFormComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component';
+import {
+    NwaJustificationTasksComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
+import {
+    NwaKnwSecTasksComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
+import {
+    NwaDiSdtTasksComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
+import {
+    SacSecTasksComponent
+} from './apollowebs/standards-development/workshop-agreement/sac-sec-tasks/sac-sec-tasks.component';
+import {
+    HoSicTasksComponent
+} from './apollowebs/standards-development/workshop-agreement/ho-sic-tasks/ho-sic-tasks.component';
+import {
+    NwaHopTasksComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
+import {
+    IsProposalFormComponent
+} from './apollowebs/standards-development/international-standard/international-standard-proposal/is-proposal-form/is-proposal-form.component';
+import {
+    ReviewStandardsComponent
+} from './apollowebs/standards-development/systemic-review/request-standard-review/review-standards/review-standards.component';
+import {
+    CsRequestFormComponent
+} from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
+import {
+    InformationcheckComponent
+} from './apollowebs/standards-development/informationcheck/informationcheck.component';
+import {
+    DivisionresponseComponent
+} from './apollowebs/standards-development/divisionresponse/divisionresponse.component';
+import {
+    MakeEnquiryComponent
+} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
+import {
+    ComStdRequestListComponent
+} from './apollowebs/standards-development/company-standard/com-std-request-list/com-std-request-list.component';
+import {
+    IntStdResponsesListComponent
+} from './apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component';
+import {
+    ComStdJcJustificationComponent
+} from './apollowebs/standards-development/company-standard/com-std-jc-justification/com-std-jc-justification.component';
+import {
+    IntStdJustificationListComponent
+} from './apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component';
+import {
+    IntStdCommentsComponent
+} from './apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component';
+import {
+    ComStdJcJustificationListComponent
+} from './apollowebs/standards-development/company-standard/com-std-jc-justification-list/com-std-jc-justification-list.component';
+import {
+    SystemicReviewCommentsComponent
+} from './apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component';
+import {
+    IntStdJustificationAppComponent
+} from './apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component';
+import {
+    SystemicAnalyseCommentsComponent
+} from './apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component';
 import {UsermanagementComponent} from './apollowebs/usermanagement/usermanagement.component';
-import {UserManagementProfileComponent} from './apollowebs/usermanagement/user-management-profile/user-management-profile.component';
-import {RequestStandardFormComponent} from './apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component';
+import {
+    UserManagementProfileComponent
+} from './apollowebs/usermanagement/user-management-profile/user-management-profile.component';
+import {
+    RequestStandardFormComponent
+} from './apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component';
 import {StandardRequestComponent} from './apollowebs/standards-development/standard-request/standard-request.component';
-import {StandardTaskComponent} from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
-import {SmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/smark-all-awarded-applications/smark-all-awarded-applications.component';
-import {FmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/fmark-all-awarded-applications/fmark-all-awarded-applications.component';
-import {DmarkAllAwardedApplicationsComponent} from './apollowebs/quality-assurance/dmark-all-awarded-applications/dmark-all-awarded-applications.component';
+import {
+    StandardTaskComponent
+} from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
+import {
+    SmarkAllAwardedApplicationsComponent
+} from './apollowebs/quality-assurance/smark-all-awarded-applications/smark-all-awarded-applications.component';
+import {
+    FmarkAllAwardedApplicationsComponent
+} from './apollowebs/quality-assurance/fmark-all-awarded-applications/fmark-all-awarded-applications.component';
+import {
+    DmarkAllAwardedApplicationsComponent
+} from './apollowebs/quality-assurance/dmark-all-awarded-applications/dmark-all-awarded-applications.component';
 import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-details/qa-task-details.component';
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
 import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
-import {ComStdApproveJustificationComponent} from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
-import {ComStdDraftComponent} from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
-import {ComStdUploadComponent} from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
-import {SpcSecTaskComponent} from './apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component';
+import {
+    ComStdApproveJustificationComponent
+} from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
+import {
+    ComStdDraftComponent
+} from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
+import {
+    ComStdUploadComponent
+} from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
+import {
+    SpcSecTaskComponent
+} from './apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component';
 import {AllpermitsComponent} from './apollowebs/quality-assurance/allpermits/allpermits.component';
 import {NepNotificationComponent} from './apollowebs/standards-development/nep-notification/nep-notification.component';
-import {ManagernotificationsComponent} from './apollowebs/standards-development/managernotifications/managernotifications.component';
-import {CreateDepartmentComponent} from './apollowebs/standards-development/standard-request/create-department/create-department.component';
-import {CreatetechnicalcommitteeComponent} from './apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component';
-import {IntStdUploadStandardComponent} from './apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component';
-import {IntStdGazzetteComponent} from './apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component';
-import {CreateproductComponent} from './apollowebs/standards-development/standard-request/createproduct/createproduct.component';
-import {CreateproductSubCategoryComponent} from './apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component';
-import {RoleSwitcherComponent} from './apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component';
-import {CustomerRegistrationComponent} from './apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component';
-import {StandardsLevyHomeComponent} from './apollowebs/standards-levy/standards-levy-home/standards-levy-home.component';
+import {
+    ManagernotificationsComponent
+} from './apollowebs/standards-development/managernotifications/managernotifications.component';
+import {
+    CreateDepartmentComponent
+} from './apollowebs/standards-development/standard-request/create-department/create-department.component';
+import {
+    CreatetechnicalcommitteeComponent
+} from './apollowebs/standards-development/standard-request/createtechnicalcommittee/createtechnicalcommittee.component';
+import {
+    IntStdUploadStandardComponent
+} from './apollowebs/standards-development/international-standard/int-std-upload-standard/int-std-upload-standard.component';
+import {
+    IntStdGazzetteComponent
+} from './apollowebs/standards-development/international-standard/int-std-gazzette/int-std-gazzette.component';
+import {
+    CreateproductComponent
+} from './apollowebs/standards-development/standard-request/createproduct/createproduct.component';
+import {
+    CreateproductSubCategoryComponent
+} from './apollowebs/standards-development/standard-request/createproduct-sub-category/createproduct-sub-category.component';
+import {
+    RoleSwitcherComponent
+} from './apollowebs/standards-levy/standards-levy-home/role-switcher/role-switcher.component';
+import {
+    CustomerRegistrationComponent
+} from './apollowebs/standards-levy/standards-levy-home/customer-registration/customer-registration.component';
+import {
+    StandardsLevyHomeComponent
+} from './apollowebs/standards-levy/standards-levy-home/standards-levy-home.component';
 import {ComStandardLevyComponent} from './apollowebs/standards-levy/com-standard-levy/com-standard-levy.component';
-import {ComPaymentHistoryComponent} from './apollowebs/standards-levy/com-payment-history/com-payment-history.component';
+import {
+    ComPaymentHistoryComponent
+} from './apollowebs/standards-levy/com-payment-history/com-payment-history.component';
 import {ComStdLevyFormComponent} from './apollowebs/standards-levy/com-std-levy-form/com-std-levy-form.component';
-import {StandardLevyDashboardComponent} from './apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component';
+import {
+    StandardLevyDashboardComponent
+} from './apollowebs/standards-levy/standard-levy-dashboard/standard-levy-dashboard.component';
 import {StandardLevyPaidComponent} from './apollowebs/standards-levy/standard-levy-paid/standard-levy-paid.component';
-import {StandardLevyPenaltiesComponent} from './apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component';
-import {StandardLevyDefaulterComponent} from './apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component';
-import {StandardLevyPenaltyHistoryComponent} from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
-import {StandardLevyPaidHistoryComponent} from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
-import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
-import {StdTscSecTasksComponentComponent} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
-import {StdTcTasksComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
-import {InvoiceConsolidateComponent} from './apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component';
+import {
+    StandardLevyPenaltiesComponent
+} from './apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component';
+import {
+    StandardLevyDefaulterComponent
+} from './apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component';
+import {
+    StandardLevyPenaltyHistoryComponent
+} from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
+import {
+    StandardLevyPaidHistoryComponent
+} from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
+import {
+    StandardLevyDefaulterHistoryComponent
+} from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
+import {
+    StdTscSecTasksComponentComponent
+} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
+import {
+    StdTcTasksComponent
+} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
+import {
+    InvoiceConsolidateComponent
+} from './apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component';
 import {FmarkApplicationComponent} from './apollowebs/quality-assurance/fmark-application/fmark-application.component';
 import {SmarkComponent} from './apollowebs/quality-assurance/smark/smark.component';
-import {ViewDiDeclarationDocumentsComponent} from './apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component';
-import {ViewIdfDocumentDetailsComponent} from './apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component';
-import {ItemDetailsComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component';
+import {
+    ViewDiDeclarationDocumentsComponent
+} from './apollowebs/di/view-single-consignment-document/view-di-declaration-documents/view-di-declaration-documents.component';
+import {
+    ViewIdfDocumentDetailsComponent
+} from './apollowebs/di/view-single-consignment-document/view-idf-document-details/view-idf-document-details.component';
+import {
+    ItemDetailsComponent
+} from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details/item-details.component';
 import {ViewTasksComponent} from './apollowebs/di/view-tasks/view-tasks.component';
 import {DiCorComponent} from './apollowebs/di/view-single-consignment-document/di-cor/di-cor.component';
 import {DiCocComponent} from './apollowebs/di/view-single-consignment-document/di-coc/di-coc.component';
-import {ViewInspectionDetailsComponent} from './apollowebs/di/view-single-consignment-document/view-inspection-details/view-inspection-details.component';
-import {ChecklistDataFormComponent} from './apollowebs/di/view-single-consignment-document/checklist-data-form/checklist-data-form.component';
+import {
+    ViewInspectionDetailsComponent
+} from './apollowebs/di/view-single-consignment-document/view-inspection-details/view-inspection-details.component';
+import {
+    ChecklistDataFormComponent
+} from './apollowebs/di/view-single-consignment-document/checklist-data-form/checklist-data-form.component';
 import {InspectionDashboardComponent} from './apollowebs/di/inspection-dashboard/inspection-dashboard.component';
-import {LabResultsComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component';
-import {CurrencyExchangeRatesComponent} from './apollowebs/di/currency-exchange-rates/currency-exchange-rates.component';
+import {
+    LabResultsComponent
+} from './apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component';
+import {
+    CurrencyExchangeRatesComponent
+} from './apollowebs/di/currency-exchange-rates/currency-exchange-rates.component';
 import {MessageDashboardComponent} from './apollowebs/di/message-dashboard/message-dashboard.component';
 import {TransactionViewComponent} from './apollowebs/di/transaction-view/transaction-view.component';
 import {ViewClientsComponent} from './apollowebs/system/clients/view-clients/view-clients.component';
 import {ViewPartnersComponent} from './apollowebs/pvoc/partners/view-partners/view-partners.component';
-import {ViewPartnerDetailsComponent} from './apollowebs/pvoc/partners/view-partner-details/view-partner-details.component';
+import {
+    ViewPartnerDetailsComponent
+} from './apollowebs/pvoc/partners/view-partner-details/view-partner-details.component';
 import {IsmApplicationsComponent} from './apollowebs/di/ism/ism-applications/ism-applications.component';
 import {ViewIsmApplicationComponent} from './apollowebs/di/ism/view-ism-application/view-ism-application.component';
-import {ViewCorporateCustomersComponent} from './apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component';
+import {
+    ViewCorporateCustomersComponent
+} from './apollowebs/invoice/corporate/view-corporate-customers/view-corporate-customers.component';
 import {ViewCorporateComponent} from './apollowebs/invoice/corporate/view-corporate/view-corporate.component';
 import {ViewBillLimitsComponent} from './apollowebs/invoice/limits/view-bill-limits/view-bill-limits.component';
 import {ViewTransactionsComponent} from './apollowebs/invoice/corporate/view-transactions/view-transactions.component';
@@ -129,10 +265,16 @@ import {AuctionItemDetailsComponent} from './apollowebs/di/auction/auction-item-
 
 import {EpraBatchListComponent} from './apollowebs/market-surveillance/fuel/epra-batch-list/epra-batch-list.component';
 import {EpraListComponent} from './apollowebs/market-surveillance/fuel/epra-list/epra-list.component';
-import {ViewFuelSheduledDetailsComponent} from './apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component';
+import {
+    ViewFuelSheduledDetailsComponent
+} from './apollowebs/market-surveillance/fuel/view-fuel-sheduled-details/view-fuel-sheduled-details.component';
 import {ComplaintNewComponent} from './apollowebs/market-surveillance/complaint/complaint-new/complaint-new.component';
-import {ComplaintListComponent} from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
-import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
+import {
+    ComplaintListComponent
+} from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
+import {
+    ComplaintDetailsComponent
+} from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
 // import {HoSicTasksComponent} from "./apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component";
 // export const AppRoutes: Routes = [
 //     {
@@ -185,62 +327,164 @@ import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/compla
 //     }
 // ];
 import {ViewComplaintsComponent} from './apollowebs/pvoc/complaints/view-complaints/view-complaints.component';
-import {ViewComplaintDetailsComponent} from './apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component';
-import {ViewWaiverApplicationsComponent} from './apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component';
+import {
+    ViewComplaintDetailsComponent
+} from './apollowebs/pvoc/complaints/view-complaint-details/view-complaint-details.component';
+import {
+    ViewWaiverApplicationsComponent
+} from './apollowebs/pvoc/waivers/view-waiver-applications/view-waiver-applications.component';
 import {ViewWaiverDetailsComponent} from './apollowebs/pvoc/waivers/view-waiver-details/view-waiver-details.component';
-import {ViewExemptionApplicationsComponent} from './apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component';
-import {ViewExemptionDetailsComponent} from './apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component';
-import {StdJustificationComponent} from './apollowebs/standards-development/standard-request/std-justification/std-justification.component';
-import {StdTcWorkplanComponent} from './apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component';
-import {PreparePreliminaryDraftComponent} from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
-import {NwaPreliminaryDraftComponent} from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
-import {ComStdPlTaskComponent} from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
-import {ComStdDraftViewComponent} from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
-import {ComStdListComponent} from './apollowebs/standards-development/company-standard/com-std-list/com-std-list.component';
-import {StandardLevySiteVisitComponent} from './apollowebs/standards-levy/standard-levy-site-visit/standard-levy-site-visit.component';
-import {StandardLevySiteVisitApproveTwoComponent} from './apollowebs/standards-levy/standard-levy-site-visit-approve-two/standard-levy-site-visit-approve-two.component';
-import {StandardLevySiteVisitApproveOneComponent} from './apollowebs/standards-levy/standard-levy-site-visit-approve-one/standard-levy-site-visit-approve-one.component';
-import {StandardLevySiteVisitFeedbackComponent} from './apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component';
-import {StandardLevyUploadSiteVisitFeedbackComponent} from './apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component';
-import {StandardLevyManufactureDetailsComponent} from './apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component';
-import {RequestForFormationOfTCComponent} from './apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component';
-import {ReviewJustificationOfTCComponent} from './apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component';
-import {ReviewFeedbackSPCComponent} from './apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component';
-import {ApproveDraftStdComponent} from './apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component';
-import {StdDraughtsmanComponent} from './apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component';
-import {StdProofreadComponent} from './apollowebs/standards-development/publishing/std-proofread/std-proofread.component';
+import {
+    ViewExemptionApplicationsComponent
+} from './apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component';
+import {
+    ViewExemptionDetailsComponent
+} from './apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component';
+import {
+    StdJustificationComponent
+} from './apollowebs/standards-development/standard-request/std-justification/std-justification.component';
+import {
+    StdTcWorkplanComponent
+} from './apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component';
+import {
+    PreparePreliminaryDraftComponent
+} from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
+import {
+    NwaPreliminaryDraftComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
+import {
+    ComStdPlTaskComponent
+} from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
+import {
+    ComStdDraftViewComponent
+} from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
+import {
+    ComStdListComponent
+} from './apollowebs/standards-development/company-standard/com-std-list/com-std-list.component';
+import {
+    StandardLevySiteVisitComponent
+} from './apollowebs/standards-levy/standard-levy-site-visit/standard-levy-site-visit.component';
+import {
+    StandardLevySiteVisitApproveTwoComponent
+} from './apollowebs/standards-levy/standard-levy-site-visit-approve-two/standard-levy-site-visit-approve-two.component';
+import {
+    StandardLevySiteVisitApproveOneComponent
+} from './apollowebs/standards-levy/standard-levy-site-visit-approve-one/standard-levy-site-visit-approve-one.component';
+import {
+    StandardLevySiteVisitFeedbackComponent
+} from './apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component';
+import {
+    StandardLevyUploadSiteVisitFeedbackComponent
+} from './apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component';
+import {
+    StandardLevyManufactureDetailsComponent
+} from './apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component';
+import {
+    RequestForFormationOfTCComponent
+} from './apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component';
+import {
+    ReviewJustificationOfTCComponent
+} from './apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component';
+import {
+    ReviewFeedbackSPCComponent
+} from './apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component';
+import {
+    ApproveDraftStdComponent
+} from './apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component';
+import {
+    StdDraughtsmanComponent
+} from './apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component';
+import {
+    StdProofreadComponent
+} from './apollowebs/standards-development/publishing/std-proofread/std-proofread.component';
 import {EditorTasksComponent} from './apollowebs/standards-development/publishing/editor-tasks/editor-tasks.component';
-import {StdHopTasksComponent} from './apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component';
-import {StdPublishingComponent} from './apollowebs/standards-development/publishing/std-publishing/std-publishing.component';
-import {CallsForApplicationComponent} from './apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component';
-import {ReviewRecommendationComponent} from './apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component';
-import {ReviewRecommendationOfSpcComponentComponent} from './apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component';
-import {SubmitApplicationComponent} from './apollowebs/standards-development/membershipToTc/submit-application/submit-application.component';
-import {UploadTcMemberComponentComponent} from './apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component';
-import {ReviewApplicationComponent} from './apollowebs/standards-development/membershipToTc/review-application/review-application.component';
-import {ManifestDocumentComponent} from './apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component';
-import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component';
-import {ReviewApplicationsAcceptedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component';
-import {ReviewApplicationsRejectedComponent} from './apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component';
-import {ApproveApplicationComponent} from './apollowebs/standards-development/membershipToTc/approve-application/approve-application.component';
-import {ApprovedMembersComponent} from './apollowebs/standards-development/membershipToTc/approved-members/approved-members.component';
-import {MembersToCreateCredentialsComponent} from './apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component';
-import {MembersCreatedCredentialsComponent} from './apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component';
-import {ApproveInductionComponent} from './apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component';
-import {StdLevyCompleteTasksComponent} from './apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component';
-import {StdLevyPendingTasksComponent} from './apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component';
-import {StdLevyApplicationsComponent} from './apollowebs/standards-levy/std-levy-applications/std-levy-applications.component';
-import {UploadSacSummaryComponent} from './apollowebs/standards-development/adoptionOfEaStds/upload-sac-summary/upload-sac-summary.component';
-import {ViewSacSummaryComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component';
-import {ViewSacSummaryApprovedComponent} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component';
+import {
+    StdHopTasksComponent
+} from './apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component';
+import {
+    StdPublishingComponent
+} from './apollowebs/standards-development/publishing/std-publishing/std-publishing.component';
+import {
+    CallsForApplicationComponent
+} from './apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component';
+import {
+    ReviewRecommendationComponent
+} from './apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component';
+import {
+    ReviewRecommendationOfSpcComponentComponent
+} from './apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component';
+import {
+    SubmitApplicationComponent
+} from './apollowebs/standards-development/membershipToTc/submit-application/submit-application.component';
+import {
+    UploadTcMemberComponentComponent
+} from './apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component';
+import {
+    ReviewApplicationComponent
+} from './apollowebs/standards-development/membershipToTc/review-application/review-application.component';
+import {
+    ManifestDocumentComponent
+} from './apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component';
+import {
+    IncompleteIDFDocumentsComponent
+} from './apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component';
+import {
+    ReviewApplicationsAcceptedComponent
+} from './apollowebs/standards-development/membershipToTc/review-applications-accepted/review-applications-accepted.component';
+import {
+    ReviewApplicationsRejectedComponent
+} from './apollowebs/standards-development/membershipToTc/review-applications-rejected/review-applications-rejected.component';
+import {
+    ApproveApplicationComponent
+} from './apollowebs/standards-development/membershipToTc/approve-application/approve-application.component';
+import {
+    ApprovedMembersComponent
+} from './apollowebs/standards-development/membershipToTc/approved-members/approved-members.component';
+import {
+    MembersToCreateCredentialsComponent
+} from './apollowebs/standards-development/membershipToTc/members-to-create-credentials/members-to-create-credentials.component';
+import {
+    MembersCreatedCredentialsComponent
+} from './apollowebs/standards-development/membershipToTc/members-created-credentials/members-created-credentials.component';
+import {
+    ApproveInductionComponent
+} from './apollowebs/standards-development/membershipToTc/approve-induction/approve-induction.component';
+import {
+    StdLevyCompleteTasksComponent
+} from './apollowebs/standards-levy/std-levy-complete-tasks/std-levy-complete-tasks.component';
+import {
+    StdLevyPendingTasksComponent
+} from './apollowebs/standards-levy/std-levy-pending-tasks/std-levy-pending-tasks.component';
+import {
+    StdLevyApplicationsComponent
+} from './apollowebs/standards-levy/std-levy-applications/std-levy-applications.component';
+import {
+    UploadSacSummaryComponent
+} from './apollowebs/standards-development/adoptionOfEaStds/upload-sac-summary/upload-sac-summary.component';
+import {
+    ViewSacSummaryComponent
+} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary/view-sac-summary.component';
+import {
+    ViewSacSummaryApprovedComponent
+} from './apollowebs/standards-development/adoptionOfEaStds/view-sac-summary-approved/view-sac-summary-approved.component';
 import {NwaTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-tasks/nwa-tasks.component';
-import {AdminBusinessManagementComponent} from './apollowebs/admin/admin-business-management/admin-business-management.component';
-import {StandardLevyClosureComponent} from './apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component';
-import {StandardLevySuspensionComponent} from './apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component';
+import {
+    AdminBusinessManagementComponent
+} from './apollowebs/admin/admin-business-management/admin-business-management.component';
+import {
+    StandardLevyClosureComponent
+} from './apollowebs/standards-levy/standard-levy-closure/standard-levy-closure.component';
+import {
+    StandardLevySuspensionComponent
+} from './apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component';
 import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payments.component';
-import {WorkPlanBatchListComponent} from './apollowebs/market-surveillance/workplan/workplan-batch-list/work-plan-batch-list.component';
+import {
+    WorkPlanBatchListComponent
+} from './apollowebs/market-surveillance/workplan/workplan-batch-list/work-plan-batch-list.component';
 import {WorkPlanListComponent} from './apollowebs/market-surveillance/workplan/work-plan-list/work-plan-list.component';
-import {WorkPlanDetailsComponent} from './apollowebs/market-surveillance/workplan/work-plan-details/work-plan-details.component';
+import {
+    WorkPlanDetailsComponent
+} from './apollowebs/market-surveillance/workplan/work-plan-details/work-plan-details.component';
 import {CfsComponent} from "./apollowebs/system/cfs/cfs.component";
 import {InspectionFeesComponent} from "./apollowebs/system/inspection-fees/inspection-fees.component";
 import {LaboratoriesComponent} from "./apollowebs/system/laboratories/laboratories.component";
@@ -256,14 +500,31 @@ import {
 } from "./apollowebs/standards-development/committee-module/review-committee-draft/review-committee-draft.component";
 import {
     PreparePublicReviewDraftComponent
-} from "./apollowebs/standards-development/committee-module/prepare-public-review-draft/prepare-public-review-draft.component";
+} from "./apollowebs/standards-development/publicReview/prepare-public-review-draft/prepare-public-review-draft.component";
 import {
     PublicReviewDraftComponent
-} from "./apollowebs/standards-development/committee-module/public-review-draft/public-review-draft.component";
+} from "./apollowebs/standards-development/publicReview/public-review-draft/public-review-draft.component";
 import {ForeignCorsComponent} from "./apollowebs/pvoc/documents/foreign-cors/foreign-cors.component";
 import {ForeignCocsComponent} from "./apollowebs/pvoc/documents/foreign-cocs/foreign-cocs.component";
 import {ViewCorComponent} from "./apollowebs/pvoc/documents/foreign-cors/view-cor/view-cor.component";
-import {ViewOtherDocumentsComponent} from "./apollowebs/pvoc/documents/foreign-cocs/view-other-documents/view-other-documents.component";
+import {
+    ViewOtherDocumentsComponent
+} from "./apollowebs/pvoc/documents/foreign-cocs/view-other-documents/view-other-documents.component";
+import {
+    ApproveInductionMembersComponent
+} from "./apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component";
+import {
+    ApproveCommitteeDraftComponent
+} from "./apollowebs/standards-development/committee-module/approve-committee-draft/approve-committee-draft.component";
+import {
+    CommentOnPublicReviewDraftComponent
+} from "./apollowebs/standards-development/publicReview/comment-on-public-review-draft/comment-on-public-review-draft.component";
+import {
+    PrepareBallotingDraftComponent
+} from "./apollowebs/standards-development/balloting/prepare-balloting-draft/prepare-balloting-draft.component";
+import {
+    VoteOnBallotDraftComponent
+} from "./apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component";
 
 export const routes: Routes = [
     {
@@ -1132,6 +1393,20 @@ export const routes: Routes = [
     },
 
     {
+        // approve Committee Draft
+        path: 'approveCD', component: AdminLayoutComponent,
+        children: [{path: '', component: ApproveCommitteeDraftComponent}],
+    },
+
+
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+     ***************************************************************/
+    /****************************************************************
+     * STANDARD DEVELOPMENT - PUBLIC REVIEW ROUTES
+     ***************************************************************/
+
+    {
         // prepare Public Review Draft
         path: 'preparePrd', component: AdminLayoutComponent,
         children: [{path: '', component: PreparePublicReviewDraftComponent}],
@@ -1143,9 +1418,40 @@ export const routes: Routes = [
         path: 'viewPrd', component: AdminLayoutComponent,
         children: [{path: '', component: PublicReviewDraftComponent}],
     },
+
+    {
+        // view Public Review Draft
+        path: 'commentOnPrd', component: AdminLayoutComponent,
+        children: [{path: '', component: CommentOnPublicReviewDraftComponent}],
+    },
     /****************************************************************
-     * END OF STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+     * END OF STANDARD DEVELOPMENT - PUBLIC REVIEW MODULE ROUTES
      ***************************************************************/
+
+    /****************************************************************
+     * STANDARD DEVELOPMENT - BALLOTING ROUTES
+     ***************************************************************/
+
+    {
+        // prepare Ballot Draft
+        path: 'prepareBallot', component: AdminLayoutComponent,
+        children: [{path: '', component: PrepareBallotingDraftComponent}],
+    },
+
+    {
+        // vote on Ballot Draft
+        path: 'voteOnBallot', component: AdminLayoutComponent,
+        children: [{path: '', component: VoteOnBallotDraftComponent}],
+    },
+
+
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - PUBLIC REVIEW MODULE ROUTES
+     ***************************************************************/
+
+
+
+
     /****************************************************************
      * PUBLISHING ROUTES
      ***************************************************************/
@@ -1418,7 +1724,8 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: ComplaintListComponent},
+                component: ComplaintListComponent
+            },
             {
                 path: 'details/:referenceNumber',
                 component: ComplaintDetailsComponent,
@@ -1453,7 +1760,8 @@ export const routes: Routes = [
         path: 'stdLevyPenalties', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyPenaltiesComponent}],
     },
-    {path: 'stdLevyPaid', component: AdminLayoutComponent,
+    {
+        path: 'stdLevyPaid', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyPaidComponent}],
     },
     {

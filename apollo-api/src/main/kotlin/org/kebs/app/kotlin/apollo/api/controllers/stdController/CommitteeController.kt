@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse
 
 class CommitteeController(
     val committeeService: CommitteeService,
-    val committeeNWIRepository: CommitteeNWIRepository,
     val standardNWIRepository: StandardNWIRepository,
     val committeePDRepository: CommitteePDRepository,
     val committeeCDRepository: CommitteeCDRepository,
@@ -214,7 +213,7 @@ class CommitteeController(
         return ServerResponse(
             HttpStatus.OK,
             "Comment Approved",
-            committeeService.makeComment(comments,docType)
+            committeeService.makeComment(comments, docType)
         )
     }
 
@@ -239,6 +238,26 @@ class CommitteeController(
     @GetMapping("/getAllDocumentsOnPd")
     fun getAllPdDocuments(@RequestParam("preliminaryDraftId") preliminaryDraftId: Long): Collection<DatKebsSdStandardsEntity?>? {
         return committeeService.getAllPdDocuments(preliminaryDraftId)
+    }
+
+    @GetMapping("/getAllDocumentsOnCd")
+    fun getAllCdDocuments(@RequestParam("committeeDraftId") committeeDraftId: Long): Collection<DatKebsSdStandardsEntity?>? {
+        return committeeService.getAllCdDocuments(committeeDraftId)
+    }
+
+    @GetMapping("/getAllCommentsOnCd")
+    fun getAllCommentsOnCommitteeDrafts(@RequestParam("committeeDraftId") committeeDraftId: Long): List<CommentsWithCdId> {
+        return committeeService.getAllCommentsOnCd(committeeDraftId)
+    }
+
+    @PostMapping("/approveCD")
+    fun approveCd(@RequestBody committeeCD: CommitteeCD)
+            : ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Committee Draft Approved",
+            committeeService.approveCd(committeeCD)
+        )
     }
 
 
@@ -337,7 +356,7 @@ class CommitteeController(
         )
     }
 
-    //committee draft upload other Preliminary Draft Documents
+    //committee draft upload other committee Draft Documents
     @PostMapping("/upload/cd")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadCdDocument(
@@ -387,70 +406,6 @@ class CommitteeController(
     @GetMapping("/getUserLoggedInCommentsOnCD")
     fun getUserLoggedInCommentsOnCD(): List<CommentsWithCdId> {
         return committeeService.getUserLoggedInCommentsOnCD()
-    }
-
-
-    @PostMapping("/approveNWI/{taskId}/{approved}")
-    fun approve(@PathVariable("taskId") taskId: String, @PathVariable("approved") approved: Boolean) {
-        committeeService.approveNWI(taskId, approved)
-    }
-
-    @PostMapping("/uploaddrafts/{taskId}")
-    fun uploadDrafts(@RequestBody committeeDrafts: CommitteeDrafts, @PathVariable("taskId") taskId: String?) {
-        committeeService.uploadDrafts(committeeDrafts, taskId)
-    }
-
-
-    @PostMapping("/preparePD")
-    fun preparePD(@RequestBody committeePD: CommitteePD): ProcessInstanceResponse {
-        return committeeService.preparePD(committeePD)
-    }
-
-    @PostMapping("/uploaddraftspd/{taskId}")
-    fun uploadDraftsPD(@RequestBody committeeDraftsPD: CommitteeDraftsPD, @PathVariable("taskId") taskId: String?) {
-        committeeService.uploadDraftsPD(committeeDraftsPD, taskId)
-    }
-
-    @PostMapping("/prepareCD")
-    fun prepareCD(@RequestBody committeeCD: CommitteeCD): ProcessInstanceResponse {
-        return committeeService.prepareCD(committeeCD)
-    }
-
-
-    @PostMapping("/approveCD/{taskId}/{approved}")
-    fun approveCD(@PathVariable("taskId") taskId: String, @PathVariable("approved") approved: Boolean) {
-        committeeService.approveCD(taskId, approved)
-    }
-
-    @GetMapping("/process/{process_id}")
-    fun checkstate(@PathVariable("process_id") process_id: String?) {
-        committeeService.checkProcessHistory(process_id)
-    }
-
-    @GetMapping("/tcsec/tasks")
-    fun getTCSecTasks(): List<TaskDetails> {
-        return committeeService.getTCSECTasks()
-    }
-
-    @GetMapping("/getnwis")
-    fun getNWIs(): MutableList<CommitteeNWI> {
-        return committeeService.getNWIs()
-    }
-
-    @GetMapping("/getPds")
-    fun getPDS(): MutableList<CommitteePD> {
-        return committeeService.getPds()
-    }
-
-    @GetMapping("/getCds")
-    fun getCDS(): MutableList<CommitteeCD> {
-        return committeeService.getCds()
-    }
-
-
-    @GetMapping("/pd/{id}")
-    fun getPreliminaryDraftById(@PathVariable("id") id: Long): ResponseEntity<CommitteePD?>? {
-        return committeeService.getPreliminaryDraftById(id)
     }
 
     @GetMapping("/view")

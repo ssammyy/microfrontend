@@ -45,7 +45,7 @@ class InternationalStandardController(
 //    }
 
     //********************************************************** process upload Justification **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/prepareAdoptionProposal")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -125,7 +125,7 @@ class InternationalStandardController(
         return ServerResponse(HttpStatus.OK,"Comment Has been submitted",internationalStandardService.submitAPComments(isAdoptionComments))
     }
     //********************************************************** get TC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getTCSECTasks")
     fun getTCSECTasks():List<TaskDetails>
     {
@@ -133,7 +133,7 @@ class InternationalStandardController(
     }
 
     //decision on Adoption Proposal
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnProposal")
     fun decisionOnProposal(@RequestBody iSDecision: ISDecision) : List<TaskDetails>
     {
@@ -141,14 +141,14 @@ class InternationalStandardController(
     }
 
     //********************************************************** get TC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getTCSeCTasks")
     fun getTCSeCTasks():List<TaskDetails>
     {
         return internationalStandardService.getTCSeCTasks()
     }
     //********************************************************** process upload Justification **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/prepareJustification")
     @ResponseBody
     fun prepareJustification(@RequestBody iSAdoptionJustification: ISAdoptionJustification): ServerResponse{
@@ -188,7 +188,7 @@ class InternationalStandardController(
     }
 
     //********************************************************** get SPC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getSPCSECTasks")
     fun getSPCSECTasks():List<TaskDetails>
     {
@@ -217,7 +217,7 @@ class InternationalStandardController(
     }
 
     //decision
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnJustification")
     fun decisionOnJustification(@RequestBody isJustificationDecision: ISJustificationDecision) : List<TaskDetails>
     {
@@ -225,7 +225,7 @@ class InternationalStandardController(
     }
 
     //********************************************************** get SPC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getSACSECTasks")
     fun getSACSECTasks():List<TaskDetails>
     {
@@ -233,7 +233,7 @@ class InternationalStandardController(
     }
 
     //approve International Standard
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/approveStandard")
     fun approveStandard(@RequestBody isJustificationDecision: ISJustificationDecision) : List<TaskDetails>
     {
@@ -241,7 +241,7 @@ class InternationalStandardController(
     }
 
     //********************************************************** get Head of Publishing Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_READ')")
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getHOPTasks")
     fun getHOPTasks():List<TaskDetails>
     {
@@ -249,7 +249,7 @@ class InternationalStandardController(
     }
 
     //********************************************************** process upload Standard **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/uploadISStandard")
     @ResponseBody
     fun uploadISStandard(@RequestBody iSUploadStandard: ISUploadStandard): ServerResponse
@@ -292,7 +292,7 @@ class InternationalStandardController(
 
 
     //********************************************************** get Head of HO SIC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_READ')")
+    @PreAuthorize("hasAuthority('HO_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getHoSiCTasks")
     fun getHoSiCTasks():List<TaskDetails>
     {
@@ -321,7 +321,7 @@ class InternationalStandardController(
     }
 
     //********************************************************** process upload Gazette Notice **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/uploadGazetteNotice")
     @ResponseBody
     fun uploadGazetteNotice(@RequestBody iSGazetteNotice: ISGazetteNotice): ServerResponse
@@ -384,7 +384,7 @@ class InternationalStandardController(
     }
 
     //********************************************************** process upload Gazettement Date **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/updateGazettementDate")
     @ResponseBody
     fun updateGazettementDate(@RequestBody iSGazettement: ISGazettement): ServerResponse

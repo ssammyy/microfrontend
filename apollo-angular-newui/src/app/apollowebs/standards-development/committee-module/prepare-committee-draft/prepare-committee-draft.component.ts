@@ -1,8 +1,7 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
-    ApprovedNwiS,
     CommentMadeRetrieved,
-    Preliminary_Draft, Preliminary_Draft_With_Name,
+    Preliminary_Draft_With_Name,
     StandardDocuments
 } from "../../../../core/store/data/std/commitee-model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -232,7 +231,7 @@ export class PrepareCommitteeDraftComponent implements OnInit {
                     });
                     this.getAllPds();
 
-                    },
+                },
             );
         }
     }
@@ -348,9 +347,11 @@ export class PrepareCommitteeDraftComponent implements OnInit {
     public hideModelC() {
         this.closeModalC?.nativeElement.click();
     }
+
     public hideModelD() {
         this.closeModalD?.nativeElement.click();
     }
+
     public hideModelE() {
         this.closeModalE?.nativeElement.click();
     }

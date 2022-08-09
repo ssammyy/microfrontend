@@ -6,7 +6,7 @@ import {catchError, map} from "rxjs/operators";
 import {
     CommentMade,
     CommentMadeRetrieved,
-    Committee_Draft,
+    Committee_Draft, Committee_Draft_With_Name,
     Preliminary_Draft,
     StandardDocuments
 } from "./commitee-model";
@@ -252,6 +252,49 @@ export class CommitteeService {
     //retrieve comment
     public retrieveUserLoggedInCommentsOnCd(): Observable<any> {
         return this.http.get<CommentMadeRetrieved>(`${this.apiServerUrl}` + 'getUserLoggedInCommentsOnCD')
+
+    }
+
+    //get All Docs On CD
+    public getDocsOnCd(CdId: any): Observable<any> {
+
+        const url = `${this.apiServerUrl}getAllDocumentsOnCd`;
+        const params = new HttpParams()
+            .set('committeeDraftId', CdId)
+        return this.http.get<StandardDocuments>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    //get All Comments On CD
+    public getCommentsOnCd(CdId: any): Observable<any> {
+        const url = `${this.apiServerUrl}getAllCommentsOnCd`;
+        const params = new HttpParams()
+            .set('committeeDraftId', CdId)
+        return this.http.get<CommentMadeRetrieved>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    //delete comment
+    public approveCommitteeDraft(committeeDraft: Committee_Draft_With_Name): Observable<any> {
+        return this.http.request('POST', `${this.apiServerUrl}` + 'approveCD', {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+            }),
+            body: {id: committeeDraft.cdid}
+        });
+
 
     }
 

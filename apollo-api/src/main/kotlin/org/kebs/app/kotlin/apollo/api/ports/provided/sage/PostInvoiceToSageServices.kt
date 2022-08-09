@@ -176,7 +176,7 @@ class PostInvoiceToSageServices(
             val log = daoService.createTransactionLog(0, "${demandNote.demandNoteNumber}_1")
             val resp = daoService.getHttpResponseFromPostCall(
                     false,
-                    "$configUrl/bsk/urls/inspectionfee.php",
+                    "$configUrl/${config.varField2}",
                     null,
                     requestBody,
                     config,
@@ -233,7 +233,7 @@ class PostInvoiceToSageServices(
             val log = daoService.createTransactionLog(0, "${billPayment.billNumber}_1")
             val resp = daoService.getHttpResponseFromPostCall(
                     false,
-                    "$configUrl/m-api/urls/sageinvoice.php",
+                    "$configUrl/${config.varField2}",
                     null,
                     requestBody,
                     config,
@@ -288,7 +288,7 @@ class PostInvoiceToSageServices(
             // Send and log request
             val resp = daoService.getHttpResponseFromGetCall(
                     false,
-                    "$configUrl/bsk/urls/inquiry.php",
+                    "$configUrl/${config.varField3}",
                     config,
                     requestBody,
                     null,
@@ -338,7 +338,7 @@ class PostInvoiceToSageServices(
             // Send and log request
             val resp = daoService.getHttpResponseFromGetCall(
                     false,
-                    "$configUrl/bsk/urls/inquiry.php",
+                    "$configUrl/${config.varField3}",
                     config,
                     requestBody,
                     null,

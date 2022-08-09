@@ -23,6 +23,10 @@ class NWAGazettement {
     @Basic
     var description: String? = null
 
+    @Column(name = "PROCESS_ID")
+    @Basic
+    var processId: String? = null
+
 
     @Transient
     @Column(name = "ACCENT_TO")
