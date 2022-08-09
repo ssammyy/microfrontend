@@ -1360,6 +1360,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             MSRemarksDto(
                 it.id,
                 it.remarksDescription,
+                it.remarksStatus,
                 it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processBy },
                 it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName },
             )
@@ -1435,7 +1436,5 @@ class MarketSurveillanceComplaintProcessDaoServices(
             ?: throw ExpectedDataNotFound("Fuel Process Details found with ID : $processID")
     }
 }
-
-
 
 

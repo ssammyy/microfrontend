@@ -168,6 +168,7 @@ export class CountriesEntityDto {
 }
 
 export class WorkPlanEntityDto {
+    id: number;
     complaintDepartment: number;
     divisionId: number;
     nameActivity: string;
@@ -516,6 +517,9 @@ export class WorkPlanInspectionDto {
     preliminaryReport: PreliminaryReportDto;
     officersList: MsUsersDto[];
     hofList: MsUsersDto[];
+    updateWorkPlan: WorkPlanEntityDto;
+    updatedStatus: Boolean;
+    resubmitStatus: Boolean;
 }
 
 export class CountryListDto {

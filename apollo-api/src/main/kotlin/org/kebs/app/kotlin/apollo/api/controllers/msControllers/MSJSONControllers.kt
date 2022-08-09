@@ -257,29 +257,33 @@ class MSJSONControllers(
 
 
 
+    @RequestMapping(value = ["/report/remediation-invoice"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msRemediationInvoicePDF(
+        response: HttpServletResponse,
+        @RequestParam(value = "fuelInspectionId") fuelInspectionId: Long
+    ) {
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
-
-//    @GetMapping("populate-all-labs",  produces = [MediaType.APPLICATION_JSON_VALUE])
-//    fun populateBroadCategory(): String? {
-//        val gson = Gson()
-//        return gson.toJson(iLaboratoryRepo.findAll())
-//    }
-
-//    @GetMapping("email-check/{email}",  produces = [MediaType.APPLICATION_JSON_VALUE])
-//    fun myEmail(
-//            @PathVariable(value = "email", required = false) email: String
-//    ): String? {
-//        var result = "notExist"
-//        usersRepo.findByEmail(email)
-//                .let {usersEntity ->
-//                    if (usersEntity?.email == email){
-//                        result = email
-//                    }else{
-//                        result
-//                    }
-//                }
-//        return result
-//    }
+        val invoiceRemediationDetails = fuelRemediationInvoiceRepo.findFirstByFuelInspectionId(fuelInspectionId)
+        val fuelRemediationDetailsDto = msDaoService.mapFuelRemediationDetails(invoiceRemediationDetails)
+        val pdfReportStream = reportsDaoService.extractReport(
+            map,
+            applicationMapProperties.mapMSFuelInvoiceRemediationPath,
+            fuelRemediationDetailsDto
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Remediation-Invoice-${invoiceRemediationDetails[0].fuelInspectionId}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
 
 
 }

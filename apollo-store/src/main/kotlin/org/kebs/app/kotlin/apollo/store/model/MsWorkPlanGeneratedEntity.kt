@@ -412,6 +412,14 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var status: Int? = null
 
+    @Column(name = "UPDATED_STATUS")
+    @Basic
+    var updatedStatus: Int? = null
+
+    @Column(name = "RESUBMIT_STATUS")
+    @Basic
+    var resubmitStatus: Int? = null
+
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
