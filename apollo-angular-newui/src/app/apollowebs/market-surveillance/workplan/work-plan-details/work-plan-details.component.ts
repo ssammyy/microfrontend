@@ -1043,33 +1043,33 @@ export class WorkPlanDetailsComponent implements OnInit {
   loadDataToBeUsed() {
     this.msCounties = this.msService.getAllCountriesList();
 // Hof Reject
-    if (this.workPlanInspection?.preliminaryReport.rejectedStatus
-        && this.workPlanInspection?.preliminaryReport.approvedStatus === false
-        && this.workPlanInspection?.preliminaryReport.rejectedStatusHod === false
+    if (this.workPlanInspection?.preliminaryReport?.rejectedStatus
+        && this.workPlanInspection?.preliminaryReport?.approvedStatus === false
+        && this.workPlanInspection?.preliminaryReport?.rejectedStatusHod === false
     ) {
-      this.preliminaryReportForm.patchValue(this.workPlanInspection.preliminaryReport);
-      this.workPlanInspection.preliminaryReport.kebsOfficersName.forEach(inspector => {
+      this.preliminaryReportForm.patchValue(this.workPlanInspection?.preliminaryReport);
+      this.workPlanInspection?.preliminaryReport?.kebsOfficersName.forEach(inspector => {
         this.dataSaveDataInspectorInvestList.push(inspector);
       });
-      this.workPlanInspection.preliminaryReport.parametersList.forEach(param => {
+      this.workPlanInspection?.preliminaryReport?.parametersList.forEach(param => {
         this.dataSavePreliminaryReportParamList.push(param);
       });
     }
 // Hod Reject
-    if (this.workPlanInspection?.preliminaryReport.rejectedStatusHod
-        && this.workPlanInspection?.preliminaryReport.rejectedStatus
-        && this.workPlanInspection?.preliminaryReport.approvedStatusHod === false ) {
-      this.preliminaryReportForm.patchValue(this.workPlanInspection.preliminaryReport);
-      this.workPlanInspection.preliminaryReport.kebsOfficersName.forEach(inspector => {
+    if (this.workPlanInspection?.preliminaryReport?.rejectedStatusHod
+        && this.workPlanInspection?.preliminaryReport?.rejectedStatus
+        && this.workPlanInspection?.preliminaryReport?.approvedStatusHod === false ) {
+      this.preliminaryReportForm.patchValue(this.workPlanInspection?.preliminaryReport);
+      this.workPlanInspection?.preliminaryReport?.kebsOfficersName.forEach(inspector => {
         this.dataSaveDataInspectorInvestList.push(inspector);
       });
-      this.workPlanInspection.preliminaryReport.parametersList.forEach(param => {
+      this.workPlanInspection?.preliminaryReport?.parametersList.forEach(param => {
         this.dataSavePreliminaryReportParamList.push(param);
       });
     }
 
     if (this.workPlanInspection?.rejectedStatus && this.workPlanInspection?.approvedStatus === false ) {
-      this.addNewScheduleForm.patchValue(this.workPlanInspection.updateWorkPlan);
+      this.addNewScheduleForm.patchValue(this.workPlanInspection?.updateWorkPlan);
       this.msService.msDepartmentListDetails().subscribe(
           (dataDep: MsDepartment[]) => {
             this.msDepartments = dataDep;
