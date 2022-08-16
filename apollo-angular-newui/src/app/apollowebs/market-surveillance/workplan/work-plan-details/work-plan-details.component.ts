@@ -1740,7 +1740,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       for (let i = 0; i < file.length; i++) {
         console.log(file[i]);
         formData.append('docFile', file[i], file[i].name);
-        this.uploadedFiles.item(i).slice();
+        // this.uploadedFiles.item(i).slice();
       }
       this.msService.saveWorkPlanFiles(formData).subscribe(
           (data: any) => {
