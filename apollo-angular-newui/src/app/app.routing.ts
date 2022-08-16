@@ -1692,7 +1692,7 @@ export const routes: Routes = [
                 component: EpraListComponent,
             },
             {
-                path: 'fuelInspection/details/:referenceNumber/:batchReferenceNumber',
+                path: 'details/:referenceNumber/:batchReferenceNumber',
                 component: ViewFuelSheduledDetailsComponent,
             },
         ],
@@ -1724,7 +1724,7 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: ComplaintListComponent
+                component: ComplaintListComponent,
             },
             {
                 path: 'details/:referenceNumber',
