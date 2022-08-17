@@ -638,7 +638,7 @@
                                                     <ng2-smart-table [settings]="settingsLabResultsParam" [source]="workPlanInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>
                                                 </div>
                                             </div>
-                                            <div *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested!=null">
+                                            <div *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested.length!=0">
                                                 <div *ngFor="let role of roles">
                                                     <div  *ngIf="role == 'MS_IO_MODIFY'" class="form-row">
                                                         <div class="col-md-12 mb-3">
@@ -2591,12 +2591,12 @@
                                     <div>
                                         <label for="bsNumber"><b>BS Number</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="bsNumber" matInput type="text" placeholder="Please Enter Bs Number received date" formControlName="bsNumber" name="bsNumber"
+                                            <input id="bsNumber" matInput type="text" placeholder="Please Enter Bs Number" formControlName="bsNumber" name="bsNumber"
                                                    [class.is-invalid]="formSampleSubmitBSNumberForm.bsNumber.invalid && formSampleSubmitBSNumberForm.bsNumber.touched">
                                         </mat-form-field>
                                         <label for="submittedDate"><b>Received Date</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Bs Number received date" formControlName="submittedDate" name="submittedDate"
+                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Received date" formControlName="submittedDate" name="submittedDate"
                                                    [class.is-invalid]="formSampleSubmitBSNumberForm.submittedDate.invalid && formSampleSubmitBSNumberForm.submittedDate.touched">
                                         </mat-form-field>
                                         <label for="remarksBsNumber"><b>Please write, in detail, your feedback for Attached BS Number:</b></label>
