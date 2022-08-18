@@ -64,4 +64,16 @@ class ComStdDraft {
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null
+
+    @Column(name = "PROCESS_ID")
+    @Basic
+    var processId: String? = null
+
+    @Column(name="ASSIGNED_TO")
+    @Basic
+    var assignedTo:Long?=null
+
+    @Column(name="REQUEST_NUMBER")
+    @Basic
+    var requestNumber:String?=null
 }

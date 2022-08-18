@@ -12,3 +12,6 @@ class TaskDetailsBody(val taskId:String, val name:String,val processId: String,v
 
 class WorkShopAgreementTasks(val taskId:String, val name:String,val processId: String,val taskData: Map<String,Any>) {
 }
+
+class StdUserTasks(val taskId:String, val name:String,val processId: String,val taskData: Map<String,Any>) {
+}

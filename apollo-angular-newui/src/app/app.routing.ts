@@ -106,9 +106,6 @@ import {
     IntStdCommentsComponent
 } from './apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component';
 import {
-    ComStdJcJustificationListComponent
-} from './apollowebs/standards-development/company-standard/com-std-jc-justification-list/com-std-jc-justification-list.component';
-import {
     SystemicReviewCommentsComponent
 } from './apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component';
 import {
@@ -141,9 +138,6 @@ import {QaTaskDetailsComponent} from './apollowebs/quality-assurance/qa-task-det
 import {CompanyViewComponent} from './apollowebs/company/company-view/company-view.component';
 import {BranchViewComponent} from './apollowebs/company/branch/branch-view/branch-view.component';
 import {QrCodeDetailsComponent} from './apollowebs/quality-assurance/qr-code-details/qr-code-details.component';
-import {
-    ComStdApproveJustificationComponent
-} from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
 import {
     ComStdDraftComponent
 } from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
@@ -525,6 +519,7 @@ import {
 import {
     VoteOnBallotDraftComponent
 } from "./apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component";
+import {ComTasksComponent} from "./apollowebs/standards-development/company-standard/com-tasks/com-tasks.component";
 
 export const routes: Routes = [
     {
@@ -1253,21 +1248,6 @@ export const routes: Routes = [
         children: [{path: '', component: ComStdJcJustificationComponent}],
     },
     {
-        path: 'comAppJustification', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdApproveJustificationComponent}],
-    },
-    {
-        path: 'comStdJustificationList', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdJcJustificationListComponent}],
-    },
-    {
-        path: 'comStdAppJustification', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdApproveJustificationComponent}],
-    },
-    {
         path: 'comPlTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdPlTaskComponent}],
@@ -1288,9 +1268,17 @@ export const routes: Routes = [
         children: [{path: '', component: ComStdUploadComponent}],
     },
     {
-        path: 'comStdListed', component: AdminLayoutComponent,
+        path: 'comStdListed',
+        component: ComStdListComponent
+    },
+    // {
+    //     path: 'comStdListed', component: AdminLayoutComponent,
+    //     children: [{path: '', component: ComStdListComponent}],
+    // },
+    {
+        path: 'comStdTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: ComStdListComponent}],
+        children: [{path: '', component: ComTasksComponent}],
     },
     {
         path: 'nep_information_received', component: AdminLayoutComponent,
@@ -1311,6 +1299,8 @@ export const routes: Routes = [
     {
         path: 'make_enquiry', component: MakeEnquiryComponent,
     },
+
+
 
 
     //  Request For Standards

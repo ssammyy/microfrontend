@@ -683,3 +683,54 @@ alter table SD_NWA_GAZETTE_NOTICE
 alter table SD_NWA_GAZETTE_NOTICE
     add PROCESS_ID VARCHAR(350 char) ;
 /
+alter table SD_COM_STANDARD_REQUEST
+    add ASSIGNED_TO NUMBER ;
+/
+
+alter table SD_COM_STANDARD_ASSIGNEE
+add PROCESS_ID NUMBER ;
+/
+create  table DAT_KEBS_COM_REMARKS
+(
+    id                   number   not null primary key,
+    PROCESS_ID            VARCHAR2(350 CHAR),
+    REMARKS           varchar(350 char),
+    STATUS           varchar(350 char),
+    REMARK_BY            varchar(350),
+    ROLE          VARCHAR2(350 CHAR),
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_REMARK          VARCHAR2(350 CHAR)
+)
+/
+
+create  table DAT_KEBS_SITE_VISIT_REMARKS
+(
+    id                   number   not null primary key,
+    PROCESS_ID            VARCHAR2(350 CHAR),
+    APPROVAL_ID            NUMBER,
+    REMARKS           varchar(350 char),
+    STATUS           varchar(350 char),
+    REMARK_BY            varchar(350),
+    ROLE          VARCHAR2(350 CHAR),
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_REMARK          VARCHAR2(350 CHAR)
+)
+/
+create sequence DAT_KEBS_COM_REMARKS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_COM_REMARKS_trg
+    before
+        insert
+    on DAT_KEBS_COM_REMARKS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_COM_REMARKS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/

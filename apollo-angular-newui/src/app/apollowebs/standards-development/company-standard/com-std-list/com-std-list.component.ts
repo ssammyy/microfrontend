@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Subject} from "rxjs";
-import {ComJcJustificationDec} from "../../../../core/store/data/std/std.model";
+import {ComJcJustificationDec, ComStandard} from "../../../../core/store/data/std/std.model";
 import {Router} from "@angular/router";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
@@ -16,9 +16,9 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class ComStdListComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
-  tasks: ComJcJustificationDec[] = [];
+  tasks: ComStandard[] = [];
   blob: Blob;
-  public actionRequest: ComJcJustificationDec | undefined;
+  public actionRequest: ComStandard | undefined;
   constructor(
       private router: Router,
       private stdComStandardService:StdComStandardService,
@@ -28,15 +28,15 @@ export class ComStdListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getSacSecTasks();
+    this.getAllStandards();
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
-  public getSacSecTasks(): void{
+  public getAllStandards(): void{
     this.SpinnerService.show();
-    this.stdComStandardService.getSacSecTasks().subscribe(
-        (response: ComJcJustificationDec[])=> {
+    this.stdComStandardService.getAllStandards().subscribe(
+        (response: ComStandard[])=> {
           this.SpinnerService.hide();
           this.dtTrigger.next();
           this.tasks = response;

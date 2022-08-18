@@ -2,11 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angu
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
-import {
-    DiSdtDECISION, NWADiSdtJustification,
-    NWAJustification,
-    NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft,
-    NwaTasks, NWAWDDecision, NWAWorkShopDraft, UpdateNwaGazette, UploadNwaGazette, UsersEntity
+import {NwaTasks,UsersEntity
 } from "../../../../core/store/data/std/std.model";
 import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";

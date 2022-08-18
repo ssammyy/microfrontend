@@ -87,7 +87,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
         variables["proposalNumber"] = iSAdoptionProposal.proposalNumber!!
 //email to stakeholders
-        val recipient= "Ashraf.Mohammed@bskglobaltech.com"
+        val recipient= "stephenmuganda@gmail.com"
         val subject = "New Adoption Proposal Document"
         val messageBody= "An adoption document has been uploaded Kindly login to the system to comment on it"
         notifications.sendEmail(recipient, subject, messageBody)
@@ -156,6 +156,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
     fun submitAPComments(isAdoptionComments: ISAdoptionComments){
         val variables: MutableMap<String, Any> = HashMap()
         isAdoptionComments.user_id?.let{ variables.put("user_id", it)}
+        isAdoptionComments.taskId?.let{ variables.put("taskId", it)}
         isAdoptionComments.adoption_proposal_comment?.let{ variables.put("adoption_proposal_comment", it)}
 
         isAdoptionComments.comment_time = Timestamp(System.currentTimeMillis())
@@ -182,6 +183,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         variables["Yes"] = iSDecision.accentTo
         variables["No"] = iSDecision.accentTo
         iSDecision.comments.let { variables.put("comments", it) }
+        iSDecision.taskId.let { variables.put("taskId", it) }
         if(variables["Yes"]==true){
             isAdoptionProposalRepository.findByIdOrNull(iSDecision.approvalID)?.let { iSAdoptionProposal->
 
@@ -231,6 +233,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         iSAdoptionJustification.department?.let{ variables.put("department", it)}
         iSAdoptionJustification.status?.let{ variables.put("status", it)}
         iSAdoptionJustification.remarks?.let{ variables.put("remarks", it)}
+        iSAdoptionJustification.taskId?.let{ variables.put("taskId", it)}
 
         iSAdoptionJustification.submissionDate = Timestamp(System.currentTimeMillis())
         variables["submissionDate"] = iSAdoptionJustification.submissionDate!!
@@ -301,6 +304,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         variables["Yes"] = isJustificationDecision.accentTo
         variables["No"] = isJustificationDecision.accentTo
         isJustificationDecision.comments.let { variables.put("comments", it) }
+        isJustificationDecision.taskId.let { variables.put("taskId", it) }
         if(variables["Yes"]==true){
             iSAdoptionJustificationRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionJustification->
 
@@ -339,6 +343,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         variables["Yes"] = isJustificationDecision.accentTo
         variables["No"] = isJustificationDecision.accentTo
         isJustificationDecision.comments.let { variables.put("comments", it) }
+        isJustificationDecision.taskId.let { variables.put("taskId", it) }
         if(variables["Yes"]==true){
             iSAdoptionJustificationRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionJustification->
 
@@ -348,7 +353,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
                 }
                 iSAdoptionJustificationRepository.save(iSAdoptionJustification)
                 //email to stakeholders
-                val recipient= "Ashraf.Mohammed@bskglobaltech.com"
+                val recipient= "Catherine.Kariuki@bskglobaltech.com"
                 val subject = "Justification Approved"
                 val messageBody= "Justification for International Standard has been approved by the SAC."
                 notifications.sendEmail(recipient, subject, messageBody)
@@ -387,6 +392,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         iSUploadStandard.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
         iSUploadStandard.clause?.let{variable.put("clause", it)}
         iSUploadStandard.special?.let{variable.put("special", it)}
+        iSUploadStandard.taskId?.let{variable.put("taskId", it)}
         //iSUploadStandard.iSNumber?.let{variable.put("ISNumber", it)}
 
 
@@ -399,7 +405,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
         val isuDetails = iSUploadStandardRepository.save(iSUploadStandard)
         //email to legal
-        val recipient= "Ashraf.Mohammed@bskglobaltech.com"
+        val recipient= "Catherine.Kariuki@bskglobaltech.com"
         val subject = "International Standard Uploaded"
         val messageBody= "International Standard has been uploaded by the Head of Publishing."
         notifications.sendEmail(recipient, subject, messageBody)
@@ -458,6 +464,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         val variable:MutableMap<String, Any> = HashMap()
         iSGazetteNotice.iSNumber?.let{variable.put("iSNumber", it)}
         iSGazetteNotice.description?.let{variable.put("description", it)}
+        iSGazetteNotice.taskId?.let{variable.put("taskId", it)}
 
         iSGazetteNotice.dateUploaded = Timestamp(System.currentTimeMillis())
         variable["dateUploaded"] = iSGazetteNotice.dateUploaded!!
@@ -512,6 +519,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         iSGazettement.dateOfGazettement = Timestamp(System.currentTimeMillis())
         variable["dateOfGazettement"] = iSGazettement.dateOfGazettement!!
         iSGazettement.description?.let{variable.put("description", it)}
+        iSGazettement.taskId?.let{variable.put("taskId", it)}
 
         print(iSGazettement.toString())
 
