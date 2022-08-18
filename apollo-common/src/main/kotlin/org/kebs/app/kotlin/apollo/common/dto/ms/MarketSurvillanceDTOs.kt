@@ -197,6 +197,9 @@ data class WorkPlanInspectionDto(
         var preliminaryReport: PreliminaryReportDto? = null,
         var officersList: List<MsUsersDto>? = null,
         var hofList: List<MsUsersDto>? = null,
+        val updateWorkPlan: WorkPlanEntityDto? = null,
+        val updatedStatus: Boolean? = null,
+        val resubmitStatus: Boolean? = null,
 )
 
 data class FuelEntityDto(
@@ -232,6 +235,7 @@ data class FuelEntityDto(
 )
 
 data class WorkPlanEntityDto(
+        var id: Long? = null,
         var complaintDepartment: Long? = null,
         var divisionId: Long? = null,
         var nameActivity: String? = null,

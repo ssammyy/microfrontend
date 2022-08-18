@@ -299,7 +299,7 @@ export class EpraListComponent implements OnInit {
 
   viewRecord(data: FuelInspectionDto) {
     console.log('TEST 101 REF NO: ' + data.referenceNumber);
-    this.router.navigate([`/epra/fuelInspection/details/`, data.referenceNumber, this.selectedBatchRefNo]);
+    this.router.navigate([`/epra/details/`, data.referenceNumber, this.selectedBatchRefNo]);
   }
 
   get formNewScheduleForm(): any {

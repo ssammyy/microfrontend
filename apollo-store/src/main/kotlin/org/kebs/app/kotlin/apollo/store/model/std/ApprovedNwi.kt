@@ -156,7 +156,6 @@ interface CommentsWithCdId {
     fun getRECIPIENT_id(): Long?
 
 
-
 }
 
 interface PrdWithUserName {
@@ -224,5 +223,21 @@ interface BallotWithUserName {
     fun getNUMBER_OF_COMMENTS(): String?
 
     fun getVAR_FIELD_1(): String?
+
+}
+
+interface VotesWithBallotId {
+    fun getBallotId(): Long?
+    fun getAPPROVAL_STATUS(): String?
+    fun getSTATUS(): Long?
+    fun getBALLOT_name(): String?
+
+    fun getCREATED_on(): String?
+    fun getCOMMENTS_BY(): String?
+    fun getCOMMENTS(): String?
+
+    fun getUSER_id(): Long?
+
+
 
 }

@@ -613,6 +613,7 @@ export class ApiEndpointService {
         MY_TASK_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-my-task`,
         ONGOING_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list-on-going`,
         CREATE_NEW_WORK_PLAN_SCHEDULE: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/new`,
+        UPDATE_NEW_WORK_PLAN_SCHEDULE: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/update`,
         INSPECTION_SCHEDULED_DETAILS: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/details`,
         INSPECTION_SCHEDULED_APPROVE_DETAILS: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/approval-schedule`,
         INSPECTION_SCHEDULED_CLIENT_APPEALED: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/client-appealed-status`,

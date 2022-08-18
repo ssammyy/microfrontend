@@ -1115,14 +1115,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   viewLIMSPDFRecord(data: LIMSFilesFoundDto, bsNumber: string) {
     console.log('TEST 101 REF NO VIEW: ' + data.fileName);
     this.viewLabResultsPdfFile(String(data.fileName), bsNumber, 'application/pdf');
-    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
   viewLIMSPDFSaved(data: MSSSFPDFListDetailsDto) {
     console.log('TEST 101 REF NO VIEW FILE: ' + data.pdfSavedId);
 
     this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
-    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
   viewLIMSPDFSavedRemarks(data: MSSSFPDFListDetailsDto) {

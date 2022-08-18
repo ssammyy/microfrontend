@@ -26,8 +26,6 @@ declare const $: any;
 })
 
 export class CommentOnPublicReviewDraftComponent implements OnInit {
-
-    publicReviewDraft: PublicReviewDraftWithName | undefined;
     public publicReviewDrafts !: PublicReviewDraftWithName[];
     publicReviewDraftsB !: PublicReviewDraftWithName | undefined;
 

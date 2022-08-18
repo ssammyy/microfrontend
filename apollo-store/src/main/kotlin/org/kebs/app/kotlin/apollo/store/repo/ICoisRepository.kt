@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository
 interface ICoisRepository:HazelcastRepository<CoisEntity, Long> {
     fun findByCoiNumber(coiNumber:String):CoisEntity?
     fun findByUcrNumber(ucrNumber: String): CoisEntity?
+
+
 }

@@ -1044,7 +1044,7 @@ class MarketSurveillanceFuelDaoServices(
             when (userFuelScheduleBatch) {
                 null -> {
                     with(fuel) {
-                        referenceNumber = "FL/BATCH/${
+                        referenceNumber = "FL#BATCH#${
                             generateRandomText(
                                 5,
                                 map.secureRandom,
@@ -1946,7 +1946,7 @@ class MarketSurveillanceFuelDaoServices(
         var fuelDetail = MsFuelInspectionEntity()
         try {
             with(fuelDetail) {
-                referenceNumber = "FL/FILE/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                referenceNumber = "FUEL#${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
                 company = body.company
                 batchId = batchIdFound
                 petroleumProduct = body.petroleumProduct
@@ -2179,6 +2179,7 @@ class MarketSurveillanceFuelDaoServices(
             MSRemarksDto(
                 it.id,
                 it.remarksDescription,
+                it.remarksStatus,
                 it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processBy },
                 it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName },
             )

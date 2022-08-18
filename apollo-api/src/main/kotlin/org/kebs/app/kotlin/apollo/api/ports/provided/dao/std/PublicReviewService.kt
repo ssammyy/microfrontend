@@ -175,8 +175,8 @@ class PublicReviewService(
 
         publicReviewDraftToBeUpdated.status = "Posted On Website For Comments"
         variable["status"] = publicReviewDraftToBeUpdated.status!!
-        publicReviewDraftToBeUpdated.varField1 = "Posted On Website For Comments"
-        variable["varField1"] = publicReviewDraftToBeUpdated.varField1!!
+        publicReviewDraftToBeUpdated.varField2 = "Posted On Website For Comments"
+        variable["varField1"] = publicReviewDraftToBeUpdated.varField2!!
         publicReviewDraftToBeUpdated.modifiedOn = Timestamp(System.currentTimeMillis())
         variable["modifiedOn"] = publicReviewDraftToBeUpdated.modifiedOn!!
         publicReviewDraftToBeUpdated.modifiedBy = loggedInUser.id.toString()
@@ -294,11 +294,18 @@ class PublicReviewService(
         variable["modifiedOn"] = approveCommitteeDraft.modifiedOn!!
         approveCommitteeDraft.modifiedBy = loggedInUser.id.toString()
         variable["modifiedBy"] = approveCommitteeDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
-
+        approveCommitteeDraft.varField3 = "Approved"
+        variable["varField3"] = approveCommitteeDraft.varField3!!
         publicReviewDraftRepository.save(approveCommitteeDraft)
 
 
     }
+
+    //get all Prd Approved
+    fun getAllPrdApproved(): MutableList<PrdWithUserName> {
+        return publicReviewDraftRepository.findApprovedPublicReviewDraft()
+    }
+
 
 
 }

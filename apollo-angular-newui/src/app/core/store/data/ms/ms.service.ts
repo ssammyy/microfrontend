@@ -730,6 +730,25 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
+    public msUpdateWorkPlanScheduleDetails(batchReferenceNo: string, referenceNo: string,  data: WorkPlanEntityDto): Observable<WorkPlanScheduleListDetailsDto> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPDATE_NEW_WORK_PLAN_SCHEDULE);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanScheduleListDetailsDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanScheduleListDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public msWorkPlanScheduleDetails(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_DETAILS);
@@ -1008,7 +1027,7 @@ export class MsService {
     public msWorkPlanScheduleDetailsFinalReport(batchReferenceNo: string, referenceNo: string, data: PreliminaryReportFinal): Observable<WorkPlanInspectionDto> {
         console.log(data);
         const url = ApiEndpointService.getEndpoint(
-            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_FINAL_REPORT
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_FINAL_REPORT,
         );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -1023,7 +1042,7 @@ export class MsService {
             }),
         );
     }
-    
+
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsSubmitForApproval(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
         // console.log(data);
@@ -1579,7 +1598,7 @@ export class MsService {
 
     public msComplaintUpdateSaveClassificationDetails(
         referenceNo: string,
-        data: ComplaintClassificationDto
+        data: ComplaintClassificationDto,
     ): Observable<AllComplaintsDetailsDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
