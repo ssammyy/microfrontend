@@ -34,7 +34,16 @@ import {
   WorkPlanScheduleApprovalDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
-import {LoggedInUser, selectUserInfo} from '../../../../core/store';
+import {
+  County,
+  CountyService,
+  loadCountyId,
+  LoggedInUser,
+  selectCountyIdData,
+  selectUserInfo,
+  Town,
+  TownService,
+} from '../../../../core/store';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {Store} from '@ngrx/store';
 import {NgxSpinnerService} from 'ngx-spinner';
@@ -46,6 +55,7 @@ import {
   ProductSubcategory,
   StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
+import {Observable, throwError} from 'rxjs';
 
 @Component({
   selector: 'app-work-plan-details',
@@ -154,6 +164,10 @@ export class WorkPlanDetailsComponent implements OnInit {
   blob: Blob;
   uploadedFiles: FileList;
   resetUploadedFiles: FileList;
+  selectedCounty = 0;
+  selectedTown = 0;
+  county$: Observable<County[]>;
+  town$: Observable<Town[]>;
 
   attachments: any[];
   recommendationList: MsRecommendationDto[] = [];
@@ -725,7 +739,12 @@ export class WorkPlanDetailsComponent implements OnInit {
       private store$: Store<any>,
       private SpinnerService: NgxSpinnerService,
       private activatedRoute: ActivatedRoute,
+      private countyService: CountyService,
+      private townService: TownService,
       private router: Router) {
+    this.county$ = countyService.entities$;
+    this.town$ = townService.entities$;
+    countyService.getAll().subscribe();
   }
 
   ngOnInit(): void {
@@ -2492,6 +2511,28 @@ export class WorkPlanDetailsComponent implements OnInit {
   onChangeSelectedMyProduct() {
     this.productsSelected = this.addNewScheduleForm?.get('product')?.value;
     this.productSubcategorySelected = this.addNewScheduleForm?.get('productSubcategory')?.value;
+  }
+
+  updateSelectedCounty() {
+    this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
+    console.log(`county set to ${this.selectedCounty}`);
+    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
+    this.store$.select(selectCountyIdData).subscribe(
+        (d) => {
+          if (d) {
+            console.log(`Select county inside is ${d}`);
+            return this.townService.getAll();
+          } else {
+            return throwError('Invalid request, County id is required');
+          }
+        },
+    );
+
+  }
+
+  updateSelectedTown() {
+    this.selectedTown = this.addNewScheduleForm?.get('town')?.value;
+    console.log(`town set to ${this.selectedTown}`);
   }
 
   onChangeSelectedProductSubcategory() {
