@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
@@ -36,13 +37,15 @@ class ApiAuthenticationHandler(
     private val usersRepo: IUserRepository,
     private val verificationTokensRepo: IUserVerificationTokensRepository,
     private val smsService: SmsServiceImpl,
+    private val notifications: Notifications,
+
     private val customAuthenticationProvider: CustomAuthenticationProvider
 ) {
 
 
     fun generateOtp(req: ServerRequest): ServerResponse {
         val reqBody = req.body<OtpRequestValuesDto>()
-        KotlinLogging.logger {  }.info { "Email received: ${reqBody.username}" }
+        KotlinLogging.logger { }.info { "Email received: ${reqBody.username}" }
         return reqBody.username?.let {
             usersRepo.findByEmail(it.toLowerCase())
                 ?.let { user ->
@@ -74,6 +77,7 @@ class ApiAuthenticationHandler(
         val phone = token.userId?.personalContactNumber
         val message = "Your verification code is ${token.token}"
         var smsSent = false
+        sendOtpViaEmail(token)
         if (phone != null) {
             smsSent = smsService.sendSms(phone, message)
         }
@@ -81,6 +85,17 @@ class ApiAuthenticationHandler(
             return "OTP successfully sent"
         }
         return "An error occurred, please try again later"
+    }
+
+    fun sendOtpViaEmail(token: UserVerificationTokensEntity): String {
+        val email = token.userId?.email
+        val messageBody = " Hello  \n Your verification code is ${token.token} \n\n\n\n\n\n"
+
+        if (email != null) {
+            notifications.sendEmail(email, "OTP", messageBody)
+        }
+
+        return "OTP successfully sent"
     }
 
     fun generateVerificationToken(input: String, user: UsersEntity): UserVerificationTokensEntity {
@@ -100,9 +115,9 @@ class ApiAuthenticationHandler(
     }
 
     fun generateTransactionReference(
-            length: Int = 12,
-            secureRandomAlgorithm: String = "SHA1PRNG",
-            messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false,
+        length: Int = 12,
+        secureRandomAlgorithm: String = "SHA1PRNG",
+        messageDigestAlgorithm: String = "SHA-512", prefix: Boolean = false,
     ): String {
         return generateRandomText(length, secureRandomAlgorithm, messageDigestAlgorithm, false)
     }
@@ -138,7 +153,8 @@ class ApiAuthenticationHandler(
 //                        val localDate = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
 //                        val timestamp: Timestamp = Timestamp.valueOf(localDate)
 //                        expiry = timestamp
-                        expiry = LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
+                        expiry =
+                            LocalDateTime.now().plusMinutes(authenticationProperties.jwtExpirationMs).minusSeconds(20L)
                         companyID = user.companyId
                         branchID = user.plantId
 
@@ -192,7 +208,7 @@ class ApiAuthenticationHandler(
                     )
                     val userEmail = user.email
                     commonDaoServices.sendOtpViaSMS(tokenValidation)
-                    commonDaoServices.sendOtpViaEmail(tokenValidation,userEmail)
+                    commonDaoServices.sendOtpViaEmail(tokenValidation, userEmail)
 
 
                     val response = CustomResponse().apply {
@@ -200,7 +216,7 @@ class ApiAuthenticationHandler(
                         payload = "$token"
                         status = 200
                     }
-                    ServerResponse.ok().header("Authorization","Bearer $token").body(response)
+                    ServerResponse.ok().header("Authorization", "Bearer $token").body(response)
                 }
                 ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
 
