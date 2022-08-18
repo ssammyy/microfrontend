@@ -638,7 +638,7 @@
                                                     <ng2-smart-table [settings]="settingsLabResultsParam" [source]="workPlanInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>
                                                 </div>
                                             </div>
-                                            <div *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested!=null">
+                                            <div *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested.length!=0">
                                                 <div *ngFor="let role of roles">
                                                     <div  *ngIf="role == 'MS_IO_MODIFY'" class="form-row">
                                                         <div class="col-md-12 mb-3">
@@ -2121,7 +2121,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -2148,7 +2148,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks2"><b>Please write, in detail, your feedback:</b></label>
+                                        <label ><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -2202,7 +2202,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea  matInput type="text"
                                                        formControlName="remarks"
@@ -2272,7 +2272,7 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="approvalStatus2"><b>Select Status</b></label>
+                                        <label ><b>Select Status</b></label>
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
@@ -2282,7 +2282,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks3" matInput type="text"
                                                       formControlName="remarks"
@@ -2591,12 +2591,12 @@
                                     <div>
                                         <label for="bsNumber"><b>BS Number</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="bsNumber" matInput type="text" placeholder="Please Enter Bs Number received date" formControlName="bsNumber" name="bsNumber"
+                                            <input id="bsNumber" matInput type="text" placeholder="Please Enter Bs Number" formControlName="bsNumber" name="bsNumber"
                                                    [class.is-invalid]="formSampleSubmitBSNumberForm.bsNumber.invalid && formSampleSubmitBSNumberForm.bsNumber.touched">
                                         </mat-form-field>
                                         <label for="submittedDate"><b>Received Date</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Bs Number received date" formControlName="submittedDate" name="submittedDate"
+                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Received date" formControlName="submittedDate" name="submittedDate"
                                                    [class.is-invalid]="formSampleSubmitBSNumberForm.submittedDate.invalid && formSampleSubmitBSNumberForm.submittedDate.touched">
                                         </mat-form-field>
                                         <label for="remarksBsNumber"><b>Please write, in detail, your feedback for Attached BS Number:</b></label>
