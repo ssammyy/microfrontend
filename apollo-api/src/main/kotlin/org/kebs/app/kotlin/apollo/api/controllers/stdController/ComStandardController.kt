@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 
-@RequestMapping("api/v1/migration")
+@RequestMapping("api/v1/migration/null")
 class ComStandardController (val comStandardService: ComStandardService,
                              val standardRequestService: StandardRequestService,
                              private val commonDaoServices: CommonDaoServices,

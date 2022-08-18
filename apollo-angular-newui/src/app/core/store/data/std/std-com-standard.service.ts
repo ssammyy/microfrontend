@@ -6,13 +6,14 @@ import {
   ApproveJC, ApproveSACJC,
   ComHodTasks,
   ComJcJustification, ComJcJustificationAction, ComJcJustificationDec,
-  ComJcJustificationList, CompanyStandardRequest, COMPreliminaryDraft, ComStandardJC,
+  ComJcJustificationList, CompanyStandardRequest, CompanyStdRemarks, COMPreliminaryDraft, ComStandard, ComStandardJC,
   ComStdAction,
   Department, NWAPreliminaryDraft, NWAWDDecision, NWAWorkShopDraft, Product,
   UsersEntity
 } from './std.model';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
+import {SiteVisitRemarks} from "../levy/levy.model";
 
 @Injectable({
   providedIn: 'root'
@@ -139,11 +140,7 @@ export class StdComStandardService {
     );
   }
 
-  public getSpcSecTasks(): Observable<ComJcJustificationList[]> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_SPC_SEC_TASKS);
-    const params = new HttpParams();
-    return this.http.get<ComJcJustificationList[]>(url, {params}).pipe();
-  }
+
 
   public decisionOnJustification(approveJC: ApproveJC): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_DECISION_ON_JUSTIFICATION);
@@ -158,10 +155,10 @@ export class StdComStandardService {
     );
   }
 
-  public getSacSecTasks(): Observable<ComJcJustificationDec[]> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_SAC_SEC_TASKS);
+  public getAllStandards(): Observable<ComStandard[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_STANDARDS);
     const params = new HttpParams();
-    return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
+    return this.http.get<ComStandard[]>(url, {params}).pipe();
   }
 
   public decisionOnAppJustification(approveSACJC: ApproveSACJC): Observable<any> {
@@ -232,6 +229,7 @@ export class StdComStandardService {
     const params = new HttpParams();
     return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
   }
+
   public viewCompanyDraft(comStdDraftID: any): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_DATA_VIEW_PD);
     const params = new HttpParams()
@@ -247,6 +245,8 @@ export class StdComStandardService {
         })
     );
   }
+
+
 
 
 
@@ -293,10 +293,10 @@ export class StdComStandardService {
     );
   }
 
-  public prepareCompanyStandard(comJcJustificationDec: ComJcJustificationDec): Observable<any> {
+  public prepareCompanyStandard(comPreliminaryDraft: COMPreliminaryDraft): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_PREPARE_COM_STANDARD);
     const params = new HttpParams();
-    return this.http.post<ComJcJustificationDec>(url, comJcJustificationDec, {params}).pipe(
+    return this.http.post<COMPreliminaryDraft>(url, comPreliminaryDraft, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -324,9 +324,14 @@ export class StdComStandardService {
     );
   }
 
-
   public getHopTasks(): Observable<ComJcJustificationDec[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_HOP_TASKS);
+    const params = new HttpParams();
+    return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
+  }
+
+  public getUserTasks(): Observable<ComJcJustificationDec[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_USER_TASKS);
     const params = new HttpParams();
     return this.http.get<ComJcJustificationDec[]>(url, {params}).pipe();
   }
@@ -359,6 +364,12 @@ export class StdComStandardService {
           return throwError(fault);
         })
     );
+  }
+
+  public getComStandardRemarks(approvalID: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_REMARKS);
+    const params = new HttpParams().set('approvalID', approvalID);
+    return this.http.get<CompanyStdRemarks>(url, {params}).pipe();
   }
 
 

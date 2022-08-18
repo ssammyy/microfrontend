@@ -572,6 +572,14 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'is',
         children: [
             {path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
+            {path: 'isProposalForm', title: 'Prepare Proposal', ab: 'C'},
+            {path: 'isProposalComments', title: 'View Proposal', ab: 'VC'},
+            {path: 'isProposalResponses', title: 'View Responses ', ab: 'V'},
+            {path: 'isJustificationList', title: 'View Justification', ab: 'V'},
+            {path: 'isJustificationApp', title: 'SPC Approval', ab: 'J'},
+            {path: 'isUploadStd', title: 'SAC Approval', ab: 'J'},
+            {path: 'isUploadNotice', title: 'Publishing', ab: 'PL'},
+
 
 
         ],

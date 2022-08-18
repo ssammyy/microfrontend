@@ -685,7 +685,6 @@ export interface ComStdAction {
     id: string;
     requestNumber: string;
     dateAssigned: string;
-    assignedTo: string;
     taskId: string;
 }
 
@@ -694,6 +693,7 @@ export interface ComStandardJC {
     requestNumber: string;
     idOfJc: string;
     taskId: string;
+    processId: string;
 }
 
 export interface ComJcJustification {
@@ -799,10 +799,21 @@ export interface ComJcJustificationListData {
     productSubCategoryName: string;
     ID: number;
 }
+export interface ComStandard{
+    id: number;
+    clause: string;
+    title:string;
+    scope:string;
+    normativeReference:string;
+    symbolsAbbreviatedTerms:string;
+    special:string;
+    comStdNumber:string;
+}
 
 export interface ComJcJustificationDec {
     taskId: string;
     name: string;
+    processId: string;
     taskData: ComJcJustificationDecData;
 }
 export interface ComJcJustificationDecData {
@@ -867,7 +878,9 @@ export interface COMPreliminaryDraft{
     special: string;
     clause: string;
     taskId: string;
+    processId: string;
     diJNumber: number;
+    requestNumber: number;
 }
 
 //********************************************************** Company Standards Adoption -END **********************************************************
@@ -1067,6 +1080,14 @@ export interface NWAWDDecision{
     accentTo: boolean;
     approvalID: bigint;
     comments: string;
+}
+export interface CompanyStdRemarks{
+    approvalID: number;
+    remarks: string;
+    remarkBy: string;
+    status: string;
+    role: string;
+    dateOfRemark: string;
 }
 
 

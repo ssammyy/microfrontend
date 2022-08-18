@@ -31,30 +31,26 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th class="knw">Request Number</th>
-                                        <th class="sl">Company Name</th>
+                                        <th class="sl">Company Standard No.</th>
                                         <th class="knw">Title</th>
                                         <th class="sl">Scope</th>
                                         <th class="requestNumber">Clause </th>
                                         <th class="knw">Normative Reference</th>
-                                        <th class="sl">Symbols Abbreviated Terms</th>
                                         <th class="knw">Special</th>
-                                        <th class="action">Reference Material</th>
+                                        <th class="knw">Document</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr  *ngFor="let task of tasks let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{task.taskData.requestNumber}}</td>
-                                        <td>{{task.taskData.companyName}}</td>
-                                        <td>{{task.taskData.title}}</td>
-                                        <td>{{task.taskData.scope}}</td>
-                                        <td>{{task.taskData.clause}}</td>
-                                        <td>{{task.taskData.normativeReference}}</td>
-                                        <td>{{task.taskData.symbolsAbbreviatedTerms}}</td>
-                                        <td>{{task.taskData.special}}</td>
+                                        <td>{{task.comStdNumber}}</td>
+                                        <td>{{task.title}}</td>
+                                        <td>{{task.scope}}</td>
+                                        <td>{{task.clause}}</td>
+                                        <td>{{task.normativeReference}}</td>
+                                        <td>{{task.special}}</td>
                                         <td><button mat-raised-button type="button" data-toggle="modal"
-                                                    (click)="viewStdFile( task.taskData.ID,'Company_Standard'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                                    (click)="viewStdFile( task.id,'Company_Standard'+task.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
                                             <i class="material-icons">visibility</i>
 
                                         </button>

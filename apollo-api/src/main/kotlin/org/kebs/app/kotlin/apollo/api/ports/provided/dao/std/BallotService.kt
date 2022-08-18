@@ -94,13 +94,14 @@ class BallotService(
 
     fun voteForBallot(ballotVote: BallotVote): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-
-
+        //Ballot Approval Status
+        //1 - Approved
+        //2 - Approved With Comments
+        //3 - Disapprove With Comments
+        //4 - Abstention
         ballotVote.approvalStatus.let { variable.put("approvalStatus", it) }
         ballotVote.comment?.let { variable.put("comment", it) }
         ballotVote.ballotId.let { variable.put("ballotId", it) }
-
         ballotVote.userId = loggedInUser.id!!
         variable["userId"] = ballotVote.userId
 

@@ -1,0 +1,668 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
+                                Tasks <span class="badge badge-primary">{{tasks.length}}</span>
+                            </button></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div  class="material-datatables table-responsive">
+                                <table class="table table-striped table-bordered table-hover" datatable
+                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="knw">Request Number</th>
+                                        <th class="sl">Company Name</th>
+                                        <th class="requestNumber">Department </th>
+                                        <th class="knw">Product</th>
+                                        <th class="sl">Sub Category</th>
+                                        <th class="requestNumber">Submission Date </th>
+                                        <th class="sl">Phone Number</th>
+                                        <th class="action">Action</th>
+                                        <th class="action">Task</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr  *ngFor="let task of tasks let i=index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{task.taskData.requestNumber}}</td>
+                                        <td>{{task.taskData.companyName}}</td>
+                                        <td>{{task.taskData.departmentName}}</td>
+                                        <td>{{task.taskData.productName}}</td>
+                                        <td>{{task.taskData.productSubCategoryName}}</td>
+                                        <td>{{task.taskData.submissionDate | date: 'dd/MM/yyyy hh:mm:ss'}}</td>
+                                        <td>{{task.taskData.companyPhone}}</td>
+                                        <td>{{task.name}}</td>
+                                        <td *ngIf="task.name ==='Assign Project Leader'"><a  (click)="onOpenModal(task,'approve')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px"> Assign To Project Leader</a></td>
+                                        <td *ngIf="task.name ==='assignProjectLeader'"><a  (click)="onOpenModal(task,'approve')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px"> Assign To Project Leader</a></td>
+                                        <td *ngIf="task.name ==='Form Joint Committee'"><a  (click)="onOpenModal(task,'formJc')" class="btn btn-warning btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px"> Form Joint Committee</a></td>
+                                        <td *ngIf="task.name ==='formJointCommittee'"><a  (click)="onOpenModal(task,'formJc')" class="btn btn-warning btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px"> Form Joint Committee</a></td>
+                                        <td *ngIf="task.name ==='Upload Draft Company standard'"><a  (click)="onOpenModal(task,'uploadDraft')" class="btn btn-success btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px"> Upload Standard Draft</a></td>
+                                        <td *ngIf="task.name ==='uploadDraftCompanyStandard'"><a  (click)="onOpenModal(task,'uploadDraft')" class="btn btn-success btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px"> Upload Standard Draft</a></td>
+                                        <td *ngIf="task.name ==='View Draft'"><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-dark btn-sm tooltips" data-placement="top"  data-original-title="preparePD" style="width: 190px">Approve/Reject Draft</a></td>
+                                        <td *ngIf="task.name ==='viewDraft'"><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-dark btn-sm tooltips" data-placement="top"  data-original-title="preparePD" style="width: 190px">Approve/Reject Draft</a></td>
+                                        <td *ngIf="task.name ==='Forward to Company'"><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-dark btn-sm tooltips" data-placement="top"  data-original-title="preparePD" style="width: 190px">Approve/Reject Draft</a></td>
+                                        <td *ngIf="task.name ==='companyStandard'"><a  (click)="onOpenModal(task,'approveComDraft')" class="btn btn-warning btn-sm tooltips" data-placement="top"  data-original-title="preparePD" style="width: 190px">Approve/Reject Company Draft</a></td>
+                                        <td *ngIf="task.name ==='publishing'"><a  (click)="onOpenModal(task,'uploadStandard')" class="btn btn-success btn-sm tooltips" data-placement="top"  data-original-title="preparePD" style="width: 190px">Upload Standard</a></td>
+                                        <td *ngIf="task.name ==='Edit Company Standard'"><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-dark btn-sm tooltips" data-placement="top"  data-original-title="preparePD" style="width: 190px">Approve/Reject Draft</a></td>
+                                        <td *ngIf="task.name ==='View Company Standard'"><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-dark btn-sm tooltips" data-placement="top"  data-original-title="preparePD" style="width: 190px">Approve/Reject Draft</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+
+                                <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignExampleModalLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title" id="assignExampleModalLabel">Assign To Project Leader</h3>
+                                                <button type="button" #closeModalAssignTask class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <hr>
+                                            <form #assignForm="ngForm" >
+                                                <div class="modal-body">
+                                                    <div class="form-body">
+                                                        <h3>Do you want to assign this task to a Project Leader?</h3>
+                                                        <div class="row col-12">
+                                                            <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+                                                            <input type="hidden" ngModel="{{actionRequest?.processId}}" name="processId" >
+                                                            <input type="hidden" ngModel="{{actionRequest?.taskData?.requestNumber}}" name="requestNumber" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">No</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm" (click)="onAssign(assignForm.value)" >Yes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="formJc" tabindex="-1" role="dialog" aria-labelledby="assignExampleModalLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title" id="assignExampleModalJCLabel">Form Joint Committee</h3>
+                                                <button type="button" #closeModalFormJC class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form (ngSubmit)="formJointCommittee()" [formGroup]="formJointCommitteeFormGroup" class="form">
+                                                <div class="modal-body">
+                                                    <div class="form-body">
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-12">
+                                                                <label>Select Joint Committee Names</label>
+                                                                <ng-select  formControlName="idOfJc"  class="form-control"  name="idOfJc" >
+                                                                    <ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                </ng-select>
+
+
+                                                            </div>
+                                                            <input type="hidden" formControlName="taskId" class="form-control" value="{{actionRequest?.taskId}}" name="taskId" >
+                                                            <input type="hidden" formControlName="processId" class="form-control" value="{{actionRequest?.processId}}" name="processId" >
+                                                            <input type="hidden" formControlName="requestNumber" class="form-control" value="{{actionRequest?.taskData?.requestNumber}}" name="requestNumber" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="uploadDraft" tabindex="-1" role="dialog" aria-labelledby="PdExampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2 class="modal-title" id="PdExampleModalLabel">Prepare Company Draft</h2>
+                                                <button type="button" #closeModalFormPD class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form (ngSubmit)="uploadPreliminaryDraft()" [formGroup]="preparePreliminaryDraftFormGroup" class="form">
+                                                <div class="modal-body">
+                                                    <div class="row col-12">
+                                                        <div class="form-group col-6">
+                                                            <label>Title <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPreparePD.title.invalid && formPreparePD.title.touched"
+                                                                   class="form-control"  formControlName="title" name="title" type="text">
+                                                        </div>
+                                                        <div class="form-group col-6">
+                                                            <label>Scope <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPreparePD.scope.invalid && formPreparePD.scope.touched"
+                                                                   class="form-control"  formControlName="scope" name="scope" type="text">
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="row col-12">
+                                                        <div class="form-group col-6">
+                                                            <label>Normative Reference <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPreparePD.normativeReference.invalid && formPreparePD.normativeReference.touched"
+                                                                   class="form-control"  formControlName="normativeReference" name="normativeReference" type="text">
+                                                        </div>
+                                                        <div class="form-group col-6">
+                                                            <label>Symbols Abbreviated Terms<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPreparePD.symbolsAbbreviatedTerms.invalid && formPreparePD.symbolsAbbreviatedTerms.touched"
+                                                                   class="form-control"  formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms" type="text">
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row col-12">
+
+                                                        <div class="form-group col-6">
+                                                            <label>Clause<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPreparePD.clause.invalid && formPreparePD.clause.touched"
+                                                                   class="form-control"  formControlName="clause" name="clause" type="text">
+                                                        </div>
+                                                        <div class="form-group col-6">
+                                                            <label>Special<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPreparePD.special.invalid && formPreparePD.special.touched"
+                                                                   class="form-control"  formControlName="special" name="special" type="text">
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="row col-12">
+                                                        <div class="form-group col-12">
+                                                            <label><b>Upload Company Draft  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+                                                            <form #demoForm="ngForm">
+                                                                <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+                                                                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf" ></file-upload>
+                                                            </form>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+
+                                                <input type="hidden" value="{{actionRequest?.taskId}}" class="form-control" formControlName="taskId" name="taskId"  >
+                                                <input type="hidden" value="{{actionRequest?.processId}}" class="form-control" formControlName="processId" name="processId"  >
+                                                <input type="hidden" value="{{actionRequest?.taskData?.requestNumber}}" class="form-control" formControlName="requestNumber" name="requestNumber"  >
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                    <button *ngIf="preparePreliminaryDraftFormGroup.valid" [disabled]="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Save</button>
+                                                    <button *ngIf="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right"
+                                                            (click)="showNotification('top','right')">Save
+                                                    </button>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="approveDraft" tabindex="-1" role="dialog" aria-labelledby="approvePdExampleModalLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" #closeModalApprovePD data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="row col-12" >
+                                                <div class="col-12 ">
+                                                    <nav>
+                                                        <div class="nav nav-tabs nav-fill col-12" id="nav-tab-five" role="tablist">
+                                                            <a class="nav-item nav-link active col-3" id="nav-viewPreliminaryDraft-tab" data-toggle="tab" href="#nav-viewPreliminaryDraft" role="tab" aria-controls="nav-viewPreliminaryDraft" aria-selected="true">View Company Draft</a>
+                                                            <a class="nav-item nav-link col-3" id="nav-approvePreliminaryDraft-tab" data-toggle="tab" href="#nav-approvePreliminaryDraft" role="tab" aria-controls="nav-approvePreliminaryDraft" aria-selected="false">Approve Company Draft</a>
+                                                            <a class="nav-item nav-link col-3" id="nav-rejectPreliminaryDraft-tab" data-toggle="tab" href="#nav-rejectPreliminaryDraft" role="tab" aria-controls="nav-rejectPreliminaryDraft" aria-selected="false">Reject Company Draft</a>
+                                                            <a class="nav-item nav-link col-3" id="nav-viewRemarks-tab" data-toggle="tab" (click)=toggleDisplayRemarksTab(actionRequest?.taskData?.ID) href="#nav-viewRemarks" role="tab" aria-controls="nav-viewRemarks" aria-selected="false">View Remarks</a>
+
+                                                        </div>
+                                                    </nav>
+                                                    <div class="tab-content py-12 px-12 px-sm-0" id="nav-tabContent-approvePD">
+                                                        <div class="tab-pane fade show active" id="nav-viewPreliminaryDraft" role="tabpanel" aria-labelledby="nav-viewPreliminaryDraft-tab">
+                                                            <div class="list-group list-group-flush">
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Title</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.title}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Scope</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.scope}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Normative Reference</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.normativeReference}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Symbols Abbreviated Terms</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.symbolsAbbreviatedTerms}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Clause</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.clause}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Special</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.special}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>View Draft Upload</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                <button mat-raised-button type="button" data-toggle="modal"
+                                                                        (click)="viewPdfFile( actionRequest?.taskData?.ID,'Company-Draft'+actionRequest?.taskData?.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                                                    <i class="material-icons">visibility</i>
+                                                                </button>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="nav-approvePreliminaryDraft" role="tabpanel" aria-labelledby="nav-approvePreliminaryDraft-tab">
+                                                            <form (ngSubmit)="approvePreliminaryDraft()" [formGroup]="approvePreliminaryDraftFormGroup" class="form">
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="form-group col-12">
+                                                                            <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
+                                                                            <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
+                                                                    <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
+                                                                    <input type="hidden" formControlName="accentTo" value="{{approve}}" name="accentTo"  >
+                                                                    <input type="hidden" formControlName="approvalID" name="approvalID" value="{{actionRequest?.taskData?.ID}}" >
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary btn-sm"  >Approve</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="nav-rejectPreliminaryDraft" role="tabpanel" aria-labelledby="nav-rejectPreliminaryDraft-tab">
+                                                            <form (ngSubmit)="rejectPreliminaryDraft()" [formGroup]="rejectPreliminaryDraftFormGroup" class="form">
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="form-group col-12">
+                                                                            <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Required</span></label>
+                                                                            <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
+                                                                    <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
+                                                                    <input type="hidden" formControlName="accentTo" value="{{reject}}" name="accentTo"  >
+                                                                    <input type="hidden" formControlName="approvalID" name="approvalID" value="{{actionRequest?.taskData?.ID}}" >
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-danger btn-sm"  >Reject</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="nav-viewRemarks" role="tabpanel" aria-labelledby="nav-viewRemarks-tab">
+                                                            <div class="col-12 row">
+
+                                                                <div class="container col-md-12" [hidden]="isShowRemarksTab">
+                                                                    <div class="col-12">
+                                                                        <div class="card" *ngFor="let companyStdRemark of companyStdRemarks">
+                                                                            <div class="card-header">
+                                                                                <span class="badge badge-info">{{companyStdRemark.status}}</span> By {{companyStdRemark.remarkBy}} On {{companyStdRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                                            </div>
+                                                                            <div class="card-body">
+                                                                                <blockquote class="blockquote mb-0">
+                                                                                    <p>Remark: {{companyStdRemark.remarks}}.</p>
+                                                                                    <footer class="blockquote-footer">Role: <cite title="Source Title">{{companyStdRemark.role}}</cite></footer>
+                                                                                </blockquote>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="approveComDraft" tabindex="-1" role="dialog" aria-labelledby="approveComExampleModalLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" #closeModalApproveDraft data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="row col-12" >
+                                                <div class="col-12 ">
+                                                    <nav>
+                                                        <div class="nav nav-tabs nav-fill col-12" id="nav-tab-fives" role="tablist">
+                                                            <a class="nav-item nav-link active col-3" id="nav-viewComDraft-tab" data-toggle="tab" href="#nav-viewComDraft" role="tab" aria-controls="nav-viewComDraft" aria-selected="true">View Company Draft</a>
+                                                            <a class="nav-item nav-link col-3" id="nav-approveComDraft-tab" data-toggle="tab" href="#nav-approveComDraft" role="tab" aria-controls="nav-approveComDraft" aria-selected="false">Approve Company Draft</a>
+                                                            <a class="nav-item nav-link col-3" id="nav-rejectComDraft-tab" data-toggle="tab" href="#nav-rejectComDraft" role="tab" aria-controls="nav-rejectComDraft" aria-selected="false">Reject Company Draft</a>
+                                                            <a class="nav-item nav-link col-3" id="nav-viewRemark-tab" data-toggle="tab" (click)=toggleDisplayRemarksTab(actionRequest?.taskData?.ID) href="#nav-viewRemark" role="tab" aria-controls="nav-viewRemark" aria-selected="false">View Remarks</a>
+
+                                                        </div>
+                                                    </nav>
+                                                    <div class="tab-content py-12 px-12 px-sm-0" id="nav-tabContent-approveWD">
+                                                        <div class="tab-pane fade show active" id="nav-viewComDraft" role="tabpanel" aria-labelledby="nav-viewComDraft-tab">
+                                                            <div class="list-group list-group-flush">
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Title</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.title}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Scope</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.scope}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Normative Reference</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.normativeReference}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Symbols Abbreviated Terms</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.symbolsAbbreviatedTerms}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Clause</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.clause}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Special</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.special}}.</p>
+                                                                </a>
+                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <div>
+                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>View Draft Upload</b></h5>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                                            (click)="viewPdfFile( actionRequest?.taskData?.ID,'Company-Draft'+actionRequest?.taskData?.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                                                        <i class="material-icons">visibility</i>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="nav-approveComDraft" role="tabpanel" aria-labelledby="nav-approveComDraft-tab">
+                                                            <form (ngSubmit)="approveDraft()" [formGroup]="approveCompanyDraftFormGroup" class="form">
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="form-group col-12">
+                                                                            <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
+                                                                            <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
+                                                                    <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
+                                                                    <input type="hidden" formControlName="accentTo" value="{{approve}}" name="accentTo"  >
+                                                                    <input type="hidden" formControlName="approvalID" name="approvalID" value="{{actionRequest?.taskData?.ID}}" >
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary btn-sm"  >Approve</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="nav-rejectComDraft" role="tabpanel" aria-labelledby="nav-rejectComDraft-tab">
+                                                            <form (ngSubmit)="rejectDraft()" [formGroup]="rejectCompanyDraftFormGroup" class="form">
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="form-group col-12">
+                                                                            <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Required</span></label>
+                                                                            <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
+                                                                    <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
+                                                                    <input type="hidden" formControlName="accentTo" value="{{reject}}" name="accentTo"  >
+                                                                    <input type="hidden" formControlName="approvalID" name="approvalID" value="{{actionRequest?.taskData?.ID}}" >
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-danger btn-sm"  >Reject</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="nav-viewRemark" role="tabpanel" aria-labelledby="nav-viewRemark-tab">
+                                                            <div class="col-12 row">
+
+                                                                <div class="container col-md-12" [hidden]="isShowRemarksTab">
+                                                                    <div class="col-12">
+                                                                        <div class="card" *ngFor="let companyStdRemark of companyStdRemarks">
+                                                                            <div class="card-header">
+                                                                                <span class="badge badge-info">{{companyStdRemark.status}}</span> By {{companyStdRemark.remarkBy}} On {{companyStdRemark.dateOfRemark }}
+                                                                            </div>
+                                                                            <div class="card-body">
+                                                                                <blockquote class="blockquote mb-0">
+                                                                                    <p>Remark: {{companyStdRemark.remarks}}.</p>
+                                                                                    <footer class="blockquote-footer">Role: <cite title="Source Title">{{companyStdRemark.role}}</cite></footer>
+                                                                                </blockquote>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="uploadStandard" tabindex="-1" role="dialog" aria-labelledby="uploadExampleModalLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title" id="uploadExampleModalLabel">Upload Company Draft</h3>
+                                                <button type="button" #closeModalStandard class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form (ngSubmit)="onSaveStandard()" [formGroup]="prepareStandardFormGroup" class="form">
+                                                <div class="modal-body">
+                                                    <div class="row col-12">
+                                                        <div class="form-group col-6">
+                                                            <label>Title <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPrepareSD.title.invalid && formPrepareSD.title.touched"
+                                                                   class="form-control"  formControlName="title" ngModel="{{actionRequest?.taskData?.title}}" name="title" type="text">
+                                                        </div>
+                                                        <div class="form-group col-6">
+                                                            <label>Scope <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPrepareSD.scope.invalid && formPrepareSD.scope.touched"
+                                                                   class="form-control"  formControlName="scope" ngModel="{{actionRequest?.taskData?.scope}}" name="scope" type="text">
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="row col-12">
+                                                        <div class="form-group col-6">
+                                                            <label>Normative Reference <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPrepareSD.normativeReference.invalid && formPrepareSD.normativeReference.touched"
+                                                                   class="form-control"  formControlName="normativeReference" ngModel="{{actionRequest?.taskData?.normativeReference}}" name="normativeReference" type="text">
+                                                        </div>
+                                                        <div class="form-group col-6">
+                                                            <label>Reference Material <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPrepareSD.referenceMaterial.invalid && formPrepareSD.referenceMaterial.touched"
+                                                                   class="form-control"  formControlName="referenceMaterial" ngModel="{{actionRequest?.taskData?.referenceMaterial}}" name="referenceMaterial" type="text">
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row col-12">
+                                                        <div class="form-group col-6">
+                                                            <label>Clause <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPrepareSD.clause.invalid && formPrepareSD.clause.touched"
+                                                                   class="form-control"  formControlName="clause" ngModel="{{actionRequest?.taskData?.clause}}" name="clause" type="text">
+                                                        </div>
+                                                        <div class="form-group col-6">
+                                                            <label>Special <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input [class.is-invalid]="formPrepareSD.special.invalid && formPrepareSD.special.touched"
+                                                                   class="form-control"  formControlName="special" ngModel="{{actionRequest?.taskData?.special}}" name="special" type="text">
+                                                        </div>
+                                                        <input type="hidden" formControlName="taskId" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+                                                        <input type="hidden" formControlName="processId" ngModel="{{actionRequest?.processId}}" name="processId" >
+                                                    </div>
+                                                    <div class="row col-12">
+                                                        <div class="form-group col-12">
+                                                            <label><b>Upload Standard  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+                                                            <form #demoForm="ngForm">
+                                                                <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  >
+                                                                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="1" accept=".pdf" ></file-upload>
+                                                            </form>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                    <button  class="btn btn-sm btn-primary float-right" type="submit">Edit</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

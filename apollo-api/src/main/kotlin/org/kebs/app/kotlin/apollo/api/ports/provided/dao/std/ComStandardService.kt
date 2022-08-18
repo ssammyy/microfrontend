@@ -56,7 +56,7 @@ class ComStandardService(
     //deploy bpmn file
     fun deployProcessDefinition(): Deployment = repositoryService
         .createDeployment()
-        .addClasspathResource("processes/std/Company_Standard.bpmn20.xml")
+        .addClasspathResource("processes/std/com_Standard_Process.bpmn20.xml")
         .deploy()
 
     //start the process by process Key

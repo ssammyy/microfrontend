@@ -118,7 +118,6 @@ import {ComStdJcJustificationComponent} from './apollowebs/standards-development
 import {IntStdJustificationListComponent} from './apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component';
 import {IntStdCommentsComponent} from './apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component';
 import {CompanyStandardRequestComponent} from './apollowebs/standards-development/company-standard/company-standard-request/company-standard-request.component';
-import {ComStdJcJustificationListComponent} from './apollowebs/standards-development/company-standard/com-std-jc-justification-list/com-std-jc-justification-list.component';
 import {RequestStandardReviewComponent} from './apollowebs/standards-development/systemic-review/request-standard-review/request-standard-review.component';
 import {SystemicReviewCommentsComponent} from './apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component';
 import {IntStdJustificationAppComponent} from './apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component';
@@ -200,7 +199,6 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {InspectionDashboardComponent} from './apollowebs/di/inspection-dashboard/inspection-dashboard.component';
 import {LabResultsComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/lab-results/lab-results.component';
 import {StdTcTasksComponent} from './apollowebs/standards-development/standard-request/std-tc-tasks/std-tc-tasks.component';
-import {ComStdApproveJustificationComponent} from './apollowebs/standards-development/company-standard/com-std-approve-justification/com-std-approve-justification.component';
 import {ComStdDraftComponent} from './apollowebs/standards-development/company-standard/com-std-draft/com-std-draft.component';
 import {ComStdUploadComponent} from './apollowebs/standards-development/company-standard/com-std-upload/com-std-upload.component';
 import {ComStdConfirmComponent} from './apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component';
@@ -367,6 +365,7 @@ import { ApproveCommitteeDraftComponent } from './apollowebs/standards-developme
 import { CommentOnPublicReviewDraftComponent } from './apollowebs/standards-development/publicReview/comment-on-public-review-draft/comment-on-public-review-draft.component';
 import { PrepareBallotingDraftComponent } from './apollowebs/standards-development/balloting/prepare-balloting-draft/prepare-balloting-draft.component';
 import { VoteOnBallotDraftComponent } from './apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component';
+import { ComTasksComponent } from './apollowebs/standards-development/company-standard/com-tasks/com-tasks.component';
 
 
 @NgModule({
@@ -539,7 +538,6 @@ import { VoteOnBallotDraftComponent } from './apollowebs/standards-development/b
         ComStdRequestListComponent,
         AllpermitsComponent,
         ComStdJcJustificationComponent,
-        ComStdJcJustificationListComponent,
         InformationcheckComponent,
         DivisionresponseComponent,
         NationalEnquiryPointComponent,
@@ -598,7 +596,6 @@ import { VoteOnBallotDraftComponent } from './apollowebs/standards-development/b
         QrCodeDetailsComponent,
         StdTscSecTasksComponentComponent,
         StdTcTasksComponent,
-        ComStdApproveJustificationComponent,
         ComStdDraftComponent,
         ComStdUploadComponent,
         ComStdConfirmComponent,
@@ -757,7 +754,8 @@ import { VoteOnBallotDraftComponent } from './apollowebs/standards-development/b
         ApproveCommitteeDraftComponent,
         CommentOnPublicReviewDraftComponent,
         PrepareBallotingDraftComponent,
-        VoteOnBallotDraftComponent
+        VoteOnBallotDraftComponent,
+        ComTasksComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],
