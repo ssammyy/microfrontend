@@ -101,6 +101,8 @@ import org.springframework.web.servlet.function.ServerRequest
 import java.io.*
 import java.math.BigDecimal
 import java.net.URLConnection
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
@@ -494,6 +496,22 @@ class CommonDaoServices(
                     return s
                 }
                 ?: throw ServiceMapNotFoundException("No service map found for appId=$appId, aborting")
+
+    }
+
+    fun saveFileForAttachmentEmails(docFile:MultipartFile){
+        val destinationDir = "kebs_files_attachment/" // converted
+
+        val directory = File(destinationDir)
+        if (!directory.exists()) {
+            directory.mkdir()
+        }
+
+
+
+//        Files.write(docFile.bytes,convertMultipartFileToFile(docFile));
+//        fileList.add(attName);
+//        return fileList;
 
     }
 

@@ -146,7 +146,7 @@ class MSJSONControllers(
             workPlanScheduled.destructionClientEmail?.let {
                 commonDaoServices.sendEmailWithUserEmail(it,
                     applicationMapProperties.mapMsOfficerSendDestructionNotificationEmail,
-                scheduleEmailDetails, map, remarksSaved.first,docFile.inputStream.toString())
+                scheduleEmailDetails, map, remarksSaved.first,commonDaoServices.convertMultipartFileToFile(docFile).absolutePath)
             }
         }
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)

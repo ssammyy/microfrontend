@@ -698,7 +698,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
     @Bean
     fun kraApiRoutes(handler: StandardsLevyHandler) = router {
         "/api/v1/kra".nest {
-            POST("/receiveSL2Payment".and(contentType(MediaType.TEXT_PLAIN)), handler::processReceiveSL2Payment)
+            POST("/receiveSL2Payment".and(contentType(MediaType.APPLICATION_JSON)), handler::processReceiveSL2Payment)
             //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
 
         }
