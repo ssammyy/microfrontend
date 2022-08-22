@@ -934,4 +934,40 @@ class PvocAgentService(
         }
         return response
     }
+
+    fun getIdfData(idfNumber: String?, ucrNumber: String?): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val idfData = pvocIntegrations.getIdfData(idfNumber.orEmpty(), ucrNumber.orEmpty())
+            response.data = idfData
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: ExpectedDataNotFound) {
+            response.message = ex.localizedMessage
+            response.responseCode = ResponseCodes.FAILED_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to process request", ex)
+            response.message = "Failed, request could not be completed"
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        }
+        return response
+    }
+
+    fun getRfcData(rfcNumber: String?, ucrNumber: String?, documentType: String?): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val idfData = pvocIntegrations.getRfcData(rfcNumber.orEmpty(), ucrNumber.orEmpty(), documentType.orEmpty())
+            response.data = idfData
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: ExpectedDataNotFound) {
+            response.message = ex.localizedMessage
+            response.responseCode = ResponseCodes.FAILED_CODE
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to process request", ex)
+            response.message = "Failed, request could not be completed"
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        }
+        return response
+    }
 }

@@ -5,10 +5,12 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.*
+import org.kebs.app.kotlin.apollo.api.service.BillingService
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.PvocAgentService
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.paramOrNull
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.function.paramOrNull
 @Component
 class PvocClientHandler(
         private val pvocService: PvocAgentService,
+        private val billingService: BillingService,
         private val validatorService: DaoValidatorService
 ) {
     fun foreignCoi(req: ServerRequest): ServerResponse {
@@ -195,6 +198,45 @@ class PvocClientHandler(
         return ServerResponse.ok().body(response)
     }
 
+    fun idfRequestDataWithItems(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val ucrNumber = req.paramOrNull("ucr")
+            val idfNumber = req.paramOrNull("idf")
+            if (StringUtils.hasLength(idfNumber) || StringUtils.hasLength(ucrNumber)) {
+                response = pvocService.getIdfData(idfNumber, ucrNumber)
+            } else {
+                response.message = "ucr or idf parameters are required"
+                response.responseCode = ResponseCodes.INVALID_CODE
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add  idf data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun rfcRequestDataWithItems(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val ucrNumber = req.paramOrNull("ucr")
+            val rfcNumber = req.paramOrNull("rfc")
+            val documentType = req.paramOrNull("doc_type")
+            if (StringUtils.hasLength(rfcNumber) || StringUtils.hasLength(ucrNumber)) {
+                response = pvocService.getRfcData(rfcNumber, ucrNumber, documentType)
+            } else {
+                response.message = "ucr or rfc parameters are required"
+                response.responseCode = ResponseCodes.INVALID_CODE
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add  RFC data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
     fun pvocPartnerQueryRequest(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
@@ -291,6 +333,21 @@ class PvocClientHandler(
             val pg = extractPage(req)
             KotlinLogging.logger { }.info("Risk profile: $dateStr")
             response = pvocService.getRiskProfile(null, dateStr, pg)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Risk profile failed", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun listMonthlyInvoiceDetails(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        try {
+            val dateStr = req.pathVariable("inv_date")
+            val pg = extractPage(req)
+            KotlinLogging.logger { }.info("Monthly invoice for month: $dateStr")
+            response = billingService.getPvocPartnerInvoice(dateStr, pg)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Risk profile failed", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
