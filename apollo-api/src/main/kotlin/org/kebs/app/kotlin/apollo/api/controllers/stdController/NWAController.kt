@@ -328,10 +328,11 @@ class NWAController(val nwaService: NWAService,
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/preparePreliminaryDraft")
     @ResponseBody
-    fun preparePreliminaryDraft(@RequestBody nwaPreliminaryDraft: NWAPreliminaryDraft): ServerResponse
+    fun preparePreliminaryDraft(@RequestBody nwaPreliminaryDraft: NWAPreliminaryDraft,
+                                standardNwaRemarks: StandardNwaRemarks): ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Preliminary Draft",nwaService.preparePreliminaryDraft(nwaPreliminaryDraft))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Preliminary Draft",nwaService.preparePreliminaryDraft(nwaPreliminaryDraft,standardNwaRemarks))
     }
 
     // upload preliminary draft
@@ -409,10 +410,11 @@ class NWAController(val nwaService: NWAService,
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/editWorkshopDraft")
     @ResponseBody
-    fun editWorkshopDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft): ServerResponse
+    fun editWorkshopDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft,
+                          standardNwaRemarks: StandardNwaRemarks): ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Workshop Draft",nwaService.editWorkshopDraft(nwaWorkShopDraft))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Workshop Draft",nwaService.editWorkshopDraft(nwaWorkShopDraft,standardNwaRemarks))
     }
 
     // upload Workshop draft
@@ -494,9 +496,10 @@ class NWAController(val nwaService: NWAService,
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/uploadNwaStandard")
     @ResponseBody
-    fun uploadNwaStandard(@RequestBody nWAStandard: NWAStandard): ServerResponse
+    fun uploadNwaStandard(@RequestBody nWAStandard: NWAStandard,
+                          standardNwaRemarks: StandardNwaRemarks): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",nwaService.uploadNwaStandard(nWAStandard))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",nwaService.uploadNwaStandard(nWAStandard,standardNwaRemarks))
     }
 
     // upload NWA Standard
@@ -566,18 +569,20 @@ class NWAController(val nwaService: NWAService,
     @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/uploadGazetteNotice")
     @ResponseBody
-    fun uploadGazetteNotice(@RequestBody nWAGazetteNotice: NWAGazetteNotice): ServerResponse
+    fun uploadGazetteNotice(@RequestBody nWAGazetteNotice: NWAGazetteNotice,
+                            standardNwaRemarks: StandardNwaRemarks): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Gazette Notice",nwaService.uploadGazetteNotice(nWAGazetteNotice))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Gazette Notice",nwaService.uploadGazetteNotice(nWAGazetteNotice,standardNwaRemarks))
     }
 
     //********************************************************** process upload Gazettement Date **********************************************************
     @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/updateGazettementDate")
     @ResponseBody
-    fun updateGazettementDate(@RequestBody nWAGazettement: NWAGazettement): ServerResponse
+    fun updateGazettementDate(@RequestBody nWAGazettement: NWAGazettement,
+                              standardNwaRemarks: StandardNwaRemarks): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Gazette Notice",nwaService.updateGazettementDate(nWAGazettement))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Gazette Notice",nwaService.updateGazettementDate(nWAGazettement,standardNwaRemarks))
     }
 
     @PostMapping("/upload")
@@ -665,7 +670,8 @@ class NWAController(val nwaService: NWAService,
     }
 
     @PreAuthorize("hasAuthority('KNW_SEC_READ') or hasAuthority('SPC_SEC_SD_READ')" +
-            " or hasAuthority('DI_SDT_SD_READ') or hasAuthority('HOP_SD_READ') or" +
+            " or hasAuthority('DI_SDT_SD_READ') or hasAuthority('HOP_SD_READ') " +
+            " or hasAuthority('TC_SEC_SD_READ') or hasAuthority('TC_SEC_SD_MODIFY') or" +
             " hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HO_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')  ")
     @GetMapping("/getUserTasks")
     fun getUserTasks():List<WorkShopAgreementTasks>

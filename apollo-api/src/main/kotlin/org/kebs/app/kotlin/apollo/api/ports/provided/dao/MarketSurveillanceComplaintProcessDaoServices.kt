@@ -1158,34 +1158,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         if (comp.timelineEndDate!!>commonDaoServices.getCurrentDate()){
             timelineOverDue = true
         }}
-//
-//        val compliantDetailsStatus = mapCompliantStatusDto(fileInspectionDetail, map)
-//        var compliantStatusDone = false
-//        if (compliantDetailsStatus!=null){
-//            compliantStatusDone = true
-//        }
-//        val sampleCollected = findSampleCollectedDetailByFuelInspectionID(fileInspectionDetail.id)
-//        val sampleCollectedParamList = sampleCollected?.id?.let { findAllSampleCollectedParametersBasedOnSampleCollectedID(it) }
-//        val sampleCollectedDtoValues = sampleCollectedParamList?.let { mapSampleCollectedParamListDto(it) }?.let { mapSampleCollectedDto(sampleCollected, it) }
-//
-//        val sampleSubmitted = findSampleSubmissionDetailByFuelInspectionID(fileInspectionDetail.id)
-//        val sampleSubmittedParamList = sampleSubmitted?.id?.let { findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
-//        val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { mapSampleSubmissionParamListDto(it) }?.let { mapSampleSubmissionDto(sampleSubmitted, it) }
-//
-//        val labResultsParameters = sampleSubmitted?.bsNumber?.let { findSampleLabTestResultsRepoBYBSNumber(it) }
-//        val ssfDetailsLab = findSampleSubmittedBYFuelInspectionId(fileInspectionDetail.id)
-//        val savedPDFFilesLims = ssfDetailsLab?.id?.let { findSampleSubmittedListPdfBYSSFid(it)?.let { ssfDetails->mapLabPDFFilesListDto(ssfDetails) } }
-////        val savedPDFFilesLims = ssfDetailsLab?.id?.let { findSampleSubmittedListPdfBYSSFid(it)?.let { mapLabPDFFilesListDto(it) } }
-//        val ssfResultsListCompliance = ssfDetailsLab?.let { mapSSFComplianceStatusDetailsDto(it) }
-//        val limsPDFFiles = ssfDetailsLab?.bsNumber?.let { mapLIMSSavedFilesDto(it,savedPDFFilesLims)}
-//        val labResultsDto = mapLabResultsDetailsDto(ssfResultsListCompliance,savedPDFFilesLims,limsPDFFiles,labResultsParameters?.let { mapLabResultsParamListDto(it) })
-//        val remediationDetails = findFuelScheduledRemediationDetails(fileInspectionDetail.id)
-//        val invoiceRemediationDetails = fuelRemediationInvoiceRepo.findFirstByFuelInspectionId(fileInspectionDetail.id)
-//        var invoiceCreatedStatus = false
-//        if (invoiceRemediationDetails.isNotEmpty()){
-//            invoiceCreatedStatus = true
-//        }
-//        val fuelRemediationDto = remediationDetails?.let { mapFuelRemediationDto(it,invoiceCreatedStatus) }
+
         return mapComplaintInspectionDto(
             mapComplaintDto(comp, complaintCustomersDetails, complaintLocationDetails, complaintFilesSaved, map, timelineOverDue),
             acceptanceDone,
@@ -1360,6 +1333,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             MSRemarksDto(
                 it.id,
                 it.remarksDescription,
+                it.remarksStatus,
                 it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processBy },
                 it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName },
             )
@@ -1435,7 +1409,5 @@ class MarketSurveillanceComplaintProcessDaoServices(
             ?: throw ExpectedDataNotFound("Fuel Process Details found with ID : $processID")
     }
 }
-
-
 
 

@@ -14,6 +14,7 @@ import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.ms.*
+import org.kebs.app.kotlin.apollo.store.model.qa.QaPersonnelInchargeEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IWorkPlanCreatedRepository
@@ -323,6 +324,9 @@ class MarketSurveillanceWorkPlanDaoServices(
         when (fileSaved.first.status) {
             map.successStatus -> {
                 with(workPlanScheduled) {
+                    if (submittedForApprovalStatus == map.activeStatus){
+                        resubmitStatus = map.activeStatus
+                    }
                     submittedForApprovalStatus= map.activeStatus
                     timelineStartDate = commonDaoServices.getCurrentDate()
                     timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionSubmission.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
@@ -534,6 +538,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                             approvedBy = commonDaoServices.concatenateName(loggedInUser)
                             approvedStatus = map.activeStatus
                             rejectedStatus = map.inactiveStatus
+                            updatedStatus = map.inactiveStatus
+                            resubmitStatus = map.inactiveStatus
                             approvedOn = commonDaoServices.getCurrentDate()
                             scheduleEmailDetails.approvalStatus = approved
                             emailDetails = applicationMapProperties.mapMsWorkPlanScheduleSubmitedApprovalApproved
@@ -553,6 +559,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                             rejectedBy = commonDaoServices.concatenateName(loggedInUser)
                             rejectedStatus = map.activeStatus
                             approvedStatus = map.inactiveStatus
+                            updatedStatus= map.inactiveStatus
+                            resubmitStatus= map.inactiveStatus
                             rejectedOn = commonDaoServices.getCurrentDate()
                             scheduleEmailDetails.approvalStatus = rejected
                             emailDetails = applicationMapProperties.mapMsWorkPlanScheduleSubmitedApprovalRejected
@@ -997,10 +1005,13 @@ class MarketSurveillanceWorkPlanDaoServices(
                         fetchedPreliminary.approvedStatusHofFinal== map.activeStatus -> {
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApproveFinalPreliminaryReportHOF
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
+
                         }
                         fetchedPreliminary.rejectedStatusHofFinal== map.activeStatus -> {
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRejectFinalPreliminaryReportHOF
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                            updatedStatus= map.inactiveStatus
+                            resubmitStatus= map.inactiveStatus
                         }
                     }
                 }
@@ -1015,6 +1026,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                         fetchedPreliminary.rejectedStatus== map.activeStatus -> {
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRejectPreliminaryReportHOF
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                            updatedStatus= map.inactiveStatus
+                            resubmitStatus= map.inactiveStatus
                         }
                     }
 
@@ -1168,6 +1181,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                         fetchedPreliminary.rejectedStatusHodFinal== map.activeStatus -> {
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRejectFinalPreliminaryReportHODRM
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
+                            updatedStatus = map.inactiveStatus
+                            resubmitStatus = map.inactiveStatus
                         }
                     }
                 }
@@ -1182,6 +1197,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                         fetchedPreliminary.rejectedStatusHod== map.activeStatus -> {
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRejectPreliminaryReportHODRM
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
+                            updatedStatus = map.inactiveStatus
+                            resubmitStatus = map.inactiveStatus
                         }
                     }
 
@@ -1415,6 +1432,10 @@ class MarketSurveillanceWorkPlanDaoServices(
         fetchedPreliminary =  updatePreliminaryReportDetails(fetchedPreliminary, map, loggedInUser).second
 
         with(workPlanScheduled){
+            if (finalReportGenerated == map.activeStatus){
+                resubmitStatus = map.activeStatus
+                updatedStatus = map.activeStatus
+            }
             finalReportGenerated= map.activeStatus
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGenerateFinalPreliminaryReport
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
@@ -1773,6 +1794,10 @@ class MarketSurveillanceWorkPlanDaoServices(
                             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionGeneratePreliminaryReport.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGeneratePreliminaryReport
+                            if (msPreliminaryReportStatus == map.activeStatus){
+                                resubmitStatus = map.activeStatus
+                                updatedStatus = map.activeStatus
+                            }
                             msPreliminaryReportStatus = map.activeStatus
                         }
                     }
@@ -2128,6 +2153,51 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
 
     }
+
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateNewWorkPlanSchedule(body: WorkPlanEntityDto, batchReferenceNo: String,referenceNo: String, page: PageRequest): WorkPlanInspectionDto {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val batchDetails  = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        with(workPlanScheduled){
+            complaintDepartment = body.complaintDepartment
+            divisionId = body.divisionId
+            nameActivity = body.nameActivity
+            timeActivityDate = body.timeActivityDate
+            county = body.county
+            townMarketCenter = body.townMarketCenter
+            locationActivityOther = body.locationActivityOther
+            standardCategory = body.standardCategory
+            broadProductCategory = body.broadProductCategory
+            productCategory = body.productCategory
+            product = body.product
+            productSubCategory = body.productSubCategory
+            resourcesRequired = body.resourcesRequired
+            budget = body.budget
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGenerateWorkPlan
+            status = map.initStatus
+            updatedStatus = map.activeStatus
+            resubmitStatus = map.inactiveStatus
+            officerId = loggedInUser.id
+            officerName = commonDaoServices.concatenateName(loggedInUser)
+        }
+
+        val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
+
+        when (fileSaved.first.status) {
+            map.successStatus -> {
+               return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+            }
+        }
+
+    }
+
 
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -2641,27 +2711,51 @@ class MarketSurveillanceWorkPlanDaoServices(
         var saveData = MsPreliminaryReportEntity()
         try {
 
-            with(saveData) {
-                reportTo = body.reportTo
-                reportFrom = body.reportFrom
-                reportSubject = body.reportSubject
-                reportTitle = body.reportTitle
-                reportDate = body.reportDate
-                surveillanceDateFrom = body.surveillanceDateFrom
-                surveillanceDateTo = body.surveillanceDateTo
-                reportBackground = body.reportBackground
-                kebsOfficersName = body.kebsOfficersName?.let { commonDaoServices.convertClassToJson(it) }
-                surveillanceObjective = body.surveillanceObjective
-                surveillanceConclusions = body.surveillanceConclusions
-                surveillanceRecommendation = body.surveillanceRecommendation
-                remarks = body.remarks
-                workPlanGeneratedID = workPlanScheduled.id
-                status = map.activeStatus
-                createdBy = commonDaoServices.concatenateName(user)
-                createdOn = commonDaoServices.getTimestamp()
-
+            preliminaryRepo.findByIdOrNull(body.id ?: -1L)
+                ?.let { prelimFound->
+                    with(prelimFound){
+                        reportTo = body.reportTo
+                        reportFrom = body.reportFrom
+                        reportSubject = body.reportSubject
+                        reportTitle = body.reportTitle
+                        reportDate = body.reportDate
+                        surveillanceDateFrom = body.surveillanceDateFrom
+                        surveillanceDateTo = body.surveillanceDateTo
+                        reportBackground = body.reportBackground
+                        kebsOfficersName = body.kebsOfficersName?.let { commonDaoServices.convertClassToJson(it) }
+                        surveillanceObjective = body.surveillanceObjective
+                        surveillanceConclusions = body.surveillanceConclusions
+                        surveillanceRecommendation = body.surveillanceRecommendation
+                        remarks = body.remarks
+                        workPlanGeneratedID = workPlanScheduled.id
+                        status = map.activeStatus
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    saveData = preliminaryRepo.save(prelimFound)
             }
-            saveData = preliminaryRepo.save(saveData)
+                ?: kotlin.run {
+                    with(saveData) {
+                        reportTo = body.reportTo
+                        reportFrom = body.reportFrom
+                        reportSubject = body.reportSubject
+                        reportTitle = body.reportTitle
+                        reportDate = body.reportDate
+                        surveillanceDateFrom = body.surveillanceDateFrom
+                        surveillanceDateTo = body.surveillanceDateTo
+                        reportBackground = body.reportBackground
+                        kebsOfficersName = body.kebsOfficersName?.let { commonDaoServices.convertClassToJson(it) }
+                        surveillanceObjective = body.surveillanceObjective
+                        surveillanceConclusions = body.surveillanceConclusions
+                        surveillanceRecommendation = body.surveillanceRecommendation
+                        remarks = body.remarks
+                        workPlanGeneratedID = workPlanScheduled.id
+                        status = map.activeStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    saveData = preliminaryRepo.save(saveData)
+                }
 
             sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveData)}"
             sr.names = "Save Preliminary Report Details"
@@ -2696,20 +2790,39 @@ class MarketSurveillanceWorkPlanDaoServices(
         var sr = commonDaoServices.createServiceRequest(map)
         var param = MsPreliminaryReportOutletsVisitedEntity()
         try {
-            with(param) {
-                marketCenter = body.marketCenter
-                nameOutlet = body.nameOutlet
-                sector = body.sector
-                dateVisit = body.dateVisit
-                numberProductsPhysicalInspected = body.numberProductsPhysicalInspected
-                compliancePhysicalInspection = body.compliancePhysicalInspection
-                remarks = body.remarks
-                preliminaryReportID = preliminaryReport.id
-                status = map.activeStatus
-                createdBy = commonDaoServices.concatenateName(user)
-                createdOn = commonDaoServices.getTimestamp()
-            }
-            param = preliminaryOutletRepo.save(param)
+            preliminaryOutletRepo.findByIdOrNull(body.id ?: -1L)
+                ?.let { foundParam ->
+                    with(foundParam) {
+                        marketCenter = body.marketCenter
+                        nameOutlet = body.nameOutlet
+                        sector = body.sector
+                        dateVisit = body.dateVisit
+                        numberProductsPhysicalInspected = body.numberProductsPhysicalInspected
+                        compliancePhysicalInspection = body.compliancePhysicalInspection
+                        remarks = body.remarks
+                        preliminaryReportID = preliminaryReport.id
+                        status = map.activeStatus
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    param = preliminaryOutletRepo.save(foundParam)
+                }
+                ?: kotlin.run {
+                    with(param) {
+                        marketCenter = body.marketCenter
+                        nameOutlet = body.nameOutlet
+                        sector = body.sector
+                        dateVisit = body.dateVisit
+                        numberProductsPhysicalInspected = body.numberProductsPhysicalInspected
+                        compliancePhysicalInspection = body.compliancePhysicalInspection
+                        remarks = body.remarks
+                        preliminaryReportID = preliminaryReport.id
+                        status = map.activeStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    param = preliminaryOutletRepo.save(param)
+                }
 
             sr.payload = "${commonDaoServices.createJsonBodyFromEntity(param)} "
             sr.names = "Preliminary Report Parameter To be tested Save file"
@@ -2810,6 +2923,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             resourcesRequired = body.resourcesRequired
             budget = body.budget
             msProcessEndedStatus = map.inactiveStatus
+            updatedStatus = map.inactiveStatus
+            resubmitStatus = map.inactiveStatus
             uuid = commonDaoServices.generateUUIDString()
             msTypeId = msType.id
             progressStep = "WorkPlan Generated"
@@ -3010,11 +3125,11 @@ class MarketSurveillanceWorkPlanDaoServices(
         workPlanList?.map {workPlanInspectionScheduledList.add(
             WorkPlanInspectionDto(
                 id =it.id,
-                referenceNumber =it.referenceNumber,
                 nameActivity =it.nameActivity,
-                timeActivityDate =it.timeActivityDate,
                 budget =it.budget,
                 progressStep =it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName },
+                timeActivityDate =it.timeActivityDate,
+                referenceNumber =it.referenceNumber
             )
         )}
 
@@ -3321,6 +3436,11 @@ class MarketSurveillanceWorkPlanDaoServices(
             }
         }
 
+        var updateWorkPlan: WorkPlanEntityDto? = null
+        if (workPlanScheduledDetails.approvedStatus == map.inactiveStatus && workPlanScheduledDetails.rejectedStatus== map.activeStatus){
+            updateWorkPlan = mapWorkPlanUpdateEntity(workPlanScheduledDetails)
+        }
+
 
         val preliminaryReport  = findPreliminaryReportByWorkPlanGeneratedID(workPlanScheduledDetails.id)
         val preliminaryReportParamList = preliminaryReport?.id?.let { findPreliminaryReportParams(it) }
@@ -3343,8 +3463,30 @@ class MarketSurveillanceWorkPlanDaoServices(
             sampleCollectedDtoValues,
             sampleSubmittedDtoValues,
             labResultsDto,
-            preliminaryReportDtoValues
+            preliminaryReportDtoValues,
+            updateWorkPlan
 
+        )
+    }
+
+    private fun mapWorkPlanUpdateEntity(wkp: MsWorkPlanGeneratedEntity): WorkPlanEntityDto {
+        return WorkPlanEntityDto(
+                    wkp.id,
+                    wkp.complaintDepartment,
+                    wkp.divisionId,
+                    wkp.nameActivity,
+                    wkp.timeActivityDate,
+                    wkp.county,
+                    wkp.townMarketCenter,
+                    wkp.locationActivityOther,
+                    wkp.standardCategory,
+                    wkp.broadProductCategory,
+                    wkp.productCategory,
+                    wkp.product,
+                    wkp.productSubCategory,
+                    wkp.resourcesRequired,
+                    wkp.budget,
+                    null,
         )
     }
 
@@ -3366,6 +3508,8 @@ class MarketSurveillanceWorkPlanDaoServices(
         sampleSubmitted: SampleSubmissionDto?,
         sampleLabResults: MSSSFLabResultsDto?,
         preliminaryReport: PreliminaryReportDto?,
+        updateWorkPlan: WorkPlanEntityDto?,
+
 
         ): WorkPlanInspectionDto {
         return WorkPlanInspectionDto(
@@ -3478,6 +3622,9 @@ class MarketSurveillanceWorkPlanDaoServices(
             preliminaryReport,
             officerList?.let { msComplaintDaoServices.mapOfficerListDto(it) },
             hofList?.let { msComplaintDaoServices.mapOfficerListDto(it) },
+            updateWorkPlan,
+            wKP.updatedStatus== 1,
+            wKP.resubmitStatus== 1,
         )
     }
 

@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.repo.std
 
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyOperationsClosure
+import org.kebs.app.kotlin.apollo.store.model.StandardLevySiteVisitRemarks
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaRawMaterialEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
@@ -31,6 +32,42 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
 
     @Query("SELECT MAX(ID) FROM SD_COM_STANDARD", nativeQuery = true)
     fun getMaxComStdId(): String
+
+    @Query(
+        value = "SELECT u.EMAIL as userEmail,u.FIRST_NAME as firstName,u.LAST_NAME as lastName  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='SAC_SEC_SD'",
+        nativeQuery = true
+    )
+    fun getSacSecEmailList(): MutableList<UserEmailListHolder>
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='HOD_TWO_SD'",
+        nativeQuery = true
+    )
+    fun getHodId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='PL_SD'",
+        nativeQuery = true
+    )
+    fun getProjectLeaderId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='HOP_SD'",
+        nativeQuery = true
+    )
+    fun getHopId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='JC_SEC_SD'",
+        nativeQuery = true
+    )
+    fun getJcSecId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='COM_SEC_SD'",
+        nativeQuery = true
+    )
+    fun getComSecId(): Long
 
 }
 
@@ -268,6 +305,11 @@ interface ComStandardJCRepository : JpaRepository<ComStandardJC, Long> {
 interface StandardNwaRemarksRepository : JpaRepository<StandardNwaRemarks, Long> {
 
 }
+interface StandardComRemarksRepository : JpaRepository<StandardComRemarks, Long> {
+    fun findAllByApprovalIDOrderByIdDesc(id: Long): List<StandardComRemarks>?
+}
+
+
 //interface UserNameRepository : JpaRepository<UsersEntity,Long>{
 //    fun findByUserId(assignedTo: Long?) : MutableList<UsersEntity>
 //    @Query("SELECT u.firstName,u.lastName FROM UsersEntity u WHERE u.id =:id")

@@ -198,3 +198,52 @@ export interface StandardDocuments {
     name: string,
     documentTypeDef: string
 }
+
+
+export interface Ballot_Draft {
+    id: number;
+    slNo: number;
+    cdNo: number;
+    pdName: string;
+    cdName: string;
+    cdBy: string;
+
+
+}
+
+export interface Ballot_Draft_With_Name {
+    id: number;
+    prd_id: number;
+    ballot_name: string;
+    cdby: string;
+    status: string;
+    createdon: string;
+    number_OF_COMMENTS: string;
+
+}
+
+export interface Vote {
+    id: number;
+    ballotId: number;
+    userId: number;
+    approvalStatus: number;
+    comment: string;
+    status: string;
+    createdOn: Date;
+
+
+}
+
+export interface VoteRetrieved {
+    ballotId: number;
+    userId: number;
+    approval_STATUS: number;
+    comments_BY: string;
+    status: string;
+    created_on: Date;
+    ballot_name:string;
+    comments:string;
+
+
+}
+

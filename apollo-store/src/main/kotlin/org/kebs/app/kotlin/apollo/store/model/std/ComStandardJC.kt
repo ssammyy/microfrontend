@@ -68,13 +68,13 @@ class ComStandardJC  : Serializable {
     @Basic
     var varField8: String? = null
 
-    @Column(name = "VAR_FIELD_9")
+    @Column(name="ASSIGNED_TO")
     @Basic
-    var varField9: String? = null
+    var assignedTo:Long?=null
 
-    @Column(name = "VAR_FIELD_10")
+    @Column(name = "PROCESS_ID")
     @Basic
-    var varField10: String? = null
+    var processId: String? = null
 
     @Column(name = "CREATED_BY")
     @Basic
@@ -105,7 +105,7 @@ class ComStandardJC  : Serializable {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as ComStandardJC
-        return id == that.id && requestNumber == that.requestNumber && dateOfFormation == that.dateOfFormation && nameOfJc == that.nameOfJc && idOfJc == that.idOfJc   && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
+        return id == that.id && requestNumber == that.requestNumber && dateOfFormation == that.dateOfFormation && nameOfJc == that.nameOfJc && idOfJc == that.idOfJc   && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && assignedTo == that.assignedTo && processId == that.processId && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
 
     override fun hashCode(): Int {
@@ -123,8 +123,8 @@ class ComStandardJC  : Serializable {
             varField6,
             varField7,
             varField8,
-            varField9,
-            varField10,
+            assignedTo,
+            processId,
             createdBy,
             createdOn,
             modifiedBy,

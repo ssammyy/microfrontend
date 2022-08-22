@@ -56,7 +56,7 @@ class ComStandardService(
     //deploy bpmn file
     fun deployProcessDefinition(): Deployment = repositoryService
         .createDeployment()
-        .addClasspathResource("processes/std/Company_Standard.bpmn20.xml")
+        .addClasspathResource("processes/std/com_Standard_Process.bpmn20.xml")
         .deploy()
 
     //start the process by process Key
@@ -72,7 +72,7 @@ class ComStandardService(
     }
 
     //request for company standard
-    fun requestForStandard(companyStandardRequest: CompanyStandardRequest): String {
+    fun requestForStandard(companyStandardRequest: CompanyStandardRequest): ProcessInstanceResponse {
 
         val variables: MutableMap<String, Any> = HashMap()
         companyStandardRequest.companyName?.let { variables.put("companyName", it) }
@@ -105,10 +105,10 @@ class ComStandardService(
             productSubCategoryRepository.findNameById(companyStandardRequest.productSubCategoryId?.toLong())
 
         comStandardRequestRepository.save(companyStandardRequest)
-//        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-//        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
 
-        return "Request Sent"
+  //      return "Request Sent"
 
 
     }
@@ -164,6 +164,7 @@ class ComStandardService(
         val variables: MutableMap<String, Any> = HashMap()
         comStdAction.requestNumber?.let { variables.put("requestNumber", it) }
         comStdAction.assignedTo?.let { variables.put("assignedTo", it) }
+        comStdAction.taskId?.let { variables.put("taskId", it) }
         comStdAction.dateAssigned = Timestamp(System.currentTimeMillis())
         variables["dateAssigned"] = comStdAction.dateAssigned!!
         variables["plAssigned"] = userListRepository.findNameById(comStdAction.assignedTo?.toLong())
@@ -180,6 +181,7 @@ class ComStandardService(
         val variables: MutableMap<String, Any> = HashMap()
         comStandardJC.requestNumber?.let { variables.put("requestNumber", it) }
         comStandardJC.idOfJc?.let { variables.put("idOfJc", it) }
+        comStandardJC.taskId?.let { variables.put("taskId", it) }
         comStandardJC.dateOfFormation = Timestamp(System.currentTimeMillis())
         variables["dateOfFormation"] = comStandardJC.dateOfFormation!!
         variables["nameOfJc"] = userListRepository.findNameById(comStandardJC.idOfJc?.toLong())
@@ -215,6 +217,7 @@ class ComStandardService(
         comJcJustification.department?.let { variables.put("department", it) }
         comJcJustification.status?.let { variables.put("status", it) }
         comJcJustification.remarks?.let { variables.put("remarks", it) }
+        comJcJustification.taskId?.let { variables.put("taskId", it) }
         comJcJustification.datePrepared = Timestamp(System.currentTimeMillis())
         variables["datePrepared"] = comJcJustification.datePrepared!!
 
@@ -273,6 +276,7 @@ class ComStandardService(
         variables["Yes"] = comJustificationDecision.accentTo
         variables["No"] = comJustificationDecision.accentTo
         comJustificationDecision.comments.let { variables.put("comments", it) }
+        comJustificationDecision.taskId.let { variables.put("taskId", it) }
         if (variables["Yes"] == true) {
             comJcJustificationRepository.findByIdOrNull(comJustificationDecision.approvalID)
                 ?.let { comJcJustification ->
@@ -307,6 +311,7 @@ class ComStandardService(
         variables["Yes"] = comJustificationDecision.accentTo
         variables["No"] = comJustificationDecision.accentTo
         comJustificationDecision.comments.let { variables.put("comments", it) }
+        comJustificationDecision.taskId.let { variables.put("taskId", it) }
         if (variables["Yes"] == true) {
             comJcJustificationRepository.findByIdOrNull(comJustificationDecision.approvalID)
                 ?.let { comJcJustification ->
@@ -345,6 +350,7 @@ class ComStandardService(
         comStdDraft.clause?.let { variables.put("clause", it) }
         comStdDraft.special?.let { variables.put("special", it) }
         comStdDraft.uploadedBy?.let { variables.put("uploadedBy", it) }
+        comStdDraft.taskId?.let { variables.put("taskId", it) }
         comStdDraft.uploadDate = Timestamp(System.currentTimeMillis())
         variables["uploadDate"] = comStdDraft.uploadDate!!
         variables["uploadedByName"] = userListRepository.findNameById(comStdDraft.uploadedBy?.toLong())

@@ -4864,10 +4864,7 @@ class QADaoServices(
                 qaPersonnelInchargeRepo.findByIdOrNull(personnel.id ?: -1L)
                         ?.let { foundPersonnelDetails ->
 
-                            personnelDetails = commonDaoServices.updateDetails(
-                                    personnel,
-                                    foundPersonnelDetails
-                            ) as QaPersonnelInchargeEntity
+                            personnelDetails = commonDaoServices.updateDetails(personnel, foundPersonnelDetails) as QaPersonnelInchargeEntity
 
                             with(personnelDetails) {
                                 modifiedBy = commonDaoServices.concatenateName(user)

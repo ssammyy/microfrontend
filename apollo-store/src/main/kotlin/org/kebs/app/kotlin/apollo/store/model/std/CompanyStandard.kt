@@ -46,4 +46,8 @@ class CompanyStandard {
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null
+
+    @Column(name = "PROCESS_ID")
+    @Basic
+    var processId: String? = null
 }

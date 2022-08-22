@@ -8,7 +8,29 @@
         text-align: center;
         margin-bottom: 15px;
     }
+    .error-msg {
+        color: red;
+        display: inline-block;
+        position: absolute;
+        top: 34px;
+        /* font-size: 10px; */
+        font-size: 75%;
+        margin-top: 2.604167em;
+        top: calc(100% - 1.72916667em);
+    }
+    .fix-error-icon {
+        top: 27px;
+    }
+
 </style>
+<div *ngIf="displayError" >
+    <!-- <span class="glyphicon glyphicon-remove form-control-feedback fix-error-icon"></span> -->
+    <span class="sr-only">(error)</span>
+    <div class="error-msg">
+        {{ errorMsg }}
+    </div>
+</div>
+
 <div class="container-fluid" style="margin-top: 5%">
     <form (ngSubmit)="saveStandard()" [formGroup]="stdRequestFormGroup" class="form">
 
@@ -17,14 +39,60 @@
 
         <div class="form-body">
             <div class="form-group">
-                <label>Division/Department</label>
+                <label><b>Enter your Full Names</b></label>
+                <mat-form-field class="example-full-width has-label" [ngClass]="displayFieldCss(stdRequestFormGroup, 'name')">
+                    <input type="text"
+                           matInput
+                           id="name"
+                           placeholder="Full Names *"
+                           (ngModelChange)="textValidationType($event)"
+                           formControlName="name">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'name')" errorMsg="Please Enter Your Full Names">
+                    </app-field-error-display>
+                </mat-form-field>
+            </div>
+            <div class="form-group">
+                <label><b>Enter Phone Number</b></label>
+                <mat-form-field class="example-full-width has-label" [ngClass]="displayFieldCss(stdRequestFormGroup, 'phone')">
+                    <input type="text" name="phone" number="true"
+                           matInput
+                           id="phone"
+                           placeholder="Phone Number *"
+                           (ngModelChange)="numberValidationType($event)"
+                           formControlName="phone">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'phone')" errorMsg="Please Enter Your Phone Number">
+                    </app-field-error-display>
+                </mat-form-field>
+            </div>
+            <div class="form-group">
+                <label><b>Enter your Email address</b></label>
+
+                <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailRegister===true}">
+                    <input
+                            type="email"
+                            matInput
+                            placeholder="Email Address *"
+                            [errorStateMatcher]="matcher"
+                            formControlName="email"
+                            (ngModelChange)="emailValidationRegister($event)">
+                    <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                        Please enter a valid email address
+                    </mat-error>
+                    <mat-error *ngIf="emailFormControl.hasError('required')">
+                        Email is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="form-group">
+                <label><b>Sector</b></label>
                 <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
                         class="form-control" required
                         formControlName="departmentId"
                         name="departmentId" (change)="onSelectDepartment($event.target.value)"
                         [class.is-invalid]="formStdRequest.departmentId.invalid && formStdRequest.departmentId.touched">
                     <option disabled>--Select Department--</option>
-                    <option *ngFor="let department of departments" value="{{department.id}}">{{department.name}}</option>
+                    <option *ngFor="let department of departments"
+                            value="{{department.id}}">{{department.name}}</option>
                 </select>
             </div>
             <div class="form-group">
@@ -59,35 +127,14 @@
                         name="productSubCategoryId"
                         [class.is-invalid]="formStdRequest.productSubCategoryId.invalid && formStdRequest.productSubCategoryId.touched">
                     <option disabled>--Select Sub Category--</option>
-                    <option *ngFor="let productSub of productsSubCategory" [value]="productSub.id">{{productSub.name}}</option>
+                    <option *ngFor="let productSub of productsSubCategory"
+                            [value]="productSub.id">{{productSub.name}}</option>
                 </select>
-            </div>
-
-            <div class="form-group">
-                <label><b>Enter your name</b></label>
-                <input [class.is-invalid]="formStdRequest.name.invalid && formStdRequest.name.touched"
-                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                       class="form-control one-column-input" formControlName="name" name="name"
-                       placeholder="name" type="text">
-            </div>
-            <div class="form-group">
-                <label><b>Enter Phone Number</b></label>
-                <input [class.is-invalid]="formStdRequest.phone.invalid && formStdRequest.phone.touched"
-                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                       class="form-control one-column-input" formControlName="phone" name="phone"
-                       placeholder="+25470000000" type="text">
-            </div>
-            <div class="form-group">
-                <label><b>Enter your Email address</b></label>
-                <input [class.is-invalid]="formStdRequest.email.invalid && formStdRequest.email.touched"
-                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                       class="form-control one-column-input" formControlName="email" name="email"
-                       placeholder="joedoe@gmail.com" type="email">
             </div>
 
 
             <div style="margin: 3em 0 2em 0">
-                <button [disabled]="!stdRequestFormGroup.valid" class="login-button" type="submit">SUBMIT</button>
+                <button  class="login-button" type="submit">SUBMIT</button>
 
             </div>
 

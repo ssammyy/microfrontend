@@ -638,7 +638,7 @@
                                                     <ng2-smart-table [settings]="settingsLabResultsParam" [source]="workPlanInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>
                                                 </div>
                                             </div>
-                                            <div *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested!=null">
+                                            <div *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested.length!=0">
                                                 <div *ngFor="let role of roles">
                                                     <div  *ngIf="role == 'MS_IO_MODIFY'" class="form-row">
                                                         <div class="col-md-12 mb-3">
@@ -1483,6 +1483,14 @@
                                                     class="mat-button-wrapper">APPROVE/REJECT SCHEDULE</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                                && workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus "
+                                                     (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-APPROVE/REJECT SCHEDULE</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
                                             <button *ngIf="workPlanInspection?.hofAssignedDetails != null" (click)="openModalAddDetails('reAssignHOF')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -1502,6 +1510,17 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod== false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHod"
+                                                     (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-APPROVE/REJECT PRELIMINARY REPORT</span>
+
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
@@ -1515,6 +1534,22 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT FINAL PRELIMINARY REPORT</span>
+
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                     (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-APPROVE/REJECT FINAL PRELIMINARY REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1536,6 +1571,7 @@
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.hodRecommendationStatus
                                                 && workPlanInspection?.destructionDocId != null
                                                 && workPlanInspection?.msEndProcessRemarks == null
                                                 && workPlanInspection?.msProcessEndedStatus == false
@@ -1549,6 +1585,7 @@
                                             </button>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.hodRecommendationStatus
                                                 && workPlanInspection?.appealStatus
                                                 && workPlanInspection?.destructionDocId == null
                                                 && workPlanInspection?.msEndProcessRemarks == null
@@ -1558,12 +1595,45 @@
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL REMARKS</span>
-
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.hodRecommendationStatus
+                                                && workPlanInspection?.destructionDocId == null
+                                                && workPlanInspection?.msEndProcessRemarks == null
+                                                && workPlanInspection?.msProcessEndedStatus == false
+                                                && workPlanInspection?.destructionRecommended == false"
+                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
+                                            <div *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            && workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false
+                                            && workPlanInspection?.rejectedStatus">
+                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
+                                                        data-target="#workPlanModal"
+                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">UPDATE WORK-PLAN</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </div>
+
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus ==false
+                                                && workPlanInspection?.rejectedStatus && workPlanInspection?.submittedForApprovalStatus
+                                                 && workPlanInspection?.onsiteStartStatus ==false"
+                                                     (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-SUBMIT FOR APPROVAL</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.complaintId!= null
                                                 && workPlanInspection?.approvedStatus ==false && workPlanInspection?.submittedForApprovalStatus ==false && workPlanInspection?.onsiteStartStatus ==false"
                                                      (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"
@@ -1686,6 +1756,29 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatus && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
+                                                    (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#preliminaryReportModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE PRELIMINARY</span>
+
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatus && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
+                                                    (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#preliminaryReportModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE PRELIMINARY</span>
+
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+
 
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                             && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
@@ -1698,6 +1791,33 @@
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL REPORT</span>
 
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatus== false
+                                            && workPlanInspection?.preliminaryReport?.approvedStatusHod && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
+                                            && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal == false
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal
+                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
+                                                     (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE FINAL REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                            && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatus== false
+                                            && workPlanInspection?.preliminaryReport?.approvedStatusHod && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
+                                            && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal
+                                            && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
+                                                     (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1776,6 +1896,27 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatus"
+                                                     (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-APPROVE/REJECT PRELIMINARY REPORT</span>
+
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.updatedStatus== false && workPlanInspection?.resubmitStatus == false
+                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus && workPlanInspection?.preliminaryReport?.approvedStatusHod == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHod"
+                                                     (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-APPROVE/REJECT PRELIMINARY REPORT</span>
+
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
 
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.msPreliminaryReportStatus
@@ -1791,6 +1932,32 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.finalReportGenerated
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                     (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-APPROVE/REJECT FINAL REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
+                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus  == false && workPlanInspection?.resubmitStatus  == false
+                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.finalReportGenerated
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal  && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                     (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-APPROVE/REJECT FINAL REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
                                         </div>
                                     </div>
 
@@ -1799,40 +1966,42 @@
 
                                 <br/>
                                 <b>Document Details:</b>
-                                <div *ngIf="workPlanInspection.scfDocId != null">
-                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.scfDocId}"
-                                       (click)="viewWorkPlanFileSaved(data)"
-                                       class="btn btn-sm btn-primary">Sample Collection View</i>
-                                </div>
-                                <div *ngIf="workPlanInspection.ssfDocId != null">
-                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.ssfDocId}"
-                                       (click)="viewWorkPlanFileSaved(data)"
-                                       class="btn btn-sm btn-primary">Sample Submission View</i>
-                                </div>
-                                <div *ngIf="workPlanInspection.seizureDocId != null">
-                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.seizureDocId}"
-                                       (click)="viewWorkPlanFileSaved(data)"
-                                       class="btn btn-sm btn-primary">Seizure View</i>
-                                </div>
-                                <div *ngIf="workPlanInspection.declarationDocId != null">
-                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.declarationDocId}"
-                                       (click)="viewWorkPlanFileSaved(data)"
-                                       class="btn btn-sm btn-primary">Declaration View</i>
-                                </div>
-                                <div *ngIf="workPlanInspection.chargeSheetDocId != null">
-                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.chargeSheetDocId}"
-                                       (click)="viewWorkPlanFileSaved(data)"
-                                       class="btn btn-sm btn-primary">Charge Sheet View</i>
-                                </div>
-                                <div *ngIf="workPlanInspection.dataReportDocId != null">
-                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.dataReportDocId}"
-                                       (click)="viewWorkPlanFileSaved(data)"
-                                       class="btn btn-sm btn-primary">Data Report View</i>
-                                </div>
-                                <div *ngIf="workPlanInspection.destructionDocId != null">
-                                    <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.destructionDocId}"
-                                       (click)="viewWorkPlanFileSaved(data)"
-                                       class="btn btn-sm btn-primary">Destruction Report View</i>
+                                <div>
+                                    <div *ngIf="workPlanInspection.scfDocId != null">
+                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.scfDocId}"
+                                           (click)="viewWorkPlanFileSaved(data)"
+                                           class="btn btn-sm btn-primary">Sample Collection View</i>
+                                    </div>
+                                    <div *ngIf="workPlanInspection.ssfDocId != null">
+                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.ssfDocId}"
+                                           (click)="viewWorkPlanFileSaved(data)"
+                                           class="btn btn-sm btn-primary">Sample Submission View</i>
+                                    </div>
+                                    <div *ngIf="workPlanInspection.seizureDocId != null">
+                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.seizureDocId}"
+                                           (click)="viewWorkPlanFileSaved(data)"
+                                           class="btn btn-sm btn-primary">Seizure View</i>
+                                    </div>
+                                    <div *ngIf="workPlanInspection.declarationDocId != null">
+                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.declarationDocId}"
+                                           (click)="viewWorkPlanFileSaved(data)"
+                                           class="btn btn-sm btn-primary">Declaration View</i>
+                                    </div>
+                                    <div *ngIf="workPlanInspection.chargeSheetDocId != null">
+                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.chargeSheetDocId}"
+                                           (click)="viewWorkPlanFileSaved(data)"
+                                           class="btn btn-sm btn-primary">Charge Sheet View</i>
+                                    </div>
+                                    <div *ngIf="workPlanInspection.dataReportDocId != null">
+                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.dataReportDocId}"
+                                           (click)="viewWorkPlanFileSaved(data)"
+                                           class="btn btn-sm btn-primary">Data Report View</i>
+                                    </div>
+                                    <div *ngIf="workPlanInspection.destructionDocId != null">
+                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.destructionDocId}"
+                                           (click)="viewWorkPlanFileSaved(data)"
+                                           class="btn btn-sm btn-primary">Destruction Report View</i>
+                                    </div>
                                 </div>
 
                             </div>
@@ -1952,7 +2121,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1979,7 +2148,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks2"><b>Please write, in detail, your feedback:</b></label>
+                                        <label ><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -2033,7 +2202,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea  matInput type="text"
                                                        formControlName="remarks"
@@ -2103,7 +2272,7 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="approvalStatus2"><b>Select Status</b></label>
+                                        <label ><b>Select Status</b></label>
                                         <mat-form-field>
                                             <mat-select placeholder="Please Select an option"
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
@@ -2113,7 +2282,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="remarks2"><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks3" matInput type="text"
                                                       formControlName="remarks"
@@ -2422,12 +2591,12 @@
                                     <div>
                                         <label for="bsNumber"><b>BS Number</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="bsNumber" matInput type="text" placeholder="Please Enter Bs Number received date" formControlName="bsNumber" name="bsNumber"
+                                            <input id="bsNumber" matInput type="text" placeholder="Please Enter Bs Number" formControlName="bsNumber" name="bsNumber"
                                                    [class.is-invalid]="formSampleSubmitBSNumberForm.bsNumber.invalid && formSampleSubmitBSNumberForm.bsNumber.touched">
                                         </mat-form-field>
                                         <label for="submittedDate"><b>Received Date</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Bs Number received date" formControlName="submittedDate" name="submittedDate"
+                                            <input id="submittedDate" matInput type="date" placeholder="Please Enter Received date" formControlName="submittedDate" name="submittedDate"
                                                    [class.is-invalid]="formSampleSubmitBSNumberForm.submittedDate.invalid && formSampleSubmitBSNumberForm.submittedDate.touched">
                                         </mat-form-field>
                                         <label for="remarksBsNumber"><b>Please write, in detail, your feedback for Attached BS Number:</b></label>
@@ -5493,4 +5662,268 @@
         </div>
     </div>
     <!-- End Sample Collect Modal -->
+
+    <!-- Work Plan UPDATE Modal -->
+    <div class="modal fade" id="workPlanModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fill in bellow activity Details</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="addNewScheduleForm">
+                        <div class="form-group bmd-form-group is-filled">
+                            <h5 class="mb-3" style="color: #0066B1">Work-Plan Details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Department</b></label>
+                                        <select (change)="onChangeSelectedDepartment()"
+                                                [class.is-invalid]="submitted && formNewScheduleForm.complaintDepartment.errors && formNewScheduleForm.complaintDepartment.invalid"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="complaintDepartment" name="complaintDepartment" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.complaintDepartment.errors && formNewScheduleForm.complaintDepartment.invalid" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.complaintDepartment.errors.required">Department is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Division</b></label>
+                                        <select [class.is-invalid]="formNewScheduleForm.divisionId.errors && formNewScheduleForm.divisionId.invalid"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="divisionId" name="divisionId" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.divisionId.errors
+                                        && formNewScheduleForm.divisionId.invalid" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.divisionId.errors.required">Division is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Name of Activity</b></label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="nameActivity" name="nameActivity" required
+                                               [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.errors">
+                                        <div *ngIf="submitted && formNewScheduleForm.nameActivity.errors && formNewScheduleForm.nameActivity.invalid" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.nameActivity.errors.required">Name of Activity is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Date of activity</b> </label>
+                                        <input [class.is-invalid]="formNewScheduleForm.timeActivityDate.invalid && formNewScheduleForm.timeActivityDate.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="timeActivityDate"
+                                               name="timeActivityDate" required type="date">
+                                        <div *ngIf="submitted && formNewScheduleForm.timeActivityDate.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.timeActivityDate.errors.required">Date of Activity is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group" *ngIf="county$ | async as apps">
+                                        <label><b>County</b></label>
+                                        <select (change)="updateSelectedCounty()"
+                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="county" name="county" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
+                                            >{{app.county}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group" *ngIf="town$ | async as apps">
+                                        <label><b>Town/Market center</b></label>
+                                        <select (change)="updateSelectedTown()"
+                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
+                                                    [ngValue]="app.id">{{app.town}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Other</b></label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="locationActivityOther" name="locationActivityOther" required
+                                               [class.is-invalid]="formNewScheduleForm.locationActivityOther.invalid && formNewScheduleForm.locationActivityOther.errors">
+                                        <div *ngIf="submitted && formNewScheduleForm.locationActivityOther.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.locationActivityOther.errors.required">Other is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select Product Category</b> </label>
+                                        <select (change)="onChangeSelectedProductClassification()"
+                                                [class.is-invalid]="formNewScheduleForm.standardCategory.invalid && formNewScheduleForm.standardCategory.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="standardCategory" name="standardCategory" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of standardProductCategory | filterPipe: {status: true}" [value]="app.id">{{app.standardCategory}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.standardCategory.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.standardCategory.errors.required">Product Category is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select Broad Product Category</b> </label>
+                                        <select (change)="onChangeSelectedBroadProductCategory()"
+                                                [class.is-invalid]="formNewScheduleForm.broadProductCategory.invalid && formNewScheduleForm.broadProductCategory.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="broadProductCategory" name="broadProductCategory" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.broadProductCategory.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.broadProductCategory.errors.required">Broad Product Category is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select Product Category</b> </label>
+                                        <select (change)="onChangeSelectedProductCategory()"
+                                                [class.is-invalid]="formNewScheduleForm.productCategory.invalid && formNewScheduleForm.productCategory.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
+                                                formControlName="productCategory" id="productCategory" name="productCategory" >
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.productCategory.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.productCategory.errors.required">Product Category is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select Product</b> </label>
+                                        <select (change)="onChangeSelectedMyProduct()"
+                                                [class.is-invalid]="formNewScheduleForm.product.invalid && formNewScheduleForm.product.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
+                                                formControlName="product" id="product" name="product" >
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</option>
+                                        </select><div *ngIf="submitted && formNewScheduleForm.product.errors" class="invalid-feedback">
+                                        <div *ngIf="formNewScheduleForm.product.errors.required">Product is required</div>
+                                    </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select Product Sub-Category</b> </label>
+                                        <select (change)="onChangeSelectedProductSubcategory()"
+                                                [class.is-invalid]="formNewScheduleForm.productSubCategory.invalid && formNewScheduleForm.productSubCategory.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
+                                                formControlName="productSubCategory" id="productSubCategory" name="productSubCategory" >
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.productSubCategory.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.productSubCategory.errors.required">Product Sub-Category is required</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Resources Required</b> </label>
+                                        <input [class.is-invalid]="formNewScheduleForm.resourcesRequired.invalid && formNewScheduleForm.resourcesRequired.errors"
+                                               class="form-control two-column-input" formControlName="resourcesRequired" name="resourcesRequired" required type="text">
+                                        <div *ngIf="submitted && formNewScheduleForm.resourcesRequired.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.resourcesRequired.errors.required">Resources Required is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Budget</b> </label>
+                                        <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"
+                                               class="form-control two-column-input" formControlName="budget" name="budget" required type="text">
+                                    </div>
+                                    <div *ngIf="submitted && formNewScheduleForm.budget.errors" class="invalid-feedback">
+                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                        <button *ngIf="addNewScheduleForm.valid" mat-raised-button   data-dismiss="modal"
+                                class="btn btn-success" (click)="onClickSaveWorkPlanScheduled()" type="button" >SUBMIT
+                        </button>
+                        <button *ngIf="addNewScheduleForm.invalid" mat-raised-button (click)="onClickSaveWorkPlanScheduled()" class="btn btn-success" type="button" >SUBMIT
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Work Plan Modal -->
 </div>

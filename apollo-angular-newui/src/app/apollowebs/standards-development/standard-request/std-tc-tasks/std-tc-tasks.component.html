@@ -229,58 +229,37 @@
                                                 </div>
 
                                                 <div class="row">
-                                                    <div class=" col-12">
-                                                        <div class="accordion" id="accordionExample">
-                                                            <div class="card z-depth-0 bordered">
-                                                                <div class="card-header" id="headingOne">
-                                                                    <h5 class="mb-0">
-                                                                        <button class="btn btn-link" type="button"
-                                                                                data-toggle="collapse"
-                                                                                data-target="#collapseOne"
-                                                                                aria-expanded="true"
-                                                                                aria-controls="collapseOne">
-                                                                            New Work Item Details
-                                                                        </button>
-                                                                    </h5>
-                                                                </div>
-                                                                <div id="collapseOne" class="collapse collapsed"
-                                                                     aria-labelledby="headingOne"
-                                                                     data-parent="#accordionExample">
-                                                                    <div class="card-body">
-                                                                        <ul class="list-group">
-                                                                            <li class="list-group-item active">{{actionRequest?.taskData?.proposalTitle}}</li>
-                                                                            <li class="list-group-item">{{"Scope: " + actionRequest?.taskData?.name}}</li>
-                                                                            <li class="list-group-item">{{"Purpose: " + actionRequest?.taskData?.purpose}}</li>
-                                                                            <li class="list-group-item">{{"Target Date: " + actionRequest?.taskData?.targetDate}}</li>
-                                                                            <li class="list-group-item">{{"Similar Standards: " + actionRequest?.taskData?.similarStandards}}</li>
-                                                                            <li class="list-group-item">{{"Liaison Organization: " + actionRequest?.taskData?.liaisonOrganisation}}</li>
-                                                                            <li class="list-group-item">{{"Preparatory Work-A draft is attached: " + actionRequest?.taskData?.draftAttached}}</li>
-                                                                            <li class="list-group-item">{{"An outline is attached: " + actionRequest?.taskData?.outlineAttached}}</li>
-                                                                            <li class="list-group-item">{{"It is not possible to attach either a draft or outline: " + actionRequest?.taskData?.outlineAttached}}</li>
-                                                                            <li class="list-group-item">{{"An outline will be sent later: " + actionRequest?.taskData?.outlineSentLater}}</li>
-                                                                            <li class="list-group-item">{{"Name of proposer: " + actionRequest?.taskData?.nameOfProposer}}</li>
-                                                                            <li class="list-group-item">{{"Organization: " + actionRequest?.taskData?.organization}}</li>
-                                                                            <li class="list-group-item">{{"Date of Circulation: " + actionRequest?.taskData?.circulationDate}}</li>
-                                                                            <li class="list-group-item">{{"Closing Date: " + actionRequest?.taskData?.closingDate}}</li>
-                                                                            <li class="list-group-item">{{"Date of Presentation: " + actionRequest?.taskData?.dateOfPresentation}}</li>
-                                                                            <li class="list-group-item">{{"Name of TC: " + actionRequest?.taskData?.nameOfTC}}</li>
-                                                                            <li class="list-group-item">{{"Reference Number given by Secretariat: " + actionRequest?.taskData?.referenceNumber}}</li>
-<!--                                                                            <li class="list-group-item"><label><b>Relevant-->
-<!--                                                                                Documents</b></label>-->
-<!--                                                                                <app-list-files [itemId]="itemId"-->
-<!--                                                                                                [type]="relevantDocumentsNWI"></app-list-files>-->
-<!--                                                                            </li>-->
-<!--                                                                            <li class="list-group-item"><label><b>Annex-->
-<!--                                                                                for Purpose & application</b></label>-->
-<!--                                                                                <app-list-files [itemId]="itemId"-->
-<!--                                                                                                [type]="filePurposeAnnex"></app-list-files>-->
-<!--                                                                            </li>-->
-                                                                        </ul>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
+                                                    <div class="card-body">
+                                                        <ul class="list-group">
+                                                            <h2>New Work Item Details</h2>
+                                                            <li class="list-group-item active">{{actionRequest?.taskData?.proposalTitle}}</li>
+                                                            <li class="list-group-item">{{"Scope: " + actionRequest?.taskData?.name}}</li>
+                                                            <li class="list-group-item">{{"Purpose: " + actionRequest?.taskData?.purpose}}</li>
+                                                            <li class="list-group-item">{{"Target Date: " + actionRequest?.taskData?.targetDate}}</li>
+                                                            <li class="list-group-item">{{"Similar Standards: " + actionRequest?.taskData?.similarStandards}}</li>
+                                                            <li class="list-group-item">{{"Liaison Organization: " + actionRequest?.taskData?.liaisonOrganisation}}</li>
+                                                            <li class="list-group-item">{{"Preparatory Work-A draft is attached: " + actionRequest?.taskData?.draftAttached}}</li>
+                                                            <li class="list-group-item">{{"An outline is attached: " + actionRequest?.taskData?.outlineAttached}}</li>
+                                                            <li class="list-group-item">{{"It is not possible to attach either a draft or outline: " + actionRequest?.taskData?.outlineAttached}}</li>
+                                                            <li class="list-group-item">{{"An outline will be sent later: " + actionRequest?.taskData?.outlineSentLater}}</li>
+                                                            <li class="list-group-item">{{"Name of proposer: " + actionRequest?.taskData?.nameOfProposer}}</li>
+                                                            <li class="list-group-item">{{"Organization: " + actionRequest?.taskData?.organization}}</li>
+                                                            <li class="list-group-item">{{"Date of Circulation: " + actionRequest?.taskData?.circulationDate}}</li>
+                                                            <li class="list-group-item">{{"Closing Date: " + actionRequest?.taskData?.closingDate}}</li>
+                                                            <li class="list-group-item">{{"Date of Presentation: " + actionRequest?.taskData?.dateOfPresentation}}</li>
+                                                            <li class="list-group-item">{{"Name of TC: " + actionRequest?.taskData?.nameOfTC}}</li>
+                                                            <li class="list-group-item">{{"Reference Number given by Secretariat: " + actionRequest?.taskData?.id}}</li>
+                                                            <!--                                                                            <li class="list-group-item"><label><b>Relevant-->
+                                                            <!--                                                                                Documents</b></label>-->
+                                                            <!--                                                                                <app-list-files [itemId]="itemId"-->
+                                                            <!--                                                                                                [type]="relevantDocumentsNWI"></app-list-files>-->
+                                                            <!--                                                                            </li>-->
+                                                            <!--                                                                            <li class="list-group-item"><label><b>Annex-->
+                                                            <!--                                                                                for Purpose & application</b></label>-->
+                                                            <!--                                                                                <app-list-files [itemId]="itemId"-->
+                                                            <!--                                                                                                [type]="filePurposeAnnex"></app-list-files>-->
+                                                            <!--                                                                            </li>-->
+                                                        </ul>
                                                     </div>
                                                 </div>
 
@@ -288,6 +267,8 @@
                                             </div>
                                             <input hidden ngModel="{{actionRequest?.taskId}}"
                                                    value="{{actionRequest?.taskId}}" name="taskId" id="taskId">
+                                            <input hidden ngModel="{{actionRequest?.taskData.id}}"
+                                                   value="{{actionRequest?.taskData.id}}" name="nwiId" id="id">
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" #closeModal (click)="hideModel()" data-dismiss="modal">Close</button>
 

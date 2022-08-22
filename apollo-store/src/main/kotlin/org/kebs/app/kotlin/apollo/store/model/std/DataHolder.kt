@@ -286,6 +286,16 @@ interface EmailListHolder{
     fun getCompanyName(): String?;
 }
 
+interface UserEmailListHolder{
+    fun getUserEmail(): String?;
+    fun getFirstName(): String?;
+    fun getLastName(): String?;
+}
+
+interface UserIdHolder{
+    fun getUserId();
+}
+
 interface ManufacturerStatusHolder{
     fun getManufacturerStatus(): Long?
 }

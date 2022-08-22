@@ -4,38 +4,35 @@ import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/c
 import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import {
+    Ballot_Draft,
     CommentMade,
     CommentMadeRetrieved,
     PublicReviewDraft, PublicReviewDraftWithName,
-    StandardDocuments
+    StandardDocuments, Vote, VoteRetrieved
 } from "./commitee-model";
 import {DataHolderB, Department} from "./request_std.model";
+import {AllBatchInvoiceDetailsDto, GenerateInvoiceDto, PermitEntityDto} from "../qa/qa.model";
 
 @Injectable({
     providedIn: 'root'
 })
-export class PublicReviewService {
+export class BallotService {
 
     protocol = `https://`;
     baseUrl = ApiEndpointService.DOMAIN.LOCAL_DEV
 
-    private apiServerUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/publicReview/`;
+    private apiServerUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/ballot/`;
 
     constructor(private http: HttpClient) {
     }
 
-    //get all approved committee drafts
-    public getAllApprovedCommitteeDrafts(): any {
-        return this.http.get<any>(`${this.apiServerUrl}getAllApprovedCds`)
-    }
-
-    //upload  Minutes For PRD
-    public uploadMinutesForPrd(cdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
-        const url = `${this.apiServerUrl}upload/prdMinutes`;
+    //upload  Minutes For Ballot Draft
+    public uploadMinutesForBallot(prdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
+        const url = `${this.apiServerUrl}upload/ballotMinutes`;
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'cdId': cdId, 'type': doctype, 'docName': docName}
+            }, params: {'prdId': prdId, 'type': doctype, 'docName': docName}
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -46,13 +43,13 @@ export class PublicReviewService {
         );
     }
 
-    //upload Draft Documents For PRD
-    public uploadPrdDraftDocuments(cdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
-        const url = `${this.apiServerUrl}upload/prdDraftDocuments`;
+    //upload Draft Documents For Ballot Draft
+    public uploadBallotDraftDocuments(prdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
+        const url = `${this.apiServerUrl}upload/ballotDraftDocuments`;
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'cdId': cdId, 'type': doctype, 'docName': docName}
+            }, params: {'prdId': prdId, 'type': doctype, 'docName': docName}
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -63,35 +60,20 @@ export class PublicReviewService {
         );
     }
 
-    //upload Public Review Draft Name
-    public preparePublicReviewDraft(publicReviewDraft: PublicReviewDraft, cdId: string): Observable<any> {
+    //upload Ballot Review Draft Name
+    public prepareBallotDraft(ballotDraft: Ballot_Draft, prdId: string): Observable<any> {
         const params = new HttpParams()
-            .set('cdId', cdId)
-        return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'preparepr', publicReviewDraft, {params})
+            .set('prdId', prdId)
+        return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'prepareBallot', ballotDraft, {params})
     }
 
     //upload  PRD Document
-    public uploadPRDDocument(prdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
-        const url = `${this.apiServerUrl}upload/prd`;
+    public uploadBallotDocument(ballotId: string, data: FormData, doctype: string, docName: string): Observable<any> {
+        const url = `${this.apiServerUrl}upload/ballot`;
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'prdId': prdId, 'type': doctype, 'docName': docName}
-        }).pipe(
-            map(function (response: any) {
-                return response;
-            }),
-            catchError((fault: HttpErrorResponse) => {
-                return throwError(fault);
-            })
-        );
-    }
-    public uploadEditedPRDDocument(prdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
-        const url = `${this.apiServerUrl}upload/editedPrd`;
-        return this.http.post<any>(url, data, {
-            headers: {
-                'enctype': 'multipart/form-data'
-            }, params: {'prdId': prdId, 'type': doctype, 'docName': docName}
+            }, params: {'ballotId': ballotId, 'type': doctype, 'docName': docName}
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -102,10 +84,28 @@ export class PublicReviewService {
         );
     }
 
-    //get all Public Review drafts
-    public getAllPublicReviewDrafts(): any {
-        return this.http.get<any>(`${this.apiServerUrl}getAllPrds`)
+
+    //get all Ballot drafts
+    public getAllBallotDrafts(): any {
+        return this.http.get<any>(`${this.apiServerUrl}getBallots`)
     }
+
+    //vote
+    public vote(vote: Vote): Observable<any> {
+        const url =`${this.apiServerUrl}` + 'voteBallot';
+
+        return this.http.post<Vote>(url, vote).pipe(
+            map(function (response: Vote) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+
+    }
+
 
     //make comment
     public makeCommentUnLoggedInUsers(comment: CommentMade): Observable<any> {
@@ -123,12 +123,11 @@ export class PublicReviewService {
     }
 
     //sendToDepartments
-    public sendToDepartments(department: DataHolderB, publicReviewId:string): Observable<any> {
+    public sendToDepartments(department: DataHolderB, publicReviewId: string): Observable<any> {
 
         const params = new HttpParams()
             .set('publicReviewDraftId', publicReviewId)
         return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'sendToDepartments', department, {params})
-
 
 
     }
@@ -148,9 +147,9 @@ export class PublicReviewService {
     }
 
 
-    //retrieve comment for logged in user
-    public retrieveComment(): Observable<any> {
-        return this.http.get<CommentMadeRetrieved>(`${this.apiServerUrl}` + 'getUserLoggedInCommentsOnPrd')
+    //retrieve vote for logged in user
+    public retrieveVote(): Observable<any> {
+        return this.http.get<VoteRetrieved>(`${this.apiServerUrl}` + 'getMyBallotVotes')
 
     }
 
@@ -171,11 +170,11 @@ export class PublicReviewService {
         );
     }
 
-    //get All Comments On Prd
-    public getAllCommentsOnPrd(PrdId: any): Observable<any> {
-        const url = `${this.apiServerUrl}getAllCommentsOnPrd`;
+    //get All Votes On Ballot
+    public getAllVotesOnBallot(BallotId: any): Observable<any> {
+        const url = `${this.apiServerUrl}getAllBallotVotes`;
         const params = new HttpParams()
-            .set('publicReviewDraftId', PrdId)
+            .set('ballotId', BallotId)
         return this.http.get<CommentMadeRetrieved>(url, {params}).pipe(
             map(function (response: any) {
                 return response;
@@ -191,14 +190,6 @@ export class PublicReviewService {
     public approvePublicReviewDraft(publicReviewDraft: PublicReviewDraftWithName): Observable<any> {
 
         return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'approvePrd', publicReviewDraft)
-
-
-    }
-
-    //approve prd
-    public getApprovePublicReviewDraft(): Observable<any> {
-
-        return this.http.get<PublicReviewDraft>(`${this.apiServerUrl}` + 'getAllApprovedPrds')
 
 
     }

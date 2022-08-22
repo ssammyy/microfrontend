@@ -127,7 +127,7 @@ export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
     button.setAttribute('data-toggle','modal');
     if (mode==='approve'){
       this.actionRequest=task;
-      button.setAttribute('data-target','#approveModal');
+      button.setAttribute('data-target','#approve');
     }
     if (mode==='reject'){
       this.actionRequest=task;

@@ -229,28 +229,10 @@ export class ComplaintDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      // complianceStatus: {
-      //   title: 'COMPLIANCE STATUS',
-      //   type: 'boolean',
-      //   filter: false
-      // },
-      // sampled: {
-      //   title: 'Sampled',
-      //   type: 'string'
-      // },
-      // inspectionDate: {
-      //   title: 'Inspection Date',
-      //   type: 'date'
-      // },
-      // sampleUpdated: {
-      //   title: 'Sample Updated',
-      //   type: 'custom',
-      //   renderComponent: ConsignmentStatusComponent
-      // }
     },
     pager: {
       display: true,
-      perPage: 20,
+      perPage: 10,
     },
   };
 
@@ -336,6 +318,7 @@ export class ComplaintDetailsComponent implements OnInit {
 
     this.remarksSavedForm = this.formBuilder.group({
       processBy: null,
+      remarksStatus: null,
       remarksDescription: null,
     });
 

@@ -21,7 +21,7 @@ class ComStdAction {
 
     @Column(name="ASSIGNED_TO")
     @Basic
-    var assignedTo:String?=null
+    var assignedTo:Long?=null
 
     @Column(name="NAME_ASSIGNED_TO")
     @Basic
@@ -31,6 +31,10 @@ class ComStdAction {
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null
+
+    @Column(name = "PROCESS_ID")
+    @Basic
+    var processId: String? = null
 
 
 }

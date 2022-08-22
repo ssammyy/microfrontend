@@ -1,6 +1,6 @@
 export interface StandardRequest {
     id: number;
-    requestNumber:string;
+    requestNumber: string;
     name: string;
     phone: string;
     email: string;
@@ -8,23 +8,23 @@ export interface StandardRequest {
     tcId: number;
     productId: number;
     productSubCategoryId: number;
-    tcName:string;
-    departmentName:string;
-    productName:string;
-    productSubCategoryName:string;
+    tcName: string;
+    departmentName: string;
+    productName: string;
+    productSubCategoryName: string;
 }
 
 export interface ServerResponse {
-    httpStatus:string;
-    responseText:string;
+    httpStatus: string;
+    responseText: string;
     body: FlowableData;
 }
 
 
 export interface FlowableData {
-    processId:string;
-    isEnded:boolean;
-    body:StandardRequest;
+    processId: string;
+    isEnded: boolean;
+    body: StandardRequest;
 }
 
 export interface Product {
@@ -39,19 +39,21 @@ export interface ProductSubCategory {
 
 
 }
+
 export interface DataHolderB {
     department: string;
     departmentData: LiaisonOrganization;
 
 }
+
 export interface Department {
     id: number;
     name: string;
-    abbreviations:string;
-    codes:string;
-    createdBy:string;
-    createdOn:string;
-    status:string;
+    abbreviations: string;
+    codes: string;
+    createdBy: string;
+    createdOn: string;
+    status: string;
 
 }
 
@@ -68,31 +70,34 @@ export interface TechnicalCommitteeb {
     title: string;
     technical_committee_no: string;
     parentCommitte: string;
-    createdBy:string;
-    createdOn:string;
-    status:string;
+    createdBy: string;
+    createdOn: string;
+    status: string;
 
 }
+
 export interface ProductCategory {
     id: number;
     technicalCommitteeId: number;
     name: string;
     description: string;
-    createdBy:string;
-    createdOn:string;
-    status:string;
+    createdBy: string;
+    createdOn: string;
+    status: string;
 
 }
+
 export interface ProductSubCategoryB {
     id: number;
     productId: number;
     name: string;
     description: string;
-    createdBy:string;
-    createdOn:string;
-    status:string;
+    createdBy: string;
+    createdOn: string;
+    status: string;
 
 }
+
 export interface TechnicalCommittee {
     id: number;
     technical_committee_no: string;
@@ -108,24 +113,23 @@ export interface StandardTasks {
 }
 
 
-
 export interface TaskData {
     phone: string;
     departmentId: string;
     name: string;
     tcId: string;
-    productId:string;
+    productId: string;
     productSubCategoryId: string;
     email: string;
-    requestNumber:string;
-    submissionDate:string;
+    requestNumber: string;
+    submissionDate: string;
 
 }
 
 export interface StdTCSecWorkPlan {
     taskId: string;
     name: string;
-    taskData:StdWorkplanData
+    taskData: StdWorkplanData
 }
 
 export interface Stdtsectask {
@@ -147,13 +151,14 @@ export interface Stdtsectask {
     circulationDate: string;
     closingDate: string;
     referenceNumber: string;
-    dateOfPresentation:string;
+    dateOfPresentation: string;
     nameOfTC: string;
-    taskData:StandardRequest;
+    id: string;
+    taskData: StandardRequest;
 }
 
 
-export interface StdJustification{
+export interface StdJustification {
     taskId: string;
     spcMeetingDate: string;
     departmentId: string;
@@ -211,6 +216,7 @@ export interface justificationTaskData {
     name: string,
     nameOfProposer: string,
     taskId: string;
+    id: string;
 }
 
 export interface StdTCTask {
@@ -234,19 +240,20 @@ export interface StdSPCSECTask {
 export interface StdTCDecision {
     taskId: string;
     decision: string;
-    reason:string;
+    reason: string;
 }
 
 export interface VoteOnNWI {
     taskId: string;
     decision: string;
-    reason:string;
-    position:string;
-    organization:string;
-    userId:string;
+    reason: string;
+    position: string;
+    organization: string;
+    userId: string;
+    nwiId: string;
 }
 
-export interface HOFFeedback{
+export interface HOFFeedback {
     taskId: string;
     sdRequestID: string;
     isTc: string;
@@ -280,7 +287,7 @@ export interface EditorTask {
     taskData: StandardDraft;
 }
 
-export interface StdWorkplanData{
+export interface StdWorkplanData {
     taskId: string;
     spcMeetingDate: string;
     departmentId: string;
@@ -293,9 +300,10 @@ export interface StdWorkplanData{
     requestedBy: string;
     issuesAddressedBy: string;
     tcAcceptanceDate: string;
-    tcName:string;
-    departmentName:string;
-    targetDate:string;
+    tcName: string;
+    departmentName: string;
+    targetDate: string;
+    id: string;
 }
 
 export interface ReviewFormationOFTCRequest {
@@ -324,8 +332,7 @@ export interface CallForApplication {
 
 }
 
-export interface SubmitApplicationsTask
-{
+export interface SubmitApplicationsTask {
     taskId: string;
     name: string;
     taskData: CallForApplication;
@@ -360,15 +367,13 @@ export interface ReviewApplicationTask {
     taskId: string
 }
 
-export interface HOFRecommendationTask
-{
+export interface HOFRecommendationTask {
     taskId: string;
     name: string;
     taskData: HOFRecommendation;
 }
 
-export interface TCMemberDetails
-{
+export interface TCMemberDetails {
     taskId: string,
     userId: string,
     tcId: string,
@@ -382,15 +387,13 @@ export interface TCMemberDetails
 
 }
 
-export interface SACSummaryTask
-{
+export interface SACSummaryTask {
     taskId: string;
     name: string;
     taskData: SACSummary;
 }
 
-export interface SACSummary
-{
+export interface SACSummary {
     id: number,
     department: string,
     technicalCommittee: string,
@@ -414,8 +417,7 @@ export interface SACSummary
 
 }
 
-export interface HOFRecommendation
-{
+export interface HOFRecommendation {
     mobileNumber: string,
     commitment: string,
     nomineeName: string,
@@ -436,8 +438,7 @@ export interface HOFRecommendation
     email: string
 }
 
-export interface SubmitApplication
-{
+export interface SubmitApplication {
     technicalCommittee: string;
     organization: string;
     nomineeName: string;
@@ -458,27 +459,27 @@ export interface ProposalForTC {
     nameOfTC: string;
     purpose: string;
     liaisonOrganisation: string;
-    proposer:string;
-    scope:string;
-    targetDate:string;
-    subject:string;
-    proposedRepresentation:string;
-    draftOutlineImpossible:string;
-    programmeOfWork:string;
-    organization:string;
-    dateOfPresentation:string;
-    referenceNumber:string;
+    proposer: string;
+    scope: string;
+    targetDate: string;
+    subject: string;
+    proposedRepresentation: string;
+    draftOutlineImpossible: string;
+    programmeOfWork: string;
+    organization: string;
+    dateOfPresentation: string;
+    referenceNumber: string;
 }
 
 export interface StdJustificationDecision {
     taskId: string;
     decision: string;
-    referenceNo:string;
-    reason:string;
+    referenceNo: string;
+    reason: string;
 }
 
 export interface ServerResponseProcess {
-    processId:string;
+    processId: string;
     isEnded: boolean;
     body: any;
 }
@@ -527,6 +528,7 @@ export interface DecisionFeedback {
     status: boolean;
     comment: string;
 }
+
 export interface DecisionFeedback {
     taskId: string;
     user_id: string;
@@ -536,16 +538,16 @@ export interface DecisionFeedback {
 }
 
 
-
-export interface StdWorkPlan{
+export interface StdWorkPlan {
     taskId: string;
     targetDate: string;
     referenceNo: string;
     stageDate: string;
-    month:string;
-    stage:string;
-    subStage:string;
-    value:string;
+    month: string;
+    stage: string;
+    subStage: string;
+    value: string;
+    id: string;
 }
 
 export interface DraughtsmanTask {

@@ -616,6 +616,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                     GET("/list-on-going", handler::getAllWorkPlanOnGoingList)
                     GET("/list-my-task", handler::getAllWorkPlanMyTaskList)
                     POST("/new", handler::saveNewWorkPlanSchedule)
+                    PUT("/update", handler::updateWorkPlanSchedule)
                     GET("/details", handler::getWorkPlanInspectionDetails)
                     "/update".nest {
                         PUT("/submit-for-approval", handler::submitWorkPlanScheduleEntry)
@@ -648,6 +649,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
+//                        PUT("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
                         PUT("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
                 }
@@ -696,7 +698,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
     @Bean
     fun kraApiRoutes(handler: StandardsLevyHandler) = router {
         "/api/v1/kra".nest {
-            POST("/receiveSL2Payment".and(contentType(MediaType.TEXT_PLAIN)), handler::processReceiveSL2Payment)
+            POST("/receiveSL2Payment".and(contentType(MediaType.APPLICATION_JSON)), handler::processReceiveSL2Payment)
             //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
 
         }

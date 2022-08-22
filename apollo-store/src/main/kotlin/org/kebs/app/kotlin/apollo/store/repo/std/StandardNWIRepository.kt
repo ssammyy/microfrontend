@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface StandardNWIRepository:JpaRepository<StandardNWI,Long> {
+
+
 }

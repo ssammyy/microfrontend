@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 
-@RequestMapping("api/v1/migration")
+@RequestMapping("api/v1/migration/null")
 class ComStandardController (val comStandardService: ComStandardService,
                              val standardRequestService: StandardRequestService,
                              private val commonDaoServices: CommonDaoServices,
@@ -71,7 +71,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** get HOD Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOD_TWO_SD_READ')")
+    @PreAuthorize("hasAuthority('HOD_TWO_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getHODTasks")
     fun getHODTasks():List<TaskDetails>
     {
@@ -79,7 +79,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** process Assign Standard Request **********************************************************
-    @PreAuthorize("hasAuthority('HOD_TWO_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('HOD_TWO_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/assignRequest")
     @ResponseBody
     fun assignRequest(@RequestBody comStdAction: ComStdAction): ServerResponse{
@@ -87,7 +87,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** get Project Leader Tasks **********************************************************
-    @PreAuthorize("hasAuthority('PL_SD_READ')")
+    @PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getPlTasks")
     fun getPlTasks():List<TaskDetails>
     {
@@ -95,7 +95,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** process Form Joint Committee **********************************************************
-    @PreAuthorize("hasAuthority('PL_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('PL_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/formJointCommittee")
     @ResponseBody
     fun formJointCommittee(@RequestBody comStandardJC: ComStandardJC,user: UsersEntity): ServerResponse{
@@ -103,7 +103,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** process upload Justification **********************************************************
-    @PreAuthorize("hasAuthority('PL_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('PL_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/prepareJustification")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -144,7 +144,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** get SPC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getSpcSecTasks")
     fun getSpcSecTasks():List<TaskDetails>
     {
@@ -152,7 +152,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //decision
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/decisionOnJustification")
     fun decisionOnJustification(@RequestBody comJustificationDecision: ComJustificationDecision) : List<TaskDetails>
     {
@@ -162,7 +162,7 @@ class ComStandardController (val comStandardService: ComStandardService,
 
 
     //approve Justification List
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/approveJustification")
     fun approveJustification(@RequestBody comJustificationDecision: ComJustificationDecision) : List<TaskDetails>
     {
@@ -170,7 +170,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** process Upload Company Draft **********************************************************
-    @PreAuthorize("hasAuthority('PL_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('PL_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/uploadDraft")
     @ResponseBody
     fun uploadDraft(@RequestBody comStdDraft: ComStdDraft): ServerResponse{
@@ -219,7 +219,7 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getDRNumber();
     }
     //********************************************************** get JC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('JC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('JC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getJcSecTasks")
     fun getJcSecTasks():List<TaskDetails>
     {
@@ -281,7 +281,7 @@ class ComStandardController (val comStandardService: ComStandardService,
 
 
     //Decision on Company Draft
-    @PreAuthorize("hasAuthority('JC_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('JC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/decisionOnCompanyStdDraft")
     fun decisionOnCompanyStdDraft(@RequestBody comDraftDecision: ComDraftDecision) : List<TaskDetails>
     {
@@ -289,7 +289,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** get COM SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('COM_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('COM_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getComSecTasks")
     fun getComSecTasks():List<TaskDetails>
     {
@@ -298,7 +298,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     //********************************************************** process Edit Company Standard **********************************************************
 
     //Decision on Company Draft COM SEC
-    @PreAuthorize("hasAuthority('COM_SEC_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('COM_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/decisionOnComStdDraft")
     fun decisionOnComStdDraft(@RequestBody comDraftDecision: ComDraftDecision) : List<TaskDetails>
     {
@@ -306,7 +306,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** get HOP Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_READ')")
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getHopTasks")
     fun getHopTasks():List<TaskDetails>
     {
@@ -314,7 +314,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** process Upload Company Standard **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/uploadComStandard")
     @ResponseBody
     fun uploadComStandard(@RequestBody companyStandard: CompanyStandard): ServerResponse
@@ -363,7 +363,7 @@ class ComStandardController (val comStandardService: ComStandardService,
 
 
     //********************************************************** get SAC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ')")
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getSacSecTasks")
     fun getSacSecTasks():List<TaskDetails>
     {
@@ -392,7 +392,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //********************************************************** process Upload Company Standard **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_MODIFY')")
+    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/editCompanyStandard")
     @ResponseBody
     fun editCompanyStandard(@RequestBody editCompanyStandard: EditCompanyStandard): ServerResponse

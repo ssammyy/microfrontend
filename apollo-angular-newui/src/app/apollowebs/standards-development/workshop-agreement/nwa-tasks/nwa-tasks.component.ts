@@ -2,11 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angu
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
-import {
-    DiSdtDECISION, NWADiSdtJustification,
-    NWAJustification,
-    NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft,
-    NwaTasks, NWAWDDecision, NWAWorkShopDraft, UpdateNwaGazette, UploadNwaGazette, UsersEntity
+import {NwaTasks,UsersEntity
 } from "../../../../core/store/data/std/std.model";
 import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -420,9 +416,9 @@ export class NwaTasksComponent implements OnInit {
     }
 
 
-    if (mode==='prepPd'){
+    if (mode==='preparePD'){
       this.actionRequest=task;
-      button.setAttribute('data-target','#prepPd');
+      button.setAttribute('data-target','#preparePD');
         this.preparePreliminaryDraftFormGroup.patchValue(
             {
                 taskId: this.actionRequest.taskId,
@@ -452,6 +448,8 @@ export class NwaTasksComponent implements OnInit {
             }
         );
     }
+
+
 
 
       if (mode==='editPreliminaryDraft'){
@@ -514,6 +512,7 @@ export class NwaTasksComponent implements OnInit {
                   taskId: this.actionRequest.taskId
               });
       }
+
       if (mode==='gazetteDate'){
           this.actionRequest=task;
           button.setAttribute('data-target','#gazettementModal');
@@ -616,7 +615,7 @@ export class NwaTasksComponent implements OnInit {
 
 
   uploadDiSdt(): void {
-
+      this.loadingText = "Saving...";
     this.SpinnerService.show();
     this.stdNwaService.prepareDisDtJustification(this.prepareDIJustificationFormGroup.value).subscribe(
         (response ) => {
@@ -787,6 +786,7 @@ export class NwaTasksComponent implements OnInit {
     }
 
     uploadPreliminaryDraft(): void {
+        this.loadingText = "Saving...";
         this.SpinnerService.show();
         //console.log(this.preparePreliminaryDraftFormGroup.value);
         this.stdNwaService.preparePreliminaryDraft(this.preparePreliminaryDraftFormGroup.value).subscribe(
@@ -839,6 +839,7 @@ export class NwaTasksComponent implements OnInit {
 
     }
     viewDIJustificationPDF(pdfId: number, fileName: string, applicationType: string): void {
+        this.loadingText = "Generating File...";
         this.SpinnerService.show();
         this.stdNwaService.viewDIJustificationPDF(pdfId).subscribe(
             (dataPdf: any) => {
@@ -856,6 +857,7 @@ export class NwaTasksComponent implements OnInit {
         );
     }
     editWorkshopDraft(): void {
+        this.loadingText = "Saving...";
         this.SpinnerService.show();
         //console.log(this.prepareWorkShopDraftFormGroup.value);
         this.stdNwaService.editWorkshopDraft(this.prepareWorkShopDraftFormGroup.value).subscribe(
@@ -950,6 +952,7 @@ export class NwaTasksComponent implements OnInit {
 
 
     onNwaUpload(): void {
+        this.loadingText = "Saving...";
         this.SpinnerService.show();
         //console.log(this.prepareStandardFormGroup.value);
         this.stdNwaService.uploadNwaStandard(this.prepareStandardFormGroup.value).subscribe(
@@ -1003,6 +1006,7 @@ export class NwaTasksComponent implements OnInit {
 
     }
     onSave(): void {
+        this.loadingText = "Saving...";
         this.SpinnerService.show();
         this.stdNwaService.uploadGazetteNotice(this.uploadNoticeFormGroup.value).subscribe(
             (response ) => {
@@ -1023,6 +1027,7 @@ export class NwaTasksComponent implements OnInit {
     }
 
     onUpdate(): void {
+        this.loadingText = "Updating...";
         this.SpinnerService.show();
         this.stdNwaService.updateGazettementDate(this.updateNoticeFormGroup.value).subscribe(
             (response ) => {
@@ -1044,6 +1049,7 @@ export class NwaTasksComponent implements OnInit {
 
 
     viewSTDFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.loadingText = "Generating Document...";
         this.SpinnerService.show();
         this.stdNwaService.viewStandardPDF(pdfId).subscribe(
             (dataPdf: any) => {
@@ -1179,6 +1185,7 @@ export class NwaTasksComponent implements OnInit {
   }
 
     viewJustificationPDF(pdfId: number, fileName: string, applicationType: string): void {
+        this.loadingText = "Generating Document...";
     this.SpinnerService.show();
     this.stdNwaService.viewJustificationPDF(pdfId).subscribe(
         (dataPdf: any) => {
@@ -1197,6 +1204,7 @@ export class NwaTasksComponent implements OnInit {
   }
 
   viewPDFile(pdfId: number, fileName: string, applicationType: string): void {
+      this.loadingText = "Generating Document...";
     this.SpinnerService.show();
     this.stdNwaService.viewPreliminaryDraftPDF(pdfId).subscribe(
         (dataPdf: any) => {
