@@ -3,9 +3,17 @@ package org.kebs.app.kotlin.apollo.api.payload.request
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import org.kebs.app.kotlin.apollo.api.service.AmountInWordsService
+import org.kebs.app.kotlin.apollo.api.service.BillStatus
+import org.kebs.app.kotlin.apollo.store.model.IdfItemsEntity
+import org.kebs.app.kotlin.apollo.store.model.IdfsEntity
+import org.kebs.app.kotlin.apollo.store.model.PaymentMethodsEntity
+import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.RfcCorEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.RfcEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.RfcItemEntity
+import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import javax.validation.Valid
@@ -74,17 +82,21 @@ class CocItem {
     var shipmentPartialNumber: Long = 0
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Description should be upto 150 characters")
     @JsonAlias("SHIPMENT_SEAL_NUMBERS")
     var shipmentSealNumbers: String? = null
 
     @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
+    @Size(max = 200, message = "Description should be upto 200 characters")
     var shipmentContainerNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 200, message = "Description should be upto 200 characters")
     @JsonAlias("SHIPMENT_GROSS_WEIGHT")
     var shipmentGrossWeight: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 200, message = "Description should be upto 200 characters")
     @JsonAlias("SHIPMENT_QUANTITY_DELIVERED")
     var shipmentQuantityDelivered: String? = null
 
@@ -93,6 +105,7 @@ class CocItem {
     var shipmentLineNumber: Long = 0
 
     @NotEmpty(message = "Required field")
+    @Pattern(regexp = "^[A-Za-z0-9_/-]+$", message = "Alphanumeric values expected for this field")
     @JsonAlias("SHIPMENT_LINE_HS_CODE")
     var shipmentLineHscode: String? = null
 
@@ -101,13 +114,16 @@ class CocItem {
     var shipmentLineQuantity: Double = 0.0
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "Shipment line unit can have upto 20 characters")
     @JsonAlias("Shipment Line Unit of Measure")
     var shipmentLineUnitofMeasure: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 200, message = "Description should be upto 200 characters")
     @JsonAlias("SHIPMENT_LINE_DESCRIPTION")
     var shipmentLineDescription: String? = null
 
+    @Size(max = 100, message = "VIN should be upto 100 characters")
     @JsonAlias("SHIPMENT_LINE_VIN")
     var shipmentLineVin: String? = null
 
@@ -115,23 +131,29 @@ class CocItem {
     @JsonAlias("SHIPMENT_LINE_STICKER_NUMBER")
     var shipmentLineStickerNumber: String? = null
 
+    @Size(max = 200, message = "ICS should be upto 200 characters")
     @JsonAlias("SHIPMENT_LINE_ICS")
     var shipmentLineIcs: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 200, message = "Standard reference should be upto 200 characters")
     @JsonAlias("SHIPMENT_LINE_STANDARDS_REFERENCE")
     var shipmentLineStandardsReference: String? = null
 
+    @Size(max = 200, message = "Licence reference should be upto 200 characters")
     @JsonAlias("SHIPMENT_LINE_LICENCE_REFERENCE")
     var shipmentLineLicenceReference: String? = null
 
+    @Size(max = 100, message = "Line registration should be upto 200 characters")
     @JsonAlias("SHIPMENT_LINE_REGISTRATION")
     var shipmentLineRegistration: String? = null
 
+    @Size(max = 100, message = "Brand name should be upto 200 characters")
     @JsonAlias("SHIPMENT_BRAND_NAME")
     var shipmentBrandName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Category should be upto 200 characters")
     @JsonAlias("PRODUCT_CATEGORY")
     var productCategory: String? = null
 
@@ -140,16 +162,26 @@ class CocItem {
 @JsonIgnoreProperties(ignoreUnknown = true)
 class CocEntityForm {
 
+    @NotEmpty(message = "Required field")
+    @Pattern(regexp = "^[A-Za-z0-9_/-]+$", message = "Only Alphanumeric values expected for this field")
+    @Size(max = 100, message = "Line registration should be upto 200 characters")
     @JsonAlias("COC_NUMBER")
     var cocNumber: String? = null
 
+    @Pattern(regexp = "^[A-Za-z0-9_/-]+$", message = "Only Alphanumeric values expected for this field")
+    @Size(max = 100, message = "ID number should be upto 200 characters")
     @JsonAlias("IDF NUMBER")
     var idfNumber: String? = null
 
+    @NotEmpty(message = "Required field")
+    @Pattern(regexp = "^[A-Za-z0-9_/-]+$", message = "Only Alphanumeric values expected for this field")
+    @Size(max = 100, message = "RFI number should be upto 200 characters")
     @JsonAlias("RFI_NUMBER")
     var rfiNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Pattern(regexp = "^[A-Za-z0-9_/-]+$", message = "Only Alphanumeric values expected for this field")
+    @Size(max = 100, message = "UCR number should be upto 200 characters")
     @JsonAlias("UCR_NUMBER")
     var ucrNumber: String? = null
 
@@ -172,9 +204,13 @@ class CocEntityForm {
 
 
     @NotEmpty(message = "Required field")
+    @Pattern(regexp = "^[yYNn]{1}$", message = "Only Y/N expected for this field")
+    @Size(max = 10, message = "should be upto 10 characters")
     @JsonAlias("CLEAN")
     var clean: String? = null
 
+    @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "hould be upto 400 characters")
     @JsonAlias("COC_REMARKS")
     var cocRemarks: String? = null
 
@@ -184,83 +220,111 @@ class CocEntityForm {
     var issuingOffice: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 30, message = "Should be upto 30 characters")
     @JsonAlias("IMPORTER_NAME")
     var importerName: String? = null
 
+    @Pattern(regexp = "^[A-Za-z0-9_/-]+$", message = "Only Alphanumeric values expected for this field")
+    @Size(max = 50, message = "Importer pin should be upto 50 characters")
     @JsonAlias("IMPORTER_PIN")
     var importerPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Adress 1 should be upto 150 characters")
     @JsonAlias("IMPORTER_ADDRESS_1")
     var importerAddress1: String? = null
 
 
+    @Size(max = 150, message = "Address 2 should be upto 150 characters")
     @JsonAlias("IMPORTER_ADDRESS_2")
     var importerAddress2: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "city should be upto 100 characters")
     @JsonAlias("IMPORTER_CITY")
     var importerCity: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Country should be upto 100 characters")
     @JsonAlias("IMPORTER_COUNTRY")
     var importerCountry: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "ZIP should be upto 75 characters")
     @JsonAlias("IMPORTER_ZIP_CODE")
     var importerZipCode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "Phone should be upto 20 characters")
+    @Pattern(regexp = "^[0-9+-]+$", message = "Only numeric, + and - values alowed values expected for this field")
     @JsonAlias("IMPORTER_TELEPHONE_NUMBER")
     var importerTelephoneNumber: String? = null
 
 
+    @Size(max = 30, message = "Fax should be upto 30 characters")
     @JsonAlias("IMPORTER_FAX_NUMBER")
     var importerFaxNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Email(message = "importer email is required")
+    @Size(max = 100, message = "Email should be upto 100 characters")
     @JsonAlias("IMPORTER_EMAIL")
     var importerEmail: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Name should be upto 100 characters")
     @JsonAlias("EXPORTER_NAME")
     var exporterName: String? = null
 
+
+    @Pattern(regexp = "^[A-Za-z0-9_/-]+$", message = "Only Alphanumeric values expected for this field")
+    @Size(max = 50, message = "PIN should be upto 50 characters")
     @JsonAlias("EXPORTER_PIN")
     var exporterPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Address 1 should be upto 150 characters")
     @JsonAlias("EXPORTER_ADDRESS_1")
     var exporterAddress1: String? = null
 
 
+    @Size(max = 150, message = "Address 2 should be upto 150 characters")
     @JsonAlias("EXPORTER_ADDRESS_2")
     var exporterAddress2: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("EXPORTER_CITY")
     var exporterCity: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("EXPORTER_COUNTRY")
     var exporterCountry: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "should be upto 75 characters")
     @JsonAlias("EXPORTER_ZIP_CODE")
     var exporterZipCode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "Phone should be upto 20 characters")
+    @Pattern(regexp = "^[0-9+-]+$", message = "Only numeric, + and - values alowed values expected for this field")
     @JsonAlias("EXPORTER_TELEPHONE_NUMBER")
     var exporterTelephoneNumber: String? = null
 
+    @Size(max = 75, message = "should be upto 75 characters")
     @JsonAlias("EXPORTER_FAX_NUMBER")
     var exporterFaxNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Email(message = "Should be a valid email")
+    @Size(max = 100, message = "should be upto 100 characters")
     @JsonAlias("EXPORTER_EMAIL")
     var exporterEmail: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("PLACE_OF_INSPECTION")
     var placeOfInspection: String? = null
 
@@ -270,18 +334,22 @@ class CocEntityForm {
     var dateOfInspection: Timestamp? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("PORT_OF_DESTINATION")
     var portOfDestination: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("SHIPMENT_MODE")
     var shipmentMode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("SHIPMENT_SEAL_NUMBER")
     var shipmentSealNumbers: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
     var shipmentContainerNumber: String? = null
 
@@ -291,6 +359,7 @@ class CocEntityForm {
     var shipmentGrossWeight: Double? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("COUNTRY_OF_SUPPLY")
     var countryOfSupply: String? = null
 
@@ -305,10 +374,12 @@ class CocEntityForm {
     var finalInvoiceExchangeRate: Double = 0.0
 
     @NotEmpty(message = "Required field")
+    @Size(max = 5, message = "should be upto 5 characters")
     @JsonAlias("FINAL_INVOICE_CURRENCY")
     var finalInvoiceCurrency: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("FINAL_INVOICE_NUMBER")
     var finalInvoiceNumber: String? = null
 
@@ -318,6 +389,7 @@ class CocEntityForm {
     var finalInvoiceDate: Timestamp? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 10, message = "should be upto 10 characters")
     @JsonAlias("ROUTE")
     var route: String? = null
 
@@ -334,42 +406,48 @@ class CocEntityForm {
 @JsonIgnoreProperties(ignoreUnknown = true)
 class NcrEntityForm {
 
-    @JsonAlias("COC_NUMBER")
+    @JsonAlias("NCR_NUMBER")
+    @Size(max = 100, message = "Should be upto 100 characters")
     var ncrNumber: String? = null
 
-    @JsonAlias("IDF NUMBER")
+    @JsonAlias("IDF_NUMBER")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var idfNumber: String? = null
 
     @JsonAlias("RFI_NUMBER")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var rfiNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("UCR_NUMBER")
     var ucrNumber: String? = null
 
     @JsonAlias("ACCEPTABLE_DOC_DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     var acceptableDocDate: Timestamp? = null
 
     @JsonAlias("FINAL_DOC_DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     var finalDocDate: Timestamp? = null
 
     @JsonAlias("RFC_DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     var rfcDate: Timestamp? = null
 
 
-    @JsonAlias("COC_ISSUED_DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonAlias("NCR_ISSUED_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     var ncrIssueDate: Timestamp? = null
 
 
     @NotEmpty(message = "Required field")
+    @Size(max = 5, message = "Should be upto 5 characters")
     @JsonAlias("CLEAN")
     var clean: String? = null
 
-    @JsonAlias("COC_REMARKS")
+    @JsonAlias("NCR_REMARKS")
+    @Size(max = 400, message = "Should be upto 400 characters")
     var ncrRemarks: String? = null
 
 
@@ -576,15 +654,19 @@ class CoiItem {
 class CoiEntityForm {
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var coiNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var idfNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var rfiNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var ucrNumber: String? = null
 
     @JsonAlias("ACCEPTABLE_DOC_DATE")
@@ -603,79 +685,101 @@ class CoiEntityForm {
 
 
     @NotEmpty(message = "Required field")
+    @Size(max = 5, message = "should be upto 5 characters")
     var clean: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 250, message = "should be upto 250 characters")
     var coiRemarks: String? = null
 
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "should be upto 100 characters")
     var issuingOffice: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var importerName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var importerPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var importerAddress1: String? = null
 
-
-    @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var importerAddress2: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var importerCity: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var importerCountry: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "should be upto 75 characters")
     var importerZipCode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "should be upto 20 characters")
     var importerTelephoneNumber: String? = null
 
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "should be upto 75 characters")
     var importerFaxNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Email(message = "Invalid email address")
+    @Size(max = 100, message = "should be upto 100 characters")
     var importerEmail: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var exporterName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "should be upto 100 characters")
     var exporterPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var exporterAddress1: String? = null
 
 
-    @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var exporterAddress2: String? = null
 
     @NotEmpty(message = "Required field")
     var exporterCity: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var exporterCountry: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "should be upto 75 characters")
     var exporterZipCode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "should be upto 20 characters")
     var exporterTelephoneNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "should be upto 75 characters")
     var exporterFaxNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "should be upto 1o0 characters")
+    @Email(message = "Invalid email address")
     var exporterEmail: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var placeOfInspection: String? = null
 
     @NotNull(message = "Required field")
@@ -683,24 +787,31 @@ class CoiEntityForm {
     var dateOfInspection: Timestamp? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var portOfDestination: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var shipmentMode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var countryOfSupply: String? = null
 
     @NotNull(message = "Required field")
+    @Min(value = 0, message = "should be greater than zero")
     var finalInvoiceFobValue: Double = 0.0
 
     @NotNull(message = "Required field")
+    @Min(value = 0, message = "should be greater than zero")
     var finalInvoiceExchangeRate: Double = 0.0
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var finalInvoiceCurrency: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var finalInvoiceNumber: String? = null
 
     @NotNull(message = "Required field")
@@ -708,9 +819,11 @@ class CoiEntityForm {
     var finalInvoiceDate: Timestamp? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var shipmentSealNumbers: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var shipmentContainerNumber: String? = null
 
     @NotNull(message = "Required field")
@@ -718,6 +831,7 @@ class CoiEntityForm {
     var shipmentGrossWeight: Double? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 10, message = "should be upto 10 characters")
     var route: String? = null
 
     @Valid
@@ -731,10 +845,12 @@ class CoiEntityForm {
 }
 
 class CorEntityForm {
-    @NotEmpty(message = "COR numnber is required")
+    @NotEmpty(message = "COR number is required")
+    @Size(max = 100, message = "should be upto 100 characters")
     var corNumber: String? = null
 
     @NotNull(message = "UCR Number is required")
+    @Size(max = 100, message = "should be upto 100 characters")
     var ucrNumber: String? = null
 
     @JsonAlias("ACCEPTABLE_DOC_DATE")
@@ -754,21 +870,27 @@ class CorEntityForm {
     var rfcDate: Timestamp? = null
 
     @NotEmpty(message = "Country of supply is required")
+    @Size(max = 50, message = "should be upto 50 characters")
     var countryOfSupply: String? = null
 
     @NotEmpty(message = "Inspection center is required")
+    @Size(max = 150, message = "should be upto 150 characters")
     var inspectionCenter: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var exporterName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var exporterAddress1: String? = null
 
-    @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var exporterAddress2: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "should be upto 150 characters")
+    @Email(message = "Invalid email address")
     var exporterEmail: String? = null
 
     @NotNull(message = "Booking date is required")
@@ -780,39 +902,51 @@ class CorEntityForm {
     var inspectionDate: Timestamp? = null
 
     @NotEmpty(message = "Make is required")
+    @Size(max = 100, message = "should be upto 100 characters")
     var make: String? = null
 
     @NotEmpty(message = "Field is required")
+    @Size(max = 100, message = "should be upto 100 characters")
     var model: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 80, message = "should be upto 80 characters")
     var chasisNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "should be upto 100 characters")
     var engineNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "should be upto 100 characters")
     var engineCapacity: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 10, message = "should be upto 10 characters")
     var yearOfManufacture: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 10, message = "should be upto 10 characters")
     var yearOfFirstRegistration: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var inspectionMileage: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 10, message = "should be upto 10 characters")
     var unitsOfMileage: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 250, message = "should be upto 250 characters")
     var inspectionRemarks: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var previousRegistrationNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var previousCountryOfRegistration: String? = null
 
     @NotNull(message = "Required field")
@@ -839,12 +973,15 @@ class CorEntityForm {
     var numberOfPassengers: Long? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var typeOfBody: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var bodyColor: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var fuelType: String? = null
 
     @NotNull(message = "Required field")
@@ -852,15 +989,19 @@ class CorEntityForm {
     var inspectionFee: Double? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "should be upto 100 characters")
     var inspectionFeeReceipt: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var transmission: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var inspectionOfficer: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "should be upto 20 characters")
     var inspectionFeeCurrency: String? = null
 
     @NotNull(message = "Required field")
@@ -872,6 +1013,7 @@ class CorEntityForm {
     var inspectionFeePaymentDate: Timestamp? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 10, message = "should be upto 10 characters")
     var route: String? = null
 
     @NotNull(message = "Required field")
@@ -881,6 +1023,7 @@ class CorEntityForm {
 
 class RfcItemForm {
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var declaredHsCode: String? = null
 
     @NotNull(message = "Required field")
@@ -888,140 +1031,203 @@ class RfcItemForm {
     var itemQuantity: Long? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "Should be upto 400 characters")
     var productDescription: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Should be upto 100 characters")
     var ownerPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var ownerName: String? = null
+
+    companion object {
+        fun fromEntity(rfc: RfcItemEntity): RfcItemForm {
+            return RfcItemForm().apply {
+                declaredHsCode = rfc.declaredHsCode
+                itemQuantity = rfc.itemQuantity?.toLong()
+                productDescription = rfc.productDescription
+                ownerPin = rfc.ownerPin
+                ownerName = rfc.ownerName
+            }
+        }
+
+        fun fromList(rfcs: List<RfcItemEntity>): List<RfcItemForm> {
+            val rfcData = mutableListOf<RfcItemForm>()
+            rfcs.forEach { rfcData.add(fromEntity(it)) }
+            return rfcData
+        }
+    }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class RfcEntityForm {
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var rfcNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var idfNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var ucrNumber: String? = null
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     var rfcDate: Date? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Should be upto 50 characters")
     var countryOfDestination: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Should be upto 50 characters")
     var applicationType: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var sorReference: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var solReference: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var importerName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Should be upto 100 characters")
     var importerPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var importerAddress1: String? = null
 
 
-    @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var importerAddress2: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var importerCity: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Should be upto 50 characters")
     var importerCountry: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "Should be upto 75 characters")
     var importerZipCode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "Should be upto 20 characters")
+    @Pattern(regexp = "^[0-9+-]*$", message = "Invalid phone number provided")
     var importerTelephoneNumber: String? = null
 
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "Should be upto 75 characters")
     var importerFaxNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Should be upto 150 characters")
+    @Email(message = "Invalid email address")
     var importerEmail: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var exporterName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Should be upto 100 characters")
     var exporterPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var exporterAddress1: String? = null
 
 
-    @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var exporterAddress2: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var exporterCity: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Should be upto 50 characters")
     var exporterCountry: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "Should be upto 75 characters")
     var exporterZipCode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "Should be upto 20 characters")
+    @Pattern(regexp = "^[0-9+-]*$", message = "Invalid phone number provided")
     var exporterTelephoneNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "Should be upto 75 characters")
     var exporterFaxNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Should be upto 100 characters")
+    @Email(message = "Invalid email address")
     var exporterEmail: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var placeOfInspection: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var placeOfInspectionAddress: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Should be upto 100 characters")
+    @Email(message = "Invalid email address")
     var placeOfInspectionEmail: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var placeOfInspectionContacts: String? = null
 
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var portOfLoading: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var portOfDischarge: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Should be upto 50 characters")
     var shipmentMethod: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Should be upto 50 characters")
     var countryOfSupply: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 10, message = "Should be upto 10 characters")
     var route: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "Should be upto 400 characters")
     var goodsCondition: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var assemblyState: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "Should be upto 400 characters")
     var linkToAttachedDocuments: String? = null
 
     @Valid
@@ -1068,6 +1274,54 @@ class RfcEntityForm {
         rfcEntity.goodsCondition = goodsCondition
         rfcEntity.assemblyState = assemblyState
         rfcEntity.linkToAttachedDocuments = linkToAttachedDocuments
+    }
+
+    companion object {
+        fun fromEntity(rfcEntity: RfcEntity, rfcItemEntity: List<RfcItemEntity>): RfcEntityForm {
+            return RfcEntityForm().apply {
+                rfcNumber = rfcEntity.rfcNumber
+                idfNumber = rfcEntity.idfNumber
+                ucrNumber = rfcEntity.ucrNumber
+                rfcDate = rfcEntity.rfcDate
+                countryOfDestination = rfcEntity.countryOfDestination
+                applicationType = rfcEntity.applicationType
+                solReference = rfcEntity.solReference
+                sorReference = rfcEntity.sorReference
+                importerName = rfcEntity.importerName
+                importerCountry = rfcEntity.importerCountry
+                importerAddress1 = rfcEntity.importerAddress1
+                importerAddress2 = rfcEntity.importerAddress2
+                importerCity = rfcEntity.importerCity
+                importerFaxNumber = rfcEntity.importerFaxNumber
+                importerPin = rfcEntity.importerPin
+                importerZipCode = rfcEntity.importerZipcode
+                importerTelephoneNumber = rfcEntity.importerTelephoneNumber
+                importerEmail = rfcEntity.importerEmail
+                exporterName = rfcEntity.exporterName
+                exporterPin = rfcEntity.exporterPin
+                exporterCity = rfcEntity.exporterCity
+                exporterAddress1 = rfcEntity.exporterAddress1
+                exporterAddress2 = rfcEntity.exporterAddress2
+                exporterCountry = rfcEntity.exporterCountry
+                exporterEmail = rfcEntity.exporterEmail
+                exporterFaxNumber = rfcEntity.exporterFaxNumber
+                exporterTelephoneNumber = rfcEntity.exporterTelephoneNumber
+                exporterZipCode = rfcEntity.exporterZipcode
+                placeOfInspection = rfcEntity.placeOfInspection
+                placeOfInspectionAddress = rfcEntity.placeOfInspectionAddress
+                placeOfInspectionContacts = rfcEntity.placeOfInspectionContacts
+                placeOfInspectionEmail = rfcEntity.placeOfInspectionEmail
+                portOfDischarge = rfcEntity.portOfDischarge
+                portOfLoading = rfcEntity.portOfLoading
+                shipmentMethod = rfcEntity.shipmentMethod
+                countryOfSupply = rfcEntity.countryOfSupply
+                route = rfcEntity.route
+                goodsCondition = rfcEntity.goodsCondition
+                assemblyState = rfcEntity.assemblyState
+                linkToAttachedDocuments = rfcEntity.linkToAttachedDocuments
+                items = RfcItemForm.fromList(rfcItemEntity)
+            }
+        }
     }
 }
 
@@ -1308,13 +1562,81 @@ class RfcCorForm {
         rfc.varField1 = version?.toString() ?: "1"
 
     }
+
+    companion object {
+        fun fromEntity(rfc: RfcCorEntity): RfcCorForm {
+            return RfcCorForm().apply {
+                rfcDate = rfc.rfcDate
+                countryOfDestination = rfc.countryOfDestination
+                idfNumber = rfc.idfNumber
+                ucrNumber = rfc.ucrNumber
+                rfcNumber = rfc.rfcNumber
+                // Importer
+                importerName = rfc.importerName
+                importerPin = rfc.importerPin
+                importerAddress1 = rfc.importerAddress1
+                importerAddress2 = rfc.importerAddress2
+                importerCity = rfc.importerCity
+                importerCountry = rfc.importerCountry
+                importerZipCode = rfc.importerZipcode
+                importerTelephoneNumber = rfc.importerTelephoneNumber
+                importerFaxNumber = rfc.importerFaxNumber
+                importerEmail = rfc.importerEmail
+                // Exporter
+                exporterName = rfc.exporterName
+                exporterPin = rfc.exporterPin
+                exporterAddress1 = rfc.exporterAddress1
+                exporterAddress2 = rfc.exporterAddress2
+                exporterCity = rfc.exporterCity
+                exporterCountry = rfc.exporterCountry
+                exporterZipCode = rfc.exporterZipcode
+                exporterTelephoneNumber = rfc.exporterTelephoneNumber
+                exporterEmail = rfc.exporterEmail
+                // Applicant details
+                applicantName = rfc.applicantName
+                applicantPin = rfc.applicantPin
+                applicantAddress1 = rfc.applicantAddress1
+                applicantAddress2 = rfc.applicantAddress2
+                applicantCity = rfc.applicantCity
+                applicantCountry = rfc.applicantCountry
+                applicantZipCode = rfc.applicantZipcode
+                applicantTelephoneNumber = rfc.applicantTelephoneNumber
+                applicantFaxNumber = rfc.applicantFaxNumber
+                applicantEmail = rfc.applicantEmail
+                // Inspection Details
+                placeOfInspection = rfc.placeOfInspection
+                placeOfInspectionAddress = rfc.placeOfInspectionAddress
+                placeOfInspectionEmail = rfc.placeOfInspectionEmail
+                placeOfInspectionContacts = rfc.placeOfInspectionContacts
+                portOfLoading = rfc.portOfLoading
+                portOfDischarge = rfc.portOfDischarge
+                shipmentMethod = rfc.shipmentMethod
+                countryOfSupply = rfc.countryOfSupply
+                goodsCondition = rfc.goodsCondition
+                assemblyState = rfc.assemblyState
+                linkToAttachedDocuments = rfc.linkToAttachedDocuments
+                preferredInspectionDate = rfc.preferredInspectionDate
+                // Vehicle
+                make = make
+                model = model
+                chassisNumber = chassisNumber
+                engineCapacity = engineCapacity
+                engineNumber = engineNumber
+                yearOfManufacture = yearOfManufacture
+                yearOfFirstRegistration = yearOfFirstRegistration
+                version = rfc.varField1?.toInt() ?: 1
+            }
+        }
+    }
 }
 
 class IdfItem {
     @NotEmpty(message = "Required field")
+    @Size(max = 250, message = "should be upto 250 characters")
     var itemDescription: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var hsCode: String? = null
 
     @NotNull(message = "Required field")
@@ -1325,78 +1647,123 @@ class IdfItem {
     var used: Boolean? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "should be upto 50 characters")
     var unitOfMeasure: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var applicableStandard: String? = null
 
     @NotNull(message = "Required field")
     @Min(value = 0, message = "Item Cost should be greater than or equal to zero")
     var itemCost: Long? = null
 
+    companion object {
+        fun fromEntity(idfItemsEntity: IdfItemsEntity): IdfItem {
+            return IdfItem()
+                    .apply {
+                        itemDescription = idfItemsEntity.itemDescription
+                        hsCode = idfItemsEntity.hsCode
+                        quantity = idfItemsEntity.quantity
+                        used = !"NEW".equals(idfItemsEntity.newUsed, true)
+                        unitOfMeasure = idfItemsEntity.unitOfMeasure
+                        applicableStandard = idfItemsEntity.applicableStandard
+                        itemCost = idfItemsEntity.itemCost
+                    }
+        }
+
+        fun fromList(items: List<IdfItemsEntity>): List<IdfItem> {
+            val idfIems = mutableListOf<IdfItem>()
+            items.forEach { idfIems.add(fromEntity(it)) }
+            return idfIems
+        }
+    }
+
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 open class IdfEntityForm {
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "should be upto 100 characters")
     var idfNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "should be upto 100 characters")
     var ucrNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var importerName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var importerAddress: String? = null
 
     @NotEmpty(message = "Required field")
+    @Email(message = "Invalid email address")
+    @Size(max = 100, message = "should be upto 100 characters")
     var importerEmail: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "should be upto 20 characters")
     var importerTelephoneNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var importerContactName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "should be upto 75 characters")
     var importerFaxNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var exporterName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var exporterAddress: String? = null
 
     @NotEmpty(message = "Required field")
+    @Email(message = "invalid email address")
+    @Size(max = 100, message = "should be upto 100 characters")
     var exporterEmail: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "should be upto 20 characters")
     var exporterTelephoneNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var exporterContactName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "should be upto 75 characters")
     var exporterFaxNumber: String? = null
 
 
     @NotEmpty(message = "Required field")
+    @Size(max = 15, message = "should be upto 15 characters")
     var countryOfSupply: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var portOfDischarge: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var portOfCustomsClearance: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var modeOfTransport: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 5, message = "should be upto 50 characters")
     var comesa: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 150 characters")
     var invoiceNumber: String? = null
 
     @NotNull(message = "Required field")
@@ -1404,6 +1771,7 @@ open class IdfEntityForm {
     var invoiceDate: Timestamp? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 5, message = "should be upto 5 characters")
     var currency: String? = null
 
     @NotNull(message = "Required field")
@@ -1431,6 +1799,7 @@ open class IdfEntityForm {
     var total: Double? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 250, message = "should be upto 250 characters")
     var observations: String? = null
 
     @NotNull(message = "Required field")
@@ -1439,6 +1808,45 @@ open class IdfEntityForm {
     @Valid
     @NotEmpty(message = "Required field")
     var items: List<IdfItem>? = null
+
+    companion object {
+        fun fromEntity(idf: IdfsEntity, itemList: List<IdfItemsEntity>): IdfEntityForm {
+            return IdfEntityForm().apply {
+                idfNumber = idf.idfNumber
+                ucrNumber = idf.ucr
+                idfNumber = idf.idfNumber
+                importerName = idf.importerName
+                importerAddress = idf.importerAddress
+                importerFaxNumber = idf.importerFax
+                importerTelephoneNumber = idf.importerTelephoneNumber
+                importerEmail = idf.importerEmail
+                importerContactName = idf.importerContactName
+                exporterName = idf.sellerName
+                exporterAddress = idf.sellerAddress
+                exporterFaxNumber = idf.sellerFax
+                exporterTelephoneNumber = idf.sellerTelephoneNumber
+                exporterContactName = idf.sellerContactName
+                exporterEmail = idf.sellerEmail
+                countryOfSupply = idf.countryOfSupply
+                portOfDischarge = idf.portOfDischarge
+                portOfCustomsClearance = idf.portOfCustomsClearance
+                modeOfTransport = idf.modeOfTransport
+                countryOfSupply = idf.countryOfSupply
+                comesa = idf.comesa
+                invoiceNumber = idf.invoiceNumber
+                invoiceDate = idf.invoiceDate
+                currency = idf.currency
+                exchangeRate = idf.exchangeRate ?: 0.0
+                fobValue = idf.fobValue ?: 0.0
+                freight = idf.freight ?: 0.0
+                insurance = idf.insurance ?: 0.0
+                observations = idf.observations ?: "NA"
+                otherCharges = idf.otherCharges ?: 0.0
+                total = idf.total
+                items = IdfItem.fromList(itemList)
+            }
+        }
+    }
 }
 
 class IdfCorForm : IdfEntityForm() {
@@ -1468,23 +1876,23 @@ class PvocKebsQueryForm {
     var documentType: String? = null
 
     @NotEmpty(message = "Cert number is required")
-    @Size(min = 1, max = 50, message = "Certificate number should be upto 50 characters")
+    @Size(min = 1, max = 100, message = "Certificate number should be upto 50 characters")
     var certNumber: String? = null
 
     @NotEmpty(message = "RFC number is required")
-    @Size(min = 1, max = 50, message = "RFC Number should be upto 50 characters")
+    @Size(min = 1, max = 100, message = "RFC Number should be upto 50 characters")
     var rfcNumber: String? = null
 
     @NotEmpty(message = "Invoice number is required")
-    @Size(min = 1, max = 50, message = "Invoice Number should be upto 50 characters")
+    @Size(min = 1, max = 100, message = "Invoice Number should be upto 50 characters")
     var invoiceNumber: String? = null
 
     @NotEmpty(message = "Invoice number is required")
-    @Size(min = 1, max = 50, message = "Invoice Number should be upto 50 characters")
+    @Size(min = 1, max = 100, message = "Invoice Number should be upto 50 characters")
     var idfNumber: String? = null
 
     @NotEmpty(message = "UCR number is required")
-    @Size(min = 1, max = 50, message = "IDF Number should be upto 50 characters")
+    @Size(min = 1, max = 100, message = "IDF Number should be upto 100 characters")
     var ucrNumber: String? = null
 
     @NotEmpty(message = "Query is required")
@@ -1579,42 +1987,55 @@ class KebsPvocQueryForm {
 
 class RiskProfileForm {
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Description should be upto 150 characters")
     var hsCode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 200, message = "Description should be upto 200 characters")
     var brandName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "Description should be upto 400 characters")
     var productDescription: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Description should be upto 50 characters")
     var countryOfSupply: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 200, message = "Description should be upto 200 characters")
     var manufacturer: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Description should be upto 150 characters")
     var traderName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Description should be upto 150 characters")
     var importerName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Description should be upto 100 characters")
     var importerPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 200, message = "Description should be upto 200 characters")
     var exporterName: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Description should be upto 100 characters")
     var exporterPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "Description should be upto 20 characters")
     var riskLevel: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "Description should be upto 400 characters")
     var riskDescription: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "Description should be upto 400 characters")
     var remarks: String? = null
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
@@ -1690,4 +2111,104 @@ class WaiverStatusForm {
 
     @NotNull(message = "Rejection/Approval remarks are required")
     val remarks: String? = null
+}
+
+class PaymentModes {
+    var accountNumber: String? = null
+    var usdAccountNumber: String? = null
+    var accountName: String? = null
+    var bankName: String? = null
+    var swiftCode: String? = null
+    var bankCode: String? = null
+
+    companion object {
+        fun fromEntity(pMethod: PaymentMethodsEntity): PaymentModes {
+            return PaymentModes().apply {
+                accountName = pMethod.bankAccountName
+                accountNumber = pMethod.bankAccountName
+                bankName = pMethod.bankName
+                usdAccountNumber = pMethod.bankAccountUsdNumber
+                swiftCode = pMethod.swiftCode
+                bankCode = pMethod.bankCode
+            }
+        }
+
+        fun fromList(toList: List<PaymentMethodsEntity>): List<PaymentModes> {
+            val bills = mutableListOf<PaymentModes>()
+            toList.forEach { bills.add(fromEntity(it)) }
+            return bills
+        }
+    }
+}
+
+class PvocInvoiceData {
+    var invoiceNumber: String? = null
+    var soldTo: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var invoiceDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var orderDate: Timestamp? = null
+    var orderNumber: String? = null
+    var customerNumber: String? = null
+    var customerCode: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var dueDate: Timestamp? = null
+    var paymentStatus: String? = null
+    var amount: BigDecimal? = null
+    var taxAmount: BigDecimal? = null
+    var vatAmount: BigDecimal? = null
+    var totalTaxAmount: BigDecimal? = BigDecimal.ZERO
+    var penaltyAmount: BigDecimal? = null
+    var totalAmount: BigDecimal? = null
+    var totalAmountAfterTax: BigDecimal? = null
+    var totalBalance: BigDecimal? = null
+    var discountAmount: BigDecimal? = null
+    var amountInWords: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var discountDate: Timestamp? = null
+    var currency: String? = null
+
+    companion object {
+        fun fromEntity(bill: BillPayments, clientId: String, corporateCode: String, amountInWordsService: AmountInWordsService): PvocInvoiceData {
+            val dt = PvocInvoiceData()
+            dt.apply {
+                invoiceNumber = bill.invoiceNumber.orEmpty()
+                customerCode = corporateCode
+                soldTo = clientId
+                invoiceDate = bill.paymentRequestDate
+                orderDate = bill.createOn
+                orderNumber = bill.billRefNumber
+                customerNumber = bill.customerCode
+                dueDate = bill.billDate
+                amount = bill.billAmount
+                penaltyAmount = bill.penaltyAmount
+                totalAmount = bill.totalAmount
+                totalAmountAfterTax = bill.totalAmount
+                totalBalance = bill.totalBalance
+                vatAmount = BigDecimal.ZERO
+                taxAmount = BigDecimal.ZERO
+                discountAmount = BigDecimal.ZERO
+                currency = bill.currencyCode
+                amountInWords = amountInWordsService.amountToWords(bill.totalAmount
+                        ?: BigDecimal.ZERO, bill.currencyCode.orEmpty())
+            }
+            dt.paymentStatus = when (bill.billStatus) {
+                BillStatus.PAID.status -> "PAID"
+                BillStatus.PENDING_PAYMENT.status -> "PENDING"
+                BillStatus.CLOSED.status -> "CLOSED"
+                else -> "OPEN"
+            }
+            return dt
+        }
+
+        fun fromList(toList: List<BillPayments>, clientId: String, corporateCode: String, amountInWordsService: AmountInWordsService): List<PvocInvoiceData> {
+            val bills = mutableListOf<PvocInvoiceData>()
+            toList.forEach { bills.add(fromEntity(it, clientId, corporateCode, amountInWordsService)) }
+            return bills
+        }
+    }
 }

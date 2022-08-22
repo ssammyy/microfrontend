@@ -75,6 +75,7 @@ interface IBillTransactionsEntityRepository : HazelcastRepository<BillTransactio
 @Repository
 interface IBillPaymentsRepository : HazelcastRepository<BillPayments, Long> {
     fun findByCorporateId(corporateId: Long, page: Pageable): Page<BillPayments>
+    fun findAllByCorporateIdAndBillNumberPrefixAndPaymentStatusIn(corporateId: Long?, billNumberPrefix: String, status: Iterable<Int>, pg: Pageable): Page<BillPayments>
     fun findAllByPaymentStatus(status: Int): List<BillPayments>
     fun findAllByPaymentStatusAndNextNoticeDateGreaterThan(status: Int, date: Date): List<BillPayments>
     fun findAllByBillNumberPrefixAndPaymentStatus(billNumberPrefix: String, status: Int): List<BillPayments>

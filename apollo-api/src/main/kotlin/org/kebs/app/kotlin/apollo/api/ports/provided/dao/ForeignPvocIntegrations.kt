@@ -735,6 +735,44 @@ class ForeignPvocIntegrations(
         return rfcEntity
     }
 
+    fun getIdfData(idfNumber: String, ucrNumber: String): IdfEntityForm {
+        val idfsEntity = when {
+            StringUtils.hasLength(ucrNumber) -> this.idfsRepository.findFirstByUcr(ucrNumber)
+            StringUtils.hasLength(idfNumber) -> this.idfsRepository.findFirstByIdfNumber(idfNumber)
+            else -> null
+        }
+        return idfsEntity?.let {
+            val items = idfsItemRepository.findByIdfId(it.id)
+            IdfEntityForm.fromEntity(idfsEntity, items)
+        } ?: throw ExpectedDataNotFound("IDF with UCR or IDF number not found")
+    }
+
+    fun getRfcData(rfcNumber: String, ucrNumber: String, documentType: String): Any {
+        when (documentType.toUpperCase()) {
+            "COR" -> {
+                val rfcEntity = when {
+                    StringUtils.hasLength(ucrNumber) -> this.rfcCorRepository.findByUcrNumber(ucrNumber)
+                    StringUtils.hasLength(rfcNumber) -> this.rfcCorRepository.findByRfcNumber(rfcNumber)
+                    else -> null
+                }
+                return rfcEntity?.let {
+                    RfcCorForm.fromEntity(rfcEntity)
+                } ?: throw ExpectedDataNotFound("COR RFC with UCR or RFC number not found")
+            }
+            else -> {
+                val rfcEntity = when {
+                    StringUtils.hasLength(ucrNumber) -> this.rfcRepository.findByUcrNumber(ucrNumber)
+                    StringUtils.hasLength(rfcNumber) -> this.rfcRepository.findByRfcNumber(rfcNumber)
+                    else -> null
+                }
+                return rfcEntity?.let {
+                    val items = rfcItemRepository.findByRfcId(it.id)
+                    RfcEntityForm.fromEntity(rfcEntity, items)
+                } ?: throw ExpectedDataNotFound("$documentType RFC with UCR or RFC number not found")
+            }
+        }
+    }
+
     @Transactional
     fun foreignIdfData(idf: IdfEntityForm, s: ServiceMapsEntity, user: PvocPartnersEntity): IdfsEntity? {
         val idfEntity = IdfsEntity()

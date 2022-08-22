@@ -6,9 +6,10 @@ import org.springframework.data.hazelcast.repository.HazelcastRepository
 
 interface IdfsEntityRepository : HazelcastRepository<IdfsEntity, Long> {
     fun findFirstByUcr(ucr: String): IdfsEntity?
+    fun findFirstByIdfNumber(idfNumber: String): IdfsEntity?
 }
 
 interface IdfItemsEntityRepository : HazelcastRepository<IdfItemsEntity, Long> {
-    fun findByIdfId(idfId: Long): List<IdfItemsEntity>?
+    fun findByIdfId(idfId: Long): List<IdfItemsEntity>
 }
 
