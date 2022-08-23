@@ -734,3 +734,74 @@ begin
     end if;
 end;
 /
+create  table DAT_KEBS_INT_STD_REMARKS
+(
+    id                   number   not null primary key,
+    PROPOSAL_ID            NUMBER,
+    REMARKS           varchar(350 char),
+    STATUS           varchar(350 char),
+    REMARK_BY            varchar(350),
+    ROLE          VARCHAR2(350 CHAR),
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_REMARK          VARCHAR2(350 CHAR)
+)
+/
+create sequence DAT_KEBS_INT_STD_REMARKS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_INT_STD_REMARKS_trg
+    before
+        insert
+    on DAT_KEBS_INT_STD_REMARKS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_INT_STD_REMARKS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+alter table SD_ADOPTION_PROPOSAL_JUSTIFICATION
+    add ASSIGNED_TO NUMBER ;
+/
+
+alter table SD_ADOPTION_PROPOSAL_JUSTIFICATION
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+alter table SD_ADOPTION_PROPOSAL
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_ADOPTION_PROPOSAL_COMMENTS
+    add PROPOSAL_ID NUMBER ;
+/
+
+alter table SD_IS_STANDARD_TB
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+alter table SD_IS_STANDARD_TB
+    add ASSIGNED_TO NUMBER ;
+/
+alter table SD_IS_GAZETTE_NOTICE
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+alter table SD_IS_GAZETTE_NOTICE
+    add ASSIGNED_TO NUMBER ;
+/
+
+alter table SD_IS_GAZETTEMENT
+    add PROCESS_ID VARCHAR(350 char) ;
+/
+alter table SD_IS_GAZETTEMENT
+    add ASSIGNED_TO NUMBER ;
+/
+
+
+
+
+
+
+
+

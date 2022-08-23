@@ -55,24 +55,6 @@ import {
     NwaJustificationFormComponent
 } from './apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component';
 import {
-    NwaJustificationTasksComponent
-} from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
-import {
-    NwaKnwSecTasksComponent
-} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
-import {
-    NwaDiSdtTasksComponent
-} from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
-import {
-    SacSecTasksComponent
-} from './apollowebs/standards-development/workshop-agreement/sac-sec-tasks/sac-sec-tasks.component';
-import {
-    HoSicTasksComponent
-} from './apollowebs/standards-development/workshop-agreement/ho-sic-tasks/ho-sic-tasks.component';
-import {
-    NwaHopTasksComponent
-} from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
-import {
     IsProposalFormComponent
 } from './apollowebs/standards-development/international-standard/international-standard-proposal/is-proposal-form/is-proposal-form.component';
 import {
@@ -343,9 +325,7 @@ import {
 import {
     PreparePreliminaryDraftComponent
 } from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
-import {
-    NwaPreliminaryDraftComponent
-} from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
+
 import {
     ComStdPlTaskComponent
 } from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
@@ -1132,41 +1112,6 @@ export const routes: Routes = [
         path: 'nwaJustification', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: NwaJustificationFormComponent}],
-    },
-    {
-        path: 'nwaJustificationTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: NwaJustificationTasksComponent}],
-    },
-    {
-        path: 'nwaKnwSecTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: NwaKnwSecTasksComponent}],
-    },
-    {
-        path: 'nwaDirStTasks', component: AdminLayoutComponent,
-        // canActivate: [RouteGuard],
-        children: [{path: '', component: NwaDiSdtTasksComponent}],
-    },
-    {
-        path: 'nwaHopTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: NwaHopTasksComponent}],
-    },
-    {
-        path: 'nwaSacSecTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: SacSecTasksComponent}],
-    },
-    {
-        path: 'nwaHoSicTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: HoSicTasksComponent}],
-    },
-    {
-        path: 'nwaPreparePD', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: NwaPreliminaryDraftComponent}],
     },
     {
         path: 'nwaTasks', component: AdminLayoutComponent,

@@ -5,6 +5,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.store.model.StagingStandardsLevyManufacturerPenalty
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
@@ -19,9 +20,9 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 //@CrossOrigin(origins = ["http://localhost:4200"])
-@RequestMapping("api/v1/migration/international_standard/null")
-class InternationalStandardController(
-    val internationalStandardService: InternationalStandardService,
+@RequestMapping("api/v1/migration/international_standard")
+class IntStandardController(
+    val internationalStandardService: IntStandardService,
     private val commonDaoServices: CommonDaoServices,
     private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
     private val isAdoptionJustificationRepository: ISAdoptionJustificationRepository,
@@ -85,17 +86,14 @@ class InternationalStandardController(
         return sm
     }
 
-
-
-
-
-    //********************************************************** get Stakeholders Tasks **********************************************************
     //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_READ')")
-    @GetMapping("/getISProposals")
-    fun getISProposals():List<TaskDetails>
+    @GetMapping("/getProposal")
+    @ResponseBody
+    fun getProposal(): MutableList<ProposalDetails>
     {
-        return internationalStandardService.getISProposals()
+        return internationalStandardService.getProposal()
     }
+
     //********************************************************** Submit Comments **********************************************************
    //view Proposal Document
     @GetMapping("/view/proposal")
@@ -124,29 +122,32 @@ class InternationalStandardController(
     fun submitAPComments(@RequestBody isAdoptionComments: ISAdoptionComments): ServerResponse{
         return ServerResponse(HttpStatus.OK,"Comment Has been submitted",internationalStandardService.submitAPComments(isAdoptionComments))
     }
-    //********************************************************** get TC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getTCSECTasks")
-    fun getTCSECTasks():List<TaskDetails>
+
+    @GetMapping("/getAllComments")
+    fun getAllComments(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISAdoptionComments>
     {
-        return internationalStandardService.getTCSECTasks()
+        return internationalStandardService.getAllComments(proposalId)
     }
+
+
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('SPC_SEC_SD_READ')" +
+            " or hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HOP_SD_READ') " +
+            " or hasAuthority('HO_SIC_SD_READ')  or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')  ")
+    @GetMapping("/getUserTasks")
+    fun getUserTasks():List<InternationalStandardTasks>
+    {
+        return internationalStandardService.getUserTasks()
+    }
+
 
     //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnProposal")
-    fun decisionOnProposal(@RequestBody iSDecision: ISDecision) : List<TaskDetails>
+    fun decisionOnProposal(@RequestBody iSDecision: ISDecision,internationalStandardRemarks: InternationalStandardRemarks) : List<InternationalStandardTasks>
     {
-        return internationalStandardService.decisionOnProposal(iSDecision)
+        return internationalStandardService.decisionOnProposal(iSDecision,internationalStandardRemarks)
     }
 
-    //********************************************************** get TC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getTCSeCTasks")
-    fun getTCSeCTasks():List<TaskDetails>
-    {
-        return internationalStandardService.getTCSeCTasks()
-    }
     //********************************************************** process upload Justification **********************************************************
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/prepareJustification")
@@ -187,13 +188,6 @@ class InternationalStandardController(
         return sm
     }
 
-    //********************************************************** get SPC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getSPCSECTasks")
-    fun getSPCSECTasks():List<TaskDetails>
-    {
-        return internationalStandardService.getSPCSECTasks()
-    }
 
     //view IS Justification Document
     @GetMapping("/view/justification")
@@ -219,34 +213,22 @@ class InternationalStandardController(
     //decision
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody isJustificationDecision: ISJustificationDecision) : List<TaskDetails>
+    fun decisionOnJustification(@RequestBody isJustificationDecision: ISJustificationDecision,internationalStandardRemarks: InternationalStandardRemarks) : List<InternationalStandardTasks>
     {
-        return internationalStandardService.decisionOnJustification(isJustificationDecision)
+        return internationalStandardService.decisionOnJustification(isJustificationDecision,internationalStandardRemarks)
     }
 
-    //********************************************************** get SPC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getSACSECTasks")
-    fun getSACSECTasks():List<TaskDetails>
-    {
-        return internationalStandardService.getSACSECTasks()
-    }
+
 
     //approve International Standard
     @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/approveStandard")
-    fun approveStandard(@RequestBody isJustificationDecision: ISJustificationDecision) : List<TaskDetails>
+    @PostMapping("/justificationDecision")
+    fun justificationDecision(@RequestBody isJustificationDecision: ISJustificationDecision,internationalStandardRemarks: InternationalStandardRemarks) : List<InternationalStandardTasks>
     {
-        return internationalStandardService.approveStandard(isJustificationDecision)
+        return internationalStandardService.justificationDecision(isJustificationDecision,internationalStandardRemarks)
     }
 
-    //********************************************************** get Head of Publishing Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getHOPTasks")
-    fun getHOPTasks():List<TaskDetails>
-    {
-        return internationalStandardService.getHOPTasks()
-    }
+
 
     //********************************************************** process upload Standard **********************************************************
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -274,7 +256,7 @@ class InternationalStandardController(
                 isStdDocumentId = isStandard.id
 
             }
-            internationalStandardService.uploadISFile(
+            internationalStandardService.uploadISDFile(
                 upload,
                 u,
                 "UPLOADS",
@@ -289,15 +271,6 @@ class InternationalStandardController(
         return sm
     }
 
-
-
-    //********************************************************** get Head of HO SIC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getHoSiCTasks")
-    fun getHoSiCTasks():List<TaskDetails>
-    {
-        return internationalStandardService.getHoSiCTasks()
-    }
 
     //view IS Justification Document
     @GetMapping("/view/iStandard")
@@ -329,59 +302,40 @@ class InternationalStandardController(
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Gazette Notice",internationalStandardService.uploadGazetteNotice(iSGazetteNotice))
     }
 
-    //upload gazzette notice document
-    @PostMapping("/gzt-file-upload")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun uploadISGFiles(
-        @RequestParam("isStandardID") isStandardID: Long,
-        @RequestParam("docFile") docFile: List<MultipartFile>,
-        model: Model
-    ): CommonDaoServices.MessageSuccessFailDTO {
+//    //upload gazzette notice document
+//    @PostMapping("/gzt-file-upload")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun uploadISGFiles(
+//        @RequestParam("isStandardID") isStandardID: Long,
+//        @RequestParam("docFile") docFile: List<MultipartFile>,
+//        model: Model
+//    ): CommonDaoServices.MessageSuccessFailDTO {
+//
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        val isGazette = isGazetteNoticeRepository.findByIdOrNull(isStandardID)?: throw Exception("IS GAZETTE DOCUMENT ID DOES NOT EXIST")
+//
+//        docFile.forEach { u ->
+//            val upload = SDISGazetteNoticeUploads()
+//            with(upload) {
+//                isGnDocumentId = isGazette.id
+//
+//            }
+//            internationalStandardService.uploadISGFile(
+//                upload,
+//                u,
+//                "UPLOADS",
+//                loggedInUser,
+//                "IS STANDARD"
+//            )
+//        }
+//
+//        val sm = CommonDaoServices.MessageSuccessFailDTO()
+//        sm.message = "Document Uploaded successfully"
+//
+//        return sm
+//    }
 
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val isGazette = isGazetteNoticeRepository.findByIdOrNull(isStandardID)?: throw Exception("IS GAZETTE DOCUMENT ID DOES NOT EXIST")
 
-        docFile.forEach { u ->
-            val upload = SDISGazetteNoticeUploads()
-            with(upload) {
-                isGnDocumentId = isGazette.id
-
-            }
-            internationalStandardService.uploadISGFile(
-                upload,
-                u,
-                "UPLOADS",
-                loggedInUser,
-                "IS STANDARD"
-            )
-        }
-
-        val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.message = "Document Uploaded successfully"
-
-        return sm
-    }
-
-    //view IS Gazettement Document
-    @GetMapping("/view/gazettement")
-    fun viewStandardGZFile(
-        response: HttpServletResponse,
-        @RequestParam("isStandardID") isStandardID: Long
-    ) {
-        val fileUploaded = internationalStandardService.findUploadedSTGFileBYId(isStandardID)
-        val fileDoc = commonDaoServices.mapClass(fileUploaded)
-        response.contentType = "application/pdf"
-//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
-        response.outputStream
-            .let { responseOutputStream ->
-                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
-                responseOutputStream.close()
-            }
-
-        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
-
-    }
 
     //********************************************************** process upload Gazettement Date **********************************************************
     @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")

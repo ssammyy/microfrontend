@@ -64,8 +64,7 @@ export class NwaJustificationFormComponent implements OnInit {
       issuesAddressed: ['', Validators.required],
       knwAcceptanceDate: ['', Validators.required],
         uploadedFiles: [],
-        DocDescription: [],
-        assignedTo:[]
+        DocDescription: []
       // postalAddress: ['', [Validators.required, Validators.pattern('P.O.BOX [0-9]{5}')]]
     });
 

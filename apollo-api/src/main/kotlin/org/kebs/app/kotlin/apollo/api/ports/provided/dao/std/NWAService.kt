@@ -53,19 +53,13 @@ class NWAService(private val runtimeService: RuntimeService,
                  private val notifications: Notifications,
                  private val bpmnService: StandardsLevyBpmn,
                  private val userListRepository: UserListRepository,
-                 private val standardNwaRemarksRepository: StandardNwaRemarksRepository
+                 private val standardNwaRemarksRepository: StandardNwaRemarksRepository,
+                 private val companyStandardRepository: CompanyStandardRepository,
 
 
                  ) {
 
     val PROCESS_DEFINITION_KEY = "sd_KenyaNationalWorkshopAgreementModule"
-    val TASK_CANDIDATE_TC_SEC ="TC_SEC"
-    val TASK_CANDIDATE_KNW_SEC ="KNW_SEC"
-    val TASK_CANDIDATE_SPC_SEC ="SPC_SEC"
-    val TASK_CANDIDATE_DI_SDT ="DI_SDT"
-    val TASK_CANDIDATE_HOP ="HOP"
-    val TASK_CANDIDATE_SAC_SEC ="SAC_SEC"
-    val TASK_CANDIDATE_HO_SIC ="HO_SIC"
 
     //deploy bpmn file
     fun deployProcessDefinition(): Deployment =repositoryService
@@ -108,7 +102,6 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaJustification.meetingDate?.let{ variables.put("meetingDate", it)}
         nwaJustification.knwSecretary?.let{ variables.put("knwSecretary", it)}
         nwaJustification.sl?.let{ variables.put("sl", it)}
-        nwaJustification.assignedTo?.let{ variables.put("assignedTo", it)}
         nwaJustification.requestedBy?.let{ variables.put("requestedBy", it)}
         nwaJustification.issuesAddressed?.let{ variables.put("issuesAddressed", it)}
         nwaJustification.knwAcceptanceDate?.let{ variables.put("knwAcceptanceDate", it)}
@@ -116,6 +109,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaJustification.department?.let{ variables.put("department", it)}
         nwaJustification.status?.let{ variables.put("status", it)}
         nwaJustification.remarks?.let{ variables.put("remarks", it)}
+        nwaJustification.assignedTo= companyStandardRepository.getKnwSecId()
 
         nwaJustification.submissionDate = Timestamp(System.currentTimeMillis())
         variables["submissionDate"] = nwaJustification.submissionDate!!
@@ -348,6 +342,7 @@ class NWAService(private val runtimeService: RuntimeService,
         loggedInUser.id?.let { variables["originator"] = it }
         nwaJustificationDecision.comments.let { variables.put("comments", it) }
         nwaJustificationDecision.taskId?.let { variables.put("taskId", it) }
+        nwaJustificationDecision.assignedTo= companyStandardRepository.getSpcSecId()
 
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
@@ -437,6 +432,7 @@ class NWAService(private val runtimeService: RuntimeService,
         variables["No"] = nwaJustificationDecision.accentTo
         nwaJustificationDecision.comments.let { variables.put("comments", it) }
         nwaJustificationDecision.taskId.let { variables.put("taskId", it) }
+        nwaJustificationDecision.assignedTo= companyStandardRepository.getKnwSecId()
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
@@ -550,7 +546,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaDiSdtJustification.identifiedNeed?.let{variable.put("identifiedNeed", it)}
         nwaDiSdtJustification.dateOfApproval?.let{variable.put("dateOfApproval", it)}
         nwaDiSdtJustification.jstNumber?.let{variable.put("jstNumber", it)}
-        nwaDiSdtJustification.assignedTo?.let{variable.put("assignedTo", it)}
+        nwaDiSdtJustification.assignedTo= companyStandardRepository.getDiDirectorId()
         nwaDiSdtJustification.datePrepared = commonDaoServices.getTimestamp()
         nwaDiSdtJustification.datePrepared?.let{variable.put("datePrepared", it)}
         nwaDiSdtJustification.taskId?.let{variable.put("taskId", it)}
@@ -658,6 +654,7 @@ class NWAService(private val runtimeService: RuntimeService,
         standardNwaRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         standardNwaRemarks.remarkBy = usersName
         if(variables["Yes"]==true){
+            workshopAgreement.assignedTo= companyStandardRepository.getTcSecId()
             nwaDisDtJustificationRepository.findByIdOrNull(workshopAgreement.approvalID)?.let { nwaDiSdtJustification->
                 val valueFound =getCDNumber()
                 with(nwaDiSdtJustification){
@@ -704,6 +701,7 @@ class NWAService(private val runtimeService: RuntimeService,
             }?: throw Exception("TASK NOT FOUND")
 
         }else if(variables["No"]==false) {
+            workshopAgreement.assignedTo= companyStandardRepository.getKnwSecId()
             nwaJustificationRepository.findByIdOrNull(workshopAgreement.jstNumber)?.let { nwaJustification->
 
                 with(nwaJustification){
@@ -770,6 +768,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaPreliminaryDraft.special?.let{variable.put("special", it)}
         nwaPreliminaryDraft.taskId?.let{variable.put("taskId", it)}
         nwaPreliminaryDraft.diJNumber?.let{variable.put("diJNumber", it)}
+        nwaPreliminaryDraft.assignedTo= companyStandardRepository.getKnwSecId()
         nwaPreliminaryDraft.datePdPrepared = commonDaoServices.getTimestamp()
         variable["datePdPrepared"] = nwaPreliminaryDraft.datePdPrepared!!
         loggedInUser.id?.let { variable["pdOriginator"] = it }
@@ -863,6 +862,7 @@ class NWAService(private val runtimeService: RuntimeService,
         standardNwaRemarks.remarkBy = usersName
         loggedInUser.id?.let { variables["vpdOriginator"] = it }
         if(variables["Yes"]==true){
+            nwaPreliminaryDraftDecision.assignedTo= companyStandardRepository.getHopId()
             nwaPreliminaryDraftRepository.findByIdOrNull(nwaPreliminaryDraftDecision.approvalID)?.let { nwaPreliminaryDraft->
 
                 with(nwaPreliminaryDraft){
@@ -907,6 +907,7 @@ class NWAService(private val runtimeService: RuntimeService,
             }?: throw Exception("TASK NOT FOUND")
 
         }else if(variables["No"]==false) {
+            nwaPreliminaryDraftDecision.assignedTo= companyStandardRepository.getTcSecId()
             nwaDisDtJustificationRepository.findByIdOrNull(nwaPreliminaryDraftDecision.diJNumber)?.let { nwaDiSdtJustification->
 
                 with(nwaDiSdtJustification){
@@ -975,6 +976,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaWorkShopDraft.processId?.let{variable.put("processId", it)}
         nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
         variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
+        nwaWorkShopDraft.assignedTo= companyStandardRepository.getSaSecId()
 
         //print(nwaWorkShopDraft.toString())
 
@@ -1073,6 +1075,7 @@ class NWAService(private val runtimeService: RuntimeService,
         standardNwaRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         standardNwaRemarks.remarkBy = usersName
         if(variables["Yes"]==true){
+            nwaWorkshopDraftDecision.assignedTo= companyStandardRepository.getHopId()
             val assignedKsNumber= getKSNumber()
 
             variables["ksNumber"] = assignedKsNumber
@@ -1123,6 +1126,7 @@ class NWAService(private val runtimeService: RuntimeService,
             }?: throw Exception("TASK NOT FOUND")
 
         }else if(variables["No"]==false) {
+            nwaWorkshopDraftDecision.assignedTo= companyStandardRepository.getKnwSecId()
             nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkshopDraftDecision.approvalID)?.let { nwaWorkShopDraft->
 
                 with(nwaWorkShopDraft){
@@ -1188,13 +1192,22 @@ class NWAService(private val runtimeService: RuntimeService,
         nWAStandard.dateSdUploaded = commonDaoServices.getTimestamp()
         variable["dateSdUploaded"] = nWAStandard.dateSdUploaded!!
         standardNwaRemarks.processId= nWAStandard.processId
+        nWAStandard.assignedTo= companyStandardRepository.getHoSicId()
+
+        var userList= companyStandardRepository.getSacSecEmailList()
+        val targetUrl = "https://kimsint.kebs.org/";
+        userList.forEach { item->
+            val recipient="stephenmuganda@gmail.com"
+            //val recipient= item.getUserEmail()
+            val subject = "New Company Standard"+  nWAStandard.ksNumber
+            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},A New standard has been approved and uploaded.Click on the Link below to view. ${targetUrl} "
+            if (recipient != null) {
+                notifications.sendEmail(recipient, subject, messageBody)
+            }
+        }
 
         //print(nWAStandard.toString())
         val nwaDetails = nwaStandardRepository.save(nWAStandard)
-        val recipient= "stephenmuganda@gmail.com"
-        val subject = "New Standard"+  nWAStandard.ksNumber
-        val messageBody= "New standard has been approved and uploaded"
-        notifications.sendEmail(recipient, subject, messageBody)
         // Send email to Legal
         variable["ID"] = nwaDetails.id
         runtimeService.createProcessInstanceQuery()
@@ -1284,6 +1297,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nWAGazetteNotice.description?.let{variable.put("description", it)}
         nWAGazetteNotice.taskId?.let{variable.put("taskId", it)}
         nWAGazetteNotice.dateUploaded = commonDaoServices.getTimestamp()
+        nWAGazetteNotice.assignedTo= companyStandardRepository.getHoSicId()
         variable["dateUploaded"] = nWAGazetteNotice.dateUploaded!!
         standardNwaRemarks.processId= nWAGazetteNotice.processId
         standardNwaRemarks.status = 1.toString()
@@ -1319,7 +1333,7 @@ class NWAService(private val runtimeService: RuntimeService,
                     ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
                 bpmnService.slAssignTask(
                     processInstance.processInstanceId,
-                    "Upload Gazzette notice on the Website",
+                    "Upload Gazette notice on the Website",
                     nWAGazetteNotice.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
                 )
 

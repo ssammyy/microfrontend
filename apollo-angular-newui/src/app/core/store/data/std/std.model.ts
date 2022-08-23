@@ -369,6 +369,7 @@ export interface NWAStandard {
     special: string;
     taskId: string;
     ksNumber: string;
+    processId: string;
 }
 
 export interface HoSicTasks {

@@ -27,5 +27,37 @@ class ISAdoptionComments {
     @Transient
     var taskId:String?=null
 
+    @Column(name="PROPOSAL_ID")
+    @Basic
+    var proposalID:Long? =null
+
+    @Column(name="TITLE")
+    @Basic
+    var commentTitle:String? =null
+
+    @Column(name="DOCUMENT_TYPE")
+    @Basic
+    var commentDocumentType:String? =null
+
+    @Column(name="ORGANIZATION")
+    @Basic
+    var comNameOfOrganization:String? =null
+
+    @Column(name="CLAUSE")
+    @Basic
+    var comClause:String? =null
+
+    @Column(name="PARAGRAPH")
+    @Basic
+    var comParagraph:String? =null
+
+    @Column(name="TYPE_OF_COMMENT")
+    @Basic
+    var typeOfComment:String? =null
+
+    @Column(name="PROPOSED_CHANGE")
+    @Basic
+    var proposedChange:String? =null
+
 
 }
