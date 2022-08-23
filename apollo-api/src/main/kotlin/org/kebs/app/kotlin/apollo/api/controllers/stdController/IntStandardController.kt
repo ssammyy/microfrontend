@@ -228,15 +228,51 @@ class IntStandardController(
         return internationalStandardService.justificationDecision(isJustificationDecision,internationalStandardRemarks)
     }
 
+    //approve International Standard
+    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/checkRequirements")
+    fun checkRequirements(@RequestBody isJustificationDecision: ISJustificationDecision,internationalStandardRemarks: InternationalStandardRemarks) : List<InternationalStandardTasks>
+    {
+        return internationalStandardService.checkRequirements(isJustificationDecision,internationalStandardRemarks)
+    }
+
+    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/editStandardDraft")
+    @ResponseBody
+    fun editStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft): ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.editStandardDraft(nwaWorkShopDraft))
+    }
+
+    @PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/draughtStandardDraft")
+    @ResponseBody
+    fun draughtStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft): ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandardDraft(nwaWorkShopDraft))
+    }
+
+    @PreAuthorize("hasAuthority('PROOFREADER_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/proofReadStandardDraft")
+    @ResponseBody
+    fun proofReadStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft): ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Successfully Proof Read Workshop Draft",internationalStandardService.proofReadStandardDraft(nwaWorkShopDraft))
+    }
+
 
 
     //********************************************************** process upload Standard **********************************************************
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/uploadISStandard")
     @ResponseBody
-    fun uploadISStandard(@RequestBody iSUploadStandard: ISUploadStandard): ServerResponse
+    fun uploadISStandard(@RequestBody iSUploadStandard: ISUploadStandard,isJustificationDecision: ISJustificationDecision,
+                         internationalStandardRemarks: InternationalStandardRemarks): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",internationalStandardService.uploadISStandard(iSUploadStandard))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",internationalStandardService.uploadISStandard(iSUploadStandard,isJustificationDecision,internationalStandardRemarks))
     }
 
     @PostMapping("/std-file-upload")

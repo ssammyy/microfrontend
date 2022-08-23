@@ -85,6 +85,25 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
     fun getComSecId(): Long
 
     @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='EDITOR_SD'",
+        nativeQuery = true
+    )
+    fun getEditorId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='DRAUGHTSMAN_SD'",
+        nativeQuery = true
+    )
+    fun getDraughtsmanId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='PROOFREADER_SD'",
+        nativeQuery = true
+    )
+    fun getProofReaderId(): Long
+
+
+    @Query(
         value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='TC_SEC_SD'",
         nativeQuery = true
     )

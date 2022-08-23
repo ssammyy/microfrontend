@@ -49,7 +49,8 @@ class IntStandardService (private val runtimeService: RuntimeService,
                           private val notifications: Notifications,
                           private val companyStandardRepository: CompanyStandardRepository,
                           private val bpmnService: StandardsLevyBpmn,
-                          private val internationalStandardRemarksRepository : InternationalStandardRemarksRepository
+                          private val internationalStandardRemarksRepository : InternationalStandardRemarksRepository,
+                          private val nwaWorkshopDraftRepository: NwaWorkShopDraftRepository,
 
                           ) {
     val PROCESS_DEFINITION_KEY = "sd_InternationalStandardsForAdoption"
@@ -587,7 +588,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
                             ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
                         bpmnService.slAssignTask(
                             processInstance.processInstanceId,
-                            "uploadKs",
+                            "checkRequirementsMet",
                             isJustificationDecision.assignedTo
                                 ?: throw NullValueNotAllowedException("invalid user id provided")
                         )
@@ -649,10 +650,323 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
     }
 
+    fun checkRequirements(isJustificationDecision: ISJustificationDecision,
+                              internationalStandardRemarks: InternationalStandardRemarks
+    ) : List<InternationalStandardTasks> {
+        val variables: MutableMap<String, Any> = java.util.HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        variables["Yes"] = isJustificationDecision.accentTo
+        variables["No"] = isJustificationDecision.accentTo
+        isJustificationDecision.comments.let { variables.put("comments", it) }
+        isJustificationDecision.taskId.let { variables.put("taskId", it) }
+        isJustificationDecision.processId.let { variables.put("processId", it) }
+
+        val fname=loggedInUser.firstName
+        val sname=loggedInUser.lastName
+        val usersName= "$fname  $sname"
+        internationalStandardRemarks.proposalId= isJustificationDecision.proposalId
+        internationalStandardRemarks.remarks= isJustificationDecision.comments
+        internationalStandardRemarks.status = 1.toString()
+        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        internationalStandardRemarks.remarkBy = usersName
+
+        if(variables["Yes"]==true){
+            isJustificationDecision.assignedTo= companyStandardRepository.getEditorId()
+            isAdoptionProposalRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionProposal->
+
+                with(iSAdoptionProposal){
+                    remarks=isJustificationDecision.comments
+                    accentTo = true
+
+                }
+                isAdoptionProposalRepository.save(iSAdoptionProposal)
+                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+                runtimeService.createProcessInstanceQuery()
+                    .processInstanceId(isJustificationDecision.processId).list()
+                    ?.let { l ->
+                        val processInstance = l[0]
+                        taskService.complete(isJustificationDecision.taskId, variables)
+
+                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                            ?.let { t ->
+                                t.list()[0]
+                                    ?.let { task ->
+                                        task.assignee = "${
+                                            isJustificationDecision.assignedTo ?: throw NullValueNotAllowedException(
+                                                " invalid user id provided"
+                                            )
+                                        }"  //set the assignee}"
+                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                        taskService.saveTask(task)
+                                    }
+                                    ?: KotlinLogging.logger { }
+                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                            }
+                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                        bpmnService.slAssignTask(
+                            processInstance.processInstanceId,
+                            "draftStandardEditing",
+                            isJustificationDecision.assignedTo
+                                ?: throw NullValueNotAllowedException("invalid user id provided")
+                        )
+
+                    }
+                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${isJustificationDecision.processId} ")
+            }?: throw Exception("TASK NOT FOUND")
+
+        }else if(variables["No"]==false) {
+            isJustificationDecision.assignedTo= companyStandardRepository.getSaSecId()
+            isAdoptionProposalRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionProposal ->
+
+                with(iSAdoptionProposal) {
+                    remarks = isJustificationDecision.comments
+                    accentTo = true
+
+                }
+                isAdoptionProposalRepository.save(iSAdoptionProposal)
+                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+                runtimeService.createProcessInstanceQuery()
+                    .processInstanceId(isJustificationDecision.processId).list()
+                    ?.let { l ->
+                        val processInstance = l[0]
+                        taskService.complete(isJustificationDecision.taskId, variables)
+
+                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                            ?.let { t ->
+                                t.list()[0]
+                                    ?.let { task ->
+                                        task.assignee = "${
+                                            isJustificationDecision.assignedTo ?: throw NullValueNotAllowedException(
+                                                " invalid user id provided"
+                                            )
+                                        }"  //set the assignee}"
+                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                        taskService.saveTask(task)
+                                    }
+                                    ?: KotlinLogging.logger { }
+                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                            }
+                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                        bpmnService.slAssignTask(
+                            processInstance.processInstanceId,
+                            "justificationDecision",
+                            isJustificationDecision.assignedTo
+                                ?: throw NullValueNotAllowedException("invalid user id provided")
+                        )
+
+                    }
+                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${isJustificationDecision.processId} ")
+            }?: throw Exception("TASK NOT FOUND")
+
+
+        }
+
+        return  getUserTasks()
+
+    }
+
+    fun editStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
+    {
+        val variable:MutableMap<String, Any> = java.util.HashMap()
+        nwaWorkShopDraft.title?.let{variable.put("title", it)}
+        nwaWorkShopDraft.scope?.let{variable.put("scope", it)}
+        nwaWorkShopDraft.normativeReference?.let{variable.put("normativeReference", it)}
+        nwaWorkShopDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
+        nwaWorkShopDraft.clause?.let{variable.put("clause", it)}
+        nwaWorkShopDraft.special?.let{variable.put("special", it)}
+        nwaWorkShopDraft.taskId?.let{variable.put("taskId", it)}
+        nwaWorkShopDraft.processId?.let{variable.put("processId", it)}
+        nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
+        variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
+        nwaWorkShopDraft.assignedTo= companyStandardRepository.getDraughtsmanId()
+
+        //print(nwaWorkShopDraft.toString())
+
+        val nwaDetails = nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
+        variable["ID"] = nwaDetails.id
+        runtimeService.createProcessInstanceQuery()
+            .processInstanceId(nwaWorkShopDraft.processId).list()
+            ?.let { l ->
+                val processInstance = l[0]
+
+                taskService.complete(nwaWorkShopDraft.taskId, variable)
+
+                taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                    ?.let { t ->
+                        t.list()[0]
+                            ?.let { task ->
+                                task.assignee =
+                                    "${nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                taskService.saveTask(task)
+                            }
+                            ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                    }
+                    ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                bpmnService.slAssignTask(
+                    processInstance.processInstanceId,
+                    "draughting",
+                    nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
+                )
+                return ProcessInstanceWD(
+                    nwaDetails.id,
+                    processInstance.id,
+                    processInstance.isEnded,nwaWorkShopDraft.dateWdPrepared?: throw NullValueNotAllowedException("Date is required")
+                )
+            }
+            ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${nwaWorkShopDraft.processId} ")
+
+
+
+    }
+
+    fun draughtStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
+    {
+        val variable:MutableMap<String, Any> = java.util.HashMap()
+        nwaWorkShopDraft.title?.let{variable.put("title", it)}
+        nwaWorkShopDraft.scope?.let{variable.put("scope", it)}
+        nwaWorkShopDraft.normativeReference?.let{variable.put("normativeReference", it)}
+        nwaWorkShopDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
+        nwaWorkShopDraft.clause?.let{variable.put("clause", it)}
+        nwaWorkShopDraft.special?.let{variable.put("special", it)}
+        nwaWorkShopDraft.taskId?.let{variable.put("taskId", it)}
+        nwaWorkShopDraft.processId?.let{variable.put("processId", it)}
+        nwaWorkShopDraft.id?.let{variable.put("id", it)}
+        nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
+        variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
+        nwaWorkShopDraft.assignedTo= companyStandardRepository.getProofReaderId()
+
+        //print(nwaWorkShopDraft.toString())
+        nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkShopDraft.id)?.let { nwaWorkShopDraft->
+
+            with(nwaWorkShopDraft){
+                title=nwaWorkShopDraft.title
+                scope=nwaWorkShopDraft.scope
+                normativeReference=nwaWorkShopDraft.normativeReference
+                symbolsAbbreviatedTerms=nwaWorkShopDraft.symbolsAbbreviatedTerms
+                clause=nwaWorkShopDraft.clause
+                special=nwaWorkShopDraft.special
+                assignedTo=nwaWorkShopDraft.assignedTo
+            }
+
+        val nwaDetails = nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
+        variable["ID"] = nwaDetails.id
+        runtimeService.createProcessInstanceQuery()
+            .processInstanceId(nwaWorkShopDraft.processId).list()
+            ?.let { l ->
+                val processInstance = l[0]
+
+                taskService.complete(nwaWorkShopDraft.taskId, variable)
+
+                taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                    ?.let { t ->
+                        t.list()[0]
+                            ?.let { task ->
+                                task.assignee =
+                                    "${nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                taskService.saveTask(task)
+                            }
+                            ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                    }
+                    ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                bpmnService.slAssignTask(
+                    processInstance.processInstanceId,
+                    "proofreading",
+                    nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
+                )
+                return ProcessInstanceWD(
+                    nwaDetails.id,
+                    processInstance.id,
+                    processInstance.isEnded,nwaWorkShopDraft.dateWdPrepared?: throw NullValueNotAllowedException("Date is required")
+                )
+            }
+            ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${nwaWorkShopDraft.processId} ")
+        }?: throw Exception("TASK NOT FOUND")
+
+
+    }
+
+    fun proofReadStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
+    {
+        val variable:MutableMap<String, Any> = java.util.HashMap()
+        nwaWorkShopDraft.title?.let{variable.put("title", it)}
+        nwaWorkShopDraft.scope?.let{variable.put("scope", it)}
+        nwaWorkShopDraft.normativeReference?.let{variable.put("normativeReference", it)}
+        nwaWorkShopDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
+        nwaWorkShopDraft.clause?.let{variable.put("clause", it)}
+        nwaWorkShopDraft.special?.let{variable.put("special", it)}
+        nwaWorkShopDraft.taskId?.let{variable.put("taskId", it)}
+        nwaWorkShopDraft.processId?.let{variable.put("processId", it)}
+        nwaWorkShopDraft.id?.let{variable.put("id", it)}
+        nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
+        variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
+        nwaWorkShopDraft.assignedTo= companyStandardRepository.getHopId()
+
+        //print(nwaWorkShopDraft.toString())
+        nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkShopDraft.id)?.let { nwaWorkShopDraft->
+
+            with(nwaWorkShopDraft){
+                title=nwaWorkShopDraft.title
+                scope=nwaWorkShopDraft.scope
+                normativeReference=nwaWorkShopDraft.normativeReference
+                symbolsAbbreviatedTerms=nwaWorkShopDraft.symbolsAbbreviatedTerms
+                clause=nwaWorkShopDraft.clause
+                special=nwaWorkShopDraft.special
+                assignedTo=nwaWorkShopDraft.assignedTo
+            }
+
+            val nwaDetails = nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
+            variable["ID"] = nwaDetails.id
+            runtimeService.createProcessInstanceQuery()
+                .processInstanceId(nwaWorkShopDraft.processId).list()
+                ?.let { l ->
+                    val processInstance = l[0]
+
+                    taskService.complete(nwaWorkShopDraft.taskId, variable)
+
+                    taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                        ?.let { t ->
+                            t.list()[0]
+                                ?.let { task ->
+                                    task.assignee =
+                                        "${nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                    taskService.saveTask(task)
+                                }
+                                ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                        }
+                        ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                    bpmnService.slAssignTask(
+                        processInstance.processInstanceId,
+                        "approveStandardChanges",
+                        nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
+                    )
+                    return ProcessInstanceWD(
+                        nwaDetails.id,
+                        processInstance.id,
+                        processInstance.isEnded,nwaWorkShopDraft.dateWdPrepared?: throw NullValueNotAllowedException("Date is required")
+                    )
+                }
+                ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${nwaWorkShopDraft.processId} ")
+        }?: throw Exception("TASK NOT FOUND")
+
+
+    }
+
     // Upload NWA Standard
-    fun uploadISStandard(iSUploadStandard: ISUploadStandard): ProcessInstanceResponseValues
+    fun uploadISStandard(iSUploadStandard: ISUploadStandard,isJustificationDecision: ISJustificationDecision,
+                         internationalStandardRemarks: InternationalStandardRemarks):  List<InternationalStandardTasks>
     {
         val variable:MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
         iSUploadStandard.title?.let{variable.put("title", it)}
         iSUploadStandard.scope?.let{variable.put("scope", it)}
         iSUploadStandard.normativeReference?.let{variable.put("normativeReference", it)}
@@ -661,7 +975,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         iSUploadStandard.special?.let{variable.put("special", it)}
         iSUploadStandard.taskId?.let{variable.put("taskId", it)}
         iSUploadStandard.processId?.let{variable.put("processId", it)}
-        iSUploadStandard.assignedTo= companyStandardRepository.getHoSicId()
+
         //iSUploadStandard.iSNumber?.let{variable.put("ISNumber", it)}
 
 
@@ -672,7 +986,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         variable["iSNumber"] = iSUploadStandard.iSNumber!!
 
 
-        val isuDetails = iSUploadStandardRepository.save(iSUploadStandard)
+
         //email to legal
         var userList= companyStandardRepository.getSacSecEmailList()
         val targetUrl = "https://kimsint.kebs.org/";
@@ -686,34 +1000,95 @@ class IntStandardService (private val runtimeService: RuntimeService,
             }
         }
 
+        if(variable["Yes"]==true){
+            iSUploadStandard.assignedTo= companyStandardRepository.getHoSicId()
+                iSUploadStandardRepository.save(iSUploadStandard)
+                runtimeService.createProcessInstanceQuery()
+                    .processInstanceId(iSUploadStandard.processId).list()
+                    ?.let { l ->
+                        val processInstance = l[0]
+                        taskService.complete(iSUploadStandard.taskId, variable)
 
-        variable["ID"] = isuDetails.id
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-            ?.let { t ->
-                t.list()[0]
-                    ?.let { task ->
-                        task.assignee =
-                            "${iSUploadStandard.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                            ?.let { t ->
+                                t.list()[0]
+                                    ?.let { task ->
+                                        task.assignee = "${
+                                            iSUploadStandard.assignedTo ?: throw NullValueNotAllowedException(
+                                                " invalid user id provided"
+                                            )
+                                        }"  //set the assignee}"
+                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                        taskService.saveTask(task)
+                                    }
+                                    ?: KotlinLogging.logger { }
+                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
 
-                        taskService.saveTask(task)
+
+                            }
+                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                        bpmnService.slAssignTask(
+                            processInstance.processInstanceId,
+                            "uploadGazetteNotice",
+                            iSUploadStandard.assignedTo
+                                ?: throw NullValueNotAllowedException("invalid user id provided")
+                        )
+
                     }
-                    ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSUploadStandard.processId} ")
 
 
-            }
-            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-        bpmnService.slAssignTask(
-            processInstance.processInstanceId,
-            "uploadGazetteNotice",
-            iSUploadStandard?.assignedTo
-                ?: throw NullValueNotAllowedException("invalid user id provided")
-        )
+        }else if(variable["No"]==false) {
+            val fname=loggedInUser.firstName
+            val sname=loggedInUser.lastName
+            val usersName= "$fname  $sname"
+            internationalStandardRemarks.proposalId= isJustificationDecision.proposalId
+            internationalStandardRemarks.remarks= isJustificationDecision.comments
+            internationalStandardRemarks.status = 1.toString()
+            internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+            internationalStandardRemarks.remarkBy = usersName
+            isJustificationDecision.assignedTo= companyStandardRepository.getEditorId()
+
+                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+                runtimeService.createProcessInstanceQuery()
+                    .processInstanceId(iSUploadStandard.processId).list()
+                    ?.let { l ->
+                        val processInstance = l[0]
+                        taskService.complete(iSUploadStandard.taskId, variable)
+
+                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                            ?.let { t ->
+                                t.list()[0]
+                                    ?.let { task ->
+                                        task.assignee = "${
+                                            iSUploadStandard.assignedTo ?: throw NullValueNotAllowedException(
+                                                " invalid user id provided"
+                                            )
+                                        }"  //set the assignee}"
+                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                        taskService.saveTask(task)
+                                    }
+                                    ?: KotlinLogging.logger { }
+                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
 
 
-        return ProcessInstanceResponseValues(isuDetails.id, processInstance.id, processInstance.isEnded,
-            iSUploadStandard.iSNumber!!
-        )
+                            }
+                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                        bpmnService.slAssignTask(
+                            processInstance.processInstanceId,
+                            "draftStandardEditing",
+                            iSUploadStandard.assignedTo
+                                ?: throw NullValueNotAllowedException("invalid user id provided")
+                        )
+
+                    }
+                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSUploadStandard.processId} ")
+
+
+
+        }
+
+        return  getUserTasks()
 
     }
 
