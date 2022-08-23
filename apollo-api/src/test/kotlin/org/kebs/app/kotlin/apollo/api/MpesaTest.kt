@@ -122,7 +122,7 @@ class MpesaTest {
 
         /*Adding elements to HashMap*/
 
-        /*Adding elements to HashMap*/hmap["bsnumber"] = "BS202122190"
+        /*Adding elements to HashMap*/hmap["bsnumber"] = "BS202219981"
 //        /*Adding elements to HashMap*/hmap["pdf"] = "BS202108613"
         val myResults = limsServices.performPostCall(hmap, applicationMapProperties.mapLimsConfigIntegrationPDF)
 

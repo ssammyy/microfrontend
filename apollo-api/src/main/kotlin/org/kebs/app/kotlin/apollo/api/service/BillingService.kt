@@ -3,6 +3,8 @@ package org.kebs.app.kotlin.apollo.api.service
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.request.PaymentModes
+import org.kebs.app.kotlin.apollo.api.payload.request.PvocInvoiceData
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CdTypeCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -43,6 +45,7 @@ class BillingService(
         private val billingLimitsRepository: IBillingLimitsRepository,
         private val batchInvoiceRepository: InvoiceBatchDetailsRepo,
         private val invoiceDaoService: InvoiceDaoService,
+        private val amountInWordsService: AmountInWordsService,
         private val diServiceDao: DestinationInspectionDaoServices,
         private val billTransactionRepo: IBillTransactionsEntityRepository,
         private val commonDaoServices: CommonDaoServices,
@@ -50,6 +53,7 @@ class BillingService(
         private val properties: ApplicationMapProperties
 ) {
     final val DATE_FORMATER = DateTimeFormatter.ofPattern("yyyy-MM")
+    final val INVOICE_DATE_FORMATER = DateTimeFormatter.ofPattern("yyyyMM")
     final val MONTH_FORMATER = DateTimeFormatter.ofPattern("MM")
 
     fun addBillTransaction(transaction: BillTransactionsEntity, corporate: CorporateCustomerAccounts): BillPayments {
@@ -470,6 +474,54 @@ class BillingService(
                 }
             } ?: throw AccountNotFoundException("Account limits and penalty not set")
         }
+    }
+
+    fun getInvoiceDate(dateStr: String?): String {
+        val date = dateStr?.let {
+            INVOICE_DATE_FORMATER.parse(it)
+            it
+        } ?: run {
+            INVOICE_DATE_FORMATER.format(LocalDateTime.now())
+        }
+
+        return date;
+    }
+
+    fun getPvocPartnerInvoice(dateStr: String?, pg: PageRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val partner = commonDaoServices.loggedInPartnerDetails()
+            val corporate = corporateCustomerRepository.findById(partner.id)
+            if (corporate.isPresent) {
+                val bills = billPaymentRepository.findAllByCorporateIdAndBillNumberPrefixAndPaymentStatusIn(corporate.get().id, getInvoiceDate(dateStr), listOf(BillStatus.CLOSED.status, BillStatus.PENDING_PAYMENT.status, BillStatus.PAID.status), pg)
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
+                val bank1Details = invoiceDaoService.findPaymentMethodtype(properties.mapBankOneDetails)
+                val bank2Details = invoiceDaoService.findPaymentMethodtype(properties.mapBankTwoDetails)
+                val bank3Details = invoiceDaoService.findPaymentMethodtype(properties.mapBankThreeDetails)
+                val responseData = mutableMapOf<String, Any>()
+                responseData["invoices"] = PvocInvoiceData.fromList(bills.toList(),
+                        corporate.get().corporateIdentifier.orEmpty(),
+                        corporate.get().corporateCode.orEmpty(),
+                        amountInWordsService)
+                responseData["paymentMethods"] = PaymentModes.fromList(listOf(bank1Details, bank2Details, bank3Details))
+                response.data = responseData
+                response.pageNo = bills.number
+                response.totalPages = bills.totalPages
+                response.totalCount = bills.totalElements
+            } else {
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "Partner does not have billing account"
+            }
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = ex.localizedMessage
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to retrieve invoice: ", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Request failed"
+        }
+        return response
     }
 
 

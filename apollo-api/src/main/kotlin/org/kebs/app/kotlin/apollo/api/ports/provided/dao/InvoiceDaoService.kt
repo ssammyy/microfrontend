@@ -192,6 +192,7 @@ class InvoiceDaoService(
                 } ?: throw ExpectedDataNotFound("PAYMENT METHOD WITH [ID = $paymentMethodID], DOES NOT EXIST")
     }
 
+
     fun postRequestToSage(user: String, demandNote: CdDemandNoteEntity) {
         val map = commonDaoServices.serviceMapDetails(appId)
         postInvoiceToSageServices.postInvoiceTransactionToSage(demandNote, user, map)

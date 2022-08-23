@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -198,8 +199,7 @@ class ApiAuthenticationHandler(
                      *SEND OTP TO USER LOGIN throw phone number
                      */
                     val request = ServletServerHttpRequest(req.servletRequest())
-                    val token =
-                        tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
+                    val token = tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
                     val otp = commonDaoServices.randomNumber(6)
                     val tokenValidation = commonDaoServices.generateVerificationToken(
                         otp,
@@ -208,7 +208,9 @@ class ApiAuthenticationHandler(
                     )
                     val userEmail = user.email
                     commonDaoServices.sendOtpViaSMS(tokenValidation)
-                    commonDaoServices.sendOtpViaEmail(tokenValidation, userEmail)
+                    runBlocking {
+                        commonDaoServices.sendOtpViaEmail(tokenValidation, userEmail)
+                    }
 
 
                     val response = CustomResponse().apply {

@@ -11,5 +11,6 @@ import java.sql.Date
 interface IRfcCorRepository : HazelcastRepository<RfcCorEntity,Long> {
     fun findByRfcDateAndPartner(rfcDate: Date, partner: Long): List<RfcCorEntity>?
     fun findByRfcNumber(rfcNumber: String): RfcCorEntity?
+    fun findByUcrNumber(ucrNumber: String): RfcCorEntity?
     fun findByReviewStatus(status: Int, page: Pageable): Page<RfcCorEntity>
 }
