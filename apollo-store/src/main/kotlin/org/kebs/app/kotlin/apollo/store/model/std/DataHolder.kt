@@ -309,6 +309,15 @@ interface ProposalDetails{
     fun getUploadedBy(): String?
     fun getRemarks(): String?
     fun getAssignedTo(): Long?
+    fun getTitle(): String?
+    fun getCirculationDate(): String?
+    fun getNameOfOrganization(): String?
+    fun getNameOfRespondent(): String?
+    fun getClosingDate(): String?
+    fun getScope(): String?
+    fun getTcSecName(): String?
+    fun getAdoptionAcceptableAsPresented(): String?
+    fun getReasonsForNotAcceptance(): String?
 }
 
 

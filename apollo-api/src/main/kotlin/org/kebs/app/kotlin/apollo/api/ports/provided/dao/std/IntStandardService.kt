@@ -88,6 +88,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         iSAdoptionProposal.dateOfApplication?.let{ variables.put("dateOfApplication", it)}
         iSAdoptionProposal.uploadedBy?.let{ variables.put("uploadedBy", it)}
         iSAdoptionProposal.preparedDate = commonDaoServices.getTimestamp()
+        iSAdoptionProposal.status = 0
         variables["preparedDate"] = iSAdoptionProposal.preparedDate!!
         iSAdoptionProposal.proposalNumber = getPRNumber()
         iSAdoptionProposal.assignedTo= companyStandardRepository.getTcSecId()

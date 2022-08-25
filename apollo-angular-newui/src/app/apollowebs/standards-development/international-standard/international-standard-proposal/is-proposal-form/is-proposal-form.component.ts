@@ -35,6 +35,18 @@ export class IsProposalFormComponent implements OnInit {
     this.isProposalFormGroup = this.formBuilder.group({
       proposal_doc_name: ['', Validators.required],
         uploadedBy: [],
+        tcSecName : ['', Validators.required],
+        circulationDate : ['', Validators.required],
+        closingDate : ['', Validators.required],
+        title : ['', Validators.required],
+        scope : ['', Validators.required],
+        adoptionAcceptableAsPresented : ['', Validators.required],
+        reasonsForNotAcceptance : ['', Validators.required],
+        recommendations : ['', Validators.required],
+        nameOfRespondent : ['', Validators.required],
+        positionOfRespondent : ['', Validators.required],
+        nameOfOrganization : ['', Validators.required],
+        dateOfApplication : ['', Validators.required],
     });
 
       this.store$.select(selectUserInfo).pipe().subscribe((u) => {
@@ -42,6 +54,18 @@ export class IsProposalFormComponent implements OnInit {
       });
 
   }
+    showToasterSuccess(title:string,message:string){
+        this.notifyService.showSuccess(message, title)
+
+    }
+    showToasterError(title:string,message:string){
+        this.notifyService.showError(message, title)
+
+    }
+    showToasterWarning(title:string,message:string){
+        this.notifyService.showWarning(message, title)
+
+    }
 
   get formISProposal(): any{
     return this.isProposalFormGroup.controls;
@@ -52,11 +76,21 @@ export class IsProposalFormComponent implements OnInit {
         (response) => {
           console.log(response);
           this.SpinnerService.hide();
-          this.onClickUploadISDocument(response.body.savedRowID)
+            this.showToasterSuccess(response.httpStatus, `Proposal Uploaded`);
+            swal.fire({
+                title: 'Proposal has been Prepared.',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success ',
+                },
+                icon: 'success'
+            });
+          //this.onClickUploadISDocument(response.body.savedRowID)
           this.isProposalFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
+            this.showToasterError('Error', `Error Preparing Proposal`);
           alert(error.message);
         }
     );

@@ -500,6 +500,7 @@ import {
     VoteOnBallotDraftComponent
 } from "./apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component";
 import {ComTasksComponent} from "./apollowebs/standards-development/company-standard/com-tasks/com-tasks.component";
+import {IntStdTasksComponent} from "./apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component";
 
 export const routes: Routes = [
     {
@@ -1120,6 +1121,12 @@ export const routes: Routes = [
     },
 
     // SD International Standards
+
+    {
+        path: 'isTasks', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdTasksComponent}],
+    },
     {
         path: 'isProposalForm', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],

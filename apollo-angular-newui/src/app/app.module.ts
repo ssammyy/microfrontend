@@ -359,6 +359,7 @@ import { CommentOnPublicReviewDraftComponent } from './apollowebs/standards-deve
 import { PrepareBallotingDraftComponent } from './apollowebs/standards-development/balloting/prepare-balloting-draft/prepare-balloting-draft.component';
 import { VoteOnBallotDraftComponent } from './apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component';
 import { ComTasksComponent } from './apollowebs/standards-development/company-standard/com-tasks/com-tasks.component';
+import { IntStdTasksComponent } from './apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component';
 
 
 @NgModule({
@@ -741,7 +742,8 @@ import { ComTasksComponent } from './apollowebs/standards-development/company-st
         CommentOnPublicReviewDraftComponent,
         PrepareBallotingDraftComponent,
         VoteOnBallotDraftComponent,
-        ComTasksComponent
+        ComTasksComponent,
+        IntStdTasksComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

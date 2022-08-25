@@ -176,8 +176,10 @@ interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustificat
 interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long> {
     fun findAllByOrderByIdDesc(): MutableList<ISAdoptionProposal>
     @Query(
-        value = "SELECT ID as id, DOC_NAME as docName,DATE_PREPARED as preparedDate,PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo FROM SD_ADOPTION_PROPOSAL " +
-                "WHERE  STATUS='1' ",
+        value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
+                "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
+                "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance FROM SD_ADOPTION_PROPOSAL " +
+                "WHERE  STATUS='0' ",
         nativeQuery = true
     )
     fun getProposalDetails(): MutableList<ProposalDetails>
