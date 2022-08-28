@@ -25,8 +25,11 @@ interface IPvocApplicationRepo : HazelcastRepository<PvocApplicationEntity, Long
     fun findAllByCreatedOnBetweenAndConpanyNameAndStatus(createdOn: Date, createdOn2: Date, conpanyName: String, status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findByIdIsIn(ids: List<Long>): List<PvocApplicationEntity>?
 
+    fun countBySnStartsWith(prefix: String): Long
+
     fun findAllByConpanyNameAndFinished(conpanyName: String, finished: Int): List<PvocApplicationEntity>?
     fun findFirstByCreatedByAndId(username: String?, id: Long): PvocApplicationEntity?
+    fun findAllByCompanyIdAndStatusIn(companyId: Long?, listOf: List<Int>, pageRequest: Pageable): Page<PvocApplicationEntity>
 }
 
 interface IPvocExceptionApplicationStatusEntityRepo : HazelcastRepository<PvocExceptionApplicationStatusEntity, Long> {

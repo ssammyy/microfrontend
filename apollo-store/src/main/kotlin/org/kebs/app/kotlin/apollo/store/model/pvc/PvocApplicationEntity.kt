@@ -14,6 +14,10 @@ class PvocApplicationEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_PVOC_APPLICATION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = 0
 
+    @Column(name = "COMPANY_ID")
+    @Basic
+    var companyId: Long? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
@@ -276,7 +280,7 @@ class PvocApplicationEntity : Serializable {
 
     @Column(name = "FINAL_APPROVAL")
     @Basic
-    var finalApproval: String? = null
+    var finalApproval: Int? = null
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

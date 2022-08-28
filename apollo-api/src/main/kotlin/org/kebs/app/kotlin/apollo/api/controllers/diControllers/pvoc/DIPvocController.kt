@@ -10,7 +10,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.PvocRemarksNotFoundException
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.RemarksEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.support.MutableSortDefinition
@@ -419,7 +419,7 @@ class DIPvocController(
                     "deffered" -> {
                         doc?.reviewStatus = pvocReviewStatus?.differedStatus
                         remarkData.remarksProcess = pvocReviewStatus?.differedStatus
-                        doc?.finalApproval = remarksType.toUpperCase()
+                        doc?.finalApproval = 1
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
                         doc?.id?.let {
                             pvocBpmn.pvocAeDeferApplicationComplete(it)
@@ -444,13 +444,13 @@ class DIPvocController(
                             }
 //                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, true)
                         }
-                        doc?.finalApproval = remarksType.toUpperCase()
+                        doc?.finalApproval = 0
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
                     }
                     "rejected" -> {
                         doc?.reviewStatus = pvocReviewStatus?.rejectedStatus
                         remarkData.remarksProcess = pvocReviewStatus?.rejectedStatus
-                        doc?.finalApproval = remarksType.toUpperCase()
+                        doc?.finalApproval = 2
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
                         doc?.id?.let {
                             pvocBpmn.pvocAeRejectApplicationComplete(it)

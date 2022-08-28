@@ -1,0 +1,45 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title">EXEMPTION CERTIFICATES
+                            <button class="btn btn-sm btn-default float-right mr-7"
+                                    (click)="goBack()"><i class="fa fa-arrow-left"></i>BACK
+
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
+                            <button type="button" (click)="toggleStatus('new')"
+                                    [className]="activeStatus === 'new' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                NEW APPLICATIONS
+                            </button>
+                            <button type="button" (click)="toggleStatus('approved')"
+                                    [className]="activeStatus === 'approved' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                APPROVED APPLICATIONS
+                            </button>
+                            <button type="button" (click)="toggleStatus('rejected')"
+                                    [className]="activeStatus === 'rejected' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                REJECTED APPLIACTIONS
+                            </button>
+                            <button type="button" (click)="toggleStatus('others')"
+                                    [className]="activeStatus === 'others' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                OTHERS
+                            </button>
+                        </div>
+                        <ng2-smart-table [settings]="settings"
+                        [source]="dataSource">
+
+                        </ng2-smart-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

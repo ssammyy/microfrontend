@@ -107,9 +107,29 @@ export class PVOCService {
         );
     }
 
+    manufacturerWaiver(status: string, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        params['status'] = status
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/manufacturer/waiver/history"), {
+            params: params
+        })
+    }
+
     public applyForImportExemption(data: any, files: File[]): Observable<any> {
         const url = ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/apply");
         return this.sendFiles(data, files, url)
+    }
+
+    manufacturerExemptionHistory(status: string, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        params['status'] = status
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/manufacturer/exemption/history"), {
+            params: params
+        })
     }
 
     private sendFiles(data: any, files: File[], url: string) {

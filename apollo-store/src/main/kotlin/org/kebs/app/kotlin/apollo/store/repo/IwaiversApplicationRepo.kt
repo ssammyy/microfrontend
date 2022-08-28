@@ -17,6 +17,8 @@ interface IwaiversApplicationRepo : HazelcastRepository<PvocWaiversApplicationEn
     fun findAllByCreatedBy(userName: String?, page: Pageable): Page<PvocWaiversApplicationEntity>?
     fun findAllBySerialNoContains(keyword: String?, page: Pageable): Page<PvocWaiversApplicationEntity>?
     fun findFirstByCreatedByAndId(username: String?, id: Long): PvocWaiversApplicationEntity?
+    fun findByStatusInAndCompanyId(listOf: List<Int>, company: Long, pageRequest: Pageable): Page<PvocWaiversApplicationEntity>
+    fun countBySerialNoStartsWith(yearIssued: String): Long
 }
 
 interface IPvocMasterListRepo : HazelcastRepository<PvocMasterListEntity, Long>{
