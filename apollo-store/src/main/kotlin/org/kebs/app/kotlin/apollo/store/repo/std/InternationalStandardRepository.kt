@@ -19,6 +19,7 @@ interface InternationalStandardRepository {
 
 @Repository
 interface ISAdoptionCommentsRepository : JpaRepository<ISAdoptionComments, Long> {
+    fun findByProposalID(id: Long): MutableIterable<ISAdoptionComments>
 }
 
 interface ComJcJustificationRepository : JpaRepository<ComJcJustification, Long> {
@@ -38,6 +39,20 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         nativeQuery = true
     )
     fun getSacSecEmailList(): MutableList<UserEmailListHolder>
+
+    @Query(
+        value = "SELECT u.EMAIL as userEmail,u.FIRST_NAME as firstName,u.LAST_NAME as lastName  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='STAKEHOLDERS_SD'",
+        nativeQuery = true
+    )
+    fun getStakeHoldersEmailList(): MutableList<UserEmailListHolder>
+
+    @Query(
+        value = "SELECT u.EMAIL as userEmail,u.FIRST_NAME as firstName,u.LAST_NAME as lastName  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='HOP_SD'",
+        nativeQuery = true
+    )
+    fun getHopEmailList(): MutableList<UserEmailListHolder>
+
+
 
     @Query(
         value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='HOD_TWO_SD'",
@@ -68,6 +83,61 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         nativeQuery = true
     )
     fun getComSecId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='EDITOR_SD'",
+        nativeQuery = true
+    )
+    fun getEditorId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='DRAUGHTSMAN_SD'",
+        nativeQuery = true
+    )
+    fun getDraughtsmanId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='PROOFREADER_SD'",
+        nativeQuery = true
+    )
+    fun getProofReaderId(): Long
+
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='TC_SEC_SD'",
+        nativeQuery = true
+    )
+    fun getTcSecId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='KNW_SEC_SD'",
+        nativeQuery = true
+    )
+    fun getKnwSecId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='SPC_SEC_SD'",
+        nativeQuery = true
+    )
+    fun getSpcSecId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='DI_SDT_SD'",
+        nativeQuery = true
+    )
+    fun getDiDirectorId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='SAC_SEC_SD'",
+        nativeQuery = true
+    )
+    fun getSaSecId(): Long
+
+    @Query(
+        value = "SELECT MAX(u.ID) as userId  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='HOD_SIC_SD'",
+        nativeQuery = true
+    )
+    fun getHoSicId(): Long
 
 }
 
@@ -105,6 +175,14 @@ interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustificat
 
 interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long> {
     fun findAllByOrderByIdDesc(): MutableList<ISAdoptionProposal>
+    @Query(
+        value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
+                "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
+                "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance FROM SD_ADOPTION_PROPOSAL " +
+                "WHERE  STATUS='0' ",
+        nativeQuery = true
+    )
+    fun getProposalDetails(): MutableList<ProposalDetails>
 }
 
 interface ISGazettementRepository : JpaRepository<ISGazettement, Long> {
@@ -307,6 +385,9 @@ interface StandardNwaRemarksRepository : JpaRepository<StandardNwaRemarks, Long>
 }
 interface StandardComRemarksRepository : JpaRepository<StandardComRemarks, Long> {
     fun findAllByApprovalIDOrderByIdDesc(id: Long): List<StandardComRemarks>?
+}
+interface InternationalStandardRemarksRepository : JpaRepository<InternationalStandardRemarks, Long> {
+    fun findAllByProposalIdOrderByIdDesc(id: Long): List<InternationalStandardRemarks>?
 }
 
 

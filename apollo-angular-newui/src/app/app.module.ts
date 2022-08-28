@@ -99,12 +99,6 @@ import {NwaJustificationFormComponent} from './apollowebs/standards-development/
 import {StandardsDevelopmentComponent} from './apollowebs/standards-development/standards-development.component';
 import {InformationcheckComponent} from './apollowebs/standards-development/informationcheck/informationcheck.component';
 import {UsermanagementComponent} from './apollowebs/usermanagement/usermanagement.component';
-import {NwaJustificationTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
-import {NwaKnwSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
-import {NwaDiSdtTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
-import {NwaHopTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
-import {SacSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/sac-sec-tasks/sac-sec-tasks.component';
-import {HoSicTasksComponent} from './apollowebs/standards-development/workshop-agreement/ho-sic-tasks/ho-sic-tasks.component';
 import {ReviewStandardsComponent} from './apollowebs/standards-development/systemic-review/request-standard-review/review-standards/review-standards.component';
 import {CsRequestFormComponent} from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
 import {DivisionresponseComponent} from './apollowebs/standards-development/divisionresponse/divisionresponse.component';
@@ -234,7 +228,6 @@ import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy
 import {SpcSecTaskComponent} from './apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component';
 import {StdJustificationComponent} from './apollowebs/standards-development/standard-request/std-justification/std-justification.component';
 import {PreparePreliminaryDraftComponent} from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
-import {NwaPreliminaryDraftComponent} from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
 import {ComStdPlTaskComponent} from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
 // tslint:disable-next-line:max-line-length
 import {ComStdDraftViewComponent} from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
@@ -368,6 +361,7 @@ import {ComTasksComponent} from './apollowebs/standards-development/company-stan
 import {PvocNewComplaintComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-new/pvoc-new-complaint.component";
 import {ViewWaiverCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-waiver-certificates/view-waiver-certificates.component';
 import {ViewExemptionCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-exemption-certificates/view-exemption-certificates.component';
+import { IntStdTasksComponent } from './apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component';
 
 
 @NgModule({
@@ -518,12 +512,6 @@ import {ViewExemptionCertificatesComponent} from './apollowebs/pvoc/manufacturer
         StandardsDevelopmentComponent,
         InformationcheckComponent,
         UsermanagementComponent,
-        NwaJustificationTasksComponent,
-        NwaKnwSecTasksComponent,
-        NwaDiSdtTasksComponent,
-        NwaHopTasksComponent,
-        SacSecTasksComponent,
-        HoSicTasksComponent,
         InternationalStandardProposalComponent,
         IntStdCommentsComponent,
         IntStdJustificationAppComponent,
@@ -657,7 +645,6 @@ import {ViewExemptionCertificatesComponent} from './apollowebs/pvoc/manufacturer
         StandardLevyDefaulterHistoryComponent,
         PreparePreliminaryDraftComponent,
         StandardLevyDefaulterHistoryComponent,
-        NwaPreliminaryDraftComponent,
         ComStdPlTaskComponent,
         ComStdDraftViewComponent,
         ComStdListComponent,
@@ -756,6 +743,8 @@ import {ViewExemptionCertificatesComponent} from './apollowebs/pvoc/manufacturer
         CommentOnPublicReviewDraftComponent,
         PrepareBallotingDraftComponent,
         VoteOnBallotDraftComponent,
+        ComTasksComponent,
+        IntStdTasksComponent
         ComTasksComponent,
         PvocNewComplaintComponent,
         ViewWaiverCertificatesComponent,

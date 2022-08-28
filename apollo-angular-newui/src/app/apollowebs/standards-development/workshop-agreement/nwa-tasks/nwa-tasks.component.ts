@@ -246,8 +246,7 @@ export class NwaTasksComponent implements OnInit {
         special: ['', Validators.required],
         taskId: [],
         ksNumber: [],
-        processId: [],
-        assignedTo: []
+        processId: []
 
       });
 
@@ -488,7 +487,7 @@ export class NwaTasksComponent implements OnInit {
       if (mode==='uploadStandard'){
           this.actionRequest=task;
           button.setAttribute('data-target','#uploadStandard');
-          this.rejectWorkShopDraftFormGroup.patchValue(
+          this.prepareStandardFormGroup.patchValue(
               {
                   title:this.actionRequest.taskData.title,
                   scope: this.actionRequest.taskData.scope,
@@ -954,7 +953,7 @@ export class NwaTasksComponent implements OnInit {
     onNwaUpload(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
-        //console.log(this.prepareStandardFormGroup.value);
+        console.log(this.prepareStandardFormGroup.value);
         this.stdNwaService.uploadNwaStandard(this.prepareStandardFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);

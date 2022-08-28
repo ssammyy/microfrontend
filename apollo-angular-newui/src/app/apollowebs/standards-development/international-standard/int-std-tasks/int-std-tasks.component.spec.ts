@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NwaKnwSecTasksComponent } from './nwa-knw-sec-tasks.component';
+import { IntStdTasksComponent } from './int-std-tasks.component';
 
-describe('NwaKnwSecTasksComponent', () => {
-  let component: NwaKnwSecTasksComponent;
-  let fixture: ComponentFixture<NwaKnwSecTasksComponent>;
+describe('IntStdTasksComponent', () => {
+  let component: IntStdTasksComponent;
+  let fixture: ComponentFixture<IntStdTasksComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NwaKnwSecTasksComponent ]
+      declarations: [ IntStdTasksComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NwaKnwSecTasksComponent);
+    fixture = TestBed.createComponent(IntStdTasksComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -31,28 +31,25 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                    <th class="knw">Proposal Title</th>
-                                    <th class="knw">Link</th>
-                                    <th class="knw">Action Name</th>
-                                        <th>Comment</th>
-                                        <th class="referenceMaterial">Reference Material</th>
+                                    <th class="knw">Name</th>
+                                    <th class="knw">Title</th>
+                                    <th class="knw">Date of Circulation</th>
+                                    <th class="knw">Closing Date</th>
+                                        <th>Name of Respondent</th>
+                                        <th class="referenceMaterial">Name of Organization</th>
                                     <th class="action">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr  *ngFor="let task of tasks let i=index">
+                                    <tr  *ngFor="let isAdoptionProposal of isAdoptionProposals let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{task.taskData.proposal_doc_name}}</td>
-                                        <td></td>
-                                        <td>{{task.name}}</td>
-                                        <td>{{task.taskData.comments}}</td>
-                                        <td *ngIf="task.name ==='Submit comments'"><button mat-raised-button type="button" data-toggle="modal"
-                                                                                                (click)="viewPdfFile( task.taskData.ID,'Proposal'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
-                                            <i class="material-icons">visibility</i>
-
-                                        </button>
-                                        </td>
-                                        <td><a  (click)="onOpenModal(task,'comment')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Make Comment</a></td>
+                                        <td>{{isAdoptionProposal.docName}}</td>
+                                        <td>{{isAdoptionProposal.title}}</td>
+                                        <td>{{isAdoptionProposal.circulationDate}}</td>
+                                        <td>{{isAdoptionProposal.closingDate}}</td>
+                                        <td>{{isAdoptionProposal.nameOfRespondent}}</td>
+                                        <td>{{isAdoptionProposal.nameOfOrganization}}</td>
+                                        <td><a  (click)="onOpenModal(isAdoptionProposal,'comment')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Make Comment</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -61,26 +58,59 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="commentExampleModalLabel">Comment on Proposal Adoption Document</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" #closeModalComment class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form #commentForm="ngForm" >
+                                            <form (ngSubmit)="onSubmit()" [formGroup]="uploadCommentsFormGroup" class="form">
                                                 <div class="modal-body">
                                                     <div class="row col-12">
 
-                                                        <input type="hidden" ngModel="{{fullname}}" name="user_id" >
+
                                                         <div class="form-group col-12">
                                                             <label><b>Type Comment</b></label>
-                                                            <textarea class="form-control one-column-input" ngModel name="adoption_proposal_comment"></textarea>
+                                                            <textarea class="form-control one-column-input" formControlName="adoption_proposal_comment" name="adoption_proposal_comment"></textarea>
+
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Title</b></label>
+                                                            <textarea class="form-control one-column-input" value="{{actionRequest?.title}}" formControlName="commentTitle" name="commentTitle" disabled></textarea>
+
+                                                        </div>
+
+                                                        <div class="form-group col-12">
+                                                            <label><b>Document Type</b></label>
+                                                            <textarea class="form-control one-column-input" formControlName="commentDocumentType" name="commentDocumentType"></textarea>
+
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Name of Organization</b></label>
+                                                            <textarea class="form-control one-column-input" value="{{actionRequest?.nameOfOrganization}}" formControlName="comNameOfOrganization" name="comNameOfOrganization"></textarea>
+
+                                                        </div>
+
+                                                        <div class="form-group col-12">
+                                                            <label><b>Paragraph</b></label>
+                                                            <textarea class="form-control one-column-input" formControlName="comParagraph" name="comParagraph"></textarea>
+
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Comment Type</b></label>
+                                                            <textarea class="form-control one-column-input" formControlName="typeOfComment" name="typeOfComment"></textarea>
+
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Proposed Change</b></label>
+                                                            <textarea class="form-control one-column-input" formControlName="proposedChange" name="proposedChange"></textarea>
 
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <input type="hidden" ngModel="{{actionRequest?.taskId}}" value="{{actionRequest?.taskId}}" name="taskId" >
+                                                <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
+                                                <input type="hidden" formControlName="proposalID" value="{{actionRequest?.id}}" name="proposalID" >
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary btn-sm" (click)="onSubmit(commentForm.value)" data-dismiss="modal">Submit</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm" >Submit</button>
                                                 </div>
                                             </form>
                                         </div>

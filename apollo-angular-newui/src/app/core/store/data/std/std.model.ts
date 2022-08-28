@@ -369,6 +369,7 @@ export interface NWAStandard {
     special: string;
     taskId: string;
     ksNumber: string;
+    processId: string;
 }
 
 export interface HoSicTasks {
@@ -442,11 +443,36 @@ export interface finalSubmit {
     taskId: string;
 }
 // **********************************************************International Standards Adoption**********************************************************
+export interface ProposalComments{
+    adoption_proposal_comment: string;
+    commentTitle: string;
+    commentDocumentType: string;
+    comNameOfOrganization: string;
+    comClause: string;
+    comParagraph: string;
+    proposedChange: string;
+    taskId: string;
+    proposalID: number;
+    typeOfComment: string;
+}
 
 export interface ISAdoptionProposal {
     taskId: string;
-    proposal_doc_name: string;
+    id: number;
+    docName: string;
     title: string;
+    tcSecName: string;
+    circulationDate: string;
+    closingDate: string;
+    scope: string;
+    clause: string;
+    adoptionAcceptableAsPresented: string;
+    reasonsForNotAcceptance: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    dateOfApplication: string;
 }
 export interface ProposalComments {
     taskId: string;
@@ -457,6 +483,40 @@ export interface PropComments {
     proposal_doc_name: string;
     ID: number;
     comments: string;
+    title: string;
+    tcSecName: string;
+    circulationDate: string;
+    closingDate: string;
+    scope: string;
+    adoptionAcceptableAsPresented: string;
+    reasonsForNotAcceptance: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    dateOfApplication: string;
+
+}
+
+export interface Proposal{
+    taskId: string;
+    name: string;
+    proposal_doc_name: string;
+    ID: number;
+    comments: string;
+    title: string;
+    tcSecName: string;
+    circulationDate: string;
+    closingDate: string;
+    scope: string;
+    adoptionAcceptableAsPresented: string;
+    reasonsForNotAcceptance: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    dateOfApplication: string;
+
 
 }
 export interface ISAdoptionComments {

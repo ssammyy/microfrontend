@@ -30,6 +30,68 @@ import {OtpComponent} from './views/registration/otp/otp.component';
 import {PdfViewComponent} from './pdf-view/pdf-view.component';
 import {TaskManagerComponent} from './apollowebs/task-manager/task-manager.component';
 import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
+import {ImportInspectionComponent} from './apollowebs/pvoc/import-inspection/import-inspection.component';
+import {
+    ExceptionsApplicationComponent
+} from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
+import {ImportationWaiverComponent} from './apollowebs/pvoc/importation-waiver/importation-waiver.component';
+import {
+    ConsignmentDocumentListComponent
+} from './apollowebs/di/consignment-document-list/consignment-document-list.component';
+import {
+    ViewSingleConsignmentDocumentComponent
+} from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
+import {
+    MinistryInspectionHomeComponent
+} from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
+import {
+    MotorVehicleInspectionSingleViewComponent
+} from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
+import {
+    NwaJustificationFormComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component';
+import {
+    IsProposalFormComponent
+} from './apollowebs/standards-development/international-standard/international-standard-proposal/is-proposal-form/is-proposal-form.component';
+import {
+    ReviewStandardsComponent
+} from './apollowebs/standards-development/systemic-review/request-standard-review/review-standards/review-standards.component';
+import {
+    CsRequestFormComponent
+} from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
+import {
+    InformationcheckComponent
+} from './apollowebs/standards-development/informationcheck/informationcheck.component';
+import {
+    DivisionresponseComponent
+} from './apollowebs/standards-development/divisionresponse/divisionresponse.component';
+import {
+    MakeEnquiryComponent
+} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
+import {
+    ComStdRequestListComponent
+} from './apollowebs/standards-development/company-standard/com-std-request-list/com-std-request-list.component';
+import {
+    IntStdResponsesListComponent
+} from './apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component';
+import {
+    ComStdJcJustificationComponent
+} from './apollowebs/standards-development/company-standard/com-std-jc-justification/com-std-jc-justification.component';
+import {
+    IntStdJustificationListComponent
+} from './apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component';
+import {
+    IntStdCommentsComponent
+} from './apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component';
+import {
+    SystemicReviewCommentsComponent
+} from './apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component';
+import {
+    IntStdJustificationAppComponent
+} from './apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component';
+import {
+    SystemicAnalyseCommentsComponent
+} from './apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component';
 import {ImportInspectionComponent} from './apollowebs/pvoc/manufacturer/manufacturer-applications/import-inspection.component';
 import {ExceptionsApplicationComponent} from './apollowebs/pvoc/manufacturer/exceptions-application/exceptions-application.component';
 import {ImportationWaiverComponent} from './apollowebs/pvoc/manufacturer/importation-waiver/importation-waiver.component';
@@ -207,6 +269,67 @@ import {ReviewFeedbackSPCComponent} from './apollowebs/standards-development/for
 import {ApproveDraftStdComponent} from './apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component';
 import {StdDraughtsmanComponent} from './apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component';
 import {StdProofreadComponent} from './apollowebs/standards-development/publishing/std-proofread/std-proofread.component';
+import {
+    ViewExemptionApplicationsComponent
+} from './apollowebs/pvoc/exemptions/view-exemption-applications/view-exemption-applications.component';
+import {
+    ViewExemptionDetailsComponent
+} from './apollowebs/pvoc/exemptions/view-exemption-details/view-exemption-details.component';
+import {
+    StdJustificationComponent
+} from './apollowebs/standards-development/standard-request/std-justification/std-justification.component';
+import {
+    StdTcWorkplanComponent
+} from './apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component';
+import {
+    PreparePreliminaryDraftComponent
+} from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
+
+import {
+    ComStdPlTaskComponent
+} from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
+import {
+    ComStdDraftViewComponent
+} from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
+import {
+    ComStdListComponent
+} from './apollowebs/standards-development/company-standard/com-std-list/com-std-list.component';
+import {
+    StandardLevySiteVisitComponent
+} from './apollowebs/standards-levy/standard-levy-site-visit/standard-levy-site-visit.component';
+import {
+    StandardLevySiteVisitApproveTwoComponent
+} from './apollowebs/standards-levy/standard-levy-site-visit-approve-two/standard-levy-site-visit-approve-two.component';
+import {
+    StandardLevySiteVisitApproveOneComponent
+} from './apollowebs/standards-levy/standard-levy-site-visit-approve-one/standard-levy-site-visit-approve-one.component';
+import {
+    StandardLevySiteVisitFeedbackComponent
+} from './apollowebs/standards-levy/standard-levy-site-visit-feedback/standard-levy-site-visit-feedback.component';
+import {
+    StandardLevyUploadSiteVisitFeedbackComponent
+} from './apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component';
+import {
+    StandardLevyManufactureDetailsComponent
+} from './apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component';
+import {
+    RequestForFormationOfTCComponent
+} from './apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component';
+import {
+    ReviewJustificationOfTCComponent
+} from './apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component';
+import {
+    ReviewFeedbackSPCComponent
+} from './apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component';
+import {
+    ApproveDraftStdComponent
+} from './apollowebs/standards-development/publishing/approve-draft-std/approve-draft-std.component';
+import {
+    StdDraughtsmanComponent
+} from './apollowebs/standards-development/publishing/std-draughtsman/std-draughtsman.component';
+import {
+    StdProofreadComponent
+} from './apollowebs/standards-development/publishing/std-proofread/std-proofread.component';
 import {EditorTasksComponent} from './apollowebs/standards-development/publishing/editor-tasks/editor-tasks.component';
 import {StdHopTasksComponent} from './apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component';
 import {StdPublishingComponent} from './apollowebs/standards-development/publishing/std-publishing/std-publishing.component';
@@ -260,6 +383,7 @@ import {ComTasksComponent} from "./apollowebs/standards-development/company-stan
 import {PvocNewComplaintComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-new/pvoc-new-complaint.component";
 import {ViewWaiverCertificatesComponent} from "./apollowebs/pvoc/manufacturer/view-waiver-certificates/view-waiver-certificates.component";
 import {ViewExemptionCertificatesComponent} from "./apollowebs/pvoc/manufacturer/view-exemption-certificates/view-exemption-certificates.component";
+import {IntStdTasksComponent} from "./apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component";
 
 export const routes: Routes = [
     {
@@ -887,47 +1011,18 @@ export const routes: Routes = [
         children: [{path: '', component: NwaJustificationFormComponent}],
     },
     {
-        path: 'nwaJustificationTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: NwaJustificationTasksComponent}],
-    },
-    {
-        path: 'nwaKnwSecTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: NwaKnwSecTasksComponent}],
-    },
-    {
-        path: 'nwaDirStTasks', component: AdminLayoutComponent,
-        // canActivate: [RouteGuard],
-        children: [{path: '', component: NwaDiSdtTasksComponent}],
-    },
-    {
-        path: 'nwaHopTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: NwaHopTasksComponent}],
-    },
-    {
-        path: 'nwaSacSecTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: SacSecTasksComponent}],
-    },
-    {
-        path: 'nwaHoSicTasks', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: HoSicTasksComponent}],
-    },
-    {
-        path: 'nwaPreparePD', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-        children: [{path: '', component: NwaPreliminaryDraftComponent}],
-    },
-    {
         path: 'nwaTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: NwaTasksComponent}],
     },
 
     // SD International Standards
+
+    {
+        path: 'isTasks', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdTasksComponent}],
+    },
     {
         path: 'isProposalForm', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],

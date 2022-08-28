@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+    ComJcJustificationDec,
     GazetteNotice,
     ISAdoptionComments, ISAdoptionJustification,
     ISAdoptionProposal, ISDecision, ISHopTASKS, ISHosSicTASKS, ISJustificationDecision,
@@ -10,6 +11,7 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
+import {DefaulterDetails} from "../levy/levy.model";
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +49,14 @@ export class StdIntStandardService {
         );
     }
 
+    public getProposal(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_PROPOSAL);
+        const params = new HttpParams();
+        return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+
+
   public getISProposals(): Observable<ProposalComments[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_PROPOSALS);
     const params = new HttpParams();
@@ -69,10 +79,10 @@ export class StdIntStandardService {
         );
     }
 
-  public submitAPComments(iSAdoptionComments: ISAdoptionComments): Observable<any> {
+  public submitAPComments(proposalComments: ProposalComments): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_AP_COMMENTS);
     const params = new HttpParams();
-    return this.http.post<ISAdoptionComments>(url, iSAdoptionComments, {params}).pipe(
+    return this.http.post<ProposalComments>(url, proposalComments, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -295,6 +305,12 @@ export class StdIntStandardService {
                 return throwError(fault);
             })
         );
+    }
+
+    public getUserTasks(): Observable<ProposalComments[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_INT_TASKS);
+        const params = new HttpParams();
+        return this.http.get<ProposalComments[]>(url, {params}).pipe();
     }
 
 

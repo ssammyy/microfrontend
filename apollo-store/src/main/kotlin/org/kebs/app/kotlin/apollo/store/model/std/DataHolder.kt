@@ -103,6 +103,7 @@ interface PenaltyDetails{
     fun getPenaltyGenDate(): String?
     fun getPenaltyPayable(): Long?
 }
+
 interface LevyPenalty{
     fun getId(): Long?
     fun getEntryNumber(): String?
@@ -298,6 +299,25 @@ interface UserIdHolder{
 
 interface ManufacturerStatusHolder{
     fun getManufacturerStatus(): Long?
+}
+
+interface ProposalDetails{
+    fun getId(): Long?
+    fun getDocName(): String?
+    fun getPreparedDate(): String?
+    fun getProposalNumber(): String?
+    fun getUploadedBy(): String?
+    fun getRemarks(): String?
+    fun getAssignedTo(): Long?
+    fun getTitle(): String?
+    fun getCirculationDate(): String?
+    fun getNameOfOrganization(): String?
+    fun getNameOfRespondent(): String?
+    fun getClosingDate(): String?
+    fun getScope(): String?
+    fun getTcSecName(): String?
+    fun getAdoptionAcceptableAsPresented(): String?
+    fun getReasonsForNotAcceptance(): String?
 }
 
 
