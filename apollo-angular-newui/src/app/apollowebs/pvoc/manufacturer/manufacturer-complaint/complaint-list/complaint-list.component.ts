@@ -26,7 +26,7 @@ import {MsService} from '../../../../../core/store/data/ms/ms.service';
   templateUrl: './complaint-list.component.html',
   styleUrls: ['./complaint-list.component.css'],
 })
-export class ComplaintListComponent implements OnInit {
+export class ComplaintListComponentB implements OnInit {
   @ViewChild('editModal') editModal !: TemplateRef<any>;
   currDiv!: string;
   currDivLabel!: string;

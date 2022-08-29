@@ -654,9 +654,7 @@ import {ComplaintNewComponent} from './apollowebs/market-surveillance/complaint/
 import {
     ComplaintListComponent
 } from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
-import {
-    ComplaintDetailsComponent
-} from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
+
 import {
     CdGeneralChecklistComponent
 } from './apollowebs/di/view-single-consignment-document/cd-general-checklist/cd-general-checklist.component';
@@ -738,6 +736,15 @@ import {PvocNewComplaintComponent} from "./apollowebs/pvoc/manufacturer/manufact
 import {ViewWaiverCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-waiver-certificates/view-waiver-certificates.component';
 import {ViewExemptionCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-exemption-certificates/view-exemption-certificates.component';
 import {IntStdTasksComponent} from './apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component';
+import {
+    ComplaintDetailsComponent
+} from "./apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component";
+import {
+    ComplaintDetailsComponentB
+} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-details/complaint-details.component";
+import {
+    ComplaintListComponentB
+} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-list/complaint-list.component";
 
 @NgModule({
     imports: [
@@ -975,6 +982,8 @@ import {IntStdTasksComponent} from './apollowebs/standards-development/internati
         ComplaintNewComponent,
         ComplaintListComponent,
         ComplaintDetailsComponent,
+        ComplaintDetailsComponentB,
+        ComplaintListComponentB,
         PaymentsComponent,
         IntStdUploadStandardComponent,
         IntStdGazzetteComponent,

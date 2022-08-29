@@ -14,19 +14,21 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons" *ngIf="complaintInspection">CMP</i>
+                            <i *ngIf="complaintInspection" class="material-icons">CMP</i>
                         </div>
-                        <h4 class="card-title" *ngIf="complaintInspection">Ref No :{{complaintInspection?.complaintsDetails?.refNumber}}
-                            <button class="btn btn-sm btn-default float-right mr-7"
-                                    (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
+                        <h4 *ngIf="complaintInspection" class="card-title">Ref No
+                            :{{complaintInspection?.complaintsDetails?.refNumber}}
+                            <button (click)="goBack()"
+                                    class="btn btn-sm btn-default float-right mr-7"><i class="fa fa-arrow-left"></i> Back
                             </button>
                         </h4>
 
                     </div>
-                    <div class="card-body" *ngIf="complaintInspection">
+                    <div *ngIf="complaintInspection" class="card-body">
                         <div class="row">
                             <div class="col-md-10">
-                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTab class="tab-wraps">
+                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTab
+                                               class="tab-wraps">
                                     <mat-tab *ngIf="complaintInspection?.complaintsDetails.refNumber" label="1">
                                         <ng-template mat-tab-label>
                                             Complainant Information Details
@@ -84,12 +86,12 @@
                                                     {{complaintInspection?.complaintsDetails?.complaintDescription}}
                                                 </div>
                                             </li>
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Region</div>-->
-<!--                                                <div class="list-text-accordion">-->
-<!--                                                    {{complaintInspection?.complaintsDetails?.county}}-->
-<!--                                                </div>-->
-<!--                                            </li>-->
+                                            <!--                                            <li class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">Region</div>-->
+                                            <!--                                                <div class="list-text-accordion">-->
+                                            <!--                                                    {{complaintInspection?.complaintsDetails?.county}}-->
+                                            <!--                                                </div>-->
+                                            <!--                                            </li>-->
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">County</div>
                                                 <div class="list-text-accordion">
@@ -113,31 +115,32 @@
                                             </li>
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="complaintInspection?.complaintsDetails?.classificationDetailsStatus" label="3">
+                                    <mat-tab *ngIf="complaintInspection?.complaintsDetails?.classificationDetailsStatus"
+                                             label="3">
                                         <ng-template mat-tab-label>
                                             Complaint Targeted Product Details
                                         </ng-template>
                                         <b class="text-primary">Complaint Targeted Product Details</b>
                                         <ul class="w-list-unstyled">
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Standard  Category</div>
-                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.standardCategory}}</div>
+                                                <div class="list-title-accordion">Standard Category</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.standardCategory}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Broad Product Category</div>
-                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.broadProductCategory}}</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.broadProductCategory}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Product Category</div>
-                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.productCategory}}</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.productCategory}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Product</div>
-                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.productName}}</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.productName}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Product Sub-Category</div>
-                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.productSubcategory}}</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.productSubcategory}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Product Brand</div>
@@ -146,16 +149,17 @@
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Standard Title</div>
-                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.ksApplicable?.standardTitle}}</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.ksApplicable?.standardTitle}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">KS Number</div>
-                                                <div class="list-text-accordion" >{{complaintInspection?.complaintsDetails?.ksApplicable?.standardNumber}}</div>
+                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.ksApplicable?.standardNumber}}</div>
                                             </li>
 
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab *ngIf="complaintInspection?.complaintsDetails?.complaintFiles.length!=0" label="4">
+                                    <mat-tab *ngIf="complaintInspection?.complaintsDetails?.complaintFiles.length!=0"
+                                             label="4">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             Complainant Photos/Documents
@@ -163,13 +167,13 @@
                                         <div class="panel" style="max-height: 388px;">
                                             <div *ngIf="complaintInspection?.complaintsDetails?.complaintFiles.length!=0">
                                                 <div class="form-row">
-<!--                                                    <div class="col-md-12 mb-3">-->
-<!--                                                        <label style="color: #0082f3">Photos/Documents</label>-->
-<!--                                                    </div>-->
+                                                    <!--                                                    <div class="col-md-12 mb-3">-->
+                                                    <!--                                                        <label style="color: #0082f3">Photos/Documents</label>-->
+                                                    <!--                                                    </div>-->
                                                     <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsComplaintsFiles"
+                                                        <ng2-smart-table (custom)="onCustomComplaintFileViewAction($event)"
+                                                                         [settings]="settingsComplaintsFiles"
                                                                          [source]="complaintInspection?.complaintsDetails?.complaintFiles"
-                                                                         (custom)="onCustomComplaintFileViewAction($event)"
                                                         ></ng2-smart-table>
                                                     </div>
                                                 </div>
@@ -185,13 +189,13 @@
                                         <div class="panel" style="max-height: 388px;">
                                             <div *ngIf="complaintInspection?.remarksDetails.length!=0">
                                                 <div class="form-row">
-<!--                                                    <div class="col-md-12 mb-3">-->
-<!--                                                        <label style="color: #0082f3">Photos/Documents</label>-->
-<!--                                                    </div>-->
+                                                    <!--                                                    <div class="col-md-12 mb-3">-->
+                                                    <!--                                                        <label style="color: #0082f3">Photos/Documents</label>-->
+                                                    <!--                                                    </div>-->
                                                     <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsRemarks"
+                                                        <ng2-smart-table (custom)="onCustomRemarksViewAction($event)"
+                                                                         [settings]="settingsRemarks"
                                                                          [source]="complaintInspection?.remarksDetails"
-                                                                         (custom)="onCustomRemarksViewAction($event)"
                                                         ></ng2-smart-table>
                                                     </div>
                                                 </div>
@@ -205,24 +209,29 @@
                                         </ng-template>
                                         <b class="text-primary">Complaint Acceptance/Rejection Details</b>
                                         <ul class="w-list-unstyled">
-                                            <li *ngIf="complaintInspection?.acceptanceResults?.acceptanceStatus" class="list-item-accordion ">
+                                            <li *ngIf="complaintInspection?.acceptanceResults?.acceptanceStatus"
+                                                class="list-item-accordion ">
                                                 <div class="list-title-accordion">Complaint Acceptance Status</div>
                                                 <div class="list-text-accordion">{{complaintInspection?.acceptanceResults?.acceptanceStatus}}
                                                 </div>
                                             </li>
-                                            <li *ngIf="complaintInspection?.acceptanceResults?.rejectedStatus" class="list-item-accordion ">
+                                            <li *ngIf="complaintInspection?.acceptanceResults?.rejectedStatus"
+                                                class="list-item-accordion ">
                                                 <div class="list-title-accordion">Complaint Rejection Only Status</div>
                                                 <div class="list-text-accordion">{{complaintInspection?.acceptanceResults?.rejectedStatus}}
                                                 </div>
                                             </li>
                                             <div *ngIf="complaintInspection?.acceptanceResults?.mandateOGAStatus">
                                                 <li class="list-item-accordion ">
-                                                    <div class="list-title-accordion">Complaint Rejection With Mandate To OGA Status</div>
+                                                    <div class="list-title-accordion">Complaint Rejection With Mandate
+                                                        To OGA Status
+                                                    </div>
                                                     <div class="list-text-accordion">{{complaintInspection?.acceptanceResults?.mandateOGAStatus}}
                                                     </div>
                                                 </li>
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Complaint Mandate To OGA Remarks</div>
+                                                    <div class="list-title-accordion">Complaint Mandate To OGA Remarks
+                                                    </div>
                                                     <div class="list-text-accordion">
                                                         {{complaintInspection?.acceptanceResults?.ogaWhereRemarks}}
                                                     </div>
@@ -294,8 +303,10 @@
                                 <div *ngIf="complaintInspection?.complaintsDetails?.timelineEndDate!=null">
                                     <b>TIMELINES STATUS:</b>
                                     <div>
-                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue" class="text-success">IN-TIME</b>
-                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue==false" class="text-danger">OVER-DUE</b>
+                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue"
+                                           class="text-success">IN-TIME</b>
+                                        <b *ngIf="complaintInspection?.complaintsDetails?.timelineOverDue==false"
+                                           class="text-danger">OVER-DUE</b>
                                     </div>
                                     <b>Started TimeLine</b>
                                     <div>
@@ -310,52 +321,60 @@
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
-                                        <button *ngIf="complaintInspection?.acceptanceDone == false " (click)="openModalAddDetails('acceptRejectComplaint')" mat-raised-button="" data-toggle="modal"
-                                                data-target="#myModal1"
-                                                class="btn btn-sm btn-primary mr-2"><span
+                                        <button (click)="openModalAddDetails('acceptRejectComplaint')"
+                                                *ngIf="complaintInspection?.acceptanceDone == false "
+                                                class="btn btn-sm btn-primary mr-2" data-target="#myModal1"
+                                                data-toggle="modal"
+                                                mat-raised-button=""><span
                                                 class="mat-button-wrapper">ACCEPT/REJECT COMPLAINT</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-ripple mat-button-ripple" matripple=""></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
-<!--                                        <button *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == false && complaintInspection?.complaintsDetails?.rejectedStatus ==false" (click)="openModalAddDetails('notKebsMandate')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                data-target="#myModal1"-->
-<!--                                                class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                class="mat-button-wrapper">MANDATE FOR OGA</span>-->
-<!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                            <div class="mat-button-focus-overlay"></div>-->
-<!--                                        </button>-->
-                                        <button *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == true && complaintInspection?.hofAssigned ==null" (click)="openModalAddDetails('assignHOF')" mat-raised-button="" data-toggle="modal"
+                                        <!--                                        <button *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == false && complaintInspection?.complaintsDetails?.rejectedStatus ==false" (click)="openModalAddDetails('notKebsMandate')" mat-raised-button="" data-toggle="modal"-->
+                                        <!--                                                data-target="#myModal1"-->
+                                        <!--                                                class="btn btn-sm btn-primary mr-2"><span-->
+                                        <!--                                                class="mat-button-wrapper">MANDATE FOR OGA</span>-->
+                                        <!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+                                        <!--                                            <div class="mat-button-focus-overlay"></div>-->
+                                        <!--                                        </button>-->
+                                        <button (click)="openModalAddDetails('assignHOF')"
+                                                *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == true && complaintInspection?.hofAssigned ==null" class="btn btn-sm btn-primary mr-2"
                                                 data-target="#myModal1"
-                                                class="btn btn-sm btn-primary mr-2"><span
+                                                data-toggle="modal"
+                                                mat-raised-button=""><span
                                                 class="mat-button-wrapper">ASSIGN HOF</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-ripple mat-button-ripple" matripple=""></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                     </div>
                                     <div *ngIf="role == 'MS_HOF_MODIFY' && userLoggedInID == complaintInspection?.hofAssigned?.id">
-                                        <button *ngIf="complaintInspection?.officersAssigned == null && complaintInspection?.hofAssigned !=null" (click)="openModalAddDetails('assignOfficer')" mat-raised-button="" data-toggle="modal"
+                                        <button (click)="openModalAddDetails('assignOfficer')"
+                                                *ngIf="complaintInspection?.officersAssigned == null && complaintInspection?.hofAssigned !=null" class="btn btn-sm btn-primary mr-2"
                                                 data-target="#myModal1"
-                                                class="btn btn-sm btn-primary mr-2"><span
+                                                data-toggle="modal"
+                                                mat-raised-button=""><span
                                                 class="mat-button-wrapper">ASSIGN IO</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-ripple mat-button-ripple" matripple=""></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                     </div>
                                     <div *ngIf="role == 'MS_IO_MODIFY' && userLoggedInID == complaintInspection?.officersAssigned?.id">
-                                        <button *ngIf="complaintInspection?.complaintsDetails?.classificationDetailsStatus == false "
-                                                (click)="openModalAddDetails('addClassificationDetails')" mat-raised-button="" data-toggle="modal"
-                                                data-target="#myModal1"
-                                                class="btn btn-sm btn-primary mr-2"><span
+                                        <button (click)="openModalAddDetails('addClassificationDetails')"
+                                                *ngIf="complaintInspection?.complaintsDetails?.classificationDetailsStatus == false "
+                                                class="btn btn-sm btn-primary mr-2" data-target="#myModal1"
+                                                data-toggle="modal"
+                                                mat-raised-button=""><span
                                                 class="mat-button-wrapper">ADD CLASSIFICATION DETAILS</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-ripple mat-button-ripple" matripple=""></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
-                                        <button  *ngIf="complaintInspection?.complaintProcessStatus == false && complaintInspection?.complaintsDetails?.classificationDetailsStatus"
-                                                (click)="openModalAddDetails('startMSProcess')" mat-raised-button="" data-toggle="modal"
+                                        <button (click)="openModalAddDetails('startMSProcess')"
+                                                *ngIf="complaintInspection?.complaintProcessStatus == false && complaintInspection?.complaintsDetails?.classificationDetailsStatus" class="btn btn-sm btn-primary mr-2"
                                                 data-target="#workPlanModal"
-                                                class="btn btn-sm btn-primary mr-2"><span
+                                                data-toggle="modal"
+                                                mat-raised-button=""><span
                                                 class="mat-button-wrapper">START MS-PROCESS</span>
-                                            <div  class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                     </div>
@@ -366,8 +385,8 @@
                                 <b>Document Details:</b>
                                 <div *ngIf="complaintInspection?.complaintProcessStatus == true">
                                     <i
-                                       (click)="viewWorkPlanCreated()"
-                                       class="btn btn-sm btn-primary">VIEW MS PROCESS</i>
+                                            (click)="viewWorkPlanCreated()"
+                                            class="btn btn-sm btn-primary">VIEW MS PROCESS</i>
                                 </div>
                             </div>
                         </div>
@@ -390,12 +409,12 @@
     </div>
 
     <!-- Dynamic Modal -->
-    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="myModal1" role="dialog" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">{{currDivLabel}}</h4>
-                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <button aria-hidden="true" class="close" data-dismiss="modal" mat-button type="button">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
@@ -407,17 +426,19 @@
                                     <div>
                                         <label for="processBy"><b>ADD BY</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="processBy" matInput type="text" readonly formControlName="processBy" name="processBy">
+                                            <input formControlName="processBy" id="processBy" matInput name="processBy"
+                                                   readonly type="text">
                                         </mat-form-field>
                                         <label for="remarksStatus"><b>Remarks Status:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="remarksStatus" matInput type="text" readonly formControlName="remarksStatus" name="remarksStatus">
+                                            <input formControlName="remarksStatus" id="remarksStatus" matInput name="remarksStatus"
+                                                   readonly type="text">
                                         </mat-form-field>
                                         <label for="remarks"><b>Remarks/ Feed back:</b></label>
                                         <mat-form-field class="example-full-width" id="remarks">
-                                            <textarea readonly id="remarksDescription" matInput type="text"
-                                                      formControlName="remarksDescription"
-                                                      name="remarksDescription">
+                                            <textarea formControlName="remarksDescription" id="remarksDescription" matInput name="remarksDescription"
+                                                      readonly
+                                                      type="text">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -433,10 +454,10 @@
                                         <label for="approved"><b>Select Results</b></label>
                                         <mat-form-field id="approved">
                                             <mat-select (selectionChange)="updateSelectedStatus()"
-                                                    placeholder="Please Select an option"
-                                                        formControlName="approved"
                                                         [class.is-invalid]="formAcceptRejectForm.approved.invalid && formAcceptRejectForm.approved.touched"
-                                                        name="approved">
+                                                        formControlName="approved"
+                                                        name="approved"
+                                                        placeholder="Please Select an option">
                                                 <mat-option [value]="1">ACCEPT</mat-option>
                                                 <mat-option [value]="0">REJECT</mat-option>
                                             </mat-select>
@@ -445,19 +466,24 @@
                                             <label for="department"><b>Select Department</b></label>
                                             <mat-form-field>
                                                 <mat-select (selectionChange)="onChangeSelectedDepartment()"
-                                                        placeholder="Please Select an option"
                                                             [class.is-invalid]="formAcceptRejectForm.department.invalid && formAcceptRejectForm.department.touched"
-                                                            formControlName="department" id="department" name="department" >
-                                                    <mat-option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</mat-option>
+                                                            formControlName="department"
+                                                            id="department" name="department"
+                                                            placeholder="Please Select an option">
+                                                    <mat-option
+                                                            *ngFor="let app of msDepartments | filterPipe: {status: true}"
+                                                            [value]="app.id">{{app.department}}</mat-option>
 
                                                 </mat-select>
                                             </mat-form-field>
                                             <label for="division"><b>Select Division</b></label>
                                             <mat-form-field>
-                                                <mat-select placeholder="Please Select an option"msDivisions
-                                                            [class.is-invalid]="formAcceptRejectForm.division.invalid && formAcceptRejectForm.division.touched"
-                                                            formControlName="division" id="division" name="division" >
-                                                    <mat-option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}} </mat-option>
+                                                <mat-select [class.is-invalid]="formAcceptRejectForm.division.invalid && formAcceptRejectForm.division.touched" formControlName="division"
+                                                            id="division"
+                                                            msDivisions name="division" placeholder="Please Select an option">
+                                                    <mat-option
+                                                            *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}"
+                                                            [value]="app.id">{{app.division}} </mat-option>
 
                                                 </mat-select>
                                             </mat-form-field>
@@ -466,32 +492,34 @@
                                             <label for="mandateForOga"><b>Select Rejection type</b></label>
                                             <mat-form-field id="mandateForOga">
                                                 <mat-select (selectionChange)="updateSelectedRejectionStatus()"
-                                                            placeholder="Please Select an option"
-                                                            formControlName="mandateForOga"
                                                             [class.is-invalid]="formAcceptRejectForm.mandateForOga.invalid && formAcceptRejectForm.mandateForOga.touched"
-                                                            name="mandateForOga">
+                                                            formControlName="mandateForOga"
+                                                            name="mandateForOga"
+                                                            placeholder="Please Select an option">
                                                     <mat-option [value]="0">REJECT ONLY</mat-option>
                                                     <mat-option [value]="1">REJECT WITH MANDATE</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                             <div *ngIf="(selectComplaintRejectionStatus == 'Accept')">
-                                                <label for="advisedWhereToRemarks"><b>Please write, in detail, Where The Complaint belongs:</b></label>
+                                                <label for="advisedWhereToRemarks"><b>Please write, in detail, Where The
+                                                    Complaint belongs:</b></label>
                                                 <mat-form-field class="example-full-width">
-                                                    <textarea id="advisedWhereToRemarks" matInput type="text"
-                                                              formControlName="advisedWhereToRemarks"
-                                                              [class.is-invalid]="formAcceptRejectForm.advisedWhereToRemarks.invalid && formAcceptRejectForm.advisedWhereToRemarks.touched"
-                                                              name="advisedWhereToRemarks">
+                                                    <textarea [class.is-invalid]="formAcceptRejectForm.advisedWhereToRemarks.invalid && formAcceptRejectForm.advisedWhereToRemarks.touched" formControlName="advisedWhereToRemarks" id="advisedWhereToRemarks"
+                                                              matInput
+                                                              name="advisedWhereToRemarks"
+                                                              type="text">
                                                     </textarea>
                                                 </mat-form-field>
 
                                             </div>
 
                                         </div>
-                                        <label for="approvedRemarks"><b>Please write, in detail, your feedback For Accepting / Rejecting:</b></label>
+                                        <label for="approvedRemarks"><b>Please write, in detail, your feedback For
+                                            Accepting / Rejecting:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="approvedRemarks" matInput type="text"
-                                                      formControlName="approvedRemarks"
-                                                      name="approvedRemarks">
+                                            <textarea formControlName="approvedRemarks" id="approvedRemarks" matInput
+                                                      name="approvedRemarks"
+                                                      type="text">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -499,32 +527,32 @@
                             </div>
                         </form>
                     </div>
-<!--                    <div *ngIf="(currDiv == 'notKebsMandate')">-->
-<!--                        <form [formGroup]="adviceComplaintForm" class="form">-->
-<!--                            <div class="form-body">-->
-<!--                                <div class="form-group">-->
-<!--                                    <div>-->
-<!--                                        <label for="advisedWhereToRemarks"><b>Please write, in detail, Where The Complaint belongs:</b></label>-->
-<!--                                        <mat-form-field class="example-full-width">-->
-<!--                                            <textarea id="advisedWhereToRemarks" matInput type="text"-->
-<!--                                                      formControlName="advisedWhereToRemarks"-->
-<!--                                                      [class.is-invalid]="formAdviceComplaintForm.advisedWhereToRemarks.invalid && formAdviceComplaintForm.advisedWhereToRemarks.touched"-->
-<!--                                                      name="advisedWhereToRemarks">-->
-<!--                                            </textarea>-->
-<!--                                        </mat-form-field>-->
-<!--                                        <label for="rejectedRemarks"><b>Please write, in detail, your feedback :</b></label>-->
-<!--                                        <mat-form-field class="example-full-width">-->
-<!--                                            <textarea id="rejectedRemarks" matInput type="text"-->
-<!--                                                      formControlName="rejectedRemarks"-->
-<!--                                                      [class.is-invalid]="formAdviceComplaintForm.rejectedRemarks.invalid && formAdviceComplaintForm.rejectedRemarks.touched"-->
-<!--                                                      name="rejectedRemarks">-->
-<!--                                            </textarea>-->
-<!--                                        </mat-form-field>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </form>-->
-<!--                    </div>-->
+                    <!--                    <div *ngIf="(currDiv == 'notKebsMandate')">-->
+                    <!--                        <form [formGroup]="adviceComplaintForm" class="form">-->
+                    <!--                            <div class="form-body">-->
+                    <!--                                <div class="form-group">-->
+                    <!--                                    <div>-->
+                    <!--                                        <label for="advisedWhereToRemarks"><b>Please write, in detail, Where The Complaint belongs:</b></label>-->
+                    <!--                                        <mat-form-field class="example-full-width">-->
+                    <!--                                            <textarea id="advisedWhereToRemarks" matInput type="text"-->
+                    <!--                                                      formControlName="advisedWhereToRemarks"-->
+                    <!--                                                      [class.is-invalid]="formAdviceComplaintForm.advisedWhereToRemarks.invalid && formAdviceComplaintForm.advisedWhereToRemarks.touched"-->
+                    <!--                                                      name="advisedWhereToRemarks">-->
+                    <!--                                            </textarea>-->
+                    <!--                                        </mat-form-field>-->
+                    <!--                                        <label for="rejectedRemarks"><b>Please write, in detail, your feedback :</b></label>-->
+                    <!--                                        <mat-form-field class="example-full-width">-->
+                    <!--                                            <textarea id="rejectedRemarks" matInput type="text"-->
+                    <!--                                                      formControlName="rejectedRemarks"-->
+                    <!--                                                      [class.is-invalid]="formAdviceComplaintForm.rejectedRemarks.invalid && formAdviceComplaintForm.rejectedRemarks.touched"-->
+                    <!--                                                      name="rejectedRemarks">-->
+                    <!--                                            </textarea>-->
+                    <!--                                        </mat-form-field>-->
+                    <!--                                    </div>-->
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </form>-->
+                    <!--                    </div>-->
                     <div *ngIf="(currDiv == 'assignHOF')">
                         <form [formGroup]="assignOfficerForm" class="form">
                             <div class="form-body">
@@ -532,18 +560,20 @@
                                     <div>
                                         <label for="assignedIo"><b>Select officer</b></label>
                                         <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
-                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >
-                                                <mat-option *ngFor="let app of complaintInspection.hofList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+                                            <mat-select [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
+                                                        formControlName="assignedIo"
+                                                        id="assignedIo" name="assignedIo" placeholder="Please Select an option">
+                                                <mat-option *ngFor="let app of complaintInspection.hofList"
+                                                            [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
+                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for
+                                            assigning the officer:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="assignedRemarks" matInput type="text"
-                                                      formControlName="assignedRemarks"
-                                                      name="assignedRemarks">
+                                            <textarea formControlName="assignedRemarks" id="assignedRemarks" matInput
+                                                      name="assignedRemarks"
+                                                      type="text">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -558,18 +588,20 @@
                                     <div>
                                         <label for="assignedIo"><b>Select officer</b></label>
                                         <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
-                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >
-                                                <mat-option *ngFor="let app of complaintInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+                                            <mat-select [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
+                                                        formControlName="assignedIo"
+                                                        id="assignedIo" name="assignedIo" placeholder="Please Select an option">
+                                                <mat-option *ngFor="let app of complaintInspection.officersList"
+                                                            [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
+                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for
+                                            assigning the officer:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="assignedRemarks" matInput type="text"
-                                                      formControlName="assignedRemarks"
-                                                      name="assignedRemarks">
+                                            <textarea formControlName="assignedRemarks" id="assignedRemarks" matInput
+                                                      name="assignedRemarks"
+                                                      type="text">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -584,55 +616,69 @@
                                     <div>
                                         <label for="productClassification"><b>Select Product Classification</b></label>
                                         <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        (selectionChange)="onChangeSelectedProductClassification()"
+                                            <mat-select (selectionChange)="onChangeSelectedProductClassification()"
                                                         [class.is-invalid]="formClassificationForm.productClassification.invalid && formClassificationForm.productClassification.touched"
-                                                        formControlName="productClassification" id="productClassification" name="productClassification" >
-                                                <mat-option *ngFor="let app of standardProductCategory" [value]="app.id">{{app.standardCategory}}</mat-option>
+                                                        formControlName="productClassification"
+                                                        id="productClassification"
+                                                        name="productClassification" placeholder="Please Select an option">
+                                                <mat-option *ngFor="let app of standardProductCategory"
+                                                            [value]="app.id">{{app.standardCategory}}</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
                                         <label for="broadProductCategory"><b>Select Broad Product Category</b></label>
                                         <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        (selectionChange)="onChangeSelectedBroadProductCategory()"
+                                            <mat-select (selectionChange)="onChangeSelectedBroadProductCategory()"
                                                         [class.is-invalid]="formClassificationForm.broadProductCategory.invalid && formClassificationForm.broadProductCategory.touched"
-                                                        formControlName="broadProductCategory" id="broadProductCategory" name="broadProductCategory" >
-                                                <mat-option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</mat-option>
+                                                        formControlName="broadProductCategory"
+                                                        id="broadProductCategory" name="broadProductCategory"
+                                                        placeholder="Please Select an option">
+                                                <mat-option
+                                                        *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}"
+                                                        [value]="app.id">{{app.category}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <label for="productCategory"><b>Select Product Category</b></label>
                                         <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        (selectionChange)="onChangeSelectedProductCategory()"
+                                            <mat-select (selectionChange)="onChangeSelectedProductCategory()"
                                                         [class.is-invalid]="formClassificationForm.productCategory.invalid && formClassificationForm.productCategory.touched"
-                                                        formControlName="productCategory" id="productCategory" name="productCategory" >
-                                                <mat-option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</mat-option>
+                                                        formControlName="productCategory"
+                                                        id="productCategory" name="productCategory"
+                                                        placeholder="Please Select an option">
+                                                <mat-option
+                                                        *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}"
+                                                        [value]="app.id">{{app.name}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <label for="myProduct"><b>Select Product</b></label>
                                         <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        (selectionChange)="onChangeSelectedMyProduct()"
+                                            <mat-select (selectionChange)="onChangeSelectedMyProduct()"
                                                         [class.is-invalid]="formClassificationForm.myProduct.invalid && formClassificationForm.myProduct.touched"
-                                                        formControlName="myProduct" id="myProduct" name="myProduct" >
-                                                <mat-option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</mat-option>
+                                                        formControlName="myProduct"
+                                                        id="myProduct" name="myProduct" placeholder="Please Select an option">
+                                                <mat-option
+                                                        *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}"
+                                                        [value]="app.id">{{app.name}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <label for="productSubcategory"><b>Select Product Sub-Category</b></label>
                                         <mat-form-field>
-                                            <mat-select placeholder="Please Select an option"
-                                                        (selectionChange)="onChangeSelectedProductSubcategory()"
+                                            <mat-select (selectionChange)="onChangeSelectedProductSubcategory()"
                                                         [class.is-invalid]="formClassificationForm.productSubcategory.invalid && formClassificationForm.productSubcategory.touched"
-                                                        formControlName="productSubcategory" id="productSubcategory" name="productSubcategory" >
-                                                <mat-option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</mat-option>
+                                                        formControlName="productSubcategory"
+                                                        id="productSubcategory" name="productSubcategory"
+                                                        placeholder="Please Select an option">
+                                                <mat-option
+                                                        *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}"
+                                                        [value]="app.id">{{app.name}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="classificationRemarks"><b>Please write, in detail, your feedback for Classification Details Above:</b></label>
+                                        <label for="classificationRemarks"><b>Please write, in detail, your feedback for
+                                            Classification Details Above:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="classificationRemarks" matInput type="text"
-                                                      formControlName="classificationRemarks"
-                                                      name="classificationRemarks">
+                                            <textarea formControlName="classificationRemarks" id="classificationRemarks" matInput
+                                                      name="classificationRemarks"
+                                                      type="text">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -644,24 +690,24 @@
                         <form [formGroup]="assignOfficerForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
-<!--                                    <div>-->
-<!--                                        <label for="assignedIo"><b>Select officer</b></label>-->
-<!--                                        <mat-form-field>-->
-<!--                                            <mat-select placeholder="Please Select an option"-->
-<!--                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"-->
-<!--                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >-->
-<!--                                                <mat-option *ngFor="let app of complaintInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>-->
+                                    <!--                                    <div>-->
+                                    <!--                                        <label for="assignedIo"><b>Select officer</b></label>-->
+                                    <!--                                        <mat-form-field>-->
+                                    <!--                                            <mat-select placeholder="Please Select an option"-->
+                                    <!--                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"-->
+                                    <!--                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >-->
+                                    <!--                                                <mat-option *ngFor="let app of complaintInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>-->
 
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
-<!--                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>-->
-<!--                                        <mat-form-field class="example-full-width">-->
-<!--                                            <textarea id="assignedRemarks" matInput type="text"-->
-<!--                                                      formControlName="assignedRemarks"-->
-<!--                                                      name="assignedRemarks">-->
-<!--                                            </textarea>-->
-<!--                                        </mat-form-field>-->
-<!--                                    </div>-->
+                                    <!--                                            </mat-select>-->
+                                    <!--                                        </mat-form-field>-->
+                                    <!--                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>-->
+                                    <!--                                        <mat-form-field class="example-full-width">-->
+                                    <!--                                            <textarea id="assignedRemarks" matInput type="text"-->
+                                    <!--                                                      formControlName="assignedRemarks"-->
+                                    <!--                                                      name="assignedRemarks">-->
+                                    <!--                                            </textarea>-->
+                                    <!--                                        </mat-form-field>-->
+                                    <!--                                    </div>-->
                                 </div>
                             </div>
                         </form>
@@ -670,36 +716,39 @@
                 </div>
                 <div class="modal-footer">
 
-                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    <button class="btn btn-danger" data-dismiss="modal" mat-raised-button type="button">Close
                     </button>
-                    <button *ngIf="(currDiv == 'assignOfficer')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveAssignIO(assignOfficerForm.valid);"
-                            [disabled]="!assignOfficerForm.valid"
+                    <button (click)="onClickSaveAssignIO(assignOfficerForm.valid);" *ngIf="(currDiv == 'assignOfficer')" [disabled]="!assignOfficerForm.valid" class="btn btn-success"
                             data-dismiss="modal"
+                            mat-raised-button
+                            type="button"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'assignHOF')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveAssignHof(assignOfficerForm.valid);"
-                            [disabled]="!assignOfficerForm.valid"
+                    <button (click)="onClickSaveAssignHof(assignOfficerForm.valid);" *ngIf="(currDiv == 'assignHOF')" [disabled]="!assignOfficerForm.valid" class="btn btn-success"
                             data-dismiss="modal"
+                            mat-raised-button
+                            type="button"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'acceptRejectComplaint')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveAcceptRejectFormResults(acceptRejectComplaintForm.valid);"
-                            [disabled]="!acceptRejectComplaintForm.valid"
+                    <button (click)="onClickSaveAcceptRejectFormResults(acceptRejectComplaintForm.valid);" *ngIf="(currDiv == 'acceptRejectComplaint')" [disabled]="!acceptRejectComplaintForm.valid"
+                            class="btn btn-success"
                             data-dismiss="modal"
+                            mat-raised-button
+                            type="button"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'notKebsMandate')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveAdviceWhereFormResults(adviceComplaintForm.valid);"
-                            [disabled]="!adviceComplaintForm.valid"
+                    <button (click)="onClickSaveAdviceWhereFormResults(adviceComplaintForm.valid);" *ngIf="(currDiv == 'notKebsMandate')" [disabled]="!adviceComplaintForm.valid"
+                            class="btn btn-success"
                             data-dismiss="modal"
+                            mat-raised-button
+                            type="button"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'addClassificationDetails')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveClassificationDetails(classificationForm.valid);"
-                            [disabled]="!classificationForm.valid"
+                    <button (click)="onClickSaveClassificationDetails(classificationForm.valid);" *ngIf="(currDiv == 'addClassificationDetails')" [disabled]="!classificationForm.valid"
+                            class="btn btn-success"
                             data-dismiss="modal"
+                            mat-raised-button
+                            type="button"
                     >SUBMIT
                     </button>
                 </div>
@@ -709,13 +758,13 @@
     <!--  End Dynamic Modal -->
 
     <!-- Work Plan Modal -->
-    <div class="modal fade" id="workPlanModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
+    <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="workPlanModal" role="dialog"
+         tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Fill in bellow activity Details</h4>
-                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <button aria-hidden="true" class="close" data-dismiss="modal" mat-button type="button">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
@@ -723,44 +772,44 @@
                     <form [formGroup]="addNewScheduleForm">
                         <div class="form-group bmd-form-group is-filled">
                             <h5 class="mb-3" style="color: #0066B1">Work-Plan Details</h5>
-<!--                            <div class="row">-->
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Department</b></label>-->
-<!--                                        <select (change)="onChangeSelectedDepartment()"-->
-<!--                                                [class.is-invalid]="submitted && formNewScheduleForm.complaintDepartment.errors && formNewScheduleForm.complaintDepartment.invalid"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-<!--                                                class="form-control" formControlName="complaintDepartment" name="complaintDepartment" required>-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>-->
-<!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.complaintDepartment.errors && formNewScheduleForm.complaintDepartment.invalid" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.complaintDepartment.errors.required">Department is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                            <div class="row">-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label><b>Department</b></label>-->
+                            <!--                                        <select (change)="onChangeSelectedDepartment()"-->
+                            <!--                                                [class.is-invalid]="submitted && formNewScheduleForm.complaintDepartment.errors && formNewScheduleForm.complaintDepartment.invalid"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+                            <!--                                                class="form-control" formControlName="complaintDepartment" name="complaintDepartment" required>-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>-->
+                            <!--                                        </select>-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.complaintDepartment.errors && formNewScheduleForm.complaintDepartment.invalid" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.complaintDepartment.errors.required">Department is-->
+                            <!--                                                required-->
+                            <!--                                            </div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Division</b></label>-->
-<!--                                        <select [class.is-invalid]="formNewScheduleForm.divisionId.errors && formNewScheduleForm.divisionId.invalid"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-<!--                                                class="form-control" formControlName="divisionId" name="divisionId" required>-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>-->
-<!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.divisionId.errors-->
-<!--                                        && formNewScheduleForm.divisionId.invalid" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.divisionId.errors.required">Division is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label><b>Division</b></label>-->
+                            <!--                                        <select [class.is-invalid]="formNewScheduleForm.divisionId.errors && formNewScheduleForm.divisionId.invalid"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+                            <!--                                                class="form-control" formControlName="divisionId" name="divisionId" required>-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>-->
+                            <!--                                        </select>-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.divisionId.errors-->
+                            <!--                                        && formNewScheduleForm.divisionId.invalid" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.divisionId.errors.required">Division is-->
+                            <!--                                                required-->
+                            <!--                                            </div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                            </div>-->
+                            <!--                            </div>-->
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -769,10 +818,12 @@
                                                 class="form-control two-column-input"
                                                 formControlName="nameActivity" name="nameActivity" required type="text">
                                             <!--                                            <option [value]="" selected>Please select</option>-->
-                                            <option  [value]="'Complaint'" selected>Complaint</option>
+                                            <option [value]="'Complaint'" selected>Complaint</option>
                                         </select>
-                                        <div *ngIf="submitted && formNewScheduleForm.nameActivity.errors && formNewScheduleForm.nameActivity.invalid" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.nameActivity.errors.required">Name of Activity is
+                                        <div *ngIf="submitted && formNewScheduleForm.nameActivity.errors && formNewScheduleForm.nameActivity.invalid"
+                                             class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.nameActivity.errors.required">Name of
+                                                Activity is
                                                 required
                                             </div>
                                         </div>
@@ -786,8 +837,10 @@
                                                class="form-control two-column-input"
                                                formControlName="timeActivityDate"
                                                name="timeActivityDate" required type="date">
-                                        <div *ngIf="submitted && formNewScheduleForm.timeActivityDate.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.timeActivityDate.errors.required">Date of Activity is
+                                        <div *ngIf="submitted && formNewScheduleForm.timeActivityDate.errors"
+                                             class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.timeActivityDate.errors.required">Date of
+                                                Activity is
                                                 required
                                             </div>
                                         </div>
@@ -795,149 +848,153 @@
                                 </div>
 
                             </div>
-<!--                            <div class="row">-->
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group" *ngIf="county$ | async as apps">-->
-<!--                                        <label><b>County</b></label>-->
-<!--                                        <select (change)="updateSelectedCounty()"-->
-<!--                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-<!--                                                class="form-control" formControlName="county" name="county" required>-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"-->
-<!--                                            >{{app.county}}</option>-->
-<!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                            <div class="row">-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group" *ngIf="county$ | async as apps">-->
+                            <!--                                        <label><b>County</b></label>-->
+                            <!--                                        <select (change)="updateSelectedCounty()"-->
+                            <!--                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+                            <!--                                                class="form-control" formControlName="county" name="county" required>-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"-->
+                            <!--                                            >{{app.county}}</option>-->
+                            <!--                                        </select>-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group" *ngIf="town$ | async as apps">-->
-<!--                                        <label><b>Town/Market center</b></label>-->
-<!--                                        <select (change)="updateSelectedTown()"-->
-<!--                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-<!--                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"-->
-<!--                                                    [ngValue]="app.id">{{app.town}}</option>-->
-<!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group" *ngIf="town$ | async as apps">-->
+                            <!--                                        <label><b>Town/Market center</b></label>-->
+                            <!--                                        <select (change)="updateSelectedTown()"-->
+                            <!--                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+                            <!--                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"-->
+                            <!--                                                    [ngValue]="app.id">{{app.town}}</option>-->
+                            <!--                                        </select>-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                            </div>-->
-<!--                            <div class="row">-->
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Other</b></label>-->
-<!--                                        <input type="text" class="form-control two-column-input"-->
-<!--                                               formControlName="locationActivityOther" name="locationActivityOther" required-->
-<!--                                               [class.is-invalid]="formNewScheduleForm.locationActivityOther.invalid && formNewScheduleForm.locationActivityOther.errors">-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.locationActivityOther.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.locationActivityOther.errors.required">Other is required</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                            </div>-->
+                            <!--                            <div class="row">-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label><b>Other</b></label>-->
+                            <!--                                        <input type="text" class="form-control two-column-input"-->
+                            <!--                                               formControlName="locationActivityOther" name="locationActivityOther" required-->
+                            <!--                                               [class.is-invalid]="formNewScheduleForm.locationActivityOther.invalid && formNewScheduleForm.locationActivityOther.errors">-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.locationActivityOther.errors" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.locationActivityOther.errors.required">Other is required</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Select Product Category</b> </label>-->
-<!--                                        <select (change)="onChangeSelectedProductClassification()"-->
-<!--                                                [class.is-invalid]="formNewScheduleForm.standardCategory.invalid && formNewScheduleForm.standardCategory.errors"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-<!--                                                class="form-control" formControlName="standardCategory" name="standardCategory" required>-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of standardProductCategory | filterPipe: {status: true}" [value]="app.id">{{app.standardCategory}}</option>-->
-<!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.standardCategory.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.standardCategory.errors.required">Product Category is required</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label><b>Select Product Category</b> </label>-->
+                            <!--                                        <select (change)="onChangeSelectedProductClassification()"-->
+                            <!--                                                [class.is-invalid]="formNewScheduleForm.standardCategory.invalid && formNewScheduleForm.standardCategory.errors"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+                            <!--                                                class="form-control" formControlName="standardCategory" name="standardCategory" required>-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of standardProductCategory | filterPipe: {status: true}" [value]="app.id">{{app.standardCategory}}</option>-->
+                            <!--                                        </select>-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.standardCategory.errors" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.standardCategory.errors.required">Product Category is required</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                            </div>-->
-<!--                            <div class="row">-->
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Select Broad Product Category</b> </label>-->
-<!--                                        <select (change)="onChangeSelectedBroadProductCategory()"-->
-<!--                                                [class.is-invalid]="formNewScheduleForm.broadProductCategory.invalid && formNewScheduleForm.broadProductCategory.errors"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-<!--                                                class="form-control" formControlName="broadProductCategory" name="broadProductCategory" required>-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</option>-->
-<!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.broadProductCategory.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.broadProductCategory.errors.required">Broad Product Category is required</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                            </div>-->
+                            <!--                            <div class="row">-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label><b>Select Broad Product Category</b> </label>-->
+                            <!--                                        <select (change)="onChangeSelectedBroadProductCategory()"-->
+                            <!--                                                [class.is-invalid]="formNewScheduleForm.broadProductCategory.invalid && formNewScheduleForm.broadProductCategory.errors"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+                            <!--                                                class="form-control" formControlName="broadProductCategory" name="broadProductCategory" required>-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</option>-->
+                            <!--                                        </select>-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.broadProductCategory.errors" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.broadProductCategory.errors.required">Broad Product Category is required</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Select Product Category</b> </label>-->
-<!--                                        <select (change)="onChangeSelectedProductCategory()"-->
-<!--                                                [class.is-invalid]="formNewScheduleForm.productCategory.invalid && formNewScheduleForm.productCategory.errors"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
-<!--                                                formControlName="productCategory" id="productCategory" name="productCategory" >-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</option>-->
-<!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.productCategory.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.productCategory.errors.required">Product Category is required</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label><b>Select Product Category</b> </label>-->
+                            <!--                                        <select (change)="onChangeSelectedProductCategory()"-->
+                            <!--                                                [class.is-invalid]="formNewScheduleForm.productCategory.invalid && formNewScheduleForm.productCategory.errors"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
+                            <!--                                                formControlName="productCategory" id="productCategory" name="productCategory" >-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</option>-->
+                            <!--                                        </select>-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.productCategory.errors" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.productCategory.errors.required">Product Category is required</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                            </div>-->
-<!--                            <div class="row">-->
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Select Product</b> </label>-->
-<!--                                        <select (change)="onChangeSelectedMyProduct()"-->
-<!--                                                [class.is-invalid]="formNewScheduleForm.product.invalid && formNewScheduleForm.product.errors"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
-<!--                                                formControlName="product" id="product" name="product" >-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</option>-->
-<!--                                        </select><div *ngIf="submitted && formNewScheduleForm.product.errors" class="invalid-feedback">-->
-<!--                                        <div *ngIf="formNewScheduleForm.product.errors.required">Product is required</div>-->
-<!--                                    </div>-->
+                            <!--                            </div>-->
+                            <!--                            <div class="row">-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label><b>Select Product</b> </label>-->
+                            <!--                                        <select (change)="onChangeSelectedMyProduct()"-->
+                            <!--                                                [class.is-invalid]="formNewScheduleForm.product.invalid && formNewScheduleForm.product.errors"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
+                            <!--                                                formControlName="product" id="product" name="product" >-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</option>-->
+                            <!--                                        </select><div *ngIf="submitted && formNewScheduleForm.product.errors" class="invalid-feedback">-->
+                            <!--                                        <div *ngIf="formNewScheduleForm.product.errors.required">Product is required</div>-->
+                            <!--                                    </div>-->
 
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Select Product Sub-Category</b> </label>-->
-<!--                                        <select (change)="onChangeSelectedProductSubcategory()"-->
-<!--                                                [class.is-invalid]="formNewScheduleForm.productSubCategory.invalid && formNewScheduleForm.productSubCategory.errors"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
-<!--                                                formControlName="productSubCategory" id="productSubCategory" name="productSubCategory" >-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</option>-->
-<!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.productSubCategory.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.productSubCategory.errors.required">Product Sub-Category is required</div>-->
-<!--                                        </div>-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group">-->
+                            <!--                                        <label><b>Select Product Sub-Category</b> </label>-->
+                            <!--                                        <select (change)="onChangeSelectedProductSubcategory()"-->
+                            <!--                                                [class.is-invalid]="formNewScheduleForm.productSubCategory.invalid && formNewScheduleForm.productSubCategory.errors"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
+                            <!--                                                formControlName="productSubCategory" id="productSubCategory" name="productSubCategory" >-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</option>-->
+                            <!--                                        </select>-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.productSubCategory.errors" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.productSubCategory.errors.required">Product Sub-Category is required</div>-->
+                            <!--                                        </div>-->
 
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                            </div>-->
+                            <!--                            </div>-->
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Resources Required</b> </label>
                                         <input [class.is-invalid]="formNewScheduleForm.resourcesRequired.invalid && formNewScheduleForm.resourcesRequired.errors"
-                                               class="form-control two-column-input" formControlName="resourcesRequired" name="resourcesRequired" required type="text">
-                                        <div *ngIf="submitted && formNewScheduleForm.resourcesRequired.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.resourcesRequired.errors.required">Resources Required is required</div>
+                                               class="form-control two-column-input" formControlName="resourcesRequired"
+                                               name="resourcesRequired" required type="text">
+                                        <div *ngIf="submitted && formNewScheduleForm.resourcesRequired.errors"
+                                             class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.resourcesRequired.errors.required">Resources
+                                                Required is required
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -946,10 +1003,13 @@
                                     <div class="form-group">
                                         <label><b>Budget</b> </label>
                                         <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"
-                                               class="form-control two-column-input" formControlName="budget" name="budget" required type="text">
+                                               class="form-control two-column-input" formControlName="budget"
+                                               name="budget" required type="text">
                                     </div>
-                                    <div *ngIf="submitted && formNewScheduleForm.budget.errors" class="invalid-feedback">
-                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required</div>
+                                    <div *ngIf="submitted && formNewScheduleForm.budget.errors"
+                                         class="invalid-feedback">
+                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required
+                                        </div>
                                     </div>
                                 </div>
 
@@ -958,14 +1018,15 @@
                     </form>
 
                     <div class="modal-footer">
-                        <button  mat-raised-button type="button" class="btn btn-danger"
-                                 data-dismiss="modal">
+                        <button class="btn btn-danger" data-dismiss="modal" mat-raised-button
+                                type="button">
                             Close
                         </button>
-                        <button *ngIf="addNewScheduleForm.valid" mat-raised-button   data-dismiss="modal"
-                                class="btn btn-success" (click)="onClickSaveWorkPlanScheduled()" type="button" >SUBMIT
+                        <button (click)="onClickSaveWorkPlanScheduled()" *ngIf="addNewScheduleForm.valid" class="btn btn-success"
+                                data-dismiss="modal" mat-raised-button type="button">SUBMIT
                         </button>
-                        <button *ngIf="addNewScheduleForm.invalid" mat-raised-button (click)="onClickSaveWorkPlanScheduled()" class="btn btn-success" type="button" >SUBMIT
+                        <button (click)="onClickSaveWorkPlanScheduled()" *ngIf="addNewScheduleForm.invalid"
+                                class="btn btn-success" mat-raised-button type="button">SUBMIT
                         </button>
                     </div>
 
