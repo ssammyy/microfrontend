@@ -361,8 +361,7 @@ import {ComTasksComponent} from './apollowebs/standards-development/company-stan
 import {PvocNewComplaintComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-new/pvoc-new-complaint.component";
 import {ViewWaiverCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-waiver-certificates/view-waiver-certificates.component';
 import {ViewExemptionCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-exemption-certificates/view-exemption-certificates.component';
-import { IntStdTasksComponent } from './apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component';
-
+import {IntStdTasksComponent} from './apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component';
 
 @NgModule({
     imports: [
@@ -744,11 +743,14 @@ import { IntStdTasksComponent } from './apollowebs/standards-development/interna
         PrepareBallotingDraftComponent,
         VoteOnBallotDraftComponent,
         ComTasksComponent,
-        IntStdTasksComponent
+        IntStdTasksComponent,
         ComTasksComponent,
         PvocNewComplaintComponent,
         ViewWaiverCertificatesComponent,
-        ViewExemptionCertificatesComponent
+        ViewExemptionCertificatesComponent,
+        StdHopTasksComponent,
+        SpcSecTaskComponent,
+        NwaJustificationFormComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],
