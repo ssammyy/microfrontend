@@ -13,7 +13,7 @@ class Ballot {
 
     @Column(name = "PRD_ID")
     @Basic
-    var prdID: Long =0
+    var prdID: Long = 0
 
     @Column(name = "BALLOT_NAME")
     @Basic
@@ -49,9 +49,9 @@ class Ballot {
     var deleteBy: String? = null
 
 
-    @Column(name = "VAR_FIELD_1")
+    @Column(name = "APPROVAL_STATUS")
     @Basic
-    var varField1: String? = null
+    var approvalStatus: String? = null
 
     @Column(name = "VAR_FIELD_2")
     @Basic

@@ -5748,42 +5748,42 @@
                                 </div>
 
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group" *ngIf="county$ | async as apps">
-                                        <label><b>County</b></label>
-                                        <select (change)="updateSelectedCounty()"
-                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"
-                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
-                                                class="form-control" formControlName="county" name="county" required>
-                                            <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
-                                            >{{app.county}}</option>
-                                        </select>
-                                        <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>
-                                        </div>
-                                    </div>
-                                </div>
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group" *ngIf="county$ | async as apps">-->
+<!--                                        <label><b>County</b></label>-->
+<!--                                        <select (change)="updateSelectedCounty()"-->
+<!--                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+<!--                                                class="form-control" formControlName="county" name="county" required>-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"-->
+<!--                                            >{{app.county}}</option>-->
+<!--                                        </select>-->
+<!--                                        <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
 
-                                <div class="col">
-                                    <div class="form-group" *ngIf="town$ | async as apps">
-                                        <label><b>Town/Market center</b></label>
-                                        <select (change)="updateSelectedTown()"
-                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"
-                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
-                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>
-                                            <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
-                                                    [ngValue]="app.id">{{app.town}}</option>
-                                        </select>
-                                        <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>
-                                        </div>
-                                    </div>
-                                </div>
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group" *ngIf="town$ | async as apps">-->
+<!--                                        <label><b>Town/Market center</b></label>-->
+<!--                                        <select (change)="updateSelectedTown()"-->
+<!--                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+<!--                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"-->
+<!--                                                    [ngValue]="app.id">{{app.town}}</option>-->
+<!--                                        </select>-->
+<!--                                        <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
 
-                            </div>
+<!--                            </div>-->
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">

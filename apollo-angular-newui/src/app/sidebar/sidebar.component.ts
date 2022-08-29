@@ -438,7 +438,8 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'ballotingModule',
         children: [
             {path: 'prepareBallot', title: 'Prepare Ballot Draft', ab: 'PBD'},
-            {path: 'voteOnBallot', title: 'Vote On Ballot Draft', ab: 'RPD'},
+            {path: 'voteOnBallot', title: 'Vote On Ballot Draft', ab: 'V'},
+            {path: 'reviewBallotDraft', title: 'Review Ballot Draft', ab: 'RBD'},
 
 
 
