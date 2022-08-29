@@ -730,22 +730,14 @@ import {
     VoteOnBallotDraftComponent
 } from './apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component';
 import {ComTasksComponent} from './apollowebs/standards-development/company-standard/com-tasks/com-tasks.component';
-import {
-    PvocNewComplaintComponent
-} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-new/pvoc-new-complaint.component";
-import {
-    ViewWaiverCertificatesComponent
-} from './apollowebs/pvoc/manufacturer/view-waiver-certificates/view-waiver-certificates.component';
-import {
-    ViewExemptionCertificatesComponent
-} from './apollowebs/pvoc/manufacturer/view-exemption-certificates/view-exemption-certificates.component';
-import {
-    IntStdTasksComponent
-} from './apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component';
+
 import {
     ReviewBallotDraftComponent
 } from './apollowebs/standards-development/balloting/review-ballot-draft/review-ballot-draft.component';
-
+import {PvocNewComplaintComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-new/pvoc-new-complaint.component";
+import {ViewWaiverCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-waiver-certificates/view-waiver-certificates.component';
+import {ViewExemptionCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-exemption-certificates/view-exemption-certificates.component';
+import {IntStdTasksComponent} from './apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component';
 
 @NgModule({
     imports: [
@@ -1133,7 +1125,10 @@ import {
         ComTasksComponent,
         PvocNewComplaintComponent,
         ViewWaiverCertificatesComponent,
-        ViewExemptionCertificatesComponent
+        ViewExemptionCertificatesComponent,
+        StdHopTasksComponent,
+        SpcSecTaskComponent,
+        NwaJustificationFormComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],
