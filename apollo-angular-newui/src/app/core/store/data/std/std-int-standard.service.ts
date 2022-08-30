@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import {
     ComJcJustificationDec,
-    GazetteNotice,
+    GazetteNotice, InternationalStandardsComments,
     ISAdoptionComments, ISAdoptionJustification,
-    ISAdoptionProposal, ISDecision, ISHopTASKS, ISHosSicTASKS, ISJustificationDecision,
-    ISSacSecTASKS, ISStandard, ISTcSecTASKS, ListJustification, NWAStandard,
-    ProposalComments
+    ISAdoptionProposal, ISDecision, ISDraftUpload, ISHopTASKS, ISHosSicTASKS, ISJustificationDecision,
+    ISSacSecTASKS, ISStandard, ISTcSecTASKS, ListJustification, NWAStandard, ProposalComment,
+    ProposalComments, StakeholderProposalComments
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
-import {DefaulterDetails} from "../levy/levy.model";
+import {DefaulterDetails, SiteVisitRemarks} from "../levy/levy.model";
 
 @Injectable({
   providedIn: 'root'
@@ -79,10 +79,10 @@ export class StdIntStandardService {
         );
     }
 
-  public submitAPComments(proposalComments: ProposalComments): Observable<any> {
+  public submitAPComments(proposalComment: ProposalComment): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_AP_COMMENTS);
     const params = new HttpParams();
-    return this.http.post<ProposalComments>(url, proposalComments, {params}).pipe(
+    return this.http.post<ProposalComment>(url, proposalComment, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -102,7 +102,7 @@ export class StdIntStandardService {
   public decisionOnProposal(iSDecision: ISDecision): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_ON_PROPOSAL);
     const params = new HttpParams();
-    return this.http.post<ISAdoptionProposal>(url, iSDecision, {params}).pipe(
+    return this.http.post<ProposalComments>(url, iSDecision, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -123,6 +123,9 @@ export class StdIntStandardService {
         })
     );
   }
+
+
+
     public uploadJSFile(isJustificationID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_JS_DOCUMENT);
 
@@ -173,6 +176,31 @@ export class StdIntStandardService {
         })
     );
   }
+    public decisionOnSACJustification(isJustificationDecision: ISJustificationDecision): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SAC_DECISION_ON_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.post<ISAdoptionJustification>(url, isJustificationDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public decisionOnHopJustification(isJustificationDecision: ISJustificationDecision): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_HOP_DECISION_ON_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.post<ISAdoptionJustification>(url, isJustificationDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
   public getSACSECTasks(): Observable<ISSacSecTASKS[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SAC_SEC_TASKS);
     const params = new HttpParams();
@@ -312,6 +340,67 @@ export class StdIntStandardService {
         const params = new HttpParams();
         return this.http.get<ProposalComments[]>(url, {params}).pipe();
     }
+
+    public getAllComments(proposalId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_PROPOSAL_COMMENTS);
+        const params = new HttpParams().set('proposalId', proposalId);
+        return this.http.get<StakeholderProposalComments>(url, {params}).pipe();
+    }
+    public getUserComments(id: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_JUSTIFICATION_COMMENTS);
+        const params = new HttpParams().set('id', id);
+        return this.http.get<InternationalStandardsComments>(url, {params}).pipe();
+    }
+
+    public editStandardDraft(iSDraftUpload: ISDraftUpload): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISDraftUpload>(url, iSDraftUpload, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public draughtStandardDraft(iSDraftUpload: ISDraftUpload): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DRAFTING_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISDraftUpload>(url, iSDraftUpload, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public proofreading(iSDraftUpload: ISDraftUpload): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_PROOFREADING_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISDraftUpload>(url, iSDraftUpload, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public uploadIStandard(iSDraftUpload: ISDraftUpload): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISDraftUpload>(url, iSDraftUpload, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
 
 
 

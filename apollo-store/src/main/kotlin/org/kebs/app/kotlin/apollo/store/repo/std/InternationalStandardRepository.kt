@@ -19,7 +19,7 @@ interface InternationalStandardRepository {
 
 @Repository
 interface ISAdoptionCommentsRepository : JpaRepository<ISAdoptionComments, Long> {
-    fun findByProposalID(id: Long): MutableIterable<ISAdoptionComments>
+    fun findByProposalID(id: Long): MutableIterable<ISAdoptionComments>?
 }
 
 interface ComJcJustificationRepository : JpaRepository<ComJcJustification, Long> {
@@ -387,7 +387,7 @@ interface StandardComRemarksRepository : JpaRepository<StandardComRemarks, Long>
     fun findAllByApprovalIDOrderByIdDesc(id: Long): List<StandardComRemarks>?
 }
 interface InternationalStandardRemarksRepository : JpaRepository<InternationalStandardRemarks, Long> {
-    fun findAllByProposalIdOrderByIdDesc(id: Long): List<InternationalStandardRemarks>?
+    fun findAllByProposalIdOrderByIdDesc(id: Long): MutableIterable<InternationalStandardRemarks>?
 }
 
 

@@ -124,7 +124,7 @@ class IntStandardController(
     }
 
     @GetMapping("/getAllComments")
-    fun getAllComments(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISAdoptionComments>
+    fun getAllComments(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISAdoptionComments>?
     {
         return internationalStandardService.getAllComments(proposalId)
     }
@@ -218,7 +218,11 @@ class IntStandardController(
         return internationalStandardService.decisionOnJustification(isJustificationDecision,internationalStandardRemarks)
     }
 
-
+    @GetMapping("/getUserComments")
+    fun getUserComments(@RequestParam("id") id: Long):MutableIterable<InternationalStandardRemarks>?
+    {
+        return internationalStandardService.getUserComments(id)
+    }
 
     //approve International Standard
     @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -248,19 +252,19 @@ class IntStandardController(
     @PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/draughtStandardDraft")
     @ResponseBody
-    fun draughtStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft): ServerResponse
+    fun draughtStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft,iSDraftStdUpload:ISDraftStdUpload): ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandardDraft(nwaWorkShopDraft))
+        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandardDraft(nwaWorkShopDraft,iSDraftStdUpload))
     }
 
     @PreAuthorize("hasAuthority('PROOFREADER_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/proofReadStandardDraft")
     @ResponseBody
-    fun proofReadStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft): ServerResponse
+    fun proofReadStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft,iSDraftStdUpload:ISDraftStdUpload): ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Successfully Proof Read Workshop Draft",internationalStandardService.proofReadStandardDraft(nwaWorkShopDraft))
+        return ServerResponse(HttpStatus.OK,"Successfully Proof Read Workshop Draft",internationalStandardService.proofReadStandardDraft(nwaWorkShopDraft,iSDraftStdUpload))
     }
 
 

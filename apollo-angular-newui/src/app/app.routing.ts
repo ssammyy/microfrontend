@@ -1124,7 +1124,7 @@ export const routes: Routes = [
 
     {
         path: 'isTasks', component: AdminLayoutComponent,
-        // canActivate: [RouteGuard],
+         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdTasksComponent}],
     },
     {
