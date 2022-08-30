@@ -196,28 +196,122 @@ class BallotController(
         return ballotService.getUserLoggedInBallots()
     }
 
-
-    @GetMapping("/getBallot/{id}")
-    fun getBallotById(@PathVariable("id") id: Long): ResponseEntity<Ballot?>? {
-        return ballotService.getBallotById(id)
+    @GetMapping("/getBallotsTally")
+    fun getBallotsTally(): List<VotesTally>? {
+        return ballotService.getAllVotesTally()
     }
 
-    //Retrieves requests made by users on the front end
-    @GetMapping("/tc/tasks")
-    fun getTasks(): List<TaskDetails> {
-        return ballotService.getTCTasks() as List<TaskDetails>
+    @PostMapping("/approveBallotDraft")
+    fun approveBallotDraft(@RequestBody ballot: Ballot)
+            : ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Ballot Draft Approved.",
+            ballotService.makeDecisionOnBallotDraft(ballot)
+        )
     }
 
-    //Retrieves requests made by users on the front end
-    @GetMapping("/tcSec/tasks")
-    fun getTCSECTasks(): List<TaskDetails> {
-        return ballotService.getTCSecTasks() as List<TaskDetails>
+    @PostMapping("/editBallotDraft")
+    fun editBallotDraft(@RequestBody ballot: Ballot)
+            : ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Ballot Draft Edited.",
+            ballotService.editBallot(ballot)
+        )
     }
 
-    //Retrieves requests made by users on the front end
-    @PostMapping("/close")
-    fun clos(@RequestBody responseMessage: ResponseMessage) {
-        return ballotService.closeTask(responseMessage.message)
+
+    //public review draft upload other Public Review Draft Document
+    @PostMapping("/upload/sacSummary")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadSacSummary(
+        @RequestParam("ballotId") ballotId: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        @RequestParam("type") type: String,
+
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        var docDescription: String;
+
+        val application = ballotingRepository.findByIdOrNull(ballotId)
+            ?: throw Exception("APPLICATION DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = DatKebsSdStandardsEntity()
+            with(upload) {
+                sdDocumentId = application.id
+                documentTypeDef = type
+
+            }
+            docDescription = "Sac Summary"
+
+            committeeService.uploadSDFileCommittee(
+                upload,
+                u,
+                "SAC SUMMARY",
+                application.id,
+                docDescription
+
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Sac Summary Uploaded successfully"
+
+        return sm
     }
+
+    @PostMapping("/upload/sacSummaryList")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadSacSummaryList(
+        @RequestParam("ballotId") ballotId: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        @RequestParam("type") type: String,
+
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        var docDescription: String;
+
+        val application = ballotingRepository.findByIdOrNull(ballotId)
+            ?: throw Exception("APPLICATION DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = DatKebsSdStandardsEntity()
+            with(upload) {
+                sdDocumentId = application.id
+                documentTypeDef = type
+
+            }
+            docDescription = "Sac Summary List"
+
+            committeeService.uploadSDFileCommittee(
+                upload,
+                u,
+                "SAC SUMMARY LIST",
+                application.id,
+                docDescription
+
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Sac Summary List Uploaded successfully"
+
+        return sm
+    }
+
+    @PostMapping("/forwardToSacForApproval")
+    fun forwardToSacForApproval(@RequestBody ballot: Ballot)
+            : ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "FDKSTD Forwarded To SAC.",
+            ballotService.editBallot(ballot)
+        )
+    }
+
 
 }

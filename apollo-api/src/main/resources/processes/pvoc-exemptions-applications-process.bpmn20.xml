@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
     <process id="exemptionApplicationProcess" name="My process" isExecutable="true">
         <startEvent id="startevent1" name="Start"></startEvent>
         <userTask id="usertask1" name="Approve/Reject/Defer" activiti:category="SECTION_OFFICER"></userTask>
@@ -11,7 +15,9 @@
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve=='DEFERED'}]]></conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="flow4" name="Edited" sourceRef="usertask2" targetRef="usertask1"></sequenceFlow>
-        <sequenceFlow id="flow5" name="Approve" sourceRef="exclusivegateway1" targetRef="servicetask1"></sequenceFlow>
+        <sequenceFlow id="flow5" name="Approve" sourceRef="exclusivegateway1" targetRef="servicetask1">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve=='APPROVE'}]]></conditionExpression>
+        </sequenceFlow>
         <sequenceFlow id="flow6" name="Reject" sourceRef="exclusivegateway1" targetRef="servicetask2">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve=='REJECT'}]]></conditionExpression>
         </sequenceFlow>
@@ -110,7 +116,7 @@
                 <omgdi:waypoint x="672.0" y="250.0"></omgdi:waypoint>
                 <omgdi:waypoint x="672.0" y="330.0"></omgdi:waypoint>
                 <bpmndi:BPMNLabel>
-                    <omgdc:Bounds height="13.0" width="40.0" x="672.0" y="250.0"></omgdc:Bounds>
+                    <omgdc:Bounds height="13.0" width="100.0" x="672.0" y="250.0"></omgdc:Bounds>
                 </bpmndi:BPMNLabel>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">

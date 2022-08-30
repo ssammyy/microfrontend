@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Add Manufactured Product</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="productForm">
+        <div class="col-md-6 col-sm-12">
+            <label for="product-name" class="waiver-form-label">Product Name</label>
+            <input formControlName="productName" id="product-name" name="text" type="text" class="waiver-form-input">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="brand" class="waiver-form-label">Brand</label>
+            <input formControlName="permitNumber" id="brand" name="brand" type="text" class="waiver-form-input">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="permit-no" class="waiver-form-label">KEBS SMARK Permit No.</label>
+            <input formControlName="expriryDate" id="permit-no" name="end-product" type="text"
+                   class="waiver-form-input">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="country-of-origin" class="waiver-form-label">Expiry Date</label>
+            <div class="col-8">
+                <input formControlName="brandName" id="country-of-origin" name="country-of-origin" type="date"
+                       class="waiver-form-input">
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+    <button [disabled]="!productForm.valid" name="submit" type="button" class="btn btn-primary" (click)="saveProduct()">
+        SAVE
+    </button>
+</mat-dialog-actions>

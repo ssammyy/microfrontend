@@ -3,7 +3,7 @@ import {LoadingService} from '../../../core/services/loader/loadingservice.servi
 import {NgxSpinnerService} from 'ngx-spinner';
 import {UserEntityService} from '../../../core/store';
 import {MasterService} from '../../../core/store/data/master/master.service';
-import {UserRegister} from '../../../../../../apollo-webs/src/app/shared/models/user';
+import {UserRegister} from '../../../shared/models/user';
 import {ActivatedRoute} from '@angular/router';
 import {TableData} from '../../../md/md-table/md-table.component';
 import {
@@ -14,7 +14,7 @@ import {
 } from '../../../core/store/data/master/master.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import swal from 'sweetalert2';
-import {DivisionDetails} from '../../../../../../apollo-webs/src/app/shared/models/master-data-details';
+import {DivisionDetails} from '../../../shared/models/master-data-details';
 import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
 
 @Component({

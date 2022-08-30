@@ -14,6 +14,10 @@ class PvocWaiversApplicationEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_PVOC_WAIVERS_APPLICATION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
+    @Column(name = "COMPANY_ID")
+    @Basic
+    var companyId: Long? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

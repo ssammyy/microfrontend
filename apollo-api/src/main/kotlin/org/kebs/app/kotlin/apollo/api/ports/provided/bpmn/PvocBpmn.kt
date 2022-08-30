@@ -390,11 +390,12 @@ class PvocBpmn(
      */
     //Start the PVOC waivers applications process
     fun startPvocWaiversApplicationsProcess(waiver: PvocWaiversApplicationEntity, username: String) {
-        val variables: HashMap<String, Any> = HashMap()
+        val variables = mutableMapOf<String, Any?>()
         KotlinLogging.logger { }.info("Waiver ID : ${waiver.id} : Starting PVOC waivers applications process")
         variables["waiverId"] = waiver.id
+        variables["category"] = "WAIVER"
         variables["startedBy"] = username
-        val process = this.runtimeService.startProcessInstanceById("waiverApplicationProcess", variables)
+        val process = this.runtimeService.startProcessInstanceByKey("waiverApplicationProcess", variables)
         waiver.pvocWaProcessInstanceId = process.processInstanceId
     }
 

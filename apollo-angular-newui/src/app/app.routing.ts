@@ -34,26 +34,6 @@ import {OtpComponent} from './views/registration/otp/otp.component';
 import {PdfViewComponent} from './pdf-view/pdf-view.component';
 import {TaskManagerComponent} from './apollowebs/task-manager/task-manager.component';
 import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
-import {ImportInspectionComponent} from './apollowebs/pvoc/import-inspection/import-inspection.component';
-import {
-    ExceptionsApplicationComponent
-} from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
-import {ImportationWaiverComponent} from './apollowebs/pvoc/importation-waiver/importation-waiver.component';
-import {
-    ConsignmentDocumentListComponent
-} from './apollowebs/di/consignment-document-list/consignment-document-list.component';
-import {
-    ViewSingleConsignmentDocumentComponent
-} from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
-import {
-    MinistryInspectionHomeComponent
-} from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
-import {
-    MotorVehicleInspectionSingleViewComponent
-} from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
-import {
-    NwaJustificationFormComponent
-} from './apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component';
 import {
     IsProposalFormComponent
 } from './apollowebs/standards-development/international-standard/international-standard-proposal/is-proposal-form/is-proposal-form.component';
@@ -96,6 +76,30 @@ import {
 import {
     SystemicAnalyseCommentsComponent
 } from './apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component';
+import {
+    ImportInspectionComponent
+} from './apollowebs/pvoc/manufacturer/manufacturer-applications/import-inspection.component';
+import {
+    ExceptionsApplicationComponent
+} from './apollowebs/pvoc/manufacturer/exceptions-application/exceptions-application.component';
+import {
+    ImportationWaiverComponent
+} from './apollowebs/pvoc/manufacturer/importation-waiver/importation-waiver.component';
+import {
+    ConsignmentDocumentListComponent
+} from './apollowebs/di/consignment-document-list/consignment-document-list.component';
+import {
+    ViewSingleConsignmentDocumentComponent
+} from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
+import {
+    MinistryInspectionHomeComponent
+} from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
+import {
+    MotorVehicleInspectionSingleViewComponent
+} from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
+import {
+    NwaJustificationFormComponent
+} from './apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component';
 import {UsermanagementComponent} from './apollowebs/usermanagement/usermanagement.component';
 import {
     UserManagementProfileComponent
@@ -251,57 +255,6 @@ import {
 import {
     ComplaintDetailsComponent
 } from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
-// import {HoSicTasksComponent} from "./apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component";
-// export const AppRoutes: Routes = [
-//     {
-//         path: '',
-//         redirectTo: 'dashboard',
-//         pathMatch: 'full',
-//     }, {
-//         path: '',
-//         component: AdminLayoutComponent,
-//         children: [
-//             {
-//                 path: '',
-//                 loadChildren: './dashboard/dashboard.module#DashboardModule'
-//             }, {
-//                 path: 'components',
-//                 loadChildren: './components/components.module#ComponentsModule'
-//             }, {
-//                 path: 'forms',
-//                 loadChildren: './forms/forms.module#Forms'
-//             }, {
-//                 path: 'tables',
-//                 loadChildren: './tables/tables.module#TablesModule'
-//             }, {
-//                 path: 'maps',
-//                 loadChildren: './maps/maps.module#MapsModule'
-//             }, {
-//                 path: 'widgets',
-//                 loadChildren: './widgets/widgets.module#WidgetsModule'
-//             }, {
-//                 path: 'charts',
-//                 loadChildren: './charts/charts.module#ChartsModule'
-//             }, {
-//                 path: 'calendar',
-//                 loadChildren: './calendar/calendar.module#CalendarModule'
-//             }, {
-//                 path: '',
-//                 loadChildren: './userpage/user.module#UserModule'
-//             }, {
-//                 path: '',
-//                 loadChildren: './timeline/timeline.module#TimelineModule'
-//             }
-//         ]
-//     }, {
-//         path: '',
-//         component: AuthLayoutComponent,
-//         children: [{
-//             path: 'pages',
-//             loadChildren: './pages/pages.module#PagesModule'
-//         }]
-//     }
-// ];
 import {ViewComplaintsComponent} from './apollowebs/pvoc/complaints/view-complaints/view-complaints.component';
 import {
     ViewComplaintDetailsComponent
@@ -325,7 +278,6 @@ import {
 import {
     PreparePreliminaryDraftComponent
 } from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
-
 import {
     ComStdPlTaskComponent
 } from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
@@ -485,9 +437,6 @@ import {
     ViewOtherDocumentsComponent
 } from "./apollowebs/pvoc/documents/foreign-cocs/view-other-documents/view-other-documents.component";
 import {
-    ApproveInductionMembersComponent
-} from "./apollowebs/standards-development/membershipToTc/approve-induction-members/approve-induction-members.component";
-import {
     ApproveCommitteeDraftComponent
 } from "./apollowebs/standards-development/committee-module/approve-committee-draft/approve-committee-draft.component";
 import {
@@ -500,7 +449,21 @@ import {
     VoteOnBallotDraftComponent
 } from "./apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component";
 import {ComTasksComponent} from "./apollowebs/standards-development/company-standard/com-tasks/com-tasks.component";
-import {IntStdTasksComponent} from "./apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component";
+import {
+    PvocNewComplaintComponent
+} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-new/pvoc-new-complaint.component";
+import {
+    ViewWaiverCertificatesComponent
+} from "./apollowebs/pvoc/manufacturer/view-waiver-certificates/view-waiver-certificates.component";
+import {
+    ViewExemptionCertificatesComponent
+} from "./apollowebs/pvoc/manufacturer/view-exemption-certificates/view-exemption-certificates.component";
+import {
+    IntStdTasksComponent
+} from "./apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component";
+import {
+    ReviewBallotDraftComponent
+} from "./apollowebs/standards-development/balloting/review-ballot-draft/review-ballot-draft.component";
 
 export const routes: Routes = [
     {
@@ -809,6 +772,11 @@ export const routes: Routes = [
                         pathMatch: 'full',
                     },
                     {
+                        path: 'certificates',
+                        component: ViewWaiverCertificatesComponent,
+                        pathMatch: 'full',
+                    },
+                    {
                         path: 'applications',
                         component: ViewWaiverApplicationsComponent,
                         pathMatch: 'full',
@@ -825,6 +793,10 @@ export const routes: Routes = [
                     {
                         path: 'apply',
                         component: ExceptionsApplicationComponent,
+                    },
+                    {
+                        path: 'certificates',
+                        component: ViewExemptionCertificatesComponent,
                     },
                     {
                         path: 'applications',
@@ -877,6 +849,10 @@ export const routes: Routes = [
                     {
                         path: '',
                         component: ViewComplaintsComponent,
+                    },
+                    {
+                        path: 'apply',
+                        component: PvocNewComplaintComponent,
                     },
                     {
                         path: ':id',
@@ -1253,8 +1229,6 @@ export const routes: Routes = [
     },
 
 
-
-
     //  Request For Standards
     {
         path: 'request-standards',
@@ -1386,6 +1360,11 @@ export const routes: Routes = [
         children: [{path: '', component: VoteOnBallotDraftComponent}],
     },
 
+    {
+        // review on Ballot Draft
+        path: 'reviewBallotDraft', component: AdminLayoutComponent,
+        children: [{path: '', component: ReviewBallotDraftComponent}],
+    },
 
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - PUBLIC REVIEW MODULE ROUTES

@@ -207,7 +207,8 @@ export interface Ballot_Draft {
     pdName: string;
     cdName: string;
     cdBy: string;
-
+    approvalStatus: string;
+    status: string;
 
 }
 
@@ -241,8 +242,20 @@ export interface VoteRetrieved {
     comments_BY: string;
     status: string;
     created_on: Date;
-    ballot_name:string;
-    comments:string;
+    ballot_name: string;
+    comments: string;
+
+
+}
+
+export interface VotesTally {
+    ballot_ID: number;
+    ballotname: string;
+    approved: number;
+    approvedwithcomments: number;
+    disapproved: number;
+    abstention: number;
+    status: string;
 
 
 }

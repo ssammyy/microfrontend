@@ -241,3 +241,17 @@ interface VotesWithBallotId {
 
 
 }
+interface VotesTally {
+    fun getBALLOT_ID(): Long?
+    fun getBALLOTNAME(): String?
+    fun getAPPROVED(): Long?
+    fun getAPPROVEDWITHCOMMENTS(): Long?
+
+    fun getDISAPPROVED(): Long?
+    fun getABSTENTION(): Long?
+
+    fun getSTATUS(): String?
+
+
+
+}

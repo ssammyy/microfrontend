@@ -136,65 +136,107 @@ class BallotService(
         return loggedInUser.id?.let { ballotvoteRepository.getUserLoggedInVotes(it) }
     }
 
-    fun getAllVotesOnBallot(ballotID: Long): List<VotesWithBallotId> {
-        return ballotvoteRepository.getBallotVotes(ballotID)
+    fun getAllVotesTally(): List<VotesTally> {
+        return ballotvoteRepository.getVotesTally()
+
     }
 
-    //request task list retrieval
-    fun getTCTasks(): List<TaskDetails?>? {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_TC)
-            .processDefinitionKey(PROCESS_DEFINITION_KEY).list()
-        return getTaskDetails(tasks)
+    fun getAllVotesOnBallot(ballotID: Long): List<VotesWithBallotId> {
+        return ballotvoteRepository.getBallotVotes(ballotID)
     }
 
     fun getAllVotes(): MutableList<BallotVote> {
         return ballotvoteRepository.findAll()
     }
 
+    fun makeDecisionOnBallotDraft(ballot: Ballot) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val approveBallotDraft =
+            ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
 
-    //returns process history for processes executed
-    fun checkProcessHistory(processId: String?) {
-        val historyService = processEngine.historyService
-        val activities = historyService
-            .createHistoricActivityInstanceQuery()
-            .processInstanceId(processId)
-            .finished()
-            .orderByHistoricActivityInstanceEndTime()
-            .asc()
-            .list()
-        for (activity in activities) {
-            println(
-                activity.activityId + " took " + activity.durationInMillis + " milliseconds"
-            )
+        if (ballot.approvalStatus.equals("Approved")) {
+            approveBallotDraft.status = "Standard Approved"
+            variable["status"] = approveBallotDraft.status!!
+            approveBallotDraft.approvalStatus = "Sent To Head Of Publishing"
+            variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
+            approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
+            variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
+            approveBallotDraft.modifiedBy = loggedInUser.id.toString()
+            variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
+
+        } else if (ballot.approvalStatus.equals("Not Approved")) {
+            approveBallotDraft.status = "Standard Not Approved"
+            variable["status"] = approveBallotDraft.status!!
+            approveBallotDraft.approvalStatus = "Forward To TC For Further Deliberations"
+            variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
+            approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
+            variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
+            approveBallotDraft.modifiedBy = loggedInUser.id.toString()
+            variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
         }
+        ballotRepository.save(approveBallotDraft)
 
     }
 
-    fun getBallotById(@PathVariable(value = "id") publicReviewId: Long): ResponseEntity<Ballot?>? {
-        val employee: Ballot = ballotRepository.findById(publicReviewId)
-            .orElseThrow { ResourceNotFoundException("Vote not found for this id :: $publicReviewId") }
-        return ResponseEntity.ok().body<Ballot?>(employee)
+
+    fun editBallot(ballot: Ballot) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val approveBallotDraft =
+            ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
+        approveBallotDraft.approvalStatus = "Edited By Hop"
+        variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
+        approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
+        variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
+        approveBallotDraft.modifiedBy = loggedInUser.id.toString()
+        variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
+
     }
 
-    //request task list retrieval
-    fun getTCSecTasks(): List<TaskDetails?> {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_TC_SEC)
-            .processDefinitionKey(PROCESS_DEFINITION_KEY).list()
-        return getTaskDetails(tasks)
+    fun forwardToSacForApproval(ballot: Ballot) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val approveBallotDraft =
+            ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
+        approveBallotDraft.approvalStatus = "Forwarded To SAC For Approval"
+        variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
+        approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
+        variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
+        approveBallotDraft.modifiedBy = loggedInUser.id.toString()
+        variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
     }
 
-    //Main task details function where tasks for different candidate groups can be queried
-    private fun getTaskDetails(tasks: List<Task>): List<TaskDetails> {
-        val taskDetails: MutableList<TaskDetails> = ArrayList()
-        for (task in tasks) {
-            val processVariables = taskService.getVariables(task.id)
-            taskDetails.add(TaskDetails(task.id, task.name, processVariables))
+    fun decisionOnFDKSTD(ballot: Ballot) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val approveBallotDraft =
+            ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
+
+        if (ballot.approvalStatus.equals("Approved")) {
+            approveBallotDraft.status = "FDKSTD Approved"
+            variable["status"] = approveBallotDraft.status!!
+            approveBallotDraft.approvalStatus = "FDKSTD Approved"
+            variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
+            approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
+            variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
+            approveBallotDraft.modifiedBy = loggedInUser.id.toString()
+            variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
+
+        } else if (ballot.approvalStatus.equals("Not Approved")) {
+            approveBallotDraft.status = "FDKSTD Not Approved"
+            variable["status"] = approveBallotDraft.status!!
+            approveBallotDraft.approvalStatus = "FDKSTD Not Approved"
+            variable["approvalStatus"] = approveBallotDraft.approvalStatus!!
+            approveBallotDraft.modifiedOn = Timestamp(System.currentTimeMillis())
+            variable["modifiedOn"] = approveBallotDraft.modifiedOn!!
+            approveBallotDraft.modifiedBy = loggedInUser.id.toString()
+            variable["modifiedBy"] = approveBallotDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
         }
-        return taskDetails
-    }
+        ballotRepository.save(approveBallotDraft)
 
-    fun closeTask(taskId: String) {
-        taskService.complete(taskId)
     }
 
 

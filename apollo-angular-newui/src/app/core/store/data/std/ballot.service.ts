@@ -8,7 +8,7 @@ import {
     CommentMade,
     CommentMadeRetrieved,
     PublicReviewDraft, PublicReviewDraftWithName,
-    StandardDocuments, Vote, VoteRetrieved
+    StandardDocuments, Vote, VoteRetrieved, VotesTally
 } from "./commitee-model";
 import {DataHolderB, Department} from "./request_std.model";
 import {AllBatchInvoiceDetailsDto, GenerateInvoiceDto, PermitEntityDto} from "../qa/qa.model";
@@ -107,46 +107,6 @@ export class BallotService {
     }
 
 
-    //make comment
-    public makeCommentUnLoggedInUsers(comment: CommentMade): Observable<any> {
-
-        return this.http.post<CommentMade>(`${this.apiServerUrl}` + 'makeComment', comment)
-
-    }
-
-
-    //sendToOrganisation
-    public sendToOrganisation(publicReviewDraft: PublicReviewDraftWithName): Observable<any> {
-
-        return this.http.post<PublicReviewDraftWithName>(`${this.apiServerUrl}` + 'sendToOrganisation', publicReviewDraft)
-
-    }
-
-    //sendToDepartments
-    public sendToDepartments(department: DataHolderB, publicReviewId: string): Observable<any> {
-
-        const params = new HttpParams()
-            .set('publicReviewDraftId', publicReviewId)
-        return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'sendToDepartments', department, {params})
-
-
-    }
-
-    //upload Edited Review Draft Name
-    public prepareEditedPublicReviewDraft(publicReviewDraft: PublicReviewDraft, publicReviewDraftId: string): Observable<any> {
-        const params = new HttpParams()
-            .set('publicReviewDraftId', publicReviewDraftId)
-        return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'editPrd', publicReviewDraft, {params})
-    }
-
-    //postToWebsite
-    public postToWebsite(publicReviewDraft: PublicReviewDraftWithName): Observable<any> {
-
-        return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'postToWebsite', publicReviewDraft)
-
-    }
-
-
     //retrieve vote for logged in user
     public retrieveVote(): Observable<any> {
         return this.http.get<VoteRetrieved>(`${this.apiServerUrl}` + 'getMyBallotVotes')
@@ -170,12 +130,26 @@ export class BallotService {
         );
     }
 
+    //get Votes Analysis
+    public getAllVotesTally(): Observable<any> {
+        const url = `${this.apiServerUrl}getBallotsTally`;
+
+        return this.http.get<VotesTally>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
     //get All Votes On Ballot
     public getAllVotesOnBallot(BallotId: any): Observable<any> {
         const url = `${this.apiServerUrl}getAllBallotVotes`;
         const params = new HttpParams()
-            .set('ballotId', BallotId)
-        return this.http.get<CommentMadeRetrieved>(url, {params}).pipe(
+            .set('ballotID', BallotId)
+        return this.http.get<VoteRetrieved>(url, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -186,10 +160,10 @@ export class BallotService {
     }
 
 
-    //approve prd
-    public approvePublicReviewDraft(publicReviewDraft: PublicReviewDraftWithName): Observable<any> {
+    //approve ballot
+    public approveBallotDraft(ballot: Ballot_Draft): Observable<any> {
 
-        return this.http.post<PublicReviewDraft>(`${this.apiServerUrl}` + 'approvePrd', publicReviewDraft)
+        return this.http.post<Ballot_Draft>(`${this.apiServerUrl}` + 'approveBallotDraft', ballot)
 
 
     }

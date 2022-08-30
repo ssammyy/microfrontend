@@ -29,12 +29,12 @@ import {
     SubSectionsL2EntityDto,
     TitlesEntityDto,
     Towns
-} from '../../../../../apollo-webs/src/app/shared/models/master-data-details';
+} from '../../shared/models/master-data-details';
 import swal from 'sweetalert2';
 import {DataTableDirective} from "angular-datatables";
 import {DataHolder, ReviewFormationOFTCRequest, SACSummary} from "../../core/store/data/std/request_std.model";
 import {TechnicalCommittee} from "../../core/store/data/std/std.model";
-import {UserRegister} from "../../../../../apollo-webs/src/app/shared/models/user";
+import {UserRegister} from "../../shared/models/user";
 
 declare interface DataTable {
     headerRow: string[];
