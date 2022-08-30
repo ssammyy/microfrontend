@@ -8,7 +8,6 @@ import {
     ComplaintClassificationDto,
     ComplaintRejectDto,
     ComplaintsFilesFoundDto,
-    LaboratoryDto,
     MsBroadProductCategory,
     MsDepartment,
     MsDivisionDetails,
@@ -49,11 +48,11 @@ declare global {
 }
 
 @Component({
-    selector: 'app-complaint-details',
-    templateUrl: './complaint-details.component.html',
-    styleUrls: ['./complaint-details.component.css'],
+    selector: 'app-manufacturer-complaint-details',
+    templateUrl: './manufacturer-complaint-details.component.html',
+    styleUrls: ['./manufacturer-complaint-details.component.css'],
 })
-export class ComplaintDetailsComponentB implements OnInit {
+export class ManufacturerComplaintDetailsComponent implements OnInit {
 
     active: Number = 0;
     submitted = false;
@@ -94,7 +93,6 @@ export class ComplaintDetailsComponentB implements OnInit {
     dataSaveComplaintClassification: ComplaintClassificationDto;
 
 
-    labList: LaboratoryDto[];
     msDepartments: MsDepartment[];
     msDivisions: MsDivisionDetails[];
     standardProductCategory!: StandardProductCategory[];

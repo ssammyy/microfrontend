@@ -1,19 +1,19 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
-    BatchFileFuelSaveDto,
-    ComplaintsListDto,
-    ComplaintsTaskAndAssignedDto,
+  BatchFileFuelSaveDto,
+  ComplaintsListDto,
+  ComplaintsTaskAndAssignedDto,
 } from '../../../../../core/store/data/ms/ms.model';
 import {Observable, Subject, throwError} from 'rxjs';
 import {
-    County,
-    CountyService,
-    loadCountyId,
-    selectCountyIdData,
-    selectUserInfo,
-    Town,
-    TownService
+  County,
+  CountyService,
+  loadCountyId,
+  selectCountyIdData,
+  selectUserInfo,
+  Town,
+  TownService
 } from '../../../../../core/store';
 import {LocalDataSource} from 'ng2-smart-table';
 import {Store} from '@ngrx/store';
@@ -22,11 +22,11 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../../../../core/store/data/ms/ms.service';
 
 @Component({
-  selector: 'app-complaint-list',
-  templateUrl: './complaint-list.component.html',
-  styleUrls: ['./complaint-list.component.css'],
+  selector: 'app-manufacturer-complaint-list',
+  templateUrl: './manufacturer-complaint-list.component.html',
+  styleUrls: ['./manufacturer-complaint-list.component.css'],
 })
-export class ComplaintListComponentB implements OnInit {
+export class ManufacturerComplaintListComponent implements OnInit {
   @ViewChild('editModal') editModal !: TemplateRef<any>;
   currDiv!: string;
   currDivLabel!: string;
