@@ -175,7 +175,6 @@ class IntStandardService (private val runtimeService: RuntimeService,
         val variables: MutableMap<String, Any> = HashMap()
         isAdoptionComments.user_id?.let{ variables.put("user_id", it)}
         isAdoptionComments.taskId?.let{ variables.put("taskId", it)}
-        isAdoptionComments.proposalID?.let{ variables.put("proposalID", it)}
         isAdoptionComments.adoption_proposal_comment?.let{ variables.put("adoption_proposal_comment", it)}
         isAdoptionComments.commentTitle?.let{ variables.put("commentTitle", it)}
         isAdoptionComments.commentDocumentType?.let{ variables.put("commentDocumentType", it)}
@@ -217,7 +216,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         return sdIsDocumentUploadsRepository.findByIsDocumentId(isDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$isDocumentId]")
     }
 
-    fun getAllComments(proposalId: Long): MutableIterable<ISAdoptionComments> {
+    fun getAllComments(proposalId: Long): MutableIterable<ISAdoptionComments>? {
         return isAdoptionCommentsRepository.findByProposalID(proposalId)
     }
 
@@ -236,22 +235,14 @@ class IntStandardService (private val runtimeService: RuntimeService,
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= iSDecision.proposalId
+        internationalStandardRemarks.proposalId= iSDecision.approvalID
         internationalStandardRemarks.remarks= iSDecision.comments
         internationalStandardRemarks.status = 1.toString()
         internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         internationalStandardRemarks.remarkBy = usersName
 
         if(variables["Yes"]==true){
-            isAdoptionProposalRepository.findByIdOrNull(iSDecision.approvalID)?.let { iSAdoptionProposal->
 
-                with(iSAdoptionProposal){
-                    remarks=iSDecision.comments
-                    accentTo = true
-                    status = 0
-
-                }
-                isAdoptionProposalRepository.save(iSAdoptionProposal)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
                 runtimeService.createProcessInstanceQuery()
                     .processInstanceId(iSDecision.processId).list()
@@ -286,28 +277,23 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
                     }
                     ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSDecision.processId} ")
-            }?: throw Exception("TASK NOT FOUND")
+
 
         }else if(variables["No"]==false) {
 
-            isAdoptionProposalRepository.findByIdOrNull(iSDecision.approvalID)?.let { iSAdoptionProposal ->
-
-                with(iSAdoptionProposal) {
-                    remarks = iSDecision.comments
-                    accentTo = true
-                    status = 0
-
-                }
-                isAdoptionProposalRepository.save(iSAdoptionProposal)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
                 taskService.complete(iSDecision.taskId, variables)
                 println("Proposal Rejected")
 
-            }
+
         }
 
         return  getUserTasks()
 
+    }
+
+    fun getUserComments(id: Long): MutableIterable<InternationalStandardRemarks>? {
+        return internationalStandardRemarksRepository.findAllByProposalIdOrderByIdDesc(id)
     }
 
     //prepare justification
@@ -315,16 +301,18 @@ class IntStandardService (private val runtimeService: RuntimeService,
     {
         val variables: MutableMap<String, Any> = HashMap()
         iSAdoptionJustification.meetingDate?.let{ variables.put("meetingDate", it)}
-        iSAdoptionJustification.tc_id?.let{ variables.put("tc_id", it)}
+        //iSAdoptionJustification.tc_id?.let{ variables.put("tc_id", it)}
         iSAdoptionJustification.tcSec_id?.let{ variables.put("tcSec_id", it)}
         iSAdoptionJustification.slNumber?.let{ variables.put("slNumber", it)}
-        //iSAdoptionJustification.requestNumber?.let{ variables.put("requestNumber", it)}
+        iSAdoptionJustification.edition?.let{ variables.put("edition", it)}
         iSAdoptionJustification.requestedBy?.let{ variables.put("requestedBy", it)}
         iSAdoptionJustification.issuesAddressed?.let{ variables.put("issuesAddressed", it)}
         iSAdoptionJustification.tcAcceptanceDate?.let{ variables.put("tcAcceptanceDate", it)}
         iSAdoptionJustification.referenceMaterial?.let{ variables.put("referenceMaterial", it)}
         iSAdoptionJustification.department?.let{ variables.put("department", it)}
         iSAdoptionJustification.status?.let{ variables.put("status", it)}
+        iSAdoptionJustification.positiveVotes?.let{ variables.put("positiveVotes", it)}
+        iSAdoptionJustification.negativeVotes?.let{ variables.put("negativeVotes", it)}
         iSAdoptionJustification.remarks?.let{ variables.put("remarks", it)}
         iSAdoptionJustification.taskId?.let{ variables.put("taskId", it)}
         iSAdoptionJustification.assignedTo= companyStandardRepository.getSpcSecId()
@@ -336,14 +324,14 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
         variables["requestNumber"] = iSAdoptionJustification.requestNumber!!
 
-        variables["tcCommittee"] = technicalComListRepository.findNameById(iSAdoptionJustification.tc_id?.toLong())
-        iSAdoptionJustification.tcCommittee = technicalComListRepository.findNameById(iSAdoptionJustification.tc_id?.toLong())
+//        variables["tcCommittee"] = technicalComListRepository.findNameById(iSAdoptionJustification.tc_id?.toLong())
+//        iSAdoptionJustification.tcCommittee = technicalComListRepository.findNameById(iSAdoptionJustification.tc_id?.toLong())
 
         variables["departmentName"] = departmentListRepository.findNameById(iSAdoptionJustification.department?.toLong())
         iSAdoptionJustification.departmentName = departmentListRepository.findNameById(iSAdoptionJustification.department?.toLong())
 
         val ispDetails = iSAdoptionJustificationRepository.save(iSAdoptionJustification)
-        variables["ID"] = ispDetails.id
+        //variables["ID"] = ispDetails.id
 
         var userList= companyStandardRepository.getHopEmailList()
 
@@ -358,35 +346,36 @@ class IntStandardService (private val runtimeService: RuntimeService,
                 notifications.sendEmail(recipient, subject, messageBody)
             }
         }
+        runtimeService.createProcessInstanceQuery()
+            .processInstanceId(iSAdoptionJustification.processId).list()
+            ?.let { l ->
+                val processInstance = l[0]
+
+                taskService.complete(iSAdoptionJustification.taskId, variables)
+
+                taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                    ?.let { t ->
+                        t.list()[0]
+                            ?.let { task ->
+                                task.assignee =
+                                    "${iSAdoptionJustification.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                taskService.saveTask(task)
+                            }
+                            ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
 
 
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-            ?.let { t ->
-                t.list()[0]
-                    ?.let { task ->
-                        task.assignee =
-                            "${iSAdoptionJustification.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-
-                        taskService.saveTask(task)
                     }
-                    ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
-
-
+                    ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                bpmnService.slAssignTask(
+                    processInstance.processInstanceId,
+                    "decisionOnJustification",
+                    iSAdoptionJustification.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
+                )
+                return ProcessInstanceResponseValue(ispDetails.id, processInstance.id, processInstance.isEnded,
+                    iSAdoptionJustification.requestNumber!!
+                )
             }
-            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-        bpmnService.slAssignTask(
-            processInstance.processInstanceId,
-            "decisionOnJustification",
-            iSAdoptionJustification?.assignedTo
-                ?: throw NullValueNotAllowedException("invalid user id provided")
-        )
-
-        return ProcessInstanceResponseValue(ispDetails.id, processInstance.id, processInstance.isEnded,
-            iSAdoptionJustification.requestNumber!!
-        )
-
-
+            ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSAdoptionJustification.processId} ")
 
 
     }
@@ -435,7 +424,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= isJustificationDecision.proposalId
+        internationalStandardRemarks.proposalId= isJustificationDecision.approvalID
         internationalStandardRemarks.remarks= isJustificationDecision.comments
         internationalStandardRemarks.status = 1.toString()
         internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -456,14 +445,6 @@ class IntStandardService (private val runtimeService: RuntimeService,
                 }
             }
 
-            isAdoptionProposalRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionProposal->
-
-                with(iSAdoptionProposal){
-                    remarks=isJustificationDecision.comments
-                    accentTo = true
-
-                }
-                isAdoptionProposalRepository.save(iSAdoptionProposal)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
                 runtimeService.createProcessInstanceQuery()
                     .processInstanceId(isJustificationDecision.processId).list()
@@ -498,23 +479,15 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
                     }
                     ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${isJustificationDecision.processId} ")
-            }?: throw Exception("TASK NOT FOUND")
+
 
         }else if(variables["No"]==false) {
 
-            isAdoptionProposalRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionProposal ->
-
-                with(iSAdoptionProposal) {
-                    remarks = isJustificationDecision.comments
-                    accentTo = true
-
-                }
-                isAdoptionProposalRepository.save(iSAdoptionProposal)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
                 taskService.complete(isJustificationDecision.taskId, variables)
                 println("Proposal Rejected")
 
-            }
+
         }
 
         return  getUserTasks()
@@ -535,7 +508,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= isJustificationDecision.proposalId
+        internationalStandardRemarks.proposalId= isJustificationDecision.approvalID
         internationalStandardRemarks.remarks= isJustificationDecision.comments
         internationalStandardRemarks.status = 1.toString()
         internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -554,14 +527,8 @@ class IntStandardService (private val runtimeService: RuntimeService,
                 }
             }
             isJustificationDecision.assignedTo= companyStandardRepository.getHopId()
-            isAdoptionProposalRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionProposal->
 
-                with(iSAdoptionProposal){
-                    remarks=isJustificationDecision.comments
-                    accentTo = true
 
-                }
-                isAdoptionProposalRepository.save(iSAdoptionProposal)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
                 runtimeService.createProcessInstanceQuery()
                     .processInstanceId(isJustificationDecision.processId).list()
@@ -596,18 +563,12 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
                     }
                     ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${isJustificationDecision.processId} ")
-            }?: throw Exception("TASK NOT FOUND")
+
 
         }else if(variables["No"]==false) {
             isJustificationDecision.assignedTo= companyStandardRepository.getSpcSecId()
-            isAdoptionProposalRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionProposal ->
 
-                with(iSAdoptionProposal) {
-                    remarks = isJustificationDecision.comments
-                    accentTo = true
 
-                }
-                isAdoptionProposalRepository.save(iSAdoptionProposal)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
                 runtimeService.createProcessInstanceQuery()
                     .processInstanceId(isJustificationDecision.processId).list()
@@ -642,7 +603,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
                     }
                     ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${isJustificationDecision.processId} ")
-            }?: throw Exception("TASK NOT FOUND")
+
 
 
         }
@@ -665,7 +626,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= isJustificationDecision.proposalId
+        internationalStandardRemarks.proposalId= isJustificationDecision.approvalID
         internationalStandardRemarks.remarks= isJustificationDecision.comments
         internationalStandardRemarks.status = 1.toString()
         internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -673,14 +634,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
         if(variables["Yes"]==true){
             isJustificationDecision.assignedTo= companyStandardRepository.getEditorId()
-            isAdoptionProposalRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionProposal->
 
-                with(iSAdoptionProposal){
-                    remarks=isJustificationDecision.comments
-                    accentTo = true
-
-                }
-                isAdoptionProposalRepository.save(iSAdoptionProposal)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
                 runtimeService.createProcessInstanceQuery()
                     .processInstanceId(isJustificationDecision.processId).list()
@@ -715,18 +669,11 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
                     }
                     ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${isJustificationDecision.processId} ")
-            }?: throw Exception("TASK NOT FOUND")
+
 
         }else if(variables["No"]==false) {
             isJustificationDecision.assignedTo= companyStandardRepository.getSaSecId()
-            isAdoptionProposalRepository.findByIdOrNull(isJustificationDecision.approvalID)?.let { iSAdoptionProposal ->
 
-                with(iSAdoptionProposal) {
-                    remarks = isJustificationDecision.comments
-                    accentTo = true
-
-                }
-                isAdoptionProposalRepository.save(iSAdoptionProposal)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
                 runtimeService.createProcessInstanceQuery()
                     .processInstanceId(isJustificationDecision.processId).list()
@@ -761,7 +708,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
                     }
                     ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${isJustificationDecision.processId} ")
-            }?: throw Exception("TASK NOT FOUND")
+
 
 
         }
@@ -788,7 +735,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         //print(nwaWorkShopDraft.toString())
 
         val nwaDetails = nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
-        variable["ID"] = nwaDetails.id
+        variable["draftId"] = nwaDetails.id
         runtimeService.createProcessInstanceQuery()
             .processInstanceId(nwaWorkShopDraft.processId).list()
             ?.let { l ->
@@ -826,7 +773,8 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
     }
 
-    fun draughtStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
+    fun draughtStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft,
+                             iSDraftStdUpload:ISDraftStdUpload) : ProcessInstanceWD
     {
         val variable:MutableMap<String, Any> = java.util.HashMap()
         nwaWorkShopDraft.title?.let{variable.put("title", it)}
@@ -837,13 +785,12 @@ class IntStandardService (private val runtimeService: RuntimeService,
         nwaWorkShopDraft.special?.let{variable.put("special", it)}
         nwaWorkShopDraft.taskId?.let{variable.put("taskId", it)}
         nwaWorkShopDraft.processId?.let{variable.put("processId", it)}
-        nwaWorkShopDraft.id?.let{variable.put("id", it)}
         nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
         variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
         nwaWorkShopDraft.assignedTo= companyStandardRepository.getProofReaderId()
 
         //print(nwaWorkShopDraft.toString())
-        nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkShopDraft.id)?.let { nwaWorkShopDraft->
+        nwaWorkshopDraftRepository.findByIdOrNull(iSDraftStdUpload.draftId)?.let { nwaWorkShopDraft->
 
             with(nwaWorkShopDraft){
                 title=nwaWorkShopDraft.title
@@ -855,8 +802,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
                 assignedTo=nwaWorkShopDraft.assignedTo
             }
 
-        val nwaDetails = nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
-        variable["ID"] = nwaDetails.id
+        nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
         runtimeService.createProcessInstanceQuery()
             .processInstanceId(nwaWorkShopDraft.processId).list()
             ?.let { l ->
@@ -883,18 +829,19 @@ class IntStandardService (private val runtimeService: RuntimeService,
                     nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
                 )
                 return ProcessInstanceWD(
-                    nwaDetails.id,
+                    nwaWorkShopDraft.id,
                     processInstance.id,
                     processInstance.isEnded,nwaWorkShopDraft.dateWdPrepared?: throw NullValueNotAllowedException("Date is required")
                 )
             }
             ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${nwaWorkShopDraft.processId} ")
-        }?: throw Exception("TASK NOT FOUND")
+        }?: throw Exception("RECORD NOT FOUND")
 
 
     }
 
-    fun proofReadStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
+    fun proofReadStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft,
+                               iSDraftStdUpload:ISDraftStdUpload) : ProcessInstanceWD
     {
         val variable:MutableMap<String, Any> = java.util.HashMap()
         nwaWorkShopDraft.title?.let{variable.put("title", it)}
@@ -905,13 +852,12 @@ class IntStandardService (private val runtimeService: RuntimeService,
         nwaWorkShopDraft.special?.let{variable.put("special", it)}
         nwaWorkShopDraft.taskId?.let{variable.put("taskId", it)}
         nwaWorkShopDraft.processId?.let{variable.put("processId", it)}
-        nwaWorkShopDraft.id?.let{variable.put("id", it)}
         nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
         variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
         nwaWorkShopDraft.assignedTo= companyStandardRepository.getHopId()
 
         //print(nwaWorkShopDraft.toString())
-        nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkShopDraft.id)?.let { nwaWorkShopDraft->
+        nwaWorkshopDraftRepository.findByIdOrNull(iSDraftStdUpload.draftId)?.let { nwaWorkShopDraft->
 
             with(nwaWorkShopDraft){
                 title=nwaWorkShopDraft.title
@@ -923,8 +869,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
                 assignedTo=nwaWorkShopDraft.assignedTo
             }
 
-            val nwaDetails = nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
-            variable["ID"] = nwaDetails.id
+            nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
             runtimeService.createProcessInstanceQuery()
                 .processInstanceId(nwaWorkShopDraft.processId).list()
                 ?.let { l ->
@@ -951,13 +896,13 @@ class IntStandardService (private val runtimeService: RuntimeService,
                         nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
                     )
                     return ProcessInstanceWD(
-                        nwaDetails.id,
+                        nwaWorkShopDraft.id,
                         processInstance.id,
                         processInstance.isEnded,nwaWorkShopDraft.dateWdPrepared?: throw NullValueNotAllowedException("Date is required")
                     )
                 }
                 ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${nwaWorkShopDraft.processId} ")
-        }?: throw Exception("TASK NOT FOUND")
+        }?: throw Exception("COMMENT NOT FOUND")
 
 
     }
@@ -1043,7 +988,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
             val fname=loggedInUser.firstName
             val sname=loggedInUser.lastName
             val usersName= "$fname  $sname"
-            internationalStandardRemarks.proposalId= isJustificationDecision.proposalId
+            internationalStandardRemarks.proposalId= isJustificationDecision.approvalID
             internationalStandardRemarks.remarks= isJustificationDecision.comments
             internationalStandardRemarks.status = 1.toString()
             internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -1141,7 +1086,6 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
         val isuDetails = iSGazetteNoticeRepository.save(iSGazetteNotice)
         println("IS Gazette Notice has been uploaded")
-        variable["ID"] = isuDetails.id
 
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
         taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)

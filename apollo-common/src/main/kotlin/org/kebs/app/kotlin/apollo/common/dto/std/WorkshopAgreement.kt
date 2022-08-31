@@ -140,4 +140,11 @@ class ISJustificationDecision(
     @JsonProperty("comments") val comments: String
 ) {
 }
+class ISDraftStdUpload(
+    @JsonProperty("draftId") val draftId: Long
+)
+{
+
+}
+
 
