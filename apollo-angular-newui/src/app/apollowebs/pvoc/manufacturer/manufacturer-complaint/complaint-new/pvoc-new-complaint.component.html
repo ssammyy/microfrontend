@@ -26,40 +26,6 @@
                                     </div>
                                 </div>
                                 <div class="row input-row" [formGroup]="stepOneForm">
-                                    <div class="col-sm-12 col-md-6">
-                                        <label for="directorIdNumber" class="waiver-form-label"><b>Directory ID
-                                            Number</b></label>
-                                        <input aria-describedby="inputGroup-sizing-sm"
-                                               aria-label="Small"
-                                               class="waiver-form-input"
-                                               formControlName="directorIdNumber"
-                                               id="directorIdNumber"
-                                               name="directorIdNumber" placeholder="ID No."
-                                               required="required">
-                                        <div *ngIf="errors && errors.directorIdNumber"
-                                             class="invalid-feedback">
-                                            <div *ngIf="errors.directorIdNumber">{{errors.directorIdNumber}}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-12 col-md-6">
-                                        <label for="registrationNumber" class="waiver-form-label"><b>Registration
-                                            Number</b></label>
-                                        <input style="color: white;font-size: 14px;"
-                                               aria-describedby="inputGroup-sizing-sm"
-                                               aria-label="Small"
-                                               class="waiver-form-input"
-                                               formControlName="registrationNumber"
-                                               id="registrationNumber"
-                                               name="registrationNumber" placeholder="Registration No."
-                                               required="required">
-                                        <div *ngIf="errors && errors.registrationNumber"
-                                             class="invalid-feedback">
-                                            <div *ngIf="errors.registrationNumber">{{errors.registrationNumber}}
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div class="col-sm-12 col-md-6">
                                         <label for="firstName" class="waiver-form-label"><b>First name</b></label>
@@ -109,33 +75,32 @@
                                     </div>
 
                                     <div class="col-sm-12 col-md-12">
-                                        <label for="phoneNumber" class="waiver-form-label"><b>Phone number</b></label>
+                                        <label for="phoneNo" class="waiver-form-label"><b>Phone number</b></label>
                                         <input aria-describedby="inputGroup-sizing-sm"
                                                aria-label="Small"
                                                class="waiver-form-input"
-                                               formControlName="phoneNumber" id="phoneNumber"
-                                               name="phoneNumber"
+                                               formControlName="phoneNo" id="phoneNo"
+                                               name="phoneNo"
                                                placeholder="The Phone Number" required="required"
                                                type="text">
-                                        <div *ngIf="errors && errors.phoneNumber"
+                                        <div *ngIf="errors && errors.phoneNo"
                                              class="invalid-feedback">
-                                            <p class="mat-error">{{errors.phoneNumber}}</p>
+                                            <p class="mat-error">{{errors.phoneNo}}</p>
                                         </div>
                                     </div>
                                     <div class="col-sm-12 col-md-6">
-
-                                        <label for="postalAddress" class="waiver-form-label"><b>Postal
+                                        <label for="address" class="waiver-form-label"><b>Postal
                                             Address</b></label>
                                         <input aria-describedby="inputGroup-sizing-sm"
                                                aria-label="Small"
                                                class="waiver-form-input"
-                                               formControlName="postalAddress" id="postalAddress"
-                                               name="postalAddress"
+                                               formControlName="address" id="address"
+                                               name="address"
                                                placeholder="The Postal Address" required="required"
                                                type="text">
-                                        <div *ngIf="errors && errors.postalAddress"
+                                        <div *ngIf="errors && errors.address"
                                              class="invalid-feedback">
-                                            <p class="mat-error">{{errors.postalAddress}}</p>
+                                            <p class="mat-error">{{errors.address}}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -155,9 +120,60 @@
                                     </div>
                                 </div>
                                 <div class="row input-row" [formGroup]="stepTwoForm">
-                                    <div class="col-sm-12 col-md-6" style="margin-top: 3%">
-                                        <label for="complaintDescription" class="waiver-form-label"><b>Complaint
-                                            Title</b></label>
+                                    <div class="col-sm-12 col-md-6">
+                                        <label for="pvocAgent" class="waiver-form-label">PVOC Partner</label>
+                                        <select [ngClass]="{ 'is-invalid': errors && errors.pvocAgent }"
+                                                formControlName="pvocAgent" id="pvocAgent"
+                                                class="waiver-form-input"
+                                                name="pvocAgent" required="required">
+                                            <option ngValue="null" selected>Please select Agent</option>
+                                            <option *ngFor="let partner of partners"
+                                                    [value]="partner.partnerId"
+                                                    class="dropdown-item">{{partner.name}}</option>
+                                        </select>
+                                        <div *ngIf="errors && errors.pvocAgent"
+                                             class="invalid-feedback">
+                                            <p>{{errors.pvocAgent}}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-6">
+                                        <label for="categoryId" class="waiver-form-label">Complaint Category</label>
+                                        <select [ngClass]="{ 'is-invalid': errors && errors.categoryId }"
+                                                formControlName="categoryId" id="categoryId"
+                                                class="waiver-form-input"
+                                                (change)="selectedComplaintCategories($event)"
+                                                name="categoryId" required="required">
+                                            <option ngValue="null" selected>Please select category</option>
+                                            <option *ngFor="let cat of complaintCategories"
+                                                    [value]="cat.categoryId"
+                                                    class="dropdown-item">{{cat.name}}</option>
+                                        </select>
+                                        <div *ngIf="errors && errors.categoryId"
+                                             class="invalid-feedback">
+                                            <p>{{errors.categoryId}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <label for="subCategoryId" class="waiver-form-label">Sub Complaint
+                                            Category</label>
+                                        <select [ngClass]="{ 'is-invalid': errors && errors.subCategoryId }"
+                                                formControlName="subCategoryId" id="subCategoryId"
+                                                class="waiver-form-input"
+                                                name="subCategoryId" required="required">
+                                            <option ngValue="null" selected>Please select sub category</option>
+                                            <option *ngFor="let cat of subcategories"
+                                                    [value]="cat.categoryId"
+                                                    class="dropdown-item">{{cat.name}}</option>
+                                        </select>
+                                        <div *ngIf="errors && errors.subCategoryId"
+                                             class="invalid-feedback">
+                                            <p>{{errors.subCategoryId}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <label for="complaintDescription" class="waiver-form-label">Complaint
+                                            Title</label>
                                         <input aria-describedby="inputGroup-sizing-sm"
                                                aria-label="Small"
                                                class="waiver-form-input"
@@ -172,57 +188,40 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-12 col-md-6">
-                                        <div class="form-group" style="margin-top: 3%">
-                                            <label for="productName" class="waiver-form-label"><b>Product
-                                                Name</b></label>
-                                            <input aria-describedby="inputGroup-sizing-sm"
-                                                   aria-label="Small"
-                                                   class="waiver-form-input"
-                                                   formControlName="productName"
-                                                   id="productName"
-                                                   name="productName" placeholder="The Product Name"
-                                                   required="required"
-                                                   type="text">
-                                            <div *ngIf="errors && errors.productName"
-                                                 class="invalid-feedback">
-                                                <p class="mat-error">{{errors.productName}}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6">
-                                        <div class="form-group" style="margin-top: 3%">
-                                            <label class="waiver-form-label"><b>Product Brand</b></label>
-                                            <input aria-describedby="inputGroup-sizing-sm"
-                                                   aria-label="Small"
-                                                   class="waiver-form-input"
-                                                   formControlName="productBrand"
-                                                   id="productBrand"
-                                                   name="productBrand" placeholder="The Product Brand"
-                                                   required="required"
-                                                   type="text">
-                                            <div *ngIf="errors && errors.productBrand"
-                                                 class="invalid-feedback">
-                                                <p class="mat-error">{{errors.productBrand}}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6">
-                                        <label for="complaintCategory" class="waiver-form-label"><b>Complaint
-                                            Category</b></label>
-                                        <input aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                               class="waiver-form-input" formControlName="complaintCategory"
-                                               id="complaintCategory"
-                                               name="complaintCategory" placeholder="The category of this complaint"
+                                        <label for="cocNumber" class="waiver-form-label">COC Number</label>
+                                        <input aria-describedby="inputGroup-sizing-sm"
+                                               aria-label="Small"
+                                               class="waiver-form-input"
+                                               formControlName="cocNumber"
+                                               id="cocNumber"
+                                               name="cocNumber" placeholder="The Product COC Number"
                                                required="required"
                                                type="text">
-                                        <div *ngIf="errors && errors.complaintCategory" class="invalid-feedback">
-                                            <p class="mat-error">{{errors.complaintCategory}}</p>
+                                        <div *ngIf="errors && errors.cocNumber"
+                                             class="invalid-feedback">
+                                            <p class="mat-error">{{errors.cocNumber}}</p>
                                         </div>
                                     </div>
                                     <div class="col-sm-12 col-md-6">
+                                        <label for="rfcNumber" class="waiver-form-label">RFC Number</label>
+                                        <input aria-describedby="inputGroup-sizing-sm"
+                                               aria-label="Small"
+                                               class="waiver-form-input"
+                                               formControlName="rfcNumber"
+                                               id="rfcNumber"
+                                               name="rfcNumber" placeholder="RFC number"
+                                               required="required"
+                                               type="text">
+                                        <div *ngIf="errors && errors.rfcNumber"
+                                             class="invalid-feedback">
+                                            <p class="mat-error">{{errors.rfcNumber}}</p>
+                                        </div>
+                                    </div>
 
-                                        <label for="complaintDescription" class="waiver-form-label"><b>Complaint
-                                            Description</b></label>
+                                    <div class="col-sm-12 col-md-6">
+
+                                        <label for="complaintDescription" class="waiver-form-label">Complaint
+                                            Description</label>
                                         <textarea aria-describedby="inputGroup-sizing-sm"
                                                   aria-label="Small"
                                                   class="waiver-form-input"
@@ -249,98 +248,16 @@
 
                             </mat-step>
 
-                            <mat-step label="Location Details">
-                                <div class="container">
-                                    <div class="row">
-                                        <h3 class="welcome">Step 3/4: Location Details</h3>
-                                    </div>
-                                </div>
-                                <div class="row input-row" [formGroup]="stepThreeForm">
-                                    <div class="col-sm-12 col-md-6">
-                                        <label for="marketCenter" class="waiver-form-label"><b>Market Center</b></label>
-                                        <input aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                               class="waiver-form-input"
-                                               formControlName="marketCenter"
-                                               id="marketCenter"
-                                               name="marketCenter" placeholder="marketCenter"
-                                               required="required" type="text">
-                                        <div *ngIf="errors && errors.marketCenter"
-                                             class="invalid-feedback">
-                                            <p class="mat-error">{{errors.marketCenter}}</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-12 col-md-6">
-                                        <label for="buildingName" class="waiver-form-label"><b>Name of
-                                            Building</b></label>
-                                        <input aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                               class="waiver-form-input"
-                                               formControlName="buildingName" id="buildingName"
-                                               name="buildingName" placeholder="The Building Name"
-                                               required="required" type="text">
-                                        <div *ngIf="errors && errors.buildingName"
-                                             class="invalid-feedback">
-                                            <p>{{errors.buildingName}}</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6">
-                                        <label for="county" class="waiver-form-label"><b>County</b></label>
-                                        <select [ngClass]="{ 'is-invalid': errors && errors.county }"
-                                                formControlName="county" id="county"
-                                                class="waiver-form-input"
-                                                name="county" required="required">
-                                            <option ngValue="null" selected>Please select</option>
-                                            <option
-                                                    *ngFor="let app of countries| filterPipe: {status: true}"
-                                                    [ngValue]="app.id"
-                                                    class="dropdown-item">{{app.county}}</option>
-                                        </select>
-                                        <div *ngIf="errors && errors.county"
-                                             class="invalid-feedback">
-                                            <p>{{errors.county}}</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6">
-                                        <label for="town" class="waiver-form-label">Town</label>
-                                        <select [ngClass]="{ 'is-invalid': errors && errors.town }"
-                                                formControlName="town" id="town"
-                                                class="waiver-form-input"
-                                                name="town" required="required">
-                                            <option ngValue="null" selected>Please select</option>
-                                            <option *ngFor="let app of towns| filterPipe: {status: true, countyId: selectedCounty}"
-                                                    [ngValue]="app.id"
-                                                    class="dropdown-item">{{app.town}}</option>
-                                        </select>
-                                        <div *ngIf="errors && errors.town"
-                                             class="invalid-feedback">
-                                            <p>{{errors.town}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mt-5">
-                                    <div class="col">
-                                        <button class="btn btn-primary" mat-button matStepperPrevious>
-                                            PREVIOUS
-                                        </button>
-                                    </div>
-                                    <div class="col float-right">
-                                        <button [disabled]="stepThreeForm.invalid" class="btn btn-primary"
-                                                mat-button matStepperNext>NEXT
-                                        </button>
-                                    </div>
-                                </div>
-                            </mat-step>
 
                             <mat-step label="Upload Documents Here">
                                 <div class="container">
                                     <div class="row">
-                                        <h3 class="welcome">Step 4/4: Upload Documents Here</h3>
+                                        <h3 class="welcome">Step 3/4: Upload Documents Here</h3>
                                     </div>
                                 </div>
                                 <div class="container">
                                     <form #demoForm="ngForm">
-                                        <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                        <file-upload (change)="importFile($event)" name="files"
                                                      fileslimit="5" accept=".pdf, .png, .jpg"></file-upload>
                                     </form>
 
@@ -352,7 +269,7 @@
                                         </div>
                                         <div class="col">
                                             <button class="btn btn-primary"
-                                                    [disabled]="stepOneForm.invalid || stepTwoForm.invalid || stepThreeForm.invalid"
+                                                    [disabled]="stepOneForm.invalid || stepTwoForm.invalid"
                                                     (click)="openComplaintRequest()">
                                                 SUBMIT COMPLAINT
                                             </button>
@@ -361,7 +278,6 @@
                                     </div>
                                 </div>
                             </mat-step>
-
 
                         </mat-horizontal-stepper>
                     </div>

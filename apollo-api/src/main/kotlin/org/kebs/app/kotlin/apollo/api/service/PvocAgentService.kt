@@ -22,15 +22,14 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
-import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-enum class ComplaintStatus {
-    NEW, PVOC_APPROVED, PVOC_REJECTED
+enum class ComplaintStatus(val code: Int) {
+    NEW(0), PVOC_APPROVED(1), PVOC_REJECTED(4)
 }
 
 @Service("pvocAgentService")
@@ -54,14 +53,18 @@ class PvocAgentService(
 ) {
     val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd")
     val TIMELINE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMM")
-    fun getComplaintCategories(): ApiResponseModel {
+
+
+    fun raiseComplaintFrom(form: PvocComplaintForm): ApiResponseModel {
         val response = ApiResponseModel()
-        val categories = this.complaintCategoryRepo.findAllByStatus(1)
-        response.data = PvocComplaintCategoryDao.fromList(categories)
-        response.responseCode = ResponseCodes.SUCCESS_CODE
-        response.message = "Success"
+        try {
+
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Error ", ex)
+        }
         return response
     }
+
 
     fun getRecommendations(): ApiResponseModel {
         val response = ApiResponseModel()
@@ -86,74 +89,14 @@ class PvocAgentService(
         return response
     }
 
-    fun generateComplaintRef(prefix: String): String {
-        val count = complaintEntityRepo.countAllByRefPrefix(prefix)
-        return "%s%05x".format(prefix, count)
-    }
-
-    fun pvocFileComplaint(form: PvocComplaintForm, uploads: MultipartFile): ApiResponseModel {
-        val response = ApiResponseModel()
-        try {
-            val prefix = commonDaoServices.convertDateToString(LocalDateTime.now(), "yyyyMMdd")
-            val complaint = PvocComplaintEntity()
-            complaint.complaintName = form.complaintName
-            complaint.address = form.address
-            complaint.phoneNo = form.phoneNo
-            complaint.cocNo = form.cocNo
-            complaint.rfcNo = form.rfcNo
-            complaint.reviewStatus = ComplaintStatus.NEW.name
-            complaint.refPrefix = prefix
-            complaint.refNo = generateComplaintRef(prefix)
-            complaint.email = form.email
-            complaint.generalDescription = form.complaintDescription
-            complaint.createdOn = Timestamp.from(Instant.now())
-            complaint.createdBy = commonDaoServices.loggedInUserAuthentication().name
-            val errors = mutableMapOf<String, String>()
-            val category = complaintCategoryRepo.findById(form.categoryId!!)
-            if (category.isPresent) {
-                complaint.compliantNature = category.get()
-            } else {
-                errors["categoryId"] = "Please select category"
-            }
-            val subCategory = complaintSubCategoryRepo.findById(form.subCategoryId!!)
-            if (subCategory.isPresent) {
-                complaint.compliantSubCategory = subCategory.get()
-            } else {
-                errors["subCategoryId"] = "Please select sub category"
-            }
-            if (errors.isEmpty()) {
-                val saved = this.complaintEntityRepo.save(complaint)
-                this.addUploads(saved, uploads)
-                response.data = saved.id
-                response.message = "Request received"
-                response.responseCode = ResponseCodes.SUCCESS_CODE
-                // Start BPM process
-                this.pvocBpmn.startPvocComplaintApplicationsProcess(saved)
-                // Update process
-                this.complaintEntityRepo.save(saved)
-            } else {
-                response.errors = errors
-                response.responseCode = ResponseCodes.INVALID_CODE
-                response.message = "Please make corrections and resubmit"
-            }
-        } catch (ex: Exception) {
-            response.message = "Invalid request"
-            response.responseCode = ResponseCodes.EXCEPTION_STATUS
-        }
-        return response
-    }
-
     fun sendComplaintEmail(complaintEntity: PvocComplaintEntity, emailType: String, recipient: String, remarks: String? = null) {
         val data = mutableMapOf<String, Any>()
-        data["complaint"] = PvocComplaintDao.fromEntity(complaintEntity)
+        data["complaint"] = PvocComplaintDao.fromEntity(complaintEntity, false)
         data["referenceNumber"] = complaintEntity.refNo ?: "UNKNOWN"
         data["remarks"] = remarks ?: "NO REMARKS"
         this.notificationService.sendEmail(recipient, emailType, data)
     }
 
-    fun addUploads(complaintEntity: PvocComplaintEntity, files: MultipartFile) {
-
-    }
 
     fun approveCurrentComplaint(complaintId: Long, action: String, taskId: String, remarks: String): ApiResponseModel {
         val response = ApiResponseModel()
@@ -192,7 +135,7 @@ class PvocAgentService(
         if (optional.isPresent) {
             val complaint = optional.get()
             val data = mutableMapOf<String, Any?>()
-            this.daoServices.findCocByCocNumber(complaint.cocNo ?: "")?.let { cocDetails ->
+            this.daoServices.findCocByCocNumber(complaint.cocNumber ?: "")?.let { cocDetails ->
                 data["cd_uuid"] = cocDetails.consignmentDocId?.uuid
                 data["certificate_details"] = cocDetails
             }
@@ -234,7 +177,7 @@ class PvocAgentService(
             }
             // Add details
             data["assigned_officer"] = "${complaint.pvocUser?.firstName} ${complaint.pvocUser?.lastName}"
-            data["complaint"] = PvocComplaintDao.fromEntity(complaint)
+            data["complaint"] = PvocComplaintDao.fromEntity(complaint, false)
             response.data = data
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Success"

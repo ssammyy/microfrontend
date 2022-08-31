@@ -5,6 +5,7 @@ import org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc.ExceptionPa
 import org.kebs.app.kotlin.apollo.api.handlers.forms.WaiverApplication
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.request.PvocComplaintForm
 import org.kebs.app.kotlin.apollo.api.payload.response.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -14,6 +15,7 @@ import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,6 +26,10 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
+
+enum class DocumentTypes {
+    COMPLAINT, WAIVER, EXEMPTION, OTHER;
+}
 
 enum class PvocExemptionStatus(val status: String, val code: Int) {
     NEW_APPLICATIONS("NEW", 0), PVOC_APPROVED("PVOC_APPROVE", 1), PVOC_REJECTED("PVOC_REJECTED", 2), DEFERRED("DEFERRED", 3), CERT_APPROVED("CERT_APPROVE", 1), CERT_REJECTED("CERT_REJECTED", 1)
@@ -37,8 +43,9 @@ class PvocService(
         private val iPvocExceptionRawMaterialCategoryEntityRepo: IPvocExceptionRawMaterialCategoryEntityRepo,
         private val iPvocExceptionMainMachineryCategoryEntityRepo: IPvocExceptionMainMachineryCategoryEntityRepo,
         private val iPvocExceptionIndustrialSparesCategoryEntityRepo: IPvocExceptionIndustrialSparesCategoryEntityRepo,
-        private val iPvocWaiversApplicationDocumentRepo: IPvocWaiversApplicationDocumentRepo,
+        private val iPvocApplicationDocumentRepo: IPvocApplicationDocumentRepo,
         private val pvocBpmn: PvocBpmn,
+        private val partnerService: PvocPartnerService,
         private val waiversRemarksRepo: IPvocWaiversRemarksRepo,
         private val ipvocExemptionCertificateRepository: IPvocExceptionCertificateRepository,
         private val iPvocWaiversCategoriesRepo: IPvocWaiversCategoriesRepo,
@@ -46,8 +53,141 @@ class PvocService(
         private val iwaiversApplicationRepo: IwaiversApplicationRepo,
         private val commonDaoServices: CommonDaoServices,
         private val standardLevyRepo: IStandardLevyPaymentsRepository,
-        private val userRolesService: UserRolesService
+        private val complaintEntityRepo: IPvocComplaintRepo,
+        private val complaintCategoryRepo: IPvocComplaintCategoryRepo,
+        private val complaintSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo
 ) {
+
+    fun addUploads(auth: Authentication, reference: String, docType: DocumentTypes, files: List<MultipartFile>?) {
+        files?.forEach { file ->
+            val waiverDocs = PvocApplicationDocumentsEntity()
+            waiverDocs.name = file.originalFilename
+            waiverDocs.fileType = file.contentType
+            waiverDocs.documentType = file.bytes
+            waiverDocs.status = 1
+            waiverDocs.modifiedBy = auth.name
+            waiverDocs.modifiedOn = Timestamp.from(Instant.now())
+            waiverDocs.createdBy = auth.name
+            waiverDocs.createdOn = Timestamp.from(Instant.now())
+            waiverDocs.refId = reference
+            waiverDocs.refType = docType.name
+            iPvocApplicationDocumentRepo.save(waiverDocs)
+        }
+    }
+
+    fun companyComplaintHistory(statusDesc: String, page: PageRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        val status = when (statusDesc) {
+            "new" -> ComplaintStatus.NEW.code
+            "approved" -> ComplaintStatus.PVOC_APPROVED.code
+            "rejected" -> ComplaintStatus.PVOC_REJECTED.code
+            else -> ComplaintStatus.NEW.code
+        }
+        val user = this.commonDaoServices.loggedInUserDetails()
+        user.companyId?.let {
+            val requests = this.complaintEntityRepo.findAllByStatusAndCompanyId(status, it, page)
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+            response.data = PvocComplaintDao.fromList(requests.toList(), true)
+            response.totalPages = requests.totalPages
+            response.totalCount = requests.totalElements
+            response
+        } ?: run {
+            response.message = "Invalid company setting"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return response
+    }
+
+    fun getComplaintCategories(): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val categories = this.complaintCategoryRepo.findAllByStatus(1)
+            response.data = PvocComplaintCategoryDao.fromList(categories)
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Complaint categories: ", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed to load categories"
+        }
+        return response
+    }
+
+    fun generateComplaintRef(prefix: String): String {
+        val count = complaintEntityRepo.countAllByRefPrefix(prefix)
+        return "%s%05x".format(prefix, count)
+    }
+
+    fun pvocFileComplaint(form: PvocComplaintForm, uploads: List<MultipartFile>): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val prefix = commonDaoServices.convertDateToString(LocalDateTime.now(), "yyyyMMdd")
+            val complaint = PvocComplaintEntity()
+            val user = commonDaoServices.getLoggedInUser()
+            user?.companyId?.let { companyId ->
+                val company = this.commonDaoServices.findCompanyProfileWithProfileID(companyId)
+
+                form.fillDetails(complaint)
+                complaint.reviewStatus = ComplaintStatus.NEW.name
+                complaint.status = ComplaintStatus.NEW.code
+                complaint.refPrefix = prefix
+                complaint.companyId = companyId
+                complaint.companyRegNumber = company?.registrationNumber
+                complaint.directorIdNumber = company?.directorIdNumber
+                complaint.refNo = generateComplaintRef(prefix)
+                complaint.createdOn = Timestamp.from(Instant.now())
+                complaint.createdBy = commonDaoServices.loggedInUserAuthentication().name
+                val errors = mutableMapOf<String, String>()
+                val category = complaintCategoryRepo.findById(form.categoryId!!)
+                if (category.isPresent) {
+                    complaint.compliantNature = category.get()
+                } else {
+                    errors["categoryId"] = "Please select category"
+                }
+                // Sub Category is optional
+                if (form.subCategoryId == null) {
+                    form.subCategoryId = 0
+                }
+                val subCategory = complaintSubCategoryRepo.findById(form.subCategoryId!!)
+                if (subCategory.isPresent) {
+                    complaint.compliantSubCategory = subCategory.get()
+                } else if (form.subCategoryId!! > 0) {
+                    errors["subCategoryId"] = "Please select sub category"
+                }
+                val agent = partnerService.getPartner(form.pvocAgent!!)
+                if (agent != null) {
+                    complaint.pvocAgent = agent
+                } else {
+                    errors["pvocAgent"] = "Please select PVOC agent"
+                }
+                if (errors.isEmpty()) {
+                    val saved = this.complaintEntityRepo.save(complaint)
+                    this.addUploads(commonDaoServices.loggedInUserAuthentication(), saved.refNo.orEmpty(), DocumentTypes.COMPLAINT, uploads)
+                    response.data = saved.id
+                    response.message = "Request received"
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                    // Start BPM process
+                    this.pvocBpmn.startPvocComplaintApplicationsProcess(saved)
+                    this.complaintEntityRepo.save(saved)
+                } else {
+                    response.errors = errors
+                    response.responseCode = ResponseCodes.INVALID_CODE
+                    response.message = "Please make corrections and resubmit"
+                }
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.message = "Account is not a company"
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add complaint: ", ex)
+            response.message = "Invalid request"
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+        }
+        return response
+    }
+
     fun checkExemptionApplicable(): ApiResponseModel {
         val response = ApiResponseModel()
         try {
@@ -95,6 +235,7 @@ class PvocService(
         return response
     }
 
+
     fun updateWaiverTaskStatus(waiverId: Long, action: String, taskId: String, remarks: String): ApiResponseModel {
         val response = ApiResponseModel()
         val optional = this.iwaiversApplicationRepo.findById(waiverId)
@@ -117,7 +258,7 @@ class PvocService(
 
     fun kimsWaiverApplications(waiverStatus: String, keywords: String?, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
-        var requests: Page<PvocWaiversApplicationEntity>?
+        val requests: Page<PvocWaiversApplicationEntity>?
         if (StringUtils.hasLength(keywords)) {
             requests = this.iwaiversApplicationRepo.findAllBySerialNoContains(keywords!!, page)
         } else {
@@ -266,7 +407,6 @@ class PvocService(
     @Transactional
     fun applyOrRenewWaiver(waiver: WaiverApplication, documents: List<MultipartFile>?): ApiResponseModel {
         val response = ApiResponseModel()
-        val r = Random()
         val userDetails = commonDaoServices.loggedInUserDetails()
         userDetails.companyId?.let {
             val randomNumber = waiverSerialNumber()
@@ -291,17 +431,6 @@ class PvocService(
             waiverApp.serialNo = randomNumber
             iwaiversApplicationRepo.save(waiverApp)
                     .let { w ->
-                        documents?.forEach { file ->
-                            val waiverDocs = PvocWaiversApplicationDocumentsEntity()
-                            waiverDocs.name = file.originalFilename
-                            waiverDocs.fileType = file.contentType
-                            waiverDocs.documentType = file.bytes
-                            waiverDocs.status = 1
-                            waiverDocs.createdBy = w.createdBy
-                            waiverDocs.createdOn = Timestamp.from(Instant.now())
-                            waiverDocs.waiverId = w.id
-                            iPvocWaiversApplicationDocumentRepo.save(waiverDocs)
-                        }
                         waiver.products?.forEach({ product ->
                             val waiverProduct = PvocMasterListEntity()
                             waiverProduct.hsCode = product.hsCode
@@ -325,6 +454,7 @@ class PvocService(
                         userDetails.userName?.let { it1 ->
                             this.pvocBpmn.startPvocWaiversApplicationsProcess(w, it1)
                         }
+                        this.addUploads(commonDaoServices.loggedInUserAuthentication(), w.serialNo.orEmpty(), DocumentTypes.WAIVER, documents)
                         iwaiversApplicationRepo.save(w)
                     }
         } ?: run {
@@ -334,8 +464,8 @@ class PvocService(
         return response
     }
 
-    fun waiverAttachment(uploadId: Long): PvocWaiversApplicationDocumentsEntity? {
-        return this.iPvocWaiversApplicationDocumentRepo.findById(uploadId).orElse(null)
+    fun pvocAttachment(uploadId: String, docType: DocumentTypes): List<PvocApplicationDocumentsEntity>? {
+        return this.iPvocApplicationDocumentRepo.findFirstByRefIdAndRefType(uploadId, docType.name)
     }
 
     fun updateReviewRequest(requestId: Long, validity: String, remarks: String, reviewOfficer: String, reviewStatus: String) {
@@ -617,6 +747,7 @@ class PvocService(
                         KotlinLogging.logger { }.info { "Spare save OK" }
                     }
                 }
+                this.addUploads(commonDaoServices.loggedInUserAuthentication(), pvocExceptionApp.sn.orEmpty(), DocumentTypes.EXEMPTION, documents)
                 // Exemption application BPM process
                 pvocBpmn.startPvocApplicationExemptionsProcess(pvocExceptionApp)
                 // Save the update
@@ -744,7 +875,7 @@ class PvocService(
             }
 
             data.put("products", PvocWaiverProductDao.fromList(this.iPvocMasterListRepo.findAllByWaiversApplicationId(waiver.id)))
-            data.put("attachments", PvocWaiverAttachmentDao.fromList(iPvocWaiversApplicationDocumentRepo.findAllByWaiverId(waiver.id)))
+            data.put("attachments", PvocWaiverAttachmentDao.fromList(iPvocApplicationDocumentRepo.findFirstByRefIdAndRefType(waiver.serialNo.orEmpty(), DocumentTypes.WAIVER.name)))
             data.put("waiver_details", PvocWaiverDao.fromEntity(waiver))
             data.put("waiver_history", PvocWaiverRemarksDao.fromList(this.waiversRemarksRepo.findAllByWaiverId(waiver.id)))
 
@@ -824,5 +955,9 @@ class PvocService(
             response.responseCode = ResponseCodes.NOT_FOUND
         }
         return response
+    }
+
+    fun findPvoceDocument(uploadId: String): PvocApplicationDocumentsEntity? {
+        return iPvocApplicationDocumentRepo.findByIdOrNull(uploadId.toLong())
     }
 }

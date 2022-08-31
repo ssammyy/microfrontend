@@ -6,25 +6,33 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_PVOC_WAIVERS_APPLICATION_DOCUMENTS")
-class PvocWaiversApplicationDocumentsEntity : Serializable {
+@Table(name = "DAT_KEBS_PVOC_APPLICATION_DOCUMENTS")
+class PvocApplicationDocumentsEntity : Serializable {
     @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "DAT_KEBS_PVOC_WAIVERS_APPLICATION_DOCUMENTS_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_WAIVERS_APPLICATION_DOCUMENTS_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "DAT_KEBS_PVOC_WAIVERS_APPLICATION_DOCUMENTS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "DAT_KEBS_PVOC_APPLICATION_DOCUMENTS_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_APPLICATION_DOCUMENTS_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_PVOC_APPLICATION_DOCUMENTS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
+
     @Column(name = "STATUS")
     @Basic
     var status: Long? = null
+
     @Column(name = "NAME")
     @Basic
     var name: String? = null
+
     @Column(name = "DESCRIPTION")
     @Basic
     var description: String? = null
-    @Column(name = "WAIVER_ID")
+
+    @Column(name = "REF_ID")
     @Basic
-    var waiverId: Long? = null
+    var refId: String? = null
+
+    @Column(name = "REF_TYPE")
+    @Basic
+    var refType: String? = null // WAIVER/COMPLAINT/EXEMPTION/DOCUMENT
 
     @Column(name = "FILE_TYPE")
     @Basic
@@ -89,14 +97,13 @@ class PvocWaiversApplicationDocumentsEntity : Serializable {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
-        val that = o as PvocWaiversApplicationDocumentsEntity
+        val that = o as PvocApplicationDocumentsEntity
         return id == that.id &&
                 status == that.status &&
                 name == that.name &&
                 fileType == that.fileType &&
                 Arrays.equals(documentType, that.documentType) &&
                 description == that.description &&
-                waiverId == that.waiverId &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -116,6 +123,6 @@ class PvocWaiversApplicationDocumentsEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, status, name, description,fileType, documentType, waiverId, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        return Objects.hash(id, status, name, description, fileType, documentType, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
     }
 }
