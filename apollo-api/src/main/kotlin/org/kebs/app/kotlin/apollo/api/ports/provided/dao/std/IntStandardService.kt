@@ -346,35 +346,36 @@ class IntStandardService (private val runtimeService: RuntimeService,
                 notifications.sendEmail(recipient, subject, messageBody)
             }
         }
+        runtimeService.createProcessInstanceQuery()
+            .processInstanceId(iSAdoptionJustification.processId).list()
+            ?.let { l ->
+                val processInstance = l[0]
+
+                taskService.complete(iSAdoptionJustification.taskId, variables)
+
+                taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                    ?.let { t ->
+                        t.list()[0]
+                            ?.let { task ->
+                                task.assignee =
+                                    "${iSAdoptionJustification.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+                                taskService.saveTask(task)
+                            }
+                            ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
 
 
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-            ?.let { t ->
-                t.list()[0]
-                    ?.let { task ->
-                        task.assignee =
-                            "${iSAdoptionJustification.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-
-                        taskService.saveTask(task)
                     }
-                    ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
-
-
+                    ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                bpmnService.slAssignTask(
+                    processInstance.processInstanceId,
+                    "decisionOnJustification",
+                    iSAdoptionJustification.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
+                )
+                return ProcessInstanceResponseValue(ispDetails.id, processInstance.id, processInstance.isEnded,
+                    iSAdoptionJustification.requestNumber!!
+                )
             }
-            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-        bpmnService.slAssignTask(
-            processInstance.processInstanceId,
-            "decisionOnJustification",
-            iSAdoptionJustification?.assignedTo
-                ?: throw NullValueNotAllowedException("invalid user id provided")
-        )
-
-        return ProcessInstanceResponseValue(ispDetails.id, processInstance.id, processInstance.isEnded,
-            iSAdoptionJustification.requestNumber!!
-        )
-
-
+            ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSAdoptionJustification.processId} ")
 
 
     }
