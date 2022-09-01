@@ -10,7 +10,6 @@ import org.kebs.app.kotlin.apollo.api.payload.request.ComplaintStatusForm
 import org.kebs.app.kotlin.apollo.api.payload.request.PvocComplaintForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
-import org.kebs.app.kotlin.apollo.api.service.PvocAgentService
 import org.kebs.app.kotlin.apollo.api.service.PvocService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
@@ -31,7 +30,6 @@ class PvocComplaintHandler(
         private val applicationMapProperties: ApplicationMapProperties,
         private val mapper: ObjectMapper,
         private val iPvocWaiversCategoriesRepo: IPvocWaiversCategoriesRepo,
-        private val agentService: PvocAgentService,
         private val pvocService: PvocService,
         private val validator: DaoValidatorService
 
@@ -55,7 +53,6 @@ class PvocComplaintHandler(
                             ServerResponse.ok().render("destination-inspection/pvoc/WaiversApplication", req.attributes())
                         }
             }
-
     fun companyComplaintHistory(req: ServerRequest): ServerResponse {
         val status = req.param("status").orElse("new")
         val response = this.pvocService.companyComplaintHistory(status, extractPage(req))
@@ -119,7 +116,7 @@ class PvocComplaintHandler(
                 response.message = "Please correct errors"
                 response
             } ?: run {
-                response = this.agentService.approveCurrentComplaint(complaintId, form.action!!, form.taskId!!, form.remarks!!)
+                response = this.pvocService.approveCurrentComplaint(complaintId, form.action!!, form.taskId!!, form.remarks!!)
                 response
             }
         } catch (ex: Exception) {
@@ -133,7 +130,7 @@ class PvocComplaintHandler(
     fun complaintApplications(req: ServerRequest): ServerResponse {
         val complaintStatus = req.pathVariable("applicationStatus")
         val keywords = req.param("keywords")
-        val response = this.agentService.listComplaints(complaintStatus.toUpperCase(), keywords.orElse(null), extractPage(req))
+        val response = this.pvocService.listComplaints(complaintStatus.toUpperCase(), keywords.orElse(null), extractPage(req))
         return ServerResponse.ok().body(response)
     }
 
@@ -141,7 +138,7 @@ class PvocComplaintHandler(
         var response = ApiResponseModel()
         try {
             val complaintId = req.pathVariable("complaintId").toLong()
-            response = this.agentService.complaintDetails(complaintId)
+            response = this.pvocService.complaintDetails(complaintId)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to fetch application", ex)
             response.message = "Request failed"

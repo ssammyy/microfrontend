@@ -1,38 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
     <process id="complaintApplicationProcess" name="My process" isExecutable="true">
         <startEvent id="startevent1" name="Start"></startEvent>
-        <userTask id="usertask1" name="PVOC Officer" activiti:priority="REVIEW_RECOMMENDATION"></userTask>
+        <userTask id="usertask1" name="PVOC Officer" activiti:category="PVOC_OFFICER"
+                  activiti:priority="REVIEW_RECOMMENDATION"></userTask>
         <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
         <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow6" sourceRef="usertask1" targetRef="exclusivegateway2"></sequenceFlow>
-        <userTask id="usertask5" name="Query PVOC Agent" activiti:category="QUERY"></userTask>
+        <userTask id="usertask5" name="Query PVOC Agent" activiti:category="PVOC_QUERY"></userTask>
         <sequenceFlow id="flow7" sourceRef="exclusivegateway2" targetRef="usertask5">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action='QUERY'}]]></conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="flow8" sourceRef="usertask5" targetRef="servicetask1"></sequenceFlow>
-        <serviceTask id="servicetask1" name="Record Result" activiti:expression="#{pvocAgentService.pvocAgentQueryStatus(complaintId,remarks,pvocOfficer)}"></serviceTask>
+        <serviceTask id="servicetask1" name="Record Result"
+                     activiti:expression="#{pvocService.pvocAgentQueryStatus(complaintId,remarks,pvocOfficer)}"></serviceTask>
         <sequenceFlow id="flow9" sourceRef="servicetask1" targetRef="usertask1"></sequenceFlow>
         <sequenceFlow id="flow10" sourceRef="exclusivegateway2" targetRef="servicetask2">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action='RECOMEND'}]]></conditionExpression>
         </sequenceFlow>
-        <serviceTask id="servicetask2" name="Submit Recommendation" activiti:expression="#{pvocAgentService.pvocOfficerReviewStatus(complaintId,remarks,action,pvocOfficer)}"></serviceTask>
-        <userTask id="usertask6" name="MPVOC" activiti:category="MPVOC_APPROVAL"></userTask>
+        <serviceTask id="servicetask2" name="Submit Recommendation"
+                     activiti:expression="#{pvocService.pvocOfficerReviewStatus(complaintId,remarks,action,pvocOfficer)}"></serviceTask>
+        <userTask id="usertask6" name="MPVOC" activiti:category="MPVOC_OFFICER"></userTask>
         <sequenceFlow id="flow11" sourceRef="servicetask2" targetRef="usertask6"></sequenceFlow>
         <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow12" sourceRef="usertask6" targetRef="exclusivegateway3"></sequenceFlow>
         <sequenceFlow id="flow13" sourceRef="exclusivegateway3" targetRef="servicetask3">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve='REJECT'}]]></conditionExpression>
         </sequenceFlow>
-        <serviceTask id="servicetask3" name="Reject" activiti:expression="#{pvocAgentService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
+        <serviceTask id="servicetask3" name="Reject"
+                     activiti:expression="#{pvocService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
         <sequenceFlow id="flow14" sourceRef="exclusivegateway3" targetRef="servicetask4">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve='APPROVED'}]]></conditionExpression>
         </sequenceFlow>
         <endEvent id="endevent1" name="End"></endEvent>
         <sequenceFlow id="flow15" sourceRef="servicetask5" targetRef="endevent1"></sequenceFlow>
         <sequenceFlow id="flow16" sourceRef="servicetask3" targetRef="servicetask5"></sequenceFlow>
-        <serviceTask id="servicetask4" name="Approve" activiti:expression="#{pvocAgentService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
-        <userTask id="usertask9" name="HOD Approval" activiti:category="HOD_APPROVAL"></userTask>
+        <serviceTask id="servicetask4" name="Approve"
+                     activiti:expression="#{pvocService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
+        <userTask id="usertask9" name="HOD Approval" activiti:category="HOD_OFFICER"></userTask>
         <sequenceFlow id="flow17" sourceRef="servicetask4" targetRef="usertask9"></sequenceFlow>
         <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow18" sourceRef="usertask9" targetRef="exclusivegateway4"></sequenceFlow>
@@ -42,11 +51,14 @@
         <sequenceFlow id="flow20" sourceRef="exclusivegateway4" targetRef="servicetask6">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve='APPROVED'}]]></conditionExpression>
         </sequenceFlow>
-        <serviceTask id="servicetask5" name="Complaint Completed" activiti:class="#{pvocAgentService.pvocComplaintProcessCompleted(complaintId)}"></serviceTask>
+        <serviceTask id="servicetask5" name="Complaint Completed"
+                     activiti:class="#{pvocService.pvocComplaintProcessCompleted(complaintId)}"></serviceTask>
         <sequenceFlow id="flow21" sourceRef="servicetask7" targetRef="servicetask5"></sequenceFlow>
         <sequenceFlow id="flow22" sourceRef="servicetask6" targetRef="servicetask5"></sequenceFlow>
-        <serviceTask id="servicetask6" name="Approve" activiti:expression="#{pvocAgentService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
-        <serviceTask id="servicetask7" name="Reject" activiti:expression="#{pvocAgentService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
+        <serviceTask id="servicetask6" name="Approve"
+                     activiti:expression="#{pvocService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
+        <serviceTask id="servicetask7" name="Reject"
+                     activiti:expression="#{pvocService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_complaintApplicationProcess">
         <bpmndi:BPMNPlane bpmnElement="complaintApplicationProcess" id="BPMNPlane_complaintApplicationProcess">
