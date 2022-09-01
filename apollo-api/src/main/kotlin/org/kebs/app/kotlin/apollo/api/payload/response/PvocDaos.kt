@@ -29,6 +29,11 @@ class PvocComplaintDao {
     var recommendationId: Long? = null
     var recommendationAction: String? = null
     var recommendationDesc: String? = null
+    var pvocQueryResult: String? = null
+    var mpvocRemarks: String? = null
+    var hodRemarks: String? = null
+    var pvocRemarks: String? = null
+    var conclusion: String? = null
     var complaintDate: Timestamp? = null
     var officerName: String? = null
     var hodName: String? = null
@@ -56,10 +61,17 @@ class PvocComplaintDao {
                 categoryName = complaint.compliantNature?.name
                 subCategoryId = complaint.compliantSubCategory?.id
                 subCategoryName = complaint.compliantSubCategory?.name
-                recommendationDesc = complaint.recomendation
+                conclusion = complaint.recomendation
             }
             if (!manufacturer) {
                 data.apply {
+                    pvocRemarks = complaint.recomendation ?: "N/A"
+                    hodRemarks = complaint.hodRemarks ?: "N/A"
+                    pvocQueryResult = complaint.agentReviewRemarks ?: "N/A"
+                    mpvocRemarks = complaint.mpvocRemarks ?: "N/A"
+                    recommendationAction = complaint.recommendedAction?.action
+                    recommendationId = complaint.recommendedAction?.id
+                    recommendationDesc = complaint.recommendedAction?.description
                     officerName = "${complaint.pvocUser?.firstName} ${complaint.pvocUser?.lastName}"
                     hodName = "${complaint.hod?.firstName} ${complaint.hod?.lastName}"
                     mpvocName = "${complaint.mpvoc?.firstName} ${complaint.mpvoc?.lastName}"

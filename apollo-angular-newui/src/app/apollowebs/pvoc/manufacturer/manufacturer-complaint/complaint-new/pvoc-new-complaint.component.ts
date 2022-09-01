@@ -21,7 +21,7 @@ export class PvocNewComplaintComponent implements OnInit {
     stepOneForm: FormGroup;
     stepTwoForm: FormGroup;
 
-    uploadedFiles: File[] = [];
+    uploadedFiles: FileList;
     errors: any = null
     countries: any[] = []
     towns: any[] = []
@@ -122,13 +122,15 @@ export class PvocNewComplaintComponent implements OnInit {
             .then(() => console.log("Back"))
     }
 
-    importFile($event) {
-        if ($event.target.files.length == 0) {
+    importFile(event: any) {
+        console.log(event)
+        if (event.target.files && event.target.files.length == 0) {
             console.log("No file selected!");
             return
         }
-        let file: File = $event.target.files[0];
-        this.uploadedFiles.push(file)
+        console.log("File selected!");
+        let file: File = event.target.files[0];
+        //this.uploadedFiles.push(file)
 
     }
 
@@ -142,7 +144,11 @@ export class PvocNewComplaintComponent implements OnInit {
         data.pvocAgent = parseInt(d2.pvocAgent)
         data.subCategoryId = parseInt(d2.subCategoryId)
         this.loading = true;
-        this.pvoc.fileComplaint(data, this.uploadedFiles)
+        let fileList: File[] = []
+        for (let v = 0; v < this.uploadedFiles.length; v++) {
+            fileList.push(this.uploadedFiles[v])
+        }
+        this.pvoc.fileComplaint(data, fileList)
             .subscribe(
                 res => {
                     if (res.responseCode === '00') {

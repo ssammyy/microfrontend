@@ -333,34 +333,60 @@
                                             </li>
                                         </ul>
                                     </mat-tab>
-                                    <mat-tab tabindex="6" label="Exporter Details">
-                                        <b class="text-primary">Attachments</b>
+                                    <mat-tab tabindex="6" label="Complaint Attachments">
+                                        <b class="text-primary">Complaint Attachments</b>
                                         <ng2-smart-table
                                                 [settings]="attachmentSettings"
                                                 [source]="complaintDetails.attachments"
                                         >
                                         </ng2-smart-table>
                                     </mat-tab>
-                                    <mat-tab tabindex="7" label="Shipment Details">
+                                    <mat-tab tabindex="7" label="Review Remarks">
+                                        <b class="text-primary">Review Comments</b>
+
+                                        <div class="row" *ngIf="complaintDetails.remarks">
+                                            <div class="col-md-12 card" *ngFor="let remark in complaintDetails.remarks">
+                                                <div class="card-title">
+                                                    {{remark.createdBy}}- {{remark.createdOn | date:'medium'}}
+                                                </div>
+                                                <div class="card-body">
+                                                    {{remark.remarksDescription}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab tabindex="7" label="Conclusions">
                                         <b class="text-primary">Conclusion Details</b>
                                         <div class="panel" style="max-height: 487px;">
                                             <ul class="w-list-unstyled">
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Recomendation</div>
-                                                    <div class="list-text-accordion">{{complaintDetails.complaint.recommendationDesc}}</div>
+                                                    <div class="list-title-accordion">Conclusion</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.conclusion}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">MPVOC recomendation</div>
-                                                    <div class="list-text-accordion">{{complaintDetails.complaint.mpvoc}}</div>
-                                                </li>
-
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">PVOC recomendation</div>
-                                                    <div class="list-text-accordion">{{complaintDetails.complaint.pvoc}}</div>
+                                                    <div class="list-title-accordion">PVOC Recommendation</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.pvocRemarks}}</div>
                                                 </li>
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Container Number</div>
+                                                    <div class="list-title-accordion">MPVOC Recommendation</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.mpvocRemarks}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">HOD Recommendation</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.hodRemarks}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Recommended Action</div>
                                                     <div class="list-text-accordion">{{complaintDetails.complaint.recommendationAction}}</div>
+                                                </li>
+                                                <li class="list-item-accordion"
+                                                    *ngIf="complaintDetails.complaint.pvocQueryResult">
+                                                    <div class="list-title-accordion">PVOC Query Result</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.pvocQueryResult}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Recommendation</div>
+                                                    <div class="list-text-accordion">{{complaintDetails.complaint.recommendationDesc}}</div>
                                                 </li>
                                             </ul>
                                         </div>

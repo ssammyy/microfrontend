@@ -88,6 +88,7 @@ class PvocRouter {
         "/api/v1/pvoc/complaint".nest {
             POST("/file", handler::fileComplaintRequest)
             GET("/categories", handler::loadComplaintCategories)
+            GET("/recommendations", handler::loadComplaintRecommendations)
             GET("/get/{applicationStatus}", handler::complaintApplications)
             GET("/details/{complaintId}", handler::complaintApplicationDetails)
             POST("/status/update/{complaintId}", handler::approveCurrentComplaintTask)

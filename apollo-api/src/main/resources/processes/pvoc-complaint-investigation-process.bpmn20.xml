@@ -6,59 +6,63 @@
              targetNamespace="http://www.activiti.org/test">
     <process id="complaintApplicationProcess" name="My process" isExecutable="true">
         <startEvent id="startevent1" name="Start"></startEvent>
-        <userTask id="usertask1" name="PVOC Officer" activiti:category="PVOC_OFFICER"
-                  activiti:priority="REVIEW_RECOMMENDATION"></userTask>
+        <userTask id="usertask1" name="PVOC Officer Review" activiti:category="PVOC_OFFICER"></userTask>
         <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
         <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow6" sourceRef="usertask1" targetRef="exclusivegateway2"></sequenceFlow>
         <userTask id="usertask5" name="Query PVOC Agent" activiti:category="PVOC_QUERY"></userTask>
         <sequenceFlow id="flow7" sourceRef="exclusivegateway2" targetRef="usertask5">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action='QUERY'}]]></conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action=='QUERY'}]]></conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="flow8" sourceRef="usertask5" targetRef="servicetask1"></sequenceFlow>
         <serviceTask id="servicetask1" name="Record Result"
                      activiti:expression="#{pvocService.pvocAgentQueryStatus(complaintId,remarks,pvocOfficer)}"></serviceTask>
         <sequenceFlow id="flow9" sourceRef="servicetask1" targetRef="usertask1"></sequenceFlow>
         <sequenceFlow id="flow10" sourceRef="exclusivegateway2" targetRef="servicetask2">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action='RECOMEND'}]]></conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action=='RECOMMEND'}]]></conditionExpression>
         </sequenceFlow>
         <serviceTask id="servicetask2" name="Submit Recommendation"
-                     activiti:expression="#{pvocService.pvocOfficerReviewStatus(complaintId,remarks,action,pvocOfficer)}"></serviceTask>
-        <userTask id="usertask6" name="MPVOC" activiti:category="MPVOC_OFFICER"></userTask>
+                     activiti:expression="#{pvocService.pvocOfficerReviewStatus(complaintId,recommendedAction,remarks,action,pvocOfficer)}"></serviceTask>
+        <userTask id="usertask6" name="MPVOC Review" activiti:category="MPVOC_OFFICER"></userTask>
         <sequenceFlow id="flow11" sourceRef="servicetask2" targetRef="usertask6"></sequenceFlow>
         <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow12" sourceRef="usertask6" targetRef="exclusivegateway3"></sequenceFlow>
         <sequenceFlow id="flow13" sourceRef="exclusivegateway3" targetRef="servicetask3">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve='REJECT'}]]></conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action=='REJECT'}]]></conditionExpression>
         </sequenceFlow>
         <serviceTask id="servicetask3" name="Reject"
-                     activiti:expression="#{pvocService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
+                     activiti:expression="#{pvocService.mpvocReviewStatus(complaintId,remarks,action,pvocOfficer)}"></serviceTask>
         <sequenceFlow id="flow14" sourceRef="exclusivegateway3" targetRef="servicetask4">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve='APPROVED'}]]></conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action=='APPROVE'}]]></conditionExpression>
         </sequenceFlow>
         <endEvent id="endevent1" name="End"></endEvent>
-        <sequenceFlow id="flow15" sourceRef="servicetask5" targetRef="endevent1"></sequenceFlow>
+        <sequenceFlow id="flow15" sourceRef="servicetask5" targetRef="usertask10"></sequenceFlow>
         <sequenceFlow id="flow16" sourceRef="servicetask3" targetRef="servicetask5"></sequenceFlow>
         <serviceTask id="servicetask4" name="Approve"
-                     activiti:expression="#{pvocService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
-        <userTask id="usertask9" name="HOD Approval" activiti:category="HOD_OFFICER"></userTask>
+                     activiti:expression="#{pvocService.mpvocReviewStatus(complaintId,remarks,action,pvocOfficer)}"></serviceTask>
+        <userTask id="usertask9" name="HOD Review" activiti:category="HOD_OFFICER"></userTask>
         <sequenceFlow id="flow17" sourceRef="servicetask4" targetRef="usertask9"></sequenceFlow>
         <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow18" sourceRef="usertask9" targetRef="exclusivegateway4"></sequenceFlow>
         <sequenceFlow id="flow19" sourceRef="exclusivegateway4" targetRef="servicetask7">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve='REJECTED'}]]></conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action=='REJECT'}]]></conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="flow20" sourceRef="exclusivegateway4" targetRef="servicetask6">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve='APPROVED'}]]></conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action=='APPROVE'}]]></conditionExpression>
         </sequenceFlow>
         <serviceTask id="servicetask5" name="Complaint Completed"
-                     activiti:class="#{pvocService.pvocComplaintProcessCompleted(complaintId)}"></serviceTask>
+                     activiti:expression="#{pvocService.pvocComplaintProcessCompleted(complaintId)}"></serviceTask>
         <sequenceFlow id="flow21" sourceRef="servicetask7" targetRef="servicetask5"></sequenceFlow>
         <sequenceFlow id="flow22" sourceRef="servicetask6" targetRef="servicetask5"></sequenceFlow>
         <serviceTask id="servicetask6" name="Approve"
-                     activiti:expression="#{pvocService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
+                     activiti:expression="#{pvocService.hodReviewStatus(complaintId,remarks,action,pvocOfficer)}"></serviceTask>
         <serviceTask id="servicetask7" name="Reject"
-                     activiti:expression="#{pvocService.mpvocReviewStatus(complaintId,remarks,approve,pvocOfficer)}"></serviceTask>
+                     activiti:expression="#{pvocService.hodReviewStatus(complaintId,remarks,action,pvocOfficer)}"></serviceTask>
+        <userTask id="usertask10" name="PVOC Officer Action"></userTask>
+        <serviceTask id="servicetask8" name="Send Notification"
+                     activiti:expression="#{pvocService.pvocOfficerActionCompleted(complaintId, action,remarks,pvocOfficer)}"></serviceTask>
+        <sequenceFlow id="flow23" sourceRef="usertask10" targetRef="servicetask8"></sequenceFlow>
+        <sequenceFlow id="flow24" sourceRef="servicetask8" targetRef="endevent1"></sequenceFlow>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_complaintApplicationProcess">
         <bpmndi:BPMNPlane bpmnElement="complaintApplicationProcess" id="BPMNPlane_complaintApplicationProcess">
@@ -90,10 +94,10 @@
                 <omgdc:Bounds height="55.0" width="105.0" x="918.0" y="70.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
-                <omgdc:Bounds height="35.0" width="35.0" x="1690.0" y="255.0"></omgdc:Bounds>
+                <omgdc:Bounds height="35.0" width="35.0" x="1960.0" y="255.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="servicetask4" id="BPMNShape_servicetask4">
-                <omgdc:Bounds height="55.0" width="105.0" x="1050.0" y="241.0"></omgdc:Bounds>
+                <omgdc:Bounds height="55.0" width="105.0" x="1051.0" y="238.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="usertask9" id="BPMNShape_usertask9">
                 <omgdc:Bounds height="55.0" width="105.0" x="1201.0" y="238.0"></omgdc:Bounds>
@@ -109,6 +113,12 @@
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="servicetask7" id="BPMNShape_servicetask7">
                 <omgdc:Bounds height="55.0" width="105.0" x="1410.0" y="124.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="usertask10" id="BPMNShape_usertask10">
+                <omgdc:Bounds height="55.0" width="105.0" x="1660.0" y="245.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetask8" id="BPMNShape_servicetask8">
+                <omgdc:Bounds height="55.0" width="105.0" x="1810.0" y="245.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
                 <omgdi:waypoint x="295.0" y="267.0"></omgdi:waypoint>
@@ -148,11 +158,11 @@
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
                 <omgdi:waypoint x="990.0" y="268.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1050.0" y="268.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1051.0" y="265.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
                 <omgdi:waypoint x="1625.0" y="272.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1690.0" y="272.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1660.0" y="272.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
                 <omgdi:waypoint x="1023.0" y="97.0"></omgdi:waypoint>
@@ -160,7 +170,7 @@
                 <omgdi:waypoint x="1572.0" y="245.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
-                <omgdi:waypoint x="1155.0" y="268.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1156.0" y="265.0"></omgdi:waypoint>
                 <omgdi:waypoint x="1201.0" y="265.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
@@ -182,6 +192,14 @@
             <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
                 <omgdi:waypoint x="1462.0" y="360.0"></omgdi:waypoint>
                 <omgdi:waypoint x="1572.0" y="300.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+                <omgdi:waypoint x="1765.0" y="272.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1810.0" y="272.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+                <omgdi:waypoint x="1915.0" y="272.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1960.0" y="272.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>

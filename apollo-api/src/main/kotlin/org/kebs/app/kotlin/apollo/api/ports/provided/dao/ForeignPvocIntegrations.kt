@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter
 import javax.transaction.Transactional
 
 enum class ReviewStatus(var code: Int) {
-    NEW(0), APPROVE(1), OPEN(2), REVIEW(3), REJECTED(4)
+    NEW(0), APPROVE(1), OPEN(2), REVIEW(3), REJECTED(4), DEFFERED(5)
 }
 
 @Service

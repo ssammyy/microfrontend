@@ -12,12 +12,17 @@ export class UpdateComplaintTaskComponent implements OnInit {
     sectionOfficerStatus = [
         {
             name: 'APPROVE',
-            description: 'Approve Exemption',
+            description: 'Approve Complaint',
             section: false
         },
         {
+            name: 'RECOMMEND',
+            description: 'Recommend Action',
+            section: true
+        },
+        {
             name: 'REJECT',
-            description: 'Reject Exemption',
+            description: 'Reject Complaint',
             section: false
         },
         {
@@ -27,6 +32,7 @@ export class UpdateComplaintTaskComponent implements OnInit {
         }
     ]
     complaintStatus: any[]
+    recommendations: any[]
     form: FormGroup
     errors: any
     loading: boolean = false
@@ -37,28 +43,53 @@ export class UpdateComplaintTaskComponent implements OnInit {
     ngOnInit(): void {
         // Status
         this.complaintStatus = []
+        this.data.is_pvoc_officer = false
         for (let d of this.sectionOfficerStatus) {
-            if (d.section === this.data.pvoc_officer) {
-                this.complaintStatus.push(d)
+            if (this.data.is_pvoc_officer) {
+                if (d.section) {
+                    this.complaintStatus.push(d)
+                }
             } else {
-                this.complaintStatus.push(d)
+                if (!d.section) {
+                    this.complaintStatus.push(d)
+                }
             }
         }
         // Form
         this.form = this.fb.group({
             taskId: [this.data.taskId],
-            action: ["NA", Validators.required],
+            action: ["0", this.data.is_pvoc_officer ? [Validators.required] : []],
+            status: [null, [Validators.required]],
             remarks: [null, Validators.required]
         })
+        // Complaint Recommendations
+        this.loadData()
+    }
+
+    loadData() {
+        this.pvocService.getComplaintRecommendations()
+            .subscribe(
+                res => {
+                    if (res.responseCode === '00') {
+                        this.recommendations = res.data
+                    }
+                }
+            )
     }
 
     saveRecord() {
         this.loading = true
-        this.pvocService.updateComplaintStatus(this.data.recordId, this.data)
+        let pData = this.form.value
+        // Convert recommendation to actionId
+        pData.action = parseInt(this.form.value.action)
+        this.pvocService.updateComplaintStatus(this.data.complaintId, pData)
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {
-                        this.dialogRef.close(true)
+                        this.pvocService.showSuccess(res.message, () => {
+                            this.dialogRef.close(true)
+                        })
+
                     } else {
                         this.errors = res.errors
                         this.pvocService.showError(res.message)

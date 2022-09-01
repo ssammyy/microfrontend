@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
+import org.flowable.common.engine.api.FlowableException
 import org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc.ExceptionPayload
 import org.kebs.app.kotlin.apollo.api.handlers.forms.WaiverApplication
 import org.kebs.app.kotlin.apollo.api.notifications.NotificationCodes
@@ -12,6 +13,7 @@ import org.kebs.app.kotlin.apollo.api.payload.response.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReviewStatus
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -95,13 +97,16 @@ class PvocService(
         }
     }
 
-    fun pvocOfficerReviewStatus(complaintId: Long, remarks: String, action: String, pvocOfficer: String) {
+    fun pvocOfficerReviewStatus(complaintId: Long, recommendedAction: Long, remarks: String, action: String, pvocOfficer: String) {
         val optional = this.complaintEntityRepo.findById(complaintId)
         if (optional.isPresent) {
             val complaint = optional.get()
             complaint.reviewStatus = action
             complaint.recomendation = remarks
             complaint.reviewedOn = Timestamp.from(Instant.now())
+            this.complaintRecommendationRepo.findByIdOrNull(recommendedAction)?.let {
+                complaint.recommendedAction = it
+            }
             complaint.pvocUser = commonDaoServices.findUserByUserName(pvocOfficer)
             this.complaintEntityRepo.save(complaint)
             addComplaintRemarks(complaintId, remarks, "AGENT_REVIEW")
@@ -125,6 +130,20 @@ class PvocService(
             val complaint = optional.get()
             complaint.hod = commonDaoServices.findUserByUserName(pvocOfficer)
             complaint.hodRemarks = remarks
+            when (action) {
+                "APPROVE" -> {
+                    complaint.reviewStatus = ReviewStatus.APPROVE.name
+                    complaint.status = ReviewStatus.APPROVE.code
+                }
+                "REJECT" -> {
+                    complaint.reviewStatus = ReviewStatus.REJECTED.name
+                    complaint.status = ReviewStatus.REJECTED.code
+                }
+                "DEFFERED" -> {
+                    complaint.reviewStatus = ReviewStatus.DEFFERED.name
+                    complaint.status = ReviewStatus.DEFFERED.code
+                }
+            }
             complaint.hodRecomendationDate = Timestamp.from(Instant.now())
             this.complaintEntityRepo.save(complaint)
         }
@@ -139,18 +158,24 @@ class PvocService(
         }
     }
 
-    fun sendComplaintReviewEmail(complaintId: Long) {
+    fun sendComplaintReviewEmail(complaintId: Long, remarks: String) {
         val optional = this.complaintEntityRepo.findById(complaintId)
         if (optional.isPresent) {
             val complaint = optional.get()
             // Send email
-            this.sendComplaintEmail(complaint, complaint.reviewStatus ?: "UNKNOWN", complaint.email ?: "")
+            if (complaint.status != ReviewStatus.DEFFERED.code) {
+                this.sendComplaintEmail(complaint, complaint.reviewStatus ?: "UNKNOWN", complaint.email ?: "", remarks)
+            }
         }
     }
 
 
     fun pvocComplaintProcessCompleted(complaintId: Long) {
+        KotlinLogging.logger { }.info("Complain Process completed")
+    }
 
+    fun pvocOfficerActionCompleted(complaintId: Long, action: String, remarks: String, pvocOfficer: String) {
+        this.sendComplaintReviewEmail(complaintId, remarks)
     }
 
     fun getRecommendations(): ApiResponseModel {
@@ -193,14 +218,29 @@ class PvocService(
     }
 
 
-    fun approveCurrentComplaint(complaintId: Long, action: String, taskId: String, remarks: String): ApiResponseModel {
+    fun approveCurrentComplaint(complaintId: Long, recommendedAction: Long, action: String, taskId: String, remarks: String): ApiResponseModel {
         val response = ApiResponseModel()
-        val data = mutableMapOf<String, Any>()
-        data["pvocOfficer"] = commonDaoServices.loggedInUserDetails().userName!!
-        data["remarks"] = remarks
-        this.pvocBpmn.pvocCompleteTask(taskId, data)
-        response.responseCode = ResponseCodes.SUCCESS_CODE
-        response.message = "Task completed"
+        try {
+            val data = mutableMapOf<String, Any>()
+            data["pvocOfficer"] = commonDaoServices.loggedInUserAuthentication().name
+            data["action"] = action.toUpperCase()
+            data["approve"] = action.toUpperCase()
+            if (recommendedAction > 0) {
+                data["recommendedAction"] = recommendedAction
+            }
+            data["remarks"] = remarks
+            this.pvocBpmn.pvocCompleteTask(taskId, data)
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Task completed"
+        } catch (ex: FlowableException) {
+            KotlinLogging.logger { }.error("Failed", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Task failed: ${ex.message}"
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed", ex)
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Task failed: ${ex.message}"
+        }
         return response
     }
 
@@ -271,6 +311,8 @@ class PvocService(
                 KotlinLogging.logger { }.error("Failed to add data", ex)
             }
             // Add details
+            // TODO: remove this in production
+            data.put("tasks", this.pvocBpmn.getComplaintTasks(listOf("HOD_OFFICER", "MPVOC_OFFICER", "PVOC_OFFICER", "PVOC_QUERY", "HOD"), complaint.id!!))
             data["assigned_officer"] = "${complaint.pvocUser?.firstName} ${complaint.pvocUser?.lastName}"
             data["complaint"] = PvocComplaintDao.fromEntity(complaint, false)
             data["attachments"] = PvocWaiverAttachmentDao.fromList(this.iPvocApplicationDocumentRepo.findFirstByRefIdAndRefType(complaint.refNo.orEmpty(), DocumentTypes.COMPLAINT.name))
@@ -326,7 +368,7 @@ class PvocService(
 
     fun generateComplaintRef(prefix: String): String {
         val count = complaintEntityRepo.countAllByRefPrefix(prefix)
-        return "%s%05x".format(prefix, count)
+        return "%s%05x".format(prefix, count + 1)
     }
 
     fun pvocFileComplaint(form: PvocComplaintForm, uploads: List<MultipartFile>): ApiResponseModel {

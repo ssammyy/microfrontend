@@ -257,7 +257,7 @@
                                 </div>
                                 <div class="container">
                                     <form #demoForm="ngForm">
-                                        <file-upload (change)="importFile($event)" name="files"
+                                        <file-upload [(ngModel)]="uploadedFiles" name="files"
                                                      fileslimit="5" accept=".pdf, .png, .jpg"></file-upload>
                                     </form>
 

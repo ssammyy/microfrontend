@@ -2112,7 +2112,7 @@ class ComplaintStatusForm {
     val status: String? = null
 
     @NotNull(message = "Please select action")
-    val action: String? = null
+    val action: Long? = null
 
     @NotNull(message = "Rejection/Approval remarks are required")
     val remarks: String? = null

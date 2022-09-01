@@ -40,16 +40,20 @@ export class ViewComplaintDetailsComponent implements OnInit {
         },
         noDataMessage: 'No attachments found',
         columns: {
-            fileName: {
+            name: {
                 title: 'FILE NAME',
                 type: 'string'
             },
-            createdOn: {
-                title: 'DATE GENERATED',
+            documentRef: {
+                title: 'DOC REF',
                 type: 'string'
             },
-            fileSize: {
-                title: 'FILE SIZE',
+            documentRefType: {
+                title: 'DOC TYPE',
+                type: 'string'
+            },
+            fileType: {
+                title: 'FILE TYPE',
                 type: 'string'
             }
         }
@@ -80,7 +84,7 @@ export class ViewComplaintDetailsComponent implements OnInit {
         this.dialog.open(UpdateComplaintTaskComponent, {
             data: {
                 complaintId: this.requestId,
-                pvoc_officer: this.complaintDetails.is_pvoc_officer,
+                pvoc_officer: true, // this.complaintDetails.is_pvoc_officer,
                 task: task,
                 taskId: taskId
             }

@@ -53,6 +53,7 @@ class PvocComplaintHandler(
                             ServerResponse.ok().render("destination-inspection/pvoc/WaiversApplication", req.attributes())
                         }
             }
+
     fun companyComplaintHistory(req: ServerRequest): ServerResponse {
         val status = req.param("status").orElse("new")
         val response = this.pvocService.companyComplaintHistory(status, extractPage(req))
@@ -61,6 +62,11 @@ class PvocComplaintHandler(
 
     fun loadComplaintCategories(req: ServerRequest): ServerResponse {
         val response = this.pvocService.getComplaintCategories()
+        return ServerResponse.ok().body(response)
+    }
+
+    fun loadComplaintRecommendations(req: ServerRequest): ServerResponse {
+        val response = this.pvocService.getRecommendations()
         return ServerResponse.ok().body(response)
     }
 
@@ -116,7 +122,8 @@ class PvocComplaintHandler(
                 response.message = "Please correct errors"
                 response
             } ?: run {
-                response = this.pvocService.approveCurrentComplaint(complaintId, form.action!!, form.taskId!!, form.remarks!!)
+                response = this.pvocService.approveCurrentComplaint(complaintId, form.action
+                        ?: 0, form.status!!, form.taskId!!, form.remarks!!)
                 response
             }
         } catch (ex: Exception) {

@@ -170,6 +170,7 @@ class PvocBpmn(
             KotlinLogging.logger { }.info("objectId : $objectId :  Completed")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
+            throw e
         }
         return null
     }

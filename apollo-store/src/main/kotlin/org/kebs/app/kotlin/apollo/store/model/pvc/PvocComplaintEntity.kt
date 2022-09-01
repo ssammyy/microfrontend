@@ -127,6 +127,11 @@ class PvocComplaintEntity : Serializable {
     @ManyToOne
     var mpvoc: UsersEntity? = null
 
+    @JoinColumn(name = "RECOMMENDED_ACTION", referencedColumnName = "ID")
+    @ManyToOne
+    var recommendedAction: PvocComplaintRecommendationEntity? = null
+
+
     @JoinColumn(name = "PVOC_USER", referencedColumnName = "ID")
     @ManyToOne
     var pvocUser: UsersEntity? = null
