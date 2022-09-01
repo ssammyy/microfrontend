@@ -43,7 +43,7 @@ export class UpdateComplaintTaskComponent implements OnInit {
     ngOnInit(): void {
         // Status
         this.complaintStatus = []
-        this.data.is_pvoc_officer = false
+        // this.data.is_pvoc_officer = false
         for (let d of this.sectionOfficerStatus) {
             if (this.data.is_pvoc_officer) {
                 if (d.section) {
