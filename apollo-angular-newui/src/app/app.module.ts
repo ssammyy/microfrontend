@@ -367,6 +367,10 @@ import {IntStdTasksComponent} from './apollowebs/standards-development/internati
 import {ComplaintDetailsComponent} from "./apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component";
 import {ManufacturerComplaintListComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-list/manufacturer-complaint-list.component";
 import {ManufacturerComplaintDetailsComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-details/manufacturer-complaint-details.component";
+import {RfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component';
+import {RfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component';
+import {ViewRfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component';
+import {ViewRfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component';
 
 @NgModule({
     imports: [
@@ -759,7 +763,11 @@ import {ManufacturerComplaintDetailsComponent} from "./apollowebs/pvoc/manufactu
         ViewExemptionCertificatesComponent,
         StdHopTasksComponent,
         SpcSecTaskComponent,
-        NwaJustificationFormComponent
+        NwaJustificationFormComponent,
+        RfcCocDocumentsComponent,
+        RfcCorDocumentsComponent,
+        ViewRfcCorDocumentsComponent,
+        ViewRfcCocDocumentsComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

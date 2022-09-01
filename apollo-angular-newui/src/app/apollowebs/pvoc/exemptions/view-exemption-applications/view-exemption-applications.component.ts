@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SystemService} from "../../../../core/store/data/system/system.service";
 import {MatDialog} from "@angular/material/dialog";
 import {PVOCService} from "../../../../core/store/data/pvoc/pvoc.service";
 import {Router} from "@angular/router";
-import {AddApiClientComponent} from "../../../system/clients/add-api-client/add-api-client.component";
-import {ViewClientCredentialsComponent} from "../../../system/clients/view-client-credentials/view-client-credentials.component";
 
 @Component({
   selector: 'app-view-exemption-applications',
@@ -18,25 +16,36 @@ export class ViewExemptionApplicationsComponent implements OnInit {
   displayedColumns = ["serialNo", "conpanyName","companyPinNo","telephoneNo", "contactName", "contactEmail", "companyEmail","physicalLocation", "actions"]
   displayedColumnResults = ["serialNo", "conpanyName","companyPinNo","telephoneNo", "contactName", "contactEmail", "companyEmail","physicalLocation", "actions"]
   page = 0
-  keywords: string | null = ""
-  pageSize = 20
+    keywords: string | null = ""
+    pageSize = 20
+    currentPageInternal: number = 1
 
-  constructor(private systemService: SystemService, private dialog: MatDialog, private pvocService: PVOCService, private router: Router) {
-  }
-
-  ngOnInit(): void {
-    this.loadData()
-  }
-
-  searchPhraseChanged() {
-    if (this.keywords && this.keywords.length > 0) {
-      this.loadData()
+    constructor(private systemService: SystemService, private dialog: MatDialog, private pvocService: PVOCService, private router: Router) {
     }
-  }
 
-  loadData() {
-    this.pvocService.listExemptionApplications(this.keywords, this.applicationStatus, this.page, this.pageSize)
-        .subscribe(
+    ngOnInit(): void {
+        this.loadData()
+    }
+
+    toggleStatus(status: string): void {
+        if (status !== this.applicationStatus) {
+            this.applicationStatus = status;
+            this.page = 0
+            this.keywords = null
+            this.currentPageInternal = 0
+            this.loadData()
+        }
+    }
+
+    searchPhraseChanged() {
+        if (this.keywords && this.keywords.length > 0) {
+            this.loadData()
+        }
+    }
+
+    loadData() {
+        this.pvocService.listExemptionApplications(this.keywords, this.applicationStatus, this.page, this.pageSize)
+            .subscribe(
             res => {
               if (res.responseCode === "00") {
                 this.exemptionListing = res.data

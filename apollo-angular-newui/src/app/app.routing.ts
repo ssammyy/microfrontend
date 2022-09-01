@@ -206,6 +206,8 @@ import {IntStdTasksComponent} from "./apollowebs/standards-development/internati
 import {ReviewBallotDraftComponent} from "./apollowebs/standards-development/balloting/review-ballot-draft/review-ballot-draft.component";
 import {ManufacturerComplaintListComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-list/manufacturer-complaint-list.component";
 import {ManufacturerComplaintDetailsComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-details/manufacturer-complaint-details.component";
+import {RfcCocDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component";
+import {RfcCorDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component";
 
 export const routes: Routes = [
     {
@@ -568,6 +570,22 @@ export const routes: Routes = [
                     },
                     {
                         path: 'document/cor/:id',
+                        component: ViewCorComponent,
+                    },
+                    {
+                        path: 'documents/rfc/cor',
+                        component: RfcCorDocumentsComponent
+                    },
+                    {
+                        path: 'document/rfc/cor/:id',
+                        component: ViewCorComponent,
+                    },
+                    {
+                        path: 'documents/rfc/other',
+                        component: RfcCocDocumentsComponent
+                    },
+                    {
+                        path: 'document/rfc/other/:id',
                         component: ViewCorComponent,
                     },
                 ],
