@@ -19,6 +19,7 @@ class PvocComplaintDao {
     var rfcNo: String? = null
     var email: String? = null
     var complaintDescription: String? = null
+    var complaintTitle: String? = null
     var pvocAgent: String? = null
     var pvocAgentId: Long? = null
     var categoryId: Long? = null
@@ -28,26 +29,31 @@ class PvocComplaintDao {
     var recommendationId: Long? = null
     var recommendationAction: String? = null
     var recommendationDesc: String? = null
+    var pvocQueryResult: String? = null
+    var mpvocRemarks: String? = null
+    var hodRemarks: String? = null
+    var pvocRemarks: String? = null
+    var conclusion: String? = null
     var complaintDate: Timestamp? = null
     var officerName: String? = null
     var hodName: String? = null
     var mpvocName: String? = null
+    var reviewStatus: String? = null
 
     companion object {
-        fun fromEntity(complaint: PvocComplaintEntity): PvocComplaintDao {
-            return PvocComplaintDao().apply {
+        fun fromEntity(complaint: PvocComplaintEntity, manufacturer: Boolean): PvocComplaintDao {
+            val data = PvocComplaintDao().apply {
                 complaintId = complaint.id
                 refNo = complaint.refNo
-                rfcNo = complaint.rfcNo
-                complaintName = complaint.complaintName
+                cocNo = complaint.cocNumber
+                rfcNo = complaint.rfcNumber
+                complaintName = complaint.firstName + " " + complaint.lastName
                 phoneNo = complaint.phoneNo
                 address = complaint.address
-                cocNo = complaint.cocNo
                 email = complaint.email
+                reviewStatus = complaint.reviewStatus
                 complaintDate = complaint.createdOn
-                officerName = "${complaint.pvocUser?.firstName} ${complaint.pvocUser?.lastName}"
-                hodName = "${complaint.hod?.firstName} ${complaint.hod?.lastName}"
-                mpvocName = "${complaint.mpvoc?.firstName} ${complaint.mpvoc?.lastName}"
+                complaintTitle = complaint.complaintTitle
                 complaintDescription = complaint.generalDescription
                 pvocAgent = complaint.pvocAgent?.partnerName
                 pvocAgentId = complaint.pvocAgent?.id
@@ -55,13 +61,28 @@ class PvocComplaintDao {
                 categoryName = complaint.compliantNature?.name
                 subCategoryId = complaint.compliantSubCategory?.id
                 subCategoryName = complaint.compliantSubCategory?.name
-                recommendationDesc = complaint.recomendation
+                conclusion = complaint.recomendation
             }
+            if (!manufacturer) {
+                data.apply {
+                    pvocRemarks = complaint.recomendation ?: "N/A"
+                    hodRemarks = complaint.hodRemarks ?: "N/A"
+                    pvocQueryResult = complaint.agentReviewRemarks ?: "N/A"
+                    mpvocRemarks = complaint.mpvocRemarks ?: "N/A"
+                    recommendationAction = complaint.recommendedAction?.action
+                    recommendationId = complaint.recommendedAction?.id
+                    recommendationDesc = complaint.recommendedAction?.description
+                    officerName = "${complaint.pvocUser?.firstName} ${complaint.pvocUser?.lastName}"
+                    hodName = "${complaint.hod?.firstName} ${complaint.hod?.lastName}"
+                    mpvocName = "${complaint.mpvoc?.firstName} ${complaint.mpvoc?.lastName}"
+                }
+            }
+            return data
         }
 
-        fun fromList(complaints: List<PvocComplaintEntity>): List<PvocComplaintDao> {
+        fun fromList(complaints: List<PvocComplaintEntity>, manufacturer: Boolean = true): List<PvocComplaintDao> {
             val daos = mutableListOf<PvocComplaintDao>()
-            complaints.forEach { daos.add(fromEntity(it)) }
+            complaints.forEach { daos.add(fromEntity(it, manufacturer)) }
             return daos
         }
     }
@@ -140,16 +161,18 @@ class PvocWaiverAttachmentDao {
     var status: Long? = null
     var name: String? = null
     var description: String? = null
-    var waiverId: Long? = null
+    var documentRef: String? = null
+    var documentRefType: String? = null
     var fileType: String? = null
 
 
     companion object {
-        fun fromEntity(documentsEntity: PvocWaiversApplicationDocumentsEntity): PvocWaiverAttachmentDao {
+        fun fromEntity(documentsEntity: PvocApplicationDocumentsEntity): PvocWaiverAttachmentDao {
             val dao = PvocWaiverAttachmentDao().apply {
                 fileId = documentsEntity.id
                 name = documentsEntity.name
-                waiverId = documentsEntity.waiverId
+                documentRef = documentsEntity.refId
+                documentRefType = documentsEntity.refType
                 fileType = documentsEntity.fileType
                 status = documentsEntity.status
                 description = documentsEntity.description
@@ -157,7 +180,7 @@ class PvocWaiverAttachmentDao {
             return dao
         }
 
-        fun fromList(documents: List<PvocWaiversApplicationDocumentsEntity>): List<PvocWaiverAttachmentDao> {
+        fun fromList(documents: List<PvocApplicationDocumentsEntity>): List<PvocWaiverAttachmentDao> {
             val daos = mutableListOf<PvocWaiverAttachmentDao>()
             documents.forEach { daos.add(fromEntity(it)) }
             return daos

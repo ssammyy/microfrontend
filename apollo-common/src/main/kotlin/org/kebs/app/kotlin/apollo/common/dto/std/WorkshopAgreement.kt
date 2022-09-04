@@ -11,7 +11,7 @@ class WorkshopAgreement(
     @JsonProperty("approvalID")  val approvalID: Long,
     @JsonProperty("comments") val comments: String,
     @JsonProperty("jstNumber")  val jstNumber: Long,
-    @JsonProperty("assignedTo") val assignedTo: Long
+    @JsonProperty("assignedTo") var assignedTo: Long
     ) {
 }
 data class JustificationNwa(
@@ -77,7 +77,7 @@ class NWAJustificationDecision(
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
     @JsonProperty("comments") val comments: String,
-    @JsonProperty("assignedTo") val assignedTo: Long
+    @JsonProperty("assignedTo") var assignedTo: Long
     ) {
 }
 
@@ -87,7 +87,7 @@ class NWAPreliminaryDraftDecision(
     @JsonProperty("approvalID")  val approvalID: Long,
     @JsonProperty("comments") val comments: String,
     @JsonProperty("diJNumber")  val diJNumber: Long,
-    @JsonProperty("assignedTo")  val assignedTo: Long,
+    @JsonProperty("assignedTo")  var assignedTo: Long,
     @JsonProperty("processId")  val processId: String
     ) {
 }
@@ -96,7 +96,7 @@ class NWAWorkshopDraftDecision(
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
     @JsonProperty("comments") val comments: String,
-    @JsonProperty("assignedTo")  val assignedTo: Long,
+    @JsonProperty("assignedTo")  var assignedTo: Long,
     @JsonProperty("processId")  val processId: String
     ) {
 }
@@ -121,17 +121,30 @@ class EditCompanyStandard(
     @JsonProperty("savedRowID")  var id: Long,
 ){}
 class ISDecision(
+    @JsonProperty("processId") val processId: String,
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
-    @JsonProperty("comments") val comments: String
+    @JsonProperty("assignedTo")  var assignedTo: Long,
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("proposalId") val proposalId: Long,
 ) {
 }
 class ISJustificationDecision(
+    @JsonProperty("processId") val processId: String,
+    @JsonProperty("proposalId") val proposalId: Long,
+    @JsonProperty("assignedTo")  var assignedTo: Long,
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
     @JsonProperty("comments") val comments: String
 ) {
 }
+class ISDraftStdUpload(
+    @JsonProperty("draftId") val draftId: Long
+)
+{
+
+}
+
 

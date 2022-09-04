@@ -12,7 +12,7 @@ import {
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpEvent, HttpParams, HttpRequest} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
-import {dev} from "../../../../../../../apollo-webs/src/app/shared/dev/dev";
+import {dev} from "../../../../shared/dev/dev";
 
 @Injectable({
   providedIn: 'root'

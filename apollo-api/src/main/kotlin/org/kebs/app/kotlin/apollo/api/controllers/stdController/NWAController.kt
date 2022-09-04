@@ -566,7 +566,7 @@ class NWAController(val nwaService: NWAService,
     }
 
     //********************************************************** process upload Gazette Notice **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('HOD_SIC_SD_MODIFY') or  hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/uploadGazetteNotice")
     @ResponseBody
     fun uploadGazetteNotice(@RequestBody nWAGazetteNotice: NWAGazetteNotice,
@@ -576,7 +576,7 @@ class NWAController(val nwaService: NWAService,
     }
 
     //********************************************************** process upload Gazettement Date **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('HOD_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/updateGazettementDate")
     @ResponseBody
     fun updateGazettementDate(@RequestBody nWAGazettement: NWAGazettement,
@@ -672,7 +672,7 @@ class NWAController(val nwaService: NWAService,
     @PreAuthorize("hasAuthority('KNW_SEC_READ') or hasAuthority('SPC_SEC_SD_READ')" +
             " or hasAuthority('DI_SDT_SD_READ') or hasAuthority('HOP_SD_READ') " +
             " or hasAuthority('TC_SEC_SD_READ') or hasAuthority('TC_SEC_SD_MODIFY') or" +
-            " hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HO_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')  ")
+            " hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HO_SIC_SD_READ') or hasAuthority('HOD_SIC_SD_READ')  or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')  ")
     @GetMapping("/getUserTasks")
     fun getUserTasks():List<WorkShopAgreementTasks>
     {

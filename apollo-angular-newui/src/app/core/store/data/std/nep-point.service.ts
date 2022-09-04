@@ -13,7 +13,7 @@ import {
     NWAWorkShopDraft,
     RootObject
 } from "./std.model";
-import {dev} from "../../../../../../../apollo-webs/src/app/shared/dev/dev";
+import {dev} from "../../../../shared/dev/dev";
 
 @Injectable({
   providedIn: 'root'

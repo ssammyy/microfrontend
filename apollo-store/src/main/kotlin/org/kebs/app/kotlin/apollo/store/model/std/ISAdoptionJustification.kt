@@ -30,6 +30,11 @@ class ISAdoptionJustification {
     @Basic
     var slNumber : String?=null
 
+    @Column(name="EDITION")
+    @Basic
+    var edition : String?=null
+
+
     @Column(name="REQUEST_NUMBER")
     @Basic
     var requestNumber : String?=null
@@ -81,4 +86,25 @@ class ISAdoptionJustification {
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null
+
+    @Column(name = "ASSIGNED_TO")
+    @Basic
+    var assignedTo: Long? = null
+
+    @Column(name = "PROCESS_ID")
+    @Basic
+    var processId: String? = null
+
+    @Column(name = "POSITIVE_VOTES")
+    @Basic
+    var positiveVotes: Long? = null
+
+    @Column(name = "NEGATIVE_VOTES")
+    @Basic
+    var negativeVotes: Long? = null
+
+
+
+
+
 }

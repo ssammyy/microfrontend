@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 //@CrossOrigin(origins = ["http://localhost:4200"])
-@RequestMapping("api/v1/migration/international_standard")
+@RequestMapping("api/v1/migration/international_standard/null")
 class InternationalStandardController(
     val internationalStandardService: InternationalStandardService,
     private val commonDaoServices: CommonDaoServices,

@@ -74,18 +74,17 @@ import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.co
 import {FmarkApplicationComponent} from './apollowebs/quality-assurance/fmark-application/fmark-application.component';
 import {LoaderComponent} from './shared/loader/loader.component';
 import {NgbNavModule, NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
-import {ImportInspectionComponent} from './apollowebs/pvoc/import-inspection/import-inspection.component';
-import {ExceptionsApplicationComponent} from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
-import {WaiverApplicationComponent} from './apollowebs/pvoc/waiver-application/waiver-application.component';
-import {GoodsDetailsComponent} from './apollowebs/pvoc/exceptions-application/goods-details/goods-details.component';
-import {WaiverSubmittedDialogComponent} from './apollowebs/pvoc/waivers/waiver-submitted-dialog/waiver-submitted-dialog.component';
-import {ManufacturerDetailsComponent} from './apollowebs/pvoc/waivers/manufacturer-details/manufacturer-details.component';
-import {ProductDetailsComponent} from './apollowebs/pvoc/waiver-application/product-details/product-details.component';
-import {ImportationWaiverComponent} from './apollowebs/pvoc/importation-waiver/importation-waiver.component';
-import {MainProductionMachineryComponent} from './apollowebs/pvoc/waivers/main-production-machinery/main-production-machinery.component';
-import {RawMaterialsComponent} from './apollowebs/pvoc/waivers/raw-materials/raw-materials.component';
-import {WaiverProductComponent} from './apollowebs/pvoc/waivers/waiver-product/waiver-product.component';
-import {IndustrialSparesComponent} from './apollowebs/pvoc/waivers/industrial-spares/industrial-spares.component';
+import {ImportInspectionComponent} from './apollowebs/pvoc/manufacturer/manufacturer-applications/import-inspection.component';
+import {ExceptionsApplicationComponent} from './apollowebs/pvoc/manufacturer/exceptions-application/exceptions-application.component';
+import {WaiverApplicationComponent} from './apollowebs/pvoc/manufacturer/export-waiver-application/waiver-application.component';
+import {GoodsDetailsComponent} from './apollowebs/pvoc/manufacturer/exceptions-application/goods-details/goods-details.component';
+import {ManufacturerDetailsComponent} from './apollowebs/pvoc/manufacturer/exceptions-application/manufacturer-details/manufacturer-details.component';
+import {ProductDetailsComponent} from './apollowebs/pvoc/manufacturer/importation-waiver/product-details/product-details.component';
+import {ImportationWaiverComponent} from './apollowebs/pvoc/manufacturer/importation-waiver/importation-waiver.component';
+import {MainProductionMachineryComponent} from './apollowebs/pvoc/manufacturer/exceptions-application/main-production-machinery/main-production-machinery.component';
+import {RawMaterialsComponent} from './apollowebs/pvoc/manufacturer/exceptions-application/raw-materials/raw-materials.component';
+import {WaiverProductComponent} from './apollowebs/pvoc/manufacturer/exceptions-application/waiver-product/waiver-product.component';
+import {IndustrialSparesComponent} from './apollowebs/pvoc/manufacturer/exceptions-application/industrial-spares/industrial-spares.component';
 import {ConsignmentDocumentListComponent} from './apollowebs/di/consignment-document-list/consignment-document-list.component';
 import {ViewSingleConsignmentDocumentComponent} from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
 import {ItemDetailsListViewComponent} from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details-list-view.component';
@@ -100,12 +99,6 @@ import {NwaJustificationFormComponent} from './apollowebs/standards-development/
 import {StandardsDevelopmentComponent} from './apollowebs/standards-development/standards-development.component';
 import {InformationcheckComponent} from './apollowebs/standards-development/informationcheck/informationcheck.component';
 import {UsermanagementComponent} from './apollowebs/usermanagement/usermanagement.component';
-import {NwaJustificationTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
-import {NwaKnwSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
-import {NwaDiSdtTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
-import {NwaHopTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
-import {SacSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/sac-sec-tasks/sac-sec-tasks.component';
-import {HoSicTasksComponent} from './apollowebs/standards-development/workshop-agreement/ho-sic-tasks/ho-sic-tasks.component';
 import {ReviewStandardsComponent} from './apollowebs/standards-development/systemic-review/request-standard-review/review-standards/review-standards.component';
 import {CsRequestFormComponent} from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
 import {DivisionresponseComponent} from './apollowebs/standards-development/divisionresponse/divisionresponse.component';
@@ -235,7 +228,6 @@ import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy
 import {SpcSecTaskComponent} from './apollowebs/standards-development/standard-request/spc-sec-task/spc-sec-task.component';
 import {StdJustificationComponent} from './apollowebs/standards-development/standard-request/std-justification/std-justification.component';
 import {PreparePreliminaryDraftComponent} from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
-import {NwaPreliminaryDraftComponent} from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
 import {ComStdPlTaskComponent} from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
 // tslint:disable-next-line:max-line-length
 import {ComStdDraftViewComponent} from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
@@ -326,7 +318,7 @@ import {StandardLevyClosureComponent} from './apollowebs/standards-levy/standard
 import {StandardLevySuspensionComponent} from './apollowebs/standards-levy/standard-levy-suspension/standard-levy-suspension.component';
 import {ComplaintNewComponent} from './apollowebs/market-surveillance/complaint/complaint-new/complaint-new.component';
 import {ComplaintListComponent} from './apollowebs/market-surveillance/complaint/complaint-list/complaint-list.component';
-import {ComplaintDetailsComponent} from './apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component';
+
 import {CdGeneralChecklistComponent} from './apollowebs/di/view-single-consignment-document/cd-general-checklist/cd-general-checklist.component';
 import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payments.component';
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
@@ -346,11 +338,11 @@ import {LaboratoriesComponent} from './apollowebs/system/laboratories/laboratori
 import {AddLaboratoryComponent} from './apollowebs/system/laboratories/add-laboratory/add-laboratory.component';
 import {AddCustomOfficeComponent} from './apollowebs/system/customs-office/add-custom-office/add-custom-office.component';
 import {AddUpdateLimitComponent} from './apollowebs/invoice/limits/add-update-limit/add-update-limit.component';
-import { ReviewPreliminaryDraftComponent } from './apollowebs/standards-development/committee-module/review-preliminary-draft/review-preliminary-draft.component';
-import { PrepareCommitteeDraftComponent } from './apollowebs/standards-development/committee-module/prepare-committee-draft/prepare-committee-draft.component';
-import { ReviewCommitteeDraftComponent } from './apollowebs/standards-development/committee-module/review-committee-draft/review-committee-draft.component';
-import { PreparePublicReviewDraftComponent } from './apollowebs/standards-development/publicReview/prepare-public-review-draft/prepare-public-review-draft.component';
-import { PublicReviewDraftComponent } from './apollowebs/standards-development/publicReview/public-review-draft/public-review-draft.component';
+import {ReviewPreliminaryDraftComponent} from './apollowebs/standards-development/committee-module/review-preliminary-draft/review-preliminary-draft.component';
+import {PrepareCommitteeDraftComponent} from './apollowebs/standards-development/committee-module/prepare-committee-draft/prepare-committee-draft.component';
+import {ReviewCommitteeDraftComponent} from './apollowebs/standards-development/committee-module/review-committee-draft/review-committee-draft.component';
+import {PreparePublicReviewDraftComponent} from './apollowebs/standards-development/publicReview/prepare-public-review-draft/prepare-public-review-draft.component';
+import {PublicReviewDraftComponent} from './apollowebs/standards-development/publicReview/public-review-draft/public-review-draft.component';
 import {ForeignCorsComponent} from './apollowebs/pvoc/documents/foreign-cors/foreign-cors.component';
 import {ForeignCocsComponent} from './apollowebs/pvoc/documents/foreign-cocs/foreign-cocs.component';
 import {ViewCorComponent} from './apollowebs/pvoc/documents/foreign-cors/view-cor/view-cor.component';
@@ -361,12 +353,24 @@ import {PvocQueriesComponent} from './apollowebs/pvoc/documents/foreign-cors/pvo
 import {PvocCocQueriesComponent} from './apollowebs/pvoc/documents/foreign-cocs/pvoc-coc-queries/pvoc-coc-queries.component';
 import {PvocQueryCardComponent} from './apollowebs/di/fragments/pvoc-query-card/pvoc-query-card.component';
 import {PvocQueryViewComponent} from './apollowebs/di/fragments/pvoc-query-view/pvoc-query-view.component';
-import { ApproveCommitteeDraftComponent } from './apollowebs/standards-development/committee-module/approve-committee-draft/approve-committee-draft.component';
-import { CommentOnPublicReviewDraftComponent } from './apollowebs/standards-development/publicReview/comment-on-public-review-draft/comment-on-public-review-draft.component';
-import { PrepareBallotingDraftComponent } from './apollowebs/standards-development/balloting/prepare-balloting-draft/prepare-balloting-draft.component';
-import { VoteOnBallotDraftComponent } from './apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component';
-import { ComTasksComponent } from './apollowebs/standards-development/company-standard/com-tasks/com-tasks.component';
+import {ApproveCommitteeDraftComponent} from './apollowebs/standards-development/committee-module/approve-committee-draft/approve-committee-draft.component';
+import {CommentOnPublicReviewDraftComponent} from './apollowebs/standards-development/publicReview/comment-on-public-review-draft/comment-on-public-review-draft.component';
+import {PrepareBallotingDraftComponent} from './apollowebs/standards-development/balloting/prepare-balloting-draft/prepare-balloting-draft.component';
+import {VoteOnBallotDraftComponent} from './apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component';
+import {ComTasksComponent} from './apollowebs/standards-development/company-standard/com-tasks/com-tasks.component';
 
+import {ReviewBallotDraftComponent} from './apollowebs/standards-development/balloting/review-ballot-draft/review-ballot-draft.component';
+import {PvocNewComplaintComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-new/pvoc-new-complaint.component";
+import {ViewWaiverCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-waiver-certificates/view-waiver-certificates.component';
+import {ViewExemptionCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-exemption-certificates/view-exemption-certificates.component';
+import {IntStdTasksComponent} from './apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component';
+import {ComplaintDetailsComponent} from "./apollowebs/market-surveillance/complaint/complaint-details/complaint-details.component";
+import {ManufacturerComplaintListComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-list/manufacturer-complaint-list.component";
+import {ManufacturerComplaintDetailsComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-details/manufacturer-complaint-details.component";
+import {RfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component';
+import {RfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component';
+import {ViewRfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component';
+import {ViewRfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component';
 
 @NgModule({
     imports: [
@@ -441,7 +445,6 @@ import { ComTasksComponent } from './apollowebs/standards-development/company-st
         ExceptionsApplicationComponent,
         WaiverApplicationComponent,
         GoodsDetailsComponent,
-        WaiverSubmittedDialogComponent,
         ManufacturerDetailsComponent,
         ChecklistsComponent,
         MinistryInspectionRequestComponent,
@@ -517,12 +520,6 @@ import { ComTasksComponent } from './apollowebs/standards-development/company-st
         StandardsDevelopmentComponent,
         InformationcheckComponent,
         UsermanagementComponent,
-        NwaJustificationTasksComponent,
-        NwaKnwSecTasksComponent,
-        NwaDiSdtTasksComponent,
-        NwaHopTasksComponent,
-        SacSecTasksComponent,
-        HoSicTasksComponent,
         InternationalStandardProposalComponent,
         IntStdCommentsComponent,
         IntStdJustificationAppComponent,
@@ -611,6 +608,8 @@ import { ComTasksComponent } from './apollowebs/standards-development/company-st
         ComplaintNewComponent,
         ComplaintListComponent,
         ComplaintDetailsComponent,
+        ManufacturerComplaintDetailsComponent,
+        ManufacturerComplaintListComponent,
         PaymentsComponent,
         IntStdUploadStandardComponent,
         IntStdGazzetteComponent,
@@ -656,7 +655,6 @@ import { ComTasksComponent } from './apollowebs/standards-development/company-st
         StandardLevyDefaulterHistoryComponent,
         PreparePreliminaryDraftComponent,
         StandardLevyDefaulterHistoryComponent,
-        NwaPreliminaryDraftComponent,
         ComStdPlTaskComponent,
         ComStdDraftViewComponent,
         ComStdListComponent,
@@ -755,7 +753,21 @@ import { ComTasksComponent } from './apollowebs/standards-development/company-st
         CommentOnPublicReviewDraftComponent,
         PrepareBallotingDraftComponent,
         VoteOnBallotDraftComponent,
-        ComTasksComponent
+        ComTasksComponent,
+        ReviewBallotDraftComponent,
+        ComTasksComponent,
+        IntStdTasksComponent,
+        ComTasksComponent,
+        PvocNewComplaintComponent,
+        ViewWaiverCertificatesComponent,
+        ViewExemptionCertificatesComponent,
+        StdHopTasksComponent,
+        SpcSecTaskComponent,
+        NwaJustificationFormComponent,
+        RfcCocDocumentsComponent,
+        RfcCorDocumentsComponent,
+        ViewRfcCorDocumentsComponent,
+        ViewRfcCocDocumentsComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

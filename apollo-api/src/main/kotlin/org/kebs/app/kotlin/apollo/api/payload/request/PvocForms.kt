@@ -9,10 +9,7 @@ import org.kebs.app.kotlin.apollo.store.model.IdfItemsEntity
 import org.kebs.app.kotlin.apollo.store.model.IdfsEntity
 import org.kebs.app.kotlin.apollo.store.model.PaymentMethodsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.RfcCorEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.RfcEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.RfcItemEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -2042,9 +2039,13 @@ class RiskProfileForm {
     var categorizationDate: java.sql.Date? = null
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 class PvocComplaintForm {
     @NotEmpty(message = "Please enter your name")
-    var complaintName: String? = null
+    var lastName: String? = null
+
+    @NotEmpty(message = "Please enter your name")
+    var firstName: String? = null
 
     @NotEmpty(message = "Please enter your phone number")
     var phoneNo: String? = null
@@ -2052,13 +2053,16 @@ class PvocComplaintForm {
     @NotEmpty(message = "Please enter you city")
     var address: String? = null
 
-    var cocNo: String? = null
+    var complaintTitle: String? = null
 
-    var rfcNo: String? = null
+    var cocNumber: String? = null
+
+    var rfcNumber: String? = null
+
 
     @NotEmpty(message = "Please enter email address")
     @Email(message = "Please enter valid email address")
-    var email: String? = null
+    var emailAddress: String? = null
 
     @NotEmpty(message = "Please enter complaint")
     var complaintDescription: String? = null
@@ -2071,6 +2075,18 @@ class PvocComplaintForm {
 
     @NotNull(message = "Please select nature type of complaint")
     var subCategoryId: Long? = null
+
+    fun fillDetails(complaint: PvocComplaintEntity) {
+        complaint.address = this.address
+        complaint.firstName = this.firstName
+        complaint.lastName = this.lastName
+        complaint.generalDescription = this.complaintDescription
+        complaint.complaintTitle = this.complaintTitle
+        complaint.phoneNo = this.phoneNo
+        complaint.email = this.emailAddress
+        complaint.rfcNumber = this.rfcNumber
+        complaint.cocNumber = this.cocNumber
+    }
 
 }
 
@@ -2096,7 +2112,7 @@ class ComplaintStatusForm {
     val status: String? = null
 
     @NotNull(message = "Please select action")
-    val action: String? = null
+    val action: Long? = null
 
     @NotNull(message = "Rejection/Approval remarks are required")
     val remarks: String? = null

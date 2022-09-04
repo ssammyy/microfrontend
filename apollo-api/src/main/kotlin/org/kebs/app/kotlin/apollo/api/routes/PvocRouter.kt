@@ -40,6 +40,8 @@ class PvocRouter {
             GET("/exemption/check/eligible", handler::checkExemptionEligibility)
             GET("/exemption/history", handler::exemptionHistory)
             GET("/exemption/{exemptionId}", handler::viewExemption)
+            GET("/manufacturer/waiver/history", handler::manufacturerWaiverHistory)
+            GET("/manufacturer/exemption/history", handler::manufacturerExemptionHistory)
 
         }
     }
@@ -47,7 +49,7 @@ class PvocRouter {
     @Bean
     @CrossOrigin
     fun pvocExemptions(handler: PvocExemptionHandler) = router {
-        "api/v1/pvoc/exemption".nest {
+        "/api/v1/pvoc/exemption".nest {
             GET("/get/{applicationStatus}", handler::exemptionApplications)
             GET("/details/{exemptionId}", handler::exemptionApplicationDetails)
             POST("/status/update/{exemptionId}", handler::updateExemptionStatus)
@@ -57,7 +59,7 @@ class PvocRouter {
     @Bean
     @CrossOrigin
     fun pvocAgentMonitoring(handler: PvocMonitoringHandler) = router {
-        "api/v1/pvoc/monitoring".nest {
+        "/api/v1/pvoc/monitoring".nest {
             GET("/get/{applicationStatus}", handler::listMonitoringIssues)
             GET("/rfc/{rfcId}", handler::getRfcForCoiOrCoc)
             GET("/rfc/cocs", handler::listRfcsCoc)
@@ -74,7 +76,7 @@ class PvocRouter {
     @Bean
     @CrossOrigin
     fun pvocQueries(handler: PvocQueryHandler) = router {
-        "api/v1/pvoc/kebs/query".nest {
+        "/api/v1/pvoc/kebs/query".nest {
             POST("/request", handler::pvocPartnerQueryRequest)
             POST("/conclusion", handler::pvocPartnerQueryConclusion)
             POST("/response", handler::pvocPartnerQueryResponse)
@@ -83,10 +85,14 @@ class PvocRouter {
 
     @Bean
     fun pvocComplaint(handler: PvocComplaintHandler) = router {
-        "api/v1/pvoc/complaint".nest {
+        "/api/v1/pvoc/complaint".nest {
+            POST("/file", handler::fileComplaintRequest)
+            GET("/categories", handler::loadComplaintCategories)
+            GET("/recommendations", handler::loadComplaintRecommendations)
             GET("/get/{applicationStatus}", handler::complaintApplications)
             GET("/details/{complaintId}", handler::complaintApplicationDetails)
             POST("/status/update/{complaintId}", handler::approveCurrentComplaintTask)
+            GET("/manufacturer/history", handler::companyComplaintHistory)
         }
     }
 

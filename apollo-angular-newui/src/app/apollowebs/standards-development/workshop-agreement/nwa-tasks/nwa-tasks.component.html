@@ -118,6 +118,12 @@
                                             <i class="material-icons">visibility</i>
 
                                         </button></td>
+                                        <td *ngIf="task.name ==='Assign Project Leader'"><button mat-raised-button type="button" data-toggle="modal"
+                                                                                                     (click)="viewSTDFile( task.taskData.ID,'Standard'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                            <i class="material-icons">visibility</i>
+
+                                        </button></td>
+
 
                                         <td>{{task.taskData.requestedBy}}</td>
                                         <td style="width: fit-content">{{task.taskData.comments}}</td>
@@ -133,6 +139,7 @@
                                         <td *ngIf="task.name ==='Upload on  KNWA Standards Database'"><button (click)="onOpenModal(task,'uploadStandard')" type="submit" style="width: 160px; color: white;" class="btn btn-info btn-sm">Upload Standard</button></td>
                                         <td *ngIf="task.name ==='Upload Gazzette notice on the Website'"><a  (click)="onOpenModal(task,'notice')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="Edit">Upload Gazette Notice</a></td>
                                         <td *ngIf="task.name ==='Update Gazzzettement Date'"><a  (click)="onOpenModal(task,'gazetteDate')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 160px; " data-original-title="Edit">Update Gazette Date</a></td>
+                                        <td *ngIf="task.name ==='Assign Project Leader'"><a  (click)="onOpenModal(task,'gazetteDate')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 160px; " data-original-title="Edit">Update Gazette Date</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -270,20 +277,20 @@
                                                                                           class="form-control one-column-input" formControlName="comments" name="comments"
                                                                                           placeholder="Comments" type="text"></textarea>
                                                                             </div>
-                                                                            <div class=" col-12">
-                                                                                <label>Select User To Assign To</label>
-<!--                                                                                <select formControlName="assignedTo" class="form-control" name="assignedTo">-->
-<!--                                                                                    <option>Select User</option>-->
-<!--                                                                                    <option *ngFor="let user of spcSecretary" [value]="user.id">{{user.firstName}} {{user.lastName}}</option>-->
-<!--                                                                                </select>-->
-                                                                                <ng-select  formControlName="assignedTo"  class="form-control"  name="assignedTo" >
-                                                                                    <ng-option *ngFor="let user of spcSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
-                                                                                </ng-select>
-
-<!--                                                                                <ng-select [(ngModel)]="spcSecretary" formControlName="assignedTo"  class="form-control"  name="assignedTo" >-->
+<!--                                                                            <div class=" col-12">-->
+<!--                                                                                <label>Select User To Assign To</label>-->
+<!--&lt;!&ndash;                                                                                <select formControlName="assignedTo" class="form-control" name="assignedTo">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                                    <option>Select User</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                                    <option *ngFor="let user of spcSecretary" [value]="user.id">{{user.firstName}} {{user.lastName}}</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                                </select>&ndash;&gt;-->
+<!--                                                                                <ng-select  formControlName="assignedTo"  class="form-control"  name="assignedTo" >-->
 <!--                                                                                    <ng-option *ngFor="let user of spcSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>-->
 <!--                                                                                </ng-select>-->
-                                                                            </div>
+
+<!--&lt;!&ndash;                                                                                <ng-select [(ngModel)]="spcSecretary" formControlName="assignedTo"  class="form-control"  name="assignedTo" >&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                                    <ng-option *ngFor="let user of spcSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                                </ng-select>&ndash;&gt;-->
+<!--                                                                            </div>-->
 
                                                                             <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
                                                                             <input type="hidden" formControlName="accentTo" value="{{approve}}" name="accentTo"  >
@@ -661,17 +668,17 @@
                                                                                    class="form-control"  formControlName="dateOfApproval" name="dateOfApproval" type="date">
                                                                         </div>
                                                                     </div>
-                                                                    <div class="row col-12">
-                                                                        <div class="form-group col-12">
-                                                                            <label>Select User To Assign To</label>
-                                                                            <ng-select  formControlName="assignedTo"  class="form-control"  name="assignedTo" >
-                                                                                <ng-option *ngFor="let user of diDirector" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
-                                                                            </ng-select>
-<!--                                                                            <ng-select [(ngModel)]="diDirector" formControlName="assignedTo"  class="form-control"  name="assignedTo" >-->
+<!--                                                                    <div class="row col-12">-->
+<!--                                                                        <div class="form-group col-12">-->
+<!--                                                                            <label>Select User To Assign To</label>-->
+<!--                                                                            <ng-select  formControlName="assignedTo"  class="form-control"  name="assignedTo" >-->
 <!--                                                                                <ng-option *ngFor="let user of diDirector" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>-->
 <!--                                                                            </ng-select>-->
-                                                                        </div>
-                                                                    </div>
+<!--&lt;!&ndash;                                                                            <ng-select [(ngModel)]="diDirector" formControlName="assignedTo"  class="form-control"  name="assignedTo" >&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                                <ng-option *ngFor="let user of diDirector" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                            </ng-select>&ndash;&gt;-->
+<!--                                                                        </div>-->
+<!--                                                                    </div>-->
                                                                     <input type="hidden" value="{{actionRequest?.processId}}" formControlName="processId" name="processId" >
                                                                     <input type="hidden"  formControlName="taskId" name="taskId" value="{{actionRequest?.taskId}}" >
                                                                     <input type="hidden"  formControlName="jstNumber" name="jstNumber" value="{{actionRequest?.taskData?.ID}}" >
@@ -853,7 +860,6 @@
                                                                     <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                 </div>
                                                             </div>
-                                                            <input type="hidden" formControlName="assignedTo" value="{{actionRequest?.taskData?.originator}}" name="assignedTo" >
                                                             <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
                                                             <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
                                                             <input type="hidden" formControlName="accentTo" value="{{approve}}" name="accentTo"  >
@@ -874,7 +880,7 @@
                                                                         <textarea class="form-control" ngModel name="comments" rows="2" ></textarea>
                                                                     </div>
                                                                 </div>
-                                                                <input type="hidden" formControlName="assignedTo" value="{{actionRequest?.taskData?.diOriginator}}" name="assignedTo" >
+
                                                                 <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
                                                                 <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}"  name="taskId"  >
                                                                 <input type="hidden" formControlName="jstNumber" value="{{actionRequest?.taskData.jstNumber}}"  name="jstNumber"  >
@@ -1074,14 +1080,14 @@
                                                                         </div>
 
                                                                     </div>
-                                                                    <div class="row col-12">
-                                                                        <div class="form-group col-12">
-                                                                            <label>Select User To Assign To</label>
-                                                                            <ng-select  formControlName="assignedTo"  class="form-control"  name="assignedTo" >
-                                                                                <ng-option *ngFor="let user of knwSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
-                                                                            </ng-select>
-                                                                        </div>
-                                                                    </div>
+<!--                                                                    <div class="row col-12">-->
+<!--                                                                        <div class="form-group col-12">-->
+<!--                                                                            <label>Select User To Assign To</label>-->
+<!--                                                                            <ng-select  formControlName="assignedTo"  class="form-control"  name="assignedTo" >-->
+<!--                                                                                <ng-option *ngFor="let user of knwSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>-->
+<!--                                                                            </ng-select>-->
+<!--                                                                        </div>-->
+<!--                                                                    </div>-->
                                                                     <input type="hidden" value="{{actionRequest?.processId}}" formControlName="processId" name="processId" >
 
                                                                     <div class="row col-12">
@@ -1219,14 +1225,14 @@
                                                                             <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="row col-12">
-                                                                        <div class="form-group col-12">
-                                                                            <label>Select User To Assign To</label>
-                                                                            <ng-select  formControlName="assignedTo"    class="form-control"  name="assignedTo" >
-                                                                                <ng-option *ngFor="let user of headOfPublishing" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
-                                                                            </ng-select>
-                                                                        </div>
-                                                                    </div>
+<!--                                                                    <div class="row col-12">-->
+<!--                                                                        <div class="form-group col-12">-->
+<!--                                                                            <label>Select User To Assign To</label>-->
+<!--                                                                            <ng-select  formControlName="assignedTo"    class="form-control"  name="assignedTo" >-->
+<!--                                                                                <ng-option *ngFor="let user of headOfPublishing" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>-->
+<!--                                                                            </ng-select>-->
+<!--                                                                        </div>-->
+<!--                                                                    </div>-->
                                                                     <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
                                                                     <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
                                                                     <input type="hidden" formControlName="accentTo" value="{{approve}}" name="accentTo"  >
@@ -1249,7 +1255,7 @@
                                                                     </div>
                                                                     <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
                                                                     <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
-                                                                    <input type="hidden" formControlName="assignedTo" value="{{actionRequest?.taskData?.originator}}" name="assignedTo" >
+<!--                                                                    <input type="hidden" formControlName="assignedTo" value="{{actionRequest?.taskData?.originator}}" name="assignedTo" >-->
                                                                     <input type="hidden" formControlName="accentTo" value="{{reject}}" name="accentTo"  >
                                                                     <input type="hidden" formControlName="jstNumber" value="{{actionRequest?.taskData.diJNumber}}"  name="jstNumber"  >
                                                                 </div>
@@ -1404,14 +1410,14 @@
                                                                         </div>
                                                                         <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
                                                                     </div>
-                                                                    <div class="row col-12">
-                                                                        <div class="form-group col-12">
-                                                                            <label>Select User To Assign To</label>
-                                                                            <ng-select  formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
-                                                                                <ng-option *ngFor="let user of sacSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
-                                                                            </ng-select>
-                                                                        </div>
-                                                                    </div>
+<!--                                                                    <div class="row col-12">-->
+<!--                                                                        <div class="form-group col-12">-->
+<!--                                                                            <label>Select User To Assign To</label>-->
+<!--                                                                            <ng-select  formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >-->
+<!--                                                                                <ng-option *ngFor="let user of sacSecretary" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>-->
+<!--                                                                            </ng-select>-->
+<!--                                                                        </div>-->
+<!--                                                                    </div>-->
                                                                     <input type="hidden" value="{{actionRequest?.processId}}" formControlName="processId" name="processId" >
                                                                     <div class="row col-12">
                                                                         <div class="form-group col-12">
@@ -1539,14 +1545,14 @@
                                                                             <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="row col-12">
-                                                                        <div class="form-group col-12">
-                                                                            <label>Select User To Assign To</label>
-                                                                            <ng-select  class="form-control"  name="assignedTo" >
-                                                                                <ng-option *ngFor="let user of headOfPublishing" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
-                                                                            </ng-select>
-                                                                        </div>
-                                                                    </div>
+<!--                                                                    <div class="row col-12">-->
+<!--                                                                        <div class="form-group col-12">-->
+<!--                                                                            <label>Select User To Assign To</label>-->
+<!--                                                                            <ng-select  class="form-control"  name="assignedTo" >-->
+<!--                                                                                <ng-option *ngFor="let user of headOfPublishing" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>-->
+<!--                                                                            </ng-select>-->
+<!--                                                                        </div>-->
+<!--                                                                    </div>-->
                                                                     <input type="hidden" formControlName="processId"  value="{{actionRequest?.processId}}" name="processId" >
                                                                 </div>
                                                                 <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
@@ -1720,15 +1726,15 @@
                                                                         </div>
                                                                         <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
                                                                     </div>
-                                                                    <div class="row col-12">
-                                                                        <div class="form-group col-12">
-                                                                            <label>Select User To Assign To</label>
-                                                                            <ng-select  formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >
-                                                                                <ng-option *ngFor="let user of headOfSic" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
-                                                                            </ng-select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <input type="hidden" value="{{actionRequest?.processId}}" formControlName="assignedTo" name="processId" >
+<!--                                                                    <div class="row col-12">-->
+<!--                                                                        <div class="form-group col-12">-->
+<!--                                                                            <label>Select User To Assign To</label>-->
+<!--                                                                            <ng-select  formControlName="assignedTo"  class="form-control" ngModel name="assignedTo" >-->
+<!--                                                                                <ng-option *ngFor="let user of headOfSic" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>-->
+<!--                                                                            </ng-select>-->
+<!--                                                                        </div>-->
+<!--                                                                    </div>-->
+                                                                    <input type="hidden" value="{{actionRequest?.processId}}" formControlName="processId" name="processId" >
                                                                     <div class="row col-12">
                                                                         <div class="form-group col-12">
                                                                             <label><b>Upload Standard  </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>

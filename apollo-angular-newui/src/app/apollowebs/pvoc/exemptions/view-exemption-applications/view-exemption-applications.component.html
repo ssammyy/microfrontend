@@ -26,6 +26,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Auction Approval Status">
+                            <button type="button" (click)="toggleStatus('assigned')"
+                                    [className]="applicationStatus == 'assigned' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                MY TASKS
+                            </button>
+                            <button type="button" (click)="toggleStatus('new')"
+                                    [className]="applicationStatus == 'new' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                NEW APPLICATIONS
+                            </button>
+                            <button type="button" (click)="toggleStatus('REVIEW_REJECTED')"
+                                    [className]="applicationStatus == 'REVIEW_REJECTED' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                REVIEW REJECTED
+                            </button>
+                            <button *ngIf="applicationStatus" type="button" (click)="toggleStatus('REVIEW_APPROVED')"
+                                    [className]="applicationStatus == 'REVIEW_APPROVED' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                REVIEW APPROVED
+                            </button>
+                        </div>
                         <div class="material-datatables">
                             <div class="table-responsive">
                                 <mat-table class="table-striped table-responsive table-condensed"

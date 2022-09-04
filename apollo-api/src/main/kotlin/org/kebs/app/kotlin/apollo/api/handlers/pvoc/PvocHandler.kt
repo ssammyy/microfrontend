@@ -3,11 +3,11 @@ package org.kebs.app.kotlin.apollo.api.handlers.pvoc
 import mu.KotlinLogging
 import okhttp3.internal.toNonNegativeInt
 import org.codehaus.jackson.map.ObjectMapper
+import org.flowable.common.engine.api.FlowableObjectNotFoundException
 import org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc.ExceptionPayload
 import org.kebs.app.kotlin.apollo.api.handlers.forms.WaiverApplication
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
-import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.PvocService
 import org.springframework.http.HttpStatus
@@ -46,6 +46,19 @@ class PvocHandler(
         return ServerResponse.ok().body(response)
     }
 
+    fun manufacturerExemptionHistory(req: ServerRequest): ServerResponse {
+        var currentPage: Int = 0
+        var pageSize: Int = 20
+        req.param("page").ifPresent { p -> currentPage = p.toNonNegativeInt(0) }
+        req.param("size").ifPresent { p -> pageSize = p.toNonNegativeInt(20) }
+        if (pageSize > 100) {
+            pageSize = 100
+        }
+        val status = req.param("status").orElse(null)
+        val response = this.pvocService.manufacturerExemptionApplicationHistory(status, currentPage, pageSize);
+        return ServerResponse.ok().body(response)
+    }
+
     fun exemptionApplication(req: ServerRequest): ServerResponse {
         var response: ApiResponseModel
         try {
@@ -74,7 +87,7 @@ class PvocHandler(
             response.message = "Invalid request data: " + ex.reason
             response.responseCode = ResponseCodes.FAILED_CODE
         } catch (ex: Exception) {
-            KotlinLogging.logger {}.error(ex.message)
+            KotlinLogging.logger {}.error("Exemption request failed:", ex)
             response = ApiResponseModel()
             response.message = "Failed to process request"
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -135,16 +148,34 @@ class PvocHandler(
                 response.errors = errors
                 response.message = "Request data is invalid"
             }
+        } catch (ex: FlowableObjectNotFoundException) {
+            response = ApiResponseModel()
+            response.message = "Waiver process defination not found"
+            response.errors = ex.localizedMessage
+            response.responseCode = ResponseCodes.FAILED_CODE
         } catch (ex: ResponseStatusException) {
             response = ApiResponseModel()
             response.message = "Invalid request data: " + ex.reason
             response.responseCode = ResponseCodes.FAILED_CODE
         } catch (ex: Exception) {
-            KotlinLogging.logger {}.error(ex.message)
+            KotlinLogging.logger {}.error("Failed to process request", ex)
             response = ApiResponseModel()
             response.message = "Failed to process request"
             response.responseCode = ResponseCodes.FAILED_CODE
         }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun manufacturerWaiverHistory(req: ServerRequest): ServerResponse {
+        var currentPage: Int = 0
+        var pageSize: Int = 20
+        req.param("page").ifPresent { p -> currentPage = p.toNonNegativeInt(0) }
+        req.param("size").ifPresent { p -> pageSize = p.toNonNegativeInt(20) }
+        if (pageSize > 100) {
+            pageSize = 100
+        }
+        val status = req.param("status").orElse("new")
+        val response = this.pvocService.manufacturerWaiverApplicationHistory(status, currentPage, pageSize)
         return ServerResponse.ok().body(response)
     }
 

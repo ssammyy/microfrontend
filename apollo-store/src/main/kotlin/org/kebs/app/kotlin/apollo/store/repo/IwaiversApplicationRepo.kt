@@ -17,6 +17,8 @@ interface IwaiversApplicationRepo : HazelcastRepository<PvocWaiversApplicationEn
     fun findAllByCreatedBy(userName: String?, page: Pageable): Page<PvocWaiversApplicationEntity>?
     fun findAllBySerialNoContains(keyword: String?, page: Pageable): Page<PvocWaiversApplicationEntity>?
     fun findFirstByCreatedByAndId(username: String?, id: Long): PvocWaiversApplicationEntity?
+    fun findByStatusInAndCompanyId(listOf: List<Int>, company: Long, pageRequest: Pageable): Page<PvocWaiversApplicationEntity>
+    fun countBySerialNoStartsWith(yearIssued: String): Long
 }
 
 interface IPvocMasterListRepo : HazelcastRepository<PvocMasterListEntity, Long>{
@@ -45,8 +47,9 @@ interface IPvocComplaintRepo : HazelcastRepository<PvocComplaintEntity, Long> {
     fun findAllByStatusOrderByCreatedOnDesc(status: Int, pageable: Pageable) : Page<PvocComplaintEntity>?
     fun countAllByRefPrefix(prefix: String): Long
     fun findAllByReviewStatus(status: String, pageable: Pageable) : Page<PvocComplaintEntity>
-    fun findAllByRefNoContains(refNo: String, pageable: Pageable) : Page<PvocComplaintEntity>
-    fun findAllByReviewStatusAndRefNoContains(status: String,refNo: String, pageable: Pageable) : Page<PvocComplaintEntity>
+    fun findAllByRefNoContains(refNo: String, pageable: Pageable): Page<PvocComplaintEntity>
+    fun findAllByStatusAndCompanyId(status: Int, company: Long, pageable: Pageable): Page<PvocComplaintEntity>
+    fun findAllByReviewStatusAndRefNoContains(status: String, refNo: String, pageable: Pageable): Page<PvocComplaintEntity>
     fun findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(status: Int, fromDate: Date, toDate :Date, pageable: Pageable) : Page<PvocComplaintEntity>?
 }
 

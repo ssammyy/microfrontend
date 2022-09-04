@@ -369,6 +369,7 @@ export interface NWAStandard {
     special: string;
     taskId: string;
     ksNumber: string;
+    processId: string;
 }
 
 export interface HoSicTasks {
@@ -442,21 +443,101 @@ export interface finalSubmit {
     taskId: string;
 }
 // **********************************************************International Standards Adoption**********************************************************
+export interface ProposalComment{
+    adoption_proposal_comment: string;
+    commentTitle: string;
+    commentDocumentType: string;
+    comNameOfOrganization: string;
+    comClause: string;
+    comParagraph: string;
+    proposedChange: string;
+    taskId: string;
+    proposalID: number;
+    typeOfComment: string;
+}
 
 export interface ISAdoptionProposal {
     taskId: string;
-    proposal_doc_name: string;
+    id: number;
+    docName: string;
     title: string;
+    tcSecName: string;
+    circulationDate: string;
+    closingDate: string;
+    scope: string;
+    clause: string;
+    adoptionAcceptableAsPresented: string;
+    reasonsForNotAcceptance: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    dateOfApplication: string;
 }
 export interface ProposalComments {
     taskId: string;
     name: string;
+    processId: string;
     taskData: PropComments;
 }
 export interface PropComments {
     proposal_doc_name: string;
     ID: number;
     comments: string;
+    title: string;
+    tcSecName: string;
+    circulationDate: string;
+    closingDate: string;
+    scope: string;
+    adoptionAcceptableAsPresented: string;
+    reasonsForNotAcceptance: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    dateOfApplication: string;
+    uploadedBy: string;
+    preparedDate: string;
+    proposalNumber: string;
+    meetingDate :string;
+    slNumber :string;
+    edition :string;
+    requestedBy :string;
+    issuesAddressed :string;
+    tcAcceptanceDate :string;
+    departmentName :string;
+    positiveVotes :number;
+    negativeVotes :number;
+    symbolsAbbreviatedTerms: string;
+    normativeReference: string;
+    clause: string;
+    special: string;
+    draftId: number;
+    iSNumber:string;
+    description: string;
+    proposalID: number;
+
+}
+
+export interface Proposal{
+    taskId: string;
+    name: string;
+    proposal_doc_name: string;
+    ID: number;
+    comments: string;
+    title: string;
+    tcSecName: string;
+    circulationDate: string;
+    closingDate: string;
+    scope: string;
+    adoptionAcceptableAsPresented: string;
+    reasonsForNotAcceptance: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    dateOfApplication: string;
+
 
 }
 export interface ISAdoptionComments {
@@ -478,11 +559,26 @@ export interface IsTcSecTaskData {
     proposal_doc_name: string;
     ID: number;
 }
+export interface ISDraftUpload{
+    title: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    scope: string;
+    special: string;
+    processId: string;
+    taskId: string;
+    accentTo: boolean;
+    approvalID: bigint;
+    draftId: number;
+}
 export interface ISDecision {
     taskId: string;
     accentTo: boolean;
     approvalID: bigint;
     comments: string;
+    processId: string;
+    proposalId: number;
 }
 export interface ISAdoptionJustification {
     id: number;
@@ -499,6 +595,15 @@ export interface ISAdoptionJustification {
     taskId: string;
     status: string;
     remarks: string;
+    edition: string;
+    scope: string;
+    purposeAndApplication: string;
+    intendedUsers: string;
+    circulationDate: string;
+    closingDate: string;
+    positiveVotes: number;
+    negativeVotes: number;
+    processId: string;
 
 }
 export interface ListJustification {
@@ -531,6 +636,7 @@ export interface JSListTaskData {
 }
 export interface ISJustificationDecision {
     taskId: string;
+    processId: string;
     accentTo: boolean;
     approvalID: bigint;
     comments: string;
@@ -1088,6 +1194,32 @@ export interface CompanyStdRemarks{
     status: string;
     role: string;
     dateOfRemark: string;
+}
+export interface InternationalStandardsComments{
+    id: number;
+    proposalId: number;
+    remarks: string;
+    remarkBy: string;
+    status: string;
+    role: string;
+    description: string;
+    dateOfRemark: Timestamp<any>;
+}
+
+export interface StakeholderProposalComments{
+    id: number;
+    user_id: number;
+    adoption_proposal_comment: string;
+    comment_time: string;
+    taskId: string;
+    proposalID: number;
+    commentTitle: string;
+    commentDocumentType: string;
+    comNameOfOrganization: string;
+    comClause: string;
+    comParagraph: string;
+    typeOfComment: string;
+    proposedChange: string;
 }
 
 

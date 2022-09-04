@@ -1,0 +1,62 @@
+<div class="pl-2">
+    <p>Please fill the details about your company or business bellow</p>
+    <div class="row no_margin" [formGroup]="companyDetailsForm">
+        <div class="col-md-6 col-sm-12">
+            <label for="business-name" class="waiver-form-label">BUSINESS/COMPANY
+                NAME</label>
+            <input formControlName="companyName" id="business-name" name="business-name" type="text"
+                   class="waiver-form-input">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="kra-pin" class="waiver-form-label">KRA PIN</label>
+            <input formControlName="companyPinNo" id="kra-pin" name="kra-pin" type="text" class="waiver-form-input">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="company-email" class="waiver-form-label">COMPANY EMAIL</label>
+
+            <input formControlName="email" id="company-email" name="company-email" type="text"
+                   class="waiver-form-input">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="postal-address" class="waiver-form-label">POSTAL ADDRESS</label>
+
+            <input formControlName="postalAddress" id="postal-address" name="postal-address" type="text"
+                   class="waiver-form-input">
+
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="mobile-number" class="waiver-form-label">TELEPHONE</label>
+            <input formControlName="telephoneNo" id="mobile-number" name="mobile-number" type="text"
+                   class="waiver-form-input">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="office-location" class="waiver-form-label">MAIN OFFICE
+                LOCATION</label>
+            <input id="office-location" name="office-location" type="text"
+                   class="waiver-form-input">
+
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="contact-person-name" class="waiver-form-label">CONTACT PERSON
+                NAME</label>
+            <input formControlName="contactPersonName" id="contact-person-name" name="contact-person-name"
+                   type="text"
+                   class="waiver-form-input">
+
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="contact-person-telephone" class="waiver-form-label">CONTACT PERSON
+                TELEPHONE</label>
+            <input formControlName="contactPersonEmail" id="contact-person-telephone"
+                   name="contact-person-telephone" type="text"
+                   class="waiver-form-input">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="contact-person-email" class="waiver-form-label">CONTACT PERSON
+                EMAIL</label>
+            <input formControlName="contactPersonPhone" id="contact-person-email" name="contact-person-email"
+                   type="text"
+                   class="waiver-form-input">
+        </div>
+    </div>
+</div>

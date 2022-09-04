@@ -305,8 +305,8 @@ class GeneralController(
     }
 
     @GetMapping("/waiver/attachment/{uploadId}")
-    fun downloadWaiverAttachment(@PathVariable("uploadId") uploadId: Long, httResponse: HttpServletResponse) {
-        pvocService.waiverAttachment(uploadId)?.let { diUpload ->
+    fun downloadWaiverAttachment(@PathVariable("uploadId") uploadId: String, httResponse: HttpServletResponse) {
+        pvocService.findPvoceDocument(uploadId)?.let { diUpload ->
             // Response with file
             diUpload.documentType?.let { doc ->
                 downloadBytes(doc, "ATTACHMENT-${diUpload.id}-${diUpload.name?.toUpperCase()}", httResponse)

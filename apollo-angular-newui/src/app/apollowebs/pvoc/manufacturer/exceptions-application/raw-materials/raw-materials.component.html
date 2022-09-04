@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Raw Material</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="rawMaterial">
+        <div class="col-md-6 col-sm-12">
+            <label for="text" class="waiver-form-label">HS Code</label>
+            <input formControlName="hsCode" id="text" name="text" type="text" class="waiver-form-input">
+
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="raw-material-description" class="waiver-form-label">RAW MATERIAL DESCRIPTION</label>
+            <input formControlName="rawMaterialDescription" id="raw-material-description"
+                   name="raw-material-description" type="text"
+                   class="waiver-form-input">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="end-product" class="waiver-form-label">END PRODUCT (I.E FINISHED PRODUCT)</label>
+            <input formControlName="endProduct" id="end-product" name="end-product" type="text"
+                   class="waiver-form-input">
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <label for="country-of-origin" class="waiver-form-label">COUNTRY Of ORIGIN</label>
+            <input formControlName="countryOfOrigin" id="country-of-origin" name="country-of-origin" type="text"
+                   class="waiver-form-input">
+
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="btn btn-warning" mat-dialog-close>Close</button>
+    <button [disabled]="!rawMaterial.valid" class="btn btn-primary"  (click)="addRawMaterial()">Save</button>
+</mat-dialog-actions>

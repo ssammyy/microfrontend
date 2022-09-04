@@ -40,23 +40,100 @@ placeholder="name" type="text">
 </div>
     </div>
     <div class="row col-12">
-    <div class="form-group col-12">
+    <div class="form-group col-6">
         <label><b>Uploaded By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
         <input
                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                class="form-control one-column-input" formControlName="uploadedBy" ngModel="{{fullname}}" name="uploadedBy"
+                class="form-control one-column-input" formControlName="tcSecName" ngModel="{{fullname}}" name="tcSecName"
                 placeholder="Name" type="text" disabled>
     </div>
-    </div>
-    <div class="row col-12">
-        <div class=" col-12">
-            <label><b>Upload Proposal</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-    <form #demoForm="ngForm">
-        <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2" accept=".pdf" ></file-upload>
-        <input class="form-control one-column-input" ngModel="IS Proposal"  name="DocDescription" type="hidden">
-    </form>
+        <div class="form-group col-6">
+            <label><b>Date of Circulation</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input
+                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                    class="form-control one-column-input" formControlName="circulationDate" name="circulationDate"
+                    placeholder="circulationDate" type="date" >
+        </div>
+        <div class="form-group col-6">
+            <label><b>Closing Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input
+                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                    class="form-control one-column-input" formControlName="closingDate" name="closingDate"
+                    placeholder="closingDate" type="date" >
+        </div>
+        <div class="form-group col-6">
+            <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input
+                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                    class="form-control one-column-input" formControlName="title" name="title"
+                    placeholder="International Standard Title" type="text" >
+        </div>
+        <div class="form-group col-12">
+            <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                      class="form-control one-column-input" formControlName="scope" name="scope"
+                      placeholder="International Standard Scope" type="text"></textarea>
+
+        </div>
+        <div class="form-group col-12">
+            <label><b>Adoption Acceptable as Presented</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                      class="form-control one-column-input" formControlName="adoptionAcceptableAsPresented" name="adoptionAcceptableAsPresented"
+                      placeholder="Adoption Acceptable as Presented" type="text"></textarea>
+
+        </div>
+        <div class="form-group col-12">
+            <label><b>Reasons for Not Acceptance</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                      class="form-control one-column-input" formControlName="reasonsForNotAcceptance" name="reasonsForNotAcceptance"
+                      placeholder="Reasons for Not Acceptance" type="text"></textarea>
+
+        </div>
+        <div class="form-group col-12">
+            <label><b>Recommendations</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                      class="form-control one-column-input" formControlName="recommendations" name="recommendations"
+                      placeholder="Recommendations" type="text"></textarea>
+
+        </div>
+        <div class="form-group col-6">
+            <label><b>Name of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input
+                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                    class="form-control one-column-input" formControlName="nameOfRespondent" name="nameOfRespondent"
+                    placeholder="" type="text" >
+        </div>
+        <div class="form-group col-6">
+            <label><b>Position of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input
+                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                    class="form-control one-column-input" formControlName="positionOfRespondent" name="positionOfRespondent"
+                    placeholder="" type="text" >
+        </div>
+        <div class="form-group col-6">
+            <label><b>Name of Organization</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input
+                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                    class="form-control one-column-input" formControlName="nameOfOrganization" name="nameOfOrganization"
+                    placeholder="" type="text" >
+        </div>
+        <div class="form-group col-6">
+            <label><b>Date of Application</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <input
+                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                    class="form-control one-column-input" formControlName="dateOfApplication" name="dateOfApplication"
+                    placeholder="" type="date" >
         </div>
     </div>
+<!--    <div class="row col-12">-->
+<!--        <div class=" col-12">-->
+<!--            <label><b>Upload Proposal</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+<!--    <form #demoForm="ngForm">-->
+<!--        <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2" accept=".pdf" ></file-upload>-->
+<!--        <input class="form-control one-column-input" ngModel="IS Proposal"  name="DocDescription" type="hidden">-->
+<!--    </form>-->
+<!--        </div>-->
+<!--    </div>-->
     </div>
     <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
         <button *ngIf="isProposalFormGroup.valid" [disabled]="!isProposalFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
