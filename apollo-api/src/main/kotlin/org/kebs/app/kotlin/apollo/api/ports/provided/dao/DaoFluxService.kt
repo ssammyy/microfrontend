@@ -381,7 +381,6 @@ class DaoFluxService(
         with(log) {
             transactionDate = java.sql.Date(Date().time)
             transactionStartDate = Timestamp.from(Instant.now())
-
             retried = 0
             transactionStatus = initStatus
             createdBy = ref
