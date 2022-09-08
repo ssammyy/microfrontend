@@ -16,23 +16,30 @@ import org.flowable.engine.TaskService
 import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.web.config.EmailConfig
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
+import org.kebs.app.kotlin.apollo.common.dto.std.StandardsDto
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
+import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
+import org.kebs.app.kotlin.apollo.store.repo.IUserRolesRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.io.StringReader
 import java.sql.Timestamp
 import java.util.*
-import kotlin.collections.HashMap
 
 
 @Service
@@ -56,7 +63,13 @@ class StandardRequestService(
     private val voteOnNWIRepository: VoteOnNWIRepository,
     private val decisionJustificationRepository: DecisionJustificationRepository,
     private val commonDaoServices: CommonDaoServices,
-
+    private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
+    private val notifications: Notifications,
+    private val draftDocumentService: DraftDocumentService,
+    private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
+    private val userRolesAssignRepo: IUserRoleAssignmentsRepository,
+    private val userRolesRepo: IUserRolesRepository,
+    private val usersRepo: IUserRepository,
 
     ) {
 
@@ -73,38 +86,40 @@ class StandardRequestService(
         .deploy()
 
 
-    fun requestForStandard(standardRequest: StandardRequest): ProcessInstanceResponse {
+    fun requestForStandard(standardRequest: StandardRequest): ProcessInstanceResponseValue {
 
         val variables: MutableMap<String, Any> = HashMap()
 
 
         standardRequest.name?.let { variables.put("name", it) }
+        standardRequest.createdBy?.let { variables.put("name", it) }
+
         standardRequest.email?.let { variables.put("email", it) }
         standardRequest.phone?.let { variables.put("phone", it) }
-        standardRequest.tcId?.let { variables.put("tcId", it) }
+//        standardRequest.tcId?.let { variables.put("tcId", it) }
         //standardRequest.tcName?.let { variables.put("tcName", technicalCommitteeRepository.findNameById(standardRequest.tcId?.toLong())) }
         standardRequest.departmentId?.let { variables.put("departmentId", it) }
-        standardRequest.productSubCategoryId?.let { variables.put("productSubCategoryId", it) }
-        standardRequest.productId?.let { variables.put("productId", it) }
+//        standardRequest.productSubCategoryId?.let { variables.put("productSubCategoryId", it) }
+//        standardRequest.productId?.let { variables.put("productId", it) }
 
         standardRequest.submissionDate = Timestamp(System.currentTimeMillis())
-
-
-
-        variables["tcName"] = technicalCommitteeRepository.findNameById(standardRequest.tcId?.toLong())
-        standardRequest.tcName = technicalCommitteeRepository.findNameById(standardRequest.tcId?.toLong())
+        standardRequest.createdOn = Timestamp(System.currentTimeMillis())
 
         variables["departmentName"] = departmentRepository.findNameById(standardRequest.departmentId?.toLong())
         standardRequest.departmentName = departmentRepository.findNameById(standardRequest.departmentId?.toLong())
 
-        variables["productName"] = productRepository.findNameById(standardRequest.productId?.toLong())
-        standardRequest.productName = productRepository.findNameById(standardRequest.productId?.toLong())
+        standardRequest.organisationName?.let { variables.put("organisationName", it) }
+        standardRequest.subject?.let { variables.put("subject", it) }
+        standardRequest.description?.let { variables.put("description", it) }
+        standardRequest.economicEfficiency?.let { variables.put("economicEfficiency", it) }
+        standardRequest.healthSafety?.let { variables.put("healthSafety", it) }
+        standardRequest.environment?.let { variables.put("environment", it) }
+        standardRequest.integration?.let { variables.put("integration", it) }
+        standardRequest.exportMarkets?.let { variables.put("exportMarkets", it) }
+        standardRequest.levelOfStandard?.let { variables.put("levelOfStandard", it) }
 
-        variables["productSubCategoryName"] =
-            productSubCategoryRepository.findNameById(standardRequest.productSubCategoryId?.toLong())
-        standardRequest.productSubCategoryName =
-            productSubCategoryRepository.findNameById(standardRequest.productSubCategoryId?.toLong())
-
+        standardRequest.status = "Review By HOD"
+        variables["status"] = standardRequest.status!!
 
         //println(standardRequest.tcId?.toLong())
 
@@ -128,25 +143,52 @@ class StandardRequestService(
 
         standardRequestRepository.save(standardRequest)
 
-        sendFeedback(
+//        sendFeedback(
+//            standardRequest.email!!,
+//            "We have received your request for standard. This is your request number: " + standardRequest.requestNumber!!,
+//            standardRequest.name!!,
+//            "Standard Request Submission"
+//        )
+
+        notifications.sendEmail(
             standardRequest.email!!,
-            "We have received your request for standard. This is your request number: " + standardRequest.requestNumber!!,
-            standardRequest.name!!,
-            "Standard Request Submission"
+            "Standard Request Submission",
+            "Hello " + standardRequest.name!! + ",\n We have received your request for standard. This is your request number: " + standardRequest.requestNumber!!
         )
+        standardRequest.id.let { variables.put("id", it) }
+
 
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
         //print(variables)
 
-        val processIntance = ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+//        val processIntance = ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+        //  val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstanceResponseValue(
+            standardRequest.id, processInstance.id, processInstance.isEnded,
+            standardRequest.requestNumber ?: throw NullValueNotAllowedException("ID is required")
+        )
+    }
 
-        //val getProcessInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(PROCESS_DEFINITION_KEY).singleResult()
+    fun updateDepartmentStandardRequest(standardRequest: StandardRequest) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val standardRequestToUpdate = standardRequestRepository.findById(standardRequest.id)
+            .orElseThrow { RuntimeException("No Standard Request found") }
+        standardRequestToUpdate.departmentId = standardRequest.departmentId
+        variable["departmentId"] = standardRequestToUpdate.departmentId!!
+        standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+        variable["modifiedOn"] = standardRequestToUpdate.modifiedOn!!
+        standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+        variable["modifiedBy"] = standardRequestToUpdate.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
-//        val gottenVariables = processIntance.body
 //
-//        println(gottenVariables)
+//        standardRequestToUpdate.departmentId?.let { variables.put("departmentId", it) }
+//        standardRequestToUpdate.taskId?.let { variables.put("taskId", it) }
+//        variables["departmentName"] = departmentRepository.findNameById(standardRequestToUpdate.departmentId?.toLong())
+//        standardRequestToUpdate.departmentName =
+//            departmentRepository.findNameById(standardRequestToUpdate.departmentId?.toLong())
+//        runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
 
-        return processIntance
+        standardRequestRepository.save(standardRequestToUpdate)
     }
 
     fun evaluateStandardRequest(tcId: String, departmentId: String): String {
@@ -173,7 +215,40 @@ class StandardRequestService(
         mailMessage.setText("$toName, $body")
 
         // Send mail
-        //  mailSender.send(mailMessage)
+        mailSender.send(mailMessage)
+    }
+
+
+    fun getAllStandardRequests(): List<StandardsDto> {
+        val standardRequest: List<StandardRequest> = standardRequestRepository.findByStatus("Review By HOD")!!
+        return standardRequest.map { p ->
+            StandardsDto(
+                p.id,
+                p.requestNumber,
+                p.rank,
+                p.name,
+                p.phone,
+                p.email,
+                p.submissionDate,
+                p.departmentId,
+                p.tcId,
+                p.organisationName,
+                p.subject,
+                p.description,
+                p.economicEfficiency,
+                p.healthSafety,
+                p.environment,
+                p.integration,
+                p.exportMarkets,
+                p.levelOfStandard,
+                p.status,
+                departmentRepository.findNameById(p.departmentId?.toLong()),
+
+
+                )
+        }
+
+
     }
 
 
@@ -194,15 +269,34 @@ class StandardRequestService(
     fun hofReview(hofFeedback: HOFFeedback): HOFFeedback {
         println("HOF has finished the review and given suggestion")
         val variable: MutableMap<String, Any> = HashMap()
-        hofFeedback.isTc?.let { variable.put("tc", it) }
-        hofFeedback.isTcSec?.let { variable.put("tcSec", it) }
-        hofFeedback.sdOutput?.let { variable.put("output", it) }
-        hofFeedback.sdRequestID?.let { variable.put("sdRequest", it) }
+        hofFeedback.isTc?.let { variable.put("isTc", it) }
+        hofFeedback.isTcSec?.let { variable.put("isTcSec", it) }
+        hofFeedback.sdOutput?.let { variable.put("sdOutput", it) }
+        hofFeedback.sdRequestID?.let { variable.put("id", it) }
         hofFeedback.taskId?.let { variable.put("taskId", it) }
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val standardRequestToUpdate = hofFeedback.sdRequestID?.let {
+            standardRequestRepository.findById(it.toLong())
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.status = "Assigned To TC Sec"
+            standardRequestToUpdate.process = hofFeedback.sdOutput
+            standardRequestToUpdate.tcSecAssigned = hofFeedback.isTc
+            standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+            variable["modifiedOn"] = standardRequestToUpdate.modifiedOn!!
+            standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+            variable["modifiedBy"] = standardRequestToUpdate.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
+
 
 
         hofFeedbackRepository.save(hofFeedback)
-        taskService.complete(hofFeedback.taskId)
+//        taskService.complete(hofFeedback.taskId)
 
         return hofFeedback
     }
@@ -255,7 +349,7 @@ class StandardRequestService(
         standardNWI.liaisonOrganisation = allOrganization
         standardNWI.liaisonOrganisation?.let { variable.put("liaisonOrganisation", it) }
 
-        standardNWI.status="Vote ON NWI"
+        standardNWI.status = "Vote ON NWI"
         standardNWI.status?.let { variable.put("statud", it) }
 
         standardNWIRepository.save(standardNWI)
@@ -423,6 +517,27 @@ class StandardRequestService(
         return productSubCategoryRepository.findByProductId(id)
     }
 
+    fun getAllTcSec(): MutableList<UsersEntity> {
+        val users: MutableList<UsersEntity> = ArrayList()
+
+        userRolesRepo.findByRoleNameAndStatus("SD_TC_SEC", 1)
+            ?.let { role ->
+                userRolesAssignRepo.findByRoleIdAndStatus(role.id, 1)
+                    ?.let { roleAssigns ->
+                        roleAssigns.forEach { roleAssign ->
+                            usersRepo.findByIdOrNull(roleAssign.userId)
+                                ?.let { user ->
+                                    users.add(user)
+                                }
+                        }
+                    }
+                    ?: throw Exception("Role [id=${role.id}] not found, may not be active or assigned yet")
+
+            }
+            ?: throw Exception("User role name does not exist")
+        return users
+    }
+
     fun checkProcessHistory(id: ID): List<HistoricActivityInstance> {
         val historyService = processEngine.historyService
         val activities = historyService
@@ -501,13 +616,17 @@ class StandardRequestService(
         department.name?.let { variable.put("name", it) }
         department.abbreviations?.let { variable.put("abbreviations", it) }
         department.codes?.let { variable.put("codes", it) }
-        department.createdBy?.let { variable.put((loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it) }
+        department.createdBy?.let {
+            variable.put(
+                (loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it
+            )
+        }
 
         department.createdOn = Timestamp(System.currentTimeMillis())
         variable["createdOn"] = department.createdOn!!
         department.status = 1
         variable["status"] = department.status!!
-        department.createdBy =loggedInUser.id.toString();
+        department.createdBy = loggedInUser.id.toString();
         variable["createdBy"] = department.createdBy!!
 
         departmentRepository.save(department)
@@ -527,7 +646,7 @@ class StandardRequestService(
         variable["createdOn"] = technicalCommittee.createdOn!!
         technicalCommittee.status = 1.toString()
         variable["status"] = technicalCommittee.status!!
-        technicalCommittee.createdBy =loggedInUser.id.toString();
+        technicalCommittee.createdBy = loggedInUser.id.toString();
         variable["createdBy"] = technicalCommittee.createdBy!!
 
         technicalCommitteeRepository.save(technicalCommittee)
@@ -547,7 +666,7 @@ class StandardRequestService(
         variable["createdOn"] = product.createdOn!!
         product.status = 1
         variable["status"] = product.status
-        product.createdBy =loggedInUser.id.toString();
+        product.createdBy = loggedInUser.id.toString();
         variable["createdBy"] = product.createdBy!!
 
         productRepository.save(product)
@@ -661,11 +780,12 @@ class StandardRequestService(
         technicalCommitteeRepository.save(technicalCommittee)
 
     }
+
     //delete technicalCommittee
-    fun deleteTechnicalCommitee(technicalCommitteeId: Long)
-    {
+    fun deleteTechnicalCommitee(technicalCommitteeId: Long) {
         findTechnicalCommitteeById(technicalCommitteeId)
     }
+
     fun findTechnicalCommitteeById(technicalCommitteeId: Long) {
 
         val exist: Boolean = productRepository.existsProductByTechnicalCommitteeId(technicalCommitteeId)
@@ -686,13 +806,11 @@ class StandardRequestService(
     }
 
 
-
-
     //update productCategory
     fun updateProductCategory(product: Product) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        product.id.let { variable.put("id",it) }
+        product.id.let { variable.put("id", it) }
         product.technicalCommitteeId.let { variable.put("technicalCommitteeId", it) }
         product.name?.let { variable.put("name", it) }
         product.description?.let { variable.put("description", it) }
@@ -701,14 +819,13 @@ class StandardRequestService(
         variable["createdOn"] = product.createdOn!!
         product.status = 1
         variable["status"] = product.status
-        product.createdBy =loggedInUser.id.toString();
+        product.createdBy = loggedInUser.id.toString();
         variable["createdBy"] = product.createdBy!!
 
         productRepository.save(product)
 
 
     }
-
 
 
     //update productSubCategory
@@ -730,6 +847,38 @@ class StandardRequestService(
 
 
     }
+
+    fun uploadSDFileNotLoggedIn(
+        uploads: DatKebsSdStandardsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        nomineeName: String,
+        DocDescription: String
+    ): DatKebsSdStandardsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = nomineeName
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return sdNwaUploadsEntityRepository.save(uploads)
+    }
+
+    fun getDocuments(standardId: Long): Collection<DatKebsSdStandardsEntity?>? {
+
+        return draftDocumentService.findUploadedDIFileBYId(standardId)
+    }
+
+
 }
 
 

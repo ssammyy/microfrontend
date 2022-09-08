@@ -1,15 +1,22 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.FilePurposeAnnexService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.ReferenceMaterialJustificationService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.RelevantDocumentsNWIService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.StandardRequestService
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.std.StandardRequestRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
@@ -21,8 +28,10 @@ class StandardRequestController(
     val standardRequestService: StandardRequestService,
     val purposeAnnexService: FilePurposeAnnexService,
     val relevantDocumentsNWIService: RelevantDocumentsNWIService,
-    val referenceMaterialJustificationService: ReferenceMaterialJustificationService
-) {
+    val referenceMaterialJustificationService: ReferenceMaterialJustificationService,
+    private val standardRequestRepository: StandardRequestRepository,
+
+    ) {
 
     //********************************************************** deployment endpoints **********************************************************
     @PostMapping("/anonymous/standard/deploy")
@@ -352,12 +361,21 @@ class StandardRequestController(
     @PostMapping("standard/createDepartment")
     @ResponseBody
     fun createDepartment(@RequestBody department: Department): ServerResponse {
-        return ServerResponse(HttpStatus.OK, "Upload Department", standardRequestService.createStandardsDepartment(department))
+        return ServerResponse(
+            HttpStatus.OK,
+            "Upload Department",
+            standardRequestService.createStandardsDepartment(department)
+        )
     }
+
     @PostMapping("standard/createTechnicalCommittee")
     @ResponseBody
     fun createTechnicalCommittee(@RequestBody technicalCommittee: TechnicalCommittee): ServerResponse {
-        return ServerResponse(HttpStatus.OK, "Upload Technical Committee", standardRequestService.createTechnicalCommittee(technicalCommittee))
+        return ServerResponse(
+            HttpStatus.OK,
+            "Upload Technical Committee",
+            standardRequestService.createTechnicalCommittee(technicalCommittee)
+        )
     }
 
     @PostMapping("standard/createProductCategory")
@@ -412,12 +430,84 @@ class StandardRequestController(
         )
     }
 
+    @PostMapping("standard/updateDepartmentStandardRequest")
+    @ResponseBody
+    fun updateDepartmentStandardRequest(@RequestBody standardRequest: StandardRequest): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Updated Department For Request",
+            standardRequestService.updateDepartmentStandardRequest(standardRequest)
+        )
+    }
+
+    @GetMapping("standard/getAllTcSec")
+    fun getAllTcSec(): List<UsersEntity> {
+        return standardRequestService.getAllTcSec()
+    }
+
+    @GetMapping("standard/getAllStds")
+    fun getAllStandards(): List<StandardsDto> {
+        return standardRequestService.getAllStandardRequests()
+    }
+
     @PostMapping("standard/deleteDepartment")
     @ResponseBody
     fun deleteDepartment(@RequestBody department: Department): ServerResponse {
-        return ServerResponse(HttpStatus.OK,
+        return ServerResponse(
+            HttpStatus.OK,
             "Deleted Department",
-            standardRequestService.deleteDepartment(department.id))
+            standardRequestService.deleteDepartment(department.id)
+        )
     }
+
+
+    @PostMapping("/anonymous/standard/file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFilesDraftStandard(
+        @RequestParam("requestId") requestId: Long,
+        @RequestParam("requesterName") requesterName: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        @RequestParam("type") type: String,
+
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        var docDescription: String;
+
+        val application = standardRequestRepository.findByIdOrNull(requestId)
+            ?: throw Exception("APPLICATION DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = DatKebsSdStandardsEntity()
+            with(upload) {
+                sdDocumentId = application.id
+                documentTypeDef = type
+
+            }
+            docDescription = "$requesterName AdditionalDetails"
+
+            standardRequestService.uploadSDFileNotLoggedIn(
+                upload,
+                u,
+                "UPLOADS",
+                requesterName,
+                docDescription
+
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+    @GetMapping("standard/getAdditionalDocuments")
+    fun getAdditionalDocuments(
+        @RequestParam("standardId") standardId: Long,
+    ): Collection<DatKebsSdStandardsEntity?>? {
+        return standardRequestService.getDocuments(standardId)
+    }
+
 
 }

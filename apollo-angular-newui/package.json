@@ -86,6 +86,7 @@
     "ng2-smart-table": "^1.7.2",
     "ngb-modal": "^2.0.3",
     "ngrx-store-localstorage": "^10.0.0",
+    "ngx-doc-viewer": "^2.0.4",
     "ngx-extended-pdf-viewer": "^10.0.0-alpha.1",
     "ngx-mat-select-search": "^3.3.3",
     "ngx-pagination": "^5.1.1",
