@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.api.security.service.CustomAuthenticationProvi
 import org.kebs.app.kotlin.apollo.common.dto.kra.request.*
 import org.kebs.app.kotlin.apollo.common.dto.kra.response.PinValidationResponse
 import org.kebs.app.kotlin.apollo.common.dto.kra.response.PinValidationResponseResult
+import org.kebs.app.kotlin.apollo.common.dto.kra.response.RequestFinalResults
 import org.kebs.app.kotlin.apollo.common.dto.kra.response.RequestResult
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -85,8 +86,9 @@ class StandardsLevyDaoService(
      * @return RequestResult
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun processSl2Payments(paymentRequest: Request): RequestResult {
-        val result = RequestResult()
+    fun processSl2Payments(paymentRequest: Request): RequestFinalResults {
+        val result = RequestFinalResults()
+        var requestResult = RequestResult()
         val log = daoService.createTransactionLog(0, daoService.generateTransactionReference())
         try {
             log.integrationRequest = daoService.mapper().writeValueAsString(paymentRequest)
@@ -105,7 +107,7 @@ class StandardsLevyDaoService(
                     )
                 ).isAuthenticated
 
-                validateCredentialsAndLogToDataStore(paymentRequest, log, result)
+                requestResult = validateCredentialsAndLogToDataStore(paymentRequest, log)
 
 
             } catch (e: DisabledException) {
@@ -120,31 +122,30 @@ class StandardsLevyDaoService(
 
         } catch (e: Exception) {
             try {
-
-
                 e.message
                     ?.split(",")
                     ?.forEach { part ->
                         when {
-                            part.startsWith("9") -> result.responseCode = part
-                            part.startsWith("NOK") -> result.status = part
+                            part.startsWith("9") -> requestResult.responseCode = part
+                            part.startsWith("NOK") -> requestResult.status = part
 
                         }
                     }
-                result.message = e.message
+                requestResult.message = e.message
             } catch (e: Exception) {
-                result.responseCode = "90001"
-                result.message = e.message
-                result.status = "NOK"
+                requestResult.responseCode = "90001"
+                requestResult.message = e.message
+                requestResult.status = "NOK"
                 KotlinLogging.logger { }.error(e.message, e)
                 KotlinLogging.logger { }.debug(e.message, e)
 
             }
 
             log.transactionStatus = 20
-            log.responseStatus = result.responseCode
+            log.responseStatus = requestResult.responseCode
             log.responseMessage = e.message
         }
+        result.requestResult = requestResult
         log.integrationResponse = daoService.mapper().writeValueAsString(result)
         logsRepo.save(log)
 
@@ -163,7 +164,7 @@ class StandardsLevyDaoService(
      *
      * @return RequestResult
      */
-    private fun validateCredentialsAndLogToDataStore(paymentRequest: Request, log: WorkflowTransactionsEntity, result: RequestResult) {
+    private fun validateCredentialsAndLogToDataStore(paymentRequest: Request, log: WorkflowTransactionsEntity): RequestResult {
         when (daoService.validateHash(paymentRequest)) {
             false -> throw InvalidInputException("90003,NOK, Hash code validation provided")
             true -> {
@@ -228,15 +229,20 @@ class StandardsLevyDaoService(
                     detail.version = 1
                     detailsRepository.save(detail)
                 }
-                result.responseCode = "90000"
-                result.message = "Successful Submission of Payment Details"
-                result.status = "OK"
+
+                val requestResult = RequestResult()
+                with(requestResult){
+                    responseCode = "90000"
+                    message = "Successful Submission of Payment Details"
+                    status = "OK"
+                }
 
                 log.transactionStatus = 30
 
-                log.responseStatus = result.responseCode
-                log.responseMessage = result.message
+                log.responseStatus = requestResult.responseCode
+                log.responseMessage = requestResult.message
 
+                return requestResult
 
             }
         }

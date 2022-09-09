@@ -101,8 +101,6 @@ import org.springframework.web.servlet.function.ServerRequest
 import java.io.*
 import java.math.BigDecimal
 import java.net.URLConnection
-import java.nio.file.Path
-import java.nio.file.Paths
 import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
@@ -1211,6 +1209,10 @@ class CommonDaoServices(
                     return userCompanyDetails
                 }
                 ?: throw ExpectedDataNotFound("Company Profile with ID= ${id}, does not Exist")
+    }
+
+    fun findCompanyProfileWithProfileID(id: Long): CompanyProfileEntity? {
+        return companyProfileRepo.findByIdOrNull(id)
     }
 
 

@@ -21,18 +21,42 @@ class PvocComplaintEntity : Serializable {
     @Basic
     var refPrefix: String? = null
 
+    @Column(name = "COMPANY_ID")
+    @Basic
+    var companyId: Long? = null
+
     @Column(name = "REF_NO")
     @Basic
     var refNo: String? = null
+
+
+    @Column(name = "COMPANY_REG_NUMBER")
+    @Basic
+    var companyRegNumber: String? = null
+
+    @Column(name = "COC_NUMBER")
+    @Basic
+    var cocNumber: String? = null
+
+    @Column(name = "RFC_NUMBER")
+    @Basic
+    var rfcNumber: String? = null
 
     @Column(name = "PROCESS_ID")
     @Basic
     var processId: String? = null
 
-
-    @Column(name = "COMPLAINT_NAME")
+    @Column(name = "DIRECTOR_ID_NUMBER")
     @Basic
-    var complaintName: String? = null
+    var directorIdNumber: String? = null
+
+    @Column(name = "FIRST_NAME")
+    @Basic
+    var firstName: String? = null
+
+    @Column(name = "LAST_NAME")
+    @Basic
+    var lastName: String? = null
 
     @Column(name = "PHONE_NO")
     @Basic
@@ -67,13 +91,9 @@ class PvocComplaintEntity : Serializable {
     @Basic
     var generalDescription: String? = null
 
-    @Column(name = "COC_NO")
+    @Column(name = "COMPLAINT_TITLE")
     @Basic
-    var cocNo: String? = null
-
-    @Column(name = "RFC_NO")
-    @Basic
-    var rfcNo: String? = null
+    var complaintTitle: String? = null
 
     @Column(name = "RECOMENDATION")
     @Basic
@@ -106,6 +126,11 @@ class PvocComplaintEntity : Serializable {
     @JoinColumn(name = "MPVOC", referencedColumnName = "ID")
     @ManyToOne
     var mpvoc: UsersEntity? = null
+
+    @JoinColumn(name = "RECOMMENDED_ACTION", referencedColumnName = "ID")
+    @ManyToOne
+    var recommendedAction: PvocComplaintRecommendationEntity? = null
+
 
     @JoinColumn(name = "PVOC_USER", referencedColumnName = "ID")
     @ManyToOne
@@ -193,7 +218,6 @@ class PvocComplaintEntity : Serializable {
         val that = other as PvocComplaintEntity
         return id == that.id &&
                 status == that.status &&
-                complaintName == that.complaintName &&
                 phoneNo == that.phoneNo &&
                 address == that.address &&
                 pvocAgent == that.pvocAgent &&
@@ -215,14 +239,12 @@ class PvocComplaintEntity : Serializable {
                 deletedOn == that.deletedOn &&
                 reviewStatus == that.reviewStatus &&
                 generalDescription == that.generalDescription &&
-                cocNo == that.cocNo &&
                 recomendation == that.recomendation &&
-                rfcNo == that.rfcNo &&
                 email == that.email
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, status, complaintName, phoneNo, address, pvocAgent, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, reviewStatus, generalDescription, recomendation, cocNo, rfcNo, email)
+        return Objects.hash(id, status, phoneNo, address, pvocAgent, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, reviewStatus, generalDescription, recomendation, email)
     }
 
 }

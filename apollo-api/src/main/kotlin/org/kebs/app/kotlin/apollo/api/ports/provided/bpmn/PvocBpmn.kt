@@ -170,6 +170,7 @@ class PvocBpmn(
             KotlinLogging.logger { }.info("objectId : $objectId :  Completed")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
+            throw e
         }
         return null
     }
@@ -707,7 +708,7 @@ class PvocBpmn(
         try {
             variables.put("complaintId", application.id!!)
             variables.put("appliedBy", application.email!!)
-            val process = this.runtimeService.startProcessInstanceById("complaintApplicationProcess", variables)
+            val process = this.runtimeService.startProcessInstanceByKey("complaintApplicationProcess", variables)
             application.processId = process.processInstanceId
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)

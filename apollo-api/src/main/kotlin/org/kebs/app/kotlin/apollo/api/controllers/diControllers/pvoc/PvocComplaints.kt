@@ -151,7 +151,7 @@ class PvocComplaints(
                     complaint.status = 1
                     complaint.createdOn = Timestamp.from(Instant.now())
                     val newComp = iPvocComplaintRepo.save(complaint)
-                    val messageBody = " Hi ${complaint.complaintName} \n Thank for sending this complain. We will get back to you shortly"
+                    val messageBody = " Hi ${complaint.firstName} \n Thank for sending this complain. We will get back to you shortly"
                     complaint.email?.let { notifications.sendEmail(it, "Complaint  Submission", messageBody) }
                     val messageBody2 = "Please Click the link bellow to review the complaint \n" +
                             "\n " +

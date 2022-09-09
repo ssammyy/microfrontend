@@ -122,6 +122,7 @@ export class PVOCService {
         return this.sendFiles(data, files, url)
     }
 
+
     manufacturerExemptionHistory(status: string, page: number, size: number): Observable<any> {
         let params = {}
         params["size"] = size
@@ -138,7 +139,7 @@ export class PVOCService {
         form.append("data", JSON.stringify(data))
 
         for (let filesKey in files) {
-            form.append("files", filesKey);
+            form.append("files", files[filesKey]);
         }
         return this.http.post<any>(url, form).pipe(
             map(function (response: any) {
@@ -202,8 +203,33 @@ export class PVOCService {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/details/" + complaintId))
     }
 
-    updateComplaintStatus(complaintId: any, data): Observable<any> {
-        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/exemption/status/update/" + complaintId), data)
+    manufacturerComplaintHistory(status: string, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        if (status) {
+            params["status"] = status
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/manufacturer/history"), {
+            params: params
+        })
+    }
+
+    updateComplaintStatus(complaintId: any, data: any): Observable<any> {
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/status/update/" + complaintId), data)
+    }
+
+    getComplaintCategories(): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/categories"))
+    }
+
+    getComplaintRecommendations(): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/recommendations"))
+    }
+
+    public fileComplaint(data: any, files: File[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint("/api/v1/pvoc/complaint/file");
+        return this.sendFiles(data, files, url)
     }
 
     public listWaiverApplications(keywords: string, status: string, page: any, size: any): Observable<any> {

@@ -22,6 +22,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.transaction.Transactional
 
+enum class ReviewStatus(var code: Int) {
+    NEW(0), APPROVE(1), OPEN(2), REVIEW(3), REJECTED(4), DEFFERED(5)
+}
+
 @Service
 class ForeignPvocIntegrations(
         private val cocRepo: ICocsRepository,
@@ -112,7 +116,7 @@ class ForeignPvocIntegrations(
                         cocRemarks = coc.cocRemarks ?: "UNKNOWN"
                         route = coc.route ?: "Z"
                         partner = user.id
-                        reviewStatus = 0
+                        reviewStatus = ReviewStatus.NEW.code
                         version = coc.version ?: 1
                         cocType = "COC"
                         documentsType = "F"
@@ -198,7 +202,7 @@ class ForeignPvocIntegrations(
                         cocIssueDate = ncr.ncrIssueDate
                         route = ncr.route ?: "Z"
                         partner = user.id
-                        reviewStatus = 0
+                        reviewStatus = ReviewStatus.NEW.code
                         version = ncr.version ?: 1
                         cocType = "NCR"
                         documentsType = "F"
@@ -318,7 +322,7 @@ class ForeignPvocIntegrations(
                     documentsType = "F"
                     productCategory = "UNKNOWN"
                     partner = user.id
-                    reviewStatus = 0
+                    reviewStatus = ReviewStatus.NEW.code
                     createdBy = commonDaoServices.loggedInUserAuthentication().name
                     createdOn = commonDaoServices.getTimestamp()
                 }
@@ -666,6 +670,7 @@ class ForeignPvocIntegrations(
                 inspectionRemarks = cor.inspectionRemarks ?: "No Remarks"
                 status = s.activeStatus
                 partner = user.id
+                reviewStatus = ReviewStatus.NEW.code
                 createdBy = commonDaoServices.loggedInUserAuthentication().name
                 createdOn = commonDaoServices.getTimestamp()
             }

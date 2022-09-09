@@ -121,14 +121,14 @@ class StandardsLevyHandler(
 //            mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
             val removedString = commonDaoServices.removeQuotesAndUnescape(stringData)
             val body: RootKra = mapper.readValue(removedString, RootKra::class.java)
-            KotlinLogging.logger { }.info { "Payment Body 2 ${body}" }
+            KotlinLogging.logger { }.info { "Payment Body 2 $body" }
             val errors: Errors = BeanPropertyBindingResult(body, RootKra::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
 
                     val requestBody = body.request?: throw ExpectedDataNotFound("Missing request value")
-                    KotlinLogging.logger { }.info { "Payment Body 4 ${requestBody}" }
+                    KotlinLogging.logger { }.info { "Payment Body 4 $requestBody" }
                     val response = service.processSl2Payments(requestBody)
                     ServerResponse.ok().body(response)
                 }

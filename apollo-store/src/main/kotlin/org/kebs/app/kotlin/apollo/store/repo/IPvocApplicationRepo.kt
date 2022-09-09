@@ -67,9 +67,10 @@ interface IPvocWaiversReportRepo : HazelcastRepository<PvocWaiversReportsEntity,
 
 }
 
-interface IPvocWaiversApplicationDocumentRepo : HazelcastRepository<PvocWaiversApplicationDocumentsEntity, Long> {
-    fun findAllByWaiverId(waiverId: Long): List<PvocWaiversApplicationDocumentsEntity>
-    fun findFirstByWaiverIdAndReason(waiverId: Long, reason: String): PvocWaiversApplicationDocumentsEntity?
+interface IPvocApplicationDocumentRepo : HazelcastRepository<PvocApplicationDocumentsEntity, Long> {
+    fun findAllByRefId(waiverId: String): List<PvocApplicationDocumentsEntity>
+    fun findFirstByRefIdAndReason(waiverId: String, reason: String): PvocApplicationDocumentsEntity?
+    fun findFirstByRefIdAndRefType(waiverId: String, refType: String): List<PvocApplicationDocumentsEntity>
 }
 
 interface IPvocWaiversWetcMinutesEntityRepo : HazelcastRepository<PvocWaiversWetcMinutesEntity, Long> {

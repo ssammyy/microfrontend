@@ -400,8 +400,7 @@ class SchedulerImpl(
                                     .let { pm ->
                                         with(pm) {
                                             userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                            permitStatus =
-                                                applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                            permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
                                             modifiedBy = "SYSTEM SCHEDULER"
                                             modifiedOn = commonDaoServices.getTimestamp()
                                         }

@@ -148,6 +148,12 @@ class PinValidationResponseResult {
     var status: String? = null
 }
 
+class RequestFinalResults{
+    @JsonProperty("RESULT")
+    var requestResult: RequestResult? = null
+}
+
+
 @JacksonXmlRootElement(localName = "RESULT")
 class RequestResult {
     @JsonProperty("RESPONSECODE")

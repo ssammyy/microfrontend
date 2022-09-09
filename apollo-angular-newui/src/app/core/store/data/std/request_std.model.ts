@@ -1,4 +1,4 @@
-export interface StandardRequest {
+export interface StandardRequestB {
     id: number;
     requestNumber: string;
     name: string;
@@ -12,6 +12,15 @@ export interface StandardRequest {
     departmentName: string;
     productName: string;
     productSubCategoryName: string;
+    organisationName: string;
+    subject: string;
+    description: string;
+    economicEfficiency: number;
+    healthSafety: number;
+    environment: number;
+    integration: number;
+    exportMarkets: number;
+    levelOfStandard: string;
 }
 
 export interface ServerResponse {
@@ -24,7 +33,7 @@ export interface ServerResponse {
 export interface FlowableData {
     processId: string;
     isEnded: boolean;
-    body: StandardRequest;
+    body: StandardRequestB;
 }
 
 export interface Product {
@@ -108,7 +117,7 @@ export interface TechnicalCommittee {
 export interface StandardTasks {
     taskId: string;
     name: string;
-    taskData: StandardRequest;
+    taskData: StandardRequestB;
     id: string;
 }
 
@@ -154,7 +163,7 @@ export interface Stdtsectask {
     dateOfPresentation: string;
     nameOfTC: string;
     id: string;
-    taskData: StandardRequest;
+    taskData: StandardRequestB;
 }
 
 
@@ -567,5 +576,15 @@ export interface DataHolder {
     v5: string;
     v6: string;
 
+
+}
+
+export interface Document {
+    id: number;
+    name: string;
+    fileType: string;
+    document: string;
+    createdOn: string;
+    createdBy: string;
 
 }

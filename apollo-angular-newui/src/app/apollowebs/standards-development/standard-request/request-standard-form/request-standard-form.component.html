@@ -8,6 +8,7 @@
         text-align: center;
         margin-bottom: 15px;
     }
+
     .error-msg {
         color: red;
         display: inline-block;
@@ -18,12 +19,13 @@
         margin-top: 2.604167em;
         top: calc(100% - 1.72916667em);
     }
+
     .fix-error-icon {
         top: 27px;
     }
 
 </style>
-<div *ngIf="displayError" >
+<div *ngIf="displayError">
     <!-- <span class="glyphicon glyphicon-remove form-control-feedback fix-error-icon"></span> -->
     <span class="sr-only">(error)</span>
     <div class="error-msg">
@@ -32,40 +34,79 @@
 </div>
 
 <div class="container-fluid" style="margin-top: 5%">
-    <form (ngSubmit)="saveStandard()" [formGroup]="stdRequestFormGroup" class="form">
+    <form #formDirective="ngForm" (ngSubmit)="saveStandard(formDirective)" [formGroup]="stdRequestFormGroup" class="form">
 
-        <p>Fill in the form below to request for a standard</p>
+        <h1 style="color: #0A95FC">Proposing Subjects for Standardization</h1>
+        <h3>Guidelines for collecting and filling in the information required for this template</h3>
         <hr>
+        <p>
+            1. Fill this template in and submit it to KEBS through the online portal. Please rank your proposals
+            regarding the potential to contribute to economic efficiency safeguard health and safety preserve the
+            environment, the local exchange of products and industrial integration and facilitate access to export
+            markets.
+        </p>
+        <p>
+            2.In this context "economic sector" means sectors such as : food processing, textiles and apparel, plastics,
+            automotive parts, electrical and electronic engineering, petrochemicals, banking, education, tourism,
+            phosphate mining etc. Sectors could be in the agriculture and mining, manufacturing or services areas.
+        </p>
+        <p>3.
+            Subjects are subjects for an individual standard such as cottage cheese, plugs and sockets, polyethylene
+            sheets, centrifugal pumps for petrochemical industry, Personal Identification Number (PIN) management and
+            security
+        </p>
+        <p>4.Some sectors may have multiple proposals, others may have only one. Feel free to add or delete rows to
+            tailor this template to your needs.
+        </p>
 
         <div class="form-body">
             <div class="form-group">
-                <label><b>Enter your Full Names</b></label>
-                <mat-form-field class="example-full-width has-label" [ngClass]="displayFieldCss(stdRequestFormGroup, 'name')">
+                <label><b>Full Names:</b></label>
+                <mat-form-field class="example-full-width has-label"
+                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'name')">
                     <input type="text"
                            matInput
                            id="name"
                            placeholder="Full Names *"
                            (ngModelChange)="textValidationType($event)"
                            formControlName="name">
-                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'name')" errorMsg="Please Enter Your Full Names">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'name')"
+                                             errorMsg="Please Enter Your Full Names">
                     </app-field-error-display>
                 </mat-form-field>
             </div>
             <div class="form-group">
-                <label><b>Enter Phone Number</b></label>
-                <mat-form-field class="example-full-width has-label" [ngClass]="displayFieldCss(stdRequestFormGroup, 'phone')">
+                <label><b>Organisation Name:</b></label>
+                <mat-form-field class="example-full-width has-label"
+                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'name')">
+                    <input type="text"
+                           matInput
+                           id="organisationName"
+                           placeholder="Your Organisation's Name Here *"
+                           (ngModelChange)="textValidationType($event)"
+                           formControlName="organisationName">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'name')"
+                                             errorMsg="Please Enter Your Organisation's Name">
+                    </app-field-error-display>
+                </mat-form-field>
+            </div>
+            <div class="form-group">
+                <label><b>Telephone Number</b></label>
+                <mat-form-field class="example-full-width has-label"
+                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'phone')">
                     <input type="text" name="phone" number="true"
                            matInput
                            id="phone"
                            placeholder="Phone Number *"
                            (ngModelChange)="numberValidationType($event)"
                            formControlName="phone">
-                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'phone')" errorMsg="Please Enter Your Phone Number">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'phone')"
+                                             errorMsg="Please Enter Your Phone Number">
                     </app-field-error-display>
                 </mat-form-field>
             </div>
             <div class="form-group">
-                <label><b>Enter your Email address</b></label>
+                <label><b>Email address:</b></label>
 
                 <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailRegister===true}">
                     <input
@@ -85,56 +126,206 @@
             </div>
             <div class="form-group">
                 <label><b>Sector</b></label>
-                <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                        class="form-control" required
-                        formControlName="departmentId"
-                        name="departmentId" (change)="onSelectDepartment($event.target.value)"
-                        [class.is-invalid]="formStdRequest.departmentId.invalid && formStdRequest.departmentId.touched">
-                    <option disabled>--Select Department--</option>
-                    <option *ngFor="let department of departments"
-                            value="{{department.id}}">{{department.name}}</option>
-                </select>
+                <mat-form-field>
+
+                    <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                class="form-control" required
+                                formControlName="departmentId"
+                                name="departmentId" (change)="onSelectDepartment($event.target.value)"
+                                placeholder="Select Sector"
+                                [class.is-invalid]="formStdRequest.departmentId.invalid && formStdRequest.departmentId.touched">
+                        <mat-option *ngFor="let department of departments"
+                                    value="{{department.id}}">{{department.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!--            <div class="form-group">-->
+            <!--                <label>Technical Committee</label>-->
+            <!--                <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"-->
+            <!--                        class="form-control" required-->
+            <!--                        formControlName="tcId"-->
+            <!--                        name="tcId" (change)="onSelectTechnicalCommittee($event.target.value)"-->
+            <!--                        [class.is-invalid]="formStdRequest.tcId.invalid && formStdRequest.tcId.touched">-->
+            <!--                    <option disabled>&#45;&#45;Select committee&#45;&#45;</option>-->
+            <!--                    <option *ngFor="let committee of technicalCommittees"-->
+            <!--                            [value]="committee.id">{{committee.title}}-->
+            <!--                    </option>-->
+            <!--                </select>-->
+            <!--            </div>-->
+            <!--            <div class="form-group">-->
+            <!--                <label>Product Category</label>-->
+            <!--                <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"-->
+            <!--                        class="form-control"-->
+            <!--                        formControlName="productId"-->
+            <!--                        name="productId" (change)="onSelectProductCategory($event.target.value)"-->
+            <!--                        [class.is-invalid]="formStdRequest.productId.invalid && formStdRequest.productId.touched">-->
+            <!--                    <option disabled>&#45;&#45;Select Category&#45;&#45;</option>-->
+            <!--                    <option *ngFor="let product of products" [value]="product.id">{{product.name}}</option>-->
+            <!--                </select>-->
+            <!--            </div>-->
+            <!--            <div class="form-group">-->
+            <!--                <label>Product Sub Category</label>-->
+            <!--                <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"-->
+            <!--                        class="form-control" required-->
+            <!--                        formControlName="productSubCategoryId"-->
+            <!--                        name="productSubCategoryId"-->
+            <!--                        [class.is-invalid]="formStdRequest.productSubCategoryId.invalid && formStdRequest.productSubCategoryId.touched">-->
+            <!--                    <option disabled>&#45;&#45;Select Sub Category&#45;&#45;</option>-->
+            <!--                    <option *ngFor="let productSub of productsSubCategory"-->
+            <!--                            [value]="productSub.id">{{productSub.name}}</option>-->
+            <!--                </select>-->
+            <!--            </div>-->
+
+            <div class="form-group">
+                <label><b>Subject ( Name of product or service to be standardized ) :</b></label>
+                <mat-form-field class="example-full-width has-label"
+                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'subject')">
+                    <input type="text"
+                           matInput
+                           id="subject"
+                           placeholder="Enter Subject Here *"
+                           (ngModelChange)="textValidationType($event)"
+                           formControlName="subject">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'subject')"
+                                             errorMsg="Please Enter Subject">
+                    </app-field-error-display>
+                </mat-form-field>
             </div>
             <div class="form-group">
-                <label>Technical Committee</label>
-                <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                        class="form-control" required
-                        formControlName="tcId"
-                        name="tcId" (change)="onSelectTechnicalCommittee($event.target.value)"
-                        [class.is-invalid]="formStdRequest.tcId.invalid && formStdRequest.tcId.touched">
-                    <option disabled>--Select committee--</option>
-                    <option *ngFor="let committee of technicalCommittees"
-                            [value]="committee.id">{{committee.title}}
-                    </option>
-                </select>
+                <label><b>Brief description of product or service ( Briefly describe specific issues to be addressed
+                    )</b></label>
+                <mat-form-field class="example-full-width has-label"
+                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'description')">
+                    <input type="text"
+                           matInput
+                           id="description"
+                           placeholder="Enter Specific Issues To Be Addressed *"
+                           (ngModelChange)="textValidationType($event)"
+                           formControlName="description">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'description')"
+                                             errorMsg="Please Enter Specific Issues To Be Addressed">
+                    </app-field-error-display>
+                </mat-form-field>
+            </div>
+
+            <div class="form-group">
+                <label><b>Priority Fill in ranks 1 - 5 (where 1 is the Highest Priority and 5 the Lowest
+                    Priority)</b></label>
+                <div class="form-group">
+                    <label><b>Potential to contribute to economic efficiency :
+                    </b></label>
+                    <mat-radio-group aria-labelledby="example-radio-group-label"
+                                     class="example-radio-group"
+                                     formControlName="economicEfficiency">
+                        <mat-radio-button class="example-margin mb-0" *ngFor="let rating of ratings" [value]="rating">
+                            {{rating}}
+                        </mat-radio-button>
+                        <mat-error
+                                *ngIf="isFormSubmitted && stdRequestFormGroup.controls['economicEfficiency'].errors?.required">
+                            Please Select An Option
+                        </mat-error>
+
+                    </mat-radio-group>
+                </div>
+                <div class="form-group">
+                    <label><b>Potential to safeguard health and safety :
+                    </b></label>
+                    <mat-radio-group aria-labelledby="example-radio-group-label"
+                                     class="example-radio-group"
+                                     formControlName="healthSafety">
+                        <mat-radio-button class="example-margin mb-0" *ngFor="let rating of ratings" [value]="rating">
+                            {{rating}}
+                        </mat-radio-button>
+                        <mat-error
+                                *ngIf="isFormSubmitted && stdRequestFormGroup.controls['healthSafety'].errors?.required">
+                            Please Select An Option
+                        </mat-error>
+
+
+                    </mat-radio-group>
+                </div>
+                <div class="form-group">
+                    <label><b>Potential to preserve the environment :
+                    </b></label>
+                    <mat-radio-group aria-labelledby="example-radio-group-label"
+                                     class="example-radio-group"
+                                     formControlName="environment">
+                        <mat-radio-button class="example-margin mb-0" *ngFor="let rating of ratings" [value]="rating">
+                            {{rating}}
+                        </mat-radio-button>
+                        <mat-error
+                                *ngIf="isFormSubmitted && stdRequestFormGroup.controls['environment'].errors?.required">
+                            Please Select An Option
+                        </mat-error>
+
+
+                    </mat-radio-group>
+                </div>
+                <div class="form-group">
+                    <label><b>Potential to facilitate the local exchange of products and industrial integration :
+                    </b></label>
+                    <mat-radio-group aria-labelledby="example-radio-group-label"
+                                     class="example-radio-group"
+                                     formControlName="integration">
+                        <mat-radio-button class="example-margin mb-0" *ngFor="let rating of ratings" [value]="rating">
+                            {{rating}}
+                        </mat-radio-button>
+                        <mat-error
+                                *ngIf="isFormSubmitted && stdRequestFormGroup.controls['integration'].errors?.required">
+                            Please Select An Option
+                        </mat-error>
+
+
+                    </mat-radio-group>
+                </div>
+                <div class="form-group">
+                    <label><b>Potential to facilitate access to export markets :
+                    </b></label>
+                    <mat-radio-group aria-labelledby="example-radio-group-label"
+                                     class="example-radio-group"
+                                     formControlName="exportMarkets">
+                        <mat-radio-button class="example-margin mb-0" *ngFor="let rating of ratings" [value]="rating">
+                            {{rating}}
+                        </mat-radio-button>
+                        <mat-error
+                                *ngIf="isFormSubmitted && stdRequestFormGroup.controls['exportMarkets'].errors?.required">
+                            Please Select An Option
+                        </mat-error>
+
+
+                    </mat-radio-group>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label><b>Level Of Standard Required</b></label>
+                <mat-form-field>
+
+                    <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                class="form-control" required
+                                formControlName="levelOfStandard"
+                                name="levelOfStandard"
+                                placeholder="Select Level Of Standard">
+                        <mat-option *ngFor="let lvs of levelOfStandards"
+                                    value="{{lvs}}">{{lvs}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
             <div class="form-group">
-                <label>Product Category</label>
-                <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                        class="form-control"
-                        formControlName="productId"
-                        name="productId" (change)="onSelectProductCategory($event.target.value)"
-                        [class.is-invalid]="formStdRequest.productId.invalid && formStdRequest.productId.touched">
-                    <option disabled>--Select Category--</option>
-                    <option *ngFor="let product of products" [value]="product.id">{{product.name}}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Product Sub Category</label>
-                <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                        class="form-control" required
-                        formControlName="productSubCategoryId"
-                        name="productSubCategoryId"
-                        [class.is-invalid]="formStdRequest.productSubCategoryId.invalid && formStdRequest.productSubCategoryId.touched">
-                    <option disabled>--Select Sub Category--</option>
-                    <option *ngFor="let productSub of productsSubCategory"
-                            [value]="productSub.id">{{productSub.name}}</option>
-                </select>
+                <label><b>Attach Any Additional Information</b></label>
+                <form>
+                    <file-upload [(ngModel)]="uploadedFiles" style="background: inherit"
+                                 name="uploadedFiles" fileslimit="1"
+                                 required
+                                 accept=".pdf"></file-upload>
+
+                </form>
             </div>
 
 
             <div style="margin: 3em 0 2em 0">
-                <button  class="login-button" type="submit">SUBMIT</button>
+                <button class="login-button" type="submit">SUBMIT</button>
 
             </div>
 

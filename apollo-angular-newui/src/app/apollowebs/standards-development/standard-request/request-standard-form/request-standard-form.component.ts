@@ -1,11 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {
-    Department,
-    Product,
-    ProductSubCategory,
-    StandardRequest,
-    TechnicalCommittee
-} from "../../../../core/store/data/std/std.model";
+import {Department, Product, ProductSubCategory, TechnicalCommittee} from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
@@ -13,12 +7,15 @@ import {StandardDevelopmentService} from "../../../../core/store/data/std/standa
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ErrorStateMatcher} from "@angular/material/core";
+import swal from "sweetalert2";
+
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = form && form.submitted;
         return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
     }
 }
+
 @Component({
     selector: 'app-request-standard-form',
     templateUrl: './request-standard-form.component.html',
@@ -32,8 +29,16 @@ export class RequestStandardFormComponent implements OnInit {
     public departments !: Department[];
     public technicalCommittees !: TechnicalCommittee[];
 
+    economicEfficiency: string;
+    healthSafety: string;
+    environment: string;
+    integration: string;
+    exportMarkets: string;
 
+    ratings: string[] = ['1', '2', '3', '4', '5'];
+    levelOfStandards: string[] = ['East Africa Standard', 'ARSO Standard', 'AFSEC Standard', 'Kenya Standard']
     title = 'toaster-not';
+    public uploadedFiles: Array<File> = [];
 
     emailFormControl = new FormControl('', [
         Validators.required,
@@ -41,24 +46,19 @@ export class RequestStandardFormComponent implements OnInit {
     ]);
 
     validEmailRegister: boolean = false;
-    validConfirmPasswordRegister: boolean = false;
-    validPasswordRegister: boolean = false;
-
-    validEmailLogin: boolean = false;
-    validPasswordLogin: boolean = false;
 
     validTextType: boolean = false;
-    validEmailType: boolean = false;
     validNumberType: boolean = false;
     pattern = "https?://.+";
 
 
     matcher = new MyErrorStateMatcher();
-    register : FormGroup;
-    stdRequestFormGroup : FormGroup;
+    register: FormGroup;
+    stdRequestFormGroup: FormGroup;
 
-    login : FormGroup;
-    type : FormGroup;
+    login: FormGroup;
+    type: FormGroup;
+    isFormSubmitted = false;
 
 
     constructor(
@@ -70,6 +70,7 @@ export class RequestStandardFormComponent implements OnInit {
         private notifyService: NotificationService
     ) {
     }
+
     isFieldValid(form: FormGroup, field: string) {
         return !form.get(field).valid && form.get(field).touched;
     }
@@ -86,7 +87,7 @@ export class RequestStandardFormComponent implements OnInit {
         Object.keys(formGroup.controls).forEach(field => {
             const control = formGroup.get(field);
             if (control instanceof FormControl) {
-                control.markAsTouched({ onlySelf: true });
+                control.markAsTouched({onlySelf: true});
             } else if (control instanceof FormGroup) {
                 this.validateAllFormFields(control);
             }
@@ -101,13 +102,23 @@ export class RequestStandardFormComponent implements OnInit {
 
         this.stdRequestFormGroup = this.formBuilder.group({
 
-            email: [null, [Validators.required,Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
+            email: [null, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
             name: ['', Validators.required],
+            organisationName: ['', Validators.required],
             phone: ['', Validators.required],
-            tcId: ['', Validators.required],
+            // tcId: ['', Validators.required],
             departmentId: ['', Validators.required],
-            productId: ['', Validators.required],
-            productSubCategoryId: ['', Validators.required]
+
+            // productId: ['', Validators.required],
+            // productSubCategoryId: ['', Validators.required]
+            subject: ['', Validators.required],
+            description: ['', Validators.required],
+            economicEfficiency: ['', Validators.required],
+            healthSafety: ['', Validators.required],
+            environment: ['', Validators.required],
+            integration: ['', Validators.required],
+            exportMarkets: ['', Validators.required],
+            levelOfStandard: ['', Validators.required],
         });
     }
 
@@ -153,29 +164,83 @@ export class RequestStandardFormComponent implements OnInit {
       );
     }*/
 
-    saveStandard(): void {
+    saveStandard(formDirective): void {
+        this.isFormSubmitted = true;
 
         if (this.stdRequestFormGroup.valid) {
 
-        this.SpinnerService.show();
-        this.standardDevelopmentService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
-            (response: StandardRequest) => {
-                console.log(response);
-                this.SpinnerService.hide();
+            // if (this.uploadedFiles != null && this.uploadedFiles.length > 0) {
+            //     this.onClickSaveUploads("568","Marvin")
+            // }
 
-                // let requestNumber = response.responseText+":"+response.body.body.requestNumber;
+            this.SpinnerService.show();
+            this.standardDevelopmentService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
+                (response) => {
 
-                this.showToasterSuccess(response.name, "Request Successfully Submitted")
-                //this.router.navigate(['/login'])
-                this.stdRequestFormGroup.reset()
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        );
+                    // let requestNumber = response.responseText+":"+response.body.body.requestNumber;
+
+                    this.showToasterSuccess(response.httpStatus, `Successfully submitted your application`);
+                    if (this.uploadedFiles != null && this.uploadedFiles.length > 0) {
+                        this.onClickSaveUploads(response.body.savedRowID, this.stdRequestFormGroup.get("name").value.toString())
+                        formDirective.resetForm();
+                        this.stdRequestFormGroup.reset()
+                        this.isFormSubmitted = false;
+
+                    } else {
+                        this.SpinnerService.hide();
+                        formDirective.resetForm();
+                        this.isFormSubmitted = false;
+                        this.stdRequestFormGroup.reset()
+                        swal.fire({
+                            title: 'Your Application Has Been Submitted.',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    }
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+
+                    alert(error.message);
+                }
+            );
+
         } else {
             this.validateAllFormFields(this.stdRequestFormGroup);
         }
+
+
+    }
+
+    onClickSaveUploads(draftStandardID: string, nomineeName: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            this.standardDevelopmentService.uploadFileDetails(draftStandardID, formData, "AdditionalInformation", nomineeName).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFiles = [];
+
+                    swal.fire({
+                        title: 'Your Application Has Been Submitted.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                },
+            );
+        }
+
     }
 
     onSelectDepartment(value: any): any {
@@ -213,7 +278,7 @@ export class RequestStandardFormComponent implements OnInit {
         );
     }
 
-    emailValidationRegister(e){
+    emailValidationRegister(e) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (re.test(String(e).toLowerCase())) {
             this.validEmailRegister = true;
@@ -223,20 +288,18 @@ export class RequestStandardFormComponent implements OnInit {
     }
 
 
-
-
-    textValidationType(e){
+    textValidationType(e) {
         if (e) {
             this.validTextType = true;
-        }else{
+        } else {
             this.validTextType = false;
         }
     }
 
-    numberValidationType(e){
+    numberValidationType(e) {
         if (e) {
             this.validNumberType = true;
-        }else{
+        } else {
             this.validNumberType = false;
         }
     }
