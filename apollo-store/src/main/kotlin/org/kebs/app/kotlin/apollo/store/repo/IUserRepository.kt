@@ -440,9 +440,12 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturesLevyPayments(@Param("entryNumber") entryNumber: Long?): MutableList<LevyPayments>
 
     @Query(
-        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount," +
-                "c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo" +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
+        value = "SELECT p.ID as id,c.NAME as companyName,h.REQUEST_HEADER_PAYMENT_SLIP_NO as paymentSlipNo,p.ENTRY_NUMBER as entryNumber," +
+                "c.KRA_PIN as kraPin,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate,h.REQUEST_HEADER_PAYMENT_TYPE as paymentType,p.PAYMENT_DATE as paymentDate,h.REQUEST_HEADER_TOTAL_DECL_AMT as totalDeclAmt,p.PENALTY_APPLIED as totalPenaltyAmt," +
+                "p.PAYMENT_AMOUNT as totalPaymentAmt,h.REQUEST_BANK_REF_NO as bankRefNo,h.REQUEST_HEADER_BANK as bank,d.COMMODITY_TYPE as commodityType" +
+                ",c.REGISTRATION_NUMBER as registrationNumber,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,d.QTY_MANF as qtyManf,d.EX_FACT_VAL as exFactVal,d.LEVY_PAID as levyPaid " +
+                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER" +
+                " JOIN LOG_SL2_PAYMENTS_HEADER h ON p.PAYMENT_ID=h.ID JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID " +
                 "WHERE p.ID= :id",
         nativeQuery = true
     )

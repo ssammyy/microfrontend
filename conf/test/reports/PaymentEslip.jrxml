@@ -1,109 +1,359 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bb89d848-2a63-4d9c-a793-3924ea65343b">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<queryString>
-		<![CDATA[]]>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="KraPaymentsSlip" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="2f5a263b-e55d-4648-b365-c14d3dbdfc5b">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<style name="TextStatic" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="Times New Roman" fontSize="12" isBold="false"/>
+	<style name="TextParamater" hTextAlign="Left" vTextAlign="Middle" rotation="None" isBlankWhenNull="true" fontName="Times New Roman" fontSize="12" isBold="false">
+		<box>
+			<bottomPen lineWidth="1.0" lineStyle="Dotted"/>
+		</box>
+	</style>
+	<style name="TextBankDetails" isDefault="true" hTextAlign="Left" vTextAlign="Middle" rotation="None" isBlankWhenNull="true" fontName="Times New Roman" fontSize="10" isBold="false">
+		<paragraph rightIndent="5"/>
+	</style>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<parameter name="companyName" class="java.lang.String"/>
+	<parameter name="paymentSlipNo" class="java.lang.String"/>
+	<parameter name="entryNumber" class="java.lang.String"/>
+	<parameter name="kraPin" class="java.lang.String"/>
+	<parameter name="paymentSlipDate" class="java.lang.String"/>
+	<parameter name="paymentType" class="java.lang.String"/>
+	<parameter name="paymentDate" class="java.lang.String"/>
+	<parameter name="totalDeclAmt" class="java.lang.String"/>
+	<parameter name="totalPenaltyAmt" class="java.lang.String"/>
+	<parameter name="bankRefNo" class="java.lang.String"/>
+	<parameter name="totalPaymentAmt" class="java.lang.String"/>
+	<parameter name="bank" class="java.lang.String"/>
+	<parameter name="commodityType" class="java.lang.String"/>
+	<parameter name="periodFrom" class="java.lang.String"/>
+	<parameter name="periodTo" class="java.lang.String"/>
+	<parameter name="qtyManf" class="java.lang.String"/>
+	<parameter name="exFactVal" class="java.lang.String"/>
+	<parameter name="levyPaid" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT * FROM ADDRESS]]>
 	</queryString>
-	<field name="entryNumber" class="java.lang.String"/>
-	<field name="paymentDate" class="java.lang.String"/>
-	<field name="paymentAmount" class="java.lang.String"/>
-	<field name="companyName" class="java.lang.String"/>
-	<field name="periodFrom" class="java.lang.String"/>
-	<field name="periodTo" class="java.lang.String"/>
+	<field name="itemDescName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ADDRESS"/>
+	</field>
+	<field name="itemAmount" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="FIRSTNAME"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ADDRESS"/>
+	</field>
+	<field name="umo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="LASTNAME"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ADDRESS"/>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="94" splitType="Stretch">
-			<property name="com.jaspersoft.studio.layout"/>
-			<staticText>
-				<reportElement x="164" y="30" width="236" height="30" uuid="58e0f2ed-47fd-4692-bee3-4db4825f6a6a"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" isBold="true" isUnderline="true"/>
-				</textElement>
-				<text><![CDATA[KENYA BUREAU OF STANDARDS ]]></text>
-			</staticText>
-			<image>
-				<reportElement x="10" y="30" width="146" height="60" uuid="04cb7ce9-d5b5-4384-aa32-a87dc0e9c758"/>
-				<imageExpression><![CDATA["https://usalama.app/kebs-logo.png"]]></imageExpression>
-			</image>
-			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="440" y="-20" width="120" height="20" uuid="cd8bf6bd-bf55-429e-9374-1f7a12f222e3"/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
+		<band height="209">
+			<frame>
+				<reportElement x="1" y="2" width="552" height="207" uuid="71852249-082e-4ad2-b977-7a2c84103de4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="320" y="120" width="77" height="20" uuid="28d5c763-4aab-47c8-ae61-83a14e592764">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="11"/>
+					</textElement>
+					<text><![CDATA[Entry Number]]></text>
+				</staticText>
+				<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+					<reportElement x="131" y="170" width="230" height="20" uuid="eb696532-a8ad-4bcc-a5e1-4f4210d94ab3">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<bottomPen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$P{kraPin}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="171" y="60" width="150" height="28" uuid="4f7ca1da-ef9f-4d82-a5c5-7b18785b9398">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
+				</staticText>
+				<image>
+					<reportElement x="222" y="12" width="50" height="45" uuid="ded6c83a-fc78-4171-8526-1423147c69be">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+				</image>
+				<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+					<reportElement x="410" y="120" width="142" height="20" uuid="35e1c7cc-a521-4417-ae65-2bab8a79cd56">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{entryNumber}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="80" y="93" width="359" height="18" uuid="38dec521-c688-4293-8a78-e6447c15764d">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center">
+						<font fontName="Times New Roman" size="15" isBold="true" isItalic="false" isUnderline="false"/>
+					</textElement>
+					<text><![CDATA[PAYMENT E-SLIP]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="143" width="131" height="20" uuid="bcd62312-21eb-4582-94a3-abaf717b4a74">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<text><![CDATA[Company Name ]]></text>
+				</staticText>
+				<textField textAdjust="ScaleFont">
+					<reportElement x="131" y="143" width="417" height="20" uuid="90417f2e-898f-4d15-a85e-bee0f23d5f9f">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<bottomPen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$P{companyName}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="2" y="110" width="100" height="30" uuid="2d8cc648-0177-4bf1-9798-1c47907a77a0"/>
+					<text><![CDATA[Payment Slip No:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="110" y="110" width="100" height="30" uuid="a98ae33a-09c5-489a-a2b9-fdb64c4db137"/>
+					<textFieldExpression><![CDATA[$P{paymentSlipNo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="170" width="64" height="20" uuid="20184e23-120c-40e1-b3d6-df865e2206f1">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<text><![CDATA[Kra Pin]]></text>
+				</staticText>
+			</frame>
 		</band>
 	</title>
 	<columnHeader>
-		<band height="71" splitType="Stretch">
+		<band height="214" splitType="Stretch">
 			<staticText>
-				<reportElement x="4" y="1" width="100" height="30" uuid="6c3d24f4-b5a4-43e8-afb8-48ab2504d352"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<text><![CDATA[Entry Number :]]></text>
+				<reportElement x="1" y="7" width="89" height="30" uuid="74e84a47-66ab-483c-8c6c-da43e2963f50"/>
+				<text><![CDATA[Payment Slip Date]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="104" y="1" width="119" height="30" uuid="cc9f9496-88b9-4ce9-af5c-9bb70a5c151c"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{entryNumber}]]></textFieldExpression>
+			<textField>
+				<reportElement x="93" y="7" width="100" height="30" uuid="09ba5a35-9d28-4435-b16e-5cb4f77ced15"/>
+				<textFieldExpression><![CDATA[$P{paymentSlipDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="4" y="41" width="100" height="30" uuid="7422edd7-d88e-422b-a30e-92c2946f8fff"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<text><![CDATA[Recieved From]]></text>
+				<reportElement x="280" y="7" width="100" height="30" uuid="bb843a85-6845-4557-9d0c-e1fc8953676d"/>
+				<text><![CDATA[Payment Type]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="104" y="41" width="119" height="30" uuid="d1c4dd57-b5db-444c-9dac-0d4ed7887f6d"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{companyName}]]></textFieldExpression>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="398" y="7" width="142" height="30" uuid="2ce768c9-cba0-445c-b23d-abaa0a8999b5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{paymentType}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="1" y="44" width="89" height="30" uuid="f32585ce-6123-43bc-b856-58f13c7fe266"/>
+				<text><![CDATA[Payment Date]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="93" y="44" width="100" height="30" uuid="fd7be207-7641-4cee-9ef8-424ebaa28f75"/>
+				<textFieldExpression><![CDATA[$P{paymentDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="280" y="44" width="100" height="30" uuid="10be0945-7f00-4778-9743-77e54d790954"/>
+				<text><![CDATA[Total Declared Amount]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="398" y="44" width="142" height="30" uuid="31acfe67-b34f-432c-989f-d1d06285eacd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{totalDeclAmt}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="80" width="89" height="30" uuid="260c7b5e-15c9-4675-b61d-eee66976a3aa"/>
+				<text><![CDATA[Total Penalty Amount]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="92" y="80" width="100" height="30" uuid="620868c7-772d-4cfa-b6ae-e07555af93f3"/>
+				<textFieldExpression><![CDATA[$P{totalPenaltyAmt}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="280" y="80" width="100" height="30" uuid="de964d3f-5581-413f-9860-cbc28c54a663"/>
+				<text><![CDATA[Bank Ref No.]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="398" y="80" width="142" height="30" uuid="e6fed18a-452e-48fb-a876-2f66792b99f1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{bankRefNo}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement x="1" y="0" width="552" height="180" uuid="714aaa4f-cd40-4d06-9461-46c3d00c7927">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<staticText>
+					<reportElement x="-3" y="124" width="89" height="30" uuid="416180e5-5cce-4375-8e08-723b51e10e68"/>
+					<text><![CDATA[Total Payment Amount]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="89" y="124" width="100" height="30" uuid="4c3b892f-f401-4dc5-90cb-34c78b51b1e7"/>
+					<textFieldExpression><![CDATA[$P{totalPaymentAmt}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="281" y="125" width="100" height="30" uuid="031a4ba8-6766-4e5f-826a-2453f34d4b6b"/>
+					<text><![CDATA[Bank]]></text>
+				</staticText>
+				<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+					<reportElement x="399" y="125" width="142" height="30" uuid="d3f854fd-8987-4576-b49c-64ccdb8b1d4c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{bank}]]></textFieldExpression>
+				</textField>
+			</frame>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="40" splitType="Stretch">
+		<band height="279" splitType="Stretch">
 			<staticText>
-				<reportElement x="4" y="10" width="100" height="30" uuid="7241d2b8-574a-4be2-98be-53ac44c93468"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<text><![CDATA[Period From]]></text>
+				<reportElement x="93" y="-10" width="359" height="18" uuid="76b3cc0e-6d60-4eab-a5c3-e3856d44f350">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="15" isBold="true" isItalic="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[DECLARATION]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="104" y="10" width="119" height="30" uuid="af1831ee-ca7f-410c-a496-44f2b6ebae66"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{periodFrom}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="280" y="0" width="100" height="30" uuid="c6804ea4-54de-4472-b40b-944e18e984ae"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<text><![CDATA[Period To]]></text>
-			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="380" y="0" width="119" height="30" uuid="3fb4b216-e599-442a-b828-b33d15890575"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{periodTo}]]></textFieldExpression>
-			</textField>
+			<frame>
+				<reportElement x="1" y="230" width="552" height="49" uuid="8a8ee3d0-5906-433d-9720-910307e41945">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textField>
+					<reportElement style="TextParamater" x="51" y="8" width="132" height="20" uuid="fcf1c54d-199a-44f5-ab7b-a13706aba3f5">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center"/>
+				</textField>
+				<staticText>
+					<reportElement style="TextStatic" x="3" y="8" width="48" height="20" uuid="b3de2922-4c43-4c4d-a839-e4fbee2222ef"/>
+					<text><![CDATA[SIGNED]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="TextStatic" mode="Transparent" x="25" y="29" width="168" height="20" uuid="5156259b-8c7e-4ec7-bd5f-6065859fc04d"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[(For Kenya Bureau of Standards)]]></text>
+				</staticText>
+			</frame>
+			<frame>
+				<reportElement x="3" y="20" width="552" height="200" uuid="05ce2bb9-20cc-4d71-b7a4-c9c8a8508261">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<staticText>
+					<reportElement x="-1" y="13" width="131" height="20" uuid="30bcc9d6-1554-408b-9d0a-402d613d97b7">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<text><![CDATA[Commodity Type]]></text>
+				</staticText>
+				<textField textAdjust="ScaleFont">
+					<reportElement x="130" y="13" width="417" height="20" uuid="86a57cb8-e81e-4de8-92b9-1861f05ffbd4">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<bottomPen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$P{commodityType}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="2" y="61" width="89" height="30" uuid="ecd314a2-27ed-43ea-ab17-270295950712"/>
+					<text><![CDATA[Period From]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="94" y="61" width="100" height="30" uuid="7f4b0ca8-7361-4c3f-8b9c-7b6b440e4522"/>
+					<textFieldExpression><![CDATA[$P{periodFrom}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="286" y="62" width="100" height="30" uuid="486b29c8-135c-4c77-a165-c94c8ed2bb43"/>
+					<text><![CDATA[Period To]]></text>
+				</staticText>
+				<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+					<reportElement x="404" y="62" width="142" height="30" uuid="644e6248-64bb-46d3-b46e-934088335527">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{periodTo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="6" y="111" width="89" height="30" uuid="e2ade91c-43eb-4eb9-9c38-0274dbcfbbf2"/>
+					<text><![CDATA[Quantity Manufactured]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="98" y="111" width="100" height="30" uuid="e43630de-171d-464f-8c90-cb00322cc215"/>
+					<textFieldExpression><![CDATA[$P{qtyManf}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="290" y="112" width="100" height="30" uuid="d95cb1d0-f44c-4ecc-aefe-a776af3e4aba"/>
+					<text><![CDATA[Expected Fact Value]]></text>
+				</staticText>
+				<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+					<reportElement x="408" y="112" width="142" height="30" uuid="bf59bef8-471e-4137-913d-8148caf5edaa">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{exFactVal}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="179" y="161" width="89" height="30" uuid="fdd5b7ea-80ab-4c6b-a1b2-398a186ad202"/>
+					<text><![CDATA[Levy Paid]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="271" y="161" width="100" height="30" uuid="8169f8b6-c271-4f47-8f10-84ddd9640a8c"/>
+					<textFieldExpression><![CDATA[$P{levyPaid}]]></textFieldExpression>
+				</textField>
+			</frame>
 		</band>
 	</detail>
 	<summary>
-		<band height="42" splitType="Stretch">
-			<staticText>
-				<reportElement x="4" y="10" width="100" height="30" uuid="69f61310-d6f5-4e99-b445-c9604821d13c"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<text><![CDATA[Date Paid]]></text>
-			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="104" y="10" width="119" height="30" uuid="b2a1e163-5bf9-4aec-9006-f5eac33ded80"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{paymentDate}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="280" y="0" width="100" height="30" uuid="12853e80-0620-4676-b250-dec009887e0b"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<text><![CDATA[Amount Paid]]></text>
-			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="380" y="0" width="119" height="30" uuid="4fcd2400-5643-46bc-bc7b-7005ebdd4cd6"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{paymentAmount}]]></textFieldExpression>
-			</textField>
-		</band>
+		<band height="276" splitType="Stretch"/>
 	</summary>
 </jasperReport>

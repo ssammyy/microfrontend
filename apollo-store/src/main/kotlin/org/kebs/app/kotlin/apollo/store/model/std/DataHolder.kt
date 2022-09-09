@@ -82,7 +82,7 @@ interface LevyPayments{
     fun getId(): Long?
     fun getEntryNumber(): String?
     fun getPaymentDate(): String?
-    fun getPaymentAmount(): String?
+    fun getTotalPaymentAmt(): String?
     fun getCompanyId(): Long?
     fun getCompanyName(): String?
     fun getAssignStatus(): Long?
@@ -92,6 +92,17 @@ interface LevyPayments{
     fun getRegistrationNumber(): String?
     fun getPeriodFrom(): String?
     fun getPeriodTo(): String?
+    fun getPaymentSlipNo():String?
+    fun getPaymentSlipDate(): String?
+    fun getPaymentType(): String?
+    fun getTotalDeclAmt(): String?
+    fun getTotalPenaltyAmt(): String?
+    fun getBankRefNo(): String?
+    fun getBank(): String?
+    fun getCommodityType(): String?
+    fun getQtyManf(): String?
+    fun getExFactVal(): String?
+    fun getLevyPaid(): String?
 }
 interface PenaltyDetails{
     fun getPenaltyOrderNo(): Long?
