@@ -1099,7 +1099,7 @@ class PvocService(
                             iwaiversApplicationRepo.save(waiver)
                         }
                         data.put("is_owner", loggedInUser?.id == waiver.wetcMember)
-                        data.put("tasks", this.pvocBpmn.getWaiverTasks("PVOC_OFFICER", waiver.id))
+                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("PVOC_OFFICER"), waiver.id))
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_NAC_OFFICER" } -> {
                         data.put("is_nac_officer", true)
@@ -1109,7 +1109,7 @@ class PvocService(
                             iwaiversApplicationRepo.save(waiver)
                         }
                         data.put("is_owner", loggedInUser?.id == waiver.wetcSecretary)
-                        data.put("tasks", this.pvocBpmn.getWaiverTasks("NAC_OFFICER", waiver.id))
+                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("NAC_OFFICER"), waiver.id))
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_CS_OFFICER" } -> {
                         data.put("is_cs_officer", true)
@@ -1119,9 +1119,12 @@ class PvocService(
                             iwaiversApplicationRepo.save(waiver)
                         }
                         data.put("is_owner", loggedInUser?.id == waiver.wetcChairman)
-                        data.put("tasks", this.pvocBpmn.getWaiverTasks("CS_OFFICER", waiver.id))
+                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("CS_OFFICER"), waiver.id))
                     }
                 }
+                data.put("is_owner", true)
+                data.put("is_cs_officer", true)
+                data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("CS_OFFICER", "NAC_OFFICER", "WATC_OFFICER", "PVOC_OFFICER"), waiver.id))
             } catch (ex: Exception) {
                 KotlinLogging.logger { }.error("Failed to add data", ex)
             }

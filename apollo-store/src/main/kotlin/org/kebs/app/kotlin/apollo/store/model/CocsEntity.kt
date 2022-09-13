@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import java.io.Serializable
 import java.sql.Timestamp
@@ -41,27 +40,22 @@ class CocsEntity : Serializable {
 
     @Column(name = "ACCEPTABLE_DOC_DATE", nullable = true)
     @Basic
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var acceptableDocDate: Timestamp? = null
 
     @Column(name = "FINAL_DOC_DATE", nullable = true)
     @Basic
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var finalDocDate: Timestamp? = null
 
     @Column(name = "RFC_DATE", nullable = true)
     @Basic
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var rfcDate: Timestamp? = null
 
     @Column(name = "COC_ISSUE_DATE", nullable = true)
     @Basic
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var cocIssueDate: Timestamp? = null
 
     @Column(name = "COI_ISSUE_DATE", nullable = true)
     @Basic
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var coiIssueDate: Timestamp? = null
 
     @NotEmpty(message = "Required field")
@@ -187,10 +181,18 @@ class CocsEntity : Serializable {
     @Basic
     var placeOfInspection: String? = null
 
+
+    @Column(name = "INSPECTION_ZONE", length = 400)
+    @Basic
+    var inspectionZone: String? = null
+
+    @Column(name = "INSPECTION_PROVINCE", length = 400)
+    @Basic
+    var inspectionProvince: String? = null
+
     @NotNull(message = "Required field")
     @Column(name = "DATE_OF_INSPECTION", nullable = false)
     @Basic
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var dateOfInspection: Timestamp? = null
 
     @NotEmpty(message = "Required field")
@@ -219,23 +221,26 @@ class CocsEntity : Serializable {
     var finalInvoiceNumber: String? = null
 
     @NotNull(message = "Required field")
-    @Column(name = "FINAL_INVOICE_EXCHANGE_RATE", nullable = false, precision = 10, scale = 2)
+    @Column(name = "FINAL_INVOICE_EXCHANGE_RATE", precision = 17, scale = 2)
     @Basic
     var finalInvoiceExchangeRate: Double = 0.0
 
     @NotEmpty(message = "Required field")
-    @Column(name = "FINAL_INVOICE_CURRENCY", nullable = false, length = 10)
+    @Column(name = "FINAL_INVOICE_CURRENCY", length = 10)
     @Basic
     var finalInvoiceCurrency: String? = null
 
-    @NotNull(message = "Required field")
-    @Column(name = "FINAL_INVOICE_DATE", nullable = false)
+    @Column(name = "FINAL_INVOICE_DATE")
     @Basic
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var finalInvoiceDate: Timestamp? = null
 
+
+    @Column(name = "INVOICE_PAYMENT_DATE")
+    @Basic
+    var invoicePaymentDate: Timestamp? = null
+
     @NotNull(message = "Required field")
-    @Column(name = "SHIPMENT_PARTIAL_NUMBER", nullable = false)
+    @Column(name = "SHIPMENT_PARTIAL_NUMBER")
     @Basic
     var shipmentPartialNumber: Long = 0
 

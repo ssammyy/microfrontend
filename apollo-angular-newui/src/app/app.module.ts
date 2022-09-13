@@ -371,6 +371,7 @@ import {RfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-docu
 import {RfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component';
 import {ViewRfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component';
 import {ViewRfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component';
+import {UpdateWaiverTaskComponent} from "./apollowebs/pvoc/waivers/update-waiver-task/update-waiver-task.component";
 
 @NgModule({
     imports: [
@@ -696,6 +697,7 @@ import {ViewRfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-
         StdLevyCompleteTasksComponent,
         ViewWaiverApplicationsComponent,
         ViewWaiverDetailsComponent,
+        UpdateWaiverTaskComponent,
         ViewExemptionApplicationsComponent,
         ViewExemptionDetailsComponent,
         ViewComplaintsComponent,

@@ -422,7 +422,7 @@ class PvocAgentService(
                     res.serialNumber = queryResponseReference("PVOC")
                     res.response = form.queryResponse
                     res.responseFrom = "PVOC"
-                    res.linkToUploads = form.linkToUploads
+                    res.linkToUploads = form.linkToUploads?.joinToString(",")
                     res.status = 1
                     res.varField1 = form.queryAnalysis
                     res.createdOn = Timestamp.from(Instant.now())

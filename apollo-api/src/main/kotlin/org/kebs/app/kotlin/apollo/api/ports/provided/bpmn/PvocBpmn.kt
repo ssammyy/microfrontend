@@ -304,10 +304,13 @@ class PvocBpmn(
         return getTaskDetails(tasks)
     }
 
-    fun getWaiverTasks(category: String, waiverId: Long): List<DiTaskDetails> {
-        val tasks = taskService.createTaskQuery().taskCategory(category)
-                .processVariableValueEquals("waiverId", waiverId)
-                .listPage(0, 30)
+    fun getWaiverTasks(category: List<String>, waiverId: Long): List<DiTaskDetails> {
+        val tasks = mutableListOf<org.flowable.task.api.Task>()
+        for (cat in category) {
+            tasks.addAll(taskService.createTaskQuery().taskCategory(cat)
+                    .processVariableValueEquals("waiverId", waiverId)
+                    .listPage(0, 30))
+        }
         return getTaskDetails(tasks)
     }
 

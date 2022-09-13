@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {PVOCService} from "../../../../core/store/data/pvoc/pvoc.service";
 import {MatDialog} from "@angular/material/dialog";
-import {UpdateExemptionTaskComponent} from "../../exemptions/update-exemption-task/update-exemption-task.component";
 import {ApproveRejectApplicationComponent} from "../../../di/ism/approve-reject-application/approve-reject-application.component";
 import {UpdateWaiverTaskComponent} from "../update-waiver-task/update-waiver-task.component";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
@@ -15,7 +14,7 @@ import {DestinationInspectionService} from "../../../../core/store/data/di/desti
 export class ViewWaiverDetailsComponent implements OnInit {
     attachmentColumns = ["name", "description", "fileType", "actions"]
     historyColumns = ["names", "remarks", "waiverAction"]
-    productsColumns = ["hsCode", "unit", "quantity", "brand", "origin", "productDescription", "serialNo", "currency"]
+    productsColumns = ["hsCode", "unit", "quantity", "totalAmount", "brand", "origin", "productDescription", "serialNo", "currency"]
     requestId: any
     waiverDetails: any
     activeTab: number = 0

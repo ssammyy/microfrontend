@@ -124,6 +124,11 @@
                                                 <mat-cell
                                                         *matCellDef="let element"> {{element.quantity}} </mat-cell>
                                             </ng-container>
+                                            <ng-container matColumnDef="totalAmount">
+                                                <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
+                                                <mat-cell
+                                                        *matCellDef="let element"> {{element.totalAmount}} </mat-cell>
+                                            </ng-container>
                                             <ng-container matColumnDef="brand">
                                                 <mat-header-cell *matHeaderCellDef>Brand</mat-header-cell>
                                                 <mat-cell
