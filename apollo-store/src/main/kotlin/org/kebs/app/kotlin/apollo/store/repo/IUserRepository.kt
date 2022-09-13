@@ -440,26 +440,41 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturesLevyPayments(@Param("entryNumber") entryNumber: Long?): MutableList<LevyPayments>
 
     @Query(
-        value = "SELECT p.ID as id,c.NAME as companyName,h.REQUEST_HEADER_PAYMENT_SLIP_NO as paymentSlipNo,p.ENTRY_NUMBER as entryNumber," +
-                "c.KRA_PIN as kraPin,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate,h.REQUEST_HEADER_PAYMENT_TYPE as paymentType,p.PAYMENT_DATE as paymentDate,h.REQUEST_HEADER_TOTAL_DECL_AMT as totalDeclAmt,p.PENALTY_APPLIED as totalPenaltyAmt," +
-                "p.PAYMENT_AMOUNT as totalPaymentAmt,h.REQUEST_BANK_REF_NO as bankRefNo,h.REQUEST_HEADER_BANK as bank,d.COMMODITY_TYPE as commodityType" +
-                ",c.REGISTRATION_NUMBER as registrationNumber,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,d.QTY_MANF as qtyManf,d.EX_FACT_VAL as exFactVal,d.LEVY_PAID as levyPaid " +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER" +
-                " JOIN LOG_SL2_PAYMENTS_HEADER h ON p.PAYMENT_ID=h.ID JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID " +
-                "WHERE p.ID= :id",
+        value = "SELECT d.ID as id,p.ENTRY_NUMBER as entryNumber,d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_NO as paymentSlipNo,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate," +
+                "h.REQUEST_HEADER_PAYMENT_TYPE as paymentType,h.REQUEST_HEADER_TOTAL_DECL_AMT as totalDeclAmt,h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,h.REQUEST_BANK_REF_NO as bankRefNo," +
+                "h.REQUEST_HEADER_TOTAL_PAYMENT_AMT as totalPaymentAmt,h.REQUEST_HEADER_BANK as bankName,d.COMMODITY_TYPE as commodityType,p.PAYMENT_DATE as paymentDate," +
+                "d.LEVY_PAID as levyPaid,d.PENALTY_PAID as penaltyPaid,d.QTY_MANF as qtyManf,d.EX_FACT_VAL as exFactVal," +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID LEFT JOIN  LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
+                "WHERE d.ID= :id ",
         nativeQuery = true
     )
     fun getLevyPaymentsReceipt(@Param("id") id: Long?): MutableList<LevyPayments>
 
 
     @Query(
-        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount," +
+        value = "SELECT d.ID as id,p.ENTRY_NUMBER as entryNumber,d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_NO as paymentSlipNo,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate," +
+                "h.REQUEST_HEADER_PAYMENT_TYPE as paymentType,h.REQUEST_HEADER_TOTAL_DECL_AMT as totalDeclAmt,h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,h.REQUEST_BANK_REF_NO as bankRefNo," +
+                "h.REQUEST_HEADER_TOTAL_PAYMENT_AMT as totalPaymentAmt,h.REQUEST_HEADER_BANK as bankName,d.COMMODITY_TYPE as commodityType,p.PAYMENT_DATE as paymentDate," +
+                "d.LEVY_PAID as levyPaid,d.PENALTY_PAID as penaltyPaid," +
                 "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
-                "WHERE c.ID= :companyId ORDER BY p.ID DESC",
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID LEFT JOIN  LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
+                "WHERE c.ID= :companyId ORDER BY d.ID DESC",
         nativeQuery = true
     )
     fun getManufacturesLevyPaymentsList(@Param("companyId") companyId: Long?): MutableList<LevyPayments>
+
+    @Query(
+        value = "SELECT d.ID as id,p.ENTRY_NUMBER as entryNumber,cast(d.PERIOD_FROM as varchar(200)) as periodFrom ,cast(d.PERIOD_TO as varchar(200)) as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_NO as paymentSlipNo,cast(h.REQUEST_HEADER_PAYMENT_SLIP_DATE as varchar(200)) as paymentSlipDate," +
+                "h.REQUEST_HEADER_PAYMENT_TYPE as paymentType,h.REQUEST_HEADER_TOTAL_DECL_AMT as totalDeclAmt,h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,h.REQUEST_BANK_REF_NO as bankRefNo," +
+                "h.REQUEST_HEADER_TOTAL_PAYMENT_AMT as totalPaymentAmt,h.REQUEST_HEADER_BANK as bankName,d.COMMODITY_TYPE as commodityType,cast(p.PAYMENT_DATE as varchar(200)) as paymentDate," +
+                "d.LEVY_PAID as levyPaid,d.PENALTY_PAID as penaltyPaid," +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID LEFT JOIN  LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
+                "WHERE c.ENTRY_NUMBER= :entryNumber ORDER BY d.ID DESC",
+        nativeQuery = true
+    )
+    fun getManufacturesPayments(@Param("entryNumber") entryNumber: String?): MutableList<LevyPayment>
 
     @Query(
         value = "SELECT COMPANY_EMAIL as companyEmail,NAME as companyName  FROM DAT_KEBS_COMPANY_PROFILE WHERE STATUS='4'",

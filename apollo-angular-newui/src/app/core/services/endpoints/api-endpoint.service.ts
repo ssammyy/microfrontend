@@ -483,6 +483,7 @@ export class ApiEndpointService {
         STD_LEVY_MANUFACTURES_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPaymentsList`,
         STD_LEVY_PENALTY_DETAIL: `${ApiEndpointService.STL_CONTEXT}/getLevyPenalty`,
         STD_LEVY_MANUFACTURE_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPenalty`,
+        STD_LEVY_MANUFACTURE_PAY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesPayments`,
         STD_LEVY_MANUFACTURES_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPenaltyList`,
         STD_LEVY_COMPANY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getCompanyProfile`,
         STD_LEVY_SL_FORM: `${ApiEndpointService.STL_CONTEXT}/getNotificationFormDetails`,

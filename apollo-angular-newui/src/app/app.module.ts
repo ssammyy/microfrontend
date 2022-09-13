@@ -756,7 +756,8 @@ import {
 import {RfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component';
 import {RfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component';
 import {MatBadgeModule} from "@angular/material/badge";
-import {NgxDocViewerModule} from "ngx-doc-viewer";
+import { StdLevyManufacturerPenaltyComponent } from './apollowebs/standards-levy/std-levy-manufacturer-penalty/std-levy-manufacturer-penalty.component';
+//import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({
     imports: [
@@ -824,7 +825,7 @@ import {NgxDocViewerModule} from "ngx-doc-viewer";
         MatListModule,
         MatBadgeModule,
         NgbRatingModule,
-        NgxDocViewerModule
+        //NgxDocViewerModule
     ],
     declarations: [
         AppComponent,
@@ -1154,7 +1155,8 @@ import {NgxDocViewerModule} from "ngx-doc-viewer";
         SpcSecTaskComponent,
         NwaJustificationFormComponent,
         RfcCocDocumentsComponent,
-        RfcCorDocumentsComponent
+        RfcCorDocumentsComponent,
+        StdLevyManufacturerPenaltyComponent
 
     ],
     entryComponents: [],

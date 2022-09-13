@@ -954,11 +954,12 @@ data class LevyPaymentsDTO(
         var totalDeclAmt: String?=null,
         var totalPenaltyAmt: String?=null,
         var bankRefNo: String?=null,
-        var bank: String?=null,
+        var bankName: String?=null,
         var commodityType: String?=null,
         var qtyManf: String?=null,
         var exFactVal: String?=null,
-        var levyPaid: String?=null
+        var levyPaid: String?=null,
+        var penaltyPaid: String?=null
 )
 
 data class FuelRemediationDetailsDTO(

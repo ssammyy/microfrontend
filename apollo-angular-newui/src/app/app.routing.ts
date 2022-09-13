@@ -472,6 +472,7 @@ import {
 } from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-details/manufacturer-complaint-details.component";
 import {RfcCocDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component";
 import {RfcCorDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component";
+import {StdLevyManufacturerPenaltyComponent} from "./apollowebs/standards-levy/std-levy-manufacturer-penalty/std-levy-manufacturer-penalty.component";
 
 export const routes: Routes = [
     {
@@ -1726,6 +1727,10 @@ export const routes: Routes = [
         path: 'stdLevyPaidHistory', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyPaidHistoryComponent}],
         // no data
+    },
+    {
+        path: 'stdLevyManPenalty', component: AdminLayoutComponent,
+        children: [{path: '', component: StdLevyManufacturerPenaltyComponent}],
     },
     {
         path: 'stdLevyPenaltiesHistory', component: AdminLayoutComponent,
