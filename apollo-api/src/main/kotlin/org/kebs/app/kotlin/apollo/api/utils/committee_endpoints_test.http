@@ -94,3 +94,8 @@ Content-Type: application/json
   "recipientId": 80,
   "title": "TEST"
 }
+
+###
+GET https://localhost:8006/api/v1/migration/standard/getAdditionalDocuments?standardId=569
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY2MjM3NjA5MSwiZXhwIjoxNjYyMzgyMDkxLCJhZGRyZXNzIjoiMTI3LjAuMC4xIiwidXNlckFnZW50IjoiW0FwYWNoZS1IdHRwQ2xpZW50LzQuNS4xMyAoSmF2YS8xNy4wLjMpXSIsImZ1bGxOYW1lIjoiSmFtZXMgTXVnYW5kYSIsInJvbGVzIjoiU1RBTkRBUkRTX0RFVkVMT1BNRU5UX0ZVTExfQURNSU4ifQ.ETPaYVATM1MJ6vQWkSmIQToc4AQT-cqdZo1nfudIWZKru0h-vKhhvsLBshVjzn-Lk527sVsmNEDrBxKHXqlYnQ
+

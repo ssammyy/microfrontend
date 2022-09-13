@@ -20,4 +20,7 @@ interface DepartmentRepository : JpaRepository<Department,Long> {
     @Modifying
     @Query("UPDATE  Department d set d.name = ?1, d.abbreviations = ?2, d.codes =?3 where d.id = ?4")
     fun updateDepartmentById(departmentName: String?, departmentAbbreviation: String?, departmentCodes:String?, departmentId: Long?)
+    abstract fun findAllById(departmentId: Long): MutableList<Department>
+
+
 }

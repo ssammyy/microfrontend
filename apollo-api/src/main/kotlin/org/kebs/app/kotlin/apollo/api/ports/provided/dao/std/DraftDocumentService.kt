@@ -41,7 +41,7 @@ class DraftDocumentService(
         return draftDocumentRepository.findByItemId(itemId).stream()
     }
 
-    fun findUploadedDIFileBYId(diDocumentId: Long): DatKebsSdStandardsEntity {
+    fun findUploadedDIFileBYId(diDocumentId: Long): Collection<DatKebsSdStandardsEntity?>? {
         return standardsDocumentsRepository.findBySdDocumentId(diDocumentId)
             ?: throw ExpectedDataNotFound("No File found with the following [ id=$diDocumentId]")
     }

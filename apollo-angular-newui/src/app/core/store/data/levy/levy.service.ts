@@ -626,6 +626,12 @@ export class LevyService {
         return this.http.get<PenaltyDetails>(url, {params}).pipe();
     }
 
+    public getManufacturesPayments(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_PAY_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
+    }
+
     public getManufacturesLevyPenaltyList(companyId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURES_PENALTY_DETAILS);
         const params = new HttpParams().set('companyId', companyId);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Subject} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
@@ -7,6 +7,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {LevyService} from "../../../core/store/data/levy/levy.service";
 import {KnwSecTasks} from "../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {DataTableDirective} from "angular-datatables";
 declare const $: any;
 
 @Component({
@@ -16,7 +17,10 @@ declare const $: any;
 })
 export class StandardLevyPenaltyHistoryComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
+  dtTrigger1: Subject<any> = new Subject<any>();
+  dtTrigger2: Subject<any> = new Subject<any>();
   p = 1;
   p2 = 1;
   tasks: ManufacturePenalty[] = [];
@@ -42,7 +46,8 @@ export class StandardLevyPenaltyHistoryComponent implements OnInit {
     return this.scheduleVisitFormGroup.controls;
   }
   ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
+    this.dtTrigger1.unsubscribe();
+    this.dtTrigger2.unsubscribe();
   }
   showToasterSuccess(title:string,message:string){
     this.notifyService.showSuccess(message, title)
@@ -58,7 +63,7 @@ export class StandardLevyPenaltyHistoryComponent implements OnInit {
     this.levyService.getManufacturerPenaltyHistory().subscribe(
         (response: ManufacturePenalty[])=> {
           this.tasks = response;
-          this.dtTrigger.next();
+          this.rerender();
           this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
@@ -130,6 +135,19 @@ export class StandardLevyPenaltyHistoryComponent implements OnInit {
           '<a href="{3}" target="{4}" data-notify="url"></a>' +
           '</div>'
     });
+  }
+  rerender(): void {
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      if (dtElement.dtInstance)
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
+    });
+    setTimeout(() => {
+      this.dtTrigger1.next();
+      this.dtTrigger2.next();
+    });
+
   }
 
 }

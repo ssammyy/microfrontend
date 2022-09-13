@@ -1997,6 +1997,19 @@ return getUserTasks();
             ?: throw ExpectedDataNotFound("No Data Found")
     }
 
+    fun getManufacturesPayments(): MutableList<LevyPayment>{
+        commonDaoServices.loggedInUserDetailsEmail().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureEntryNo(id)
+                    .let {
+
+                        return companyProfileRepo.getManufacturesPayments(it.toString())
+                    }
+
+            }
+            ?: throw ExpectedDataNotFound("No Data Found")
+    }
+
     fun getManufacturesLevyPaymentsList(companyId: Long): MutableList<LevyPayments>{
         return companyProfileRepo.getManufacturesLevyPaymentsList(companyId)
     }
@@ -2109,14 +2122,23 @@ return getUserTasks();
                 it.getId(),
                 it.getEntryNumber(),
                 it.getPaymentDate(),
-                it.getPaymentAmount(),
+                it.getTotalPaymentAmt(),
                 it.getCompanyName(),
-                it.getFirstName(),
-                it.getLastName(),
                 it.getKraPin(),
-                it.getRegistrationNumber(),
                 it.getPeriodFrom(),
                 it.getPeriodTo(),
+                it.getPaymentSlipNo(),
+                it.getPaymentSlipDate(),
+                it.getPaymentType(),
+                it.getTotalDeclAmt(),
+                it.getTotalPenaltyAmt(),
+                it.getBankRefNo(),
+                it.getBankName(),
+                it.getCommodityType(),
+                it.getQtyManf(),
+                it.getExFactVal(),
+                it.getLevyPaid(),
+                it.getPenaltyPaid()
             )
         }
     }

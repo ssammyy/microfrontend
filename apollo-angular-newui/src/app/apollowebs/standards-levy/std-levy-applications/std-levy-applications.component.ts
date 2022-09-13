@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {UsersEntity} from "../../../core/store/data/std/std.model";
 import {
   ClosedCompanyDTO,
@@ -149,11 +149,11 @@ export class StdLevyApplicationsComponent implements OnInit {
 
 
 
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective;
-
-  dtTrigger: Subject<any> = new Subject<any>();
-  isDtInitialized: boolean = false
+  dtOptions: DataTables.Settings = {};
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
+  dtTrigger1: Subject<any> = new Subject<any>();
+  dtTrigger2: Subject<any> = new Subject<any>();
   loadingText: string;
 
   constructor(
@@ -331,6 +331,12 @@ export class StdLevyApplicationsComponent implements OnInit {
     });
 
   }
+
+  ngOnDestroy(): void {
+    this.dtTrigger1.unsubscribe();
+    this.dtTrigger2.unsubscribe();
+  }
+
   get assignCompanyTaskForm(): any {
     return this.assignCompanyTaskFormGroup.controls;
   }
@@ -468,15 +474,7 @@ export class StdLevyApplicationsComponent implements OnInit {
           this.manufactureLists = response;
           console.log(this.manufactureLists);
           this.SpinnerService.hide();
-          if (this.isDtInitialized) {
-            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
-              this.dtTrigger.next();
-            });
-          } else {
-            this.isDtInitialized = true
-            this.dtTrigger.next();
-          }
+          this.rerender();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -550,7 +548,7 @@ console.log(this.assignCompanyTaskFormGroup.value);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Assigning Task`);
+          this.showToasterError('Error', `Error Assigning Task Try Again`);
           console.log(error.message);
         }
     );
@@ -570,7 +568,7 @@ console.log(this.assignCompanyTaskFormGroup.value);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Assigning Task`);
+          this.showToasterError('Error', `Error Assigning Task Try Again`);
           console.log(error.message);
         }
     );
@@ -590,7 +588,7 @@ console.log(this.assignCompanyTaskFormGroup.value);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Assigning Task`);
+          this.showToasterError('Error', `Error Assigning Task Try Again`);
           console.log(error.message);
         }
     );
@@ -612,7 +610,7 @@ console.log(this.assignCompanyTaskFormGroup.value);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Editing Company`);
+          this.showToasterError('Error', `Error Editing Company Try Again`);
           console.log(error.message);
         }
     );
@@ -635,7 +633,7 @@ console.log(this.assignCompanyTaskFormGroup.value);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Editing Company`);
+          this.showToasterError('Error', `Error Editing Company Try Again`);
           console.log(error.message);
         }
     );
@@ -670,6 +668,20 @@ console.log(this.assignCompanyTaskFormGroup.value);
           '<a href="{3}" target="{4}" data-notify="url"></a>' +
           '</div>'
     });
+  }
+
+  rerender(): void {
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      if (dtElement.dtInstance)
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
+    });
+    setTimeout(() => {
+      this.dtTrigger1.next();
+      this.dtTrigger2.next();
+    });
+
   }
 
 

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Subject} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
@@ -19,12 +19,12 @@ export class StandardLevyPenaltiesComponent implements OnInit {
   penaltiesDetails: PenaltyDetails[] = [];
   public actionRequest: PenaltyDetails | undefined;
   public pdfRequest: PenaltyDetails | undefined;
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective;
-  dtElements: DataTableDirective;
+  dtOptions: DataTables.Settings = {};
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
+  dtTrigger1: Subject<any> = new Subject<any>();
+  dtTrigger2: Subject<any> = new Subject<any>();
 
-  dtTrigger: Subject<any> = new Subject<any>();
-  dtTriggers: Subject<any> = new Subject<any>();
   isDtInitialized: boolean = false
   loadingText: string;
   constructor(
@@ -38,31 +38,21 @@ export class StandardLevyPenaltiesComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-    this.dtTriggers.unsubscribe();
+    this.dtTrigger1.unsubscribe();
+    this.dtTrigger2.unsubscribe();
   }
 
 
 
   public getLevyPenalty(): void{
-    this.loadingText = "Retrieving Payments ...."
+    this.loadingText = "Retrieving Penalties ...."
     this.SpinnerService.show();
     this.levyService.getLevyPenalty().subscribe(
         (response: PenaltyDetails[]) => {
           this.penaltyDetails = response;
           console.log(this.penaltyDetails);
           this.SpinnerService.hide();
-          if (this.isDtInitialized) {
-            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
-              this.dtTrigger.next();
-              this.dtTriggers.next();
-            });
-          } else {
-            this.isDtInitialized = true
-            this.dtTrigger.next();
-            this.dtTriggers.next();
-          }
+          this.rerender();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -91,17 +81,7 @@ export class StandardLevyPenaltiesComponent implements OnInit {
             this.penaltiesDetails = response;
             this.SpinnerService.hide();
             console.log(this.penaltiesDetails);
-            if (this.isDtInitialized) {
-              this.dtElements.dtInstance.then((dtInstance: DataTables.Api) => {
-                dtInstance.destroy();
-                this.dtTrigger.next();
-                this.dtTriggers.next();
-              });
-            } else {
-              this.isDtInitialized = true
-              this.dtTrigger.next();
-              this.dtTriggers.next();
-            }
+            this.rerender();
           },
           (error: HttpErrorResponse) => {
             this.SpinnerService.hide();
@@ -114,6 +94,19 @@ export class StandardLevyPenaltiesComponent implements OnInit {
     // @ts-ignore
     container.appendChild(button);
     button.click();
+
+  }
+  rerender(): void {
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      if (dtElement.dtInstance)
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
+    });
+    setTimeout(() => {
+      this.dtTrigger1.next();
+      this.dtTrigger2.next();
+    });
 
   }
 

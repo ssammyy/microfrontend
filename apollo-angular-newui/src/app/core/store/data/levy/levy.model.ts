@@ -322,6 +322,17 @@ export interface PaymentDetails{
     registrationNumber: string;
     periodFrom: string;
     periodTo: string;
+    paymentSlipNo: string;
+    paymentType :string;
+    totalDeclAmt :string;
+    totalPenaltyAmt :string;
+    bankRefNo :string;
+    totalPaymentAmt :string;
+    bankName :string;
+    commodityType :string;
+    levyPaid: string;
+    penaltyPaid: string;
+
 }
 export interface PenaltyDetails{
     id: number;

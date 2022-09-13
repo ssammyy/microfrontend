@@ -1509,6 +1509,8 @@ class StdLevyController(
         return standardLevyService.getLevyPayments()
     }
 
+
+
     @GetMapping("/getManufacturesLevyPayments")
     @ResponseBody
     fun getManufacturesLevyPayments(): MutableList<LevyPayments>
@@ -1549,6 +1551,12 @@ class StdLevyController(
 
 
 
+    @GetMapping("/getManufacturesPayments")
+    @ResponseBody
+    fun getManufacturesPayments(): MutableList<LevyPayment>
+    {
+        return standardLevyService.getManufacturesPayments()
+    }
 
 
     @GetMapping("/getManufacturesLevyPenalty")
@@ -1608,6 +1616,7 @@ class StdLevyController(
         response: HttpServletResponse,
         @RequestParam(value = "id") id: Long
     ) {
+
         val map = hashMapOf<String, Any>()
         map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 

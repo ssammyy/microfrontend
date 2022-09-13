@@ -6,8 +6,9 @@ export interface StandardRequest {
     phone: string;
     email: string;
     tc_id: number;
-    department_id: number;
+    departmentId: number;
     product_category: number;
+    taskId: string;
 
 
 }

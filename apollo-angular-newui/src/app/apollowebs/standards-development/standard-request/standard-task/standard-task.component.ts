@@ -1,12 +1,16 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
-import {HOFFeedback, StandardTasks, TaskData} from "../../../../core/store/data/std/request_std.model";
+import {Document, HOFFeedback, StandardRequestB, TaskData} from "../../../../core/store/data/std/request_std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import { MatRadioModule } from '@angular/material/radio';
+import {CommitteeService} from "../../../../core/store/data/std/committee.service";
+import {Department, StandardRequest, UsersEntity} from "../../../../core/store/data/std/std.model";
+import {MatSelect} from "@angular/material/select";
+import {MatOption} from "@angular/material/core";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
     selector: 'app-standard-task',
@@ -15,128 +19,292 @@ import { MatRadioModule } from '@angular/material/radio';
 })
 export class StandardTaskComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
-    dtTrigger: Subject<any> = new Subject<any>();
-    @ViewChild(DataTableDirective, {static: false})
-    dtElement: DataTableDirective;
-    isDtInitialized: boolean = false
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtTrigger1: Subject<any> = new Subject<any>();
+    dtTrigger2: Subject<any> = new Subject<any>();
+    dtTrigger3: Subject<any> = new Subject<any>();
     // data source for the radio buttons:
     seasons: string[] = ['Develop a standard through committee draft', 'Adopt existing International Standard', 'Review existing Kenyan Standard',
-        'Development of urgent Kenyan standard', 'Development of publicly available specification', 'Development of national workshop agreement'];
+        'Development of publicly available specification', 'Development of national workshop agreement', 'Adoption of EA and other regions standards'];
 
     // selected item
     sdOutput: string;
+    blob: Blob;
+    selectedDepartment: string;
+    selectedStandard: number;
+
 
     // to dynamically (by code) select item
     // from the calling component add:
     @Input() selectSeason: string;
+    public departments !: Department[];
+    public tcSecs !: UsersEntity[];
 
     p = 1;
     p2 = 1;
     countLine = 0;
-    tasks: StandardTasks[] = [];
-    public actionRequest: StandardTasks | undefined;
+    tasks: StandardRequestB[] = [];
+    public actionRequest: StandardRequestB;
 
     public hofFeedback: HOFFeedback | undefined;
+    public standardRequest: StandardRequest | undefined;
+    stdDepartmentChange: FormGroup;
+    stdHOFReview: FormGroup;
 
     public technicalName = "";
+    docs !: Document[];
+    dtOptionsB: DataTables.Settings = {};
 
     public taskData: TaskData | undefined;
 
     constructor(private standardDevelopmentService: StandardDevelopmentService,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
-
+                private formBuilder: FormBuilder,
+                private committeeService: CommitteeService,
     ) {
+    }
+
+
+    validateAllFormFields(formGroup: FormGroup) {
+        Object.keys(formGroup.controls).forEach(field => {
+            const control = formGroup.get(field);
+            if (control instanceof FormControl) {
+                control.markAsTouched({onlySelf: true});
+            } else if (control instanceof FormGroup) {
+                this.validateAllFormFields(control);
+            }
+        });
     }
 
     ngOnInit(): void {
         this.getHOFTasks();
         this.sdOutput = this.selectSeason;
+        this.dtOptionsB = {
+            searching: false,
+            paging: false, info: false
+        };
 
+        this.stdDepartmentChange = this.formBuilder.group({
+            departmentId: ['', Validators.required],
+            id: ['', Validators.required],
+
+        });
+        this.stdHOFReview = this.formBuilder.group({
+            isTcSec: ['', Validators.required],
+            isTc: ['', Validators.required],
+            sdOutput: ['', Validators.required],
+            id: ['', Validators.required],
+            sdRequestID: ['', Validators.required],
+
+        });
 
     }
 
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
-  public hideModel() {
-    this.closeModal?.nativeElement.click();
-  }
+    @ViewChild('closeModalB') private closeModalB: ElementRef | undefined;
 
-  public getHOFTasks(): void {
-    this.standardDevelopmentService.getHOFTasks().subscribe(
-        (response: StandardTasks[]) => {
-            this.tasks = response;
+    public hideModel() {
+        this.closeModal?.nativeElement.click();
+    }
 
-            if (this.isDtInitialized) {
-                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.destroy();
-                    this.dtTrigger.next();
-                });
-            } else {
-                this.isDtInitialized = true
-                this.dtTrigger.next();
+    public hideModelB() {
+        this.closeModalB?.nativeElement.click();
+    }
+
+    get formStdRequest(): any {
+        return this.stdDepartmentChange.controls;
+    }
+
+    public getHOFTasks(): void {
+        this.standardDevelopmentService.getHOFTasks().subscribe(
+            (response: StandardRequestB[]) => {
+                this.tasks = response;
+                this.rerender()
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
             }
-            // this.dtTrigger.next();
+        );
+    }
 
-            console.log(response)
-            this.hideModel()
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
+    public getTechnicalCommitteeName(id: number): void {
+        this.standardDevelopmentService.getTechnicalCommitteeName(id).subscribe(
+            (response: string) => {
+                this.technicalName = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    public onReviewTask(): void {
+
+        if (this.stdHOFReview.valid) {
+            this.SpinnerService.show();
+
+            this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
+                (response) => {
+                    this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
+                    this.SpinnerService.hide();
+                    this.getHOFTasks();
+                    this.stdHOFReview.reset();
+                    this.hideModel()
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                    this.SpinnerService.hide();
+
+                }
+            )
+        } else {
+            this.showToasterError("Error", `Please Fill In All The Fields.`);
+
         }
-    );
-  }
+    }
 
-  public  getTechnicalCommitteeName(id:number): void {
-    this.standardDevelopmentService.getTechnicalCommitteeName(id).subscribe(
-        (response: string) => {
-          console.log(response)
-          this.technicalName = response;
-        },
-        (error: HttpErrorResponse) => {
-          //alert(error.message);
+    public updateDepartment(): void {
+
+        if (this.stdDepartmentChange.valid) {
+            this.SpinnerService.show();
+
+            this.standardDevelopmentService.updateDepartmentStandardRequest(this.stdDepartmentChange.value).subscribe(
+                (response) => {
+                    this.showToasterSuccess(response.httpStatus, `Section Reassigned`);
+                    this.getHOFTasks();
+                    this.hideModelB()
+                    this.clear()
+
+                    this.SpinnerService.hide();
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                    this.SpinnerService.hide();
+
+                }
+            )
+        } else {
+            this.showToasterError("Error", `Please Select A Sector.`);
+
         }
-    );
-  }
 
-  public onReviewTask(hofFeedback:HOFFeedback): void {
-      console.log(hofFeedback);
-      this.SpinnerService.show();
+    }
 
-      this.standardDevelopmentService.reviewTask(hofFeedback).subscribe(
-          (response) => {
-            console.log(response);
-              this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
-              this.SpinnerService.hide();
-            this.getHOFTasks();
-          },
-          (error: HttpErrorResponse) => {
-            alert(error.message);
-            this.SpinnerService.hide();
+    public onOpenModal(task: StandardRequestB, mode: string): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+        if (mode === 'edit') {
+            this.actionRequest = task;
+            button.setAttribute('data-target', '#updateRequestModal');
+            this.getAllDocs(String(this.actionRequest.id))
+            this.getTcSecs()
+            this.selectedStandard = this.actionRequest.id
 
-          }
-      )
-  }
 
-  public onOpenModal(task: StandardTasks, mode: string): void {
-    const container = document.getElementById('main-container');
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.style.display = 'none';
-    button.setAttribute('data-toggle', 'modal');
-    console.log(task.taskId)
-      if (mode === 'edit') {
-          this.actionRequest = task;
-          button.setAttribute('data-target', '#updateRequestModal');
-      }
+        }
+        if (mode === 'divisions') {
+            this.actionRequest = task;
+            button.setAttribute('data-target', '#divisionChange');
+            this.getDepartments()
+            this.selectedDepartment = this.actionRequest.departmentName
+            this.selectedStandard = this.actionRequest.id
 
-      // @ts-ignore
-      container.appendChild(button);
-      button.click();
 
-  }
+        }
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+
+    }
 
     showToasterSuccess(title: string, message: string) {
         this.notifyService.showSuccess(message, title)
+
+    }
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger1.next();
+            this.dtTrigger2.next();
+            this.dtTrigger3.next();
+
+        });
+
+    }
+
+    public getAllDocs(standardId: string): void {
+        this.standardDevelopmentService.getAdditionalDocuments(standardId).subscribe(
+            (response: Document[]) => {
+                this.docs = response;
+                this.rerender()
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.committeeService.viewDocsById(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                window.open(downloadURL, '_blank');
+
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
+
+    public getDepartments(): void {
+        this.standardDevelopmentService.getDepartmentsb().subscribe(
+            (response: Department[]) => {
+                this.departments = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    public getTcSecs(): void {
+        this.standardDevelopmentService.getTcSec().subscribe(
+            (response: UsersEntity[]) => {
+                this.tcSecs = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    @ViewChild('matRef') matRef: MatSelect;
+
+    clear() {
+        this.matRef.options.forEach((data: MatOption) => data.deselect());
+    }
+
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
 
     }
 

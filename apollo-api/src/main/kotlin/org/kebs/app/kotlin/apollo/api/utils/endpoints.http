@@ -657,10 +657,13 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdW1hLmFuZHJld0Bic2tnbG9iY
 
 ###
 GET https://localhost:8006/api/v1/migration/stdLevy/getPenaltyDetails
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aW1Aa2Vicy5jb20iLCJpc3MiOiJraW1zLmtlYnMub3JnIiwiaWF0IjoxNjU2NDA4NDIwLCJleHAiOjE2NTY0MTQ0MjAsImFkZHJlc3MiOiIxMjcuMC4wLjEiLCJ1c2VyQWdlbnQiOiJbQXBhY2hlLUh0dHBDbGllbnQvNC41LjEzIChKYXZhLzExLjAuMTIpXSIsImZ1bGxOYW1lIjoiVGltb3RoeSBLYW56ZSIsInJvbGVzIjoiTElTVF9DT01QQU5ZLE1PRElGWV9DT01QQU5ZLFNMX01BTlVGQUNUVVJFX1ZJRVcsU0xfU0NIRURVTEVfVklTSVQsU0xfQVNTSUdOX0NPTVBBTlksU0xfU0lURV9WSVNJVF9QUk9DRVNTX1ZJRVcsU0xfU0lURV9WSVNJVF9SRVBPUlRfQ1JFQVRFLFNMX1NJVEVfVklTSVRfUkVQT1JUX0ZFRURCQUNLX0NSRUFURSxTTF9TTElfQ19GT1JNX1ZJRVcsU0xfU0xJX0ZPUk1fVklFVyxTTF9JU19QTF9PRkZJQ0VSIn0.aVCxyIAv-c3F_ahk8-M7tPnranYn97v3WlQ2MgiAfuFfgxyHWP23kPlxcu2cQ_Gpu49UD3ewVjAB31Sg6h9jdg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY2MjYyMjA4MiwiZXhwIjoxNjYyNjI4MDgyLCJhZGRyZXNzIjoiMTI3LjAuMC4xIiwidXNlckFnZW50IjoiW0FwYWNoZS1IdHRwQ2xpZW50LzQuNS4xMyAoSmF2YS8xNy4wLjMpXSIsImZ1bGxOYW1lIjoiSmFtZXMgTXVnYW5kYSIsInJvbGVzIjoiU1RBTkRBUkRTX0RFVkVMT1BNRU5UX0ZVTExfQURNSU4ifQ.ugecxGMb0Tiicpde6OjoDp55MPyRbw2LDMvQ8Dncfy0h6uagUjPzX4CmptkCMGTDGFLFM5mRXt1baB6fG-x9rQ
+
 
 ###
-
+GET https://localhost:8006/api/v1/migration/standard/getAllStds
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY2MjYyMjA4MiwiZXhwIjoxNjYyNjI4MDgyLCJhZGRyZXNzIjoiMTI3LjAuMC4xIiwidXNlckFnZW50IjoiW0FwYWNoZS1IdHRwQ2xpZW50LzQuNS4xMyAoSmF2YS8xNy4wLjMpXSIsImZ1bGxOYW1lIjoiSmFtZXMgTXVnYW5kYSIsInJvbGVzIjoiU1RBTkRBUkRTX0RFVkVMT1BNRU5UX0ZVTExfQURNSU4ifQ.ugecxGMb0Tiicpde6OjoDp55MPyRbw2LDMvQ8Dncfy0h6uagUjPzX4CmptkCMGTDGFLFM5mRXt1baB6fG-x9rQ
+###
 POST https://localhost:8006/api/v1/migration/stdLevy/postPenaltyDetailsToKra
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aW1Aa2Vicy5jb20iLCJpc3MiOiJraW1zLmtlYnMub3JnIiwiaWF0IjoxNjU2NDM1ODIzLCJleHAiOjE2NTY0NDE4MjMsImFkZHJlc3MiOiIxMjcuMC4wLjEiLCJ1c2VyQWdlbnQiOiJbQXBhY2hlLUh0dHBDbGllbnQvNC41LjEzIChKYXZhLzExLjAuMTIpXSIsImZ1bGxOYW1lIjoiVGltb3RoeSBLYW56ZSIsInJvbGVzIjoiTElTVF9DT01QQU5ZLE1PRElGWV9DT01QQU5ZLFNMX01BTlVGQUNUVVJFX1ZJRVcsU0xfU0NIRURVTEVfVklTSVQsU0xfQVNTSUdOX0NPTVBBTlksU0xfU0lURV9WSVNJVF9QUk9DRVNTX1ZJRVcsU0xfU0lURV9WSVNJVF9SRVBPUlRfQ1JFQVRFLFNMX1NJVEVfVklTSVRfUkVQT1JUX0ZFRURCQUNLX0NSRUFURSxTTF9TTElfQ19GT1JNX1ZJRVcsU0xfU0xJX0ZPUk1fVklFVyxTTF9JU19QTF9PRkZJQ0VSIn0.tr8ZSSX9vC8l0vyVaH4PPqS45mw92utBr2VRT-e-bfDFV__Iv--HGealzwPA2O6_4zwQXVVgjGxKtFAFpugSTQ
 Content-Type: application/json
@@ -677,8 +680,5 @@ Content-Type: application/json
 
 
 "{\"REQUEST\":{\"loginId\":\"vmuriuki\",\"password\":\"password\",\"hash\":\"cddca83b2d54cdd2cf42adae146e9b4ed6de67ebaae4ddbcf8dcfb285a60478c\",\"transmissionDate\":\"31-03-2021T16:31:25\",\"HEADER\":{\"entryNo\":\"3\",\"kraPin\":\"A001559909F\",\"manufacturerName\":\"DAISYLINES\",\"paymentSlipNo\":\"2020210002968981\",\"paymentSlipDate\":\"16-03-2022\",\"paymentType\":\"CASH\",\"paymentDate\":\"16-03-2022\",\"totalDeclAmt\":\"1\",\"totalPenaltyAmt\":\"0\",\"TotalPaymentAmt\":\"1\",\"Bank\":\"FAMILYBANKLTD\",\"bankRefNo\":\"123\"},\"DETAILS\":{\"DECLARATION\":[{\"commodityType\":\"COTTON\",\"periodFrom\":\"01-01-2022\",\"periodTo\":\"31-01-2022\",\"qtyManf\":\"1000\",\"exFactVal\":\"100\",\"levyPaid\":\"10\"},{\"commodityType\":\"BRASS\",\"periodFrom\":\"01-02-2022\",\"periodTo\":\"28-02-2022\",\"qtyManf\":\"2000\",\"exFactVal\":\"200\",\"levyPaid\":\"20\"}],\"PENALTY\":[{\"penaltyOrderNo\":\"4\",\"periodFrom\":\"01-01-2022\",\"periodTo\":\"31-01-2022\",\"penaltyPaid\":\"100\"},{\"penaltyOrderNo\":\"5\",\"periodFrom\":\"01-02-2022\",\"periodTo\":\"28-02-2022\",\"penaltyPaid\":\"200\"}]}}}"
-
-
-
 
 

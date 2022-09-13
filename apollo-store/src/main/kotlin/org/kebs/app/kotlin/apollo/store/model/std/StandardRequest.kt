@@ -6,106 +6,137 @@ import javax.persistence.*
 import kotlin.jvm.Transient
 
 @Entity
-@Table(name="SD_STANDARD_REQUEST")
+@Table(name = "SD_STANDARD_REQUEST")
 class StandardRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    var id: Long=0
+    var id: Long = 0
 
-    @Column(name="REQUEST_NUMBER")
+    @Column(name = "REQUEST_NUMBER")
     @Basic
-    var requestNumber:String?=null
+    var requestNumber: String? = null
 
-    @Column(name="RANK")
+    @Column(name = "RANK")
     @Basic
-    var rank:String?=null
+    var rank: String? = null
 
-    @Column(name="REQUESTOR_NAME")
+    @Column(name = "REQUESTOR_NAME")
     @Basic
-    var name:String?=null
+    var name: String? = null
 
-    @Column(name="REQUESTOR_PHONE_NUMBER")
+    @Column(name = "REQUESTOR_PHONE_NUMBER")
     @Basic
-    var phone:String?=null
+    var phone: String? = null
 
-    @Column(name="REQUESTOR_EMAIL")
+    @Column(name = "REQUESTOR_EMAIL")
     @Basic
-    var email:String?=null
+    var email: String? = null
 
 
-    @Column(name="SUBMISSION_DATE")
+    @Column(name = "SUBMISSION_DATE")
     @Basic
-    var submissionDate: Timestamp?=null
+    var submissionDate: Timestamp? = null
 
 
-    @Column(name="DEPARTMENT_ID")
+    @Column(name = "DEPARTMENT_ID")
     @Basic
-    var departmentId:String?=null
+    var departmentId: String? = null
 
-    @Column(name="PRODUCT_SUB_CATEGORY_ID")
+    @Column(name = "PRODUCT_SUB_CATEGORY_ID")
     @Basic
-    var productSubCategoryId:String?=null
+    var productSubCategoryId: String? = null
 
-    @Column(name="TECHNICAL_COMMITTEE_ID")
+    @Column(name = "TECHNICAL_COMMITTEE_ID")
     @Basic
-    var tcId:String?=null
+    var tcId: String? = null
 
-    @Column(name="PRODUCT_ID")
+    @Column(name = "PRODUCT_ID")
     @Basic
-    var productId: String?=null
+    var productId: String? = null
 
-    @Transient
-    @JsonProperty("tcName")
-    var tcName: String?=null
+    @Column(name = "ORGANISATION_NAME")
+    @Basic
+    var organisationName: String? = null
+
+    @Column(name = "SUBJECT")
+    @Basic
+    var subject: String? = null
+
+    @Column(name = "DESCRIPTION")
+    @Basic
+    var description: String? = null
+
+    @Column(name = "ECONOMIC_EFFICIENCY")
+    @Basic
+    var economicEfficiency: String? = null
+
+    @Column(name = "HEALTH_SAFETY")
+    @Basic
+    var healthSafety: String? = null
+
+    @Column(name = "ENVIRONMENT")
+    @Basic
+    var environment: String? = null
+
+    @Column(name = "INTEGRATION")
+    @Basic
+    var integration: String? = null
+
+    @Column(name = "EXPORT_MARKETS")
+    @Basic
+    var exportMarkets: String? = null
+
+    @Column(name = "LEVEL_OF_STANDARD")
+    @Basic
+    var levelOfStandard: String? = null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: String? = null
+
 
     @Transient
     @JsonProperty("departmentName")
-    var departmentName: String?=null
+    var departmentName: String? = null
+
+    @Column(name = "CREATED_BY")
+    @Basic
+    var createdBy: String? = null
+
+    @Column(name = "CREATED_ON")
+    @Basic
+    var createdOn: Timestamp? = null
+
+    @Column(name = "MODIFIED_ON")
+    @Basic
+    var modifiedOn: Timestamp? = null
+
+    @Column(name = "DELETED_ON")
+    @Basic
+    var deletedOn: Timestamp? = null
+
+
+
+
+    @Column(name = "MODIFIED_BY")
+    @Basic
+    var modifiedBy: String? = null
+
+    @Column(name = "DELETE_BY")
+    @Basic
+    var deleteBy: String? = null
 
     @Transient
-    @JsonProperty("productName")
-    var productName: String?=null
+    @JsonProperty("taskId")
+    var taskId: String? = null
 
-    @Transient
-    @JsonProperty("productSubCategoryName")
-    var productSubCategoryName: String?=null
+    @Column(name = "PROCESS")
+    @Basic
+    var process: String? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as StandardRequest
-
-        if (id != other.id) return false
-        if (requestNumber != other.requestNumber) return false
-        if (name != other.name) return false
-        if (phone != other.phone) return false
-        if (email != other.email) return false
-        if (submissionDate != other.submissionDate) return false
-        if (departmentId != other.departmentId) return false
-        if (productSubCategoryId != other.productSubCategoryId) return false
-        if (tcId != other.tcId) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + (requestNumber?.hashCode() ?: 0)
-        result = 31 * result + (name?.hashCode() ?: 0)
-        result = 31 * result + (phone?.hashCode() ?: 0)
-        result = 31 * result + (email?.hashCode() ?: 0)
-        result = 31 * result + (submissionDate?.hashCode() ?: 0)
-        result = 31 * result + (departmentId?.hashCode() ?: 0)
-        result = 31 * result + (productSubCategoryId?.hashCode() ?: 0)
-        result = 31 * result + (tcId?.hashCode() ?: 0)
-        return result
-    }
-
-    override fun toString(): String {
-        return "StandardRequest(id=$id, requestNumber=$requestNumber, name=$name, phone=$phone, email=$email, submission_date=$submissionDate, department_id=$departmentId, product_category=$productSubCategoryId, tc_id=$tcId)"
-    }
-
+    @Column(name = "TC_SEC_ASSIGNED")
+    @Basic
+    var tcSecAssigned: String? = null
 
 }
