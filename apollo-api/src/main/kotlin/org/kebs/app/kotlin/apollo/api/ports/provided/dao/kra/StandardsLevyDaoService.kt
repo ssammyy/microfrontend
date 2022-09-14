@@ -174,20 +174,20 @@ class StandardsLevyDaoService(
 
                 var header = Sl2PaymentsHeaderEntity()
 
-                header.transactionDate = SimpleDateFormat("dd-MM-YYYY").parse(paymentRequest.transmissionDate)
                 header.requestHeaderEntryNo = paymentRequest.header?.entryNo
                 header.requestHeaderKraPin = paymentRequest.header?.kraPin
                 header.requestHeaderManufacturerName = paymentRequest.header?.manufacturerName
                 header.requestHeaderPaymentSlipNo = paymentRequest.header?.paymentSlipNo
-                header.requestHeaderPaymentSlipDate = SimpleDateFormat("dd-MM-YYYY").parse(paymentRequest.header?.paymentSlipDate)
+                header.requestHeaderPaymentSlipDate = SimpleDateFormat("MM-dd-yyyy").parse(paymentRequest.header?.paymentSlipDate)
                 header.requestHeaderPaymentType = paymentRequest.header?.paymentType
                 header.requestHeaderTotalDeclAmt = paymentRequest.header?.totalDeclAmt?.toBigDecimal()
                 header.requestHeaderTotalPenaltyAmt = paymentRequest.header?.totalPenaltyAmt?.toBigDecimal()
                 header.requestHeaderTotalPaymentAmt = paymentRequest.header?.totalPaymentAmt?.toBigDecimal()
                 header.requestHeaderBank = paymentRequest.header?.bank
                 header.requestBankRefNo = paymentRequest.header?.bankRefNo
-                header.requestHeaderTransmissionDate = SimpleDateFormat("dd-MM-YYYY").parse(paymentRequest.transmissionDate)
-                header.transactionDate = Date()
+                header.requestHeaderTransmissionDate = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").parse(paymentRequest.transmissionDate)
+                header.headerTransmissionDate = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").parse(paymentRequest.transmissionDate)
+                header.transactionDate = SimpleDateFormat("dd-MM-yyyy").parse(paymentRequest.header?.paymentDate)
                 header.status = 0
                 header.createdBy = paymentRequest.loginId
                 header.createdOn = Timestamp.from(Instant.now())
@@ -201,9 +201,8 @@ class StandardsLevyDaoService(
                     detail.headerId = header.id
                     detail.transactionType = "DECLARATION"
                     detail.commodityType = d.commodityType
-                    detail.periodFrom = SimpleDateFormat("dd-MM-YYYY").parse(d.periodFrom)
-                    detail.periodTo = SimpleDateFormat("dd-MM-YYYY").parse(d.periodTo)
-                    detail.periodTo = SimpleDateFormat("dd-MM-YYYY").parse(d.periodTo)
+                    detail.periodFrom = SimpleDateFormat("dd-MM-yyyy").parse(d.periodFrom)
+                    detail.periodTo = SimpleDateFormat("dd-MM-yyyy").parse(d.periodTo)
                     detail.qtyManf = d.qtyManf?.toBigDecimal()
                     detail.exFactVal = d.exFactVal?.toBigDecimal()
                     detail.levyPaid = d.levyPaid?.toBigDecimal()
@@ -219,8 +218,8 @@ class StandardsLevyDaoService(
                     detail.headerId = header.id
                     detail.transactionType = "PENALTY"
                     detail.penaltyOrderNo = p.penaltyOrderNo
-                    detail.periodFrom = SimpleDateFormat("dd-MM-YYYY").parse(p.periodFrom)
-                    detail.periodTo = SimpleDateFormat("dd-MM-YYYY").parse(p.periodTo)
+                    detail.periodFrom = SimpleDateFormat("dd-MM-yyyy").parse(p.periodFrom)
+                    detail.periodTo = SimpleDateFormat("dd-MM-yyyy").parse(p.periodTo)
                     detail.penaltyPaid = p.penaltyPaid?.toBigDecimal()
                     detail.transactionDate = Date()
                     detail.status = 0

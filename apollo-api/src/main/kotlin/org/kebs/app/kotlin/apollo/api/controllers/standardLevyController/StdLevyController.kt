@@ -1621,6 +1621,8 @@ class StdLevyController(
         map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
         val eSlipPaymentDetails = companyProfileRepo.getLevyPaymentsReceipt(id)
+//        val gson = Gson()
+//         KotlinLogging.logger { }.info { "Manufacturer" + gson.toJson(eSlipPaymentDetails) }
         val levyPaymentsDTO = standardLevyService.mapPaymentDetails(eSlipPaymentDetails)
         val pdfReportStream = reportsDaoService.extractReport(
             map,
