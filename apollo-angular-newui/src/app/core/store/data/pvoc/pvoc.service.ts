@@ -248,6 +248,9 @@ export class PVOCService {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/waiver/details/" + waiverId))
     }
 
+    updateWaiverStatus(waiverId: any, data: any): Observable<any> {
+        return this.http.post(ApiEndpointService.getEndpoint("/api/v1/pvoc/waiver/status/update/" + waiverId), data)
+    }
 
     loadCorDocument(keywords: string, reviewStatus: number, page: number, size: number): Observable<any> {
         let params = {}

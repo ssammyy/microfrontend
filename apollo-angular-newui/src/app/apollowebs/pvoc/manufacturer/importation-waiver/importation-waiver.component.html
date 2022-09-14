@@ -15,7 +15,8 @@
                         <mat-horizontal-stepper>
                             <mat-step label="Applicant details" [stepControl]="ApplicantDetailsForm">
                                 <div class="importation-waiver-main">
-                                    <p class="main-title-font importation-waiver-title">Apply for an importation  waiver</p>
+                                    <p class="main-title-font importation-waiver-title">Apply for an importation
+                                        waiver</p>
                                 </div>
                                 <div class="row no_margin" [formGroup]="ApplicantDetailsForm">
                                     <div class="col-sm-12 col-md-6">
@@ -113,12 +114,17 @@
                             <mat-step label="Documentation">
                                 <div class="importation-waiver-main">
                                     <div class="row no-margin file-input">
-                                        <p>Documents Required</p>
+                                        <p>Upload documents: </p>
+                                        <br/>
                                         <ul>
-                                            <li>Document 1</li>
-                                            <li>Document 2</li>
-                                            <li>Document 3</li>
+                                            <li>Document 1: Application Letter*</li>
+                                            <li>Document 2: Supporting document One*</li>
+                                            <li>Document 3: Supporting document Two</li>
                                         </ul>
+                                        <br/>
+                                    </div>
+                                    <div class="row no-margin">
+                                        <b>Documents Marked with astelix (*) are required</b>
                                     </div>
                                     <div class="row no-margin file-input">
                                         <p>Documents Added</p>
@@ -134,9 +140,10 @@
                                                class="display-nothing" #file>
                                         <button class="next-btn btn-attach" (click)="file.click()">ATTACH FILES</button>
                                     </div>
+
                                     <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
-                                    <div class="pull-right pr-4">
-                                        <button class="back-btn btn-gen" mat-button matStepperNext>NEXT</button>
+                                    <div class="pull-right float-right pr-4">
+                                        <button class="btn btn back-btn btn-gen" mat-button matStepperNext>NEXT</button>
                                     </div>
                                 </div>
 

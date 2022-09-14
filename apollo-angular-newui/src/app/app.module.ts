@@ -755,6 +755,9 @@ import {
 } from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-details/manufacturer-complaint-details.component";
 import {RfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component';
 import {RfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component';
+import {ViewRfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component';
+import {ViewRfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component';
+import {UpdateWaiverTaskComponent} from "./apollowebs/pvoc/waivers/update-waiver-task/update-waiver-task.component";
 import {MatBadgeModule} from "@angular/material/badge";
 import { StdLevyManufacturerPenaltyComponent } from './apollowebs/standards-levy/std-levy-manufacturer-penalty/std-levy-manufacturer-penalty.component';
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
@@ -1086,6 +1089,7 @@ import { StdLevyManufacturerPenaltyComponent } from './apollowebs/standards-levy
         StdLevyCompleteTasksComponent,
         ViewWaiverApplicationsComponent,
         ViewWaiverDetailsComponent,
+        UpdateWaiverTaskComponent,
         ViewExemptionApplicationsComponent,
         ViewExemptionDetailsComponent,
         ViewComplaintsComponent,
