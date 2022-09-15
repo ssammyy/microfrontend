@@ -1,56 +1,56 @@
 {
-  "REQUEST": {
-    "loginId": "epraUser@gmail.com",
-    "password": "password",
-    "hash": "cddca83b2d54cdd2cf42adae146e9b4ed6de67ebaae4ddbcf8dcfb285a60478c",
-    "transmissionDate": "31-03-2022T16:31:25",
-    "HEADER": {
-      "entryNo": "3",
-      "kraPin": "A001559909F",
-      "manufacturerName": "DAISYLINES",
-      "paymentSlipNo": "2020210002968981",
-      "paymentSlipDate": "05-09-2022",
-      "paymentType": "CASH",
-      "paymentDate": "05-09-2022",
-      "totalDeclAmt": "1",
-      "totalPenaltyAmt": "0",
-      "TotalPaymentAmt": "1",
-      "Bank": "FAMILYBANKLTD",
-      "bankRefNo": "123"
-    },
-    "DETAILS": {
-      "DECLARATION": [
-        {
-          "commodityType": "COTTON",
-          "periodFrom": "01-01-2022",
-          "periodTo": "31-01-2022",
-          "qtyManf": "1000",
-          "exFactVal": "100",
-          "levyPaid": "10"
-        },
-        {
-          "commodityType": "BRASS",
-          "periodFrom": "01-02-2022",
-          "periodTo": "28-02-2022",
-          "qtyManf": "2000",
-          "exFactVal": "200",
-          "levyPaid": "20"
-        }
-      ],
-      "PENALTY": [
-        {
-          "penaltyOrderNo": "4",
-          "periodFrom": "01-01-2022",
-          "periodTo": "31-01-2022",
-          "penaltyPaid": "100"
-        },
-        {
-          "penaltyOrderNo": "5",
-          "periodFrom": "01-02-2022",
-          "periodTo": "28-02-2022",
-          "penaltyPaid": "200"
-        }
-      ]
-    }
+  "loginId": "vmuriuki",
+  "password": "password",
+  "hash": "123445",
+  "transmissionDate": "18-07-2022T10:08:31.971",
+  "header": {
+    "entryNo": "20600713597870",
+    "kraPin": "P051860387Q",
+    "manufacturerName": "CLIMAX INDUSTRIES LIMITED",
+    "paymentSlipNo": "test",
+    "paymentSlipDate": "09-14-2022",
+    "paymentType": "CASH",
+    "paymentDate": "18-07-2022",
+    "totalDeclAmt": "10000",
+    "totalPenaltyAmt": "0",
+    "totalPaymentAmt": "10000",
+    "bank": "test",
+    "bankRefNo": "345345"
+  },
+  "details": {
+    "declaration": [
+      {
+        "commodityType": "FOOD",
+        "periodFrom": "01-05-2022",
+        "periodTo": "31-05-2022",
+        "qtyManf": "5",
+        "exFactVal": "50000",
+        "levyPaid": "2000"
+      },
+      {
+        "commodityType": "FOOD",
+        "periodFrom": "01-05-2022",
+        "periodTo": "31-05-2022",
+        "qtyManf": "5",
+        "exFactVal": "50000",
+        "levyPaid": "2000"
+      },
+      {
+        "commodityType": "FOOD",
+        "periodFrom": "01-05-2022",
+        "periodTo": "31-05-2022",
+        "qtyManf": "5",
+        "exFactVal": "50000",
+        "levyPaid": "2000"
+      },
+      {
+        "commodityType": "FOOD",
+        "periodFrom": "01-05-2022",
+        "periodTo": "31-05-2022",
+        "qtyManf": "5",
+        "exFactVal": "50000",
+        "levyPaid": "4000"
+      }
+    ]
   }
 }

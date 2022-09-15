@@ -7,6 +7,7 @@ import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
+import org.kebs.app.kotlin.apollo.common.dto.ms.LevyPaymentDTO
 import org.kebs.app.kotlin.apollo.common.dto.ms.LevyPaymentsDTO
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
@@ -2116,9 +2117,9 @@ return getUserTasks();
         return companyProfileRepo.findAll()
     }
 
-    fun mapPaymentDetails(data: List<LevyPayments>): List<LevyPaymentsDTO>{
+    fun mapPaymentDetails(data: List<LevyPayments>): List<LevyPaymentDTO>{
         return data.map {
-            LevyPaymentsDTO(
+            LevyPaymentDTO(
                 it.getId(),
                 it.getEntryNumber(),
                 it.getPaymentDate(),
@@ -2141,6 +2142,19 @@ return getUserTasks();
                 it.getPenaltyPaid()
             )
         }
+    }
+
+
+    fun updatePenaltyDetails(): String {
+        var updatedPenalties= companyProfileRepo.updatedPenalty()
+        updatedPenalties.forEach { item->
+            val penaltyId=item.getPenaltyOrderNo()
+            if (penaltyId != null) {
+                companyProfileRepo.updatePenaltyStatus(penaltyId)
+            }
+        }
+
+        return "Updated"
     }
 
 

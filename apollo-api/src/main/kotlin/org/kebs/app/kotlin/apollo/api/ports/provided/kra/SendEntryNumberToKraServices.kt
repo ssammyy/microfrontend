@@ -10,6 +10,7 @@ import org.joda.time.format.DateTimeFormatter
 import org.json.simple.JSONObject
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.StandardLevyService
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.KraHeader.Companion.globalVar
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
@@ -41,7 +42,8 @@ class SendEntryNumberToKraServices(
     private val iKraPenaltyDetailsRequestLogEntityRepository: IKraPenaltyDetailsRequestLogEntityRepository,
     private val commonDaoServices: CommonDaoServices,
     private val daoService: DaoService,
-    private val companyRepo: ICompanyProfileRepository
+    private val companyRepo: ICompanyProfileRepository,
+    private val standardLevyService: StandardLevyService
 ) {
     fun postEntryNumberTransactionToKra(companyProfileID: Long, user: String, map: ServiceMapsEntity): KraEntryNumberRequestLogEntity? {
         var resultSaved: KraEntryNumberRequestLogEntity? =null
@@ -206,6 +208,7 @@ class SendEntryNumberToKraServices(
                     updatedOn = commonDaoServices.getTimestamp()
                 }
                 resultSaved=   iKraPenaltyDetailsRequestLogEntityRepository.save(transactionsRequest)
+                standardLevyService.updatePenaltyDetails()
 
 
             } else {

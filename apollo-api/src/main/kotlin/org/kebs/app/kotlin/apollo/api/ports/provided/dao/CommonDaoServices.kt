@@ -2263,7 +2263,7 @@ class CommonDaoServices(
                                                                 ?.let { user ->
                                                                     val request = req?.servletRequest()
                                                                             ?.let { ServletServerHttpRequest(it) }
-                                                                            ?: throw NullValueNotAllowedException("Empty request receivded during authentication flow")
+                                                                            ?: throw NullValueNotAllowedException("Empty request received during authentication flow")
                                                                     val oAuthToken =
                                                                             tokenService.tokenFromAuthentication(
                                                                                     auth,
