@@ -86,6 +86,10 @@ class ExceptionPayload {
     var spares: ArrayList<Spares>? = null
 }
 
+class ExceptionRenewalPayload {
+    var justification: String? = null
+}
+
 class RawMaterialsCheck {
     var rawMaterials: MutableList<PvocExceptionRawMaterialCategoryEntity?>? = null
 }

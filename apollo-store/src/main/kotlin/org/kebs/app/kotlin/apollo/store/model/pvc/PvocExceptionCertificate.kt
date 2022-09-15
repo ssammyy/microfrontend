@@ -22,13 +22,30 @@ class PvocExceptionCertificate : Serializable {
     @Basic
     var certificateNumber: String? = null
 
+    @Column(name = "DEPARTMENT_CODE")
+    @Basic
+    var departmentCode: String? = null
+
+    @Column(name = "CERTIFICATE_PREFIX")
+    @Basic
+    var certPrefix: String? = null
+
     @Column(name = "ISSUED_ON")
     @Basic
     var issuedOn: Date? = null
 
+
     @Column(name = "EXPIRED_ON")
     @Basic
     var expiresOn: Date? = null
+
+    @Column(name = "CERTIFICATE_RENEWED")
+    @Basic
+    var certificateRenewed: Boolean? = null
+
+    @Column(name = "CERTIFICATE_RENEWED_ON")
+    @Basic
+    var certificateRenewedOn: Timestamp? = null
 
     @Column(name = "CERTIFICATE_REVOKED")
     @Basic

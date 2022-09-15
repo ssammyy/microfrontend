@@ -62,6 +62,14 @@ class PvocWaiversApplicationEntity : Serializable {
     @Basic
     var reviewStatus: String? = null
 
+    @Column(name = "FINAL_REVIEW_STAGE")
+    @Basic
+    var finalReviewStage: String? = null
+
+    @Column(name = "FINAL_REVIEW_REMARKS")
+    @Basic
+    var finalReviewRemarks: String? = null
+
     @Column(name = "NSC_APPROVAL_STATUS")
     @Basic
     var nscApprovalStatus: String? = null
