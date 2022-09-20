@@ -1249,6 +1249,11 @@ class RfcEntityForm {
     @Valid
     @NotEmpty(message = "Required field")
     var items: List<RfcItemForm>? = null
+
+    @NotEmpty(message = "Required field")
+    @Min(value = 0, message = "Version should be set to positive number only")
+    @Max(value = 100, message = "Max Value is 100")
+    var version: Long? = null
     fun fillDetails(rfcEntity: RfcEntity) {
         rfcEntity.rfcNumber = rfcNumber
         rfcEntity.idfNumber = idfNumber
@@ -1287,6 +1292,7 @@ class RfcEntityForm {
         rfcEntity.shipmentMethod = shipmentMethod
         rfcEntity.countryOfSupply = countryOfSupply
         rfcEntity.route = route
+        rfcEntity.version = version ?: 1
         rfcEntity.goodsCondition = goodsCondition
         rfcEntity.assemblyState = assemblyState
         rfcEntity.linkToAttachedDocuments = linkToAttachedDocuments?.joinToString(",")
@@ -1332,6 +1338,7 @@ class RfcEntityForm {
                 shipmentMethod = rfcEntity.shipmentMethod
                 countryOfSupply = rfcEntity.countryOfSupply
                 route = rfcEntity.route
+                version = rfcEntity.version
                 goodsCondition = rfcEntity.goodsCondition
                 assemblyState = rfcEntity.assemblyState
                 linkToAttachedDocuments = rfcEntity.linkToAttachedDocuments?.split(",")
@@ -1567,7 +1574,8 @@ class RfcCorForm {
 
     @NotNull(message = "Required field")
     @Min(value = 0, message = "Version should be set to positive number only")
-    var version: Int? = 1
+    @Max(value = 100, message = "Version should be upto 100")
+    var version: Long? = 1
     fun fillCorRfc(rfc: RfcCorEntity) {
         rfc.rfcDate = rfcDate
         rfc.countryOfDestination = countryOfDestination
@@ -1627,6 +1635,7 @@ class RfcCorForm {
         rfc.engineNumber = engineNumber
         rfc.yearOfManufacture = yearOfManufacture
         rfc.yearOfFirstRegistration = yearOfFirstRegistration
+        rfc.version = version ?: 1
         rfc.varField1 = version?.toString() ?: "1"
 
     }
@@ -1685,14 +1694,14 @@ class RfcCorForm {
                 linkToAttachedDocuments = rfc.linkToAttachedDocuments?.split(",")
                 preferredInspectionDate = rfc.preferredInspectionDate
                 // Vehicle
-                make = make
-                model = model
-                chassisNumber = chassisNumber
-                engineCapacity = engineCapacity
-                engineNumber = engineNumber
-                yearOfManufacture = yearOfManufacture
-                yearOfFirstRegistration = yearOfFirstRegistration
-                version = rfc.varField1?.toInt() ?: 1
+                make = rfc.make
+                model = rfc.model
+                chassisNumber = rfc.chassisNumber
+                engineCapacity = rfc.engineCapacity
+                engineNumber = rfc.engineNumber
+                yearOfManufacture = rfc.yearOfManufacture
+                yearOfFirstRegistration = rfc.yearOfFirstRegistration
+                version = rfc.version
             }
         }
     }

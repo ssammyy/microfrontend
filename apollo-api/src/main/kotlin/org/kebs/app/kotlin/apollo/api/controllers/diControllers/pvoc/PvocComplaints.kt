@@ -205,7 +205,7 @@ class PvocComplaints(
 
     @GetMapping("rfc-details/{rfcNo}")
     fun rfcDetails(model: Model,@PathVariable("rfcNo") rfcNo: String) : String{
-        iRfcEntityRepo.findByRfcNumber(rfcNo).let { cocRfc ->
+        iRfcEntityRepo.findFirstByRfcNumberOrderByVersionDesc(rfcNo).let { cocRfc ->
             model.addAttribute("cocRfc", cocRfc)
             return "destination-inspection/pvoc/complaint/CocRFC"
         }

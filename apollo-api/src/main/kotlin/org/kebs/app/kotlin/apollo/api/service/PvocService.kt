@@ -551,7 +551,7 @@ class PvocService(
         if (requests != null) {
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Success"
-            response.data = PvocWaiverDao.fromList(requests.toList())
+            response.data = PvocWaiverDao.fromList(requests.toList(), false)
             response.totalPages = requests.totalPages
             response.totalCount = requests.totalElements
         } else {
@@ -1011,7 +1011,7 @@ class PvocService(
                     "others" -> this.iwaiversApplicationRepo.findByStatusInAndCompanyId(listOf(PvocExemptionStatus.DEFERRED.code), company, PageRequest.of(page, size))
                     else -> throw ExpectedDataNotFound("Invalid application status: $status")
                 }
-                response.data = requests.toList()
+                response.data = PvocWaiverDao.fromList(requests.toList(), true)
                 response.message = "Success"
                 response.totalPages = requests.totalPages
                 response.totalCount = requests.totalElements
@@ -1334,10 +1334,10 @@ class PvocService(
                 KotlinLogging.logger { }.error("Failed to add data", ex)
             }
 
-            data.put("products", PvocWaiverProductDao.fromList(this.iPvocMasterListRepo.findAllByWaiversApplicationId(waiver.id)))
-            data.put("attachments", PvocWaiverAttachmentDao.fromList(iPvocApplicationDocumentRepo.findFirstByRefIdAndRefType(waiver.serialNo.orEmpty(), DocumentTypes.WAIVER.name)))
-            data.put("waiver_details", PvocWaiverDao.fromEntity(waiver))
-            data.put("waiver_history", PvocWaiverRemarksDao.fromList(this.waiversRemarksRepo.findAllByWaiverId(waiver.id)))
+            data["products"] = PvocWaiverProductDao.fromList(this.iPvocMasterListRepo.findAllByWaiversApplicationId(waiver.id))
+            data["attachments"] = PvocWaiverAttachmentDao.fromList(iPvocApplicationDocumentRepo.findFirstByRefIdAndRefType(waiver.serialNo.orEmpty(), DocumentTypes.WAIVER.name))
+            data["waiver_details"] = PvocWaiverDao.fromEntity(waiver, false)
+            data["waiver_history"] = PvocWaiverRemarksDao.fromList(this.waiversRemarksRepo.findAllByWaiverId(waiver.id))
 
             response.data = data
             response.message = "Success"

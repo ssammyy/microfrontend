@@ -285,7 +285,7 @@ class PvocWaiverDao {
     var submittedOn: Timestamp? = null
 
     companion object {
-        fun fromEntity(waiver: PvocWaiversApplicationEntity): PvocWaiverDao {
+        fun fromEntity(waiver: PvocWaiversApplicationEntity, manufacturer: Boolean): PvocWaiverDao {
             val dao = PvocWaiverDao().apply {
                 waiverId = waiver.id
                 status = waiver.status
@@ -299,19 +299,23 @@ class PvocWaiverDao {
                 productDescription = waiver.productDescription
                 documentation = waiver.documentation
                 reviewStatus = waiver.reviewStatus
-                nscApprovalStatus = waiver.nscApprovalStatus
-                csApprovalStatus = waiver.csApprovalStatus
                 serialNo = waiver.serialNo
-                csResponceCode = waiver.csResponceCode
-                csResponceMessage = waiver.csResponceMessage
                 submittedOn = waiver.createdOn
+            }
+            if (!manufacturer) {
+                dao.apply {
+                    nscApprovalStatus = waiver.nscApprovalStatus
+                    csApprovalStatus = waiver.csApprovalStatus
+                    csResponceCode = waiver.csResponceCode
+                    csResponceMessage = waiver.csResponceMessage
+                }
             }
             return dao
         }
 
-        fun fromList(waivers: List<PvocWaiversApplicationEntity>): List<PvocWaiverDao> {
+        fun fromList(waivers: List<PvocWaiversApplicationEntity>, manufacturer: Boolean): List<PvocWaiverDao> {
             val daos = mutableListOf<PvocWaiverDao>()
-            waivers.forEach { daos.add(fromEntity(it)) }
+            waivers.forEach { daos.add(fromEntity(it, manufacturer)) }
             return daos
         }
     }
