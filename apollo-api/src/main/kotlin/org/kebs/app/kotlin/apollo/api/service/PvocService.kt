@@ -160,7 +160,7 @@ class PvocService(
                     complaint.reviewStatus = ReviewStatus.REJECTED.name
                     complaint.status = ReviewStatus.REJECTED.code
                 }
-                "DEFFERED" -> {
+                "DEFERRED" -> {
                     complaint.reviewStatus = ReviewStatus.DEFFERED.name
                     complaint.status = ReviewStatus.DEFFERED.code
                 }
@@ -846,6 +846,11 @@ class PvocService(
 
     }
 
+    fun updateWaiverNacSecretary(waiverId: Long, remarks: String, reviewAnalysis: String, reviewOfficer: String) {
+        KotlinLogging.logger { }.info("Update NAC secretary minutes : [$waiverId]")
+
+    }
+
     fun approveDeferRejectExemption(requestId: Long, certValidity: String?, taskStatus: String, taskId: String, remarks: String): ApiResponseModel {
         val response = ApiResponseModel()
         try {
@@ -1419,9 +1424,9 @@ class PvocService(
     fun applyRenewExemptionCertificateRenewal(exemptionId: Long, renewal: ExceptionRenewalPayload): ApiResponseModel {
         val response = ApiResponseModel()
         val auth = commonDaoServices.loggedInUserAuthentication()
-        val application = iPvocApplicationRepo.findByIdAndCreateBy(exemptionId, auth.name)
+        val application = iPvocApplicationRepo.findByIdAndCreatedBy(exemptionId, auth.name)
         if (application.isPresent) {
-            val certificateOptional = ipvocExemptionCertificateRepository.findFirstApplicationIdAndCertificateRenewedAndCertificateRevoked(exemptionId, false, false)
+            val certificateOptional = ipvocExemptionCertificateRepository.findFirstByApplicationIdAndCertificateRenewedAndCertificateRevoked(exemptionId, false, false)
             if (certificateOptional.isPresent) {
                 val exemption = application.get()
                 this.pvocBpmn.startExemptionCertificateRenewal(auth.name, exemption, certificateOptional.get())
