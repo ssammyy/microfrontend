@@ -7,10 +7,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.DiTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocApplicationEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocSealIssuesEntity
-import org.kebs.app.kotlin.apollo.store.model.pvc.PvocWaiversApplicationEntity
+import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.kebs.app.kotlin.apollo.store.repo.IPvocApplicationRepo
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
@@ -397,6 +394,7 @@ class PvocBpmn(
         val variables = mutableMapOf<String, Any?>()
         KotlinLogging.logger { }.info("Waiver ID : ${waiver.id} : Starting PVOC waivers applications process")
         variables["waiverId"] = waiver.id
+        variables["reviewStage"] = "MEMBERS"
         variables["category"] = "WAIVER"
         variables["startedBy"] = username
         val process = this.runtimeService.startProcessInstanceByKey("waiverApplicationProcess", variables)
@@ -713,6 +711,20 @@ class PvocBpmn(
             variables.put("appliedBy", application.email!!)
             val process = this.runtimeService.startProcessInstanceByKey("complaintApplicationProcess", variables)
             application.processId = process.processInstanceId
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+        }
+    }
+
+    fun startExemptionCertificateRenewal(username: String, exemption: PvocApplicationEntity, cert: PvocExceptionCertificate) {
+        val variables: HashMap<String, Any> = HashMap()
+        KotlinLogging.logger { }.info("Renew exemption certificate : ${cert.id} : Starting renewal process")
+        try {
+            variables.put("exemptionId", exemption.id!!)
+            variables.put("appliedBy", username)
+            variables["certificateId"] = cert.id!!
+            val process = this.runtimeService.startProcessInstanceByKey("exemptionRenewalProcess", variables)
+            exemption.pvocWaProcessInstanceId = process.processInstanceId
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
         }

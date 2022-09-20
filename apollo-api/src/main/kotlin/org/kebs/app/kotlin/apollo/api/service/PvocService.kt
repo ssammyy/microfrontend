@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.service
 import mu.KotlinLogging
 import org.flowable.common.engine.api.FlowableException
 import org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc.ExceptionPayload
+import org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc.ExceptionRenewalPayload
 import org.kebs.app.kotlin.apollo.api.handlers.forms.WaiverApplication
 import org.kebs.app.kotlin.apollo.api.notifications.NotificationCodes
 import org.kebs.app.kotlin.apollo.api.notifications.NotificationService
@@ -30,6 +31,7 @@ import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.*
 
 enum class DocumentTypes {
@@ -39,6 +41,11 @@ enum class DocumentTypes {
 enum class PvocExemptionStatus(val status: String, val code: Int) {
     NEW_APPLICATIONS("NEW", 0), PVOC_APPROVED("PVOC_APPROVE", 1), PVOC_REJECTED("PVOC_REJECTED", 2), DEFERRED("DEFERRED", 3), CERT_APPROVED("CERT_APPROVE", 1), CERT_REJECTED("CERT_REJECTED", 1)
 }
+
+enum class PvocReviewStatus(val status: String, val code: Int) {
+    NEW_APPLICATION("NEW", 0), APPROVED("APPROVED", 1), REJECTED("REJECTED", 2), DEFERRED("DEFERRED", 3), RECOMMEND("RECOMMEND", 4), COMMENTS("COMMENTS", 5)
+}
+
 
 @Service("pvocService")
 class PvocService(
@@ -64,8 +71,22 @@ class PvocService(
         private val standardLevyRepo: IStandardLevyPaymentsRepository,
         private val complaintEntityRepo: IPvocComplaintRepo,
         private val complaintCategoryRepo: IPvocComplaintCategoryRepo,
+        private val pvocRemarksRepository: IPvocExceptionRemarksRepository,
         private val complaintSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo
 ) {
+
+    fun sendWaiverEmailEvent(waiverId: Long, reviewStep: String, letter: String = "") {
+        KotlinLogging.logger { }.info("Send email for waiver [$waiverId]: Step[$reviewStep]")
+
+        if ("ACKNOWLEDGEMENT".equals(reviewStep, true)) {
+            // Send acknowledgement to applicant
+            // Send email to WETC member
+        } else if (StringUtils.hasLength(letter)) {
+            // Send letter as email
+        } else {
+            // Send other emails
+        }
+    }
 
     fun addUploads(auth: Authentication, reference: String, docType: DocumentTypes, files: List<MultipartFile>?) {
         files?.forEach { file ->
@@ -540,8 +561,8 @@ class PvocService(
         return response
     }
 
-    fun updateWaiverReviewStatus(requestId: Long, remarks: String, reviewOfficer: String, reviewStatus: String) {
-        val optional = this.iwaiversApplicationRepo.findById(requestId)
+    fun updateWaiverReviewStatus(waiverId: Long, remarks: String, applicationAnalysis: String, reviewOfficer: String, reviewStatus: String) {
+        val optional = this.iwaiversApplicationRepo.findById(waiverId)
         if (optional.isPresent) {
             val request = optional.get()
             request.reviewStatus = reviewStatus
@@ -552,14 +573,16 @@ class PvocService(
         }
     }
 
-    fun updateWaiverNscStatus(requestId: Long, remarks: String, reviewOfficer: String, approvalStatus: String) {
+    fun updateWaiverNscStatus(requestId: Long, remarks: String, reviewAnalysis: String, reviewOfficer: String, reviewStatus: String) {
         val optional = this.iwaiversApplicationRepo.findById(requestId)
         if (optional.isPresent) {
             val request = optional.get()
-            when (approvalStatus) {
+            when (reviewStatus) {
                 "APPROVED" -> {
                     request.nscApprovalStatus = "NSC_APPROVED"
                     request.rejectionStatus = 0
+                    // Send NSC waiver notification to applicant
+                    this.sendWaiverEmailEvent(requestId, "NSC_TO_CS")
                 }
                 "REJECTED" -> {
                     request.rejectionStatus = 1
@@ -573,19 +596,32 @@ class PvocService(
         }
     }
 
-    fun updateWaiverCsStatus(requestId: Long, remarks: String, reviewOfficer: String, approvalStatus: String) {
+    fun updateWaiverCsStatus(requestId: Long, remarks: String, reviewOfficer: String, reviewStatus: String) {
         val optional = this.iwaiversApplicationRepo.findById(requestId)
         if (optional.isPresent) {
             val request = optional.get()
             request.csResponceMessage = remarks
-            when (approvalStatus) {
-                "APPROVED" -> {
-                    request.csApprovalStatus = approvalStatus
+            val user = commonDaoServices.findUserByUserName(reviewOfficer)
+            request.cs = user.id
+            when (val status = PvocReviewStatus.valueOf(reviewStatus)) {
+                PvocReviewStatus.APPROVED -> {
+                    request.csApprovalStatus = status.status
+                    request.csResponceMessage = remarks
+                    request.approvalStatus = 1
                 }
-                "REJECTED" -> {
+                PvocReviewStatus.REJECTED -> {
+                    request.csApprovalStatus = status.status
                     request.rejectionStatus = 1
-                    request.nscApprovalStatus = approvalStatus
+                    request.csResponceCode = status.status
+                    request.status = status.code
                 }
+                PvocReviewStatus.DEFERRED -> {
+                    request.csApprovalStatus = status.status
+                    request.defferalStatus = 1
+                    request.nscApprovalStatus = status.status
+                    request.status = status.code
+                }
+                else -> throw ExpectedDataNotFound("Invalid CS approval status")
             }
             request.varField2 = remarks
             request.modifiedBy = reviewOfficer
@@ -594,12 +630,15 @@ class PvocService(
         }
     }
 
-    fun sendWaiverRequestToCs(requestId: Long, reviewOfficer: String) {
-
-    }
-
-    fun sendWaiverApprovalLetter(requestId: Long, approvalStatus: String) {
-
+    fun sendWaiverApprovalLetter(requestId: Long, documentId: Long, statusLetter: String, remarks: String, reviewStage: String) {
+        val optional = this.iwaiversApplicationRepo.findById(requestId)
+        if (optional.isPresent) {
+            val request = optional.get()
+            request.finalReviewRemarks = remarks
+            request.finalReviewStage = reviewStage
+            this.iwaiversApplicationRepo.save(request)
+            this.sendWaiverEmailEvent(requestId, "FINAL_LETTER", letter = statusLetter)
+        }
     }
 
     fun exemptionApplicationHistory(page: Int, size: Int): ApiResponseModel {
@@ -660,6 +699,7 @@ class PvocService(
     fun applyOrRenewWaiver(waiver: WaiverApplication, documents: List<MultipartFile>?): ApiResponseModel {
         val response = ApiResponseModel()
         val userDetails = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
         userDetails.companyId?.let {
             val randomNumber = waiverSerialNumber()
             val waiverApp = PvocWaiversApplicationEntity()
@@ -677,7 +717,7 @@ class PvocService(
             waiverApp.varField1 = waiver.contactPersonName
             waiverApp.varField2 = waiver.contactPersonPhone
             waiverApp.varField3 = waiver.contactPersonEmail
-            waiverApp.createdBy = userDetails.userName
+            waiverApp.createdBy = auth.name
             waiverApp.createdOn = Timestamp.from(Instant.now())
             waiverApp.status = PvocExemptionStatus.NEW_APPLICATIONS.code
             waiverApp.serialNo = randomNumber
@@ -703,10 +743,9 @@ class PvocService(
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Waiver application have been received"
                         // Start BPM process
-                        userDetails.userName?.let { it1 ->
-                            this.pvocBpmn.startPvocWaiversApplicationsProcess(w, it1)
-                        }
-                        this.addUploads(commonDaoServices.loggedInUserAuthentication(), w.serialNo.orEmpty(), DocumentTypes.WAIVER, documents)
+
+                        this.pvocBpmn.startPvocWaiversApplicationsProcess(w, auth.name)
+                        this.addUploads(auth, w.serialNo.orEmpty(), DocumentTypes.WAIVER, documents)
                         iwaiversApplicationRepo.save(w)
                     }
         } ?: run {
@@ -720,7 +759,10 @@ class PvocService(
         return this.iPvocApplicationDocumentRepo.findFirstByRefIdAndRefType(uploadId, docType.name)
     }
 
-    fun updateReviewRequest(requestId: Long, validity: String, remarks: String, reviewOfficer: String, reviewStatus: String) {
+    /**
+     * Exemption review by section officer
+     */
+    fun updateExemptionReviewRequest(requestId: Long, validity: String, remarks: String, reviewOfficer: String, reviewStatus: String) {
         val optional = this.iPvocApplicationRepo.findById(requestId)
         if (optional.isPresent) {
             val request = optional.get()
@@ -734,24 +776,74 @@ class PvocService(
     }
 
     fun updateCommitteeStatus(requestId: Long, remarks: String, reviewOfficer: String, approvalStatus: String) {
+        KotlinLogging.logger { }.info("Update Committee approval status [$requestId]: [$approvalStatus]")
         val optional = this.iPvocApplicationRepo.findById(requestId)
         if (optional.isPresent) {
             val request = optional.get()
-            when (approvalStatus) {
-                "APPROVED" -> {
-                    request.finalApproval = 1
+            val approved = PvocReviewStatus.valueOf(approvalStatus.toUpperCase())
+            when (approved) {
+                PvocReviewStatus.APPROVED -> {
+                    request.finalApproval = PvocReviewStatus.APPROVED.code
+                    request.reviewStatus = PvocReviewStatus.APPROVED.status
+                    request.finished = 0
+                    // Notify applicant
+                    this.sendWaiverEmailEvent(requestId, "WETC_TO_NSC")
+                }
+                PvocReviewStatus.REJECTED -> {
+                    request.finalApproval = PvocReviewStatus.REJECTED.code
+                    request.reviewStatus = PvocReviewStatus.REJECTED.status
                     request.finished = 1
                 }
-                "REJECTED" -> {
-                    request.finalApproval = 2
+                PvocReviewStatus.DEFERRED -> {
+                    request.finalApproval = PvocReviewStatus.DEFERRED.code
+                    request.reviewStatus = PvocReviewStatus.DEFERRED.status
                     request.finished = 1
                 }
+                else -> throw ExpectedDataNotFound("Invalid approval status: $approvalStatus")
             }
             request.varField2 = remarks
             request.modifiedBy = reviewOfficer
             request.modifiedOn = Timestamp.from(Instant.now())
             this.iPvocApplicationRepo.save(request)
         }
+    }
+
+    fun updateExemptionCommitteeStatus(requestId: Long, remarks: String, reviewOfficer: String, approvalStatus: String) {
+        KotlinLogging.logger { }.info("Update Exemption Committee approval status [$requestId]: [$approvalStatus]")
+        val optional = this.iPvocApplicationRepo.findById(requestId)
+        if (optional.isPresent) {
+            val request = optional.get()
+            val approved = PvocReviewStatus.valueOf(approvalStatus.toUpperCase())
+            when (approved) {
+                PvocReviewStatus.APPROVED -> {
+                    request.finalApproval = PvocReviewStatus.APPROVED.code
+                    request.reviewStatus = PvocReviewStatus.APPROVED.status
+                    request.finished = 0
+                    // Notify applicant
+                    this.sendWaiverEmailEvent(requestId, "WETC_TO_NSC")
+                }
+                PvocReviewStatus.REJECTED -> {
+                    request.finalApproval = PvocReviewStatus.REJECTED.code
+                    request.reviewStatus = PvocReviewStatus.REJECTED.status
+                    request.finished = 1
+                }
+                PvocReviewStatus.DEFERRED -> {
+                    request.finalApproval = PvocReviewStatus.DEFERRED.code
+                    request.reviewStatus = PvocReviewStatus.DEFERRED.status
+                    request.finished = 1
+                }
+                else -> throw ExpectedDataNotFound("Invalid approval status: $approvalStatus")
+            }
+            request.varField2 = remarks
+            request.modifiedBy = reviewOfficer
+            request.modifiedOn = Timestamp.from(Instant.now())
+            this.iPvocApplicationRepo.save(request)
+        }
+    }
+
+    fun updateWetcSecretaryMinutes(waiverId: Long, remarks: String, reviewOfficer: String) {
+        KotlinLogging.logger { }.info("Update WETC secretary minues : [$waiverId]")
+
     }
 
     fun approveDeferRejectExemption(requestId: Long, certValidity: String?, taskStatus: String, taskId: String, remarks: String): ApiResponseModel {
@@ -778,24 +870,107 @@ class PvocService(
         return response
     }
 
+    /**
+     * From Doc:
+     * The certificate to be in the following format: TAAA-0001, where the first character represents
+     * department identifier, next 3 character are the certificate number and 0001 is the version number.
+     */
+    fun generateCertificateNumber(version: Long?, department: String?, prefix: String?): String {
+        val certCount = ipvocExemptionCertificateRepository.countByCertPrefix(prefix.orEmpty())
+        val certNumber = "%0x03".format(certCount)
+        return "${department}%s-%0x04".format(certNumber, version)
+    }
+
     fun generateExemptionCertificate(requestId: Long, reviewOfficer: String) {
         val optional = this.iPvocApplicationRepo.findById(requestId)
         if (optional.isPresent) {
             val request = optional.get()
+            val issueDate = LocalDateTime.now()
             val exemption = PvocExceptionCertificate()
             exemption.applicationId = requestId
+            exemption.departmentCode = "T"
+            exemption.certPrefix = "${exemption.departmentCode}${issueDate.year}"
             exemption.createdBy = reviewOfficer
             exemption.modifiedBy = reviewOfficer
             exemption.certificateRevoked = false
+            exemption.certificateRenewed = false
             exemption.certificateVersion = 1
-            exemption.certificateNumber = "COE".format("%0x05%0x03", requestId, exemption.certificateVersion)
-            val issueDate = LocalDateTime.now()
+            exemption.certificateNumber = generateCertificateNumber(exemption.certificateVersion, exemption.departmentCode, exemption.certPrefix)
+            exemption.issuedOn = Date.from(issueDate.toInstant(ZoneOffset.UTC))
             exemption.createdOn = Timestamp.valueOf(issueDate)
             exemption.expiresOn = Timestamp.valueOf(issueDate.plusYears(1))
             request.modifiedOn = Timestamp.from(Instant.now())
             val g = this.ipvocExemptionCertificateRepository.save(exemption)
             request.varField2 = g.certificateNumber
             this.iPvocApplicationRepo.save(request)
+        }
+    }
+
+    fun addExemptionRemarks(exemptionId: Long, remarks: String, reviewOfficer: String, approvalStatus: String, stage: String) {
+        val eRemarks = PvocExemptionRemarksEntity()
+        eRemarks.exemptionId = exemptionId
+        eRemarks.remarks = remarks
+        eRemarks.status = 1
+        eRemarks.reviewStage = stage
+        eRemarks.approvalStatus = approvalStatus
+        eRemarks.createdBy = reviewOfficer
+        eRemarks.createdOn = Timestamp.from(Instant.now())
+        pvocRemarksRepository.save(eRemarks)
+    }
+
+    fun exemptionCertificateRenewalStatus(exemptionId: Long, certificateId: Long, validity: String, remarks: String, reviewOfficer: String, reviewStatus: String) {
+        addExemptionRemarks(exemptionId, remarks, reviewOfficer, reviewStatus, "SECTION_OFFICER_RENEWAL")
+    }
+
+    fun renewExemptionCommitteeStatus(exemptionId: Long, remarks: String, reviewOfficer: String, approvalStatus: String) {
+        addExemptionRemarks(exemptionId, remarks, reviewOfficer, approvalStatus, "COMMITTEE_RENEWAL_STATUS")
+    }
+
+    /**
+     * Generate renewed certificate
+     */
+    fun renewExemptionCertificate(exemptionId: Long, certificateId: Long, reviewOfficer: String) {
+        val optional = this.ipvocExemptionCertificateRepository.findByIdAndApplicationId(certificateId, exemptionId)
+        val optionalApplication = iPvocApplicationDocumentRepo.findById(exemptionId)
+        if (optional.isPresent || optionalApplication.isPresent) {
+            val request = optional.get()
+            if (request.certificateRenewed == true) {
+                throw ExpectedDataNotFound("Expected certificate not to be renewed")
+            }
+            if (request.certificateRevoked == true) {
+                throw ExpectedDataNotFound("Expected certificate not to be revoked")
+            }
+            val application = optionalApplication.get()
+            val issueDate = LocalDateTime.now()
+            val exemption = PvocExceptionCertificate()
+            exemption.applicationId = exemptionId
+            exemption.departmentCode = "T"
+            exemption.certPrefix = "${exemption.departmentCode}${issueDate.year}"
+            exemption.createdBy = reviewOfficer
+            exemption.modifiedBy = reviewOfficer
+            exemption.certificateRevoked = false
+            exemption.certificateRenewed = false
+            exemption.certificateVersion = (request.certificateVersion ?: 1) + 1
+            request.certificateNumber?.let {
+                val certParts = it.split("-")
+                exemption.certificateNumber = "%s-%0x04".format(certParts[0], exemption.certificateVersion)
+                exemptionId
+            } ?: run {
+                exemption.certificateNumber = generateCertificateNumber(exemption.certificateVersion, exemption.departmentCode, exemption.certPrefix)
+                exemptionId
+            }
+            exemption.issuedOn = Date.from(issueDate.toInstant(ZoneOffset.UTC))
+            exemption.createdOn = Timestamp.valueOf(issueDate)
+            exemption.expiresOn = Timestamp.valueOf(issueDate.plusYears(1))
+            request.modifiedOn = Timestamp.from(Instant.now())
+            val g = this.ipvocExemptionCertificateRepository.save(exemption)
+            request.certificateRenewed = true
+            request.certificateRenewedOn = Timestamp.from(Instant.now())
+
+            application.modifiedOn = Timestamp.from(Instant.now())
+            application.modifiedBy = reviewOfficer
+            application.varField1 = "CERTIFICATE_RENEWED"
+            this.iPvocApplicationDocumentRepo.save(application)
         }
     }
 
@@ -885,7 +1060,7 @@ class PvocService(
     fun waiverSerialNumber(): String {
         val yearIssued = commonDaoServices.convertDateToString(LocalDateTime.now(), "yyyyMMdd");
         val issuedThisYear = iwaiversApplicationRepo.countBySerialNoStartsWith(yearIssued)
-        return String.format("%s%05d", yearIssued, issuedThisYear + 1)
+        return String.format("%s%04d", yearIssued, issuedThisYear + 1)
     }
 
     fun exemptionSerialNumber(): String {
@@ -1091,40 +1266,65 @@ class PvocService(
                 val auth = commonDaoServices.loggedInUserAuthentication()
                 val loggedInUser = commonDaoServices.getLoggedInUser()
                 when {
-                    auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_WETC_MEMBER" } -> {
-                        data.put("is_pvoc_officer", true)
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "WETC_MEMBER" } -> {
+                        data.put("is_wetc_member", true)
                         // Auto Assign
                         if (waiver.wetcMember == null) {
                             waiver.wetcMember = loggedInUser?.id
                             iwaiversApplicationRepo.save(waiver)
                         }
                         data.put("is_owner", loggedInUser?.id == waiver.wetcMember)
-                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("PVOC_OFFICER"), waiver.id))
+                        val tasks = this.pvocBpmn.getWaiverTasks(listOf("WETC_MEMBER"), waiver.id)
+                        data.put("tasks", tasks)
+                        data.put("can_comment", false)
+                        // Check can comment
+                        for (t in tasks) {
+                            if ("WETC_MEMBER".equals(t.category, true)) {
+                                data["can_comment"] = true
+                            }
+                        }
                     }
-                    auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_NAC_OFFICER" } -> {
-                        data.put("is_nac_officer", true)
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "WETC_CHAIRMAN" } -> {
+                        data.put("is_wetc_chairman", true)
+                        // Auto Assign
+                        if (waiver.wetcChairman == null) {
+                            waiver.wetcChairman = loggedInUser?.id
+                            iwaiversApplicationRepo.save(waiver)
+                        }
+                        data.put("is_owner", loggedInUser?.id == waiver.wetcSecretary)
+                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("WETC_CHAIRMAN"), waiver.id))
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "WETC_SECRETARY" } -> {
+                        data.put("is_wetc_secretary", true)
                         // Auto Assign
                         if (waiver.wetcSecretary == null) {
                             waiver.wetcSecretary = loggedInUser?.id
                             iwaiversApplicationRepo.save(waiver)
                         }
                         data.put("is_owner", loggedInUser?.id == waiver.wetcSecretary)
-                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("NAC_OFFICER"), waiver.id))
+                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("WETC_SECRETARY", "WETC_MEMBER", "WETC_MEETING_APPROVE"), waiver.id))
                     }
-                    auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_CS_OFFICER" } -> {
-                        data.put("is_cs_officer", true)
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "NAC_SECRETARY" } -> {
+                        data.put("is_nac_officer", true)
                         // Auto Assign
-                        if (waiver.wetcChairman == null) {
-                            waiver.wetcChairman = loggedInUser?.id
+                        if (waiver.ncsSecretary == null) {
+                            waiver.ncsSecretary = loggedInUser?.id
                             iwaiversApplicationRepo.save(waiver)
                         }
-                        data.put("is_owner", loggedInUser?.id == waiver.wetcChairman)
-                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("CS_OFFICER"), waiver.id))
+                        data.put("is_owner", loggedInUser?.id == waiver.ncsSecretary)
+                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("NAC_SECRETARY", "NAC_SECRETARY_REVIEW", "NAC_CS_APPROVE"), waiver.id))
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "CS_OFFICER" } -> {
+                        data.put("is_cs_officer", true)
+                        // Auto Assign
+                        if (waiver.cs == null) {
+                            waiver.cs = loggedInUser?.id
+                            iwaiversApplicationRepo.save(waiver)
+                        }
+                        data.put("is_owner", loggedInUser?.id == waiver.cs)
+                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("CS_OFFICER", "NAC_SECRETARY_REVIEW"), waiver.id))
                     }
                 }
-                data.put("is_owner", true)
-                data.put("is_cs_officer", true)
-                data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("CS_OFFICER", "NAC_OFFICER", "WATC_OFFICER", "PVOC_OFFICER"), waiver.id))
             } catch (ex: Exception) {
                 KotlinLogging.logger { }.error("Failed to add data", ex)
             }
@@ -1214,5 +1414,32 @@ class PvocService(
 
     fun findPvoceDocument(uploadId: String): PvocApplicationDocumentsEntity? {
         return iPvocApplicationDocumentRepo.findByIdOrNull(uploadId.toLong())
+    }
+
+    fun applyRenewExemptionCertificateRenewal(exemptionId: Long, renewal: ExceptionRenewalPayload): ApiResponseModel {
+        val response = ApiResponseModel()
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val application = iPvocApplicationRepo.findByIdAndCreateBy(exemptionId, auth.name)
+        if (application.isPresent) {
+            val certificateOptional = ipvocExemptionCertificateRepository.findFirstApplicationIdAndCertificateRenewedAndCertificateRevoked(exemptionId, false, false)
+            if (certificateOptional.isPresent) {
+                val exemption = application.get()
+                this.pvocBpmn.startExemptionCertificateRenewal(auth.name, exemption, certificateOptional.get())
+                iPvocApplicationRepo.save(exemption)
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Renewal request received"
+                // Add justification comments if any
+                renewal.justification?.let { justification ->
+                    this.addExemptionRemarks(exemptionId, justification, auth.name, "NONE", "WAIVER_RENEWAL_JUSTIFICATION")
+                }
+            } else {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "No Exemption certificate not found"
+            }
+        } else {
+            response.responseCode = ResponseCodes.NOT_FOUND
+            response.message = "Exemption application not found"
+        }
+        return response
     }
 }
