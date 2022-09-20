@@ -80,6 +80,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
     isShowApproveRequestForm=true;
     isShowRejectRequestForm=true;
     isShowSLForm = true;
+    isShowCompanyDetails=true;
+    isShowCompanyRemarks=true;
 
     toggleDisplaySLForm(manufactureId: number) {
         this.loadingText = "Loading ...."
@@ -106,6 +108,45 @@ export class StdLevyPendingTasksComponent implements OnInit {
         this.isShowApprovalForm1= true;
         this.isShowRejectForm1= true;
 
+    }
+    toggleDisplayCompanyDetails(){
+        this.isShowCompanyDetails=!this.isShowCompanyDetails;
+        this.isShowCompanyRemarks=true;
+        this.isShowApproveRequestForm=true;
+        this.isShowRejectRequestForm=true;
+        this.isShowDocumentsTab=true;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
+        this.isShowApprovalForm1= true;
+        this.isShowRejectForm1= true;
+    }
+
+    toggleDisplayCompanyRemarks(editID: number){
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.levyService.getComEditRemarks(editID).subscribe(
+            (response: SiteVisitRemarks[]) => {
+                this.siteVisitRemarks = response;
+                this.SpinnerService.hide();
+                console.log(this.siteVisitRemarks)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.isShowCompanyRemarks = !this.isShowCompanyRemarks;
+        this.isShowCompanyDetails=true;
+        this.isShowRemarksTab=true;
+        this.isShowReportForm=true;
+        this.isShowScheduleForm= true;
+        this.isShowRejectForm1 = true;
+        this.isShowApprovalForm1 = true;
+        this.isShowDocumentsTab = true;
+        this.isShowApproveRequestForm=true;
+        this.isShowRejectRequestForm=true;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
     }
 
 
@@ -315,7 +356,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo: [],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
       });
       this.rejectEditRequestFormGroup = this.formBuilder.group({
@@ -328,7 +373,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo: [],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
 
       });
@@ -343,7 +392,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo: [],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
 
       });
@@ -357,7 +410,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo:[],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
 
       });
@@ -372,7 +429,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo:[],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
 
       });
@@ -386,7 +447,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo:[],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
 
       });

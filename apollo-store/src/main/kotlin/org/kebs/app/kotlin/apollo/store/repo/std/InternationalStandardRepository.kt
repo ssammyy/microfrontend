@@ -41,6 +41,12 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
     fun getSacSecEmailList(): MutableList<UserEmailListHolder>
 
     @Query(
+        value = "SELECT u.EMAIL as userEmail,u.FIRST_NAME as firstName,u.LAST_NAME as lastName  FROM DAT_KEBS_USERS u WHERE u.ID=:id",
+        nativeQuery = true
+    )
+    fun getUserEmail(@Param("id") id: Long?): MutableList<UserEmailListHolder>
+
+    @Query(
         value = "SELECT u.EMAIL as userEmail,u.FIRST_NAME as firstName,u.LAST_NAME as lastName  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='STAKEHOLDERS_SD'",
         nativeQuery = true
     )

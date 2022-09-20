@@ -715,6 +715,27 @@
 
                                                     </div>
                                                     <div class="form-group col-12">
+                                                        <label for="postalAddress2">Company Email <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <input type="text" ngModel="{{actionRequestList?.companyEmail}}"
+                                                           class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                           value="{{actionRequestList?.companyEmail}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="postalAddress2">Company Telephone <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <input type="text" ngModel="{{actionRequestList?.companyTelephone}}"
+                                                           class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                           value="{{actionRequestList?.companyTelephone}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="postalAddress2">Yearly Turnover <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                    <input type="text" ngModel="{{actionRequestList?.yearlyTurnover}}"
+                                                           class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                           value="{{actionRequestList?.yearlyTurnover}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
                                                         <label for="postalAddress2">Postal Address <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text"
@@ -749,6 +770,16 @@
                                                                formControlName="typeOfManufacture" name="typeOfManufacture"
                                                                value="{{actionRequestList?.typeOfManufacture}}">
                                                     </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="ownership">Remarks or Comments <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea type="text"
+                                                                  class="form-control"
+                                                                  id="remarkss" name="remarks"
+                                                                  formControlName="remarks"
+                                                                  placeholder="Remarks"></textarea>
+                                                    </div>
+
                                                     <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')" class="form-group col-12">
                                                         <label>Forward To</label>
                                                         <ng-select [(ngModel)]="approvedUsersOne" formControlName="assignedTo"  class="form-control"  name="assignedTo" >

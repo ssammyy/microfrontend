@@ -75,7 +75,10 @@ data class EditCompanyTaskToDTO(
     var registrationNumber: String? = null,
     var entryNumber: String? = null,
     var otherBusinessNatureType: String? = null,
-    var typeOfManufacture: Int? = null
+    var typeOfManufacture: Int? = null,
+    var remarks: String? = null,
+    var editID: Long? = null
+
 )
 data class AssignCompanyTaskToDTO(
     var manufacturerEntity: Long? = null,
