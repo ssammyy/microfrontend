@@ -982,7 +982,7 @@
                                                         (click)="markAsCompliant()">
                                                     COMPLIANT
                                                 </button>
-                                                <button *ngIf="consignment.ui.owner && consignment.ui.approveReject"
+                                                <button *ngIf="consignment.ui.owner && (consignment.ui.approveReject || consignment.ui.foreignDocument)"
                                                         class="btn btn-sm btn-warning"
                                                         (click)="approveRejectConsignment()">Approve / Reject
                                                     Consignment
@@ -1001,7 +1001,7 @@
                                                     class="btn btn-sm btn-primary" (click)="markAsCompliant()">
                                                 COMPLIANT
                                             </button>
-                                            <button *ngIf="consignment.ui.owner && consignment.ui.approveReject"
+                                            <button *ngIf="consignment.ui.owner && (consignment.ui.approveReject || consignment.ui.foreignDocument)"
                                                     class="btn btn-sm btn-warning"
                                                     (click)="approveRejectConsignment()">Approve / Reject
                                                 Consignment
