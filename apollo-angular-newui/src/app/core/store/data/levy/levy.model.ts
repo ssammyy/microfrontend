@@ -166,10 +166,15 @@ export interface EditCompanyDTO {
     assignedTo: number;
     taskId: string;
     accentTo: boolean;
+    companyEmail: string;
+    companyTelephone: string;
+    yearlyTurnover : number;
+    remarks: string;
 
 }
 export interface SiteVisitRemarks{
     siteVisitId: number;
+    editID: number;
     remarks: string;
     remarkBy: string;
     status: string;
@@ -469,6 +474,13 @@ export interface ManufacturePendingTaskData{
     rejectStatusLevelTwo: string;
     otherBusinessNatureType: string;
     complianceStatus: number;
+    editID: number;
+    physicalAddressEdit: string;
+    postalAddressEdit: string;
+    ownershipEdit: string;
+    yearlyTurnoverEdit: string;
+    companyTelephoneEdit: string;
+    companyEmailEdit: string;
 
 
 }

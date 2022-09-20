@@ -207,7 +207,11 @@ export class StdLevyApplicationsComponent implements OnInit {
       registrationNumber: [],
       entryNumber: [],
       typeOfManufacture:[],
-      otherBusinessNatureType:[]
+      otherBusinessNatureType:[],
+      companyEmail:[],
+      companyTelephone:[],
+      yearlyTurnover:[],
+      remarks:[]
 
     });
 
@@ -218,7 +222,10 @@ export class StdLevyApplicationsComponent implements OnInit {
       ownership: [],
       userType:[],
       taskType:[],
-      typeOfManufacture:[]
+      typeOfManufacture:[],
+      companyEmail:[],
+      companyTelephone:[],
+      yearlyTurnover:[]
 
     });
     this.assignCompanyTaskFormGroup = this.formBuilder.group({

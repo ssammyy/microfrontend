@@ -594,7 +594,8 @@ class StdLevyController(
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetails(
-        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ServerResponse
     {
         val companyProfileEditEntity= CompanyProfileEditEntity().apply {
@@ -611,12 +612,12 @@ class StdLevyController(
             entryNumber=editCompanyDTO.entryNumber
             typeOfManufacture=editCompanyDTO.typeOfManufacture
             otherBusinessNatureType=editCompanyDTO.otherBusinessNatureType
-
-
-
+        }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            remarks = editCompanyDTO.remarks
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetails(companyProfileEditEntity))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetails(companyProfileEditEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -625,7 +626,8 @@ class StdLevyController(
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetailsConfirm(
-        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ServerResponse
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
@@ -640,8 +642,12 @@ class StdLevyController(
 
 
         }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            remarks = editCompanyDTO.remarks
+            siteVisitId = editCompanyDTO.editID
+        }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirm(companyProfileEntity))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirm(companyProfileEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -650,7 +656,8 @@ class StdLevyController(
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetailsConfirmLvlOne(
-        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ServerResponse
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
@@ -665,8 +672,12 @@ class StdLevyController(
 
 
         }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            remarks = editCompanyDTO.remarks
+            siteVisitId = editCompanyDTO.editID
+        }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlOne(companyProfileEntity))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlOne(companyProfileEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -675,7 +686,8 @@ class StdLevyController(
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetailsConfirmLvlTwo(
-        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ServerResponse
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
@@ -690,8 +702,12 @@ class StdLevyController(
 
 
         }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            remarks = editCompanyDTO.remarks
+            siteVisitId = editCompanyDTO.editID
+        }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlTwo(companyProfileEntity))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlTwo(companyProfileEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -1129,7 +1145,13 @@ class StdLevyController(
         return standardLevyService.getCompanyEditedDetails(manufactureId)
     }
 
-
+    @GetMapping("/getComEditRemarks")
+    fun getComEditRemarks(
+        response: HttpServletResponse,
+        @RequestParam("editID") editID: Long
+    ): List<StandardLevySiteVisitRemarks> {
+        return standardLevyService.getComEditRemarks(editID)
+    }
 
 
     @GetMapping("/getSiteVisitRemarks")

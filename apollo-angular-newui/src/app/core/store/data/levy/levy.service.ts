@@ -316,6 +316,12 @@ export class LevyService {
         return this.http.get<SiteVisitRemarks>(url, {params}).pipe();
     }
 
+    public getComEditRemarks(editID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_COMPANY_REMARKS);
+        const params = new HttpParams().set('editID', editID);
+        return this.http.get<SiteVisitRemarks>(url, {params}).pipe();
+    }
+
     public editCompanyDetailsConfirm(editCompanyDTO: EditCompanyDTO): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_COMPANY_EDIT_COMPANY_DATA);
         const params = new HttpParams();
