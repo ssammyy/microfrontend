@@ -75,13 +75,15 @@ interface IBillTransactionsEntityRepository : HazelcastRepository<BillTransactio
 @Repository
 interface IBillPaymentsRepository : HazelcastRepository<BillPayments, Long> {
     fun findByCorporateId(corporateId: Long, page: Pageable): Page<BillPayments>
-    fun findAllByCorporateIdAndBillNumberPrefixAndPaymentStatusIn(corporateId: Long?, billNumberPrefix: String, status: Iterable<Int>, pg: Pageable): Page<BillPayments>
+    fun findAllByCorporateIdAndBillNumberAndPaymentStatusIn(corporateId: Long?, billNumberPrefix: String, status: Iterable<Int>, pg: Pageable): Page<BillPayments>
+    fun findAllByCorporateIdAndBillNumberAndBillStatusIn(corporateId: Long?, billNumberPrefix: String, status: Iterable<Int>, pg: Pageable): Page<BillPayments>
     fun findAllByPaymentStatus(status: Int): List<BillPayments>
     fun findAllByPaymentStatusAndNextNoticeDateGreaterThan(status: Int, date: Date): List<BillPayments>
     fun findAllByBillNumberPrefixAndPaymentStatus(billNumberPrefix: String, status: Int): List<BillPayments>
     fun countByCorporateIdAndBillNumber(corporateId: Long?, billNumber: String): Long
     fun countByCorporateId(corporateId: Long?): Long
     fun findFirstByCorporateIdAndBillNumberAndPaymentStatus(corporateId: Long?, billNumber: String, status: Int): Optional<BillPayments>
+
     @Query(value = "select sum(CASE WHEN bt.AMOUNT>0 then bt.AMOUNT else 0.0 END) TOTAL_AMOUNT from DAT_KEBS_BILL_TRANSACTIONS bt  where CORPORATE_ID=:corporateId and BILL_ID=:billId", nativeQuery = true)
     fun sumTotalAmountByCorporateIdAndBillId(@Param("corporateId") corporateId: Long?, @Param("billId") billId: Long): BigDecimal?
     fun findAllByCorporateIdAndPaymentStatusIn(corporateId: Long?, status: List<Int>): List<BillPayments>

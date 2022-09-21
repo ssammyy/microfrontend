@@ -24,10 +24,12 @@ import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
+import java.time.DateTimeException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoField
 import javax.security.auth.login.AccountNotFoundException
 
 enum class BillStatus(val status: Int) {
@@ -478,22 +480,24 @@ class BillingService(
 
     fun getInvoiceDate(dateStr: String?): String {
         val date = dateStr?.let {
-            INVOICE_DATE_FORMATER.parse(it)
-            it
+            val dd = INVOICE_DATE_FORMATER.parse(it)
+            return "%02d-%02d".format(dd.get(ChronoField.YEAR), dd.get(ChronoField.MONTH_OF_YEAR))
         } ?: run {
-            INVOICE_DATE_FORMATER.format(LocalDateTime.now())
+            commonDaoServices.convertDateToString(LocalDateTime.now(), "yyyy-MM")
         }
 
-        return date;
+        return "BN${date}"
     }
 
     fun getPvocPartnerInvoice(dateStr: String?, pg: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val partner = commonDaoServices.loggedInPartnerDetails()
-            val corporate = corporateCustomerRepository.findById(partner.id)
+            val corporate = corporateCustomerRepository.findById(partner.billingId ?: 0)
             if (corporate.isPresent) {
-                val bills = billPaymentRepository.findAllByCorporateIdAndBillNumberPrefixAndPaymentStatusIn(corporate.get().id, getInvoiceDate(dateStr), listOf(BillStatus.CLOSED.status, BillStatus.PENDING_PAYMENT.status, BillStatus.PAID.status), pg)
+                val billPrefix = getInvoiceDate(dateStr)
+                KotlinLogging.logger { }.info("Bill Number: $billPrefix => ${corporate.get().id}")
+                val bills = billPaymentRepository.findAllByCorporateIdAndBillNumberAndBillStatusIn(corporate.get().id, billPrefix, listOf(BillStatus.CLOSED.status, BillStatus.PENDING_PAYMENT.status, BillStatus.PAID.status), pg)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Success"
                 val bank1Details = invoiceDaoService.findPaymentMethodtype(properties.mapBankOneDetails)
@@ -516,6 +520,9 @@ class BillingService(
         } catch (ex: ExpectedDataNotFound) {
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = ex.localizedMessage
+        } catch (ex: DateTimeException) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid date format provided expected year month (yyyyMM)"
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to retrieve invoice: ", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

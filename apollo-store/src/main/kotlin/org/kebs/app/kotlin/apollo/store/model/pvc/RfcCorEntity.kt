@@ -245,6 +245,11 @@ class RfcCorEntity : Serializable {
     @Basic
     var status: Long? = null
 
+    @Column(name = "VERSION", nullable = true, precision = 0)
+    @Basic
+    var version: Long? = null
+
+
     @Column(name = "VAR_FIELD_1", nullable = true, length = 350)
     @Basic
     var varField1: String? = null

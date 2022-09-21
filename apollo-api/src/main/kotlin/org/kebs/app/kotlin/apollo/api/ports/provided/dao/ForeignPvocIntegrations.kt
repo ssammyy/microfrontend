@@ -497,7 +497,7 @@ class ForeignPvocIntegrations(
         }
         transaction.amount = transaction.fobAmount?.let { fob -> fob.times(rate).divide(BigDecimal.valueOf(100)) }
         // Skip add transaction when amount is less than or equal to zero or version is greater than one
-        if (BigDecimal.ZERO < transaction.amount) {
+        if ((transaction.amount ?: BigDecimal.ZERO) > BigDecimal.ZERO) {
             transaction.rate = rate
             if (version ?: 0 <= 1) {
                 val trx = billingService.registerPvocTransaction(transaction, user)
@@ -702,9 +702,15 @@ class ForeignPvocIntegrations(
     fun foreignRfc(rfc: RfcEntityForm, documentType: String, s: ServiceMapsEntity, user: PvocPartnersEntity): RfcEntity? {
         val rfcEntity = RfcEntity()
         val auth = this.commonDaoServices.loggedInUserAuthentication()
-        this.rfcRepository.findByRfcNumber(rfc.rfcNumber!!)?.let {
+        this.rfcRepository.findByRfcNumberAndVersion(rfc.rfcNumber!!, rfc.version ?: 1)?.let {
             return null
         } ?: run {
+            this.rfcRepository.findByRfcNumberAndStatus(rfc.rfcNumber!!, 1)?.let { existing ->
+                existing.status = 0
+                existing.modifiedBy = auth.name
+                existing.modifiedOn = Timestamp.from(Instant.now())
+                this.rfcRepository.save(existing)
+            }
             rfc.fillDetails(rfcEntity)
             rfcEntity.rfcDocumentType = documentType
             rfcEntity.partner = user.id
@@ -739,9 +745,16 @@ class ForeignPvocIntegrations(
     fun foreignRfcCor(rfc: RfcCorForm, s: ServiceMapsEntity, user: PvocPartnersEntity): RfcCorEntity? {
         val rfcEntity = RfcCorEntity()
         val auth = this.commonDaoServices.loggedInUserAuthentication()
-        this.rfcCorRepository.findByRfcNumber(rfc.rfcNumber!!)?.let {
+        this.rfcCorRepository.findByRfcNumberAndVersion(rfc.rfcNumber!!, rfc.version ?: 1)?.let {
             return null
         } ?: run {
+            // Mark Existing as inactive
+            this.rfcCorRepository.findByRfcNumberAndStatus(rfc.rfcNumber!!, 1)?.let { existing ->
+                existing.status = 0
+                existing.modifiedBy = auth.name
+                existing.modifiedOn = Timestamp.from(Instant.now())
+                this.rfcCorRepository.save(existing)
+            }
             rfc.fillCorRfc(rfcEntity)
             rfcEntity.partner = user.id
             rfcEntity.status = s.activeStatus.toLong()
@@ -770,8 +783,8 @@ class ForeignPvocIntegrations(
         when (documentType.toUpperCase()) {
             "COR" -> {
                 val rfcEntity = when {
-                    StringUtils.hasLength(ucrNumber) -> this.rfcCorRepository.findByUcrNumber(ucrNumber)
-                    StringUtils.hasLength(rfcNumber) -> this.rfcCorRepository.findByRfcNumber(rfcNumber)
+                    StringUtils.hasLength(ucrNumber) -> this.rfcCorRepository.findFirstByUcrNumberOrderByVersionDesc(ucrNumber)
+                    StringUtils.hasLength(rfcNumber) -> this.rfcCorRepository.findFirstByRfcNumberOrderByVersionDesc(rfcNumber)
                     else -> null
                 }
                 return rfcEntity?.let {
@@ -780,8 +793,8 @@ class ForeignPvocIntegrations(
             }
             else -> {
                 val rfcEntity = when {
-                    StringUtils.hasLength(ucrNumber) -> this.rfcRepository.findByUcrNumber(ucrNumber)
-                    StringUtils.hasLength(rfcNumber) -> this.rfcRepository.findByRfcNumber(rfcNumber)
+                    StringUtils.hasLength(ucrNumber) -> this.rfcRepository.findFirstByUcrNumberOrderByVersionDesc(ucrNumber)
+                    StringUtils.hasLength(rfcNumber) -> this.rfcRepository.findFirstByRfcNumberOrderByVersionDesc(rfcNumber)
                     else -> null
                 }
                 return rfcEntity?.let {

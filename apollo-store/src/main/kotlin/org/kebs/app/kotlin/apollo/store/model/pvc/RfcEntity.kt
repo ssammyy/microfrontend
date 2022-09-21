@@ -187,6 +187,10 @@ class RfcEntity : Serializable {
     @Basic
     var reviewRemarks: String? = null
 
+    @Column(name = "VERSION")
+    @Basic
+    var version: Long? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Long? = null
