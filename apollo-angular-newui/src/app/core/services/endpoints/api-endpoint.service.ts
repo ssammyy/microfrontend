@@ -548,6 +548,12 @@ export class ApiEndpointService {
         STD_LEVY_COMPANY_STATUS: `${ApiEndpointService.STL_CONTEXT}/getOperationStatus`,
         STD_LEVY_E_SLIP: `${ApiEndpointService.STL_CONTEXT}/generatePdf`,
         STD_LEVY_VIEW_E_SLIP: `${ApiEndpointService.STL_CONTEXT}/levyPaymentESlip`,
+        STD_LEVY_REG_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getRegisteredFirms`,
+        STD_LEVY_ALL_LEVY_PAYMENTS: `${ApiEndpointService.STL_CONTEXT}/getAllLevyPayments`,
+        STD_LEVY_PEN_REPORT: `${ApiEndpointService.STL_CONTEXT}/getPenaltyReport`,
+        STD_LEVY_ACTIVE_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getActiveFirms`,
+        STD_LEVY_DORMANT_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getDormantFirms`,
+        STD_LEVY_CLOSED_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getClosedFirms`,
 
 
 

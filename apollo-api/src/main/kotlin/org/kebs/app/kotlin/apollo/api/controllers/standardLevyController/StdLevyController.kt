@@ -1662,6 +1662,60 @@ class StdLevyController(
         }
     }
 
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getRegisteredFirms")
+    @ResponseBody
+    fun getRegisteredFirms(): MutableList<RegisteredFirms>
+    {
+        return standardLevyService.getRegisteredFirms()
+    }
+
+    //Get List of Levy Payments
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getAllLevyPayments")
+    @ResponseBody
+    fun getAllLevyPayments(): MutableList<AllLevyPayments>
+    {
+        return standardLevyService.getAllLevyPayments()
+    }
+
+    //Get List of Penalty Report
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getPenaltyReport")
+    @ResponseBody
+    fun getPenaltyReport(): MutableList<AllLevyPayments>
+    {
+        return standardLevyService.getPenaltyReport()
+    }
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getActiveFirms")
+    @ResponseBody
+    fun getActiveFirms(): MutableList<RegisteredFirms>
+    {
+        return standardLevyService.getActiveFirms()
+    }
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getDormantFirms")
+    @ResponseBody
+    fun getDormantFirms(): MutableList<RegisteredFirms>
+    {
+        return standardLevyService.getDormantFirms()
+    }
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getClosedFirms")
+    @ResponseBody
+    fun getClosedFirms(): MutableList<RegisteredFirms>
+    {
+        return standardLevyService.getClosedFirms()
+    }
+
+
+
+
 
 
 }

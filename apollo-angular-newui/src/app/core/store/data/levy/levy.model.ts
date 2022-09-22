@@ -118,6 +118,11 @@ export interface CompanyModel {
     totalValueOfManufacture: number;
     otherBusinessNatureType: string;
     slFormStatus: number;
+    businessLineName: string;
+    regionName: string;
+    townName: string;
+    createdOn: any;
+    dateOfClosure: string;
 
 }
 export interface StdLevyScheduleSiteVisitDTO {
@@ -337,6 +342,13 @@ export interface PaymentDetails{
     commodityType :string;
     levyPaid: string;
     penaltyPaid: string;
+    businessLines: number;
+    businessNatures: number;
+    businessLineName: string;
+    businessNatureName: string;
+    region: number;
+    regionName: string;
+    amountDue: bigint;
 
 }
 export interface PenaltyDetails{

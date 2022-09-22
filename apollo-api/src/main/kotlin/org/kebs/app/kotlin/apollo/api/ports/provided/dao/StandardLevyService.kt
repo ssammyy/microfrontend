@@ -2301,5 +2301,29 @@ return getUserTasks();
         return "Updated"
     }
 
+    fun getRegisteredFirms(): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getRegisteredFirms()
+    }
+
+    fun getAllLevyPayments(): MutableList<AllLevyPayments> {
+        return companyProfileRepo.getAllLevyPayments()
+    }
+
+    fun getPenaltyReport(): MutableList<AllLevyPayments> {
+        return companyProfileRepo.getPenaltyReport()
+    }
+    fun getActiveFirms(): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getActiveFirms()
+    }
+    fun getDormantFirms(): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getDormantFirms()
+    }
+    fun getClosedFirms(): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getClosedFirms()
+    }
+
+
+
+
 
 }
