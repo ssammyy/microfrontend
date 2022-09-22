@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31")
         classpath("org.jetbrains.kotlin:kotlin-allopen:1.4.30")
         classpath("io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.4.3")

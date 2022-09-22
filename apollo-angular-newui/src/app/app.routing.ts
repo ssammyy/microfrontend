@@ -473,6 +473,12 @@ import {
 import {RfcCocDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component";
 import {RfcCorDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component";
 import {StdLevyManufacturerPenaltyComponent} from "./apollowebs/standards-levy/std-levy-manufacturer-penalty/std-levy-manufacturer-penalty.component";
+import {StandardLevyRegisteredFirmsComponent} from "./apollowebs/standards-levy/standard-levy-registered-firms/standard-levy-registered-firms.component";
+import {StandardLevyAllPaymentsComponent} from "./apollowebs/standards-levy/standard-levy-all-payments/standard-levy-all-payments.component";
+import {StandardLevyPenaltyReportComponent} from "./apollowebs/standards-levy/standard-levy-penalty-report/standard-levy-penalty-report.component";
+import {StandardLevyActiveFirmsComponent} from "./apollowebs/standards-levy/standard-levy-active-firms/standard-levy-active-firms.component";
+import {StandardLevyDormantFirmsComponent} from "./apollowebs/standards-levy/standard-levy-dormant-firms/standard-levy-dormant-firms.component";
+import {StandardLevyClosedFirmsComponent} from "./apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component";
 
 export const routes: Routes = [
     {
@@ -1792,6 +1798,36 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: StandardLevyClosureComponent}],
     },
+    {
+        path: 'slRegisteredFirms', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyRegisteredFirmsComponent}],
+    },
+    {
+        path: 'slAllLevyPayments', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyAllPaymentsComponent}],
+    },
+    {
+        path: 'slPenaltyReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyPenaltyReportComponent}],
+    },
+    {
+        path: 'slActiveFirms', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyActiveFirmsComponent}],
+    },
+    {
+        path: 'slDormantFirms', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyDormantFirmsComponent}],
+    },
+    {
+        path: 'slClosedFirms', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyClosedFirmsComponent}],
+    }
 
     /****************MS COMPONENTS ENDS HERE**********************************/
 

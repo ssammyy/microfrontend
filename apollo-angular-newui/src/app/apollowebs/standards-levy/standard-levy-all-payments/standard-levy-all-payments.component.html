@@ -1,0 +1,71 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+
+                            </div>
+                            <div class="card-title float-left"><h4 style="color: #0d47a1; font-weight: bold">Levy Payments</h4></div>
+
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="row">
+                                <div class="material-datatables table-responsive col-md-12">
+                                    <table  class="table table-striped table-bordered table-hover " datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"  cellspacing="0" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">Entry Number</th>
+                                            <th class="knw">Pin No.</th>
+                                            <th class="knw">Name of Firm</th>
+                                            <th class="sl">Department</th>
+                                            <th class="knw">Region</th>
+                                            <th class="knw">Period Paid For</th>
+                                            <th class="knw">Date Paid</th>
+                                            <th class="knw">Amount Paid</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let paymentDetail of paymentDetails let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{paymentDetail.entryNumber}}</td>
+                                            <td>{{paymentDetail.kraPin }}</td>
+                                            <td>{{paymentDetail.companyName}}</td>
+                                            <td>{{paymentDetail.businessLineName}}</td>
+                                            <td>{{paymentDetail.regionName}}</td>
+                                            <td>{{paymentDetail.periodFrom }}-{{paymentDetail.periodTo}}</td>
+                                            <td>{{paymentDetail.paymentDate}}</td>
+                                            <td>KSH {{paymentDetail.levyPaid}}</td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+

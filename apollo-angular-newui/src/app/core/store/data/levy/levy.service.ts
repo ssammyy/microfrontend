@@ -703,6 +703,36 @@ export class LevyService {
             }
         });
     }
+    public getRegisteredFirms(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REG_FIRMS);
+        const params = new HttpParams();
+        return this.http.get<CompanyModel>(url, {params}).pipe();
+    }
+    public getActiveFirms(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ACTIVE_FIRMS);
+        const params = new HttpParams();
+        return this.http.get<CompanyModel>(url, {params}).pipe();
+    }
+    public getDormantFirms(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_DORMANT_FIRMS);
+        const params = new HttpParams();
+        return this.http.get<CompanyModel>(url, {params}).pipe();
+    }
+    public getClosedFirms(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_CLOSED_FIRMS);
+        const params = new HttpParams();
+        return this.http.get<CompanyModel>(url, {params}).pipe();
+    }
+    public getPenaltyReport(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PEN_REPORT);
+        const params = new HttpParams();
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
+    }
+    public getAllLevyPayments(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ALL_LEVY_PAYMENTS);
+        const params = new HttpParams();
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
+    }
 
 
 

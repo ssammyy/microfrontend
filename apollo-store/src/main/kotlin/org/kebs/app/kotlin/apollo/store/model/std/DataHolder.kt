@@ -106,6 +106,28 @@ interface LevyPayment{
     fun getLevyPaid(): String?
     fun getPenaltyPaid(): String?
 }
+interface AllLevyPayments{
+    fun getId(): Long?
+    fun getEntryNumber(): String?
+    fun getKraPin(): String?
+    fun getCompanyName(): String?
+    fun getCompanyId(): Long?
+    fun getBusinessLines(): Long?
+    fun getBusinessNatures(): String?
+    fun getBusinessLineName(): String?
+    fun getBusinessNatureName(): String?
+    fun getRegion(): Long?
+    fun getRegionName(): String?
+    fun getPeriodTo(): String?
+    fun getPaymentSlipDate(): String?
+    fun getPaymentDate(): String?
+    fun getLevyPaid(): String?
+    fun getPenaltyPaid(): String?
+    fun getTotalPenaltyAmt(): String?
+    fun getAmountDue(): String?
+
+
+}
 
 interface LevyPayments{
     fun getId(): Long?
@@ -162,6 +184,11 @@ interface LevyPenalty{
     fun getRegistrationNumber(): String?
     fun getPeriodFrom(): String?
     fun getPeriodTo(): String?
+    fun getPostalAddress(): String?
+    fun getBusinessLines(): Long?
+    fun getBusinessNatures(): Long?
+    fun getBusinessLineName(): String?
+    fun getBusinessNatureName(): String?
 }
 interface ManufactureListHolder {
     fun getId(): Long?
@@ -359,6 +386,28 @@ interface ProposalDetails{
     fun getTcSecName(): String?
     fun getAdoptionAcceptableAsPresented(): String?
     fun getReasonsForNotAcceptance(): String?
+}
+
+interface RegisteredFirms{
+    fun getId(): Long?
+    fun getEntryNumber(): String?
+    fun getKraPin(): String?
+    fun getName(): String?
+    fun getPostalAddress(): String?
+    fun getCompanyTelephone(): String?
+    fun getCompanyEmail(): String?
+    fun getStreetName(): String?
+    fun getBusinessLineName(): String?
+    fun getBusinessLines(): Long?
+    fun getBusinessNatureName(): String?
+    fun getBusinessNatures(): Long?
+    fun getRegionName(): String?
+    fun getRegion(): Long?
+    fun getTownName(): String?
+    fun getTown(): Long?
+    fun getCreatedOn(): String?
+    fun getAdminLocation(): String?
+    fun getDateOfClosure(): String?
 }
 
 

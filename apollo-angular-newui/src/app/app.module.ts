@@ -760,6 +760,12 @@ import {ViewRfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-
 import {UpdateWaiverTaskComponent} from "./apollowebs/pvoc/waivers/update-waiver-task/update-waiver-task.component";
 import {MatBadgeModule} from "@angular/material/badge";
 import { StdLevyManufacturerPenaltyComponent } from './apollowebs/standards-levy/std-levy-manufacturer-penalty/std-levy-manufacturer-penalty.component';
+import { StandardLevyRegisteredFirmsComponent } from './apollowebs/standards-levy/standard-levy-registered-firms/standard-levy-registered-firms.component';
+import { StandardLevyAllPaymentsComponent } from './apollowebs/standards-levy/standard-levy-all-payments/standard-levy-all-payments.component';
+import { StandardLevyPenaltyReportComponent } from './apollowebs/standards-levy/standard-levy-penalty-report/standard-levy-penalty-report.component';
+import { StandardLevyActiveFirmsComponent } from './apollowebs/standards-levy/standard-levy-active-firms/standard-levy-active-firms.component';
+import { StandardLevyDormantFirmsComponent } from './apollowebs/standards-levy/standard-levy-dormant-firms/standard-levy-dormant-firms.component';
+import { StandardLevyClosedFirmsComponent } from './apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component';
 import { AddLaboratoryRequestComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/ssf-details-form/add-laboratory-request/add-laboratory-request.component';
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1162,6 +1168,12 @@ import { AddLaboratoryRequestComponent } from './apollowebs/di/view-single-consi
         RfcCocDocumentsComponent,
         RfcCorDocumentsComponent,
         StdLevyManufacturerPenaltyComponent,
+        StandardLevyRegisteredFirmsComponent,
+        StandardLevyAllPaymentsComponent,
+        StandardLevyPenaltyReportComponent,
+        StandardLevyActiveFirmsComponent,
+        StandardLevyDormantFirmsComponent,
+        StandardLevyClosedFirmsComponent,
         AddLaboratoryRequestComponent
 
     ],

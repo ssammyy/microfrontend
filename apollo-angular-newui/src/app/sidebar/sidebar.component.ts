@@ -362,6 +362,23 @@ export const ROUTES: RouteInfo[] = [
         ],
     },
     {
+        path: '',
+        title: 'Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['SL_MANUFACTURE_VIEW'],
+        collapse: 'reports',
+        children: [
+            {path: 'slRegisteredFirms', title: 'Registered Firms', ab: 'RF'},
+            {path: 'slActiveFirms', title: 'Active Firms', ab: 'AF'},
+            {path: 'slDormantFirms', title: 'Dormant Firms', ab: 'DF'},
+            {path: 'slClosedFirms', title: 'Closed Firms', ab: 'CF'},
+            {path: 'slAllLevyPayments', title: 'Levy Payments', ab: 'LP'},
+            {path: 'slPenaltyReport', title: 'Penalties', ab: 'PE'},
+
+        ],
+    },
+    {
         path: '/epra',
         title: 'EPRA',
         type: 'link',
