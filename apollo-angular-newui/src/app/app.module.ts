@@ -760,6 +760,7 @@ import {ViewRfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-
 import {UpdateWaiverTaskComponent} from "./apollowebs/pvoc/waivers/update-waiver-task/update-waiver-task.component";
 import {MatBadgeModule} from "@angular/material/badge";
 import { StdLevyManufacturerPenaltyComponent } from './apollowebs/standards-levy/std-levy-manufacturer-penalty/std-levy-manufacturer-penalty.component';
+import { AddLaboratoryRequestComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/ssf-details-form/add-laboratory-request/add-laboratory-request.component';
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({
@@ -1160,7 +1161,8 @@ import { StdLevyManufacturerPenaltyComponent } from './apollowebs/standards-levy
         NwaJustificationFormComponent,
         RfcCocDocumentsComponent,
         RfcCorDocumentsComponent,
-        StdLevyManufacturerPenaltyComponent
+        StdLevyManufacturerPenaltyComponent,
+        AddLaboratoryRequestComponent
 
     ],
     entryComponents: [],

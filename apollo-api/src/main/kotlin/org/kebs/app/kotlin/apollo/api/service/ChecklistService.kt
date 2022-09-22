@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.payload.request.CheckListForm
+import org.kebs.app.kotlin.apollo.api.payload.request.SSFLaboratoryRequest
 import org.kebs.app.kotlin.apollo.api.payload.request.SsfResultForm
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -18,10 +19,12 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSCFLaboratoryRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmittedPdfListDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.*
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleCollectionLaboratoryRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleCollectionRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestParametersRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestResultsRepository
@@ -70,6 +73,7 @@ class ChecklistService(
         private val qaISampleCollectRepository: IQaSampleCollectionRepository,
         private val consignmentAuditService: ConsignmentDocumentAuditService,
         private val daoServices: DestinationInspectionDaoServices,
+        private val scfLabRequestsRepository: IQaSampleCollectionLaboratoryRequestsRepository,
 ) {
     @Lazy
     @Autowired
@@ -234,12 +238,12 @@ class ChecklistService(
         return response
     }
 
-    fun addEngineeringSsf(map: ServiceMapsEntity, cdItemID: Long, sampleSubmissionDetails: QaSampleSubmissionEntity, loggedInUser: UsersEntity): ApiResponseModel {
+    fun addEngineeringSsf(map: ServiceMapsEntity, cdItemID: Long, sampleSubmissionDetails: QaSampleSubmissionEntity,labRequests: List<SSFLaboratoryRequest>, loggedInUser: UsersEntity): ApiResponseModel {
         var response = ApiResponseModel()
         val enginerringItem = engineeringItemChecklistRepository.findByIdOrNull(cdItemID)
         enginerringItem?.let {
             engineeringItemChecklistRepository.save(it)
-            response = saveSsfDetails(sampleSubmissionDetails, cdItemID, map, loggedInUser)
+            response = saveSsfDetails(sampleSubmissionDetails,labRequests, cdItemID, map, loggedInUser)
         } ?: run {
             response.message = "Invalid checklist identifier"
             response.responseCode = ResponseCodes.NOT_FOUND
@@ -248,11 +252,11 @@ class ChecklistService(
         return response
     }
 
-    fun addAgrochemSsf(map: ServiceMapsEntity, cdItemID: Long, sampleSubmissionDetails: QaSampleSubmissionEntity, loggedInUser: UsersEntity): ApiResponseModel {
+    fun addAgrochemSsf(map: ServiceMapsEntity, cdItemID: Long, sampleSubmissionDetails: QaSampleSubmissionEntity,labRequests: List<SSFLaboratoryRequest>, loggedInUser: UsersEntity): ApiResponseModel {
         var response = ApiResponseModel()
         val enginerringItem = agrochemItemChecklistRepository.findByIdOrNull(cdItemID)
         enginerringItem?.let {
-            response = saveSsfDetails(sampleSubmissionDetails, cdItemID, map, loggedInUser)
+            response = saveSsfDetails(sampleSubmissionDetails, labRequests, cdItemID, map, loggedInUser)
             response
         } ?: run {
             response.message = "Invalid checklist identifier"
@@ -845,13 +849,14 @@ class ChecklistService(
     }
 
     @Transactional
-    fun saveSsfDetails(sampleSubmissionDetails: QaSampleSubmissionEntity, itemId: Long, map: ServiceMapsEntity, loggedInUser: UsersEntity): ApiResponseModel {
+    fun saveSsfDetails(sampleSubmissionDetails: QaSampleSubmissionEntity, labRequests: List<SSFLaboratoryRequest>, itemId: Long, map: ServiceMapsEntity, loggedInUser: UsersEntity): ApiResponseModel {
         val response = ApiResponseModel()
         val cdItemOptional = iCdItemsRepo.findById(itemId)
         if (cdItemOptional.isPresent) {
             var cdItem = cdItemOptional.get()
             sampleSubmissionDetails.brandName = cdItem.productBrandName
             sampleSubmissionDetails.productDescription = cdItem.itemDescription ?: cdItem.hsDescription
+
             //updating of Details in DB
             if (cdItem.sampledCollectedStatus == map.activeStatus) {
                 with(sampleSubmissionDetails) {
@@ -865,6 +870,20 @@ class ChecklistService(
                     sampleBsNumberStatus = map.initStatus
                     sampleSubmissionStatus = map.activeStatus
                     ssfId = serviceRequestsEntity.id
+                }
+                // Update lab requests
+                labRequests.forEach {request->
+                    val lab=QaSCFLaboratoryRequestsEntity()
+                    request.fillDetails(lab)
+                    lab.apply {
+                        createdBy = loggedInUser.userName
+                        createdOn = Timestamp.from(Instant.now())
+                        modifiedBy = loggedInUser.userName
+                        modifiedOn = Timestamp.from(Instant.now())
+                        status = 1
+                        ssfId = serviceRequestsEntity.id
+                    }
+                    scfLabRequestsRepository.save(lab)
                 }
 
                 cdItem = daoServices.updateCdItemDetailsInDB(cdItem, loggedInUser)
@@ -973,6 +992,7 @@ class ChecklistService(
             map["disposalMode"] = inspectionGeneral.returnOrDispose.orEmpty()
             map["testParameters"] = inspectionGeneral.testParameters.orEmpty()
             map["laboratoryName"] = inspectionGeneral.laboratoryName.orEmpty()
+            map["labRequests"]= this.scfLabRequestsRepository.findBySsfId(inspectionGeneral.id!!)
             map["ssfDescription"] = inspectionGeneral.description.orEmpty()
             map["conditionOfSample"] = inspectionGeneral.conditionOfSample.orEmpty()
             val itemDetails = this.daoServices.findItemWithItemID(inspectionGeneral.cdItemId!!)

@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Lab Request Details</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-7 col-md-6">
+            <label for="laboratoryName" class="waiver-form-label">Laboratory Name</label>
+            <select id="laboratoryName" name="laboratoryName" class="waiver-form-input-master"
+                    formControlName="laboratoryName">
+                <option value="" disabled selected>Select Laboratory</option>
+                <option *ngFor="let lab of data.laboratories" [value]="lab.labName">{{lab.labName}}
+                    -{{lab.description}}</option>
+            </select>
+        </div>
+
+        <div class="col-sm-7 col-md-6">
+            <label for="testParameters" class="waiver-form-label">List of test parameters</label>
+            <input class="waiver-form-input-master" type="text" id="testParameters" name="testParameters"
+                   formControlName="testParameters">
+        </div>
+        <div class="col-sm-7 col-md-6">
+            <label for="remarks" class="waiver-form-label">Further remarks regarding this(these) test(s)</label>
+            <textarea id="remarks" class="waiver-form-input-master"
+                      formControlName="remarks"></textarea>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        </button>
+    </div>
+</mat-dialog-actions>

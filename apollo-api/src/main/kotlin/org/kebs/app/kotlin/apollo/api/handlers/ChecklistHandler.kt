@@ -210,13 +210,13 @@ class ChecklistHandler(
                 ssfDetails.category = category
                 when (category) {
                     "engineering" -> {
-                        response = this.checlistService.addEngineeringSsf(map, cdItemID.toLongOrDefault(0L), ssfDetails, loggedInUser)
+                        response = this.checlistService.addEngineeringSsf(map, cdItemID.toLongOrDefault(0L), ssfDetails,form.labRequests?: arrayListOf(), loggedInUser)
                     }
                     "agrochem" -> {
-                        response = this.checlistService.addAgrochemSsf(map, cdItemID.toLongOrDefault(0L), ssfDetails, loggedInUser)
+                        response = this.checlistService.addAgrochemSsf(map, cdItemID.toLongOrDefault(0L), ssfDetails,form.labRequests?: arrayListOf(), loggedInUser)
                     }
                     else -> {
-                        response.message = "invalid category :" + category
+                        response.message = "invalid category :$category"
                         response.responseCode = ResponseCodes.FAILED_CODE
                     }
                 }
@@ -237,7 +237,8 @@ class ChecklistHandler(
                 val item = daoServices.findItemWithUuid(cdItemID)
                 val form = req.body(SsfForm::class.java)
                 val ssfDetails = form.ssf()
-                response = this.checlistService.saveSsfDetails(ssfDetails, item.id!!, map, loggedInUser)
+                response = this.checlistService.saveSsfDetails(ssfDetails, form.labRequests
+                        ?: arrayListOf(), item.id!!, map, loggedInUser)
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to submit SSF", ex)

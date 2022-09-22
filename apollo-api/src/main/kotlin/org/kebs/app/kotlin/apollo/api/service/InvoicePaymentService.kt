@@ -38,6 +38,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.math.ceil
 
 enum class PaymentStatus(val code: Int) {
     NEW(0), PAID(1), BILLED(4), PARTIAL_PAYMENT(5);
@@ -893,7 +894,12 @@ class InvoicePaymentService(
         return demandNoteItem
     }
 
-
+    private fun roundUpNextInteger(dd: BigDecimal?): BigDecimal{
+        return dd?.let { ddd->
+            val upped= ceil(ddd.toDouble())
+            BigDecimal.valueOf(upped).setScale(2, RoundingMode.HALF_UP)
+        }?:BigDecimal.ZERO
+    }
     private fun calculateTotalAmountDemandNote(
             demandNote: CdDemandNoteEntity,
             user: UsersEntity,
@@ -913,8 +919,8 @@ class InvoicePaymentService(
         }
 
         demandNote.cfvalue = demandNote.cfvalue?.setScale(2, RoundingMode.HALF_UP)
-        demandNote.totalAmount = demandNote.totalAmount?.setScale(2, RoundingMode.HALF_UP)
-        demandNote.amountPayable = demandNote.amountPayable?.setScale(2, RoundingMode.HALF_UP)
+        demandNote.totalAmount = roundUpNextInteger(demandNote.totalAmount?.setScale(2, RoundingMode.HALF_UP))
+        demandNote.amountPayable = roundUpNextInteger(demandNote.amountPayable?.setScale(2, RoundingMode.HALF_UP))
 
         if (presentment) {
             return demandNote
