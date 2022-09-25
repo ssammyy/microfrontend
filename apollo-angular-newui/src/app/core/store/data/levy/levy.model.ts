@@ -118,6 +118,11 @@ export interface CompanyModel {
     totalValueOfManufacture: number;
     otherBusinessNatureType: string;
     slFormStatus: number;
+    businessLineName: string;
+    regionName: string;
+    townName: string;
+    createdOn: any;
+    dateOfClosure: string;
 
 }
 export interface StdLevyScheduleSiteVisitDTO {
@@ -166,10 +171,15 @@ export interface EditCompanyDTO {
     assignedTo: number;
     taskId: string;
     accentTo: boolean;
+    companyEmail: string;
+    companyTelephone: string;
+    yearlyTurnover : number;
+    remarks: string;
 
 }
 export interface SiteVisitRemarks{
     siteVisitId: number;
+    editID: number;
     remarks: string;
     remarkBy: string;
     status: string;
@@ -322,6 +332,24 @@ export interface PaymentDetails{
     registrationNumber: string;
     periodFrom: string;
     periodTo: string;
+    paymentSlipNo: string;
+    paymentType :string;
+    totalDeclAmt :string;
+    totalPenaltyAmt :string;
+    bankRefNo :string;
+    totalPaymentAmt :string;
+    bankName :string;
+    commodityType :string;
+    levyPaid: string;
+    penaltyPaid: string;
+    businessLines: number;
+    businessNatures: number;
+    businessLineName: string;
+    businessNatureName: string;
+    region: number;
+    regionName: string;
+    amountDue: bigint;
+
 }
 export interface PenaltyDetails{
     id: number;
@@ -458,6 +486,13 @@ export interface ManufacturePendingTaskData{
     rejectStatusLevelTwo: string;
     otherBusinessNatureType: string;
     complianceStatus: number;
+    editID: number;
+    physicalAddressEdit: string;
+    postalAddressEdit: string;
+    ownershipEdit: string;
+    yearlyTurnoverEdit: string;
+    companyTelephoneEdit: string;
+    companyEmailEdit: string;
 
 
 }

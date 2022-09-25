@@ -360,6 +360,42 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturerList(): MutableList<ManufactureListHolder>
 
     @Query(
+        value = "SELECT ID as id,ENTRY_NUMBER as entryNumber,KRA_PIN as kraPin,NAME as name,POSTAL_ADDRESS as postalAddress,COMPANY_TELEPHONE as companyTelephone," +
+                "COMPANY_EMAIL as companyEmail,STREET_NAME as streetName,BUSINESS_LINES as businessLines,BUSINESS_NATURES as businessNatures,BUSINESS_LINE_NAME as businessLineName," +
+                "BUSINESS_NATURE_NAME as businessNatureName,REGION as region,REGION_NAME as regionName,TOWN as town,TOWN_NAME as townName, cast(CREATED_ON as varchar(200)) AS CreatedOn  FROM DAT_KEBS_COMPANY_PROFILE ",
+        nativeQuery = true
+    )
+    fun getRegisteredFirms(): MutableList<RegisteredFirms>
+
+    @Query(
+        value = "SELECT ID as id,ENTRY_NUMBER as entryNumber,KRA_PIN as kraPin,NAME as name,POSTAL_ADDRESS as postalAddress,BRANCH_NAME as adminLocation," +
+                "STREET_NAME as streetName,BUSINESS_LINES as businessLines,BUSINESS_NATURES as businessNatures,BUSINESS_LINE_NAME as businessLineName," +
+                "BUSINESS_NATURE_NAME as businessNatureName,REGION as region,REGION_NAME as regionName,TOWN as town,TOWN_NAME as townName, cast(CREATED_ON as varchar(200)) AS CreatedOn " +
+                " FROM DAT_KEBS_COMPANY_PROFILE  WHERE STATUS='1'",
+        nativeQuery = true
+    )
+    fun getActiveFirms(): MutableList<RegisteredFirms>
+
+    @Query(
+        value = "SELECT ID as id,ENTRY_NUMBER as entryNumber,KRA_PIN as kraPin,NAME as name,POSTAL_ADDRESS as postalAddress,BRANCH_NAME as adminLocation," +
+                "STREET_NAME as streetName,BUSINESS_LINES as businessLines,BUSINESS_NATURES as businessNatures,BUSINESS_LINE_NAME as businessLineName," +
+                "BUSINESS_NATURE_NAME as businessNatureName,REGION as region,REGION_NAME as regionName,TOWN as town,TOWN_NAME as townName, cast(CREATED_ON as varchar(200)) AS CreatedOn" +
+                " FROM DAT_KEBS_COMPANY_PROFILE  WHERE STATUS='4'",
+        nativeQuery = true
+    )
+    fun getDormantFirms(): MutableList<RegisteredFirms>
+
+
+    @Query(
+        value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.BRANCH_NAME as adminLocation," +
+                "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.BUSINESS_LINE_NAME as businessLineName," +
+                "c.BUSINESS_NATURE_NAME as businessNatureName,c.REGION as region,c.REGION_NAME as regionName,c.TOWN as town,c.TOWN_NAME as townName,cast(c.CREATED_ON as varchar(200)) AS CreatedOn,cast(p.DATE_OF_CLOSURE as varchar(200)) AS dateOfClosure " +
+                " FROM DAT_KEBS_COMPANY_PROFILE c JOIN DAT_KEBS_CLOSURE_OF_OPERATIONS p ON c.ID=p.COMPANY_ID WHERE c.STATUS='0'",
+        nativeQuery = true
+    )
+    fun getClosedFirms(): MutableList<RegisteredFirms>
+
+    @Query(
         value = "SELECT ID  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id AND ASSIGN_STATUS='0'",
         nativeQuery = true
     )
@@ -451,23 +487,63 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturesLevyPayments(@Param("entryNumber") entryNumber: Long?): MutableList<LevyPayments>
 
     @Query(
-        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount," +
-                "c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo" +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
-                "WHERE p.ID= :id",
+        value = "SELECT d.ID as id,p.ENTRY_NUMBER as entryNumber,TO_CHAR(TRUNC(d.PERIOD_FROM),'DD/MM/YYYY') as periodFrom,TO_CHAR(TRUNC(d.PERIOD_TO),'DD/MM/YYYY') as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_NO as paymentSlipNo,TO_CHAR(TRUNC(h.REQUEST_HEADER_PAYMENT_SLIP_DATE),'DD/MM/YYYY')  as paymentSlipDate," +
+                "h.REQUEST_HEADER_PAYMENT_TYPE as paymentType,h.REQUEST_HEADER_TOTAL_DECL_AMT as totalDeclAmt,h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,h.REQUEST_BANK_REF_NO as bankRefNo," +
+                "h.REQUEST_HEADER_TOTAL_PAYMENT_AMT as totalPaymentAmt,h.REQUEST_HEADER_BANK as bankName,d.COMMODITY_TYPE as commodityType,TO_CHAR(TRUNC(p.PAYMENT_DATE),'DD/MM/YYYY') as paymentDate," +
+                "d.LEVY_PAID as levyPaid,d.PENALTY_PAID as penaltyPaid,d.QTY_MANF as qtyManf,d.EX_FACT_VAL as exFactVal," +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID LEFT JOIN  LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
+                "WHERE d.ID= :id  AND d.TRANSACTION_TYPE='DECLARATION'",
         nativeQuery = true
     )
     fun getLevyPaymentsReceipt(@Param("id") id: Long?): MutableList<LevyPayments>
 
 
     @Query(
-        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,p.PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount," +
+        value = "SELECT d.ID as id,p.ENTRY_NUMBER as entryNumber,d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_NO as paymentSlipNo,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate," +
+                "h.REQUEST_HEADER_PAYMENT_TYPE as paymentType,h.REQUEST_HEADER_TOTAL_DECL_AMT as totalDeclAmt,h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,h.REQUEST_BANK_REF_NO as bankRefNo," +
+                "h.REQUEST_HEADER_TOTAL_PAYMENT_AMT as totalPaymentAmt,h.REQUEST_HEADER_BANK as bankName,d.COMMODITY_TYPE as commodityType,h.TRANSACTION_DATE as paymentDate," +
+                "d.LEVY_PAID as levyPaid,d.PENALTY_PAID as penaltyPaid," +
                 "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
-                " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
-                "WHERE c.ID= :companyId ORDER BY p.ID DESC",
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID LEFT JOIN  LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
+                "WHERE c.ID= :companyId AND d.TRANSACTION_TYPE='DECLARATION' ORDER BY d.ID DESC",
         nativeQuery = true
     )
     fun getManufacturesLevyPaymentsList(@Param("companyId") companyId: Long?): MutableList<LevyPayments>
+
+    @Query(
+        value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.BUSINESS_LINE_NAME as businessLineName," +
+                "c.BUSINESS_NATURE_NAME as businessNatureName,c.REGION as region,c.REGION_NAME as regionName,d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate," +
+                "h.TRANSACTION_DATE as paymentDate,d.LEVY_PAID as levyPaid" +
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
+                "WHERE  d.TRANSACTION_TYPE='DECLARATION' ORDER BY d.ID DESC",
+        nativeQuery = true
+    )
+    fun getAllLevyPayments(): MutableList<AllLevyPayments>
+
+    @Query(
+        value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId," +
+                "d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.TRANSACTION_DATE as paymentDate,d.PENALTY_PAID as penaltyPaid," +
+                "h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,p.NET_PENALTY_AMT as amountDue" +
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID " +
+                "LEFT JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
+                "WHERE  d.TRANSACTION_TYPE='PENALTY' ORDER BY d.ID DESC",
+        nativeQuery = true
+    )
+    fun getPenaltyReport(): MutableList<AllLevyPayments>
+
+
+    @Query(
+        value = "SELECT d.ID as id,p.ENTRY_NUMBER as entryNumber,cast(d.PERIOD_FROM as varchar(200)) as periodFrom ,cast(d.PERIOD_TO as varchar(200)) as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_NO as paymentSlipNo,cast(h.REQUEST_HEADER_PAYMENT_SLIP_DATE as varchar(200)) as paymentSlipDate," +
+                "h.REQUEST_HEADER_PAYMENT_TYPE as paymentType,h.REQUEST_HEADER_TOTAL_DECL_AMT as totalDeclAmt,h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,h.REQUEST_BANK_REF_NO as bankRefNo," +
+                "h.REQUEST_HEADER_TOTAL_PAYMENT_AMT as totalPaymentAmt,h.REQUEST_HEADER_BANK as bankName,d.COMMODITY_TYPE as commodityType,cast(h.TRANSACTION_DATE as varchar(200)) as paymentDate," +
+                "d.LEVY_PAID as levyPaid,d.PENALTY_PAID as penaltyPaid," +
+                "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus " +
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID LEFT JOIN  LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER  " +
+                "WHERE c.ENTRY_NUMBER= :entryNumber ORDER BY d.ID DESC",
+        nativeQuery = true
+    )
+    fun getManufacturesPayments(@Param("entryNumber") entryNumber: String?): MutableList<LevyPayment>
 
     @Query(
         value = "SELECT COMPANY_EMAIL as companyEmail,NAME as companyName  FROM DAT_KEBS_COMPANY_PROFILE WHERE STATUS='4'",
@@ -492,7 +568,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturesLevyPenalty(@Param("entryNumber") entryNumber: Long?): MutableList<LevyPenalty>
 
     @Query(
-        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.LEVY_PENALTY_PAYMENT_DATE as paymentDate,p.PAYMENT_AMOUNT as paymentAmount,p.NET_PENALTY_AMT as amountDue,p.PENALTY_APPLIED as penalty,p.LEVY_DUE_DATE as levyDueDate," +
+        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.LEVY_PENALTY_PAYMENT_DATE as paymentDate,p.LEVY_PENALTY_PAYABLE as paymentAmount,p.NET_PENALTY_AMT as amountDue,p.PENALTY_APPLIED as penalty,p.LEVY_DUE_DATE as levyDueDate," +
                 "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo " +
                 " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER " +
                 "WHERE c.ID= :companyId ORDER BY p.ID DESC",
@@ -501,7 +577,10 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturesLevyPenaltyList(@Param("companyId") companyId: Long?): MutableList<LevyPenalty>
 
     @Query(
-        value = "SELECT DISTINCT c.ENTRY_NUMBER as entryNumber,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,p.STATUS as status  FROM DAT_KEBS_COMPANY_PROFILE c, LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
+        value = "SELECT DISTINCT c.ENTRY_NUMBER as entryNumber,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin," +
+                "c.REGISTRATION_NUMBER as registrationNumber,p.STATUS as status,c.POSTAL_ADDRESS as postalAddress," +
+                "c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.BUSINESS_LINE_NAME as businessLineName," +
+                "c.BUSINESS_NATURE_NAME as businessNatureName  FROM DAT_KEBS_COMPANY_PROFILE c, LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
                 "WHERE p.ENTRY_NUMBER=c.ENTRY_NUMBER AND p.OVERDUE='1'",
         nativeQuery = true
     )
@@ -514,14 +593,29 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findRecordCount(entryNumber: String): Long
 
     @Query(
-        value = "SELECT p.ID as PenaltyOrderNo, c.ENTRY_NUMBER as entryNo,c.KRA_PIN as kraPin,c.NAME as manufacName,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,p.LEVY_PENALTY_PAYMENT_DATE as penaltyGenDate,p.PENALTY_APPLIED as penaltyPayable FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
-                "ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE  p.STATUS='1' AND p.LEVY_PENALTY_PAYMENT_DATE IS NOT NULL",
+        value = "SELECT p.ID as PenaltyOrderNo, c.ENTRY_NUMBER as entryNo,c.KRA_PIN as kraPin,c.NAME as manufacName,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,p.PENALTY_DATE as penaltyGenDate,p.LEVY_PENALTY_PAYABLE as penaltyPayable FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
+                "ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE  p.PENALTY_APPLIED='1' ",
         nativeQuery = true
     )
     fun getPenaltyDetails(): MutableList<PenaltyDetails>
 
     @Query(
-        value = "SELECT COUNT(c.ENTRY_NUMBER)  FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE p.STATUS='1' AND p.LEVY_PENALTY_PAYMENT_DATE IS NOT NULL",
+        value = "SELECT p.ID as PenaltyOrderNo FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
+                "ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE  p.PENALTY_APPLIED='1'",
+        nativeQuery = true
+    )
+    fun updatedPenalty(): MutableList<PenaltyDetails>
+
+    @Query(
+        value = "UPDATE LOG_KEBS_STANDARD_LEVY_PAYMENTS SET STATUS='3' WHERE ID=:id ",
+        nativeQuery = true
+    )
+    fun updatePenaltyStatus(id: Long): Long
+
+
+
+    @Query(
+        value = "SELECT COUNT(c.ENTRY_NUMBER)  FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE p.PENALTY_APPLIED='1' ",
         nativeQuery = true
     )
     fun findPenaltyCount(): String

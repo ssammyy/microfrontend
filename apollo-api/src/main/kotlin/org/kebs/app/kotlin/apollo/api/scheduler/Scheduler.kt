@@ -98,6 +98,7 @@ class SchedulerDevelopment(
     }
 
     @Scheduled(cron = "\${scheduler.cron.monthly}")
+    //@Scheduled(fixedDelay = 180_000) //3 Minutes for now
     fun runMonthlyScheduler() {
         standardLevyService.sendLevyPaymentReminders()
         sendEntryNumberToKraServices.postPenaltyDetailsToKra()

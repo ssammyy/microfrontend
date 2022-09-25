@@ -10,7 +10,9 @@ import java.sql.Date
 @Repository
 interface IRfcCorRepository : HazelcastRepository<RfcCorEntity,Long> {
     fun findByRfcDateAndPartner(rfcDate: Date, partner: Long): List<RfcCorEntity>?
-    fun findByRfcNumber(rfcNumber: String): RfcCorEntity?
-    fun findByUcrNumber(ucrNumber: String): RfcCorEntity?
-    fun findByReviewStatus(status: Int, page: Pageable): Page<RfcCorEntity>
+    fun findByRfcNumberAndVersion(rfcNumber: String, version: Long): RfcCorEntity?
+    fun findByRfcNumberAndStatus(rfcNumber: String, status: Long): RfcCorEntity?
+    fun findFirstByRfcNumberOrderByVersionDesc(rfcNumber: String): RfcCorEntity?
+    fun findFirstByUcrNumberOrderByVersionDesc(ucrNumber: String): RfcCorEntity?
+    fun findByReviewStatusAndStatus(reviewStatus: Int, status: Long, page: Pageable): Page<RfcCorEntity>
 }

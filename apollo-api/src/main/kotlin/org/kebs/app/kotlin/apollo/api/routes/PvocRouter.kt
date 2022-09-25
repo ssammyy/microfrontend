@@ -40,6 +40,7 @@ class PvocRouter {
             GET("/exemption/check/eligible", handler::checkExemptionEligibility)
             GET("/exemption/history", handler::exemptionHistory)
             GET("/exemption/{exemptionId}", handler::viewExemption)
+            POST("/exemption/renew/{exemptionId}", handler::renewExemptionCertificate)
             GET("/manufacturer/waiver/history", handler::manufacturerWaiverHistory)
             GET("/manufacturer/exemption/history", handler::manufacturerExemptionHistory)
 

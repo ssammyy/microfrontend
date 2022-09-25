@@ -70,12 +70,11 @@ class ForeignPvocIntegrations(
                         idfNumber = coc.idfNumber ?: "UNKNOWN"
                         rfiNumber = coc.rfiNumber ?: "UNKNOWN"
                         ucrNumber = coc.ucrNumber
-                        acceptableDocDate = coc.acceptableDocDate
                         finalDocDate = coc.finalDocDate
                         rfcDate = coc.rfcDate
                         shipmentQuantityDelivered = "UNKNOWN"
                         cocIssueDate = coc.cocIssueDate
-                        clean = "Y"
+                        clean = coc.compliant
                         cocIssueDate = coc.cocIssueDate
                         cocRemarks = coc.cocRemarks ?: "NA"
                         coiRemarks = "UNKNOWN"
@@ -101,6 +100,8 @@ class ForeignPvocIntegrations(
                         exporterFaxNumber = coc.exporterFaxNumber ?: "UNKOWN"
                         exporterEmail = coc.exporterEmail ?: "UNKNOWN"
                         placeOfInspection = coc.placeOfInspection ?: "UNKNOWN"
+                        inspectionZone = coc.inspectionZone
+                        inspectionProvince = coc.inspectionProvince
                         dateOfInspection = coc.dateOfInspection
                         portOfDestination = coc.portOfDestination ?: "UNKOWN"
                         shipmentMode = coc.shipmentMode ?: "UNKNOWN"
@@ -110,6 +111,7 @@ class ForeignPvocIntegrations(
                         finalInvoiceCurrency = coc.finalInvoiceCurrency ?: properties.applicationCurrencyCode
                         finalInvoiceNumber = coc.finalInvoiceNumber ?: "NA"
                         finalInvoiceDate = coc.finalInvoiceDate ?: commonDaoServices.getTimestamp()
+                        invoicePaymentDate = coc.invoicePaymentDate
                         shipmentSealNumbers = coc.shipmentSealNumbers ?: "UNKNOWN"
                         shipmentContainerNumber = coc.shipmentContainerNumber ?: "UNKNOWN"
                         shipmentGrossWeight = coc.shipmentGrossWeight?.toString() ?: "UNKNOWN"
@@ -117,6 +119,7 @@ class ForeignPvocIntegrations(
                         route = coc.route ?: "Z"
                         partner = user.id
                         reviewStatus = ReviewStatus.NEW.code
+                        status = 1
                         version = coc.version ?: 1
                         cocType = "COC"
                         documentsType = "F"
@@ -161,7 +164,7 @@ class ForeignPvocIntegrations(
                         finalDocDate = ncr.finalDocDate
                         shipmentQuantityDelivered = "UNKNOWN"
                         cocIssueDate = ncr.ncrIssueDate
-                        clean = "N"
+                        clean = ncr.compliant
                         cocRemarks = ncr.ncrRemarks ?: "NA"
                         coiRemarks = "UNKNOWN"
                         issuingOffice = ncr.issuingOffice ?: "UNKNOWN"
@@ -195,13 +198,17 @@ class ForeignPvocIntegrations(
                         finalInvoiceExchangeRate = ncr.finalInvoiceExchangeRate ?: 0.0
                         finalInvoiceCurrency = ncr.finalInvoiceCurrency ?: properties.applicationCurrencyCode
                         finalInvoiceDate = ncr.finalInvoiceDate ?: commonDaoServices.getTimestamp()
+                        invoicePaymentDate = ncr.paymentDate
                         shipmentSealNumbers = ncr.shipmentSealNumbers ?: "UNKNOWN"
                         shipmentContainerNumber = ncr.shipmentContainerNumber ?: "UNKNOWN"
                         shipmentGrossWeight = ncr.shipmentGrossWeight?.toString() ?: "UNKNOWN"
                         cocRemarks = ncr.ncrRemarks ?: "UNKNOWN"
                         cocIssueDate = ncr.ncrIssueDate
+                        inspectionProvince = ncr.inspectionProvince
+                        inspectionZone = ncr.inspectionZone
                         route = ncr.route ?: "Z"
                         partner = user.id
+                        status = 1
                         reviewStatus = ReviewStatus.NEW.code
                         version = ncr.version ?: 1
                         cocType = "NCR"
@@ -273,12 +280,14 @@ class ForeignPvocIntegrations(
                     idfNumber = coi.idfNumber ?: "UNKNOWN"
                     rfiNumber = coi.rfiNumber ?: "UNKNOWN"
                     ucrNumber = coi.ucrNumber
+                    inspectionProvince = coi.inspectionProvince
+                    inspectionZone = coi.inspectionZone
                     acceptableDocDate = coi.acceptableDocDate
                     finalDocDate = coi.finalDocDate
                     rfcDate = coi.rfcDate
                     shipmentQuantityDelivered = "UNKNOWN"
                     cocIssueDate = coi.coiIssueDate
-                    clean = "Y"
+                    clean = coi.compliant
                     cocRemarks = coiRemarks ?: "NA"
                     coiRemarks = coi.coiRemarks ?: "UNKNOWN"
                     issuingOffice = coi.issuingOffice ?: "UNKNOWN"
@@ -312,11 +321,13 @@ class ForeignPvocIntegrations(
                     finalInvoiceExchangeRate = coi.finalInvoiceExchangeRate ?: 0.0
                     finalInvoiceCurrency = coi.finalInvoiceCurrency ?: properties.applicationCurrencyCode
                     finalInvoiceDate = coi.finalInvoiceDate ?: commonDaoServices.getTimestamp()
+                    invoicePaymentDate = coi.invoicePaymentDate
                     shipmentSealNumbers = coi.shipmentSealNumbers ?: "UNKNOWN"
                     shipmentContainerNumber = coi.shipmentContainerNumber ?: "UNKNOWN"
                     shipmentGrossWeight = coi.shipmentGrossWeight?.toString() ?: "UNKNOWN"
                     coiRemarks = coi.coiRemarks ?: "UNKNOWN"
                     route = coi.route ?: "Z"
+                    status = 1
                     version = coi.version ?: 1
                     cocType = "COI"
                     documentsType = "F"
@@ -486,7 +497,7 @@ class ForeignPvocIntegrations(
         }
         transaction.amount = transaction.fobAmount?.let { fob -> fob.times(rate).divide(BigDecimal.valueOf(100)) }
         // Skip add transaction when amount is less than or equal to zero or version is greater than one
-        if (BigDecimal.ZERO < transaction.amount) {
+        if ((transaction.amount ?: BigDecimal.ZERO) > BigDecimal.ZERO) {
             transaction.rate = rate
             if (version ?: 0 <= 1) {
                 val trx = billingService.registerPvocTransaction(transaction, user)
@@ -626,12 +637,15 @@ class ForeignPvocIntegrations(
                 corIssueDate = cor.corIssueDate ?: commonDaoServices.getTimestamp()
                 countryOfSupply = cor.countryOfSupply
                 inspectionCenter = cor.inspectionCenter
+                inspectionZone = cor.inspectionZone
+                inspectionProvince = cor.inspectionProvince
                 exporterName = cor.exporterName
                 exporterAddress1 = cor.exporterAddress1
                 exporterAddress2 = cor.exporterAddress2
                 exporterEmail = cor.exporterEmail
                 acceptableDocDate = cor.acceptableDocDate
                 finalDocDate = cor.finalDocDate
+                inspectionFeePaymentDate = cor.inspectionFeePaymentDate
                 applicationBookingDate = cor.applicationBookingDate ?: commonDaoServices.getTimestamp()
                 inspectionDate = cor.inspectionDate ?: commonDaoServices.getTimestamp()
                 make = cor.make
@@ -688,9 +702,15 @@ class ForeignPvocIntegrations(
     fun foreignRfc(rfc: RfcEntityForm, documentType: String, s: ServiceMapsEntity, user: PvocPartnersEntity): RfcEntity? {
         val rfcEntity = RfcEntity()
         val auth = this.commonDaoServices.loggedInUserAuthentication()
-        this.rfcRepository.findByRfcNumber(rfc.rfcNumber!!)?.let {
+        this.rfcRepository.findByRfcNumberAndVersion(rfc.rfcNumber!!, rfc.version ?: 1)?.let {
             return null
         } ?: run {
+            this.rfcRepository.findByRfcNumberAndStatus(rfc.rfcNumber!!, 1)?.let { existing ->
+                existing.status = 0
+                existing.modifiedBy = auth.name
+                existing.modifiedOn = Timestamp.from(Instant.now())
+                this.rfcRepository.save(existing)
+            }
             rfc.fillDetails(rfcEntity)
             rfcEntity.rfcDocumentType = documentType
             rfcEntity.partner = user.id
@@ -708,8 +728,8 @@ class ForeignPvocIntegrations(
                     rfcItem.declaredHsCode = item.declaredHsCode
                     rfcItem.itemQuantity = item.itemQuantity?.toString() ?: "0"
                     rfcItem.productDescription = item.productDescription
-                    rfcItem.ownerName = item.ownerName
-                    rfcItem.ownerPin = item.ownerPin
+                    rfcItem.ownerName = rfc.exporterName
+                    rfcItem.ownerPin = rfc.exporterPin
                     rfcItem.createdBy = auth.name
                     rfcItem.createdOn = Timestamp.from(Instant.now())
                     rfcItem.modifiedBy = auth.name
@@ -725,9 +745,16 @@ class ForeignPvocIntegrations(
     fun foreignRfcCor(rfc: RfcCorForm, s: ServiceMapsEntity, user: PvocPartnersEntity): RfcCorEntity? {
         val rfcEntity = RfcCorEntity()
         val auth = this.commonDaoServices.loggedInUserAuthentication()
-        this.rfcCorRepository.findByRfcNumber(rfc.rfcNumber!!)?.let {
+        this.rfcCorRepository.findByRfcNumberAndVersion(rfc.rfcNumber!!, rfc.version ?: 1)?.let {
             return null
         } ?: run {
+            // Mark Existing as inactive
+            this.rfcCorRepository.findByRfcNumberAndStatus(rfc.rfcNumber!!, 1)?.let { existing ->
+                existing.status = 0
+                existing.modifiedBy = auth.name
+                existing.modifiedOn = Timestamp.from(Instant.now())
+                this.rfcCorRepository.save(existing)
+            }
             rfc.fillCorRfc(rfcEntity)
             rfcEntity.partner = user.id
             rfcEntity.status = s.activeStatus.toLong()
@@ -756,8 +783,8 @@ class ForeignPvocIntegrations(
         when (documentType.toUpperCase()) {
             "COR" -> {
                 val rfcEntity = when {
-                    StringUtils.hasLength(ucrNumber) -> this.rfcCorRepository.findByUcrNumber(ucrNumber)
-                    StringUtils.hasLength(rfcNumber) -> this.rfcCorRepository.findByRfcNumber(rfcNumber)
+                    StringUtils.hasLength(ucrNumber) -> this.rfcCorRepository.findFirstByUcrNumberOrderByVersionDesc(ucrNumber)
+                    StringUtils.hasLength(rfcNumber) -> this.rfcCorRepository.findFirstByRfcNumberOrderByVersionDesc(rfcNumber)
                     else -> null
                 }
                 return rfcEntity?.let {
@@ -766,8 +793,8 @@ class ForeignPvocIntegrations(
             }
             else -> {
                 val rfcEntity = when {
-                    StringUtils.hasLength(ucrNumber) -> this.rfcRepository.findByUcrNumber(ucrNumber)
-                    StringUtils.hasLength(rfcNumber) -> this.rfcRepository.findByRfcNumber(rfcNumber)
+                    StringUtils.hasLength(ucrNumber) -> this.rfcRepository.findFirstByUcrNumberOrderByVersionDesc(ucrNumber)
+                    StringUtils.hasLength(rfcNumber) -> this.rfcRepository.findFirstByRfcNumberOrderByVersionDesc(rfcNumber)
                     else -> null
                 }
                 return rfcEntity?.let {

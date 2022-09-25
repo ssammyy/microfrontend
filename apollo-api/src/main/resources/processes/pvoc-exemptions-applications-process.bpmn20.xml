@@ -12,19 +12,24 @@
         <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="exclusivegateway1"></sequenceFlow>
         <userTask id="usertask2" name="Defered Request" activiti:category="DEFERED_EDIT"></userTask>
         <sequenceFlow id="flow3" name="Defered" sourceRef="exclusivegateway1" targetRef="servicetask7">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve=='DEFERED'}]]></conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${reviewStatus=='DEFERRED'}]]></conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="flow4" name="Edited" sourceRef="usertask2" targetRef="usertask1"></sequenceFlow>
         <sequenceFlow id="flow5" name="Approve" sourceRef="exclusivegateway1" targetRef="servicetask1">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve=='APPROVE'}]]></conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${reviewStatus=='APPROVED'}]]></conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="flow6" name="Reject" sourceRef="exclusivegateway1" targetRef="servicetask2">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve=='REJECT'}]]></conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${reviewStatus=='REJECTED'}]]></conditionExpression>
         </sequenceFlow>
         <userTask id="usertask5" name="Exemption Charman Approval" activiti:priority="EXEMPTION_CHAIRMAN"></userTask>
         <sequenceFlow id="flow7" sourceRef="servicetask1" targetRef="usertask5"></sequenceFlow>
-        <serviceTask id="servicetask1" name="Approve" activiti:expression="#{pvocService.updateReviewRequest(requestId, validity,remarks, reviewOfficer, reviewStatus)}"></serviceTask>
-        <serviceTask id="servicetask2" name="Reject" activiti:expression="#{pvocService.updateReviewRequest(requestId, remarks, reviewOfficer, reviewStatus)}"></serviceTask>
+        <serviceTask id="servicetask1" name="Approve"
+                     activiti:expression="#{pvocService.updateExemptionReviewRequest(exemptionId, validity,remarks, reviewOfficer, reviewStatus)}"></serviceTask>
+        <serviceTask id="servicetask2" name="Reject"
+                     activiti:expression="#{pvocService.updateExemptionReviewRequest(exemptionId, '0',remarks, reviewOfficer, reviewStatus)}"></serviceTask>
         <sequenceFlow id="flow8" sourceRef="servicetask2" targetRef="usertask5"></sequenceFlow>
         <sequenceFlow id="flow9" sourceRef="servicetask6" targetRef="servicetask3"></sequenceFlow>
         <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
@@ -32,18 +37,23 @@
         <sequenceFlow id="flow11" name="Reject" sourceRef="exclusivegateway2" targetRef="servicetask4">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve=='REJECT'}]]></conditionExpression>
         </sequenceFlow>
-        <serviceTask id="servicetask3" name="Certificate of Exemption" activiti:expression="#{pvocService.generateExemptionCertificate(requestId, reviewOfficer)}"></serviceTask>
-        <serviceTask id="servicetask4" name="Rejected" activiti:expression="#{pvocService.updateCommitteeStatus(requestId, remarks, reviewOfficer, approvalStatus)}"></serviceTask>
+        <serviceTask id="servicetask3" name="Certificate of Exemption"
+                     activiti:expression="#{pvocService.generateExemptionCertificate(exemptionId, reviewOfficer)}"></serviceTask>
+        <serviceTask id="servicetask4" name="Rejected"
+                     activiti:expression="#{pvocService.updateExemptionCommitteeStatus(exemptionId, remarks, reviewOfficer, approvalStatus)}"></serviceTask>
         <sequenceFlow id="flow12" sourceRef="servicetask4" targetRef="servicetask5"></sequenceFlow>
-        <serviceTask id="servicetask5" name="Completed" activiti:expression="#{pvocService.completeExemptionApplication(requestId)}"></serviceTask>
+        <serviceTask id="servicetask5" name="Completed"
+                     activiti:expression="#{pvocService.completeExemptionApplication(requestId)}"></serviceTask>
         <sequenceFlow id="flow13" sourceRef="servicetask3" targetRef="servicetask5"></sequenceFlow>
         <endEvent id="endevent1" name="End"></endEvent>
         <sequenceFlow id="flow14" sourceRef="servicetask5" targetRef="endevent1"></sequenceFlow>
         <sequenceFlow id="flow15" name="Approve" sourceRef="exclusivegateway2" targetRef="servicetask6">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve=='APPROVE'}]]></conditionExpression>
         </sequenceFlow>
-        <serviceTask id="servicetask6" name="Approved" activiti:expression="#{pvocService.updateCommitteeStatus(requestId, remarks, reviewOfficer, approvalStatus)}"></serviceTask>
-        <serviceTask id="servicetask7" name="Defered" activiti:expression="#{pvocService.updateReviewRequest(requestId, remarks, reviewOfficer, reviewStatus)}"></serviceTask>
+        <serviceTask id="servicetask6" name="Approved"
+                     activiti:expression="#{pvocService.updateExemptionCommitteeStatus(exemptionId, remarks, reviewOfficer, approvalStatus)}"></serviceTask>
+        <serviceTask id="servicetask7" name="Defered"
+                     activiti:expression="#{pvocService.updateExemptionReviewRequest(exemptionId, '0',remarks, reviewOfficer, reviewStatus)}"></serviceTask>
         <sequenceFlow id="flow16" sourceRef="servicetask7" targetRef="usertask2"></sequenceFlow>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_exemptionApplicationProcess">
@@ -102,7 +112,7 @@
                 <omgdi:waypoint x="672.0" y="210.0"></omgdi:waypoint>
                 <omgdi:waypoint x="672.0" y="111.0"></omgdi:waypoint>
                 <bpmndi:BPMNLabel>
-                    <omgdc:Bounds height="13.0" width="39.0" x="672.0" y="210.0"></omgdc:Bounds>
+                    <omgdc:Bounds height="13.0" width="100.0" x="672.0" y="210.0"></omgdc:Bounds>
                 </bpmndi:BPMNLabel>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
@@ -123,7 +133,7 @@
                 <omgdi:waypoint x="692.0" y="230.0"></omgdi:waypoint>
                 <omgdi:waypoint x="810.0" y="230.0"></omgdi:waypoint>
                 <bpmndi:BPMNLabel>
-                    <omgdc:Bounds height="13.0" width="30.0" x="692.0" y="230.0"></omgdc:Bounds>
+                    <omgdc:Bounds height="13.0" width="100.0" x="692.0" y="230.0"></omgdc:Bounds>
                 </bpmndi:BPMNLabel>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">

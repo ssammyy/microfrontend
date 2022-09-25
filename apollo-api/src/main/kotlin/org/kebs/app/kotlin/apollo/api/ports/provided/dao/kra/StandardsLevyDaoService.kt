@@ -174,23 +174,23 @@ class StandardsLevyDaoService(
 
                 var header = Sl2PaymentsHeaderEntity()
 
-                header.transactionDate = paymentRequest.transmissionDate
                 header.requestHeaderEntryNo = paymentRequest.header?.entryNo
                 header.requestHeaderKraPin = paymentRequest.header?.kraPin
                 header.requestHeaderManufacturerName = paymentRequest.header?.manufacturerName
                 header.requestHeaderPaymentSlipNo = paymentRequest.header?.paymentSlipNo
-                header.requestHeaderPaymentSlipDate = paymentRequest.header?.paymentSlipDate
+                header.requestHeaderPaymentSlipDate = SimpleDateFormat("MM-dd-yyyy").parse(paymentRequest.header?.paymentSlipDate)
                 header.requestHeaderPaymentType = paymentRequest.header?.paymentType
                 header.requestHeaderTotalDeclAmt = paymentRequest.header?.totalDeclAmt?.toBigDecimal()
                 header.requestHeaderTotalPenaltyAmt = paymentRequest.header?.totalPenaltyAmt?.toBigDecimal()
                 header.requestHeaderTotalPaymentAmt = paymentRequest.header?.totalPaymentAmt?.toBigDecimal()
                 header.requestHeaderBank = paymentRequest.header?.bank
                 header.requestBankRefNo = paymentRequest.header?.bankRefNo
-                header.requestHeaderTransmissionDate = paymentRequest.transmissionDate
-                header.transactionDate = commonDaoServices.getTimestamp()
+                header.requestHeaderTransmissionDate = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").parse(paymentRequest.transmissionDate)
+                header.headerTransmissionDate = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").parse(paymentRequest.transmissionDate)
+                header.transactionDate = SimpleDateFormat("dd-MM-yyyy").parse(paymentRequest.header?.paymentDate)
                 header.status = 0
                 header.createdBy = paymentRequest.loginId
-                header.createdOn = commonDaoServices.getTimestamp()
+                header.createdOn = Timestamp.from(Instant.now())
                 header.varField1 = log.transactionReference
                 header.version = 1
                 header = headerRepository.save(header)
@@ -201,16 +201,15 @@ class StandardsLevyDaoService(
                     detail.headerId = header.id
                     detail.transactionType = "DECLARATION"
                     detail.commodityType = d.commodityType
-                    detail.periodFrom = d.periodFrom
-                    detail.periodTo = d.periodTo
-//                    detail.periodTo = d.periodTo
+                    detail.periodFrom = SimpleDateFormat("dd-MM-yyyy").parse(d.periodFrom)
+                    detail.periodTo = SimpleDateFormat("dd-MM-yyyy").parse(d.periodTo)
                     detail.qtyManf = d.qtyManf?.toBigDecimal()
                     detail.exFactVal = d.exFactVal?.toBigDecimal()
                     detail.levyPaid = d.levyPaid?.toBigDecimal()
-                    detail.transactionDate = commonDaoServices.getCurrentDate()
+                    detail.transactionDate = Date()
                     detail.status = 0
                     detail.createdBy = paymentRequest.loginId
-                    detail.createdOn = commonDaoServices.getTimestamp()
+                    detail.createdOn = Timestamp.from(Instant.now())
                     detail.version = 1
                     detailsRepository.save(detail)
                 }
@@ -219,13 +218,13 @@ class StandardsLevyDaoService(
                     detail.headerId = header.id
                     detail.transactionType = "PENALTY"
                     detail.penaltyOrderNo = p.penaltyOrderNo
-                    detail.periodFrom =p.periodFrom
-                    detail.periodTo =p.periodTo
+                    detail.periodFrom = SimpleDateFormat("dd-MM-yyyy").parse(p.periodFrom)
+                    detail.periodTo = SimpleDateFormat("dd-MM-yyyy").parse(p.periodTo)
                     detail.penaltyPaid = p.penaltyPaid?.toBigDecimal()
-                    detail.transactionDate = commonDaoServices.getCurrentDate()
+                    detail.transactionDate = Date()
                     detail.status = 0
                     detail.createdBy = paymentRequest.loginId
-                    detail.createdOn = commonDaoServices.getTimestamp()
+                    detail.createdOn = Timestamp.from(Instant.now())
                     detail.version = 1
                     detailsRepository.save(detail)
                 }

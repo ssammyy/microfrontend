@@ -1,1 +1,44 @@
-<p>update-waiver-task works!</p>
+<h2 mat-dialog-title>Waiver Status update: {{data.task.task}}</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="actionStatus" class="waiver-form-label">Approval Action</label>
+            <select id="actionStatus" name="actionStatus" class="waiver-form-input-master"
+                    formControlName="status">
+                <option value="" disabled selected>Select Action</option>
+                <option *ngFor="let st of complaintStatus" [value]="st.name">{{st.description}}</option>
+            </select>
+            <div class="mat-error" *ngIf="errors && errors.status">
+                <p>{{errors.status}}</p>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-8" *ngIf="data.is_pvoc_officer">
+            <label for="recommendation" class="waiver-form-label">Recommendation</label>
+            <select id="recommendation" name="recommendations" class="waiver-form-input-master"
+                    formControlName="action">
+                <option value="" disabled selected>Select Action</option>
+                <option *ngFor="let st of recommendations" [value]="st.recommendationId">{{st.description}}</option>
+            </select>
+            <div class="mat-error" *ngIf="errors && errors.action">
+                <p>{{errors.action}}</p>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="complaintRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
+                complaint:</label>
+            <textarea id="complaintRemarks" class="waiver-form-input-master" placeholder=""
+                      formControlName="remarks"></textarea>
+            <div class="mat-error" *ngIf="errors && errors.remarks">
+                <p>{{errors.remarks}}</p>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

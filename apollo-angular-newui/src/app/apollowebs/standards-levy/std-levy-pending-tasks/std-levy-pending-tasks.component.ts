@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
 import {UsersEntity} from "../../../core/store/data/std/std.model";
 import {DocumentDTO, ManufacturePendingTask, SiteVisitRemarks, SlModel} from "../../../core/store/data/levy/levy.model";
@@ -80,6 +80,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
     isShowApproveRequestForm=true;
     isShowRejectRequestForm=true;
     isShowSLForm = true;
+    isShowCompanyDetails=true;
+    isShowCompanyRemarks=true;
 
     toggleDisplaySLForm(manufactureId: number) {
         this.loadingText = "Loading ...."
@@ -106,6 +108,45 @@ export class StdLevyPendingTasksComponent implements OnInit {
         this.isShowApprovalForm1= true;
         this.isShowRejectForm1= true;
 
+    }
+    toggleDisplayCompanyDetails(){
+        this.isShowCompanyDetails=!this.isShowCompanyDetails;
+        this.isShowCompanyRemarks=true;
+        this.isShowApproveRequestForm=true;
+        this.isShowRejectRequestForm=true;
+        this.isShowDocumentsTab=true;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
+        this.isShowApprovalForm1= true;
+        this.isShowRejectForm1= true;
+    }
+
+    toggleDisplayCompanyRemarks(editID: number){
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.levyService.getComEditRemarks(editID).subscribe(
+            (response: SiteVisitRemarks[]) => {
+                this.siteVisitRemarks = response;
+                this.SpinnerService.hide();
+                console.log(this.siteVisitRemarks)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.isShowCompanyRemarks = !this.isShowCompanyRemarks;
+        this.isShowCompanyDetails=true;
+        this.isShowRemarksTab=true;
+        this.isShowReportForm=true;
+        this.isShowScheduleForm= true;
+        this.isShowRejectForm1 = true;
+        this.isShowApprovalForm1 = true;
+        this.isShowDocumentsTab = true;
+        this.isShowApproveRequestForm=true;
+        this.isShowRejectRequestForm=true;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
     }
 
 
@@ -256,11 +297,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
     }
 
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective;
-
-  dtTrigger: Subject<any> = new Subject<any>();
-  isDtInitialized: boolean = false
+    dtOptions: DataTables.Settings = {};
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtTrigger1: Subject<any> = new Subject<any>();
+    dtTrigger2: Subject<any> = new Subject<any>();
   loadingText: string;
 
   constructor(
@@ -315,7 +356,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo: [],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
       });
       this.rejectEditRequestFormGroup = this.formBuilder.group({
@@ -328,7 +373,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo: [],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
 
       });
@@ -343,7 +392,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo: [],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
 
       });
@@ -357,7 +410,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo:[],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
 
       });
@@ -372,7 +429,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo:[],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
 
       });
@@ -386,7 +447,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
           assignedTo:[],
           taskId: [],
           accentTo:[],
-          processId:[]
+          processId:[],
+          companyEmail:[],
+          companyTelephone:[],
+          yearlyTurnover:[],
+          editID:[]
 
 
       });
@@ -487,6 +552,11 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
 
   }
+    ngOnDestroy(): void {
+        this.dtTrigger1.unsubscribe();
+        this.dtTrigger2.unsubscribe();
+    }
+
   get scheduleVisitForm(): any {
     return this.scheduleVisitFormGroup.controls;
   }
@@ -624,19 +694,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         (response: ManufacturePendingTask[]) => {
             //console.log(this.manufacturePendingTasks);
             this.manufacturePendingTasks = response;
-            if (this.isDtInitialized) {
-                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.destroy();
-                    // dtInstance.ajax.reload()
-                    this.dtTrigger.next();
-                    this.SpinnerService.hide();
-                });
-            } else {
-                this.isDtInitialized = true
-
-                this.dtTrigger.next();
-            this.SpinnerService.hide();
-          }
+            this.rerender();
 
         },
         (error: HttpErrorResponse)=>{
@@ -814,7 +872,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
           },
           (error: HttpErrorResponse) => {
             this.SpinnerService.hide();
-            this.showToasterError('Error', `Error Scheduling Visit`);
+            this.showToasterError('Error', `Error Scheduling Visit Try Again`);
             console.log(error.message);
           }
       );
@@ -887,7 +945,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Approving Report; Try Again`);
+          this.showToasterError('Error', `Error Approving Report Try Again`);
           console.log(error.message);
         }
     );
@@ -907,7 +965,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Rejecting Report; Try Again`);
+          this.showToasterError('Error', `Error Rejecting Report Try Again`);
           console.log(error.message);
         }
     );
@@ -927,7 +985,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Rejecting Report; Try Again`);
+                this.showToasterError('Error', `Error Rejecting Report Try Again`);
                 console.log(error.message);
             }
         );
@@ -967,7 +1025,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Approving Report; Try Again`);
+          this.showToasterError('Error', `Error Approving Report Try Again`);
           console.log(error.message);
         }
     );
@@ -987,7 +1045,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Approving Report; Try Again`);
+          this.showToasterError('Error', `Error Approving Report Try Again`);
           console.log(error.message);
         }
     );
@@ -1007,7 +1065,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Rejecting Report; Try Again`);
+          this.showToasterError('Error', `Error Rejecting Report Try Again`);
           console.log(error.message);
         }
     );
@@ -1030,7 +1088,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Saving FeedBack; Try Again`);
+          this.showToasterError('Error', `Error Saving FeedBack Try Again`);
           console.log(error.message);
         }
     );
@@ -1050,7 +1108,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Editing Company`);
+                this.showToasterError('Error', `Error Editing Company Try Again`);
                 console.log(error.message);
             }
         );
@@ -1070,7 +1128,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Editing Company`);
+                this.showToasterError('Error', `Error Editing Company Try Again`);
                 console.log(error.message);
             }
         );
@@ -1090,7 +1148,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Editing Company`);
+                this.showToasterError('Error', `Error Editing Company Try Again`);
                 console.log(error.message);
             }
         );
@@ -1110,7 +1168,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Editing Company`);
+                this.showToasterError('Error', `Error Editing Company Try Again`);
                 console.log(error.message);
             }
         );
@@ -1131,7 +1189,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Editing Company`);
+                this.showToasterError('Error', `Error Editing Company Try Again`);
                 console.log(error.message);
             }
         );
@@ -1151,7 +1209,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Editing Company`);
+                this.showToasterError('Error', `Error Editing Company Try Again`);
                 console.log(error.message);
             }
         );
@@ -1246,5 +1304,19 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
     public hideModelCloseModalFeedback() {
         this.closeModalFeedback?.nativeElement.click();
+    }
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger1.next();
+            this.dtTrigger2.next();
+        });
+
     }
 }

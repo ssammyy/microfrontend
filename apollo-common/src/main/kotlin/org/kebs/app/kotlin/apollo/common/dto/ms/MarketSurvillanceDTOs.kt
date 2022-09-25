@@ -1014,11 +1014,35 @@ data class MSComplaintSubmittedSuccessful(
         var successMessage: String? = null,
         var errorMessage: String? = null
 )
+
+data class LevyPaymentDTO(
+        var Id: Long? = null,
+        var entryNumber: String?=null,
+        var paymentDate: String?=null,
+        var totalPaymentAmt: String?=null,
+        var companyName: String?=null,
+        var kraPin: String?=null,
+        var periodFrom: String?=null,
+        var periodTo: String?=null,
+        var paymentSlipNo: String?=null,
+        var paymentSlipDate: String?=null,
+        var paymentType: String?=null,
+        var totalDeclAmt: String?=null,
+        var totalPenaltyAmt: String?=null,
+        var bankRefNo: String?=null,
+        var bankName: String?=null,
+        var commodityType: String?=null,
+        var qtyManf: String?=null,
+        var exFactVal: String?=null,
+        var levyPaid: String?=null,
+        var penaltyPaid: String?=null
+)
+
 data class LevyPaymentsDTO(
         var Id: Long? = null,
         var entryNumber: String?=null,
         var paymentDate: String?=null,
-        var paymentAmount: String?=null,
+        var totalPaymentAmt: String?=null,
         var companyName: String?=null,
         var firstName: String?=null,
         var lastName: String?=null,
@@ -1026,6 +1050,18 @@ data class LevyPaymentsDTO(
         var registrationNumber: String?=null,
         var periodFrom: String?=null,
         var periodTo: String?=null,
+        var paymentSlipNo: String?=null,
+        var paymentSlipDate: String?=null,
+        var paymentType: String?=null,
+        var totalDeclAmt: String?=null,
+        var totalPenaltyAmt: String?=null,
+        var bankRefNo: String?=null,
+        var bankName: String?=null,
+        var commodityType: String?=null,
+        var qtyManf: String?=null,
+        var exFactVal: String?=null,
+        var levyPaid: String?=null,
+        var penaltyPaid: String?=null
 )
 
 data class FuelRemediationDetailsDTO(

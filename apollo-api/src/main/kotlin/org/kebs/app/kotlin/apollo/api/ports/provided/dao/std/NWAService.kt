@@ -1197,8 +1197,8 @@ class NWAService(private val runtimeService: RuntimeService,
         var userList= companyStandardRepository.getSacSecEmailList()
         val targetUrl = "https://kimsint.kebs.org/";
         userList.forEach { item->
-            val recipient="stephenmuganda@gmail.com"
-            //val recipient= item.getUserEmail()
+            //val recipient="stephenmuganda@gmail.com"
+            val recipient= item.getUserEmail()
             val subject = "New Company Standard"+  nWAStandard.ksNumber
             val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},A New standard has been approved and uploaded.Click on the Link below to view. ${targetUrl} "
             if (recipient != null) {

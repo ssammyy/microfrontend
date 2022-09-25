@@ -1,16 +1,16 @@
 import {Injectable} from '@angular/core';
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
-import {ReviewApplicationTask, StandardRequest} from "./std.model";
+import {ReviewApplicationTask, StandardRequest, UsersEntity} from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import {
     DecisionFeedback,
-    Department,
+    Department, Document,
     HOFFeedback,
     LiaisonOrganization,
     ProductCategory,
-    ProductSubCategoryB,
+    ProductSubCategoryB, StandardRequestB,
     StandardTasks,
     StdJustification,
     StdJustificationDecision,
@@ -23,6 +23,7 @@ import {
     StdWorkPlan,
     TechnicalCommitteeb
 } from './request_std.model';
+import {StandardDocuments} from "./commitee-model";
 
 @Injectable({
     providedIn: 'root'
@@ -33,6 +34,7 @@ export class StandardDevelopmentService {
     private apiServerUrl2 = `${this.protocol}${this.baseUrl}/api/v1/migration/anonymous/standard/dropdown/`;
     private apiMembershipToTCUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/membershipToTC/`;
     private apiServerUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/standard/`;
+    private apiServerUrl23 = `${this.protocol}${this.baseUrl}/api/v1/migration/anonymous/standard/`;
 
     constructor(private http: HttpClient) {
     }
@@ -83,6 +85,11 @@ export class StandardDevelopmentService {
         return this.http.get<Department[]>(`${this.apiServerUrl2}` + 'getDepartments')
     }
 
+    public getTcSec(): any {
+        return this.http.get<UsersEntity[]>(`${this.apiServerUrl}` + 'getAllTcSec')
+    }
+
+
     public getProductSubcategoryb(id: bigint): any {
         return this.http.get<any>(`${this.apiServerUrl2}getProductCategories/${id}`)
     }
@@ -100,8 +107,8 @@ export class StandardDevelopmentService {
         return this.http.get<ReviewApplicationTask[]>(`${this.apiMembershipToTCUrl}` + 'getApplicationsForReview')
     }
 
-    public getHOFTasks(): Observable<StandardTasks[]> {
-        return this.http.get<StandardTasks[]>(`${this.apiServerUrl}` + 'getHOFTasks')
+    public getHOFTasks(): Observable<StandardRequestB[]> {
+        return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllStds')
     }
 
     public getTechnicalCommitteeName(id: number): Observable<string> {
@@ -110,6 +117,10 @@ export class StandardDevelopmentService {
 
     public reviewTask(hofFeedback: HOFFeedback): Observable<any> {
         return this.http.post<HOFFeedback>(`${this.apiServerUrl}` + 'hof/review', hofFeedback)
+    }
+
+    public updateDepartmentStandardRequest(standardRequest: StandardRequest): Observable<any> {
+        return this.http.post<StandardRequest>(`${this.apiServerUrl}` + 'updateDepartmentStandardRequest', standardRequest)
     }
 
     public getLiaisonOrganization(): any {
@@ -175,6 +186,7 @@ export class StandardDevelopmentService {
 
 
     }
+
     public createTechnicalCommittee(technicalCommitteeb: TechnicalCommitteeb): Observable<any> {
         return this.http.post<Department>(`${this.apiServerUrl}` + 'createTechnicalCommittee', technicalCommitteeb).pipe(
             map(function (response: any) {
@@ -187,6 +199,7 @@ export class StandardDevelopmentService {
 
 
     }
+
     public createProductCategory(productCategory: ProductCategory): Observable<any> {
         return this.http.post<ProductCategory>(`${this.apiServerUrl}` + 'createProductCategory', productCategory).pipe(
             map(function (response: any) {
@@ -199,6 +212,7 @@ export class StandardDevelopmentService {
 
 
     }
+
     public createProductSubCategory(productSubCategory: ProductSubCategoryB): Observable<any> {
         return this.http.post<ProductSubCategoryB>(`${this.apiServerUrl}` + 'createProductSubCategory', productSubCategory).pipe(
             map(function (response: any) {
@@ -211,18 +225,23 @@ export class StandardDevelopmentService {
 
 
     }
+
     public getAllDepartments(): any {
         return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllDepartments')
     }
+
     public getTechnicalCommittees(): any {
         return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllTcs')
     }
+
     public getProductCategories(): any {
         return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllProductCategories')
     }
+
     public getProductSubCategories(): any {
         return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllProductSubCategories')
     }
+
     public updateDepartment(department: Department): Observable<any> {
         return this.http.post<Department>(`${this.apiServerUrl}` + 'updateDepartment', department).pipe(
             map(function (response: any) {
@@ -235,4 +254,39 @@ export class StandardDevelopmentService {
 
 
     }
+
+    //upload additinal info Document
+    public uploadFileDetails(draftStandardID: string, data: FormData, doctype: string, nomineeName: string): Observable<any> {
+        const url = `${this.apiServerUrl23}file-upload`;
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'requestId': draftStandardID, 'type': doctype, 'requesterName': nomineeName}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getAdditionalDocuments(standardId: string): Observable<any> {
+
+        const url = `${this.apiServerUrl}getAdditionalDocuments`;
+        const params = new HttpParams()
+            .set('standardId', standardId)
+        return this.http.get<Document>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 }
+

@@ -5,6 +5,7 @@ import okhttp3.internal.toNonNegativeInt
 import org.codehaus.jackson.map.ObjectMapper
 import org.flowable.common.engine.api.FlowableObjectNotFoundException
 import org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc.ExceptionPayload
+import org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc.ExceptionRenewalPayload
 import org.kebs.app.kotlin.apollo.api.handlers.forms.WaiverApplication
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -101,6 +102,22 @@ class PvocHandler(
             val id = exemptionId.toLongOrNull()
             if (id != null) {
                 response = this.pvocService.retrieveMyExemptionApplicationById(id)
+            } else {
+                response = ApiResponseModel()
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.message = "Invalid identifier"
+            }
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun renewExemptionCertificate(req: ServerRequest): ServerResponse {
+        var response: ApiResponseModel
+        req.pathVariable("exemptionId").let { exemptionId ->
+            val id = exemptionId.toLongOrNull()
+            if (id != null) {
+                val renewal = req.body(ExceptionRenewalPayload::class.java)
+                response = this.pvocService.applyRenewExemptionCertificateRenewal(id, renewal)
             } else {
                 response = ApiResponseModel()
                 response.responseCode = ResponseCodes.INVALID_CODE

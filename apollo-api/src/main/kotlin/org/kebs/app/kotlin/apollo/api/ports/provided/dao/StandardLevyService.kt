@@ -7,6 +7,7 @@ import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
+import org.kebs.app.kotlin.apollo.common.dto.ms.LevyPaymentDTO
 import org.kebs.app.kotlin.apollo.common.dto.ms.LevyPaymentsDTO
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
@@ -18,6 +19,7 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEnt
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.std.CompanyStandardRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.UserListRepository
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
@@ -69,7 +71,8 @@ class StandardLevyService(
     private val slWindingUpReportUploadsEntityRepository: SlWindingUpReportUploadsEntityRepository,
     private val emailVerificationTokenEntityRepo: EmailVerificationTokenEntityRepo,
     private val iUserRepository: IUserRepository,
-    private val companyRepo: ICompanyProfileRepository
+    private val companyRepo: ICompanyProfileRepository,
+    private val companyStandardRepository: CompanyStandardRepository,
 
 
     ) {
@@ -111,7 +114,8 @@ class StandardLevyService(
     }
 
     fun editCompanyDetails(
-        companyProfileEditEntity: CompanyProfileEditEntity
+        companyProfileEditEntity: CompanyProfileEditEntity,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ProcessInstanceSiteResponse {
 
         val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
@@ -121,9 +125,9 @@ class StandardLevyService(
         companyProfileEditEntity.registrationNumber?.let { variables["registrationNumber"] = it }
         companyProfileEditEntity.entryNumber?.let { variables["entryNumber"] = it }
         companyProfileEditEntity.manufactureId?.let { variables["manufactureId"] = it }
-        companyProfileEditEntity.physicalAddress?.let { variables["physicalAddress"] = it }
-        companyProfileEditEntity.postalAddress?.let { variables["postalAddress"] = it }
-        companyProfileEditEntity.ownership?.let { variables["ownership"] = it }
+        companyProfileEditEntity.physicalAddress?.let { variables["physicalAddressEdit"] = it }
+        companyProfileEditEntity.postalAddress?.let { variables["postalAddressEdit"] = it }
+        companyProfileEditEntity.ownership?.let { variables["ownershipEdit"] = it }
         companyProfileEditEntity.taskType?.let { variables["taskType"] = it }
         companyProfileEditEntity.userType?.let { variables["userType"] = it }
         companyProfileEditEntity.assignedTo?.let { variables["assignedTo"] = it }
@@ -133,6 +137,9 @@ class StandardLevyService(
         companyProfileEditEntity.createdOn?.let{variables.put("createdOn", it)}
         companyProfileEditEntity.typeOfManufacture?.let{variables.put("typeOfManufacture", it)}
         companyProfileEditEntity.otherBusinessNatureType?.let{variables.put("otherBusinessNatureType", it)}
+        companyProfileEditEntity.yearlyTurnover?.let{variables.put("yearlyTurnoverEdit", it)}
+        companyProfileEditEntity.companyTelephone?.let{variables.put("companyTelephoneEdit", it)}
+        companyProfileEditEntity.companyEmail?.let{variables.put("companyEmailEdit", it)}
 
         companyProfileEditEntity.status=1
         val userIntType = companyProfileEditEntity.userType
@@ -144,6 +151,19 @@ class StandardLevyService(
         companyProfileEditEntity.slBpmnProcessInstance = processInstance?.processInstanceId
         companyProfileEditEntity.slBpmnProcessInstance?.let{variables.put("slBpmnProcessInstance", it)}
           companyProfileEditEntityRepository.save(companyProfileEditEntity)
+        val editDetails = companyProfileEditEntityRepository.save(companyProfileEditEntity)
+        variables["editID"] = editDetails.id
+        val approverFname=loggedInUser.firstName
+        val approverLname=loggedInUser.lastName
+        val approveName= "$approverFname  $approverLname"
+        standardLevySiteVisitRemarks.siteVisitId= editDetails.id
+        standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+        standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
+        standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        standardLevySiteVisitRemarks.remarkBy = approveName
+
+        standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
+
 
         taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
             ?.let { t ->
@@ -159,6 +179,17 @@ class StandardLevyService(
 
             }
             ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+
+        var userList= companyStandardRepository.getUserEmail(companyProfileEditEntity?.assignedTo)
+        userList.forEach { item->
+            val recipient= item.getUserEmail()
+            val subject = "Company Details Edited"
+            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details for ${companyProfileEditEntity.name} have been edited. Kindly login to the KIMS System to Confirm "
+            if (recipient != null) {
+                notifications.sendEmail(recipient, subject, messageBody)
+            }
+        }
+
         when (userIntType) {
             plUserTypes -> {
                 bpmnService.slAssignTask(
@@ -167,6 +198,7 @@ class StandardLevyService(
                     companyProfileEditEntity?.assignedTo
                         ?: throw NullValueNotAllowedException("invalid user id provided")
                 )
+
             }
             asManagerUserTypes -> {
                 bpmnService.slAssignTask(
@@ -182,9 +214,16 @@ class StandardLevyService(
 
 
     }
+    fun getComEditRemarks(editID: Long): List<StandardLevySiteVisitRemarks> {
+        standardLevySiteVisitRemarksRepository.findAllBySiteVisitIdOrderByIdDesc(editID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Data Found")
+    }
 
     fun editCompanyDetailsConfirm(
-        companyProfileEntity: CompanyProfileEntity
+        companyProfileEntity: CompanyProfileEntity,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): List<TaskDetailsBody> {
 
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
@@ -192,17 +231,32 @@ class StandardLevyService(
 
                 val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
                 val variables: MutableMap<String, Any> = mutableMapOf()
-                companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
-                companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
-                companyProfileEntity.ownership?.let { variables["ownership"] = it }
+                companyProfileEntity.physicalAddress?.let { variables["physicalAddressEdit"] = it }
+                companyProfileEntity.postalAddress?.let { variables["postalAddressEdit"] = it }
+                companyProfileEntity.ownership?.let { variables["ownershipEdit"] = it }
+                companyProfileEntity.yearlyTurnover?.let{variables.put("yearlyTurnoverEdit", it)}
+                companyProfileEntity.companyTelephone?.let{variables.put("companyTelephoneEdit", it)}
+                companyProfileEntity.companyEmail?.let{variables.put("companyEmailEdit", it)}
                 companyProfileEntity.createdBy = loggedInUser.userName
                 companyProfileEntity.createdBy?.let{variables.put("createdBy", it)}
                 companyProfileEntity.modifiedOn = commonDaoServices.getTimestamp()
                 companyProfileEntity.modifiedOn?.let{variables.put("modifiedOn", it)}
                 companyProfileEntity.taskId?.let { variables.put("taskId", it) }
                 companyProfileEntity.assignedTo?.let { variables.put("assignedTo", it) }
+
                 companyProfileEntity.accentTo?.let { variables["No"] = it }
                 companyProfileEntity.accentTo?.let { variables["Yes"] = it }
+                standardLevySiteVisitRemarks.siteVisitId?.let { variables.put("editID", it) }
+                val approverFname=loggedInUser.firstName
+                val approverLname=loggedInUser.lastName
+                val approveName= "$approverFname  $approverLname"
+                standardLevySiteVisitRemarks.siteVisitId= standardLevySiteVisitRemarks.siteVisitId
+                standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+                standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
+                standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+                standardLevySiteVisitRemarks.remarkBy = approveName
+
+                standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
 
 
                 if (variables["Yes"] == true) {
@@ -210,11 +264,24 @@ class StandardLevyService(
                         physicalAddress = companyProfileEntity.physicalAddress
                         postalAddress = companyProfileEntity.postalAddress
                         ownership = companyProfileEntity.ownership
+                        yearlyTurnover = companyProfileEntity.yearlyTurnover
+                        companyTelephone = companyProfileEntity.companyTelephone
+                        companyEmail = companyProfileEntity.companyEmail
                         modifiedBy = loggedInUser.userName
                         modifiedOn = commonDaoServices.getTimestamp()
                     }
 
                     companyProfileRepo.save(entity)
+
+                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item->
+                        val recipient= item.getUserEmail()
+                        val subject = "Company Details Approved"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details Edited for ${companyProfileEntity.name} have been Approved."
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
 
                     runtimeService.createProcessInstanceQuery()
                         .processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
@@ -251,6 +318,15 @@ class StandardLevyService(
                         ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
                 }
                 if (variables["No"] == false) {
+                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item->
+                        val recipient= item.getUserEmail()
+                        val subject = "Company Details Rejected"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details Edited for ${companyProfileEntity.name} were rejected."
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
                     runtimeService.createProcessInstanceQuery()
                         .processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
                         ?.let { l ->
@@ -293,7 +369,8 @@ return getUserTasks();
     }
 
     fun editCompanyDetailsConfirmLvlOne(
-        companyProfileEntity: CompanyProfileEntity
+        companyProfileEntity: CompanyProfileEntity,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): List<TaskDetailsBody> {
 
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
@@ -301,9 +378,12 @@ return getUserTasks();
 
                 val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
                 val variables: MutableMap<String, Any> = mutableMapOf()
-                companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
-                companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
-                companyProfileEntity.ownership?.let { variables["ownership"] = it }
+                companyProfileEntity.physicalAddress?.let { variables["physicalAddressEdit"] = it }
+                companyProfileEntity.postalAddress?.let { variables["postalAddressEdit"] = it }
+                companyProfileEntity.ownership?.let { variables["ownershipEdit"] = it }
+                companyProfileEntity.yearlyTurnover?.let{variables.put("yearlyTurnoverEdit", it)}
+                companyProfileEntity.companyTelephone?.let{variables.put("companyTelephoneEdit", it)}
+                companyProfileEntity.companyEmail?.let{variables.put("companyEmailEdit", it)}
                 companyProfileEntity.createdBy = loggedInUser.id.toString()
                 companyProfileEntity.createdBy?.let{variables.put("createdBy", it)}
                 companyProfileEntity.modifiedOn = commonDaoServices.getTimestamp()
@@ -312,9 +392,29 @@ return getUserTasks();
                 companyProfileEntity.assignedTo?.let { variables.put("assignedTo", it) }
                 companyProfileEntity.accentTo?.let { variables["No"] = it }
                 companyProfileEntity.accentTo?.let { variables["Yes"] = it }
+                standardLevySiteVisitRemarks.siteVisitId?.let { variables.put("editID", it) }
+                val approverFname=loggedInUser.firstName
+                val approverLname=loggedInUser.lastName
+                val approveName= "$approverFname  $approverLname"
+                standardLevySiteVisitRemarks.siteVisitId= standardLevySiteVisitRemarks.siteVisitId
+                standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+                standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
+                standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+                standardLevySiteVisitRemarks.remarkBy = approveName
+
+                standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
 
 
                 if (variables["Yes"] == true) {
+                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item->
+                        val recipient= item.getUserEmail()
+                        val subject = "Company Details Approved"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been approved"
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
 
                     runtimeService.createProcessInstanceQuery()
                         .processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
@@ -351,6 +451,15 @@ return getUserTasks();
                         ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
                 }
                 if (variables["No"] == false) {
+                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item->
+                        val recipient= item.getUserEmail()
+                        val subject = "Company Details Rejected"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been rejected."
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
                     runtimeService.createProcessInstanceQuery()
                         .processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
                         ?.let { l ->
@@ -394,7 +503,8 @@ return getUserTasks();
 
 
     fun editCompanyDetailsConfirmLvlTwo(
-        companyProfileEntity: CompanyProfileEntity
+        companyProfileEntity: CompanyProfileEntity,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): List<TaskDetailsBody> {
 
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
@@ -402,9 +512,12 @@ return getUserTasks();
 
                 val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
                 val variables: MutableMap<String, Any> = mutableMapOf()
-                companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
-                companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
-                companyProfileEntity.ownership?.let { variables["ownership"] = it }
+                companyProfileEntity.physicalAddress?.let { variables["physicalAddressEdit"] = it }
+                companyProfileEntity.postalAddress?.let { variables["postalAddressEdit"] = it }
+                companyProfileEntity.ownership?.let { variables["ownershipEdit"] = it }
+                companyProfileEntity.yearlyTurnover?.let{variables.put("yearlyTurnoverEdit", it)}
+                companyProfileEntity.companyTelephone?.let{variables.put("companyTelephoneEdit", it)}
+                companyProfileEntity.companyEmail?.let{variables.put("companyEmailEdit", it)}
                 companyProfileEntity.createdBy = loggedInUser.userName
                 companyProfileEntity.createdBy?.let{variables.put("createdBy", it)}
                 companyProfileEntity.modifiedOn = commonDaoServices.getTimestamp()
@@ -413,13 +526,36 @@ return getUserTasks();
                 companyProfileEntity.assignedTo?.let { variables.put("assignedTo", it) }
                 companyProfileEntity.accentTo?.let { variables["No"] = it }
                 companyProfileEntity.accentTo?.let { variables["Yes"] = it }
+                standardLevySiteVisitRemarks.siteVisitId?.let { variables.put("editID", it) }
+                val approverFname=loggedInUser.firstName
+                val approverLname=loggedInUser.lastName
+                val approveName= "$approverFname  $approverLname"
+                standardLevySiteVisitRemarks.siteVisitId= standardLevySiteVisitRemarks.siteVisitId
+                standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+                standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
+                standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+                standardLevySiteVisitRemarks.remarkBy = approveName
+
+                standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
 
 
                 if (variables["Yes"] == true) {
+                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item->
+                        val recipient= item.getUserEmail()
+                        val subject = "Company Details Approved"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been approved."
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
                     entity.apply {
                         physicalAddress = companyProfileEntity.physicalAddress
                         postalAddress = companyProfileEntity.postalAddress
                         ownership = companyProfileEntity.ownership
+                        yearlyTurnover = companyProfileEntity.yearlyTurnover
+                        companyTelephone = companyProfileEntity.companyTelephone
+                        companyEmail = companyProfileEntity.companyEmail
                         modifiedBy = loggedInUser.userName
                         modifiedOn = commonDaoServices.getTimestamp()
                     }
@@ -461,6 +597,15 @@ return getUserTasks();
                         ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
                 }
                 if (variables["No"] == false) {
+                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item->
+                        val recipient= item.getUserEmail()
+                        val subject = "Company Details Rejected"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been rejected."
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
                     runtimeService.createProcessInstanceQuery()
                         .processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
                         ?.let { l ->
@@ -1997,6 +2142,19 @@ return getUserTasks();
             ?: throw ExpectedDataNotFound("No Data Found")
     }
 
+    fun getManufacturesPayments(): MutableList<LevyPayment>{
+        commonDaoServices.loggedInUserDetailsEmail().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureEntryNo(id)
+                    .let {
+
+                        return companyProfileRepo.getManufacturesPayments(it.toString())
+                    }
+
+            }
+            ?: throw ExpectedDataNotFound("No Data Found")
+    }
+
     fun getManufacturesLevyPaymentsList(companyId: Long): MutableList<LevyPayments>{
         return companyProfileRepo.getManufacturesLevyPaymentsList(companyId)
     }
@@ -2103,23 +2261,69 @@ return getUserTasks();
         return companyProfileRepo.findAll()
     }
 
-    fun mapPaymentDetails(data: List<LevyPayments>): List<LevyPaymentsDTO>{
+    fun mapPaymentDetails(data: List<LevyPayments>): List<LevyPaymentDTO>{
         return data.map {
-            LevyPaymentsDTO(
+            LevyPaymentDTO(
                 it.getId(),
                 it.getEntryNumber(),
                 it.getPaymentDate(),
-                it.getPaymentAmount(),
+                it.getTotalPaymentAmt(),
                 it.getCompanyName(),
-                it.getFirstName(),
-                it.getLastName(),
                 it.getKraPin(),
-                it.getRegistrationNumber(),
                 it.getPeriodFrom(),
                 it.getPeriodTo(),
+                it.getPaymentSlipNo(),
+                it.getPaymentSlipDate(),
+                it.getPaymentType(),
+                it.getTotalDeclAmt(),
+                it.getTotalPenaltyAmt(),
+                it.getBankRefNo(),
+                it.getBankName(),
+                it.getCommodityType(),
+                it.getQtyManf(),
+                it.getExFactVal(),
+                it.getLevyPaid(),
+                it.getPenaltyPaid()
             )
         }
     }
+
+
+    fun updatePenaltyDetails(): String {
+        var updatedPenalties= companyProfileRepo.updatedPenalty()
+        updatedPenalties.forEach { item->
+            val penaltyId=item.getPenaltyOrderNo()
+            if (penaltyId != null) {
+                companyProfileRepo.updatePenaltyStatus(penaltyId)
+            }
+        }
+
+        return "Updated"
+    }
+
+    fun getRegisteredFirms(): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getRegisteredFirms()
+    }
+
+    fun getAllLevyPayments(): MutableList<AllLevyPayments> {
+        return companyProfileRepo.getAllLevyPayments()
+    }
+
+    fun getPenaltyReport(): MutableList<AllLevyPayments> {
+        return companyProfileRepo.getPenaltyReport()
+    }
+    fun getActiveFirms(): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getActiveFirms()
+    }
+    fun getDormantFirms(): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getDormantFirms()
+    }
+    fun getClosedFirms(): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getClosedFirms()
+    }
+
+
+
 
 
 }

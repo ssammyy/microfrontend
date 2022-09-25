@@ -42,6 +42,7 @@ class ConsignmentEnableUI {
     var corAvailable: Boolean = false
     var ncrAvailable: Boolean = false
     var coiAvailable: Boolean = false
+    var foreignDocument: Boolean = false
     var complianceDisabled: Boolean = false
     var complianceRejected: Boolean = false
     var declarationDocument: Boolean = false
@@ -85,10 +86,12 @@ class ConsignmentEnableUI {
                 completed = cd.approveRejectCdStatusType?.let { it.finalStatus == map.activeStatus } == true || cd.oldCdStatus != null
                 canChange = cd.approveRejectCdStatusType?.let { it.modificationAllowed == map.activeStatus } == true
             }
+            ui.foreignDocument = false
             cd.cdStandardsTwo?.let {
                 ui.demandNoteRequired = "DES_INSP".equals(it.localCocType, true)
+                ui.foreignDocument = it.cocType?.equals("F", true) ?: false
             }
-            ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected
+            ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected || ui.foreignDocument
             ui.approveReject = !(ui.targetDisabled && ui.demandNoteDisabled && ui.complianceDisabled)
             ui.complianceRejected = !ui.complianceDisabled && !(cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus)
             cd.cdType?.let {

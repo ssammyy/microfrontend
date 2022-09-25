@@ -56,7 +56,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'My Companies',
         type: 'sub',
         icontype: 'business',
-        privilege: ['MODIFY_COMPANY'],
+        privilege: ['PERMIT_APPLICATION'],
         collapse: 'company',
         children: [
             {path: 'companies', title: 'View Companies', ab: 'VC'},
@@ -349,16 +349,33 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'settings',
     },
     {
-        path: '/standardsLevy',
+        path: '',
         title: 'Standards Levy',
         type: 'sub',
         icontype: 'receipt',
         privilege: ['PERMIT_APPLICATION'],
         collapse: 'standardsLevy',
         children: [
-            {path: 'levyRegistration', title: 'View SL Form', ab: 'SL'},
+            {path: 'standardsLevy/levyRegistration', title: 'View SL Form', ab: 'SL'},
             {path: 'stdLevyPaidHistory', title: 'Payment History', ab: 'PH'},
-            {path: 'stdLevyPenalties', title: 'Penalties', ab: 'PE'},
+            {path: 'stdLevyManPenalty', title: 'Penalties', ab: 'PE'},
+        ],
+    },
+    {
+        path: '',
+        title: 'Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['SL_MANUFACTURE_VIEW'],
+        collapse: 'reports',
+        children: [
+            {path: 'slRegisteredFirms', title: 'Registered Firms', ab: 'RF'},
+            {path: 'slActiveFirms', title: 'Active Firms', ab: 'AF'},
+            {path: 'slDormantFirms', title: 'Dormant Firms', ab: 'DF'},
+            {path: 'slClosedFirms', title: 'Closed Firms', ab: 'CF'},
+            {path: 'slAllLevyPayments', title: 'Levy Payments', ab: 'LP'},
+            {path: 'slPenaltyReport', title: 'Penalties', ab: 'PE'},
+
         ],
     },
     {

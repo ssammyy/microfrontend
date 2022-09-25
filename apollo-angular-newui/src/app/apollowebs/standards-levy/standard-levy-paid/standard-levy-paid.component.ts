@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Subject, timer} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
@@ -23,11 +23,11 @@ export class StandardLevyPaidComponent implements OnInit {
   public actionRequest: PaymentDetails | undefined;
     public pdfRequest: PaymentDetails | undefined;
 
-  dtElement: DataTableDirective;
-  dtElements: DataTableDirective;
-
-  dtTrigger: Subject<any> = new Subject<any>();
-  dtTriggers: Subject<any> = new Subject<any>();
+    dtOptions: DataTables.Settings = {};
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+  dtTrigger1: Subject<any> = new Subject<any>();
+  dtTrigger2: Subject<any> = new Subject<any>();
   isDtInitialized: boolean = false
   loadingText: string;
     isShow=true;
@@ -44,8 +44,8 @@ export class StandardLevyPaidComponent implements OnInit {
     this.getLevyPayments();
   }
   ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-    this.dtTriggers.unsubscribe();
+    this.dtTrigger1.unsubscribe();
+    this.dtTrigger2.unsubscribe();
   }
   // public getPaidLevies(): void{
   //   this.SpinnerService.show();
@@ -73,17 +73,7 @@ export class StandardLevyPaidComponent implements OnInit {
           this.paymentDetails = response;
           //console.log(this.paymentDetails);
           this.SpinnerService.hide();
-          if (this.isDtInitialized) {
-            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
-              this.dtTrigger.next();
-              this.dtTriggers.next();
-            });
-          } else {
-            this.isDtInitialized = true
-            this.dtTrigger.next();
-            this.dtTriggers.next();
-          }
+          this.rerender();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -188,18 +178,8 @@ export class StandardLevyPaidComponent implements OnInit {
                 (response: PaymentDetails[]) => {
                     this.paidDetails = response;
                     this.SpinnerService.hide();
-                    //console.log(this.paidDetails);
-                    if (this.isDtInitialized) {
-                        this.dtElements.dtInstance.then((dtInstance: DataTables.Api) => {
-                            dtInstance.destroy();
-                            this.dtTrigger.next();
-                            this.dtTriggers.next();
-                        });
-                    } else {
-                        this.isDtInitialized = true
-                        this.dtTrigger.next();
-                        this.dtTriggers.next();
-                    }
+                    console.log(this.paidDetails);
+                    this.rerender();
                 },
                 (error: HttpErrorResponse) => {
                     this.SpinnerService.hide();
@@ -231,6 +211,19 @@ export class StandardLevyPaidComponent implements OnInit {
                 // this.pdfUploadsView = dataPdf;
             },
         );
+    }
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger1.next();
+            this.dtTrigger2.next();
+        });
+
     }
 
 }

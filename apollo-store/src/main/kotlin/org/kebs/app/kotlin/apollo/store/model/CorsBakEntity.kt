@@ -48,6 +48,14 @@ class CorsBakEntity : Serializable {
     @Basic
     var inspectionCenter: String? = null
 
+    @Column(name = "INSPECTION_ZONE", length = 400)
+    @Basic
+    var inspectionZone: String? = null
+
+    @Column(name = "INSPECTION_PROVINCE", length = 400)
+    @Basic
+    var inspectionProvince: String? = null
+
     @Column(name = "EXPORTER_NAME")
     @Basic
     var exporterName: String? = null
@@ -66,12 +74,10 @@ class CorsBakEntity : Serializable {
 
     @Column(name = "APPLICATION_BOOKING_DATE")
     @Basic
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var applicationBookingDate: Timestamp? = null
 
     @Column(name = "INSPECTION_DATE")
     @Basic
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var inspectionDate: Timestamp? = null
 
     @Column(name = "MAKE")

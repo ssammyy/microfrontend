@@ -103,7 +103,7 @@ class PvocMonitoringService(
     fun listRfcCorRequests(status: Int, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            val data = this.rfcCorRepository.findByReviewStatus(status, page)
+            val data = this.rfcCorRepository.findByReviewStatusAndStatus(status, 1, page)
             response.data = RfcCorDao.fromList(data.toList())
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE

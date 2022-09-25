@@ -316,6 +316,12 @@ export class LevyService {
         return this.http.get<SiteVisitRemarks>(url, {params}).pipe();
     }
 
+    public getComEditRemarks(editID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_COMPANY_REMARKS);
+        const params = new HttpParams().set('editID', editID);
+        return this.http.get<SiteVisitRemarks>(url, {params}).pipe();
+    }
+
     public editCompanyDetailsConfirm(editCompanyDTO: EditCompanyDTO): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_COMPANY_EDIT_COMPANY_DATA);
         const params = new HttpParams();
@@ -626,6 +632,12 @@ export class LevyService {
         return this.http.get<PenaltyDetails>(url, {params}).pipe();
     }
 
+    public getManufacturesPayments(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_PAY_DETAILS);
+        const params = new HttpParams();
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
+    }
+
     public getManufacturesLevyPenaltyList(companyId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURES_PENALTY_DETAILS);
         const params = new HttpParams().set('companyId', companyId);
@@ -690,6 +702,36 @@ export class LevyService {
                 fn();
             }
         });
+    }
+    public getRegisteredFirms(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REG_FIRMS);
+        const params = new HttpParams();
+        return this.http.get<CompanyModel>(url, {params}).pipe();
+    }
+    public getActiveFirms(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ACTIVE_FIRMS);
+        const params = new HttpParams();
+        return this.http.get<CompanyModel>(url, {params}).pipe();
+    }
+    public getDormantFirms(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_DORMANT_FIRMS);
+        const params = new HttpParams();
+        return this.http.get<CompanyModel>(url, {params}).pipe();
+    }
+    public getClosedFirms(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_CLOSED_FIRMS);
+        const params = new HttpParams();
+        return this.http.get<CompanyModel>(url, {params}).pipe();
+    }
+    public getPenaltyReport(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PEN_REPORT);
+        const params = new HttpParams();
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
+    }
+    public getAllLevyPayments(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ALL_LEVY_PAYMENTS);
+        const params = new HttpParams();
+        return this.http.get<PaymentDetails>(url, {params}).pipe();
     }
 
 

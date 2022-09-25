@@ -24,7 +24,7 @@ interface IPvocApplicationRepo : HazelcastRepository<PvocApplicationEntity, Long
     fun findAllByApplicationDateBetweenAndConpanyNameAndStatus(applicationDate: java.util.Date, applicationDate2: java.util.Date, conpanyName: String, status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findAllByCreatedOnBetweenAndConpanyNameAndStatus(createdOn: Date, createdOn2: Date, conpanyName: String, status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findByIdIsIn(ids: List<Long>): List<PvocApplicationEntity>?
-
+    fun findByIdAndCreatedBy(id: Long, createBy: String): Optional<PvocApplicationEntity>
     fun countBySnStartsWith(prefix: String): Long
 
     fun findAllByConpanyNameAndFinished(conpanyName: String, finished: Int): List<PvocApplicationEntity>?
@@ -51,6 +51,12 @@ interface IPvocAgentMonitoringStatusEntityRepo : HazelcastRepository<PvocAgentMo
 }
 
 interface IPvocExceptionCertificateRepository : HazelcastRepository<PvocExceptionCertificate, Long> {
+    fun countByCertPrefix(prefix: String)
+    fun findByIdAndApplicationId(certId: Long, exemptionId: Long): Optional<PvocExceptionCertificate>
+    fun findFirstByApplicationIdAndCertificateRenewedAndCertificateRevoked(certId: Long, certificateRenewed: Boolean, certificateRevoked: Boolean): Optional<PvocExceptionCertificate>
+}
+
+interface IPvocExceptionRemarksRepository : HazelcastRepository<PvocExemptionRemarksEntity, Long> {
 }
 
 interface IPvocApplicationTypesRepo : HazelcastRepository<PvocApplicationTypeEntity, Long>

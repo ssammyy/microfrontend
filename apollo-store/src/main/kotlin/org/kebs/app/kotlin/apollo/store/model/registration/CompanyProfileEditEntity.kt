@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.registration
 
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -159,6 +160,18 @@ class CompanyProfileEditEntity : Serializable {
     @Basic
     var otherBusinessNatureType: String? = null
 
+    @Column(name = "YEARLY_TURNOVER")
+    @Basic
+    var yearlyTurnover: BigDecimal? = null
+
+    @Column(name = "COMPANY_EMAIL")
+    @Basic
+    var companyEmail: String? = null
+
+    @Column(name = "COMPANY_TELEPHONE")
+    @Basic
+    var companyTelephone: String? = null
+
 
 
 
@@ -200,7 +213,10 @@ class CompanyProfileEditEntity : Serializable {
                 updateBy == that.updateBy &&
                 ownership == that.ownership &&
                 updatedOn == that.updatedOn &&
-                typeOfManufacture == that.typeOfManufacture
+                typeOfManufacture == that.typeOfManufacture &&
+                yearlyTurnover == that.yearlyTurnover &&
+                companyTelephone == that.companyTelephone &&
+                companyEmail == that.companyEmail
     }
     override fun hashCode(): Int {
         return Objects.hash(
@@ -238,7 +254,10 @@ class CompanyProfileEditEntity : Serializable {
             updateBy,
             ownership,
             updatedOn,
-            typeOfManufacture
+            typeOfManufacture,
+            yearlyTurnover,
+            companyTelephone,
+            companyEmail
         )
     }
 }

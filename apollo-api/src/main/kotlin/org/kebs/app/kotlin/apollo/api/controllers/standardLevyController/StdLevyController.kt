@@ -594,7 +594,8 @@ class StdLevyController(
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetails(
-        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ServerResponse
     {
         val companyProfileEditEntity= CompanyProfileEditEntity().apply {
@@ -611,12 +612,12 @@ class StdLevyController(
             entryNumber=editCompanyDTO.entryNumber
             typeOfManufacture=editCompanyDTO.typeOfManufacture
             otherBusinessNatureType=editCompanyDTO.otherBusinessNatureType
-
-
-
+        }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            remarks = editCompanyDTO.remarks
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetails(companyProfileEditEntity))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetails(companyProfileEditEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -625,7 +626,8 @@ class StdLevyController(
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetailsConfirm(
-        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ServerResponse
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
@@ -640,8 +642,12 @@ class StdLevyController(
 
 
         }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            remarks = editCompanyDTO.remarks
+            siteVisitId = editCompanyDTO.editID
+        }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirm(companyProfileEntity))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirm(companyProfileEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -650,7 +656,8 @@ class StdLevyController(
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetailsConfirmLvlOne(
-        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ServerResponse
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
@@ -665,8 +672,12 @@ class StdLevyController(
 
 
         }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            remarks = editCompanyDTO.remarks
+            siteVisitId = editCompanyDTO.editID
+        }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlOne(companyProfileEntity))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlOne(companyProfileEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -675,7 +686,8 @@ class StdLevyController(
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetailsConfirmLvlTwo(
-        @RequestBody editCompanyDTO: EditCompanyTaskToDTO
+        @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ServerResponse
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
@@ -690,8 +702,12 @@ class StdLevyController(
 
 
         }
+        val standardLevySiteVisitRemarks= StandardLevySiteVisitRemarks().apply {
+            remarks = editCompanyDTO.remarks
+            siteVisitId = editCompanyDTO.editID
+        }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlTwo(companyProfileEntity))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlTwo(companyProfileEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -1129,7 +1145,13 @@ class StdLevyController(
         return standardLevyService.getCompanyEditedDetails(manufactureId)
     }
 
-
+    @GetMapping("/getComEditRemarks")
+    fun getComEditRemarks(
+        response: HttpServletResponse,
+        @RequestParam("editID") editID: Long
+    ): List<StandardLevySiteVisitRemarks> {
+        return standardLevyService.getComEditRemarks(editID)
+    }
 
 
     @GetMapping("/getSiteVisitRemarks")
@@ -1509,6 +1531,8 @@ class StdLevyController(
         return standardLevyService.getLevyPayments()
     }
 
+
+
     @GetMapping("/getManufacturesLevyPayments")
     @ResponseBody
     fun getManufacturesLevyPayments(): MutableList<LevyPayments>
@@ -1549,6 +1573,12 @@ class StdLevyController(
 
 
 
+    @GetMapping("/getManufacturesPayments")
+    @ResponseBody
+    fun getManufacturesPayments(): MutableList<LevyPayment>
+    {
+        return standardLevyService.getManufacturesPayments()
+    }
 
 
     @GetMapping("/getManufacturesLevyPenalty")
@@ -1608,10 +1638,13 @@ class StdLevyController(
         response: HttpServletResponse,
         @RequestParam(value = "id") id: Long
     ) {
+
         val map = hashMapOf<String, Any>()
         map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
         val eSlipPaymentDetails = companyProfileRepo.getLevyPaymentsReceipt(id)
+//        val gson = Gson()
+//         KotlinLogging.logger { }.info { "Manufacturer" + gson.toJson(eSlipPaymentDetails) }
         val levyPaymentsDTO = standardLevyService.mapPaymentDetails(eSlipPaymentDetails)
         val pdfReportStream = reportsDaoService.extractReport(
             map,
@@ -1628,6 +1661,60 @@ class StdLevyController(
             pdfReportStream.close()
         }
     }
+
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getRegisteredFirms")
+    @ResponseBody
+    fun getRegisteredFirms(): MutableList<RegisteredFirms>
+    {
+        return standardLevyService.getRegisteredFirms()
+    }
+
+    //Get List of Levy Payments
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getAllLevyPayments")
+    @ResponseBody
+    fun getAllLevyPayments(): MutableList<AllLevyPayments>
+    {
+        return standardLevyService.getAllLevyPayments()
+    }
+
+    //Get List of Penalty Report
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getPenaltyReport")
+    @ResponseBody
+    fun getPenaltyReport(): MutableList<AllLevyPayments>
+    {
+        return standardLevyService.getPenaltyReport()
+    }
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getActiveFirms")
+    @ResponseBody
+    fun getActiveFirms(): MutableList<RegisteredFirms>
+    {
+        return standardLevyService.getActiveFirms()
+    }
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getDormantFirms")
+    @ResponseBody
+    fun getDormantFirms(): MutableList<RegisteredFirms>
+    {
+        return standardLevyService.getDormantFirms()
+    }
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getClosedFirms")
+    @ResponseBody
+    fun getClosedFirms(): MutableList<RegisteredFirms>
+    {
+        return standardLevyService.getClosedFirms()
+    }
+
+
+
 
 
 

@@ -108,7 +108,7 @@
 
                                 <div class="material-datatables table-responsive col-md-12">
                                     <table class="table table-striped table-bordered table-hover" datatable
-                                           [dtTrigger]="dtTrigger">
+                                           [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
                                         <thead>
                                         <tr>
                                             <th>#</th>
@@ -117,7 +117,7 @@
                                             <th class="knw">Kra Pin</th>
                                             <th class="sl">Registration Number</th>
                                             <th class="sl">Task Name</th>
-                                            <th class="requestNumber">Status</th>
+<!--                                            <th class="requestNumber">Status</th>-->
                                             <th class="requestNumber">Action</th>
                                         </tr>
                                         </thead>
@@ -140,10 +140,10 @@
                                             <td *ngIf="manufacturePendingTask.name==='Approve Edited Company Details'"><span class="badge badge-primary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Edit Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Edit Not Approved'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
-                                            <td *ngIf="manufacturePendingTask.taskData.status==1"><span class="badge badge-info" style="width: 94px;">Active</span></td>
-                                            <td *ngIf="manufacturePendingTask.taskData.status==2"><span class="badge badge-default" style="width: 94px;">Suspended</span></td>
-                                            <td *ngIf="manufacturePendingTask.taskData.status==0"><span class="badge badge-info" style="width: 94px;">Closed</span></td>
-                                            <td *ngIf="manufacturePendingTask.taskData.status==4"><span class="badge badge-warning" style="width: 94px;">In-Active</span></td>
+<!--                                            <td *ngIf="manufacturePendingTask.taskData.status==1"><span class="badge badge-info" style="width: 94px;">Active</span></td>-->
+<!--                                            <td *ngIf="manufacturePendingTask.taskData.status==2"><span class="badge badge-default" style="width: 94px;">Suspended</span></td>-->
+<!--                                            <td *ngIf="manufacturePendingTask.taskData.status==0"><span class="badge badge-info" style="width: 94px;">Closed</span></td>-->
+<!--                                            <td *ngIf="manufacturePendingTask.taskData.status==4"><span class="badge badge-warning" style="width: 94px;">In-Active</span></td>-->
 <!--                                            <td *ngIf="manufacturePendingTask.taskData.typeOfManufacture==1"><span class="badge badge-warning">Assigned</span></td>-->
                                             <td *ngIf="manufacturePendingTask.name==='Schedule Site Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'viewPending')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='Prepare Report on Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'prepareSiteVisitReport')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
@@ -176,8 +176,62 @@
                                 </div>
                                 <div class="modal-body">
                                     <div>
+                                        <button (click)=toggleDisplayCompanyDetails()  class="btn btn-info btn-sm">Company Details</button>
                                         <button (click)=toggleDisplayApproveEditRequest()  class="btn btn-success btn-sm">Approve Edit Request</button>
                                         <button (click)=toggleDisplayRejectEditRequest() type="button" class="btn btn-danger btn-sm">Reject Edit Request</button>
+                                        <button (click)=toggleDisplayCompanyRemarks(actionRequestPending?.taskData?.editID) type="button" class="btn btn-warning btn-sm">View Remarks</button>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowCompanyDetails">
+                                        <div class="col-12" >
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Main Physical Location</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Postal Address</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Company Email</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.companyEmail}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Company Telephone</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Yearly Turnover</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.yearlyTurnover}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Ownership</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.ownership}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowCompanyRemarks">
+                                        <div class="col-12">
+                                            <div class="card" *ngFor="let siteVisitRemark of siteVisitRemarks">
+                                                <div class="card-header">
+                                                    <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                </div>
+                                                <div class="card-body">
+                                                    <blockquote class="blockquote mb-0">
+                                                        <p>Remark: {{siteVisitRemark.remarks}}.</p>
+                                                        <footer class="blockquote-footer">Role: <cite title="Source Title">{{siteVisitRemark.role}}</cite></footer>
+                                                    </blockquote>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="container col-md-12" [hidden]="isShowApproveRequestForm">
                                         <form (ngSubmit)="approveCompanyLevelOne()" [formGroup]="approveCompanyLevelOneFormGroup"
@@ -187,6 +241,10 @@
                                             <hr>
                                             <div class="form-body">
                                                 <div class="row">
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
                                                     <div class="form-group col-12">
                                                         <label for="Address">Main Physical Location <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -196,7 +254,7 @@
                                                                formControlName="companyId" name="companyId"
                                                         >
                                                         <textarea type="text"
-                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
                                                                   id="Address" name="physicalAddress"
                                                                   formControlName="physicalAddress"
@@ -207,7 +265,7 @@
                                                         <label for="postal">Postal Address <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text"
-                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
                                                                id="postal" name="postalAddress"
                                                                formControlName="postalAddress"
@@ -216,7 +274,7 @@
                                                     <div class="form-group col-12">
                                                         <label for="owner">Ownership <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
                                                                id="owner" name="ownership"
                                                                formControlName="ownership" placeholder="OwnerShip">
@@ -225,6 +283,37 @@
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="companyEmail2">Company Email <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
+                                                              id="companyEmail2" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="companyTelephone2">Company Telephone <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
+                                                              id="companyTelephone2" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="yearlyTurnover2">Yearly Turnover <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
+                                                              id="yearlyTurnover2" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="remarks1">Remarks or Comments <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea type="text"
+                                                                  class="form-control"
+                                                                  id="remarks1" name="remarks"
+                                                                  formControlName="remarks"
+                                                                  placeholder="Remarks"></textarea>
+                                                    </div>
+                                                    <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
                                                     <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')" class="form-group col-12">
                                                         <label>Forward To</label>
                                                         <ng-select [(ngModel)]="approvedUsersTwo" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
@@ -262,6 +351,10 @@
                                             <hr>
                                             <div class="form-body">
                                                 <div class="row">
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
                                                     <div class="form-group col-12">
                                                         <label for="Address1">Main Physical Location <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -272,7 +365,7 @@
                                                                formControlName="companyId" name="companyId"
                                                         >
                                                         <textarea type="text"
-                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
                                                                   id="Address1" name="physicalAddress"
                                                                   formControlName="physicalAddress"
@@ -283,16 +376,38 @@
                                                         <label for="postal1">Postal Address <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text"
-                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
                                                                id="postal1" name="postalAddress"
                                                                formControlName="postalAddress"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
+                                                        <label for="companyEmail22">Company Email <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
+                                                               id="companyEmail22" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="companyTelephone22">Company Telephone <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
+                                                               id="companyTelephone22" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="yearlyTurnover22">Yearly Turnover <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
+                                                               id="yearlyTurnover22" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
+                                                    </div>
+                                                    <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
+                                                    <div class="form-group col-12">
                                                         <label for="owner1">Ownership <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
                                                                id="owner1" name="ownership"
                                                                formControlName="ownership" placeholder="OwnerShip">
@@ -301,6 +416,15 @@
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="assignedTo"  name="assignedTo" ngModel="{{actionRequestPending?.taskData?.originator}}" >
                                                         </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="remarks2">Remarks or Comments <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea type="text"
+                                                                  class="form-control"
+                                                                  id="remarks2" name="remarks"
+                                                                  formControlName="remarks"
+                                                                  placeholder="Remarks"></textarea>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <button class="btn btn-sm btn-warning float-right" type="submit">Reject
@@ -324,8 +448,58 @@
                                 </div>
                                 <div class="modal-body">
                                     <div>
+                                        <button (click)=toggleDisplayCompanyDetails()  class="btn btn-info btn-sm">Company Details</button>
                                         <button (click)=toggleDisplayApproveEditRequest()  class="btn btn-success btn-sm">Approve Edit Request</button>
                                         <button (click)=toggleDisplayRejectEditRequest() type="button" class="btn btn-danger btn-sm">Reject Edit Request</button>
+                                        <button (click)=toggleDisplayCompanyRemarks(actionRequestPending?.taskData?.editID) type="button" class="btn btn-warning btn-sm">View Remarks</button>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowCompanyDetails">
+                                        <div class="col-12" >
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Main Physical Location</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Postal Address</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Company Email</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.companyEmail}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Company Telephone</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Yearly Turnover</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.yearlyTurnover}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Ownership</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.ownership}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowCompanyRemarks">
+                                        <div class="col-12">
+                                            <div class="card" *ngFor="let siteVisitRemark of siteVisitRemarks">
+                                                <div class="card-header">
+                                                    <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                </div>
+                                                <div class="card-body">
+                                                    <blockquote class="blockquote mb-0">
+                                                        <p>Remark: {{siteVisitRemark.remarks}}.</p>
+                                                        <footer class="blockquote-footer">Role: <cite title="Source Title">{{siteVisitRemark.role}}</cite></footer>
+                                                    </blockquote>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="container col-md-12" [hidden]="isShowApproveRequestForm">
                                         <form (ngSubmit)="approveEditRequest()" [formGroup]="approveEditRequestFormGroup"
@@ -335,6 +509,10 @@
                                             <hr>
                                             <div class="form-body">
                                                 <div class="row">
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
                                                     <div class="form-group col-12">
                                                         <label for="Address2">Main Physical Location <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -344,7 +522,7 @@
                                                                formControlName="companyId" name="companyId"
                                                         >
                                                         <textarea type="text"
-                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
                                                                   id="Address2" name="physicalAddress"
                                                                   formControlName="physicalAddress"
@@ -355,16 +533,38 @@
                                                         <label for="postal2">Postal Address <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text"
-                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
                                                                id="postal2" name="postalAddress"
                                                                formControlName="postalAddress"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
+                                                        <label for="companyEmail222">Company Email <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
+                                                               id="companyEmail222" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="companyTelephone222">Company Telephone <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
+                                                               id="companyTelephone222" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="yearlyTurnover222">Yearly Turnover <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
+                                                               id="yearlyTurnover222" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
+                                                    </div>
+                                                    <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
+                                                    <div class="form-group col-12">
                                                         <label for="owner2">Ownership <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
                                                                id="owner2" name="ownership"
                                                                formControlName="ownership" placeholder="OwnerShip">
@@ -373,6 +573,15 @@
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="assignedTo"  name="assignedTo" ngModel="{{actionRequestPending?.taskData?.originator}}" >
                                                         </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="remarks3">Remarks or Comments <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea type="text"
+                                                                  class="form-control"
+                                                                  id="remarks3" name="remarks"
+                                                                  formControlName="remarks"
+                                                                  placeholder="Remarks"></textarea>
+                                                    </div>
 
                                                 </div>
                                             </div>
@@ -388,6 +597,10 @@
                                             <hr>
                                             <div class="form-body">
                                                 <div class="row">
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
                                                     <div class="form-group col-12">
                                                         <label for="Address3">Main Physical Location <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -397,7 +610,7 @@
                                                                formControlName="companyId" name="companyId"
                                                         >
                                                         <textarea type="text"
-                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
                                                                   id="Address3" name="physicalAddress"
                                                                   formControlName="physicalAddress"
@@ -408,16 +621,38 @@
                                                         <label for="postal3">Postal Address <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text"
-                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
                                                                id="postal3" name="postalAddress"
                                                                formControlName="postalAddress"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
+                                                        <label for="companyEmail21">Company Email <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
+                                                               id="companyEmail21" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="companyTelephone21">Company Telephone <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
+                                                               id="companyTelephone21" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="yearlyTurnover21">Yearly Turnover <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
+                                                               id="yearlyTurnover21" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
+                                                    </div>
+                                                    <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
+                                                    <div class="form-group col-12">
                                                         <label for="owner3">Ownership <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
                                                                id="owner3" name="ownership"
                                                                formControlName="ownership" placeholder="OwnerShip">
@@ -426,6 +661,15 @@
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="assignedTo"  name="assignedTo" ngModel="{{actionRequestPending?.taskData?.originator}}" >
                                                          </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="remarks4">Remarks or Comments <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea type="text"
+                                                                  class="form-control"
+                                                                  id="remarks4" name="remarks"
+                                                                  formControlName="remarks"
+                                                                  placeholder="Remarks"></textarea>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <button class="btn btn-sm btn-warning float-right" type="submit">Reject
@@ -449,8 +693,10 @@
                                 </div>
                                 <div class="modal-body">
                                     <div>
+                                        <button (click)=toggleDisplayCompanyDetails()  class="btn btn-info btn-sm">Company Details</button>
                                         <button (click)=toggleDisplayApproveEditRequest()  class="btn btn-success btn-sm">Approve Edit Request</button>
                                         <button (click)=toggleDisplayRejectEditRequest() type="button" class="btn btn-danger btn-sm">Reject Edit Request</button>
+                                        <button (click)=toggleDisplayCompanyRemarks(actionRequestPending?.taskData?.editID) type="button" class="btn btn-warning btn-sm">View Remarks</button>
                                     </div>
                                     <div class="container col-md-12" [hidden]="isShowApproveRequestForm">
                                         <form (ngSubmit)="approveEditRequestLevelTwo()" [formGroup]="approveEditRequestLevelTwoFormGroup"
@@ -460,6 +706,10 @@
                                             <hr>
                                             <div class="form-body">
                                                 <div class="row">
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
                                                     <div class="form-group col-12">
                                                         <label for="Address4">Main Physical Location <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -469,7 +719,7 @@
                                                                formControlName="companyId" name="companyId"
                                                         >
                                                         <textarea type="text"
-                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
                                                                   id="Address4" name="physicalAddress"
                                                                   formControlName="physicalAddress"
@@ -480,16 +730,38 @@
                                                         <label for="postal4">Postal Address <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text"
-                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
                                                                id="postal4" name="postalAddress"
                                                                formControlName="postalAddress"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
+                                                        <label for="companyEmail23">Company Email <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
+                                                             id="companyEmail23"  class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="companyTelephone23">Company Telephone <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
+                                                            id="companyTelephone23"   class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="yearlyTurnover23">Yearly Turnover <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
+                                                             id="yearlyTurnover23"  class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
+                                                    </div>
+                                                    <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
+                                                    <div class="form-group col-12">
                                                         <label for="owner4">Ownership <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
                                                                id="owner4" name="ownership"
                                                                formControlName="ownership" placeholder="OwnerShip">
@@ -498,6 +770,15 @@
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="assignedTo"  name="assignedTo" ngModel="{{actionRequestPending?.taskData?.originator}}" >
                                                            </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="remarks5">Remarks or Comments <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea type="text"
+                                                                  class="form-control"
+                                                                  id="remarks5" name="remarks"
+                                                                  formControlName="remarks"
+                                                                  placeholder="Remarks"></textarea>
+                                                    </div>
 
                                                 </div>
                                             </div>
@@ -505,6 +786,55 @@
                                             </button>
                                         </form>
                                     </div>
+                                    <div class="container col-md-12" [hidden]="isShowCompanyDetails">
+                                        <div class="col-12" >
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Main Physical Location</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Postal Address</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Company Email</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.companyEmail}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Company Telephone</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Yearly Turnover</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.yearlyTurnover}}</div>
+                                            </div>
+                                            <div class="card col-12">
+                                                <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Ownership</div>
+                                                <div class="card-body">{{actionRequestPending?.taskData?.ownership}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowCompanyRemarks">
+                                        <div class="col-12">
+                                            <div class="card" *ngFor="let siteVisitRemark of siteVisitRemarks">
+                                                <div class="card-header">
+                                                    <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                </div>
+                                                <div class="card-body">
+                                                    <blockquote class="blockquote mb-0">
+                                                        <p>Remark: {{siteVisitRemark.remarks}}.</p>
+                                                        <footer class="blockquote-footer">Role: <cite title="Source Title">{{siteVisitRemark.role}}</cite></footer>
+                                                    </blockquote>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
                                     <div class="container col-md-12" [hidden]="isShowRejectRequestForm">
                                         <form (ngSubmit)="rejectEditRequestLevelTwo()" [formGroup]="rejectEditRequestLevelTwoFormGroup"
                                               class="form">
@@ -513,6 +843,10 @@
                                             <hr>
                                             <div class="form-body">
                                                 <div class="row">
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
                                                     <div class="form-group col-12">
                                                         <label for="Address5">Main Physical Location <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -522,7 +856,7 @@
                                                                formControlName="companyId" name="companyId"
                                                         >
                                                         <textarea type="text"
-                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddress}}"
+                                                                  ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
                                                                   id="Address5" name="physicalAddress"
                                                                   formControlName="physicalAddress"
@@ -533,16 +867,38 @@
                                                         <label for="postal5">Postal Address <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text"
-                                                               ngModel="{{actionRequestPending?.taskData?.postalAddress}}"
+                                                               ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
                                                                id="postal5" name="postalAddress"
                                                                formControlName="postalAddress"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
+                                                        <label for="companyEmail24">Company Email <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
+                                                             id="companyEmail24"  class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="companyTelephone24">Company Telephone <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
+                                                             id="companyTelephone24"  class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="yearlyTurnover24">Yearly Turnover <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
+                                                              id="yearlyTurnover24" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
+                                                    </div>
+                                                    <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
+                                                    <div class="form-group col-12">
                                                         <label for="owner5">Ownership <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownership}}"
+                                                        <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
                                                                id="owner5" name="ownership"
                                                                formControlName="ownership" placeholder="OwnerShip">
@@ -551,6 +907,15 @@
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden" formControlName="assignedTo"  name="assignedTo" ngModel="{{actionRequestPending?.taskData?.createdBy}}" >
                                                           </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="remarks6">Remarks or Comments <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea type="text"
+                                                                  class="form-control"
+                                                                  id="remarks6" name="remarks"
+                                                                  formControlName="remarks"
+                                                                  placeholder="Remarks"></textarea>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <button class="btn btn-sm btn-warning float-right" type="submit">Reject
@@ -587,6 +952,10 @@
                                         <div class="container col-md-12" [hidden]="isShowSLForm">
                                             <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
                                                 <div class="col-12" >
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                    </div>
                                                     <div class="card col-12">
                                                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                         <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
@@ -666,6 +1035,10 @@
                                             </div>
                                             <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
                                                 <div class="col-12" >
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                    </div>
                                                     <div class="card col-12">
                                                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                         <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
@@ -1099,6 +1472,10 @@
                                             <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
                                                 <div class="col-12" >
                                                     <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                    </div>
+                                                    <div class="card col-12">
                                                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                         <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
                                                     </div>
@@ -1177,6 +1554,10 @@
                                             </div>
                                             <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
                                                 <div class="col-12" >
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                    </div>
                                                     <div class="card col-12">
                                                         <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                         <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
@@ -1969,6 +2350,10 @@
                                                 <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
                                                     <div class="col-12" >
                                                         <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
                                                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                             <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
                                                         </div>
@@ -2047,6 +2432,10 @@
                                                 </div>
                                                 <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
                                                     <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                        </div>
                                                         <div class="card col-12">
                                                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                             <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
@@ -2647,6 +3036,10 @@
                                                 <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
                                                     <div class="col-12" >
                                                         <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
                                                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                             <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
                                                         </div>
@@ -2725,6 +3118,10 @@
                                                 </div>
                                                 <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
                                                     <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                        </div>
                                                         <div class="card col-12">
                                                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                             <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
@@ -3302,6 +3699,10 @@
                                                 <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
                                                     <div class="col-12" >
                                                         <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
                                                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                             <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
                                                         </div>
@@ -3380,6 +3781,10 @@
                                                 </div>
                                                 <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
                                                     <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                        </div>
                                                         <div class="card col-12">
                                                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                             <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
@@ -3962,6 +4367,10 @@
                                                 <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
                                                     <div class="col-12" >
                                                         <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                        </div>
+                                                        <div class="card col-12">
                                                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                             <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
                                                         </div>
@@ -4040,6 +4449,10 @@
                                                 </div>
                                                 <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
                                                     <div class="col-12" >
+                                                        <div class="card col-12">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                        </div>
                                                         <div class="card col-12">
                                                             <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
                                                             <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>

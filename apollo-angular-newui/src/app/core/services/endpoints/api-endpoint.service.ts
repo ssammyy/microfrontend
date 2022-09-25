@@ -483,6 +483,7 @@ export class ApiEndpointService {
         STD_LEVY_MANUFACTURES_PAYMENT_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPaymentsList`,
         STD_LEVY_PENALTY_DETAIL: `${ApiEndpointService.STL_CONTEXT}/getLevyPenalty`,
         STD_LEVY_MANUFACTURE_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPenalty`,
+        STD_LEVY_MANUFACTURE_PAY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesPayments`,
         STD_LEVY_MANUFACTURES_PENALTY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getManufacturesLevyPenaltyList`,
         STD_LEVY_COMPANY_DETAILS: `${ApiEndpointService.STL_CONTEXT}/getCompanyProfile`,
         STD_LEVY_SL_FORM: `${ApiEndpointService.STL_CONTEXT}/getNotificationFormDetails`,
@@ -523,6 +524,7 @@ export class ApiEndpointService {
         STD_LEVY_EDIT_COMPANY_LEVEL_TWO: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirmLvlTwo`,
         STD_LEVY_EDITED_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/getCompanyEditedDetails`,
         STD_LEVY_SITE_VISIT_REMARKS: `${ApiEndpointService.STL_CONTEXT}/getSiteVisitRemarks`,
+        STD_LEVY_COMPANY_REMARKS: `${ApiEndpointService.STL_CONTEXT}/getComEditRemarks`,
         STD_LEVY_COMPANY_EDIT_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirm`,
         STD_LEVY_NOTIFICATION_FORM_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSLNotificationStatus`,
         STD_LEVY_BRANCH_NAME: `${ApiEndpointService.STL_CONTEXT}/getBranchName`,
@@ -546,6 +548,12 @@ export class ApiEndpointService {
         STD_LEVY_COMPANY_STATUS: `${ApiEndpointService.STL_CONTEXT}/getOperationStatus`,
         STD_LEVY_E_SLIP: `${ApiEndpointService.STL_CONTEXT}/generatePdf`,
         STD_LEVY_VIEW_E_SLIP: `${ApiEndpointService.STL_CONTEXT}/levyPaymentESlip`,
+        STD_LEVY_REG_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getRegisteredFirms`,
+        STD_LEVY_ALL_LEVY_PAYMENTS: `${ApiEndpointService.STL_CONTEXT}/getAllLevyPayments`,
+        STD_LEVY_PEN_REPORT: `${ApiEndpointService.STL_CONTEXT}/getPenaltyReport`,
+        STD_LEVY_ACTIVE_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getActiveFirms`,
+        STD_LEVY_DORMANT_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getDormantFirms`,
+        STD_LEVY_CLOSED_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getClosedFirms`,
 
 
 
