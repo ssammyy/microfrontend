@@ -2,7 +2,8 @@ package org.kebs.app.kotlin.apollo.store.model
 
 import java.io.Serializable
 import java.math.BigDecimal
-import java.util.*
+import java.sql.Date
+import java.sql.Timestamp
 import javax.persistence.*
 
 /**
@@ -93,7 +94,7 @@ class Sl2PaymentsDetailsEntity : Serializable {
     var createdBy: String? = null
 
     @Column(name = "CREATED_ON", nullable = false)
-    var createdOn: Date? = null
+    var createdOn: Timestamp? = null
 
     @Column(name = "LAST_MODIFIED_BY")
     var lastModifiedBy: String? = null

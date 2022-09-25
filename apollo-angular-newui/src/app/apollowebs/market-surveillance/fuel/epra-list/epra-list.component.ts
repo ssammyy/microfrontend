@@ -37,7 +37,9 @@ export class EpraListComponent implements OnInit {
   closeBatchForm!: FormGroup;
   dataSave: FuelEntityDto;
   submitted = false;
-  selectedBatchRefNo: string;
+  batchReferenceNo: string;
+  teamsReferenceNo: string;
+  countyReferenceNo: string;
   selectedCounty = 0;
   selectedTown = 0;
   county$: Observable<County[]>;
@@ -167,7 +169,7 @@ export class EpraListComponent implements OnInit {
   managerPetroleumUser = false;
   ioUser = false;
   search: Subject<string>;
-  loadedData: FuelInspectionScheduleListDetailsDto = this.msService.fuelInspectionListExamples();
+  loadedData: FuelInspectionScheduleListDetailsDto = new FuelInspectionScheduleListDetailsDto();
 
 
 
@@ -195,8 +197,14 @@ export class EpraListComponent implements OnInit {
 
     this.activatedRoute.paramMap.subscribe(
         rs => {
-          this.selectedBatchRefNo = rs.get('referenceNumber');
-          this.loadData(this.selectedBatchRefNo, this.defaultPage, this.defaultPageSize);
+          this.batchReferenceNo = rs.get('batchReferenceNumber');
+          this.teamsReferenceNo = rs.get('teamsReferenceNo');
+          this.countyReferenceNo = rs.get('countyReferenceNo');
+          this.loadData(
+              this.batchReferenceNo,
+              this.teamsReferenceNo,
+              this.countyReferenceNo,
+              this.defaultPage, this.defaultPageSize);
         },
     );
 
@@ -208,7 +216,8 @@ export class EpraListComponent implements OnInit {
       inspectionDateTo: ['', Validators.required],
       stationOwnerEmail: ['', Validators.required],
       stationKraPin: ['', Validators.required],
-      remarks: ['', Validators.required],
+      townID: ['', Validators.required],
+      remarks: null,
     }, { validator: [
       // Default error with this validator:  {fromToDate: true}
       CustomeDateValidators.fromToDate('inspectionDateFrom', 'inspectionDateTo'),
@@ -222,16 +231,17 @@ export class EpraListComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/epra']);
+    this.router.navigate(['/epra/details/', this.batchReferenceNo, this.teamsReferenceNo]);
   }
 
-  private loadData(referenceNumber: string, page: number, records: number): any {
+  private loadData(batchReferenceNumber: string, teamsReferenceNo: string, countyReferenceNo: string, page: number, records: number): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
-    // this.totalCount = this.loadedData.fuelInspectionDto.length;
-    // this.dataSet.load(this.loadedData.fuelInspectionDto);
-    // this.SpinnerService.hide();
-    this.msService.msFuelInspectionList(referenceNumber, String(page), String(records)).subscribe(
+    this.msService.msFuelInspectionList(
+        batchReferenceNumber,
+      teamsReferenceNo,
+      countyReferenceNo,
+      String(page), String(records)).subscribe(
         (data) => {
           this.loadedData = data;
           this.totalCount = this.loadedData.fuelInspectionDto.length;
@@ -245,37 +255,13 @@ export class EpraListComponent implements OnInit {
           this.msService.showError('AN ERROR OCCURRED');
         },
     );
-
-    // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
-    // console.log(this.activeStatus)
-    // // Clear list before loading
-    // this.dataSet.load([])
-    // // Switch
-    // if (this.activeStatus === "completed") {
-    //   data = this.diService.listCompletedCd(documentTypeUuid, page, size)
-    // } else if (this.activeStatus === "ongoing") {
-    //   data = this.diService.listSectionOngoingCd(documentTypeUuid, page, size)
-    // } else if (this.activeStatus === "not-assigned") {
-    //   data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
-    // }
-    // data.subscribe(
-    //     result => {
-    //       if (result.responseCode === "00") {
-    //         let listD: any[] = result.data;
-    //         this.totalCount = result.totalCount
-    //         this.dataSet.load(listD)
-    //       } else {
-    //         console.log(result)
-    //       }
-    //     }
-    // );
   }
 
 
   onManagerPetroleumChange(event: any) {
     if (this.managerPetroleumUser) {
       this.personalTasks = event.target.value;
-      this.loadData(this.selectedBatchRefNo, this.defaultPage, this.defaultPageSize);
+      this.loadData(this.batchReferenceNo, this.teamsReferenceNo, this.countyReferenceNo, this.defaultPage, this.defaultPageSize);
     }
   }
 
@@ -285,7 +271,7 @@ export class EpraListComponent implements OnInit {
     this.searchStatus = null;
     if (status !== this.activeStatus) {
       this.activeStatus = status;
-      this.loadData(this.selectedBatchRefNo, this.defaultPage, this.defaultPageSize);
+      this.loadData(this.batchReferenceNo, this.teamsReferenceNo, this.countyReferenceNo, this.defaultPage, this.defaultPageSize);
     }
   }
 
@@ -299,7 +285,7 @@ export class EpraListComponent implements OnInit {
 
   viewRecord(data: FuelInspectionDto) {
     console.log('TEST 101 REF NO: ' + data.referenceNumber);
-    this.router.navigate([`/epra/details/`, data.referenceNumber, this.selectedBatchRefNo]);
+    this.router.navigate([`/epra/details/`, this.batchReferenceNo, this.teamsReferenceNo, this.countyReferenceNo, data.referenceNumber ]);
   }
 
   get formNewScheduleForm(): any {
@@ -337,7 +323,12 @@ export class EpraListComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSave = {...this.dataSave, ...this.addNewScheduleForm.value};
-      this.msService.msFuelInspectionAddSchedule(this.loadedData.fuelBatchDetailsDto.referenceNumber, this.dataSave).subscribe(
+      this.msService.msFuelInspectionAddSchedule(
+          this.batchReferenceNo,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.dataSave,
+      ).subscribe(
           (data: any) => {
             this.addNewScheduleForm.reset();
             console.log(data);
@@ -345,9 +336,7 @@ export class EpraListComponent implements OnInit {
             this.totalCount = this.loadedData.fuelInspectionDto.length;
             this.dataSet.load(this.loadedData.fuelInspectionDto);
             this.SpinnerService.hide();
-            this.msService.showSuccess('NEW FUEL SCHEDULE CREATED SUCCESSFUL', () => {
-              this.loadData(this.selectedBatchRefNo, this.defaultPage, this.defaultPageSize);
-            });
+            this.msService.showSuccess('NEW FUEL SCHEDULE CREATED SUCCESSFUL');
           },
           error => {
             this.SpinnerService.hide();
@@ -360,40 +349,6 @@ export class EpraListComponent implements OnInit {
 
   reloadCurrentRoute() {
     location.reload();
-  }
-
-  closeBatch() {
-    this.SpinnerService.show();
-    let resultStatus = false;
-    console.log(this.loadedData.fuelBatchDetailsDto.referenceNumber);
-    this.msService.closeMSFuelBatch(this.selectedBatchRefNo).subscribe(
-        (data: any) => {
-          console.log(data);
-          // this.loadedData = data;
-          // this.totalCount = this.loadedData.fuelInspectionDto.length;
-          // this.dataSet.load(this.loadedData.fuelInspectionDto);
-          this.SpinnerService.hide();
-          this.msService.reloadCurrentRoute();
-
-          resultStatus  = true;
-          this.msService.showSuccess('BATCH SENT TO KEBS SUCCESSFUL', this.loadData(this.selectedBatchRefNo, this.defaultPage, this.defaultPageSize));
-        },
-        error => {
-          this.SpinnerService.hide();
-          console.log(error);
-          resultStatus = false;
-          // this.msService.showError("AN ERROR OCCURRED")
-        },
-    );
-    return resultStatus;
-  }
-
-  onClickCloseBatch() {
-    this.msService.showSuccessWith2Message('Are you sure your want to close this Batch?', 'You won\'t be able to add new schedule after submission!',
-        'You can click the \'ADD NEW SCHEDULE FILE\' button to add another schedule', 'BATCH SENT TO KEBS SUCCESSFUL', () => {
-          this.closeBatch();
-        });
-
   }
 
   openModalAddDetails(divVal: string): void {
@@ -413,7 +368,7 @@ export class EpraListComponent implements OnInit {
     if (pageIndex) {
       this.currentPageInternal = pageIndex - 1;
       this.currentPage = pageIndex;
-      this.loadData(this.selectedBatchRefNo, this.currentPageInternal, this.defaultPageSize);
+      this.loadData(this.batchReferenceNo, this.teamsReferenceNo, this.countyReferenceNo, this.currentPageInternal, this.defaultPageSize);
     }
   }
 }

@@ -231,8 +231,40 @@ class NewMarketSurveillanceHandler(
     fun getAllFuelInspectionList(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val page = commonDaoServices.extractPageRequest(req)
-            marketSurveillanceFuelDaoServices.getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo,page)
+            marketSurveillanceFuelDaoServices.getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo,teamsReferenceNo,countyReferenceNo,page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getFuelBatchTeamsList(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceFuelDaoServices.getFuelTeamsList(batchReferenceNo,page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getFuelInspectionTeamsDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            marketSurveillanceFuelDaoServices.getFuelInspectionTeamsDetailsBasedOnRefNo(batchReferenceNo,teamsReferenceNo)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -247,7 +279,9 @@ class NewMarketSurveillanceHandler(
         return try {
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
-            marketSurveillanceFuelDaoServices.getFuelInspectionDetailsBasedOnRefNo(referenceNo, batchReferenceNo)
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
+            marketSurveillanceFuelDaoServices.getFuelInspectionDetailsBasedOnRefNo(referenceNo, batchReferenceNo,teamsReferenceNo,countyReferenceNo)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -297,16 +331,43 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun saveNewFuelScheduleTeam(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val body = req.body<TeamsFuelSaveDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, BatchFileFuelSaveDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    val page = commonDaoServices.extractPageRequest(req)
+                    marketSurveillanceFuelDaoServices.createNewFuelTeams(body,batchReferenceNo,page)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun saveNewFuelSchedule(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<FuelEntityDto>()
             val errors: Errors = BeanPropertyBindingResult(body, FuelEntityDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
                     val page = commonDaoServices.extractPageRequest(req)
-                    marketSurveillanceFuelDaoServices.createNewFuelSchedule(body, batchReferenceNo, page)
+                    marketSurveillanceFuelDaoServices.createNewFuelSchedule(body, batchReferenceNo,teamsReferenceNo,countyReferenceNo, page)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -326,12 +387,14 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<FuelEntityAssignOfficerDto>()
             val errors: Errors = BeanPropertyBindingResult(body, FuelEntityAssignOfficerDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.getFuelInspectionDetailsAssignOfficer(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.getFuelInspectionDetailsAssignOfficer(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -351,12 +414,41 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<FuelEntityRapidTestDto>()
             val errors: Errors = BeanPropertyBindingResult(body, FuelEntityRapidTestDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsRapidTest(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsRapidTest(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun addFuelScheduleRapidTestProducts(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
+            val body = req.body<RapidTestProductsDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, RapidTestProductsDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsRapidTestProducts(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -376,12 +468,14 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<SampleCollectionDto>()
             val errors: Errors = BeanPropertyBindingResult(body, SampleCollectionDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsSampleCollection(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsSampleCollection(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -401,12 +495,14 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<SampleSubmissionDto>()
             val errors: Errors = BeanPropertyBindingResult(body, SampleSubmissionDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsSampleSubmission(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsSampleSubmission(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -426,12 +522,14 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<BSNumberSaveDto>()
             val errors: Errors = BeanPropertyBindingResult(body, BSNumberSaveDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsSampleSubmissionBSNumber(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsSampleSubmissionBSNumber(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -451,12 +549,14 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<PDFSaveComplianceStatusDto>()
             val errors: Errors = BeanPropertyBindingResult(body, PDFSaveComplianceStatusDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsLabPDFSelected(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsLabPDFSelected(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -476,12 +576,14 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<SSFSaveComplianceStatusDto>()
             val errors: Errors = BeanPropertyBindingResult(body, SSFSaveComplianceStatusDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsSSFSaveComplianceStatus(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsSSFSaveComplianceStatus(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -501,12 +603,14 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<CompliantRemediationDto>()
             val errors: Errors = BeanPropertyBindingResult(body, CompliantRemediationDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsRemediationInvoice(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsRemediationInvoice(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -526,12 +630,14 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<CompliantRemediationDto>()
             val errors: Errors = BeanPropertyBindingResult(body, CompliantRemediationDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsScheduleRemediationAfterPayment(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsScheduleRemediationAfterPayment(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -551,12 +657,14 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
             val body = req.body<RemediationDto>()
             val errors: Errors = BeanPropertyBindingResult(body, RemediationDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsUpdateRemediation(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsUpdateRemediation(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -576,7 +684,9 @@ class NewMarketSurveillanceHandler(
         return try {
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
-            marketSurveillanceFuelDaoServices.endFuelInspectionDetailsBasedOnRefNo(referenceNo, batchReferenceNo)
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
+            marketSurveillanceFuelDaoServices.endFuelInspectionDetailsBasedOnRefNo(referenceNo, batchReferenceNo,teamsReferenceNo,countyReferenceNo)
                 .let {
                     ServerResponse.ok().body(it)
                 }

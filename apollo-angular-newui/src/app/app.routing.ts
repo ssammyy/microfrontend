@@ -87,6 +87,7 @@ import {StandardLevyPaidComponent} from './apollowebs/standards-levy/standard-le
 import {StandardLevyPenaltiesComponent} from './apollowebs/standards-levy/standard-levy-penalties/standard-levy-penalties.component';
 import {StandardLevyDefaulterComponent} from './apollowebs/standards-levy/standard-levy-defaulter/standard-levy-defaulter.component';
 import {StandardLevyPenaltyHistoryComponent} from './apollowebs/standards-levy/standard-levy-penalty-history/standard-levy-penalty-history.component';
+// tslint:disable-next-line:max-line-length
 import {StandardLevyPaidHistoryComponent} from './apollowebs/standards-levy/standard-levy-paid-history/standard-levy-paid-history.component';
 import {StandardLevyDefaulterHistoryComponent} from './apollowebs/standards-levy/standard-levy-defaulter-history/standard-levy-defaulter-history.component';
 import {StdTscSecTasksComponentComponent} from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/std-tsc-sec-tasks-component.component';
@@ -135,6 +136,7 @@ import {StdJustificationComponent} from './apollowebs/standards-development/stan
 import {StdTcWorkplanComponent} from './apollowebs/standards-development/standard-request/std-tc-workplan/std-tc-workplan.component';
 import {PreparePreliminaryDraftComponent} from './apollowebs/standards-development/committee-module/prepare-preliminary-draft/prepare-preliminary-draft.component';
 import {ComStdPlTaskComponent} from './apollowebs/standards-development/company-standard/com-std-pl-task/com-std-pl-task.component';
+// tslint:disable-next-line:max-line-length
 import {ComStdDraftViewComponent} from './apollowebs/standards-development/company-standard/com-std-draft-view/com-std-draft-view.component';
 import {ComStdListComponent} from './apollowebs/standards-development/company-standard/com-std-list/com-std-list.component';
 import {StandardLevySiteVisitComponent} from './apollowebs/standards-levy/standard-levy-site-visit/standard-levy-site-visit.component';
@@ -155,8 +157,10 @@ import {StdPublishingComponent} from './apollowebs/standards-development/publish
 import {CallsForApplicationComponent} from './apollowebs/standards-development/membershipToTc/calls-for-application/calls-for-application.component';
 import {ReviewRecommendationComponent} from './apollowebs/standards-development/membershipToTc/review-recommendation/review-recommendation.component';
 import {ReviewRecommendationOfSpcComponentComponent} from './apollowebs/standards-development/membershipToTc/review-recommendation-of-spc-component/review-recommendation-of-spc-component.component';
+// tslint:disable-next-line:max-line-length
 import {SubmitApplicationComponent} from './apollowebs/standards-development/membershipToTc/submit-application/submit-application.component';
 import {UploadTcMemberComponentComponent} from './apollowebs/standards-development/membershipToTc/upload-tc-member-component/upload-tc-member-component.component';
+// tslint:disable-next-line:max-line-length
 import {ReviewApplicationComponent} from './apollowebs/standards-development/membershipToTc/review-application/review-application.component';
 import {ManifestDocumentComponent} from './apollowebs/di/view-single-consignment-document/manifest-document/manifest-document.component';
 import {IncompleteIDFDocumentsComponent} from './apollowebs/di/message-dashboard/incomplete-idfdocuments/incomplete-idfdocuments.component';
@@ -181,33 +185,36 @@ import {PaymentsComponent} from './apollowebs/quality-assurance/payments/payment
 import {WorkPlanBatchListComponent} from './apollowebs/market-surveillance/workplan/workplan-batch-list/work-plan-batch-list.component';
 import {WorkPlanListComponent} from './apollowebs/market-surveillance/workplan/work-plan-list/work-plan-list.component';
 import {WorkPlanDetailsComponent} from './apollowebs/market-surveillance/workplan/work-plan-details/work-plan-details.component';
-import {CfsComponent} from "./apollowebs/system/cfs/cfs.component";
-import {InspectionFeesComponent} from "./apollowebs/system/inspection-fees/inspection-fees.component";
-import {LaboratoriesComponent} from "./apollowebs/system/laboratories/laboratories.component";
-import {CustomsOfficeComponent} from "./apollowebs/system/customs-office/customs-office.component";
-import {ReviewPreliminaryDraftComponent} from "./apollowebs/standards-development/committee-module/review-preliminary-draft/review-preliminary-draft.component";
-import {PrepareCommitteeDraftComponent} from "./apollowebs/standards-development/committee-module/prepare-committee-draft/prepare-committee-draft.component";
-import {ReviewCommitteeDraftComponent} from "./apollowebs/standards-development/committee-module/review-committee-draft/review-committee-draft.component";
-import {PreparePublicReviewDraftComponent} from "./apollowebs/standards-development/publicReview/prepare-public-review-draft/prepare-public-review-draft.component";
-import {PublicReviewDraftComponent} from "./apollowebs/standards-development/publicReview/public-review-draft/public-review-draft.component";
-import {ForeignCorsComponent} from "./apollowebs/pvoc/documents/foreign-cors/foreign-cors.component";
-import {ForeignCocsComponent} from "./apollowebs/pvoc/documents/foreign-cocs/foreign-cocs.component";
-import {ViewCorComponent} from "./apollowebs/pvoc/documents/foreign-cors/view-cor/view-cor.component";
-import {ViewOtherDocumentsComponent} from "./apollowebs/pvoc/documents/foreign-cocs/view-other-documents/view-other-documents.component";
-import {ApproveCommitteeDraftComponent} from "./apollowebs/standards-development/committee-module/approve-committee-draft/approve-committee-draft.component";
-import {CommentOnPublicReviewDraftComponent} from "./apollowebs/standards-development/publicReview/comment-on-public-review-draft/comment-on-public-review-draft.component";
-import {PrepareBallotingDraftComponent} from "./apollowebs/standards-development/balloting/prepare-balloting-draft/prepare-balloting-draft.component";
-import {VoteOnBallotDraftComponent} from "./apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component";
-import {ComTasksComponent} from "./apollowebs/standards-development/company-standard/com-tasks/com-tasks.component";
-import {PvocNewComplaintComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-new/pvoc-new-complaint.component";
-import {ViewWaiverCertificatesComponent} from "./apollowebs/pvoc/manufacturer/view-waiver-certificates/view-waiver-certificates.component";
-import {ViewExemptionCertificatesComponent} from "./apollowebs/pvoc/manufacturer/view-exemption-certificates/view-exemption-certificates.component";
-import {IntStdTasksComponent} from "./apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component";
-import {ReviewBallotDraftComponent} from "./apollowebs/standards-development/balloting/review-ballot-draft/review-ballot-draft.component";
-import {ManufacturerComplaintListComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-list/manufacturer-complaint-list.component";
-import {ManufacturerComplaintDetailsComponent} from "./apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-details/manufacturer-complaint-details.component";
-import {RfcCocDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component";
-import {RfcCorDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component";
+import {CfsComponent} from './apollowebs/system/cfs/cfs.component';
+import {InspectionFeesComponent} from './apollowebs/system/inspection-fees/inspection-fees.component';
+import {LaboratoriesComponent} from './apollowebs/system/laboratories/laboratories.component';
+import {CustomsOfficeComponent} from './apollowebs/system/customs-office/customs-office.component';
+import {ReviewPreliminaryDraftComponent} from './apollowebs/standards-development/committee-module/review-preliminary-draft/review-preliminary-draft.component';
+import {PrepareCommitteeDraftComponent} from './apollowebs/standards-development/committee-module/prepare-committee-draft/prepare-committee-draft.component';
+import {ReviewCommitteeDraftComponent} from './apollowebs/standards-development/committee-module/review-committee-draft/review-committee-draft.component';
+import {PreparePublicReviewDraftComponent} from './apollowebs/standards-development/publicReview/prepare-public-review-draft/prepare-public-review-draft.component';
+// tslint:disable-next-line:max-line-length
+import {PublicReviewDraftComponent} from './apollowebs/standards-development/publicReview/public-review-draft/public-review-draft.component';
+import {ForeignCorsComponent} from './apollowebs/pvoc/documents/foreign-cors/foreign-cors.component';
+import {ForeignCocsComponent} from './apollowebs/pvoc/documents/foreign-cocs/foreign-cocs.component';
+import {ViewCorComponent} from './apollowebs/pvoc/documents/foreign-cors/view-cor/view-cor.component';
+import {ViewOtherDocumentsComponent} from './apollowebs/pvoc/documents/foreign-cocs/view-other-documents/view-other-documents.component';
+import {ApproveCommitteeDraftComponent} from './apollowebs/standards-development/committee-module/approve-committee-draft/approve-committee-draft.component';
+import {CommentOnPublicReviewDraftComponent} from './apollowebs/standards-development/publicReview/comment-on-public-review-draft/comment-on-public-review-draft.component';
+import {PrepareBallotingDraftComponent} from './apollowebs/standards-development/balloting/prepare-balloting-draft/prepare-balloting-draft.component';
+import {VoteOnBallotDraftComponent} from './apollowebs/standards-development/balloting/vote-on-ballot-draft/vote-on-ballot-draft.component';
+import {ComTasksComponent} from './apollowebs/standards-development/company-standard/com-tasks/com-tasks.component';
+import {PvocNewComplaintComponent} from './apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-new/pvoc-new-complaint.component';
+import {ViewWaiverCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-waiver-certificates/view-waiver-certificates.component';
+import {ViewExemptionCertificatesComponent} from './apollowebs/pvoc/manufacturer/view-exemption-certificates/view-exemption-certificates.component';
+import {IntStdTasksComponent} from './apollowebs/standards-development/international-standard/int-std-tasks/int-std-tasks.component';
+import {ReviewBallotDraftComponent} from './apollowebs/standards-development/balloting/review-ballot-draft/review-ballot-draft.component';
+import {ManufacturerComplaintListComponent} from './apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-list/manufacturer-complaint-list.component';
+import {ManufacturerComplaintDetailsComponent} from './apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-details/manufacturer-complaint-details.component';
+import {RfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component';
+import {RfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component';
+import {FuelListTeamsComponent} from './apollowebs/market-surveillance/fuel/fuel-list-teams/fuel-list-teams.component';
+import {FuelListTeamsCountyComponent} from './apollowebs/market-surveillance/fuel/fuel-list-teams-county/fuel-list-teams-county.component';
 
 export const routes: Routes = [
     {
@@ -574,7 +581,7 @@ export const routes: Routes = [
                     },
                     {
                         path: 'documents/rfc/cor',
-                        component: RfcCorDocumentsComponent
+                        component: RfcCorDocumentsComponent,
                     },
                     {
                         path: 'document/rfc/cor/:id',
@@ -582,7 +589,7 @@ export const routes: Routes = [
                     },
                     {
                         path: 'documents/rfc/other',
-                        component: RfcCocDocumentsComponent
+                        component: RfcCocDocumentsComponent,
                     },
                     {
                         path: 'document/rfc/other/:id',
@@ -829,7 +836,7 @@ export const routes: Routes = [
             },
             {
                 path: 'inspection/fees',
-                component: InspectionFeesComponent
+                component: InspectionFeesComponent,
             },
         ],
     },
@@ -965,7 +972,7 @@ export const routes: Routes = [
     },
     {
         path: 'comStdListed',
-        component: ComStdListComponent
+        component: ComStdListComponent,
     },
     // {
     //     path: 'comStdListed', component: AdminLayoutComponent,
@@ -1378,10 +1385,18 @@ export const routes: Routes = [
             },
             {
                 path: ':referenceNumber',
+                component: FuelListTeamsComponent,
+            },
+            {
+                path: 'details/:batchReferenceNumber/:teamsReferenceNo',
+                component: FuelListTeamsCountyComponent,
+            },
+            {
+                path: 'details/:batchReferenceNumber/:teamsReferenceNo/:countyReferenceNo',
                 component: EpraListComponent,
             },
             {
-                path: 'details/:referenceNumber/:batchReferenceNumber',
+                path: 'details/:batchReferenceNumber/:teamsReferenceNo/:countyReferenceNo/:referenceNumber',
                 component: ViewFuelSheduledDetailsComponent,
             },
         ],

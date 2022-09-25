@@ -661,6 +661,13 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                 GET("/all-batch-list", handler::getAllFuelBatchList)
                 POST("/add", handler::saveNewFuelScheduleBatch)
                 PUT("/close", handler::closeFuelBatchEntry)
+                "teams".nest {
+                    POST("/add", handler::saveNewFuelScheduleTeam)
+                    GET("/list", handler::getFuelBatchTeamsList)
+                    "county".nest {
+                        GET("/list", handler::getFuelInspectionTeamsDetails)
+                    }
+                }
                 "/inspection".nest {
                     GET("/list", handler::getAllFuelInspectionList)
                     POST("/add", handler::saveNewFuelSchedule)
@@ -668,6 +675,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                     "/update".nest {
                         PUT("/assign", handler::updateFuelScheduleAssignOfficer)
                         PUT("/rapid-test", handler::setFuelScheduleRapidTest)
+                        POST("/rapid-test-products", handler::addFuelScheduleRapidTestProducts)
                         POST("/sample-collect", handler::setFuelScheduleSampleCollection)
                         POST("/sample-submission", handler::setFuelScheduleSampleSubmission)
                         PUT("/sample-submission-bs-number", handler::setFuelScheduleSampleSubmissionBsNumber)

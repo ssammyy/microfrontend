@@ -366,7 +366,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'EPRA',
         type: 'link',
         collapse: 'epra',
-        privilege: ['EPRA', 'MS_MP_MODIFY', 'MS_IOP_MODIFY'],
+        privilege: ['FUEL_ASSISTANT_MANAGER_MODIFY', 'FUEL_HOD_MODIFY', 'MS_MP_MODIFY', 'MS_IOP_MODIFY'],
         icontype: 'receipt',
     },
     {

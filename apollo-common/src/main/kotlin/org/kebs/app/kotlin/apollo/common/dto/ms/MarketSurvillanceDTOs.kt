@@ -7,11 +7,22 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 data class BatchFileFuelSaveDto(
-        @NotNull(message = "Required field")
-        var county: Long,
-        @NotNull(message = "Required field")
-        var town: Long,
+        var county: Long? = null,
+        var town: Long? = null,
+        var remarks: String? = null,
+)
 
+data class TeamsFuelSaveDto(
+        var teamName: String? = null,
+        var assignedOfficerID: Long? = null,
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var remarks: String? = null,
+        var countList : List<TeamsCountyFuelSaveDto>? = null,
+)
+
+data class TeamsCountyFuelSaveDto(
+        var countyId: Long? = null,
         var remarks: String? = null,
 )
 
@@ -40,6 +51,15 @@ data class FuelBatchDetailsDto(
         var remarks: String? = null,
         var batchClosed: Boolean? = null,
 )
+data class TeamsFuelDetailsDto(
+        var id: Long? = null,
+        var referenceNumber: String? = null,
+        var teamName: String? = null,
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var countyName : String? = null,
+        var countyID : Long? = null,
+)
 
 data class WorkPlanScheduleListDetailsDto(
         var workPlanList: List<WorkPlanInspectionDto>? = null,
@@ -48,7 +68,35 @@ data class WorkPlanScheduleListDetailsDto(
 
 data class FuelInspectionScheduleListDetailsDto(
         var fuelInspectionDto: List<FuelInspectionDto>? = null,
+        var fuelBatchDetailsDto: FuelBatchDetailsDto? = null,
+        var fuelTeamsDto: TeamsFuelDetailsDto? = null
+)
+
+data class FuelScheduleTeamsListDetailsDto(
+        var fuelTeamsDto: List<FuelTeamsDto>? = null,
+        var fuelBatchDetailsDto: FuelBatchDetailsDto? = null,
+        var officersList: List<MsUsersDto>? = null,
+)
+
+data class FuelScheduleCountyListDetailsDto(
+        var fuelCountyDtoList: List<FuelCountyDto>? = null,
+        var fuelTeamsDto: TeamsFuelDetailsDto? = null,
         var fuelBatchDetailsDto: FuelBatchDetailsDto? = null
+)
+
+data class FuelTeamsDto(
+        var id: Long? = null,
+        var referenceNumber: String? = null,
+        var teamName: String? = null,
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var officerAssignedName: String? = null
+)
+
+data class FuelCountyDto(
+        var id: Long? = null,
+        var referenceNumber: String? = null,
+        var countyName: String? = null,
 )
 
 
@@ -77,10 +125,12 @@ data class FuelInspectionDto(
         var remendiationCompleteStatus: Boolean? = null,
         var proFormaInvoiceStatus: Boolean? = null,
         var batchDetails: FuelBatchDetailsDto?= null,
+        var teamsDetails: TeamsFuelDetailsDto?= null,
         var officersList: List<MsUsersDto>? = null,
         var remarksDetails: List<MSRemarksDto>? = null,
         var officersAssigned: MsUsersDto? = null,
         var rapidTest: FuelEntityRapidTestDto? = null,
+        var rapidTestProducts: List<RapidTestProductsDetailsDto>? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: SampleSubmissionDto? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
@@ -231,6 +281,10 @@ data class FuelEntityDto(
         @NotEmpty(message = "Required field")
         var stationKraPin: String,
 
+        @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
+        var townID: Long,
+
         var remarks: String? = null,
 )
 
@@ -320,6 +374,30 @@ data class SampleCollectionDto(
         var designationWitness: String?= null,
         var dateWitness: Date?= null,
         var productsList: List<SampleCollectionItemsDto>? = null,
+)
+
+data class RapidTestProductsDto(
+        var id: Long?= null,
+        var productName: String?= null,
+        var exportMarkerTest: String?= null,
+        var domesticKeroseneMarkerTest: String?= null,
+        var sulphurMarkerTest: String?= null,
+        var exportMarkerTestStatus: Int?= null,
+        var domesticKeroseneMarkerTestStatus: Int?= null,
+        var sulphurMarkerTestStatus: Int?= null,
+        var overallComplianceStatus: Int?= null,
+)
+
+data class RapidTestProductsDetailsDto(
+        var id: Long?= null,
+        var productName: String?= null,
+        var exportMarkerTest: String?= null,
+        var domesticKeroseneMarkerTest: String?= null,
+        var sulphurMarkerTest: String?= null,
+        var exportMarkerTestStatus: Boolean,
+        var domesticKeroseneMarkerTestStatus: Boolean,
+        var sulphurMarkerTestStatus: Boolean,
+        var overallComplianceStatus: Boolean,
 )
 
 data class SampleCollectionItemsDto(

@@ -176,8 +176,8 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.QAO}")
     val mapQADesignationIDForQAOId: Long = 0L
 
-    @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.officer.roleID}")
-    val mapMSMappedOfficerROLEID: Long = 0L
+    @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.officer.petroleum.roleID}")
+    val mapMSFuelMappedOfficerROLEID: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.market.surveillance.mapped.complaint.officer.roleID}")
     val mapMSComplaintWorkPlanMappedOfficerROLEID: Long = 0L

@@ -61,7 +61,12 @@ import {
     PreliminaryReportDto,
     ApprovalDto,
     PreliminaryReportFinal,
-    MsRecommendationDto, WorkPlanFinalRecommendationDto, WorkPlanFeedBackDto,
+    MsRecommendationDto,
+    WorkPlanFinalRecommendationDto,
+    WorkPlanFeedBackDto,
+    FuelScheduleTeamsListDetailsDto,
+    TeamsFuelSaveDto,
+    FuelScheduleCountyListDetailsDto, RapidTestProductsDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -523,7 +528,7 @@ export class MsService {
     public hasRole(privileges: string[], roles: any[]): boolean {
         for (const role of roles) {
             for (const p of privileges) {
-                if (role == p) {
+                if (role === p) {
                     return true;
                 }
             }
@@ -557,13 +562,13 @@ export class MsService {
             if (result.isConfirmed) {
                 if (fn) {
                     const results = fn();
-                    if (results == true) {
+                    if (results === true) {
                         swalWithBootstrapButtons.fire(
                             'Submitted!',
                             successMessage,
                             'success',
                         );
-                    } else if (results == false) {
+                    } else if (results === false) {
                         swalWithBootstrapButtons.fire(
                             'Submitted!',
                             'AN ERROR OCCURRED',
@@ -648,6 +653,7 @@ export class MsService {
         const params = new HttpParams()
             .set('page', page)
             .set('records', records);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ADD_NEW_BATCH);
         return this.http.post<WorkPlanBatchDetailsDto[]>(url, null, {params}).pipe(
             map(function (response: WorkPlanBatchDetailsDto[]) {
@@ -699,6 +705,7 @@ export class MsService {
 
     public closeMSWorkPlanBatch(referenceNo: string): Observable<WorkPlanBatchDetailsDto[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.CLOSE_BATCH);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -716,6 +723,7 @@ export class MsService {
     public msAddWorkPlanScheduleDetails(referenceNo: string, data: WorkPlanEntityDto): Observable<WorkPlanScheduleListDetailsDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.CREATE_NEW_WORK_PLAN_SCHEDULE);
         const params = new HttpParams()
             .set('batchReferenceNo', referenceNo);
@@ -734,6 +742,7 @@ export class MsService {
     public msUpdateWorkPlanScheduleDetails(batchReferenceNo: string, referenceNo: string,  data: WorkPlanEntityDto): Observable<WorkPlanScheduleListDetailsDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPDATE_NEW_WORK_PLAN_SCHEDULE);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -751,6 +760,7 @@ export class MsService {
 
     public msWorkPlanScheduleDetails(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_DETAILS);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -769,6 +779,7 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleSaveChargeSheet(batchReferenceNo: string, referenceNo: string, data: ChargeSheetDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_CHARGE_SHEET);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -787,6 +798,7 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleSaveDataReport(batchReferenceNo: string, referenceNo: string, data: DataReportDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_DATA_REPORT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -805,7 +817,10 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleSaveSeizureDeclaration(batchReferenceNo: string, referenceNo: string, data: SeizureDeclarationDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SEIZURE_DECLARATION);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SEIZURE_DECLARATION,
+        );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
@@ -823,7 +838,10 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleSaveInvestInspectReport(batchReferenceNo: string, referenceNo: string, data: InspectionInvestigationReportDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_INSPECTION_INVESTIGATION);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_INSPECTION_INVESTIGATION,
+        );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
@@ -841,6 +859,7 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleSavePreliminaryReport(batchReferenceNo: string, referenceNo: string, data: PreliminaryReportDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -859,6 +878,7 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsApprove(batchReferenceNo: string, referenceNo: string, data: WorkPlanScheduleApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_DETAILS);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -877,6 +897,7 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsApprovePreliminaryHOF(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOF_PRELIMINARY_REPORT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -895,6 +916,7 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsClientAppealed(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_CLIENT_APPEALED);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -913,6 +935,7 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsClientAppealedSuccessfully(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_CLIENT_APPEALED_SUCCESSFULLY);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -932,7 +955,10 @@ export class MsService {
      // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsApproveFinalPreliminaryHOF(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOF_FINAL_PRELIMINARY_REPORT);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOF_FINAL_PRELIMINARY_REPORT,
+        );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
@@ -950,6 +976,7 @@ export class MsService {
      // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsApproveFinalPreliminaryHOD(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOD_FINAL_PRELIMINARY_REPORT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -968,6 +995,7 @@ export class MsService {
   // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsFinalRemarksHOD(batchReferenceNo: string, referenceNo: string, data: WorkPlanFeedBackDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(
             ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOD_FINAL_REMARKS);
         const params = new HttpParams()
@@ -987,6 +1015,7 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsApprovePreliminaryHOD(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOD_PRELIMINARY_REPORT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -1006,6 +1035,7 @@ export class MsService {
      // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsFinalRecommendationHOD(batchReferenceNo: string, referenceNo: string, data: WorkPlanFinalRecommendationDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(
             ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_HOD_ADD_FINAL_RECOMMENDATION);
         const params = new HttpParams()
@@ -1026,6 +1056,7 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsFinalReport(batchReferenceNo: string, referenceNo: string, data: PreliminaryReportFinal): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(
             ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_FINAL_REPORT,
         );
@@ -1046,7 +1077,10 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsSubmitForApproval(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
         // console.log(data);
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_SUBMIT_FOR_APPROVAL);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_SUBMIT_FOR_APPROVAL,
+        );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
@@ -1063,7 +1097,10 @@ export class MsService {
 
      // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsStartOnsiteActivities(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_START_ONSITE_ACTIVITIES);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_START_ONSITE_ACTIVITIES,
+        );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
@@ -1080,7 +1117,10 @@ export class MsService {
 
      // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsEndOnsiteActivities(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_END_ONSITE_ACTIVITIES);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_END_ONSITE_ACTIVITIES,
+        );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
@@ -1096,7 +1136,10 @@ export class MsService {
     }
 
     public saveWorkPlanFiles(data: FormData): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPLOAD_WORK_PLAN_FILE);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPLOAD_WORK_PLAN_FILE,
+        );
         // const params = new HttpParams()
         //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {
@@ -1115,7 +1158,10 @@ export class MsService {
     }
 
     public saveWorkPlanDestructionReportFiles(data: FormData): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_DESTRUCTION_REPORT_UPLOAD);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_DESTRUCTION_REPORT_UPLOAD,
+        );
         // const params = new HttpParams()
         //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {
@@ -1134,7 +1180,10 @@ export class MsService {
     }
 
     public saveWorkPlanDestructionNotificationFiles(data: FormData): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_DESTRUCTION_NOTIFICATION_UPLOAD);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_DESTRUCTION_NOTIFICATION_UPLOAD,
+        );
         // const params = new HttpParams()
         //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {
@@ -1152,8 +1201,11 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanInspectionScheduledAddSampleCollection(batchReferenceNo: string, referenceNo: string, data: SampleCollectionDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+        // tslint:disable-next-line:max-line-length
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SAMPLE_COLLECT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -1169,6 +1221,7 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanInspectionScheduledAddSampleSubmission(batchReferenceNo: string, referenceNo: string, data: SampleSubmissionDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
@@ -1191,6 +1244,7 @@ export class MsService {
     (batchReferenceNo: string,
      referenceNo: string, data: BSNumberSaveDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SAMPLE_SUBMISSION_BS_NUMBER);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -1206,8 +1260,10 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanInspectionScheduledSaveSSFComplianceStatus(batchReferenceNo: string, referenceNo: string, data: SSFSaveComplianceStatusDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SSF_COMPLIANCE_STATUS_SAVE);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -1223,8 +1279,10 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanInspectionScheduledSavePDFLIMS(batchReferenceNo: string, referenceNo: string, data: PDFSaveComplianceStatusDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_LAB_RESULTS_PDF_SAVE);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -1242,6 +1300,7 @@ export class MsService {
 
     public MsRecommendationListDetails(): Observable<MsRecommendationDto[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_RECOMMENDATION);
         return this.http.get<MsRecommendationDto[]>(url).pipe(
             map(function (response: MsRecommendationDto[]) {
@@ -1254,8 +1313,10 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanInspectionScheduledUpdateAssignHOFDetails(batchReferenceNo: string, referenceNo: string, data: ComplaintAssignDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_UPDATE_ASSIGN_HOF);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -1271,8 +1332,10 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanInspectionScheduledUpdateAssignIODetails(batchReferenceNo: string, referenceNo: string, data: ComplaintAssignDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_UPDATE_ASSIGN_IO);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
@@ -1302,6 +1365,7 @@ export class MsService {
 
     public msDepartmentListDetails(): Observable<MsDepartment[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_DEPARTMENTS);
         return this.http.get<MsDepartment[]>(url).pipe(
             map(function (response: MsDepartment[]) {
@@ -1316,6 +1380,7 @@ export class MsService {
 
     public msCountriesListDetails(): Observable<CountriesEntityDto[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_COUNTRIES);
         return this.http.get<CountriesEntityDto[]>(url).pipe(
             map(function (response: CountriesEntityDto[]) {
@@ -1330,6 +1395,7 @@ export class MsService {
 
     public msDivisionListDetails(): Observable<MsDivisionDetails[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_DIVISIONS);
         return this.http.get<MsDivisionDetails[]>(url).pipe(
             map(function (response: MsDivisionDetails[]) {
@@ -1344,6 +1410,7 @@ export class MsService {
 
     public msProductListDetails(): Observable<MsProducts[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_PRODUCTS);
         return this.http.get<MsProducts[]>(url).pipe(
             map(function (response: MsProducts[]) {
@@ -1358,6 +1425,7 @@ export class MsService {
 
     public msProductCategoryListDetails(): Observable<MsProductCategories[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_PRODUCT_CATEGORIES);
         return this.http.get<MsProductCategories[]>(url).pipe(
             map(function (response: MsProductCategories[]) {
@@ -1372,6 +1440,7 @@ export class MsService {
 
     public msProductBroadCategoryListDetails(): Observable<MsBroadProductCategory[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_BROAD_PRODUCT_CATEGORY);
         return this.http.get<MsBroadProductCategory[]>(url).pipe(
             map(function (response: MsBroadProductCategory[]) {
@@ -1386,6 +1455,7 @@ export class MsService {
 
     public msProductSubCategoryListDetails(): Observable<MsProductSubcategory[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_PRODUCT_SUB_CATEGORY);
         return this.http.get<MsProductSubcategory[]>(url).pipe(
             map(function (response: MsProductSubcategory[]) {
@@ -1399,6 +1469,7 @@ export class MsService {
     }
 
     public msProductStandardCategoryListDetails(): Observable<MsStandardProductCategory[]> {
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_STANDARD_PRODUCT_CATEGORY);
         return this.http.get<MsStandardProductCategory[]>(url).pipe(
             map(function (response: MsStandardProductCategory[]) {
@@ -1418,6 +1489,7 @@ export class MsService {
         newComplaintDto.complaintDetails = complaintDetails;
         newComplaintDto.locationDetails = locationDetails;
         console.log(newComplaintDto);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.CREATE_NEW_COMPLAINT);
         return this.http.post<MSComplaintSubmittedSuccessful>(url, newComplaintDto).pipe(
             map(function (response: MSComplaintSubmittedSuccessful) {
@@ -1430,9 +1502,11 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public msAddComplaintDetailsToWorkPlanScheduleDetails(referenceNo: string, data: WorkPlanEntityDto): Observable<WorkPlanScheduleListDetailsDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.CREATE_NEW_WORK_PLAN_SCHEDULE);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -1449,6 +1523,7 @@ export class MsService {
 
 
     public saveComplaintFiles(data: FormData): Observable<any> {
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.UPLOAD_COMPLIANT_FILE);
         // const params = new HttpParams()
         //     .set('permitID', permitID);
@@ -1502,6 +1577,7 @@ export class MsService {
 
     public msComplaintDetails(referenceNo: string): Observable<AllComplaintsDetailsDto> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -1518,6 +1594,7 @@ export class MsService {
 
     public msComplaintUpdateAcceptanceDetails(referenceNo: string, data: ComplaintApproveDto): Observable<AllComplaintsDetailsDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_ACCEPTANCE);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -1534,6 +1611,7 @@ export class MsService {
 
     public msComplaintUpdateRejectDetails(referenceNo: string, data: ComplaintRejectDto): Observable<AllComplaintsDetailsDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_REJECTION);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -1550,6 +1628,7 @@ export class MsService {
 
     public msComplaintUpdateMandateOGADetails(referenceNo: string, data: ComplaintAdviceRejectDto): Observable<AllComplaintsDetailsDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_OGA_MANDATE);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -1566,6 +1645,7 @@ export class MsService {
 
     public msComplaintUpdateAssignHOFDetails(referenceNo: string, data: ComplaintAssignDto): Observable<AllComplaintsDetailsDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_ASSIGN_HOF);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -1582,6 +1662,7 @@ export class MsService {
 
     public msComplaintUpdateAssignIODetails(referenceNo: string, data: ComplaintAssignDto): Observable<AllComplaintsDetailsDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_ASSIGN_IO);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -1602,6 +1683,7 @@ export class MsService {
     ): Observable<AllComplaintsDetailsDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_ADD_CLASSIFICATION_DETAILS);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -1621,6 +1703,7 @@ export class MsService {
 
     public loadMSFuelBatchList(page: string, records: string): Observable<FuelBatchDetailsDto[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.ALL_BATCH_LIST);
         const params = new HttpParams()
             .set('page', page)
@@ -1638,6 +1721,7 @@ export class MsService {
 
     public loadMSLabList(): Observable<LaboratoryDto[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.LAB_LIST);
         return this.http.get<LaboratoryDto[]>(url).pipe(
             map(function (response: LaboratoryDto[]) {
@@ -1651,6 +1735,7 @@ export class MsService {
     }
 
     public loadFileDetailsPDF(fileID: string): Observable<any> {
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MS_COMMON_VIEW_PDF_CONTEXT);
         const params = new HttpParams()
             .set('fileID', fileID);
@@ -1667,6 +1752,7 @@ export class MsService {
     }
 
     public loadFileDetailsLabResultsPDF(fileName: string, bsNumber: string): Observable<any> {
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.VIEW_PDF_LAB_RESULT);
         const params = new HttpParams()
             .set('fileName', fileName)
@@ -1684,6 +1770,7 @@ export class MsService {
     }
 
     public loadRemediationInvoiceDetailsPDF(fuelInspectionId: string): Observable<any> {
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.VIEW_PDF_REMEDIATION_INVOICE);
         const params = new HttpParams()
             .set('fuelInspectionId', fuelInspectionId);
@@ -1700,6 +1787,7 @@ export class MsService {
     }
 
     public loadSampleCollectionDetailsPDF(sampleCollectionID: string): Observable<any> {
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.VIEW_PDF_SAMPLE_COLLECTION);
         const params = new HttpParams()
             .set('sampleCollectionID', sampleCollectionID);
@@ -1720,6 +1808,7 @@ export class MsService {
 
     public addNewMSFuelBatch(data: BatchFileFuelSaveDto): Observable<FuelInspectionScheduleListDetailsDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.ADD_BATCH);
         return this.http.post<FuelInspectionScheduleListDetailsDto>(url, data).pipe(
             map(function (response: FuelInspectionScheduleListDetailsDto) {
@@ -1734,6 +1823,7 @@ export class MsService {
 
     public closeMSFuelBatch(referenceNo: string): Observable<FuelBatchDetailsDto[]> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.CLOSE_BATCH);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
@@ -1748,11 +1838,55 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionList(batchReferenceNo: string, page: string, records: string): Observable<FuelInspectionScheduleListDetailsDto> {
+    public msFuelInspectionTeamsList(batchReferenceNo: string, page: string, records: string): Observable<FuelScheduleTeamsListDetailsDto> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_TEAMS_LIST);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<FuelScheduleTeamsListDetailsDto>(url, {params}).pipe(
+            map(function (response: FuelScheduleTeamsListDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionTeamCountyList(batchReferenceNo: string, teamsReferenceNo: string, page: string, records: string): Observable<FuelScheduleCountyListDetailsDto> {
+        // console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_TEAM_COUNTY_LIST);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<FuelScheduleCountyListDetailsDto>(url, {params}).pipe(
+            map(function (response: FuelScheduleCountyListDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionList(batchReferenceNo: string, teamsReferenceNo: string, countyReferenceNo: string, page: string, records: string): Observable<FuelInspectionScheduleListDetailsDto> {
+        // console.log(data);
+
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_LIST);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo)
             .set('page', page)
             .set('records', records);
         return this.http.get<FuelInspectionScheduleListDetailsDto>(url, {params}).pipe(
@@ -1766,11 +1900,15 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionAddSchedule(batchReferenceNo: string, data: FuelEntityDto): Observable<FuelInspectionScheduleListDetailsDto> {
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionAddSchedule(batchReferenceNo: string, teamsReferenceNo: string, countyReferenceNo: string, data: FuelEntityDto): Observable<FuelInspectionScheduleListDetailsDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_ADD_NEW);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo);
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.post<FuelInspectionScheduleListDetailsDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionScheduleListDetailsDto) {
                 return response;
@@ -1782,12 +1920,21 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionScheduledDetails(batchReferenceNo: string, referenceNo: string): Observable<FuelInspectionDto> {
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledDetails(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+    ): Observable<FuelInspectionDto> {
         // console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.get<FuelInspectionDto>(url, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1799,14 +1946,46 @@ export class MsService {
         );
     }
 
+    public saveFuelFiles(data: FormData): Observable<FuelInspectionDto> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.UPLOAD_FUEL_FILE,
+        );
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<FuelInspectionDto>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
     // tslint:disable-next-line:max-line-length
-    public msFuelInspectionScheduledAssignOfficer(batchReferenceNo: string, referenceNo: string, data: FuelEntityAssignOfficerDto): Observable<FuelInspectionDto> {
+    public msFuelInspectionScheduledAssignOfficer(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string ,
+        data: FuelEntityAssignOfficerDto,
+    ): Observable<FuelInspectionDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_ASSIGN_OFFICER);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1818,12 +1997,21 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionScheduledRapidTest(batchReferenceNo: string, referenceNo: string, data: FuelEntityRapidTestDto): Observable<FuelInspectionDto> {
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledRapidTest(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: FuelEntityRapidTestDto): Observable<FuelInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_RAPID_TEST);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1835,12 +2023,49 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionScheduledAddSampleCollection(batchReferenceNo: string, referenceNo: string, data: SampleCollectionDto): Observable<FuelInspectionDto> {
+
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledRapidTestProducts(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: RapidTestProductsDto): Observable<FuelInspectionDto> {
         console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_RAPID_TEST_PRODUCTS);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
+        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledAddSampleCollection(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: SampleCollectionDto): Observable<FuelInspectionDto> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SAMPLE_COLLECT);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.post<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1852,12 +2077,21 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionScheduledAddSampleSubmission(batchReferenceNo: string, referenceNo: string, data: SampleSubmissionDto): Observable<FuelInspectionDto> {
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledAddSampleSubmission(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: SampleSubmissionDto): Observable<FuelInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.post<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1869,12 +2103,38 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionScheduledAddSampleSubmissionBSNumber(batchReferenceNo: string, referenceNo: string, data: BSNumberSaveDto): Observable<FuelInspectionDto> {
+    public msFuelInspectionScheduledAddTeamsAndCounty(batchReferenceNo: string, data: TeamsFuelSaveDto): Observable<FuelInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo);
+        return this.http.post<FuelInspectionDto>(url, data, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledAddSampleSubmissionBSNumber(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: BSNumberSaveDto): Observable<FuelInspectionDto> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION_BS_NUMBER);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1886,12 +2146,21 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionScheduledSavePDFLIMS(batchReferenceNo: string, referenceNo: string, data: PDFSaveComplianceStatusDto): Observable<FuelInspectionDto> {
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledSavePDFLIMS(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: PDFSaveComplianceStatusDto): Observable<FuelInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_LAB_RESULTS_SAVE_PDF);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1903,12 +2172,21 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionScheduledSaveSSFComplianceStatus(batchReferenceNo: string, referenceNo: string, data: SSFSaveComplianceStatusDto): Observable<FuelInspectionDto> {
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledSaveSSFComplianceStatus(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: SSFSaveComplianceStatusDto): Observable<FuelInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SSF_COMPLIANCE_STATUS);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1920,12 +2198,21 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionScheduledRemediation(batchReferenceNo: string, referenceNo: string, data: CompliantRemediationDto): Observable<FuelInspectionDto> {
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledRemediation(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: CompliantRemediationDto): Observable<FuelInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_REMEDIATION_DATE);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.post<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1937,12 +2224,21 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionNotCompliantRemediationInvoice(batchReferenceNo: string, referenceNo: string, data: CompliantRemediationDto): Observable<FuelInspectionDto> {
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionNotCompliantRemediationInvoice(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: CompliantRemediationDto): Observable<FuelInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_REMEDIATION_INVOICE);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.post<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1954,12 +2250,21 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionRemediation(batchReferenceNo: string, referenceNo: string, data: RemediationDto): Observable<FuelInspectionDto> {
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionRemediation(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: RemediationDto): Observable<FuelInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_ADD_REMEDIATION);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
@@ -1971,12 +2276,20 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionEnd(batchReferenceNo: string, referenceNo: string): Observable<FuelInspectionDto> {
+    public msFuelInspectionEnd(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+    ): Observable<FuelInspectionDto> {
         // console.log(da/ta);
+         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.END_INSPECTION);
         const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
         return this.http.put<FuelInspectionDto>(url, null, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;

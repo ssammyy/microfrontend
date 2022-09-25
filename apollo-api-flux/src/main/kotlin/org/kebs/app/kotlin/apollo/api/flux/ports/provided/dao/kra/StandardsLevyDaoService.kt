@@ -67,7 +67,7 @@ class StandardsLevyDaoService(
     private val integRepo: IIntegrationConfigurationRepository,
 
     private val extension: ActorSpringExtension,
-    private val actorSystem: ActorSystem,
+//    private val actorSystem: ActorSystem,
     private val headerRepository: ISl2PaymentsHeaderRepository,
     private val detailsRepository: ISl2PaymentsDetailsRepository
 ) {
@@ -178,7 +178,7 @@ class StandardsLevyDaoService(
                 header.requestHeaderBank = paymentReceiveSL2PaymentRequest.header?.bank
                 header.requestBankRefNo = paymentReceiveSL2PaymentRequest.header?.bankRefNo
                 header.requestHeaderTransmissionDate = paymentReceiveSL2PaymentRequest.transmissionDate
-                header.transactionDate = Date()
+                header.transactionDate = Timestamp.from(Instant.now())
                 header.status = 0
                 header.createdBy = paymentReceiveSL2PaymentRequest.loginId
                 header.createdOn = Timestamp.from(Instant.now())
@@ -198,7 +198,7 @@ class StandardsLevyDaoService(
                     detail.qtyManf = d.qtyManf
                     detail.exFactVal = d.exFactVal
                     detail.levyPaid = d.levyPaid
-                    detail.transactionDate = Date()
+                    detail.transactionDate = java.sql.Date(Date().time)
                     detail.status = 0
                     detail.createdBy = paymentReceiveSL2PaymentRequest.loginId
                     detail.createdOn = Timestamp.from(Instant.now())
@@ -213,7 +213,7 @@ class StandardsLevyDaoService(
                     detail.periodFrom = p.periodFrom
                     detail.periodTo = p.periodTo
                     detail.penaltyPaid = p.penaltyPaid
-                    detail.transactionDate = Date()
+                    detail.transactionDate = java.sql.Date(Date().time)
                     detail.status = 0
                     detail.createdBy = paymentReceiveSL2PaymentRequest.loginId
                     detail.createdOn = Timestamp.from(Instant.now())
@@ -253,8 +253,8 @@ class StandardsLevyDaoService(
                         ?.let { job ->
                             job.processingActorBean
                                 ?.let { actorBean ->
-                                    val actorRef = actorSystem.actorOf(extension.get(actorSystem).props(actorBean), actorBean)
-                                    actorRef.tell(job, actorRef)
+//                                    val actorRef = actorSystem.actorOf(extension.get(actorSystem).props(actorBean), actorBean)
+//                                    actorRef.tell(job, actorRef)
                                     result = "Job successfully submitted for processing"
 
                                 }
@@ -296,8 +296,8 @@ class StandardsLevyDaoService(
                             job.processingActorBean
                                 ?.let { actorBean ->
                                     val detail = PenaltyJobDetails(job.id, actorBean)
-                                    val actorRef = actorSystem.actorOf(extension.get(actorSystem).props(actorBean), actorBean)
-                                    actorRef.tell(detail, actorRef)
+//                                    val actorRef = actorSystem.actorOf(extension.get(actorSystem).props(actorBean), actorBean)
+//                                    actorRef.tell(detail, actorRef)
                                     result = "Penalty Job successfully submitted for processing"
 
                                 }

@@ -371,6 +371,8 @@ import {RfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-docu
 import {RfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component';
 import {ViewRfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component';
 import {ViewRfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component';
+import { FuelListTeamsComponent } from './apollowebs/market-surveillance/fuel/fuel-list-teams/fuel-list-teams.component';
+import { FuelListTeamsCountyComponent } from './apollowebs/market-surveillance/fuel/fuel-list-teams-county/fuel-list-teams-county.component';
 
 @NgModule({
     imports: [
@@ -767,7 +769,9 @@ import {ViewRfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-
         RfcCocDocumentsComponent,
         RfcCorDocumentsComponent,
         ViewRfcCorDocumentsComponent,
-        ViewRfcCocDocumentsComponent
+        ViewRfcCocDocumentsComponent,
+        FuelListTeamsComponent,
+        FuelListTeamsCountyComponent
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],

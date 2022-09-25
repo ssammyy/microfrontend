@@ -152,6 +152,12 @@ export class WorkPlanScheduleListDetailsDto {
     createdWorkPlan: WorkPlanBatchDetailsDto;
 }
 
+export class FuelScheduleTeamsListDetailsDto {
+    fuelTeamsDto: FuelTeamsDto[];
+    fuelBatchDetailsDto: FuelBatchDetailsDto;
+    officersList: MsUsersDto[];
+}
+
 export class WorkPlanListDto {
     id: number;
     referenceNumber: string;
@@ -583,6 +589,8 @@ export class DataReportDto {
 }
 
 
+
+
 export class DataReportParamsDto {
     id: number;
     typeBrandName: string;
@@ -596,6 +604,20 @@ export class DataInspectorInvestDto {
     inspectorName: string;
     institution: string;
     designation: string;
+}
+
+export class TeamsFuelSaveDto {
+    teamName: string;
+    assignedOfficerID: number;
+    startDate: Date;
+    endDate: Date;
+    remarks: string;
+    countList: TeamsCountyFuelSaveDto[];
+}
+
+export class TeamsCountyFuelSaveDto {
+    countyId: number;
+    remarks: string;
 }
 
 export class FuelBatchDetailsDto {
@@ -624,6 +646,8 @@ export class FuelEntityDto {
     inspectionDateFrom: Date;
     inspectionDateTo: Date;
     stationOwnerEmail: string;
+    stationKraPin: string;
+    townID: string;
     remarks: string;
 }
 
@@ -636,6 +660,37 @@ export class BatchFileFuelSaveDto {
 export class FuelEntityAssignOfficerDto {
     assignedUserID: bigint;
     remarks: string;
+}
+
+export class FuelScheduleCountyListDetailsDto {
+    fuelCountyDtoList: FuelCountyDto[];
+    fuelTeamsDto: TeamsFuelDetailsDto;
+    fuelBatchDetailsDto: FuelBatchDetailsDto;
+}
+
+export class FuelCountyDto {
+    id: bigint;
+    referenceNumber: string;
+    countyName: string;
+}
+
+export class TeamsFuelDetailsDto {
+    id: bigint;
+    referenceNumber: string;
+    teamName: string;
+    startDate: Date;
+    endDate: Date;
+    countyName: string;
+    countyID: bigint;
+}
+
+export class FuelTeamsDto {
+    id: bigint;
+    referenceNumber: string;
+    teamName: string;
+    startDate: Date;
+    endDate: Date;
+    officerAssignedName: string;
 }
 
 export class WorkPlanFinalRecommendationDto {
@@ -728,9 +783,34 @@ export class FuelEntityRapidTestDto {
     rapidTestStatus: boolean;
 }
 
+export class RapidTestProductsDto {
+    id: bigint;
+    productName: string;
+    exportMarkerTest: string;
+    domesticKeroseneMarkerTest: string;
+    sulphurMarkerTest: string;
+    exportMarkerTestStatus: number;
+    domesticKeroseneMarkerTestStatus: number;
+    sulphurMarkerTestStatus: number;
+    overallComplianceStatus: number;
+}
+
+export class RapidTestProductsDetailsDto {
+    id: bigint;
+    productName: string;
+    exportMarkerTest: string;
+    domesticKeroseneMarkerTest: string;
+    sulphurMarkerTest: string;
+    exportMarkerTestStatus: boolean;
+    domesticKeroseneMarkerTestStatus: boolean;
+    sulphurMarkerTestStatus: boolean;
+    overallComplianceStatus: boolean;
+}
+
 export class FuelInspectionScheduleListDetailsDto {
     fuelInspectionDto: FuelInspectionDto[];
     fuelBatchDetailsDto: FuelBatchDetailsDto;
+    fuelTeamsDto: TeamsFuelDetailsDto;
 }
 
 export class FuelInspectionDto {
@@ -760,6 +840,7 @@ export class FuelInspectionDto {
     remarksDetails: MSRemarksDto[];
     officersAssigned: MsUsersDto;
     rapidTest: FuelEntityRapidTestDto;
+    rapidTestProducts: RapidTestProductsDetailsDto[];
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto;
     sampleLabResults: MSSSFLabResultsDto;

@@ -142,6 +142,17 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
         @Param("status") status: Int
     ): List<UsersEntity>?
 
+    @Query(
+        "SELECT DISTINCT u.* FROM CFG_USER_ROLES_ASSIGNMENTS r, DAT_KEBS_USER_PROFILES pf,  " +
+                "DAT_KEBS_USERS u WHERE  pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID and pf.STATUS =:status\n" +
+                "AND u.ENABLED =:status and r.ROLE_ID =:roleId AND r.STATUS=:status",
+        nativeQuery = true
+    )
+    fun findOfficerUsersByRoleFromUserDetails(
+        @Param("roleId") roleId: Long,
+        @Param("status") status: Int
+    ): List<UsersEntity>?
+
     fun findAllByUserNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
         userName: String?,
         email: String?,

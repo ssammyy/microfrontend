@@ -22,69 +22,8 @@
                             </button>
                         </h4>
 
-<!--                        <h4 class="card-title">#REGION NAME : {{this.loadedData.fuelBatchDetailsDto.region}}</h4>-->
-<!--                        <h4 class="card-title">#COUNTY NAME : {{this.loadedData.fuelBatchDetailsDto.county}}</h4>-->
-<!--                        <h4 class="card-title">#TOWN NAME : {{this.loadedData.fuelBatchDetailsDto.town}}</h4>-->
-<!--                        <h4 class="card-title">#YEAR NAME : {{this.loadedData.fuelBatchDetailsDto.batchFileYear}}</h4>-->
-<!--                        <h4 class="card-title">#STATUS : {{this.loadedData.fuelBatchDetailsDto.batchClosed}}</h4>-->
                     </div>
-<!--                    <div class="card-body">-->
-<!--&lt;!&ndash;                        <div class="row">&ndash;&gt;-->
-<!--                            <div class="col-md-2 m-0 p-0">-->
-<!--                                <div widget class=" border-0 box-shadow">-->
-<!--                        <div class="text-center pt-2" style="color: green;">-->
-<!--                            FUEL BATCH INFORMATION-->
-<!--                        </div>-->
-<!--                        <div class="card-body p-0 m-0 widget-body">-->
-<!--                            <table class="table-responsive">-->
-<!--                                <th>-->
-<!--                                    Batch Reference No #-->
-<!--                                </th>-->
-<!--                                <tr>-->
-<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.referenceNumber ? this.loadedData.fuelBatchDetailsDto.referenceNumber : 'NA' }}-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                                <th>-->
-<!--                                    Region Name-->
-<!--                                </th>-->
-<!--                                <tr>-->
-<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.region ? this.loadedData.fuelBatchDetailsDto.region : 'NA' }}-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                                <th>-->
-<!--                                    County Name-->
-<!--                                </th>-->
-<!--                                <tr>-->
-<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.county ? this.loadedData.fuelBatchDetailsDto.county : 'NA' }}-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                                <th>-->
-<!--                                    Town Name-->
-<!--                                </th>-->
-<!--                                <tr>-->
-<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.town ? this.loadedData.fuelBatchDetailsDto.town : 'NA' }}-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                                <th>-->
-<!--                                    Year Name-->
-<!--                                </th>-->
-<!--                                <tr>-->
-<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.batchFileYear ? this.loadedData.fuelBatchDetailsDto.batchFileYear : 'NA' }}-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                                <th>-->
-<!--                                    Status-->
-<!--                                </th>-->
-<!--                                <tr>-->
-<!--                                    <td>{{ this.loadedData.fuelBatchDetailsDto.batchClosed ? this.loadedData.fuelBatchDetailsDto.batchClosed : false }}-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                            </table>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                            </div>-->
-<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
-<!--                    </div>-->
+
                     <div class="card-body">
                         <div class="toolbar">
                             <div class="search-bar" *ngIf="documentTypes">
@@ -258,13 +197,22 @@
                                                    [class.is-invalid]="formNewScheduleForm.inspectionDateTo.invalid && formNewScheduleForm.inspectionDateTo.touched">
                                         </mat-form-field>
 
-                                        <label for="remarks">Please write, in detail, your feedback for this fuel inspection schedule:</label>
+                                        <label><b>Select Town</b></label>
+                                        <mat-form-field *ngIf="town$ | async as apps">
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formNewScheduleForm.townID.invalid && formNewScheduleForm.townID.touched"
+                                                        formControlName="townID" id="townID" name="townID"  (ngModelChange)="updateSelectedTown()">
+                                                <mat-option *ngFor="let app of apps| filterPipe: {status: true, countyId: loadedData.fuelTeamsDto.countyID}" [value]="app.id">{{app.town}}</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+
+                                        <label >Please write, in detail, your feedback for this fuel inspection schedule:</label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="remarks" matInput type="text"
+                                            <textarea  matInput type="text"
                                                       formControlName="remarks"
                                                       placeholder="Please Enter your feedback for this fuel inspection schedule"
-                                                      name="remarks"
-                                                      [class.is-invalid]="formNewScheduleForm.remarks.invalid && formNewScheduleForm.remarks.touched">
+                                                      name="remarks">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -277,13 +225,12 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="remarks">Please write, in detail, your feedback for this fuel inspection Batch:</label>
+                                        <label >Please write, in detail, your feedback for this fuel inspection Batch:</label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="remarks" matInput type="text"
+                                            <textarea matInput type="text"
                                                       formControlName="remarks"
                                                       placeholder="Please Enter your feedback for this fuel inspection schedule"
-                                                      name="remarks"
-                                                      [class.is-invalid]="formCloseBatchForm.remarks.invalid && formCloseBatchForm.remarks.touched">
+                                                      name="remarks">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
