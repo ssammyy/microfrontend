@@ -184,9 +184,7 @@ export class EpraListComponent implements OnInit {
       private townService: TownService,
       private msService: MsService,
   ) {
-    this.county$ = countyService.entities$;
     this.town$ = townService.entities$;
-    countyService.getAll().subscribe();
   }
 
   ngOnInit(): void {
@@ -207,6 +205,7 @@ export class EpraListComponent implements OnInit {
               this.defaultPage, this.defaultPageSize);
         },
     );
+
 
     this.addNewScheduleForm = this.formBuilder.group({
       company: ['', Validators.required],
@@ -246,6 +245,7 @@ export class EpraListComponent implements OnInit {
           this.loadedData = data;
           this.totalCount = this.loadedData.fuelInspectionDto.length;
           this.dataSet.load(this.loadedData.fuelInspectionDto);
+          this.updateSelectedCounty(this.loadedData?.fuelTeamsDto?.countyID);
           this.SpinnerService.hide();
           console.log(data);
         },
@@ -297,10 +297,8 @@ export class EpraListComponent implements OnInit {
   }
 
 
-  updateSelectedCounty() {
-    this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
-    console.log(`county set to ${this.selectedCounty}`);
-    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
+  updateSelectedCounty(selectedCountyValue) {
+    this.store$.dispatch(loadCountyId({payload: selectedCountyValue}));
     this.store$.select(selectCountyIdData).subscribe(
         (d) => {
           if (d) {
@@ -314,10 +312,6 @@ export class EpraListComponent implements OnInit {
 
   }
 
-  updateSelectedTown() {
-    this.selectedTown = this.addNewScheduleForm?.get('town')?.value;
-    console.log(`town set to ${this.selectedTown}`);
-  }
 
   onClickSaveNewSchedule(valid: boolean) {
     if (valid) {

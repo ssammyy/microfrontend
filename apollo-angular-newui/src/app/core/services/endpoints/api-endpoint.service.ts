@@ -572,6 +572,7 @@ export class ApiEndpointService {
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
         UPLOAD_FUEL_FILE: `${ApiEndpointService.MS_CONTEXT}/fuel/file/save`,
         INSPECTION_SCHEDULED_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/list`,
+        INSPECTION_ADD_TEAMS: `${ApiEndpointService.MS_FUEL_CONTEXT}/teams/add`,
         INSPECTION_TEAMS_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/teams/list`,
         INSPECTION_TEAM_COUNTY_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/teams/county/list`,
         INSPECTION_SCHEDULED_ADD_NEW: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/add`,

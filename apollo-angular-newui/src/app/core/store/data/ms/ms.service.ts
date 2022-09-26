@@ -2103,14 +2103,15 @@ export class MsService {
         );
     }
 
-    public msFuelInspectionScheduledAddTeamsAndCounty(batchReferenceNo: string, data: TeamsFuelSaveDto): Observable<FuelInspectionDto> {
+    // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledAddTeamsAndCounty(batchReferenceNo: string, data: TeamsFuelSaveDto): Observable<FuelScheduleTeamsListDetailsDto> {
         console.log(data);
          // tslint:disable-next-line:max-line-length
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_ADD_TEAMS);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo);
-        return this.http.post<FuelInspectionDto>(url, data, {params}).pipe(
-            map(function (response: FuelInspectionDto) {
+        return this.http.post<FuelScheduleTeamsListDetailsDto>(url, data, {params}).pipe(
+            map(function (response: FuelScheduleTeamsListDetailsDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

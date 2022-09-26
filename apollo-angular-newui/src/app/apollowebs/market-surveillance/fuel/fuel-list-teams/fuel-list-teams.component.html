@@ -16,7 +16,7 @@
                         <div class="card-icon">
                             <i class="material-icons">EPRA</i>
                         </div>
-                        <h4 class="card-title">Fuel Teams Schedule List #REFERENCE NO: {{this.loadedData.fuelBatchDetailsDto.referenceNumber}}
+                        <h4 class="card-title">Fuel Teams Schedule List #REFERENCE NO: {{this.loadedData?.fuelBatchDetailsDto?.referenceNumber}}
                             <button class="btn btn-sm btn-default float-right mr-7"
                                     (click)="goBack()"><i class="fa fa-arrow-left"></i> Back
                             </button>
@@ -156,7 +156,7 @@
     </div>
 
     <!-- Sample collect Modal -->
-    <div class="modal fade" id="createTeamsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -252,7 +252,7 @@
                                             >{{app.county}}</option>
                                         </select>
                                         <input type="hidden" formControlName="remarks" class="form-control"
-                                            name="remarks" [value]="{{selectedCounty}}">
+                                            name="remarks" >
                                         <div *ngIf="submitted && formCreateTeamsCountyForm.countyId.errors" class="invalid-feedback">
                                             <div *ngIf="formCreateTeamsCountyForm.countyId.errors.required">County is required</div>
                                         </div>

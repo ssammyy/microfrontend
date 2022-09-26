@@ -198,8 +198,11 @@ create table DAT_KEBS_MS_FUEL_TEAMS
 ) TABLESPACE qaimssdb_data;
 
 create sequence DAT_KEBS_MS_FUEL_TEAMS_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+-- DAT_KEBS_MS_FUEL_TEAMS_SEQ_TRG
 
-create trigger DAT_KEBS_MS_FUEL_TEAMS_SEQ_trg
+
+
+create or replace trigger DAT_KEBS_MS_FUEL_TEAMS_SEQ_TRG
     before
         insert
     on DAT_KEBS_MS_FUEL_TEAMS
@@ -207,12 +210,12 @@ create trigger DAT_KEBS_MS_FUEL_TEAMS_SEQ_trg
 begin
     if inserting then
         if :new.id is null then
-    select DAT_KEBS_MS_FUEL_TEAMS_SEQ.nextval
-    into :new.id
-    from dual;
+            select DAT_KEBS_MS_FUEL_TEAMS_SEQ.nextval
+            into :new.id
+            from dual;
 
-end if;
-end if;
+        end if;
+    end if;
 end;
 
 create index DAT_KEBS_MS_FUEL_TEAMS_seq_idx on DAT_KEBS_MS_FUEL_TEAMS (TEAM_NAME,STATUS) TABLESPACE qaimssdb_idx;
@@ -336,6 +339,6 @@ alter table DAT_KEBS_MS_FUEL_INSPECTION
     add MS_COUNTY_ID NUMBER REFERENCES DAT_KEBS_MS_FUEL_TEAMS_COUNTY(ID)
 /
 
-alter table DAT_KEBS_MS_FUEL_INSPECTION
-    add TOWN_ID NUMBER REFERENCES CFG_KEBS_TOWNS(ID)
-/
+-- alter table DAT_KEBS_MS_FUEL_INSPECTION
+--     add TOWN_ID NUMBER REFERENCES CFG_KEBS_TOWNS(ID)
+-- /

@@ -279,36 +279,13 @@ export class FuelListTeamsComponent implements OnInit {
           countyDetail = event.find(item => item.id === this.createTeamsCountyForm?.get('countyId')?.value);
     });
     this.selectedCounty = countyDetail.county;
+    this.createTeamsCountyForm?.get('remarks')?.setValue(this.selectedCounty);
+    console.log(`selectedCounty set to ${this.selectedCounty}`);
   }
 
   updateSelectedTown() {
     this.selectedTown = this.addNewScheduleForm?.get('town')?.value;
     console.log(`town set to ${this.selectedTown}`);
-  }
-
-  onClickSaveNewSchedule(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSave = {...this.dataSave, ...this.addNewScheduleForm.value};
-      this.msService.msFuelInspectionAddSchedule(this.loadedData.fuelBatchDetailsDto.referenceNumber, this.dataSave).subscribe(
-          (data: any) => {
-            this.addNewScheduleForm.reset();
-            console.log(data);
-            this.loadedData = data;
-            this.totalCount = this.loadedData.fuelTeamsDto.length;
-            this.dataSet.load(this.loadedData.fuelTeamsDto);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('NEW FUEL TEAM CREATED SUCCESSFUL', () => {
-              this.loadData(this.selectedBatchRefNo, this.defaultPage, this.defaultPageSize);
-            });
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
-    }
   }
 
   reloadCurrentRoute() {

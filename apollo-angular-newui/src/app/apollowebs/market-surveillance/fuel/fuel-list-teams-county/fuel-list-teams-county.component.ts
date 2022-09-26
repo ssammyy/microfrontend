@@ -91,7 +91,7 @@ export class FuelListTeamsCountyComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      teamName: {
+      countyName: {
         title: 'COUNTY NAME',
         type: 'string',
         filter: false,

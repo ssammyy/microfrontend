@@ -474,10 +474,13 @@ import {RfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-docu
 import {RfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component';
 import {StdLevyManufacturerPenaltyComponent} from './apollowebs/standards-levy/std-levy-manufacturer-penalty/std-levy-manufacturer-penalty.component';
 import {StandardLevyRegisteredFirmsComponent} from './apollowebs/standards-levy/standard-levy-registered-firms/standard-levy-registered-firms.component';
+// tslint:disable-next-line:max-line-length
 import {StandardLevyAllPaymentsComponent} from './apollowebs/standards-levy/standard-levy-all-payments/standard-levy-all-payments.component';
 import {StandardLevyPenaltyReportComponent} from './apollowebs/standards-levy/standard-levy-penalty-report/standard-levy-penalty-report.component';
+// tslint:disable-next-line:max-line-length
 import {StandardLevyActiveFirmsComponent} from './apollowebs/standards-levy/standard-levy-active-firms/standard-levy-active-firms.component';
 import {StandardLevyDormantFirmsComponent} from './apollowebs/standards-levy/standard-levy-dormant-firms/standard-levy-dormant-firms.component';
+// tslint:disable-next-line:max-line-length
 import {StandardLevyClosedFirmsComponent} from './apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component';
 import {FuelListTeamsComponent} from './apollowebs/market-surveillance/fuel/fuel-list-teams/fuel-list-teams.component';
 import {FuelListTeamsCountyComponent} from './apollowebs/market-surveillance/fuel/fuel-list-teams-county/fuel-list-teams-county.component';

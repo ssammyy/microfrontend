@@ -41,6 +41,7 @@ interface IFuelBatchRepository : HazelcastRepository<MsFuelBatchInspectionEntity
     fun findByReferenceNumberAndRegionIdAndCountyId(referenceNumber: String, regionId: Long, countyId: Long): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndCountyIdAndRegionId(yearNameId: Long, countyId: Long, regionId: Long): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndMonthNameId(yearNameId: Long, monthNameId: Long): MsFuelBatchInspectionEntity?
+    fun findTopByYearNameIdAndMonthNameId(yearNameId: Long, monthNameId: Long): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndCountyIdAndTownIdAndRegionId(yearNameId: Long, countyId: Long, townId: Long, regionId: Long): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndCountyIdAndTownIdAndRegionIdAndMonthNameId(
         yearNameId: Long,
