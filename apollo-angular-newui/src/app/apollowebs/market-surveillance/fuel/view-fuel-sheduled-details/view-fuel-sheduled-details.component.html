@@ -573,23 +573,23 @@
                                         </button>
 
 
-                                        <div *ngIf="fuelInspection?.rapidTestDone == true && fuelInspection.rapidTest.rapidTestStatus==false">
+                                        <div *ngIf="fuelInspection?.rapidTestDone == true && fuelInspection?.rapidTest?.rapidTestStatus==false">
 
-                                            <button *ngIf="fuelInspection.sampleCollectionStatus == false"  mat-raised-button="" data-toggle="modal"
+                                            <button *ngIf="fuelInspection?.sampleCollectionStatus == false"  mat-raised-button="" data-toggle="modal"
                                                     data-target="#sampleCollectModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD SAMPLE COLLECTED</span>
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="fuelInspection.sampleCollectionStatus == true && fuelInspection.sampleSubmittedStatus== false" mat-raised-button="" data-toggle="modal"
+                                            <button *ngIf="fuelInspection?.sampleCollectionStatus == true && fuelInspection?.sampleSubmittedStatus== false" mat-raised-button="" data-toggle="modal"
                                                     data-target="#sampleSubmitModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD SAMPLE SUBMITTED</span>
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="fuelInspection.sampleCollectionStatus && fuelInspection.sampleSubmittedStatus && fuelInspection.bsNumberStatus== false" (click)="openModalAddDetails('addBsNumber')" mat-raised-button="" data-toggle="modal"
+                                            <button  *ngIf="fuelInspection?.sampleCollectionStatus && fuelInspection?.sampleSubmittedStatus && fuelInspection?.bsNumberStatus== false" (click)="openModalAddDetails('addBsNumber')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD BS NUMBER</span>
@@ -604,8 +604,8 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button *ngIf="fuelInspection.bsNumberStatus && fuelInspection.compliantStatusAdded && fuelInspection.remediationScheduledStatus==false
-                                            && fuelInspection.sampleLabResults.ssfResultsList.complianceStatus" (click)="openModalAddDetails('scheduleRemediation')" mat-raised-button="" data-toggle="modal"
+                                            <button *ngIf="fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded && fuelInspection?.remediationScheduledStatus==false
+                                            && fuelInspection?.sampleLabResults?.ssfResultsList?.complianceStatus" (click)="openModalAddDetails('scheduleRemediation')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">SCHEDULE REMEDIATION DATE</span>
@@ -754,12 +754,12 @@
                                         <label for="bsNumber"><b>Product Name</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="productName" matInput type="text" placeholder="Please Enter Product Name" formControlName="productName" name="productName"
-                                                   [class.is-invalid]="formRapidTestProductForm.productName.invalid && formSampleSubmitBSNumberForm.productName.touched">
+                                                   [class.is-invalid]="formRapidTestProductForm.productName.invalid && formRapidTestProductForm.productName.touched">
                                         </mat-form-field>
                                         <label for="exportMarkerTest"><b>Export Marker Test</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="exportMarkerTest" matInput type="text" placeholder="Please Enter Export Marker Test" formControlName="exportMarkerTest" name="exportMarkerTest"
-                                                   [class.is-invalid]="formRapidTestProductForm.exportMarkerTest.invalid && formSampleSubmitBSNumberForm.exportMarkerTest.touched">
+                                                   [class.is-invalid]="formRapidTestProductForm.exportMarkerTest.invalid && formRapidTestProductForm.exportMarkerTest.touched">
                                         </mat-form-field>
                                         <label for="exportMarkerTestStatus"><b>Select Export Marker Test Results</b></label>
                                         <mat-form-field id="exportMarkerTestStatus">
@@ -767,14 +767,14 @@
                                                         formControlName="exportMarkerTestStatus"
                                                         [class.is-invalid]="formRapidTestProductForm.exportMarkerTestStatus.invalid && formRapidTestProductForm.exportMarkerTestStatus.touched"
                                                         name="exportMarkerTestStatus">
-                                                <mat-option [value]="true">PASS</mat-option>
-                                                <mat-option [value]="false">FAIL</mat-option>
+                                                <mat-option [value]="1">PASS</mat-option>
+                                                <mat-option [value]="0">FAIL</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <label for="domesticKeroseneMarkerTest"><b>Domestic Kerosene Marker Test</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="domesticKeroseneMarkerTest" matInput type="text" placeholder="Please Enter Export Marker Test" formControlName="domesticKeroseneMarkerTest" name="domesticKeroseneMarkerTest"
-                                                   [class.is-invalid]="formRapidTestProductForm.domesticKeroseneMarkerTest.invalid && formSampleSubmitBSNumberForm.domesticKeroseneMarkerTest.touched">
+                                                   [class.is-invalid]="formRapidTestProductForm.domesticKeroseneMarkerTest.invalid && formRapidTestProductForm.domesticKeroseneMarkerTest.touched">
                                         </mat-form-field>
                                         <label for="domesticKeroseneMarkerTestStatus"><b>Select Domestic Kerosene Marker Test Results</b></label>
                                         <mat-form-field id="domesticKeroseneMarkerTestStatus">
@@ -782,14 +782,14 @@
                                                         formControlName="domesticKeroseneMarkerTestStatus"
                                                         [class.is-invalid]="formRapidTestProductForm.domesticKeroseneMarkerTestStatus.invalid && formRapidTestProductForm.domesticKeroseneMarkerTestStatus.touched"
                                                         name="domesticKeroseneMarkerTestStatus">
-                                                <mat-option [value]="true">PASS</mat-option>
-                                                <mat-option [value]="false">FAIL</mat-option>
+                                                <mat-option [value]="1">PASS</mat-option>
+                                                <mat-option [value]="0">FAIL</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <label for="sulphurMarkerTest"><b>Sulphur Marker Test</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="sulphurMarkerTest" matInput type="text" placeholder="Please Enter Export Marker Test" formControlName="sulphurMarkerTest" name="sulphurMarkerTest"
-                                                   [class.is-invalid]="formRapidTestProductForm.sulphurMarkerTest.invalid && formSampleSubmitBSNumberForm.sulphurMarkerTest.touched">
+                                                   [class.is-invalid]="formRapidTestProductForm.sulphurMarkerTest.invalid && formRapidTestProductForm.sulphurMarkerTest.touched">
                                         </mat-form-field>
                                         <label for="sulphurMarkerTestStatus"><b>Select Sulphur Marker Test Results</b></label>
                                         <mat-form-field id="sulphurMarkerTestStatus">
@@ -797,8 +797,8 @@
                                                         formControlName="sulphurMarkerTestStatus"
                                                         [class.is-invalid]="formRapidTestProductForm.sulphurMarkerTestStatus.invalid && formRapidTestProductForm.sulphurMarkerTestStatus.touched"
                                                         name="sulphurMarkerTestStatus">
-                                                <mat-option [value]="true">PASS</mat-option>
-                                                <mat-option [value]="false">FAIL</mat-option>
+                                                <mat-option [value]="1">PASS</mat-option>
+                                                <mat-option [value]="0">FAIL</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>

@@ -753,11 +753,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     const arrHead = ['scheduleRemediationInvoicePaid',
       'assignOfficer', 'rapidTest', 'addBsNumber',
       'ssfAddComplianceStatus', 'scheduleRemediation',
-      'addRemediationDetails', 'notCompliantInvoice'];
+      'addRemediationDetails', 'notCompliantInvoice','rapidTestAddProducts'];
     const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID',
       'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
-      'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED'];
+      'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED','ADD FUEL SCHEDULE DETAILS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
