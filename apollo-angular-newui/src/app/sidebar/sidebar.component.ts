@@ -64,18 +64,18 @@ export const ROUTES: RouteInfo[] = [
             {path: 'users', title: 'View Users ', ab: 'VU'},
         ],
     },
-    {
-        path: '/',
-        title: 'Operations',
-        type: 'sub',
-        icontype: 'class',
-        privilege: ['SL_IS_MANAGER'],
-        collapse: 'operations',
-        children: [
-            {path: 'slCompanySuspension', title: 'Suspend Company', ab: 'SC'},
-            {path: 'slCompanyClosure', title: 'Close Company ', ab: 'CC'},
-        ],
-    },
+    // {
+    //     path: '/',
+    //     title: 'Operations',
+    //     type: 'sub',
+    //     icontype: 'class',
+    //     privilege: ['SL_IS_MANAGER'],
+    //     collapse: 'operations',
+    //     children: [
+    //         {path: 'slCompanySuspension', title: 'Suspend Company', ab: 'SC'},
+    //         {path: 'slCompanyClosure', title: 'Close Company ', ab: 'CC'},
+    //     ],
+    // },
     {
         path: '/dmark',
         title: 'Diamond Mark',

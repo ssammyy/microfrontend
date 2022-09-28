@@ -250,6 +250,13 @@ interface NwaWorkShopDraftRepository : JpaRepository<NWAWorkShopDraft, Long> {
 interface StandardRepository : JpaRepository<Standard, Long> {
     @Query(value = "SELECT * FROM SD_STANDARD_TBL WHERE STATUS = 'review'", nativeQuery = true)
     fun reviewedStandards(): Collection<Standard?>?
+    @Query(
+        value = "SELECT ID as id,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,STANDARD_NUMBER as standardNumber,STANDARD_TYPE as standardType,cast(DATE_FORMED as varchar(200)) AS dateFormed ," +
+                "FROM SD_STANDARD_TBL WHERE STATUS='2' ",
+        nativeQuery = true
+    )
+    fun getStandardsForReview(): MutableList<ReviewStandards>
 }
 
 interface StandardReviewCommentsRepository : JpaRepository<StandardReviewComments, Long> {

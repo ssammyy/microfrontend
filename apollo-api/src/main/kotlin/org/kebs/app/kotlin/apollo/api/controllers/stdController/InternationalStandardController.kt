@@ -252,9 +252,9 @@ class InternationalStandardController(
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/uploadISStandard")
     @ResponseBody
-    fun uploadISStandard(@RequestBody iSUploadStandard: ISUploadStandard): ServerResponse
+    fun uploadISStandard(@RequestBody iSUploadStandard: ISUploadStandard,standard: Standard): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",internationalStandardService.uploadISStandard(iSUploadStandard))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",internationalStandardService.uploadISStandard(iSUploadStandard,standard))
     }
 
     @PostMapping("/std-file-upload")

@@ -296,6 +296,15 @@ export interface ReportDecisionLevelOne{
     role: string;
 }
 
+export interface SiteVisitReportDecision{
+    taskId: string;
+    processId :string;
+    accentTo : boolean;
+    visitID : number;
+    manufacturerEntity: number;
+    scheduledVisitDate : Timestamp<number>;
+}
+
 export interface ReportDecisionLevelTwo{
     taskId: string;
     accentTo: boolean;
@@ -349,6 +358,7 @@ export interface PaymentDetails{
     region: number;
     regionName: string;
     amountDue: bigint;
+    monthsLate: string;
 
 }
 export interface PenaltyDetails{

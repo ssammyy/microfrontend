@@ -52,6 +52,7 @@ data class StdLevyScheduleSiteVisitDTO(
     var createdBy: Long? = null,
     var createdOn:  Timestamp? = null,
     var taskId: String? = null,
+    var processId: String? = null,
     var entryNumber: String? = null,
     var companyName: String? = null,
     var kraPin: String? = null,
@@ -133,6 +134,7 @@ data class ReportOnSiteVisitDTO(
     var cheifManagerRemarks: String? = null,
     var officersFeedback: String? = null,
     var taskId: String? = null,
+    var processId: String? = null,
     var visitID: Long? = null,
     var assigneeId: Long? = null,
     var manufacturerEntity: Long? = null,
@@ -178,6 +180,7 @@ data class CloseCompanyDto(
 
 data class SiteVisitReportDecisionDTO(
     var taskId: String? = null,
+    var processId: String? = null,
     var accentTo: Boolean? = null,
     var visitID: Long? = null,
     var assigneeId: Long? = null,
@@ -190,7 +193,9 @@ data class SiteVisitReportDecisionDTO(
     var status: String? = null,
     var remarkBy: String? = null,
     var role: String? = null,
-    var description: String? =null
+    var description: String? =null,
+    var scheduledVisitDate: java.util.Date? = null
+
 
 ){
 

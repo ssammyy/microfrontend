@@ -178,9 +178,9 @@ class CompanyStandardController(val comStandardService: CompanyStandardService,
     @PreAuthorize("hasAuthority('PL_SD_MODIFY') or hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/uploadComStandard")
     @ResponseBody
-    fun uploadComStandard(@RequestBody companyStandard: CompanyStandard): ServerResponse
+    fun uploadComStandard(@RequestBody companyStandard: CompanyStandard,standard: Standard): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",comStandardService.uploadComStandard(companyStandard))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",comStandardService.uploadComStandard(companyStandard,standard))
     }
     @GetMapping("/company_standard/getCSNumber")
     @ResponseBody
