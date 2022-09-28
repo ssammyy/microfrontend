@@ -402,7 +402,10 @@ data class PermitEntityDto(
     var permitType: Long? = null,
     var processStatusID: Long? = null,
     var versionNumber: Long? = null,
-)
+    var encryptedPermitId:String?=null,
+    var encryptedUserId:String?=null,
+
+    )
 
 data class PermitDetailsDto(
     var Id: Long? = null,

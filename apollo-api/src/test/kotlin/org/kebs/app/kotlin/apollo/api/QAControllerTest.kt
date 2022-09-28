@@ -4,7 +4,6 @@ package org.kebs.app.kotlin.apollo.api
 import com.google.gson.Gson
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
-import org.joda.time.DateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -25,7 +24,6 @@ import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
-import java.util.*
 
 
 @ExtendWith(SpringExtension::class)

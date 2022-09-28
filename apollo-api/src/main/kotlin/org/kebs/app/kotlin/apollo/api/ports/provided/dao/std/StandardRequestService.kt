@@ -306,6 +306,39 @@ class StandardRequestService(
         return getTaskDetails(tasks)
     }
 
+    fun getAllStandardRequestsToPrepareNWI(): List<StandardsDto> {
+        val standardRequest: List<StandardRequest> = standardRequestRepository.findByStatus("Assigned To TC Sec")!!
+        return standardRequest.map { p ->
+            StandardsDto(
+                p.id,
+                p.requestNumber,
+                p.rank,
+                p.name,
+                p.phone,
+                p.email,
+                p.submissionDate,
+                p.departmentId,
+                p.tcId,
+                p.organisationName,
+                p.subject,
+                p.description,
+                p.economicEfficiency,
+                p.healthSafety,
+                p.environment,
+                p.integration,
+                p.exportMarkets,
+                p.levelOfStandard,
+                p.status,
+                departmentRepository.findNameById(p.departmentId?.toLong()),
+
+
+                )
+        }
+
+
+    }
+
+
     fun uploadNWI(standardNWI: StandardNWI) {
 
         println("TC-SEC has uploaded NWI")

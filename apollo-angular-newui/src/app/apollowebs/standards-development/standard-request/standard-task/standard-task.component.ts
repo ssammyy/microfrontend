@@ -166,6 +166,7 @@ export class StandardTaskComponent implements OnInit {
     }
 
     public updateDepartment(): void {
+        console.log(this.stdDepartmentChange.value)
 
         if (this.stdDepartmentChange.valid) {
             this.SpinnerService.show();

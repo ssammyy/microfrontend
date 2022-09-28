@@ -34,21 +34,21 @@
                                        [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
                                     <thead>
                                     <tr>
-                                        <th class="task">Id</th>
-                                        <th class="task">Task</th>
                                         <th class="task">Request No.</th>
-                                        <th class="task">Requestor</th>
-
+                                        <th class="task">Section</th>
+                                        <th class="task">Subject</th>
+                                        <th class="task">Requester</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr *ngFor="let secTask of secTasks let i= index; ">
-                                        <td>{{i + 1}}</td>
 
+                                        <td>{{secTask.requestNumber}}</td>
+                                        <td>{{secTask.departmentName}}</td>
+                                        <td>{{secTask.subject}}</td>
                                         <td>{{secTask.name}}</td>
-                                        <td>{{secTask.taskData.requestNumber}}</td>
-                                        <td>{{secTask.taskData.name}}</td>
+
                                         <td><a (click)="onOpenModal(secTask,'edit')" class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">Upload Item</a></td>
@@ -276,7 +276,7 @@
                                                                 aria-describedby="inputGroup-sizing-sm"
                                                                 aria-label="Small"
                                                                 class="form-control one-column-input" readonly
-                                                                [ngModel]="tscsecRequest?.taskData?.name"
+                                                                [ngModel]="nwiRequest?.name"
                                                                 name="nameOfProposer"
                                                                 placeholder=" " type="text">
                                                     </div>
@@ -331,7 +331,7 @@
                                                                 aria-describedby="inputGroup-sizing-sm"
                                                                 aria-label="Small"
                                                                 class="form-control one-column-input" readonly
-                                                                [ngModel]="tscsecRequest?.taskData?.tcName"
+                                                                [ngModel]="nwiRequest?.departmentName"
                                                                 placeholder="" name="nameOfTC"
                                                                 type="text">
                                                     </div>
@@ -345,7 +345,7 @@
                                                                 aria-describedby="inputGroup-sizing-sm"
                                                                 aria-label="Small"
                                                                 class="form-control one-column-input" readonly
-                                                                [ngModel]="tscsecRequest?.taskData?.requestNumber"
+                                                                [ngModel]="nwiRequest?.requestNumber"
                                                                 placeholder="" name="referenceNumber"
                                                                 type="text">
                                                     </div>

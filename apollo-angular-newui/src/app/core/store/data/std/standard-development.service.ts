@@ -128,8 +128,8 @@ export class StandardDevelopmentService {
 
     }
 
-    public getTCSECTasks(): Observable<Stdtsectask[]> {
-        return this.http.get<Stdtsectask[]>(`${this.apiServerUrl}` + 'getTCSECTasks')
+    public getTCSECTasks(): Observable<StandardRequestB[]> {
+        return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllStdsForNwi')
     }
 
     public uploadNWI(uploadNWI: Stdtsectask): Observable<any> {
