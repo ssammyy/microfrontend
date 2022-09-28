@@ -21,7 +21,7 @@ import {
     ReportDecisionLevelTwo, SendEmailDto,
     SiteVisitFeedBack,
     SiteVisitRemarks,
-    SiteVisitReport,
+    SiteVisitReport, SiteVisitReportDecision,
     SLevySL1, SlModel,
     StdLevyScheduleSiteVisitDTO, SuspendCompanyDto, SuspendedCompanyDTO,
     UserEntityRoles,
@@ -171,6 +171,19 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SCHEDULED_SITE_VISITS_REPORT);
         const params = new HttpParams();
         return this.http.get<ApproveVisitTask[]>(url, {params}).pipe();
+    }
+
+    public decisionOnSiteVisitSchedule(siteVisitReportDecision: SiteVisitReportDecision): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SCHEDULE_SITE_VISIT_DECISION);
+        const params = new HttpParams();
+        return this.http.post<SiteVisitReportDecision>(url, siteVisitReportDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
     }
 
     public levelOneDecisionOnReport(reportDecisionLevelOne: ReportDecisionLevelOne): Observable<any> {

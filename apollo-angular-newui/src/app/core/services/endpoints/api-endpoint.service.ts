@@ -491,6 +491,7 @@ export class ApiEndpointService {
         STD_LEVY_MANUFACTURE_STATUS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerStatus`,
         STD_LEVY_SL10_FORM: `${ApiEndpointService.STL_CONTEXT}/save-sl-notification-form`,
         STD_LEVY_SCHEDULE_SITE_VISIT: `${ApiEndpointService.STL_CONTEXT}/scheduleSiteVisit`,
+        STD_LEVY_SCHEDULE_SITE_VISIT_DECISION: `${ApiEndpointService.STL_CONTEXT}/decisionOnSiteVisitSchedule`,
         STD_LEVY_SCHEDULED_SITE_VISITS: `${ApiEndpointService.STL_CONTEXT}/getScheduledVisits`,
         STD_LEVY_ASSIGN_COMPANY_TASK: `${ApiEndpointService.STL_CONTEXT}/assignCompany`,
         STD_LEVY_SAVE_VISIT_REPORT: `${ApiEndpointService.STL_CONTEXT}/reportOnSiteVisit`,

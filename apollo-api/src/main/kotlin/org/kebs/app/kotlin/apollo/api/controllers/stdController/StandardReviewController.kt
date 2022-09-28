@@ -237,6 +237,14 @@ class StandardReviewController(
             .body(fileDB.data)
     }
 
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getStandardsForReview")
+    @ResponseBody
+    fun getStandardsForReview(): MutableList<ReviewStandards>
+    {
+        return standardReviewService.getStandardsForReview()
+    }
+
 
 
 }
