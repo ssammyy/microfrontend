@@ -65,7 +65,7 @@
                             <div class="btn-group btn-group-sm float-right" role="group"
                                  aria-label="Applications Status">
                                 <div *ngFor="let role of roles">
-                                    <div *ngIf="role == 'EPRA'">
+                                    <div *ngIf="role == 'MS_MP_MODIFY'">
                                     <button (click)="openModalAddDetails('addNewBatchDetails')" mat-raised-button="" data-toggle="modal"
                                             data-target="#myModal1"
                                             class="btn btn-sm btn-primary mr-2"><span
@@ -73,6 +73,24 @@
                                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>
+                                    </div>
+                                    <div *ngIf="role == 'FUEL_HOD_MODIFY'">
+                                    <button (click)="openModalAddDetails('addNewBatchDetails')" mat-raised-button="" data-toggle="modal"
+                                            data-target="#myModal1"
+                                            class="btn btn-sm btn-primary mr-2"><span
+                                            class="mat-button-wrapper">ADD NEW BATCH FILE</span>
+                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+                                    </div>
+                                    <div *ngIf="role == 'FUEL_ASSISTANT_MANAGER_MODIFY'">
+                                        <button (click)="openModalAddDetails('addNewBatchDetails')" mat-raised-button="" data-toggle="modal"
+                                                data-target="#myModal1"
+                                                class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">ADD NEW BATCH FILE</span>
+                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
                                     </div>
                                 </div>
 <!--                                <button type="button" (click)="openModalAddDetails('addNewBatchDetails')"-->
@@ -132,25 +150,7 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="county"><b>Select County</b></label>
-                                        <mat-form-field *ngIf="county$ | async as apps">
-                                            <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formNewBatchForm.county.invalid && formNewBatchForm.county.touched"
-                                                        formControlName="county" id="county" name="county"  (ngModelChange)="updateSelectedCounty()">
-                                                <mat-option *ngFor="let app of apps| filterPipe: {status: true}" [value]="app.id">{{app.county}}</mat-option>
-
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <label for="town"><b>Select Town</b></label>
-                                        <mat-form-field *ngIf="town$ | async as apps">
-                                            <mat-select placeholder="Please Select an option"
-                                                        [class.is-invalid]="formNewBatchForm.town.invalid && formNewBatchForm.town.touched"
-                                                        formControlName="town" id="town" name="town"  (ngModelChange)="updateSelectedTown()">
-                                                <mat-option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}" [value]="app.id">{{app.town}}</mat-option>
-
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <label for="remarks">Please write, in detail, your feedback for this batch:</label>
+                                        <label for="remarks">Please write, in detail, your feedback for Creating This  Batch:</label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks" matInput type="text"
                                                       formControlName="remarks"

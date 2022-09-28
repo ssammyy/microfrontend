@@ -43,6 +43,9 @@ import java.time.Instant
 class MarketSurveillanceFuelDaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val fuelBatchRepo: IFuelBatchRepository,
+    private val fuelTeamsRepo: IMsFuelTeamsRepository,
+    private val fuelRapidTestProductRepo: IMsFuelInspectionRapidTestProductsEntityRepository,
+    private val fuelTeamsCountyRepo: IMsFuelTeamsCountyEntityRepository,
     private val processNameRepo: IMsProcessNamesRepository,
     private val limsServices: LimsServices,
     private val remarksRepo: IMsRemarksComplaintRepository,
@@ -82,9 +85,9 @@ class MarketSurveillanceFuelDaoServices(
     @Autowired
     lateinit var reportsControllers: ReportsController
 
-    @PreAuthorize("hasAuthority('EPRA')")
+    @PreAuthorize("hasAuthority('FUEL_ASSISTANT_MANAGER_MODIFY') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('FUEL_HOD_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun createNewFuelBatch(body: BatchFileFuelSaveDto,page: PageRequest): FuelInspectionScheduleListDetailsDto {
+    fun createNewFuelBatch(body: BatchFileFuelSaveDto,page: PageRequest): List<FuelBatchDetailsDto> {
         val map = commonDaoServices.serviceMapDetails(appId)
 //        var sr = commonDaoServices.createServiceRequest(map)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -92,25 +95,33 @@ class MarketSurveillanceFuelDaoServices(
         val currentMonth = commonDaoServices.getCurrentMonth()
         val fuelPlanYearCode = findWorkPlanYearsCode(currentYear, map)?: throw ExpectedDataNotFound("Fuel Schedule Current Year Code Not Found")
         val fuelPlanMonthCode = findWorkPlanMonthCode(currentMonth, map)?: throw ExpectedDataNotFound("Fuel Schedule Current Month Code Not Found")
-        val fileSaved = fuelCreateBatch(body,fuelPlanYearCode,fuelPlanMonthCode, map, loggedInUser)
-        val remarksDto = RemarksToAddDto()
-        with(remarksDto){
-        remarksDescription= body.remarks
-            remarksStatus= "N/A"
-            processID = applicationMapProperties.mapMSCreateBatch
-            userId= loggedInUser.id
-        }
-        val remarksSaved = fuelAddRemarksDetails(0L,remarksDto,map,loggedInUser,fileSaved.second.id)
+        fuelBatchRepo.findTopByYearNameIdAndMonthNameId(fuelPlanYearCode.id,fuelPlanMonthCode.id)
+            ?.let {it->
+                 throw ExpectedDataNotFound("This Year Batch file for the current month has Already been Created, check batch with Reference Number ${it.referenceNumber}")
+            }
+            ?: kotlin.run {
+                val fileSaved = fuelCreateBatch(body,fuelPlanYearCode,fuelPlanMonthCode, map, loggedInUser)
 
-        if (fileSaved.first.status == map.successStatus) {
-            val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(fileSaved.second.id,page).toList()
-            return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(fileSaved.second, map))
-        } else {
-            throw ExpectedDataNotFound(fileSaved.first.responseMessage)
-        }
+                val remarksDto = RemarksToAddDto()
+                with(remarksDto){
+                    remarksDescription= body.remarks
+                    remarksStatus= "N/A"
+                    processID = applicationMapProperties.mapMSCreateBatch
+                    userId= loggedInUser.id
+                }
+                fuelAddRemarksDetails(0L,remarksDto,map,loggedInUser,fileSaved.second.id)
+
+                if (fileSaved.first.status == map.successStatus) {
+                    val fuelBatchList = findAllFuelBatchListBasedOnPageable(page).toList()
+                    return mapFuelBatchListDto(fuelBatchList, map)
+                } else {
+                    throw ExpectedDataNotFound(fileSaved.first.responseMessage)
+                }
+            }
+
     }
 
-    @PreAuthorize("hasAuthority('EPRA')")
+    @PreAuthorize("hasAuthority('FUEL_ASSISTANT_MANAGER_MODIFY') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('FUEL_HOD_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun closeFuelBatchCreated(referenceNumber: String,page: PageRequest): List<FuelBatchDetailsDto> {
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -138,7 +149,7 @@ class MarketSurveillanceFuelDaoServices(
                 updateFuelInspectionDetails(it, map, loggedInUser)
             }
 
-            val managerPetroleumList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(applicationMapProperties.mapMSMappedManagerPetroliumROLEID,
+            val managerPetroleumList = commonDaoServices.findOfficersListBasedOnRole(applicationMapProperties.mapMSMappedManagerPetroliumROLEID,
                 fileSaved.second.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
                 fileSaved.second.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
             )
@@ -166,13 +177,53 @@ class MarketSurveillanceFuelDaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('EPRA')")
+    @PreAuthorize("hasAuthority('FUEL_ASSISTANT_MANAGER_MODIFY') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('FUEL_HOD_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun createNewFuelSchedule(body: FuelEntityDto, referenceNumber: String, page: PageRequest): FuelInspectionScheduleListDetailsDto {
+    fun createNewFuelTeams(body: TeamsFuelSaveDto, batchReferenceNo: String, page: PageRequest): FuelScheduleTeamsListDetailsDto {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val batchDetail = findFuelBatchDetailByReferenceNumber(referenceNumber)
-        val fileSaved = fuelCreateSchedule(body, batchDetail.id, map, loggedInUser)
+        val batchDetail = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val fileSaved = fuelCreateTeams(body, batchDetail.id, map, loggedInUser)
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.remarks
+            remarksStatus= "N/A"
+            processID = null
+            userId= loggedInUser.id
+        }
+
+        if (fileSaved.first.status == map.successStatus) {
+            body.countList?.forEach { bt->
+                fuelCreateTeamsCounty(bt, fileSaved.second.id, map, loggedInUser)
+            }
+            val remarksSaved = fuelAddRemarksDetails(fileSaved.second.id,remarksDto, map, loggedInUser,batchDetail.id)
+            if (remarksSaved.first.status == map.successStatus){
+                val fileInspectionList = findAllFuelTeamsListBasedOnBatchIDPageRequest(fileSaved.second.id,page).toList()
+                return mapFuelInspectionTeamsListDto(fileInspectionList,mapFuelBatchDetailsDto(batchDetail, map))
+            } else {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
+            }
+        } else {
+            throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+        }
+    }
+
+    @PreAuthorize("hasAuthority('FUEL_ASSISTANT_MANAGER_MODIFY') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('FUEL_HOD_MODIFY') or hasAuthority('MS_IOP_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun createNewFuelSchedule(body: FuelEntityDto, batchReferenceNo: String, teamsReferenceNo: String,countyReferenceNo: String,page: PageRequest): FuelInspectionScheduleListDetailsDto {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val batchDetail = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
+        val fileSaved = fuelCreateSchedule(body, batchDetail.id,teamsDetail.id,countyDetail.id, map, loggedInUser)
+        val body2 = loggedInUser.id?.let {
+            FuelEntityAssignOfficerDto(
+                it,
+                body.remarks
+            )
+        }
+        val fileOfficerSaved = body2?.let { fuelInspectionDetailsAssignOfficer(it, fileSaved.second, map, loggedInUser) }
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.remarks
@@ -184,8 +235,8 @@ class MarketSurveillanceFuelDaoServices(
         if (fileSaved.first.status == map.successStatus) {
             val remarksSaved = fuelAddRemarksDetails(fileSaved.second.id,remarksDto, map, loggedInUser)
             if (remarksSaved.first.status == map.successStatus){
-                val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(fileSaved.second.id,page).toList()
-                return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(batchDetail, map))
+                val fileInspectionList = findAllFuelInspectionListBasedOnBatchIDTeamIDCountyIDPageRequest(batchDetail.id,teamsDetail.id,countyDetail.id,page).toList()
+                return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(batchDetail, map),mapFuelTeamsDetailsDto(teamsDetail,countyDetail, map))
             } else {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
             }
@@ -203,7 +254,7 @@ class MarketSurveillanceFuelDaoServices(
         return mapLaboratoryListDto(laboratoryList)
     }
 
-    @PreAuthorize("hasAuthority('EPRA') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('MS_IOP_MODIFY')")
+    @PreAuthorize("hasAuthority('FUEL_ASSISTANT_MANAGER_READ') or  hasAuthority('MS_MP_READ')  or hasAuthority('FUEL_HOD_READ') or  hasAuthority('MS_IOP_READ')")
    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun getAllFuelBatchList(page: PageRequest): List<FuelBatchDetailsDto> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -212,13 +263,33 @@ class MarketSurveillanceFuelDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         var fuelBatchList : List<MsFuelBatchInspectionEntity>? = null
         when {
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "EPRA" } -> {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_MP_READ"
+                    || authority.authority == "FUEL_HOD_READ"
+                    || authority.authority == "MS_IOP_READ"
+                    || authority.authority == "FUEL_ASSISTANT_MANAGER_READ"} -> {
                 fuelBatchList = findAllFuelBatchListBasedOnPageable(page).toList()
             }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_MP_MODIFY" } -> {
-                fuelBatchList = findAllFuelBatchListBasedOnPageableRegion(loggedInUserProfile.regionId?.id?: throw ExpectedDataNotFound("Missing region value on your user profile  details"),map.activeStatus,page).toList()
+        }
+
+        return mapFuelBatchListDto(fuelBatchList, map)
+    }
+
+    @PreAuthorize("hasAuthority('FUEL_ASSISTANT_MANAGER_READ') or  hasAuthority('MS_MP_READ')  or hasAuthority('FUEL_HOD_READ') or  hasAuthority('MS_IOP_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getFuiuelTeamsList(batchReferenceNo: String,page: PageRequest): List<FuelBatchDetailsDto> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val loggedInUserProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var fuelBatchList : List<MsFuelBatchInspectionEntity>? = null
+        when {
+
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_MP_READ"
+                    || authority.authority == "FUEL_HOD_READ"
+                    || authority.authority == "FUEL_ASSISTANT_MANAGER_READ"} -> {
+                fuelBatchList = findAllFuelBatchListBasedOnPageable(page).toList()
             }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IOP_MODIFY" } -> {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IOP_READ" } -> {
                 fuelBatchList = findAllFuelBatchListBasedOnPageableCountyAndRegion(loggedInUserProfile.countyID?.id?: throw ExpectedDataNotFound("Missing county value on your user profile  details"),loggedInUserProfile.regionId?.id?: throw ExpectedDataNotFound("Missing region value on your user profile  details"),map.activeStatus,page).toList()
             }
         }
@@ -226,53 +297,91 @@ class MarketSurveillanceFuelDaoServices(
         return mapFuelBatchListDto(fuelBatchList, map)
     }
 
-
-    @PreAuthorize("hasAuthority('EPRA') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('MS_IOP_MODIFY')")
+    @PreAuthorize("hasAuthority('FUEL_ASSISTANT_MANAGER_READ') or  hasAuthority('MS_MP_READ') or  hasAuthority('MS_IOP_READ') or hasAuthority('FUEL_HOD_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo: String,page: PageRequest): FuelInspectionScheduleListDetailsDto {
+    fun getFuelTeamsList(batchReferenceNo: String,page: PageRequest): FuelScheduleTeamsListDetailsDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val batchDetail = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val fuelInspectionTeamsList: List<MsFuelTeamsEntity> = when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_MP_READ"
+                    || authority.authority == "FUEL_HOD_READ"
+                    || authority.authority == "FUEL_ASSISTANT_MANAGER_READ"} -> {
+                findAllFuelTeamsListBasedOnBatchIDPageRequest(batchDetail.id,page).toList()
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IOP_READ" } -> {
+                findAllFuelTeamsListBasedOnBatchIDAndAssignedIOPageRequest(batchDetail.id,loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged in user ID"),page).toList()
+            }
+            else -> {
+                throw ExpectedDataNotFound("YOU CAN'T ACCESS FILES WITH THOSE RIGHTS")
+            }
+        }
+
+        return mapFuelInspectionTeamsListDto(fuelInspectionTeamsList,mapFuelBatchDetailsDto(batchDetail, map))
+    }
+
+
+
+    @PreAuthorize("hasAuthority('FUEL_ASSISTANT_MANAGER_MODIFY') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('MS_IOP_MODIFY') or hasAuthority('FUEL_HOD_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllFuelInspectionListBasedOnBatchRefNo(batchReferenceNo: String,teamsReferenceNo: String,countyReferenceNo: String,page: PageRequest): FuelInspectionScheduleListDetailsDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val auth = commonDaoServices.loggedInUserAuthentication()
         val loggedInUserProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
+        val batchDetail = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val map = commonDaoServices.serviceMapDetails(appId)
-        var findBatchDetail : MsFuelBatchInspectionEntity? = null
         var fileInspectionList : List<MsFuelInspectionEntity>? = null
-        if (auth.authorities.stream().anyMatch { authority -> authority.authority == "EPRA" }) {
-            findBatchDetail = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
-            fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(findBatchDetail.id,page).toList()
-        }
-        else if (auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_MP_MODIFY" }) {
-            findBatchDetail = findFuelBatchDetailByReferenceNumberAndRegionId(batchReferenceNo,loggedInUserProfile.regionId?.id?: throw ExpectedDataNotFound("Missing region value on your user profile  details"))
-            fileInspectionList = findAllFuelInspectionListBasedOnBatchIDPageRequest(findBatchDetail.id,page).toList()
-        }
-        else if (auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IOP_MODIFY" }) {
-            findBatchDetail = findFuelBatchDetailByReferenceNumberAndRegionIdAndCountyId(batchReferenceNo,loggedInUserProfile.regionId?.id?: throw ExpectedDataNotFound("Missing region value on your user profile  details"),loggedInUserProfile.countyID?.id?: throw ExpectedDataNotFound("Missing county value on your user profile  details"),)
-            fileInspectionList = findAllFuelInspectionListBasedOnBatchIDAndAssignedIO(findBatchDetail.id,loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged in user ID"))
-        }else{
-            throw ExpectedDataNotFound("YOU CAN'T ACCESS FILES WITH THOSE RIGHTS")
+        fileInspectionList = when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_MP_MODIFY"
+                    || authority.authority == "FUEL_HOD_READ"
+                    || authority.authority == "MS_IOP_MODIFY"
+                    || authority.authority == "FUEL_ASSISTANT_MANAGER_READ"} -> {
+                findAllFuelInspectionListBasedOnBatchIDTeamIDCountyIDPageRequest(batchDetail.id,teamsDetail.id,countyDetail.id,page).toList()
+            }
+            else -> {
+                throw ExpectedDataNotFound("YOU CAN'T ACCESS FILES WITH THOSE RIGHTS")
+            }
         }
 
-        return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(findBatchDetail, map))
+        return mapFuelInspectionListDto(fileInspectionList,mapFuelBatchDetailsDto(batchDetail, map),mapFuelTeamsDetailsDto(teamsDetail,countyDetail, map))
     }
 
-    @PreAuthorize("hasAuthority('EPRA') or  hasAuthority('MS_MP_MODIFY') or  hasAuthority('MS_IOP_MODIFY')")
+    @PreAuthorize("hasAuthority('FUEL_ASSISTANT_MANAGER_READ') or  hasAuthority('MS_MP_READ') or  hasAuthority('MS_IOP_READ') or hasAuthority('FUEL_HOD_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getFuelInspectionDetailsBasedOnRefNo(referenceNo: String, batchReferenceNo: String): FuelInspectionDto {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+    fun getFuelInspectionTeamsDetailsBasedOnRefNo(batchReferenceNo: String,teamsReferenceNo: String): FuelScheduleCountyListDetailsDto {
         val map = commonDaoServices.serviceMapDetails(appId)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val countyListDetails = findALlFuelCountyListByTeamID(teamsDetail.id)
+
+        return mapFuelInspectionCountyListDto(countyListDetails, map, batchDetails,teamsDetail)
+    }
+
+    @PreAuthorize("hasAuthority('FUEL_ASSISTANT_MANAGER_READ') or  hasAuthority('MS_MP_READ') or  hasAuthority('MS_IOP_READ') or hasAuthority('FUEL_HOD_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getFuelInspectionDetailsBasedOnRefNo(referenceNo: String, batchReferenceNo: String,teamsReferenceNo: String,countyReferenceNo: String): FuelInspectionDto {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
 //        val fuelInspectionOfficer = findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
 
-        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
     }
 
     @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun endFuelInspectionDetailsBasedOnRefNo(referenceNo: String, batchReferenceNo: String): FuelInspectionDto {
+    fun endFuelInspectionDetailsBasedOnRefNo(referenceNo: String, batchReferenceNo: String,teamsReferenceNo: String,countyReferenceNo: String): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         with(fileInspectionDetail){
             msProcessId = applicationMapProperties.mapMSFuelInspectionEnded
             inspectionCompleteStatus = map.activeStatus
@@ -287,7 +396,8 @@ class MarketSurveillanceFuelDaoServices(
             refNumber = fileInspectionDetail.referenceNumber
             remediationDate= fileInspectionDetail.inspectionDateFrom
         }
-        runBlocking {commonDaoServices.sendEmailWithUserEmail(
+        runBlocking {
+            commonDaoServices.sendEmailWithUserEmail(
             fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
             applicationMapProperties.mapMsFuelInspectionScheduleEndedNotification,
             emailValuesStationOwner, map, detailsSaved.first)
@@ -299,7 +409,7 @@ class MarketSurveillanceFuelDaoServices(
 //            refNumber = fileInspectionDetail.referenceNumber
 //        }
 //        commonDaoServices.sendEmailWithUserEntity(officerDetails, applicationMapProperties.mapMsFuelAssignedIONotification, emailValuesStationOwner, map, fileSaved2.first)
-        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
     }
 
     @PreAuthorize("hasAuthority('MS_MP_MODIFY')")
@@ -307,12 +417,16 @@ class MarketSurveillanceFuelDaoServices(
     fun getFuelInspectionDetailsAssignOfficer(
         referenceNo: String,
         batchReferenceNo: String,
+        teamsReferenceNo: String,
+        countyReferenceNo: String,
         body: FuelEntityAssignOfficerDto
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val fileOfficerSaved = fuelInspectionDetailsAssignOfficer(body, fileInspectionDetail, map, loggedInUser)
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
@@ -347,7 +461,8 @@ class MarketSurveillanceFuelDaoServices(
                         runBlocking {
                             commonDaoServices.sendEmailWithUserEntity(officerDetails, applicationMapProperties.mapMsFuelAssignedIONotification, dataValue, map, fileSaved2.first)
                         }
-                        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+                        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
+
                     }
                     else {
                         throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
@@ -368,12 +483,15 @@ class MarketSurveillanceFuelDaoServices(
     fun postFuelInspectionDetailsRapidTest(
         referenceNo: String,
         batchReferenceNo: String,
+        teamsReferenceNo: String,countyReferenceNo: String,
         body: FuelEntityRapidTestDto
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.rapidTestRemarks
@@ -414,7 +532,7 @@ class MarketSurveillanceFuelDaoServices(
             remarksDto.remarksStatus = remarksStatusAdded
             val remarksSaved = fuelAddRemarksDetails(fileSaved.second.id,remarksDto, map, loggedInUser)
             if (remarksSaved.first.status == map.successStatus){
-                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             }else {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
             }
@@ -431,12 +549,15 @@ class MarketSurveillanceFuelDaoServices(
     fun postFuelInspectionDetailsSampleCollection(
         referenceNo: String,
         batchReferenceNo: String,
+        teamsReferenceNo: String,countyReferenceNo: String,
         body: SampleCollectionDto
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val savedSampleCollection = addSampleCollectAdd(body,fileInspectionDetail,null, map, loggedInUser)
 
         when (savedSampleCollection.first.status) {
@@ -451,7 +572,7 @@ class MarketSurveillanceFuelDaoServices(
                             sampleCollectionStatus = map.activeStatus
                         }
                         fileInspectionDetail = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
-                        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+                        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
                     }
                     else -> {
                         throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedSampleCollection.first))
@@ -463,15 +584,47 @@ class MarketSurveillanceFuelDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun postFuelInspectionDetailsRapidTestProducts(
+        referenceNo: String,
+        batchReferenceNo: String,
+        teamsReferenceNo: String,countyReferenceNo: String,
+        body: RapidTestProductsDto
+    ): FuelInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
+        val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
+        val savedRapidTestProducts = addRapidTestProducts(body,fileInspectionDetail, map, loggedInUser)
+
+        when (savedRapidTestProducts.first.status) {
+            map.successStatus -> {
+//                fileInspectionDetail = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
+                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedRapidTestProducts.first))
+            }
+        }
+
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsSampleSubmission(
         referenceNo: String,
         batchReferenceNo: String,
+        teamsReferenceNo: String,countyReferenceNo: String,
         body: SampleSubmissionDto
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val sampleCollected = findSampleCollectedDetailByFuelInspectionID(fileInspectionDetail.id)
         val savedSampleSubmission = addSampleSubmissionAdd(body,fileInspectionDetail,null,sampleCollected?: throw ExpectedDataNotFound("MISSING SAMPLE COLLECTED FOR FUEL INSPECTION REF NO $referenceNo"), map, loggedInUser)
 
@@ -487,7 +640,7 @@ class MarketSurveillanceFuelDaoServices(
                             sampleSubmittedStatus = map.activeStatus
                         }
                         fileInspectionDetail = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
-                        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+                        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
                     }
                     else -> {
                         throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedSampleSubmission.first))
@@ -502,12 +655,15 @@ class MarketSurveillanceFuelDaoServices(
     fun postFuelInspectionDetailsSampleSubmissionBSNumber(
         referenceNo: String,
         batchReferenceNo: String,
+        teamsReferenceNo: String,countyReferenceNo: String,
         body: BSNumberSaveDto
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val sampleCollected = findSampleCollectedDetailByFuelInspectionID(fileInspectionDetail.id)
         val sampleSubmission = findSampleSubmissionDetailBySampleCollectedID(sampleCollected?.id?: throw ExpectedDataNotFound("MISSING SAMPLE COLLECTED FOR FUEL INSPECTION REF NO $referenceNo"))?: throw ExpectedDataNotFound("MISSING SAMPLE SUBMITTED FOR FUEL INSPECTION WITH REF NO $referenceNo")
         with(sampleSubmission){
@@ -541,7 +697,7 @@ class MarketSurveillanceFuelDaoServices(
                         val remarksSaved = fuelAddRemarksDetails(fileInspectionDetail.id,remarksDto, map, loggedInUser)
                         when (remarksSaved.first.status) {
                             map.successStatus -> {
-                                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+                                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
 
                             }
                             else -> {
@@ -566,12 +722,15 @@ class MarketSurveillanceFuelDaoServices(
     fun postFuelInspectionDetailsLabPDFSelected(
         referenceNo: String,
         batchReferenceNo: String,
+        teamsReferenceNo: String,countyReferenceNo: String,
         body: PDFSaveComplianceStatusDto
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         val fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val fileContent = limsServices.mainFunctionLimsGetPDF(body.bsNumber, body.PDFFileName)
         val savedPDFLabResultFile = addInspectionSaveLIMSPDFSelected(fileContent,body,true,map,loggedInUser)
 
@@ -595,7 +754,7 @@ class MarketSurveillanceFuelDaoServices(
             if (remarksSaved.first.status == map.successStatus){
                 fileInspectionDetail.msProcessId = applicationMapProperties.mapMSComplanceStatus
                 val fileSaved = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
-                return fuelInspectionMappingCommonDetails(fileSaved.second, map, batchDetails)
+                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             } else {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
             }
@@ -611,12 +770,15 @@ class MarketSurveillanceFuelDaoServices(
     fun postFuelInspectionDetailsSSFSaveComplianceStatus(
         referenceNo: String,
         batchReferenceNo: String,
+        teamsReferenceNo: String,countyReferenceNo: String,
         body: SSFSaveComplianceStatusDto
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val savedSSfComplianceStatus = ssfLabUpdateDetails(body,loggedInUser,map)
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
@@ -697,7 +859,7 @@ class MarketSurveillanceFuelDaoServices(
                         )
                         }
                     }
-                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             }else {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
             }
@@ -713,12 +875,15 @@ class MarketSurveillanceFuelDaoServices(
     fun postFuelInspectionDetailsRemediationInvoice(
         referenceNo: String,
         batchReferenceNo: String,
+        teamsReferenceNo: String,countyReferenceNo: String,
         body: CompliantRemediationDto
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
 //        val savedSSfComplianceStatus = ssfLabUpdateDetails(body,loggedInUser,map)
         val fuelRemediationInvoice = MsFuelRemedyInvoicesEntity().apply {
             fuelInspectionRefNumber = fileInspectionDetail.referenceNumber
@@ -768,7 +933,7 @@ class MarketSurveillanceFuelDaoServices(
                 )
                 }
 
-                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             }
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedRemediationInvoice.first))
@@ -781,6 +946,8 @@ class MarketSurveillanceFuelDaoServices(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun postFuelInspectionDetailsScheduleRemediationAfterPayment(
         referenceNo: String,
+        teamsReferenceNo: String,
+        countyReferenceNo: String,
         batchReferenceNo: String,
         body: CompliantRemediationDto
     ): FuelInspectionDto {
@@ -788,6 +955,8 @@ class MarketSurveillanceFuelDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
 //        val savedSSfComplianceStatus = ssfLabUpdateDetails(body,loggedInUser,map)
         var fuelRemediation = MsFuelRemediationEntity()
         findFuelScheduledRemediationDetails(fileInspectionDetail.id)
@@ -846,7 +1015,7 @@ class MarketSurveillanceFuelDaoServices(
                     map,
                     savedRemediation.first
                 )}
-                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             }
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedRemediation.first))
@@ -860,12 +1029,15 @@ class MarketSurveillanceFuelDaoServices(
     fun postFuelInspectionDetailsUpdateRemediation(
         referenceNo: String,
         batchReferenceNo: String,
+        teamsReferenceNo: String,countyReferenceNo: String,
         body: RemediationDto
     ): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
         val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val fuelRemediation = findFuelScheduledRemediationDetails(fileInspectionDetail.id)?: throw ExpectedDataNotFound("NO FUEL REMEDIATION DETAILS FOUND FOR FUEL INSPECTION REF NO $referenceNo ")
             with(fuelRemediation){
                 productType = body.productType
@@ -890,7 +1062,7 @@ class MarketSurveillanceFuelDaoServices(
                 }
 
                 fileInspectionDetail = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
-                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails)
+                return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             }
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(updatedRemediation.first))
@@ -958,16 +1130,19 @@ class MarketSurveillanceFuelDaoServices(
     fun fuelInspectionMappingCommonDetails(
         fileInspectionDetail: MsFuelInspectionEntity,
         map: ServiceMapsEntity,
-        batchDetails: MsFuelBatchInspectionEntity
+        batchDetails: MsFuelBatchInspectionEntity,
+        teamsDetails: MsFuelTeamsEntity,
+        countyDetails: MsFuelTeamsCountyEntity
     ): FuelInspectionDto {
         val batchDetailsDto = mapFuelBatchDetailsDto(batchDetails, map)
+        val teamsCountyDetailsDto = mapFuelTeamsDetailsDto(teamsDetails,countyDetails, map)
         val fuelInspectionOfficer = findFuelInspectionOfficerAssigned(fileInspectionDetail, map.activeStatus)
         val fuelInspectionRemarks = findRemarksForFuel(fileInspectionDetail.id)
-        val officerList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(
-                applicationMapProperties.mapMSMappedOfficerROLEID,
-                batchDetails.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
-                batchDetails.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
-            )
+//        val officerList = commonDaoServices.findOfficersListBasedOnRole(
+//                applicationMapProperties.mapMSFuelMappedOfficerROLEID,
+//                batchDetails.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
+//                batchDetails.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
+//            )
 
 
         val rapidTestStatus = mapRapidTestDto(fileInspectionDetail, map)
@@ -975,6 +1150,8 @@ class MarketSurveillanceFuelDaoServices(
         if (rapidTestStatus!=null){
             rapidTestDone = true
         }
+
+        val rapidTestProductDto = findFuelInspectionAllRapidTestProducts(fileInspectionDetail)?.let { mapRapidTestProductListDto(it) }
 
         var timelineOverDue =false
         if (fileInspectionDetail.timelineEndDate!= null){
@@ -1012,13 +1189,15 @@ class MarketSurveillanceFuelDaoServices(
         return mapFuelInspectionDto(
             fileInspectionDetail,
             batchDetailsDto,
+            teamsCountyDetailsDto,
             rapidTestDone,
             compliantStatusDone,
             timelineOverDue,
-            officerList,
+//            officerList,
             fuelInspectionRemarks,
             fuelInspectionOfficer?.assignedIo?.let { commonDaoServices.findUserByID(it) },
             rapidTestStatus,
+            rapidTestProductDto,
             sampleCollectedDtoValues,
             sampleSubmittedDtoValues,
             labResultsDto,
@@ -1038,49 +1217,28 @@ class MarketSurveillanceFuelDaoServices(
         var sr = commonDaoServices.createServiceRequest(map)
         var fuel = MsFuelBatchInspectionEntity()
         try {
-            val county = commonDaoServices.findCountiesEntityByCountyId(body.county, map.activeStatus)
-            val regionIDValue = county.regionId ?: ExpectedDataNotFound("The following County ${county.county}, with ID  = ${county.id} and status = ${county.status}, does not have a region mapped to")
-            val userFuelScheduleBatch = findFuelBatchDetailByYearNameIDCountyRegionAndTown(fuelPlanYearName.id,fuelPlanMonthName.id, body.county,body.town,commonDaoServices.findRegionEntityByRegionID(regionIDValue as Long, map.activeStatus).id)
-            when (userFuelScheduleBatch) {
-                null -> {
-                    with(fuel) {
-                        referenceNumber = "FL#BATCH#${
-                            generateRandomText(
-                                5,
-                                map.secureRandom,
-                                map.messageDigestAlgorithm,
-                                true
-                            )
-                        }".toUpperCase()
-                        countyId = county.id
-                        regionId = commonDaoServices.findRegionEntityByRegionID(regionIDValue as Long, map.activeStatus).id
-                        townId = commonDaoServices.findTownEntityByTownId(body.town).id
-                        yearNameId = fuelPlanYearName.id
-                        monthNameId = fuelPlanMonthName.id
-                        remarks = body.remarks
-                        transactionDate = commonDaoServices.getCurrentDate()
-                        status = map.initStatus
-                        batchClosed = map.inactiveStatus
-                        userTaskId = applicationMapProperties.mapMSUserTaskNameEPRA
-                        createdBy = commonDaoServices.concatenateName(user)
-                        createdOn = commonDaoServices.getTimestamp()
-                    }
-                    fuel = fuelBatchRepo.save(fuel)
-
-                    sr.payload = commonDaoServices.createJsonBodyFromEntity(fuel).toString()
-                    sr.names = "Fuel creation of batch file"
-
-                    sr.responseStatus = sr.serviceMapsId?.successStatusCode
-                    sr.responseMessage = "Success ${sr.payload}"
-                    sr.status = map.successStatus
-                    sr = serviceRequestsRepo.save(sr)
-                    sr.processingEndDate = Timestamp.from(Instant.now())
+                with(fuel) {
+                    referenceNumber = "FL#BATCH#${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                    yearNameId = fuelPlanYearName.id
+                    monthNameId = fuelPlanMonthName.id
+                    remarks = body.remarks
+                    transactionDate = commonDaoServices.getCurrentDate()
+                    status = map.initStatus
+                    batchClosed = map.inactiveStatus
+                    userTaskId = applicationMapProperties.mapMSUserTaskNameEPRA
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
                 }
-                else -> {
-                    throw ExpectedDataNotFound("You already have a fuel schedule batch plan for the Year(${fuelPlanYearName.yearName}) and Month (${fuelPlanMonthName.description})")
-                }
-            }
+                fuel = fuelBatchRepo.save(fuel)
 
+                sr.payload = commonDaoServices.createJsonBodyFromEntity(fuel).toString()
+                sr.names = "Fuel creation of batch file"
+
+                sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                sr.responseMessage = "Success ${sr.payload}"
+                sr.status = map.successStatus
+                sr = serviceRequestsRepo.save(sr)
+                sr.processingEndDate = Timestamp.from(Instant.now())
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -1246,6 +1404,54 @@ class MarketSurveillanceFuelDaoServices(
         }
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, fuelSampleCollect)
+    }
+
+    fun addRapidTestProducts(
+        body: RapidTestProductsDto,
+        fuelInspectionDetail: MsFuelInspectionEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsFuelInspectionRapidTestProductsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var fuelRapidTestProduct = MsFuelInspectionRapidTestProductsEntity()
+        try {
+            with(fuelRapidTestProduct) {
+                productName = body.productName
+                exportMarkerTest = body.exportMarkerTest
+                domesticKeroseneMarkerTest = body.domesticKeroseneMarkerTest
+                sulphurMarkerTest = body.sulphurMarkerTest
+                exportMarkerTestStatus = body.exportMarkerTestStatus
+                domesticKeroseneMarkerTestStatus = body.domesticKeroseneMarkerTestStatus
+                sulphurMarkerTestStatus = body.sulphurMarkerTestStatus
+                fuelInspectionId = fuelInspectionDetail.id
+                status = map.activeStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            fuelRapidTestProduct = fuelRapidTestProductRepo.save(fuelRapidTestProduct)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(fuelRapidTestProduct)} "
+            sr.names = "Fuel Inspection Rapid Test Products Save file"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, fuelRapidTestProduct)
     }
 
     fun addSampleCollectParamAdd(
@@ -1933,11 +2139,153 @@ class MarketSurveillanceFuelDaoServices(
             ?: throw ExpectedDataNotFound("Invoices With [refNumber = ${refNumber}], does not Exist")
     }
 
+    fun fuelCreateTeams(
+        body: TeamsFuelSaveDto,
+        batchIdFound: Long,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsFuelTeamsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var fuelTeamsDetail = MsFuelTeamsEntity()
+        try {
+            with(fuelTeamsDetail) {
+                referenceNumber = "FUEL#TEAMS#${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                assignedOfficerID= commonDaoServices.findUserByID(body.assignedOfficerID?: throw ExpectedDataNotFound("The selected User ID Does Not exist")).id
+                teamName= body.teamName
+                fuelBatchId= batchIdFound
+                startDate= body.startDate
+                endDate= body.endDate
+                status = map.initStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            fuelTeamsDetail = fuelTeamsRepo.save(fuelTeamsDetail)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(fuelTeamsDetail)}"
+            sr.names = "Fuel Teams Created"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, fuelTeamsDetail)
+    }
+
+
+    fun fuelCreateTeamsCounty(
+        body: TeamsCountyFuelSaveDto,
+        teamIdFound: Long,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsFuelTeamsCountyEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var fuelTeamsDetail = MsFuelTeamsCountyEntity()
+        try {
+            with(fuelTeamsDetail) {
+                referenceNo= "FUEL#COUNTY#${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                countyId= body.countyId
+                regionId= body.countyId?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
+                teamId= teamIdFound
+                status = map.initStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            fuelTeamsDetail = fuelTeamsCountyRepo.save(fuelTeamsDetail)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(fuelTeamsDetail)}"
+            sr.names = "Fuel Teams County Created"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, fuelTeamsDetail)
+    }
+
+    fun saveOnsiteUploadFiles(
+        docFile: MultipartFile,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        docTypeName: String,
+        fuelDetails: MsFuelInspectionEntity
+    ): Pair<ServiceRequestsEntity, MsUploadsEntity> {
+        var upload = MsUploadsEntity()
+        var sr = commonDaoServices.createServiceRequest(map)
+        try {
+            with(upload) {
+                msFuelInspectionId = fuelDetails.id
+                fuelPlanUploads = 1
+                ordinaryStatus = 0
+                versionNumber = 1
+                name = docFile.originalFilename
+                fileType = docFile.contentType
+                documentType = docTypeName
+                document = docFile.bytes
+                transactionDate = commonDaoServices.getCurrentDate()
+                status = 1
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            upload = msUploadRepo.save(upload)
+//                sr.payload = "${commonDaoServices.createJsonBodyFromEntity(workPlanSchedule)}"
+            sr.names = "Upload saved $docTypeName"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            //            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${docFile.bytes}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, upload)
+
+    }
+
+
 
 
     fun fuelCreateSchedule(
         body: FuelEntityDto,
         batchIdFound: Long,
+        teamsIdFound: Long,
+        countyIdFound: Long,
         map: ServiceMapsEntity,
         user: UsersEntity
     ): Pair<ServiceRequestsEntity, MsFuelInspectionEntity> {
@@ -1949,14 +2297,20 @@ class MarketSurveillanceFuelDaoServices(
                 referenceNumber = "FUEL#${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
                 company = body.company
                 batchId = batchIdFound
+                msTeamsId = teamsIdFound
+                msCountyId = countyIdFound
                 petroleumProduct = body.petroleumProduct
                 physicalLocation = body.physicalLocation
                 inspectionDateFrom = body.inspectionDateFrom
                 inspectionDateTo = body.inspectionDateTo
                 stationOwnerEmail = body.stationOwnerEmail
                 companyKraPin = body.stationKraPin
-                userTaskId = applicationMapProperties.mapMSUserTaskNameEPRA
-                msProcessId = applicationMapProperties.mapMSCloseBatch
+                userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER
+                msProcessId = applicationMapProperties.mapMSRapidTest
+                assignedOfficerStatus = map.activeStatus
+                townId = body.townID
+//                userTaskId = applicationMapProperties.mapMSUserTaskNameEPRA
+//                msProcessId = applicationMapProperties.mapMSCloseBatch
                 remarks = body.remarks
                 transactionDate = commonDaoServices.getCurrentDate()
                 status = map.initStatus
@@ -2080,12 +2434,36 @@ class MarketSurveillanceFuelDaoServices(
             ?: throw ExpectedDataNotFound("No Fuel Schedules found with the following BATCH ID $batchId")
     }
 
+    fun findAllFuelInspectionListBasedOnBatchIDTeamIDCountyIDPageRequest(batchId: Long,teamID: Long,countyID: Long,pageable: Pageable): Page<MsFuelInspectionEntity> {
+        fuelInspectionRepo.findAllByBatchIdAndMsTeamsIdAndMsCountyId(batchId,teamID,countyID,pageable)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Fuel Schedules found with the following BATCH ID $batchId, COUNTY ID, $countyID AND TEAMS ID $teamID")
+    }
+
+    fun findAllFuelTeamsListBasedOnBatchIDPageRequest(batchId: Long,pageable: Pageable): Page<MsFuelTeamsEntity> {
+        fuelTeamsRepo.findAllByFuelBatchId(batchId,pageable)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Fuel Teams found with the following BATCH ID $batchId")
+    }
+
+    fun findAllFuelTeamsListBasedOnBatchIDAndAssignedIOPageRequest(batchId: Long,assignedOfficerID: Long,pageable: Pageable): Page<MsFuelTeamsEntity> {
+        fuelTeamsRepo.findAllByFuelBatchIdAndAssignedOfficerID(batchId,assignedOfficerID,pageable)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Fuel Teams found with the following BATCH ID $batchId and Assigned IO ID $assignedOfficerID")
+    }
+
     fun findAllFuelInspectionListBasedOnBatchIDAndAssignedIO(batchId: Long,assignedIoID: Long): List<MsFuelInspectionEntity>? {
        return  fuelInspectionRepo.findAllByBatchIdAndAssignOfficer(batchId,assignedIoID)
-//            ?.let {
-//                return it
-//            }
-//            ?: throw ExpectedDataNotFound("No Fuel Schedules found with the following BATCH ID $batchId")
+    }
+
+    fun findAllFuelInspectionListBasedOnBatchIDTeamIDCountyIDAndAssignedIO(batchId: Long,teamID: Long,countyID: Long,assignedIoID: Long): List<MsFuelInspectionEntity>? {
+       return  fuelInspectionRepo.findAllByBatchIdAndTeamsIDAndCountyIDAndAssignOfficer(batchId,teamID,countyID,assignedIoID)
     }
 
     fun findAllSampleCollectedParametersBasedOnSampleCollectedID(sampleCollectedID: Long): List<MsCollectionParametersEntity>? {
@@ -2160,15 +2538,63 @@ class MarketSurveillanceFuelDaoServices(
 
     }
 
-    fun mapFuelInspectionListDto(fuelInspectionList: List<MsFuelInspectionEntity>?, batchDetails: FuelBatchDetailsDto): FuelInspectionScheduleListDetailsDto {
+    fun mapFuelInspectionListDto(fuelInspectionList: List<MsFuelInspectionEntity>?,
+                                 batchDetails: FuelBatchDetailsDto,
+                                 teamsCountyDetails: TeamsFuelDetailsDto
+    ): FuelInspectionScheduleListDetailsDto {
         val fuelInspectionScheduledList = mutableListOf<FuelInspectionDto>()
         fuelInspectionList?.map {fuelInspectionScheduledList.add(FuelInspectionDto(it.id, it.timelineStartDate,it.timelineEndDate,null,it.referenceNumber, it.company, it.companyKraPin, it.petroleumProduct, it.physicalLocation, it.inspectionDateFrom, it.inspectionDateTo,
             it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName }, it.assignedOfficerStatus==1, it.inspectionCompleteStatus==1))}
 
-
         return FuelInspectionScheduleListDetailsDto(
             fuelInspectionScheduledList,
-            batchDetails
+            batchDetails,
+            teamsCountyDetails
+        )
+    }
+
+    fun mapFuelInspectionTeamsListDto(fuelInspectionTeamsList: List<MsFuelTeamsEntity>?, batchDetails: FuelBatchDetailsDto): FuelScheduleTeamsListDetailsDto {
+        val fuelInspectionTeamsDto = fuelInspectionTeamsList?.map {data->
+            FuelTeamsDto(
+                data.id,
+                data.referenceNumber,
+                data.teamName,
+                data.startDate,
+                data.endDate,
+                data.assignedOfficerID?.let { it1 -> commonDaoServices.findUserByID(it1) }
+                    ?.let { it2 -> commonDaoServices.concatenateName(it2) }
+            )
+        }
+
+        val officerList = commonDaoServices.findOfficersListBasedOnRole(
+            applicationMapProperties.mapMSFuelMappedOfficerROLEID,
+        )
+
+        return FuelScheduleTeamsListDetailsDto(
+            fuelInspectionTeamsDto,
+            batchDetails,
+            officerList?.let { mapOfficerListDto(it) },
+        )
+    }
+
+    fun mapFuelInspectionCountyListDto(fuelInspectionCountyList: List<MsFuelTeamsCountyEntity>?,
+                                       map: ServiceMapsEntity,
+                                       batchDetails: MsFuelBatchInspectionEntity,
+                                       teamsDetailDto: MsFuelTeamsEntity
+    ): FuelScheduleCountyListDetailsDto {
+        val fuelInspectionCountyDto = fuelInspectionCountyList?.map {
+            FuelCountyDto(
+                it.id,
+                it.referenceNo,
+                it.countyId?.let { it2 -> commonDaoServices.findCountiesEntityByCountyId(it2, map.activeStatus).county }
+
+            )}
+
+
+        return FuelScheduleCountyListDetailsDto(
+            fuelInspectionCountyDto,
+            mapFuelTeamsDetailsDto(teamsDetailDto,null,map),
+            mapFuelBatchDetailsDto(batchDetails,map),
         )
     }
 
@@ -2189,13 +2615,15 @@ class MarketSurveillanceFuelDaoServices(
     fun mapFuelInspectionDto(
         fuelInspectionList: MsFuelInspectionEntity,
         batchDetails: FuelBatchDetailsDto,
+        teamsCountyDetails: TeamsFuelDetailsDto,
         rapidTestDone: Boolean,
         compliantStatusDone: Boolean,
         timelineOverDue: Boolean,
-        officerList: List<UsersEntity>?,
+//        officerList: List<UsersEntity>?,
         remarksList: List<MsRemarksEntity>?,
         officersAssigned: UsersEntity?,
         rapidTestResults: FuelEntityRapidTestDto?,
+        rapidTestProduct: List<RapidTestProductsDetailsDto>?,
         sampleCollected: SampleCollectionDto?,
         sampleSubmitted: SampleSubmissionDto?,
         sampleLabResults: MSSSFLabResultsDto?,
@@ -2225,10 +2653,12 @@ class MarketSurveillanceFuelDaoServices(
             fuelInspectionList.remendiationCompleteStatus==1,
             fuelInspectionList.remediationPaymentStatus==1,
             batchDetails,
-            officerList?.let { mapOfficerListDto(it) },
+            teamsCountyDetails,
+            null,
             remarksList?.let { mapRemarksListDto(it) },
             officersAssigned?.let { mapOfficerDto (it) },
             rapidTestResults,
+            rapidTestProduct,
             sampleCollected,
             sampleSubmitted,
             sampleLabResults,
@@ -2282,6 +2712,26 @@ class MarketSurveillanceFuelDaoServices(
                 return it
             }
             ?: throw ExpectedDataNotFound("No Fuel Batch File found with Ref No #$referenceNumber ")
+    }
+
+    fun findFuelTeamsDetailByReferenceNumber(referenceNumber: String): MsFuelTeamsEntity {
+        fuelTeamsRepo.findByReferenceNumber(referenceNumber)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Fuel Teams File found with Ref No #$referenceNumber ")
+    }
+
+    fun findFuelCountyDetailByReferenceNumber(referenceNumber: String): MsFuelTeamsCountyEntity {
+        fuelTeamsCountyRepo.findByReferenceNo(referenceNumber)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Fuel County File found with Ref No #$referenceNumber ")
+    }
+
+    fun findALlFuelCountyListByTeamID(teamID: Long): List<MsFuelTeamsCountyEntity>? {
+       return  fuelTeamsCountyRepo.findAllByTeamId(teamID)
     }
 
     fun findFuelBatchDetailByReferenceNumberAndRegionId(referenceNumber: String,regionId: Long): MsFuelBatchInspectionEntity {
@@ -2339,6 +2789,10 @@ class MarketSurveillanceFuelDaoServices(
 
     fun findFuelInspectionOfficerAssigned(fuelInspection: MsFuelInspectionEntity, status: Int): MsFuelInspectionOfficersEntity? {
         return fuelInspectionOfficerRepo.findByMsFuelInspectionIdAndStatus(fuelInspection.id,status)
+    }
+
+    fun findFuelInspectionAllRapidTestProducts(fuelInspection: MsFuelInspectionEntity): List<MsFuelInspectionRapidTestProductsEntity>? {
+        return fuelRapidTestProductRepo.findAllByFuelInspectionId(fuelInspection.id)
     }
 
     fun isWithinRange(checkDate: Date, workPlanYearCodes: WorkplanYearsCodesEntity): Boolean {
@@ -2423,6 +2877,27 @@ class MarketSurveillanceFuelDaoServices(
             )
     }
 
+    fun mapFuelTeamsDetailsDto(
+        fuelTeamDetail: MsFuelTeamsEntity,
+        fuelTeamCountyDetail: MsFuelTeamsCountyEntity?,
+        map: ServiceMapsEntity
+    ): TeamsFuelDetailsDto{
+        return TeamsFuelDetailsDto(
+            fuelTeamDetail.id,
+            fuelTeamDetail.referenceNumber,
+            fuelTeamDetail.teamName,
+            fuelTeamDetail.startDate,
+            fuelTeamDetail.endDate,
+            fuelTeamCountyDetail?.countyId?.let { it1 ->
+                commonDaoServices.findCountiesEntityByCountyId(
+                    it1,
+                    map.activeStatus
+                ).county
+            },
+            fuelTeamCountyDetail?.countyId
+            )
+    }
+
     fun mapOfficerListDto(officerList: List<UsersEntity>): List<MsUsersDto> {
         return officerList.map {
             MsUsersDto(
@@ -2455,7 +2930,7 @@ class MarketSurveillanceFuelDaoServices(
                 officer.lastName,
                 officer.userName,
                 officer.email,
-            officer.cellphone,
+                officer.cellphone,
                 officer.status == 1,
             )
 
@@ -2479,6 +2954,22 @@ class MarketSurveillanceFuelDaoServices(
                 it.batchNo,
                 it.batchSize,
                 it.sampleSize
+            )
+        }
+    }
+
+    fun mapRapidTestProductListDto(data: List<MsFuelInspectionRapidTestProductsEntity>): List<RapidTestProductsDetailsDto> {
+        return data.map {
+            RapidTestProductsDetailsDto(
+                it.id,
+                it.productName,
+                it.exportMarkerTest,
+                it.domesticKeroseneMarkerTest,
+                it.sulphurMarkerTest,
+                it.exportMarkerTestStatus ==1,
+                it.domesticKeroseneMarkerTestStatus==1,
+                it.sulphurMarkerTestStatus==1,
+                it.overallComplianceStatus==1,
             )
         }
     }

@@ -40,6 +40,8 @@ interface IFuelBatchRepository : HazelcastRepository<MsFuelBatchInspectionEntity
     fun findByReferenceNumberAndRegionId(referenceNumber: String, regionId: Long): MsFuelBatchInspectionEntity?
     fun findByReferenceNumberAndRegionIdAndCountyId(referenceNumber: String, regionId: Long, countyId: Long): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndCountyIdAndRegionId(yearNameId: Long, countyId: Long, regionId: Long): MsFuelBatchInspectionEntity?
+    fun findByYearNameIdAndMonthNameId(yearNameId: Long, monthNameId: Long): MsFuelBatchInspectionEntity?
+    fun findTopByYearNameIdAndMonthNameId(yearNameId: Long, monthNameId: Long): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndCountyIdAndTownIdAndRegionId(yearNameId: Long, countyId: Long, townId: Long, regionId: Long): MsFuelBatchInspectionEntity?
     fun findByYearNameIdAndCountyIdAndTownIdAndRegionIdAndMonthNameId(
         yearNameId: Long,
@@ -57,6 +59,26 @@ interface IFuelBatchRepository : HazelcastRepository<MsFuelBatchInspectionEntity
 @Repository
 interface IMsRemarksFuelInspectionRepository : HazelcastRepository<MsRemarksEntity, Long>{
     fun findAllByFuelInspectionId(fuelInspectionId: Long): List<MsRemarksEntity>?
+}
+
+@Repository
+interface IMsFuelTeamsRepository : HazelcastRepository<MsFuelTeamsEntity, Long>{
+    fun findAllByFuelBatchId(fuelBatchId: Long): List<MsFuelTeamsEntity>?
+    fun findAllByFuelBatchId(fuelBatchId: Long,pageable: Pageable): Page<MsFuelTeamsEntity>?
+    fun findAllByFuelBatchIdAndAssignedOfficerID(fuelBatchId: Long,assignedOfficerID: Long, pageable: Pageable): Page<MsFuelTeamsEntity>?
+    fun findByReferenceNumber(referenceNumber: String): MsFuelTeamsEntity?
+}
+
+@Repository
+interface IMsFuelTeamsCountyEntityRepository : HazelcastRepository<MsFuelTeamsCountyEntity, Long>{
+    fun findAllByTeamId(teamId: Long): List<MsFuelTeamsCountyEntity>?
+    fun findAllByTeamId(teamId: Long,pageable: Pageable): Page<MsFuelTeamsCountyEntity>?
+    fun findByReferenceNo(referenceNumber: String): MsFuelTeamsCountyEntity?
+}
+
+@Repository
+interface IMsFuelInspectionRapidTestProductsEntityRepository : HazelcastRepository<MsFuelInspectionRapidTestProductsEntity, Long>{
+    fun findAllByFuelInspectionId(teamId: Long): List<MsFuelInspectionRapidTestProductsEntity>?
 }
 
 @Repository
@@ -79,6 +101,7 @@ interface IFuelInspectionRepository : HazelcastRepository<MsFuelInspectionEntity
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsFuelInspectionEntity>
     fun findAllByOrderByIdAsc(): List<MsFuelInspectionEntity>
     fun findAllByBatchId(batchId: Long, pageable: Pageable): Page<MsFuelInspectionEntity>?
+    fun findAllByBatchIdAndMsTeamsIdAndMsCountyId(batchId: Long,teamsId: Long,countyId: Long, pageable: Pageable): Page<MsFuelInspectionEntity>?
     fun findAllByBatchId(batchId: Long): List<MsFuelInspectionEntity>?
 
     fun findByReferenceNumber(referenceNumber: String): MsFuelInspectionEntity?
@@ -86,7 +109,20 @@ interface IFuelInspectionRepository : HazelcastRepository<MsFuelInspectionEntity
     @Query(
         "SELECT DISTINCT fi.* FROM DAT_KEBS_MS_FUEL_INSPECTION fi\n" +
                 "JOIN DAT_KEBS_MS_FUEL_INSPECTION_OFFICERS fio ON fi.ID = fio.INSPECTION_ID\n" +
-                "WHERE  fi.BATCH_ID =:batchId AND fio.ASSIGNED_IO =:assignedIoID",
+                "WHERE  fi.BATCH_ID =:batchId AND fi.MS_TEAMS_ID =:teamID AND fi.MS_COUNTY_ID =:countyID AND  fio.ASSIGNED_IO =:assignedIoID",
+        nativeQuery = true
+    )
+    fun findAllByBatchIdAndTeamsIDAndCountyIDAndAssignOfficer(
+        @Param("batchId") batchId: Long,
+        @Param("teamID") teamID: Long,
+        @Param("countyID") countyID: Long,
+        @Param("assignedIoID") assignedIoID: Long
+    ): List<MsFuelInspectionEntity>?
+
+    @Query(
+        "SELECT DISTINCT fi.* FROM DAT_KEBS_MS_FUEL_INSPECTION fi\n" +
+                "JOIN DAT_KEBS_MS_FUEL_INSPECTION_OFFICERS fio ON fi.ID = fio.INSPECTION_ID\n" +
+                "WHERE  fi.BATCH_ID =:batchId AND  fio.ASSIGNED_IO =:assignedIoID",
         nativeQuery = true
     )
     fun findAllByBatchIdAndAssignOfficer(

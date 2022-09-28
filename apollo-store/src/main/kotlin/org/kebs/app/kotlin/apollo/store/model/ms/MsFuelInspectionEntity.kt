@@ -27,6 +27,14 @@ class MsFuelInspectionEntity : Serializable{
     @Basic
     var batchId: Long? = null
 
+    @Column(name = "MS_TEAMS_ID")
+    @Basic
+    var msTeamsId: Long? = null
+
+    @Column(name = "MS_COUNTY_ID")
+    @Basic
+    var msCountyId: Long? = null
+
     @Column(name = "TIMELINE_START_DATE")
     @Basic
     var timelineStartDate: Date? = null
@@ -42,6 +50,10 @@ class MsFuelInspectionEntity : Serializable{
     @Column(name = "MS_PROCESS_ID")
     @Basic
     var msProcessId: Long? = null
+
+    @Column(name = "FUEL_REPORT_ID")
+    @Basic
+    var fuelReportId: Long? = null
 
     @Column(name = "RAPID_TEST_FAILED_REMARKS")
     @Basic
@@ -66,6 +78,10 @@ class MsFuelInspectionEntity : Serializable{
     @Column(name = "COMPANY_KRA_PIN")
     @Basic
     var companyKraPin: String? = null
+
+    @Column(name = "TOWN_ID")
+    @Basic
+    var townId: Long? = 0
 
     @Column(name = "NOT_COMPLIANT_STATUS_BY")
     @Basic
