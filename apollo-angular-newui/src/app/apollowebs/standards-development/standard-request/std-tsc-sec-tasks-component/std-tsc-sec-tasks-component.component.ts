@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder} from "@angular/forms";
-import {LiaisonOrganization, Stdtsectask} from "../../../../core/store/data/std/request_std.model";
+import {LiaisonOrganization, StandardRequestB, Stdtsectask} from "../../../../core/store/data/std/request_std.model";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {IDropdownSettings} from 'ng-multiselect-dropdown';
@@ -15,7 +15,7 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
     templateUrl: './std-tsc-sec-tasks-component.component.html',
     styleUrls: ['./std-tsc-sec-tasks-component.component.css']
 })
-export class StdTscSecTasksComponentComponent implements OnInit {
+export class  StdTscSecTasksComponentComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
     @ViewChild(DataTableDirective, {static: false})
@@ -27,10 +27,11 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     public filePurposeAnnex: string = "FilePurposeAnnex";
     public relevantDocumentsNWI: string = "RelevantDocumentsNWI";
 
-    public secTasks: Stdtsectask[] = [];
+    public secTasks: StandardRequestB[] = [];
     public tscsecRequest !: Stdtsectask | undefined;
     public uploadedFiles: FileList;
     public uploadedFilesB: FileList;
+    public nwiRequest !: StandardRequestB | undefined;
 
     //public stdTSecFormGroup!: FormGroup;
 
@@ -97,7 +98,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
 
     public getTCSECTasks(): void {
         this.standardDevelopmentService.getTCSECTasks().subscribe(
-            (response: Stdtsectask[]) => {
+            (response: StandardRequestB[]) => {
                 this.secTasks = response;
 
                 if (this.isDtInitialized) {
@@ -138,15 +139,15 @@ export class StdTscSecTasksComponentComponent implements OnInit {
 
         this.standardDevelopmentService.uploadNWI(secTask).subscribe(
             (response) => {
-              console.log(response);
-              this.showToasterSuccess(response.httpStatus, `New Work Item Uploaded`);
-              this.hideModel();
-              this.getTCSECTasks();
-              this.SpinnerService.hide();
-              },
+                console.log(response);
+                this.showToasterSuccess(response.httpStatus, `New Work Item Uploaded`);
+                this.hideModel();
+                this.getTCSECTasks();
+                this.SpinnerService.hide();
+            },
             (error: HttpErrorResponse) => {
-              alert(error.message);
-              this.SpinnerService.hide();
+                alert(error.message);
+                this.SpinnerService.hide();
 
             }
         )
@@ -164,7 +165,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
       );
     }*/
 
-    public onOpenModal(secTask: Stdtsectask, mode: string): void {
+    public onOpenModal(secTask: StandardRequestB, mode: string): void {
 
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
@@ -172,9 +173,9 @@ export class StdTscSecTasksComponentComponent implements OnInit {
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
         if (mode === 'edit') {
-            console.log(secTask.taskId)
-            this.tscsecRequest = secTask;
-            this.itemId = this.tscsecRequest.taskData.requestNumber;
+            console.log(secTask.id)
+            this.itemId = String(secTask.id);
+            this.nwiRequest = secTask
             button.setAttribute('data-target', '#updateNWIModal');
         }
 

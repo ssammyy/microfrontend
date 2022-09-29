@@ -74,7 +74,7 @@
                                             <td style="color: #0082f3" th:text="${permit?.permitStatus}"></td>
 
                                             <td><a class="filter-link"
-                                                   th:href="@{/api/qa/permit-details(permitID=${permit.id},userID=${permit?.userId})}">view</a>
+                                                   th:href="@{/api/qa/permit-details(permitID=${permit.encryptedPermitId},userID=${permit?.encryptedUserId})}">view</a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -117,7 +117,7 @@
                                             <td th:text="${permit?.county}"></td>
                                             <td style="color: #0082f3" th:text="${permit?.permitStatus}"></td>
                                             <td><a class="filter-link"
-                                                   th:href="@{/api/qa/permit-details(permitID=${permit.id},userID=${permit?.userId})}">view</a>
+                                                   th:href="@{/api/qa/permit-details(permitID=${permit.encryptedPermitId},userID=${permit?.encryptedUserId})}">view</a>
                                             </td>
 
                                         </tr>
@@ -149,7 +149,7 @@
                                         <tbody>
                                         <tr class="list" th:each="permit: ${permitListMyTasks}" style="cursor: pointer">
                                             <td><a class="filter-link"
-                                                   th:href="@{/api/qa/permit-details(permitID=${permit.id},userID=${permit?.userId})}">view</a>
+                                                   th:href="@{/api/qa/permit-details(permitID=${permit.encryptedPermitId},userID=${permit?.encryptedUserId})}">view</a>
                                             </td>
                                             <td style="color: #0082f3" th:text="${permit?.permitStatus}"></td>
                                             <td th:text="${permit?.permitRefNumber}"></td>
