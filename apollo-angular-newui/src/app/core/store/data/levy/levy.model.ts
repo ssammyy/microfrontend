@@ -378,6 +378,7 @@ export interface PenaltyDetails{
     registrationNumber: string;
     periodFrom: string;
     periodTo: string;
+    monthsLate: string;
 }
 export interface DefaulterDetails{
     id: number;

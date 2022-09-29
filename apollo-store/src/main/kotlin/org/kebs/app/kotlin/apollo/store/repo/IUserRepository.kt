@@ -360,27 +360,31 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturerList(): MutableList<ManufactureListHolder>
 
     @Query(
-        value = "SELECT ID as id,ENTRY_NUMBER as entryNumber,KRA_PIN as kraPin,NAME as name,POSTAL_ADDRESS as postalAddress,COMPANY_TELEPHONE as companyTelephone," +
-                "COMPANY_EMAIL as companyEmail,STREET_NAME as streetName,BUSINESS_LINES as businessLines,BUSINESS_NATURES as businessNatures,BUSINESS_LINE_NAME as businessLineName," +
-                "BUSINESS_NATURE_NAME as businessNatureName,REGION as region,REGION_NAME as regionName,TOWN as town,TOWN_NAME as townName, cast(CREATED_ON as varchar(200)) AS CreatedOn  FROM DAT_KEBS_COMPANY_PROFILE ",
+        value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.COMPANY_TELEPHONE as companyTelephone," +
+                "c.COMPANY_EMAIL as companyEmail,c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
+                "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName, cast(c.CREATED_ON as varchar(200)) AS CreatedOn " +
+                "FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID " +
+                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID  ",
         nativeQuery = true
     )
     fun getRegisteredFirms(): MutableList<RegisteredFirms>
 
     @Query(
-        value = "SELECT ID as id,ENTRY_NUMBER as entryNumber,KRA_PIN as kraPin,NAME as name,POSTAL_ADDRESS as postalAddress,BRANCH_NAME as adminLocation," +
-                "STREET_NAME as streetName,BUSINESS_LINES as businessLines,BUSINESS_NATURES as businessNatures,BUSINESS_LINE_NAME as businessLineName," +
-                "BUSINESS_NATURE_NAME as businessNatureName,REGION as region,REGION_NAME as regionName,TOWN as town,TOWN_NAME as townName, cast(CREATED_ON as varchar(200)) AS CreatedOn " +
-                " FROM DAT_KEBS_COMPANY_PROFILE  WHERE STATUS='1'",
+        value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.BRANCH_NAME as adminLocation," +
+                "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
+                "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName, cast(c.CREATED_ON as varchar(200)) AS CreatedOn " +
+                " FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID " +
+                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID   WHERE c.STATUS='1'",
         nativeQuery = true
     )
     fun getActiveFirms(): MutableList<RegisteredFirms>
 
     @Query(
-        value = "SELECT ID as id,ENTRY_NUMBER as entryNumber,KRA_PIN as kraPin,NAME as name,POSTAL_ADDRESS as postalAddress,BRANCH_NAME as adminLocation," +
-                "STREET_NAME as streetName,BUSINESS_LINES as businessLines,BUSINESS_NATURES as businessNatures,BUSINESS_LINE_NAME as businessLineName," +
-                "BUSINESS_NATURE_NAME as businessNatureName,REGION as region,REGION_NAME as regionName,TOWN as town,TOWN_NAME as townName, cast(CREATED_ON as varchar(200)) AS CreatedOn" +
-                " FROM DAT_KEBS_COMPANY_PROFILE  WHERE STATUS='4'",
+        value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.BRANCH_NAME as adminLocation," +
+                "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
+                "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName, cast(c.CREATED_ON as varchar(200)) AS CreatedOn " +
+                "FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID " +
+                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID  WHERE c.STATUS='4'",
         nativeQuery = true
     )
     fun getDormantFirms(): MutableList<RegisteredFirms>
@@ -388,9 +392,10 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
     @Query(
         value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.BRANCH_NAME as adminLocation," +
-                "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.BUSINESS_LINE_NAME as businessLineName," +
-                "c.BUSINESS_NATURE_NAME as businessNatureName,c.REGION as region,c.REGION_NAME as regionName,c.TOWN as town,c.TOWN_NAME as townName,cast(c.CREATED_ON as varchar(200)) AS CreatedOn,cast(p.DATE_OF_CLOSURE as varchar(200)) AS dateOfClosure " +
-                " FROM DAT_KEBS_COMPANY_PROFILE c JOIN DAT_KEBS_CLOSURE_OF_OPERATIONS p ON c.ID=p.COMPANY_ID WHERE c.STATUS='0'",
+                "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
+                "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName,cast(c.CREATED_ON as varchar(200)) AS CreatedOn,cast(p.DATE_OF_CLOSURE as varchar(200)) AS dateOfClosure " +
+                " FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID" +
+                " JOIN DAT_KEBS_CLOSURE_OF_OPERATIONS p ON c.ID=p.COMPANY_ID  WHERE c.STATUS='0'",
         nativeQuery = true
     )
     fun getClosedFirms(): MutableList<RegisteredFirms>
@@ -568,7 +573,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturesLevyPenalty(@Param("entryNumber") entryNumber: Long?): MutableList<LevyPenalty>
 
     @Query(
-        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.LEVY_PENALTY_PAYMENT_DATE as paymentDate,p.LEVY_PENALTY_PAYABLE as paymentAmount,p.NET_PENALTY_AMT as amountDue,p.PENALTY_APPLIED as penalty,p.LEVY_DUE_DATE as levyDueDate," +
+        value = "SELECT p.ID as id,p.ENTRY_NUMBER as entryNumber,p.MONTHS_LATE as monthsLate,p.LEVY_PENALTY_PAYMENT_DATE as paymentDate,p.LEVY_PENALTY_PAYABLE as paymentAmount,p.NET_PENALTY_AMT as amountDue,p.PENALTY_APPLIED as penalty,p.LEVY_DUE_DATE as levyDueDate," +
                 "c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,c.ASSIGN_STATUS as assignStatus,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo " +
                 " FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS p JOIN DAT_KEBS_COMPANY_PROFILE c ON p.ENTRY_NUMBER=c.ENTRY_NUMBER " +
                 "WHERE c.ID= :companyId ORDER BY p.ID DESC",

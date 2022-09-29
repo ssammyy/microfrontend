@@ -190,6 +190,7 @@ interface LevyPenalty{
     fun getBusinessNatures(): Long?
     fun getBusinessLineName(): String?
     fun getBusinessNatureName(): String?
+    fun getMonthsLate(): String?
 }
 interface ManufactureListHolder {
     fun getId(): Long?
