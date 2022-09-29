@@ -113,6 +113,7 @@ class StandardLevyService(
     }
 
     fun editCompanyDetails(
+        companyProfileEntity: CompanyProfileEntity,
         companyProfileEditEntity: CompanyProfileEditEntity,
         standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ProcessInstanceSiteResponse {
@@ -124,9 +125,12 @@ class StandardLevyService(
         companyProfileEditEntity.registrationNumber?.let { variables["registrationNumber"] = it }
         companyProfileEditEntity.entryNumber?.let { variables["entryNumber"] = it }
         companyProfileEditEntity.manufactureId?.let { variables["manufactureId"] = it }
+        companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
         companyProfileEditEntity.physicalAddress?.let { variables["physicalAddressEdit"] = it }
         companyProfileEditEntity.postalAddress?.let { variables["postalAddressEdit"] = it }
+        companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
         companyProfileEditEntity.ownership?.let { variables["ownershipEdit"] = it }
+        companyProfileEntity.ownership?.let { variables["ownership"] = it }
         companyProfileEditEntity.taskType?.let { variables["taskType"] = it }
         companyProfileEditEntity.userType?.let { variables["userType"] = it }
         companyProfileEditEntity.assignedTo?.let { variables["assignedTo"] = it }
@@ -137,21 +141,21 @@ class StandardLevyService(
         companyProfileEditEntity.typeOfManufacture?.let{variables.put("typeOfManufacture", it)}
         companyProfileEditEntity.otherBusinessNatureType?.let{variables.put("otherBusinessNatureType", it)}
         companyProfileEditEntity.yearlyTurnover?.let{variables.put("yearlyTurnoverEdit", it)}
+        companyProfileEntity.yearlyTurnover?.let{variables.put("yearlyTurnover", it)}
         companyProfileEditEntity.companyTelephone?.let{variables.put("companyTelephoneEdit", it)}
+        companyProfileEntity.companyTelephone?.let{variables.put("companyTelephone", it)}
         companyProfileEditEntity.companyEmail?.let{variables.put("companyEmailEdit", it)}
+        companyProfileEntity.companyEmail?.let{variables.put("companyEmail", it)}
 
         companyProfileEditEntity.status=1
         val userIntType = companyProfileEditEntity.userType
         val plUserTypes = 61L
         val asManagerUserTypes = 62L
+        val editDetails = companyProfileEditEntityRepository.save(companyProfileEditEntity)
+        variables["editID"] = editDetails.id
 
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
 
-        companyProfileEditEntity.slBpmnProcessInstance = processInstance?.processInstanceId
-        companyProfileEditEntity.slBpmnProcessInstance?.let{variables.put("slBpmnProcessInstance", it)}
-          companyProfileEditEntityRepository.save(companyProfileEditEntity)
-        val editDetails = companyProfileEditEntityRepository.save(companyProfileEditEntity)
-        variables["editID"] = editDetails.id
         val approverFname=loggedInUser.firstName
         val approverLname=loggedInUser.lastName
         val approveName= "$approverFname  $approverLname"

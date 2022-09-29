@@ -619,11 +619,26 @@ class StdLevyController(
         standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ServerResponse
     {
+//               val gson = Gson()
+//       KotlinLogging.logger { }.info { "Assigned Variables" + gson.toJson(editCompanyDTO) }
+
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id=editCompanyDTO.companyId
+            postalAddress=editCompanyDTO.postalAddress
+            physicalAddress=editCompanyDTO.physicalAddress
+            ownership=editCompanyDTO.ownership
+            companyEmail=editCompanyDTO.companyEmail
+            companyTelephone=editCompanyDTO.companyTelephone
+            yearlyTurnover=editCompanyDTO.yearlyTurnover
+        }
         val companyProfileEditEntity= CompanyProfileEditEntity().apply {
             manufactureId = editCompanyDTO.companyId
-            postalAddress = editCompanyDTO.postalAddress
-            physicalAddress = editCompanyDTO.physicalAddress
-            ownership = editCompanyDTO.ownership
+            postalAddress = editCompanyDTO.postalAddressEdit
+            physicalAddress = editCompanyDTO.physicalAddressEdit
+            ownership = editCompanyDTO.ownershipEdit
+            companyEmail = editCompanyDTO.companyEmailEdit
+            companyTelephone = editCompanyDTO.companyTelephoneEdit
+            yearlyTurnover = editCompanyDTO.yearlyTurnoverEdit
             taskType= editCompanyDTO.taskType
             assignedTo= editCompanyDTO.assignedTo
             userType= editCompanyDTO.userType
@@ -638,7 +653,7 @@ class StdLevyController(
             remarks = editCompanyDTO.remarks
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetails(companyProfileEditEntity,standardLevySiteVisitRemarks))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetails(companyProfileEntity,companyProfileEditEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -653,9 +668,12 @@ class StdLevyController(
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
             id = editCompanyDTO.companyId
-            postalAddress = editCompanyDTO.postalAddress
-            physicalAddress = editCompanyDTO.physicalAddress
-            ownership = editCompanyDTO.ownership
+            postalAddress = editCompanyDTO.postalAddressEdit
+            physicalAddress = editCompanyDTO.physicalAddressEdit
+            ownership = editCompanyDTO.ownershipEdit
+            companyEmail = editCompanyDTO.companyEmailEdit
+            companyTelephone = editCompanyDTO.companyTelephoneEdit
+            yearlyTurnover = editCompanyDTO.yearlyTurnoverEdit
             taskId = editCompanyDTO.taskId
             slBpmnProcessInstance = editCompanyDTO.processId
             assignedTo = editCompanyDTO.assignedTo
@@ -683,9 +701,12 @@ class StdLevyController(
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
             id = editCompanyDTO.companyId
-            postalAddress = editCompanyDTO.postalAddress
-            physicalAddress = editCompanyDTO.physicalAddress
-            ownership = editCompanyDTO.ownership
+            postalAddress = editCompanyDTO.postalAddressEdit
+            physicalAddress = editCompanyDTO.physicalAddressEdit
+            ownership = editCompanyDTO.ownershipEdit
+            companyEmail = editCompanyDTO.companyEmailEdit
+            companyTelephone = editCompanyDTO.companyTelephoneEdit
+            yearlyTurnover = editCompanyDTO.yearlyTurnoverEdit
             taskId = editCompanyDTO.taskId
             slBpmnProcessInstance = editCompanyDTO.processId
             assignedTo = editCompanyDTO.assignedTo
@@ -713,9 +734,12 @@ class StdLevyController(
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
             id = editCompanyDTO.companyId
-            postalAddress = editCompanyDTO.postalAddress
-            physicalAddress = editCompanyDTO.physicalAddress
-            ownership = editCompanyDTO.ownership
+            postalAddress = editCompanyDTO.postalAddressEdit
+            physicalAddress = editCompanyDTO.physicalAddressEdit
+            ownership = editCompanyDTO.ownershipEdit
+            companyEmail = editCompanyDTO.companyEmailEdit
+            companyTelephone = editCompanyDTO.companyTelephoneEdit
+            yearlyTurnover = editCompanyDTO.yearlyTurnoverEdit
             taskId = editCompanyDTO.taskId
             slBpmnProcessInstance = editCompanyDTO.processId
             assignedTo = editCompanyDTO.assignedTo

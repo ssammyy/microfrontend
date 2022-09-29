@@ -159,6 +159,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
     toggleDisplayApproveEditRequest(){
       this.isShowApproveRequestForm=!this.isShowApproveRequestForm;
+        this.isShowCompanyRemarks=true;
       this.isShowRejectRequestForm=true;
       this.isShowDocumentsTab=true;
         this.isShowRejectForm2 = true;
@@ -428,62 +429,66 @@ export class StdLevyPendingTasksComponent implements OnInit {
       });
 
       this.approveEditRequestFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
-          ownership: [],
           userType:[],
           taskType:[],
           assignedTo: [],
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
           editID:[]
 
       });
       this.rejectEditRequestFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
-          ownership: [],
           userType:[],
           taskType:[],
           assignedTo: [],
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
           editID:[]
 
 
       });
 
       this.approveCompanyLevelOneFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
-          ownership: [],
           userType:[],
           taskType:[],
           assignedTo: [],
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
           editID:[]
 
 
       });
       this.rejectCompanyLevelOneFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
           ownership: [],
           userType:[],
@@ -492,46 +497,43 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
           editID:[]
 
 
       });
 
       this.approveEditRequestLevelTwoFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
-          ownership: [],
           userType:[],
           taskType:[],
           assignedTo:[],
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
           editID:[]
 
 
       });
       this.rejectEditRequestLevelTwoFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
-          ownership: [],
           userType:[],
           taskType:[],
           assignedTo:[],
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
           editID:[]
 
 

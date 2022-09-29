@@ -157,8 +157,11 @@ export interface DocumentDTO{
 }
 export interface EditCompanyDTO {
     postalAddress: string;
+    postalAddressEdit: string;
     physicalAddress: string;
+    physicalAddressEdit: string;
     ownership: string;
+    ownershipEdit: string;
     companyId: number;
     closureOfOperations: string;
     companyName: string;
@@ -172,8 +175,11 @@ export interface EditCompanyDTO {
     taskId: string;
     accentTo: boolean;
     companyEmail: string;
+    companyEmailEdit: string;
     companyTelephone: string;
+    companyTelephoneEdit: string;
     yearlyTurnover : number;
+    yearlyTurnoverEdit : number;
     remarks: string;
 
 }

@@ -258,8 +258,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -269,8 +269,8 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
@@ -278,8 +278,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
 
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{approve}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -289,21 +289,21 @@
                                                         <label for="companyEmail2">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                              id="companyEmail2" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                              id="companyEmail2" class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone2">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                              id="companyTelephone2" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                              id="companyTelephone2" class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover2">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                              id="yearlyTurnover2" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                              id="yearlyTurnover2" class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
@@ -315,7 +315,7 @@
                                                                   formControlName="remarks"
                                                                   placeholder="Remarks"></textarea>
                                                     </div>
-                                                    <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
+                                                    <input type="text" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
                                                     <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')" class="form-group col-12">
                                                         <label>Forward To</label>
                                                         <ng-select [(ngModel)]="approvedUsersTwo" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
@@ -369,8 +369,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address1" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address1" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -380,29 +380,29 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal1" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal1" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyEmail22">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                               id="companyEmail22" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               id="companyEmail22" class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone22">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                               id="companyTelephone22" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               id="companyTelephone22" class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover22">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                               id="yearlyTurnover22" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               id="yearlyTurnover22" class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
@@ -411,8 +411,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner1" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner1" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{reject}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -526,8 +526,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address2" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address2" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -537,29 +537,29 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal2" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal2" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyEmail222">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                               id="companyEmail222" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               id="companyEmail222" class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone222">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                               id="companyTelephone222" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               id="companyTelephone222" class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover222">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                               id="yearlyTurnover222" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               id="yearlyTurnover222" class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
@@ -568,8 +568,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner2" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner2" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{approve}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -614,8 +614,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address3" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address3" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -625,29 +625,29 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal3" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal3" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyEmail21">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                               id="companyEmail21" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               id="companyEmail21" class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone21">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                               id="companyTelephone21" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               id="companyTelephone21" class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover21">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                               id="yearlyTurnover21" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               id="yearlyTurnover21" class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
@@ -656,8 +656,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner3" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner3" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{reject}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -723,8 +723,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address4" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address4" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -734,29 +734,29 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal4" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal4" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyEmail23">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                             id="companyEmail23"  class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                             id="companyEmail23"  class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone23">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                            id="companyTelephone23"   class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                            id="companyTelephone23"   class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover23">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                             id="yearlyTurnover23"  class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                             id="yearlyTurnover23"  class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
@@ -765,8 +765,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner4" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner4" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{approve}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -860,8 +860,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address5" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address5" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -871,29 +871,29 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal5" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal5" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyEmail24">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                             id="companyEmail24"  class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                             id="companyEmail24"  class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone24">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                             id="companyTelephone24"  class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                             id="companyTelephone24"  class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover24">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                              id="yearlyTurnover24" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                              id="yearlyTurnover24" class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
@@ -902,8 +902,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner5" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner5" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{reject}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
