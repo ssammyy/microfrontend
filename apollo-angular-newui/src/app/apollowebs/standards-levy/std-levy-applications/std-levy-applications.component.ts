@@ -196,9 +196,12 @@ export class StdLevyApplicationsComponent implements OnInit {
 
     this.editCompanyFormGroup = this.formBuilder.group({
       postalAddress: [],
+      postalAddressEdit: [],
+      physicalAddressEdit: [],
       physicalAddress: [],
       companyId: [],
       ownership: [],
+      ownershipEdit: [],
       assignedTo: [],
       userType: [],
       taskType: [],
@@ -209,8 +212,11 @@ export class StdLevyApplicationsComponent implements OnInit {
       typeOfManufacture:[],
       otherBusinessNatureType:[],
       companyEmail:[],
+      companyEmailEdit:[],
       companyTelephone:[],
+      companyTelephoneEdit:[],
       yearlyTurnover:[],
+      yearlyTurnoverEdit:[],
       remarks:[]
 
     });

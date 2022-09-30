@@ -66,6 +66,7 @@ class StandardReviewService(
     }
 
 
+
     fun reviewedStandards(): MutableList<Standard>
     {
         return standardRepository.findAll()
@@ -172,5 +173,10 @@ class StandardReviewService(
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_HOP).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
     }
+
+    fun getStandardsForReview(): MutableList<ReviewStandards> {
+        return standardRepository.getStandardsForReview()
+    }
+
 
 }

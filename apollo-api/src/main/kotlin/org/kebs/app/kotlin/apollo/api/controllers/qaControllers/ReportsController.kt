@@ -4,11 +4,8 @@ import com.google.gson.Gson
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
-import org.kebs.app.kotlin.apollo.common.dto.qa.PermitDetailsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
-import org.kebs.app.kotlin.apollo.store.model.UsersSignatureEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaInvoiceMasterDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISampleStandardsRepository
 import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
@@ -16,7 +13,6 @@ import org.springframework.core.io.ResourceLoader
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.io.ByteArrayInputStream
-import java.util.*
 import javax.servlet.http.HttpServletResponse
 import kotlin.collections.HashMap
 

@@ -51,6 +51,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
                           private val bpmnService: StandardsLevyBpmn,
                           private val internationalStandardRemarksRepository : InternationalStandardRemarksRepository,
                           private val nwaWorkshopDraftRepository: NwaWorkShopDraftRepository,
+                          private val standardRepository : StandardRepository
 
                           ) {
     val PROCESS_DEFINITION_KEY = "sd_InternationalStandardsForAdoption"
@@ -909,7 +910,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
     // Upload NWA Standard
     fun uploadISStandard(iSUploadStandard: ISUploadStandard,isJustificationDecision: ISJustificationDecision,
-                         internationalStandardRemarks: InternationalStandardRemarks):  List<InternationalStandardTasks>
+                         internationalStandardRemarks: InternationalStandardRemarks,standard: Standard):  List<InternationalStandardTasks>
     {
         val variable:MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -921,14 +922,24 @@ class IntStandardService (private val runtimeService: RuntimeService,
         iSUploadStandard.special?.let{variable.put("special", it)}
         iSUploadStandard.taskId?.let{variable.put("taskId", it)}
         iSUploadStandard.processId?.let{variable.put("processId", it)}
-
-        //iSUploadStandard.iSNumber?.let{variable.put("ISNumber", it)}
-
-
+        val isStandard= getISNumber()
         iSUploadStandard.uploadDate = Timestamp(System.currentTimeMillis())
         variable["uploadDate"] = iSUploadStandard.uploadDate!!
 
-        iSUploadStandard.iSNumber = getISNumber()
+        //iSUploadStandard.iSNumber?.let{variable.put("ISNumber", it)}
+        standard.title=iSUploadStandard.title
+        standard.scope= iSUploadStandard.scope
+        standard.normativeReference= iSUploadStandard.normativeReference
+        standard.symbolsAbbreviatedTerms= iSUploadStandard.symbolsAbbreviatedTerms
+        standard.clause= iSUploadStandard.clause
+        standard.special=iSUploadStandard.special
+        standard.standardNumber= isStandard
+        standard.status=1
+        standard.standardType="International Standard"
+        standard.dateFormed=iSUploadStandard.uploadDate
+
+
+        iSUploadStandard.iSNumber = isStandard
         variable["iSNumber"] = iSUploadStandard.iSNumber!!
 
 
@@ -949,6 +960,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         if(variable["Yes"]==true){
             iSUploadStandard.assignedTo= companyStandardRepository.getHoSicId()
                 iSUploadStandardRepository.save(iSUploadStandard)
+                standardRepository.save(standard)
                 runtimeService.createProcessInstanceQuery()
                     .processInstanceId(iSUploadStandard.processId).list()
                     ?.let { l ->

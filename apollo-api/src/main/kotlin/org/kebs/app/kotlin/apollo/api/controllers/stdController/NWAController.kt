@@ -497,9 +497,9 @@ class NWAController(val nwaService: NWAService,
     @PostMapping("/uploadNwaStandard")
     @ResponseBody
     fun uploadNwaStandard(@RequestBody nWAStandard: NWAStandard,
-                          standardNwaRemarks: StandardNwaRemarks): ServerResponse
+                          standardNwaRemarks: StandardNwaRemarks,standard: Standard): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",nwaService.uploadNwaStandard(nWAStandard,standardNwaRemarks))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",nwaService.uploadNwaStandard(nWAStandard,standardNwaRemarks,standard))
     }
 
     // upload NWA Standard

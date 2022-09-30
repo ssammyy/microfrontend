@@ -49,7 +49,8 @@ class CompanyStandardService(
     private val comStandardUploadsRepository: ComStandardUploadsRepository,
     private val comStandardJCRepository: ComStandardJCRepository,
     private val bpmnService: StandardsLevyBpmn,
-    private val standardComRemarksRepository: StandardComRemarksRepository
+    private val standardComRemarksRepository: StandardComRemarksRepository,
+    private val standardRepository: StandardRepository
 ) {
     val PROCESS_DEFINITION_KEY = "sd_CompanyStandardsProcess"
 
@@ -569,7 +570,7 @@ class CompanyStandardService(
     }
 
     // Upload Company Standard
-    fun uploadComStandard(companyStandard: CompanyStandard): ProcessInstanceComStandard {
+    fun uploadComStandard(companyStandard: CompanyStandard,standard: Standard): ProcessInstanceComStandard {
         val variable: MutableMap<String, Any> = HashMap()
         companyStandard.title?.let { variable.put("title", it) }
         companyStandard.scope?.let { variable.put("scope", it) }
@@ -579,8 +580,19 @@ class CompanyStandardService(
         companyStandard.special?.let { variable.put("special", it) }
         companyStandard.taskId?.let { variable.put("taskId", it) }
         companyStandard.processId?.let { variable.put("processId", it) }
+        val standardNumber= getCSNumber()
+        companyStandard.comStdNumber = standardNumber
 
-        companyStandard.comStdNumber = getCSNumber()
+        standard.title=companyStandard.title
+        standard.scope= companyStandard.scope
+        standard.normativeReference= companyStandard.normativeReference
+        standard.symbolsAbbreviatedTerms= companyStandard.symbolsAbbreviatedTerms
+        standard.clause= companyStandard.clause
+        standard.special=companyStandard.special
+        standard.standardNumber= standardNumber
+        standard.status=1
+        standard.standardType="Company Standard"
+        standard.dateFormed=Timestamp(System.currentTimeMillis())
 
         var userList= companyStandardRepository.getSacSecEmailList()
         val targetUrl = "https://kimsint.kebs.org/";
@@ -597,6 +609,7 @@ class CompanyStandardService(
         variable["comStdNumber"] = companyStandard.comStdNumber!!
 
         val comDetails = companyStandardRepository.save(companyStandard)
+        standardRepository.save(standard)
         variable["ID"] = comDetails.id
         taskService.complete(companyStandard.taskId, variable)
         println("Company Standard Uploaded")

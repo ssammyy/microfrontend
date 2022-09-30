@@ -582,12 +582,33 @@ class StdLevyController(
           companyName= stdLevyScheduleSiteVisitDTO.companyName
           registrationNumber= stdLevyScheduleSiteVisitDTO.registrationNumber
           kraPin = stdLevyScheduleSiteVisitDTO.kraPin
+          slProcessInstanceId=stdLevyScheduleSiteVisitDTO.processId
       }
 //             val gson = Gson()
 //        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(standardLevyFactoryVisitReportEntity) }
       return ServerResponse(HttpStatus.OK,"Site Visit Scheduled",standardLevyService.scheduleSiteVisit(standardLevyFactoryVisitReportEntity))
 
   }
+
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @PostMapping("/decisionOnSiteVisitSchedule")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun decisionOnSiteVisitSchedule(@RequestBody siteVisitReportDecisionDTO: SiteVisitReportDecisionDTO): ServerResponse
+    {
+        val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
+            taskId=siteVisitReportDecisionDTO.taskId
+            slProcessInstanceId=siteVisitReportDecisionDTO.processId
+            accentTo = siteVisitReportDecisionDTO.accentTo
+            id= siteVisitReportDecisionDTO.visitID
+            manufacturerEntity= siteVisitReportDecisionDTO.manufacturerEntity
+            scheduledVisitDate= siteVisitReportDecisionDTO.scheduledVisitDate
+
+        }
+
+        return ServerResponse(HttpStatus.OK,"Action On Schedule",standardLevyService.decisionOnSiteVisitSchedule(standardLevyFactoryVisitReportEntity))
+
+    }
 
     @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
     @PostMapping("/editCompanyDetails")
@@ -598,11 +619,26 @@ class StdLevyController(
         standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
     ): ServerResponse
     {
+//               val gson = Gson()
+//       KotlinLogging.logger { }.info { "Assigned Variables" + gson.toJson(editCompanyDTO) }
+
+        val companyProfileEntity= CompanyProfileEntity().apply {
+            id=editCompanyDTO.companyId
+            postalAddress=editCompanyDTO.postalAddress
+            physicalAddress=editCompanyDTO.physicalAddress
+            ownership=editCompanyDTO.ownership
+            companyEmail=editCompanyDTO.companyEmail
+            companyTelephone=editCompanyDTO.companyTelephone
+            yearlyTurnover=editCompanyDTO.yearlyTurnover
+        }
         val companyProfileEditEntity= CompanyProfileEditEntity().apply {
             manufactureId = editCompanyDTO.companyId
-            postalAddress = editCompanyDTO.postalAddress
-            physicalAddress = editCompanyDTO.physicalAddress
-            ownership = editCompanyDTO.ownership
+            postalAddress = editCompanyDTO.postalAddressEdit
+            physicalAddress = editCompanyDTO.physicalAddressEdit
+            ownership = editCompanyDTO.ownershipEdit
+            companyEmail = editCompanyDTO.companyEmailEdit
+            companyTelephone = editCompanyDTO.companyTelephoneEdit
+            yearlyTurnover = editCompanyDTO.yearlyTurnoverEdit
             taskType= editCompanyDTO.taskType
             assignedTo= editCompanyDTO.assignedTo
             userType= editCompanyDTO.userType
@@ -617,7 +653,7 @@ class StdLevyController(
             remarks = editCompanyDTO.remarks
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetails(companyProfileEditEntity,standardLevySiteVisitRemarks))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetails(companyProfileEntity,companyProfileEditEntity,standardLevySiteVisitRemarks))
 
     }
 
@@ -632,9 +668,12 @@ class StdLevyController(
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
             id = editCompanyDTO.companyId
-            postalAddress = editCompanyDTO.postalAddress
-            physicalAddress = editCompanyDTO.physicalAddress
-            ownership = editCompanyDTO.ownership
+            postalAddress = editCompanyDTO.postalAddressEdit
+            physicalAddress = editCompanyDTO.physicalAddressEdit
+            ownership = editCompanyDTO.ownershipEdit
+            companyEmail = editCompanyDTO.companyEmailEdit
+            companyTelephone = editCompanyDTO.companyTelephoneEdit
+            yearlyTurnover = editCompanyDTO.yearlyTurnoverEdit
             taskId = editCompanyDTO.taskId
             slBpmnProcessInstance = editCompanyDTO.processId
             assignedTo = editCompanyDTO.assignedTo
@@ -662,9 +701,12 @@ class StdLevyController(
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
             id = editCompanyDTO.companyId
-            postalAddress = editCompanyDTO.postalAddress
-            physicalAddress = editCompanyDTO.physicalAddress
-            ownership = editCompanyDTO.ownership
+            postalAddress = editCompanyDTO.postalAddressEdit
+            physicalAddress = editCompanyDTO.physicalAddressEdit
+            ownership = editCompanyDTO.ownershipEdit
+            companyEmail = editCompanyDTO.companyEmailEdit
+            companyTelephone = editCompanyDTO.companyTelephoneEdit
+            yearlyTurnover = editCompanyDTO.yearlyTurnoverEdit
             taskId = editCompanyDTO.taskId
             slBpmnProcessInstance = editCompanyDTO.processId
             assignedTo = editCompanyDTO.assignedTo
@@ -692,9 +734,12 @@ class StdLevyController(
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
             id = editCompanyDTO.companyId
-            postalAddress = editCompanyDTO.postalAddress
-            physicalAddress = editCompanyDTO.physicalAddress
-            ownership = editCompanyDTO.ownership
+            postalAddress = editCompanyDTO.postalAddressEdit
+            physicalAddress = editCompanyDTO.physicalAddressEdit
+            ownership = editCompanyDTO.ownershipEdit
+            companyEmail = editCompanyDTO.companyEmailEdit
+            companyTelephone = editCompanyDTO.companyTelephoneEdit
+            yearlyTurnover = editCompanyDTO.yearlyTurnoverEdit
             taskId = editCompanyDTO.taskId
             slBpmnProcessInstance = editCompanyDTO.processId
             assignedTo = editCompanyDTO.assignedTo
@@ -789,6 +834,7 @@ class StdLevyController(
             id= reportOnSiteVisitDTO.visitID
             assigneeId=reportOnSiteVisitDTO.assigneeId
             taskId= reportOnSiteVisitDTO.taskId
+            slProcessInstanceId= reportOnSiteVisitDTO.processId
             manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
             makeRemarks = reportOnSiteVisitDTO.makeRemarks
             userType=reportOnSiteVisitDTO.userType
@@ -908,6 +954,7 @@ class StdLevyController(
             officersFeedback = reportOnSiteVisitDTO.officersFeedback
             id = reportOnSiteVisitDTO.visitID
             taskId= reportOnSiteVisitDTO.taskId
+            slProcessInstanceId= reportOnSiteVisitDTO.processId
             assigneeId = reportOnSiteVisitDTO.assigneeId
             manufacturerEntity= reportOnSiteVisitDTO.manufacturerEntity
             userType= reportOnSiteVisitDTO.userType
@@ -941,6 +988,7 @@ class StdLevyController(
     {
         val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
             taskId=siteVisitReportDecisionDTO.taskId
+            slProcessInstanceId=siteVisitReportDecisionDTO.processId
             accentTo = siteVisitReportDecisionDTO.accentTo
             id= siteVisitReportDecisionDTO.visitID
             assigneeId=siteVisitReportDecisionDTO.assigneeId
@@ -983,6 +1031,7 @@ class StdLevyController(
     {
         val standardLevyFactoryVisitReportEntity= StandardLevyFactoryVisitReportEntity().apply {
             taskId=siteVisitReportDecisionDTO.taskId
+            slProcessInstanceId=siteVisitReportDecisionDTO.processId
             accentTo = siteVisitReportDecisionDTO.accentTo
             id= siteVisitReportDecisionDTO.visitID
             manufacturerEntity= siteVisitReportDecisionDTO.manufacturerEntity

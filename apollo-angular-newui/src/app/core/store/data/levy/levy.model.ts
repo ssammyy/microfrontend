@@ -157,8 +157,11 @@ export interface DocumentDTO{
 }
 export interface EditCompanyDTO {
     postalAddress: string;
+    postalAddressEdit: string;
     physicalAddress: string;
+    physicalAddressEdit: string;
     ownership: string;
+    ownershipEdit: string;
     companyId: number;
     closureOfOperations: string;
     companyName: string;
@@ -172,8 +175,11 @@ export interface EditCompanyDTO {
     taskId: string;
     accentTo: boolean;
     companyEmail: string;
+    companyEmailEdit: string;
     companyTelephone: string;
+    companyTelephoneEdit: string;
     yearlyTurnover : number;
+    yearlyTurnoverEdit : number;
     remarks: string;
 
 }
@@ -296,6 +302,15 @@ export interface ReportDecisionLevelOne{
     role: string;
 }
 
+export interface SiteVisitReportDecision{
+    taskId: string;
+    processId :string;
+    accentTo : boolean;
+    visitID : number;
+    manufacturerEntity: number;
+    scheduledVisitDate : Timestamp<number>;
+}
+
 export interface ReportDecisionLevelTwo{
     taskId: string;
     accentTo: boolean;
@@ -349,6 +364,7 @@ export interface PaymentDetails{
     region: number;
     regionName: string;
     amountDue: bigint;
+    monthsLate: string;
 
 }
 export interface PenaltyDetails{
@@ -368,6 +384,7 @@ export interface PenaltyDetails{
     registrationNumber: string;
     periodFrom: string;
     periodTo: string;
+    monthsLate: string;
 }
 export interface DefaulterDetails{
     id: number;

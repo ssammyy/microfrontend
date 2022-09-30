@@ -315,8 +315,7 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <input hidden formControlName="id"
-                                       [value]="selectedStandard" name="id">
+                                <input hidden formControlName="id" [ngModel]="selectedStandard" name="id">
 
 
                                 <button class="btn btn-info" type="submit">

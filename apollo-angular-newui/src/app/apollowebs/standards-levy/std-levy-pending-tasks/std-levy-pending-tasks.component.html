@@ -129,6 +129,7 @@
                                             <td>{{manufacturePendingTask.taskData.kraPin}}</td>
                                             <td>{{manufacturePendingTask.taskData.registrationNumber}}</td>
                                             <td *ngIf="manufacturePendingTask.name==='Schedule Site Visit'"><span class="badge badge-primary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
+                                            <td *ngIf="manufacturePendingTask.name==='viewSchedule'"><span class="badge badge-primary" style="width: 160px;">View Site Visit Schedule</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Prepare Report on Visit'"><span class="badge badge-info" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='Notification of Report'"><span class="badge badge-warning" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
                                             <td *ngIf="manufacturePendingTask.name==='View The Report'"><span class="badge badge-secondary" style="width: 160px;">{{manufacturePendingTask.name}}</span></td>
@@ -146,6 +147,7 @@
 <!--                                            <td *ngIf="manufacturePendingTask.taskData.status==4"><span class="badge badge-warning" style="width: 94px;">In-Active</span></td>-->
 <!--                                            <td *ngIf="manufacturePendingTask.taskData.typeOfManufacture==1"><span class="badge badge-warning">Assigned</span></td>-->
                                             <td *ngIf="manufacturePendingTask.name==='Schedule Site Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'viewPending')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
+                                            <td *ngIf="manufacturePendingTask.name==='viewSchedule'"><button (click)="onOpenModalPending(manufacturePendingTask,'viewSchedule')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='Prepare Report on Visit'"><button (click)="onOpenModalPending(manufacturePendingTask,'prepareSiteVisitReport')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='Notification of Report'"><button (click)="onOpenModalPending(manufacturePendingTask,'reportNotification1')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
                                             <td *ngIf="manufacturePendingTask.name==='View The Report'"><button (click)="onOpenModalPending(manufacturePendingTask,'managementReport')" type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> More</button></td>
@@ -256,8 +258,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -267,8 +269,8 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
@@ -276,8 +278,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
 
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{approve}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -287,21 +289,21 @@
                                                         <label for="companyEmail2">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                              id="companyEmail2" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                              id="companyEmail2" class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone2">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                              id="companyTelephone2" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                              id="companyTelephone2" class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover2">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                              id="yearlyTurnover2" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                              id="yearlyTurnover2" class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
@@ -313,7 +315,7 @@
                                                                   formControlName="remarks"
                                                                   placeholder="Remarks"></textarea>
                                                     </div>
-                                                    <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
+                                                    <input type="text" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
                                                     <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')" class="form-group col-12">
                                                         <label>Forward To</label>
                                                         <ng-select [(ngModel)]="approvedUsersTwo" formControlName="assignedTo"  class="form-control"  name="assignedTo" >
@@ -367,8 +369,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address1" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address1" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -378,29 +380,29 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal1" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal1" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyEmail22">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                               id="companyEmail22" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               id="companyEmail22" class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone22">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                               id="companyTelephone22" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               id="companyTelephone22" class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover22">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                               id="yearlyTurnover22" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               id="yearlyTurnover22" class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
@@ -409,8 +411,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner1" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner1" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{reject}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -524,8 +526,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address2" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address2" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -535,29 +537,29 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal2" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal2" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyEmail222">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                               id="companyEmail222" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               id="companyEmail222" class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone222">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                               id="companyTelephone222" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               id="companyTelephone222" class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover222">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                               id="yearlyTurnover222" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               id="yearlyTurnover222" class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
@@ -566,8 +568,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner2" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner2" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{approve}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -612,8 +614,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address3" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address3" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -623,29 +625,29 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal3" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal3" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyEmail21">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                               id="companyEmail21" class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                               id="companyEmail21" class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone21">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                               id="companyTelephone21" class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                               id="companyTelephone21" class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover21">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                               id="yearlyTurnover21" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                               id="yearlyTurnover21" class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
@@ -654,8 +656,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner3" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner3" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{reject}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -721,8 +723,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address4" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address4" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -732,29 +734,29 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal4" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal4" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyEmail23">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                             id="companyEmail23"  class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                             id="companyEmail23"  class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone23">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                            id="companyTelephone23"   class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                            id="companyTelephone23"   class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover23">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                             id="yearlyTurnover23"  class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                             id="yearlyTurnover23"  class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
@@ -763,8 +765,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner4" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner4" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{approve}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -858,8 +860,8 @@
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestPending?.taskData?.physicalAddressEdit}}"
                                                                   class="form-control"
-                                                                  id="Address5" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="Address5" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -869,29 +871,29 @@
                                                         <input type="text"
                                                                ngModel="{{actionRequestPending?.taskData?.postalAddressEdit}}"
                                                                class="form-control"
-                                                               id="postal5" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postal5" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyEmail24">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyEmailEdit}}"
-                                                             id="companyEmail24"  class="form-control" formControlName="companyEmail" name="companyEmail"
+                                                             id="companyEmail24"  class="form-control" formControlName="companyEmailEdit" name="companyEmailEdit"
                                                                value="{{actionRequestPending?.taskData?.companyEmailEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="companyTelephone24">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.companyTelephoneEdit}}"
-                                                             id="companyTelephone24"  class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                             id="companyTelephone24"  class="form-control" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                                value="{{actionRequestPending?.taskData?.companyTelephoneEdit}}">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="yearlyTurnover24">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}"
-                                                              id="yearlyTurnover24" class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                              id="yearlyTurnover24" class="form-control" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                                value="{{actionRequestPending?.taskData?.yearlyTurnoverEdit}}">
                                                     </div>
                                                     <input type="hidden" formControlName="editID"  name="editID" ngModel="{{actionRequestPending?.taskData?.editID}}" >
@@ -900,8 +902,8 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{actionRequestPending?.taskData?.ownershipEdit}}"
                                                                class="form-control"
-                                                               id="owner5" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="owner5" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  ngModel="{{reject}}" >
                                                         <input type="hidden" formControlName="processId"  name="processId" ngModel="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" ngModel="{{actionRequestPending?.taskId}}" >
@@ -946,7 +948,7 @@
                                                      class="btn btn-info btn-sm">View SL1 Form
                                             </button>
                                             <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
-                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+<!--                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>-->
 
                                         </div>
                                         <div class="container col-md-12" [hidden]="isShowSLForm">
@@ -1134,6 +1136,7 @@
                                                     <input type="hidden"  formControlName="registrationNumber" name="registrationNumber" value="{{actionRequestPending?.taskData?.registrationNumber}}" >
                                                     <input type="hidden"  formControlName="manufacturerEntity" name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
                                                     <input type="hidden"  formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
+                                                    <input type="hidden"  formControlName="processId" name="processId" value="{{actionRequestPending?.processId}}" >
                                                 </div>
                                                 <div class="col-12">
                                                     <button *ngIf="scheduleVisitFormGroup.valid" [disabled]="!scheduleVisitFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Save</button>
@@ -1429,6 +1432,547 @@
                                     <input type="hidden" name="companyID" ngModel="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
 
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="viewSchedule" tabindex="-1" role="dialog" aria-labelledby="viewScheduleExampleModalLabel" aria-hidden="true">a
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="viewScheduleExampleModalLabel"><b>View Site Visit Schedule</b></h5>
+                                    <button type="button" class="close" #closeModalScheduling data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+
+                                    <div class="modal-body">
+
+                                        <div  class="row">
+                                            <button  (click)=toggleDisplaySLForm(actionRequestPending?.taskData?.manufacturerEntity) type="button"
+                                                     class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
+                                            <button type="button" (click)=toggleCancelScheduleForm() class="btn btn-danger btn-sm">Cancel Site Visit</button>
+                                            <button type="button" (click)=toggleEditScheduleForm() class="btn btn-primary btn-sm">Edit Site Visit</button>
+                                            <button type="button" (click)=toggleConfirmScheduleForm() class="btn btn-warning btn-sm">Confirm Site Visit</button>
+
+                                        </div>
+                                        <div class="container col-md-12" [hidden]="isShowSLForm">
+                                            <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==1" class="row col-12">
+                                                <div class="col-12" >
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                            Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                        <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">All Commodities Manufactured or to be
+                                                            Manufactured(Commodities are comma separated)</div>
+                                                        <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                            <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                KSH</div>
+                                                            <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div *ngIf="actionRequestPending?.taskData?.typeOfManufacture==2" class="row col-12">
+                                                <div class="col-12" >
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Entry Number</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.entryNumber}}</div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Business</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.companyName}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Plot Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.plotNumber}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Road / Street</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.streetName}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Address</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.postalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Telephone Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.companyTelephone}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name and Business of Proprietors or
+                                                            Partners; and In the case of Companies, the Chief Executive and Directors</div>
+                                                        <div class="card-body">{{slFormDetails?.nameOfBusinessProprietor}}</div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Admin Location</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Registration Number</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.registrationNumber}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">KRA Pin</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.kraPin}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Name of Branch</div>
+                                                            <div class="card-body">{{actionRequestPending?.taskData?.branchName}}</div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Location</div>
+                                                        <div class="card-body">{{actionRequestPending?.taskData?.physicalAddress}}</div>
+                                                    </div>
+                                                    <div class="card col-12">
+                                                        <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Indicate which contracts were or undertaken (Electrical,Mechanical or Construction E/M/C)</div>
+                                                        <div class="card-body">{{slFormDetails?.commodity}}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Date upon which Contracting Commenced or will Commence</div>
+                                                            <div class="card-body">{{slFormDetails?.dateOfManufacture | date:'dd/MM/yyyy '}}</div>
+                                                        </div>
+                                                        <div class="card col-6">
+                                                            <div class="card-header" style="background-color: #a9a6a6; color: #0d0505; font-weight: bold">Total value of Manufacture in last Calender Year
+                                                                KSH</div>
+                                                            <div class="card-body">{{slFormDetails?.totalValue}}</div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="container col-md-12" [hidden]="isShowSiteCancelForm">
+
+                                            <form (ngSubmit)="cancelVisit()" [formGroup]="cancelVisitFormGroup" class="form">
+                                                <div class="col-12">
+                                                    <div class="row col-12">
+                                                        <p>Are you sure you want to cancel this Site Visit?..This action can not be reversed.</p>
+
+                                                    <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{reject}}" >
+                                                    <input type="hidden"  formControlName="manufacturerEntity" name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
+                                                    <input type="hidden"  formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
+                                                    <input type="hidden"  formControlName="processId" name="processId" value="{{actionRequestPending?.processId}}" >
+                                                </div>
+                                                <div class="col-12">
+                                                    <button  class="btn btn-sm btn-primary float-right" type="submit">Save</button>
+
+                                                </div>
+                                                </div>
+                                            </form>
+
+                                        </div>
+
+                                            <div class="container col-md-12" [hidden]="isShowSiteConfirmForm">
+
+                                                <form (ngSubmit)="confirmSiteVisit()" [formGroup]="siteConfirmFormGroup" class="form">
+                                                    <div class="col-12">
+
+                                                        <p>Are you sure you want to Confirm this Site Visit?</p>
+                                                        <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
+                                                        <input type="hidden"  formControlName="scheduledVisitDate" name="scheduledVisitDate" value="{{actionRequestPending?.taskData?.scheduledVisitDate}}" >
+                                                        <input type="hidden"  formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
+                                                        <input type="hidden"  formControlName="processId" name="processId" value="{{actionRequestPending?.processId}}" >
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <button  class="btn btn-sm btn-primary float-right" type="submit">Confirm</button>
+
+                                                    </div>
+
+                                                </form>
+
+                                            </div>
+                                        <div class="container col-md-12" [hidden]="isShowSiteEdit">
+
+                                            <form (ngSubmit)="editSiteVisit()" [formGroup]="siteEditFormGroup" class="form">
+                                                <div class="col-12">
+                                                    <div class="row col-12">
+                                                        <div class="form-group col-12">
+                                                          <label>Site Visit date is set at: <span style="color: orangered; font-weight: bold">{{actionRequestPending?.taskData?.scheduledVisitDate}}</span></label>
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label>Change Date of Visit To; <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input
+                                                                   class="form-control"   formControlName="scheduledVisitDate" name="scheduledVisitDate" type="date" required="required">
+                                                        </div>
+                                                    </div>
+
+                                                    <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
+                                                    <input type="hidden"  formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
+                                                    <input type="hidden"  formControlName="processId" name="processId" value="{{actionRequestPending?.processId}}" >
+                                                </div>
+                                                <div class="col-12">
+                                                    <button  class="btn btn-sm btn-primary float-right" type="submit">Change</button>
+
+                                                </div>
+
+                                            </form>
+
+                                        </div>
+
+                                        <div class="list-group list-group-flush">
+                                            <div class="row col-12">
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Company Name</b></h5>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.companyName}}.</p>
+                                                    </a>
+                                                </div>
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>KRA PIN</b></h5>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.kraPin}}.</p>
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                            <div class="row col-12">
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Registration Number</b></h5>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.registrationNumber}}.</p>
+                                                    </a>
+                                                </div>
+
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Postal Address</b></h5>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.postalAddress}}.</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row col-12">
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Physical Address</b></h5>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.physicalAddress}}.</p>
+                                                    </a>
+                                                </div>
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Plot Number</b></h5>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.plotNumber}}.</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row col-12">
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Company Email</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.companyEmail}}.</p>
+                                                    </a>
+                                                </div>
+
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Company Telephone</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.companyTelephone}}.</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row col-12">
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Yearly Turn-Over</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!--                                <h4 class="mt-3 mb-1"> New order for Argon Dashboard</h4>-->
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.yearlyTurnover}}.</p>
+                                                    </a>
+                                                </div>
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Business Lines</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessLineName}}.</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row col-12">
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Nature of Business</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.businessNatureName}}.</p>
+                                                    </a>
+                                                </div>
+
+                                                <div class="form-group col-6">
+                                                    <a class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Other</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.otherBusinessNatureType}}.</p>
+                                                    </a>
+                                                </div>
+
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Building Name</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.buildingName}}.</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row col-12">
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Branch Name</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.branchName}}.</p>
+                                                    </a>
+                                                </div>
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Street Name</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.streetName}}.</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row col-12">
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Director's ID Number</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.directorIdNumber}}.</p>
+                                                    </a>
+                                                </div>
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Region</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.regionName}}.</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row col-12">
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>County</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.countyName}}.</p>
+                                                    </a>
+                                                </div>
+                                                <div class="form-group col-6">
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center">
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Town</b></h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="text-sm mb-0">{{actionRequestPending?.taskData?.townName}}.</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
                             </div>
                         </div>
                     </div>
@@ -2570,6 +3114,7 @@
                                                         <input type="hidden" formControlName="role" name="role"  value="{{role}}" >
                                                         <input type="hidden" formControlName="status" name="status"  value="{{approveStatus}}" >
                                                         <input type="hidden" formControlName="taskId"  name="taskId" value="{{actionRequestPending?.taskId}}" >
+                                                        <input type="hidden" formControlName="processId"  name="taskId" value="{{actionRequestPending?.processId}}" >
                                                         <input type="hidden" formControlName="manufacturerEntity"  name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
 
                                                         <div class="modal-footer">

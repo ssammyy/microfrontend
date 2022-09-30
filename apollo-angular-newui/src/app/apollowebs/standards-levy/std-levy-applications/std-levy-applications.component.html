@@ -170,7 +170,7 @@
                                                     class="btn btn-success btn-sm">Edit Company Details
                                             </button>
                                             <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
-                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+<!--                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>-->
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1 Form
                                             </button>
@@ -237,7 +237,7 @@
                                                     class="btn btn-success btn-sm">Edit Company Details
                                             </button>
                                             <button type="button" class="btn btn-danger btn-sm">View Remarks</button>
-                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>
+<!--                                            <button type="button" class="btn btn-warning btn-sm">Close Account</button>-->
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1-C Form
                                             </button>
@@ -700,63 +700,65 @@
                                                         <input type="hidden" ngModel="{{actionRequestList?.entryNumber}}"
                                                                formControlName="entryNumber" name="entryNumber"
                                                                value="{{actionRequestList?.entryNumber}}">
-                                                        <label for="physicalAddress">Main Physical Location <span
-                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="hidden" ngModel="{{actionRequestList?.id}}"
-                                                               class="form-control"
+                                                               class="form-control" value="{{actionRequestList?.id}}"
                                                                formControlName="companyId" name="companyId"
                                                         >
+                                                        <div class="form-group col-12">
+                                                            <label for="postalAddress8">Postal Address <span
+                                                                    style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                 <input type="hidden" ngModel="{{actionRequestList?.physicalAddress}}"
+                                                        value="{{actionRequestList?.physicalAddress}}" class="form-control" formControlName="physicalAddress" name="physicalAddress" >
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestList?.physicalAddress}}"
-                                                                  class="form-control"
-                                                                  id="physicalAddress" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  class="form-control"  value="{{actionRequestList?.physicalAddress}}"
+                                                                  id="postalAddress8" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
+                                                        </div>
 
                                                     </div>
+
                                                     <div class="form-group col-12">
-                                                        <label for="postalAddress2">Company Email <span
+                                                        <label for="companyEmailEdit">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                    <input type="text" ngModel="{{actionRequestList?.companyEmail}}"
-                                                           class="form-control" formControlName="companyEmail" name="companyEmail"
-                                                           value="{{actionRequestList?.companyEmail}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.companyEmail}}"
+                                                               class="form-control" value="{{actionRequestList?.companyEmail}}" formControlName="companyEmail" name="companyEmail" >
                                                     </div>
                                                     <div class="form-group col-12">
-                                                        <label for="postalAddress2">Company Telephone <span
+                                                        <label for="companyTelephoneEdit">Company Telephone <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                     <input type="text" ngModel="{{actionRequestList?.companyTelephone}}"
-                                                           class="form-control" formControlName="companyTelephone" name="companyTelephone"
+                                                           class="form-control" id="companyTelephoneEdit" formControlName="companyTelephoneEdit" name="companyTelephoneEdit"
                                                            value="{{actionRequestList?.companyTelephone}}">
+                                                        <input type="hidden" ngModel="{{actionRequestList?.companyTelephone}}"
+                                                               class="form-control" value="{{actionRequestList?.companyTelephone}}" formControlName="companyTelephone" name="companyTelephone" >
                                                     </div>
                                                     <div class="form-group col-12">
-                                                        <label for="postalAddress2">Yearly Turnover <span
+                                                        <label for="yearlyTurnoverEdit">Yearly Turnover <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                     <input type="text" ngModel="{{actionRequestList?.yearlyTurnover}}"
-                                                           class="form-control" formControlName="yearlyTurnover" name="yearlyTurnover"
+                                                           class="form-control" id="yearlyTurnoverEdit" formControlName="yearlyTurnoverEdit" name="yearlyTurnoverEdit"
                                                            value="{{actionRequestList?.yearlyTurnover}}">
+
+                                                        <input type="hidden" ngModel="{{actionRequestList?.yearlyTurnover}}"
+                                                               class="form-control" value="{{actionRequestList?.yearlyTurnover}}" formControlName="yearlyTurnover" name="yearlyTurnover" >
                                                     </div>
-                                                    <div class="form-group col-12">
-                                                        <label for="postalAddress2">Postal Address <span
-                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <input type="text"
-                                                               ngModel="{{actionRequestList?.postalAddress}}"
-                                                               class="form-control"
-                                                               id="postalAddress2" name="postalAddress"
-                                                               formControlName="postalAddress"
-                                                               placeholder="Postal Address">
-                                                    </div>
+
+                                                    <input type="hidden" ngModel="{{actionRequestList?.ownership}}"
+                                                           class="form-control" value="{{actionRequestList?.ownership}}" formControlName="ownership" name="ownership" >
                                                     <div class="form-group col-12">
                                                         <label for="ownership">Ownership <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <ng-select id="ownership"
                                                                    ngModel="{{actionRequestList?.ownership}}"
-                                                                   formControlName="ownership" class="form-control"
-                                                                   name="ownership">
+                                                                   formControlName="ownershipEdit" class="form-control"
+                                                                   name="ownershipEdit">
                                                             <ng-option
                                                                     value="{{actionRequestList?.ownership}}">{{actionRequestList?.ownership}} {{actionRequestList?.ownership}}</ng-option>
-                                                            <ng-option value="Single_Ownership">Single Ownership
+                                                            <ng-option value="Single Ownership">Single Ownership
                                                             </ng-option>
-                                                            <ng-option value="Limited_Company">Limited Company
+                                                            <ng-option value="Limited Company">Limited Company
                                                             </ng-option>
 
                                                         </ng-select>
