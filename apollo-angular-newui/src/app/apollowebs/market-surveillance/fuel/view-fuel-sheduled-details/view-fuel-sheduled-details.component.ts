@@ -605,9 +605,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     this.sampleCollectItemsForm = this.formBuilder.group({
       productBrandName: ['', Validators.required],
+      sampleSize: ['', Validators.required],
       batchNo: null,
       batchSize: null,
-      sampleSize: ['', Validators.required],
+
     });
 
     this.sampleSubmitForm = this.formBuilder.group({
@@ -664,17 +665,17 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       remarks: ['', Validators.required],
       volumeFuelRemediated: ['', Validators.required],
       subsistenceTotalNights: ['', Validators.required],
+      subsistenceTotalNightsRate: ['', Validators.required],
       transportAirTicket: ['', Validators.required],
       transportInkm: ['', Validators.required],
     });
 
     this.remediationForm = this.formBuilder.group({
       productType: ['', Validators.required],
-      quantityOfFuel: ['', Validators.required],
+      quantityOfFuel: null,
       contaminatedFuelType: ['', Validators.required],
       applicableKenyaStandard: ['', Validators.required],
       remediationProcedure: ['', Validators.required],
-      volumeOfProductContaminated: ['', Validators.required],
       volumeAdded: ['', Validators.required],
       totalVolume: ['', Validators.required],
     });
@@ -751,13 +752,13 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   openModalAddDetails(divVal: string): void {
     const arrHead = ['scheduleRemediationInvoicePaid',
-      'assignOfficer', 'rapidTest', 'addBsNumber',
+      'assignOfficer', 'rapidTest', 'addBsNumber', 'uploadScfFiles', 'uploadReportFiles',
       'ssfAddComplianceStatus', 'scheduleRemediation',
-      'addRemediationDetails', 'notCompliantInvoice','rapidTestAddProducts'];
+      'addRemediationDetails', 'notCompliantInvoice', 'rapidTestAddProducts'];
     const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID',
-      'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER',
+      'SELECT OFFICER TO ASSIGN', 'RAPID TEST OVERALL RESULTS', 'ADD BS NUMBER', 'UPLOAD SCF FILE','UPLOAD REPORT FILE',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
-      'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED','ADD FUEL SCHEDULE DETAILS'];
+      'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED', 'ADD PRODUCT RAPID TEST DETAILS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {

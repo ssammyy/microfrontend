@@ -122,6 +122,10 @@ class MSJSONControllers(
                         fileDocSaved = msFuelDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,fuelInspectionDetail).second
                         fuelInspectionDetail.fuelReportId = fileDocSaved!!.id
                     }
+                    "SCF_FILE" -> {
+                        fileDocSaved = msFuelDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,fuelInspectionDetail).second
+                        fuelInspectionDetail.scfUploadId = fileDocSaved!!.id
+                    }
                 }
             }
             fuelInspectionDetail = msFuelDaoService.updateFuelInspectionDetails(fuelInspectionDetail, map, loggedInUser).second

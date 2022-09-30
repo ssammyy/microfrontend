@@ -70,20 +70,20 @@
                                                 <div class="list-text-accordion">
                                                     {{fuelInspection?.processStage}}</div>
                                             </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Region</div>
-                                                <div class="list-text-accordion">
-                                                    {{fuelInspection?.batchDetails?.region}}</div>
-                                            </li>
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">Region</div>-->
+<!--                                                <div class="list-text-accordion">-->
+<!--                                                    {{fuelInspection?.batchDetails?.region}}</div>-->
+<!--                                            </li>-->
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">County</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection?.batchDetails?.county}}</div>
+                                                    {{fuelInspection?.teamsDetails.countyName}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Town</div>
                                                 <div class="list-text-accordion">
-                                                    {{fuelInspection?.batchDetails?.town}}</div>
+                                                    {{fuelInspection?.townName}}</div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Year</div>
@@ -560,7 +560,7 @@
                                         <button *ngIf="fuelInspection?.rapidTestDone == false && fuelInspection?.rapidTestProducts.length != 0" (click)="openModalAddDetails('rapidTest')" mat-raised-button="" data-toggle="modal"
                                                 data-target="#myModal1"
                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">RAPID TEST</span>
+                                                class="mat-button-wrapper">OVERALL RAPID TEST</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -582,7 +582,15 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="fuelInspection?.sampleCollectionStatus == true && fuelInspection?.sampleSubmittedStatus== false" mat-raised-button="" data-toggle="modal"
+                                            <button *ngIf="fuelInspection?.sampleCollectionStatus && fuelInspection?.scfUploadId==null"
+                                                    (click)="openModalAddDetails('uploadScfFiles')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#myModal1"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPLOAD SCF</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="fuelInspection?.sampleCollectionStatus == true && fuelInspection?.sampleSubmittedStatus== false && fuelInspection?.scfUploadId!=null" mat-raised-button="" data-toggle="modal"
                                                     data-target="#sampleSubmitModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD SAMPLE SUBMITTED</span>
@@ -596,7 +604,15 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="fuelInspection?.sampleLabResults?.ssfResultsList?.complianceStatus == true && fuelInspection?.endInspectionStatus == false"
+                                            <button *ngIf="fuelInspection?.sampleLabResults?.ssfResultsList?.complianceStatus && fuelInspection?.fuelReportId==null"
+                                                    (click)="openModalAddDetails('uploadReportFiles')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#myModal1"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPLOAD REPORT</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="fuelInspection?.sampleLabResults?.ssfResultsList?.complianceStatus && fuelInspection?.endInspectionStatus == false && fuelInspection?.fuelReportId!=null"
                                                     (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END FUEL</span>
@@ -604,22 +620,23 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button *ngIf="fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded && fuelInspection?.remediationScheduledStatus==false
-                                            && fuelInspection?.sampleLabResults?.ssfResultsList?.complianceStatus" (click)="openModalAddDetails('scheduleRemediation')" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#myModal1"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">SCHEDULE REMEDIATION DATE</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button *ngIf="fuelInspection.bsNumberStatus && fuelInspection.compliantStatusAdded && fuelInspection?.remediationScheduledStatus
-                                            && fuelInspection.sampleLabResults.ssfResultsList.complianceStatus && fuelInspection.remendiationCompleteStatus == false" (click)="openModalAddDetails('addRemediationDetails')" mat-raised-button="" data-toggle="modal"
-                                                    data-target="#myModal1"
-                                                    class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">REMEDIATION</span>
-                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
+<!--                                            <button *ngIf="fuelInspection?.bsNumberStatus && fuelInspection?.compliantStatusAdded && fuelInspection?.remediationScheduledStatus==false-->
+<!--                                            && fuelInspection?.sampleLabResults?.ssfResultsList?.complianceStatus" (click)="openModalAddDetails('scheduleRemediation')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                    data-target="#myModal1"-->
+<!--                                                    class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                    class="mat-button-wrapper">SCHEDULE REMEDIATION DATE</span>-->
+<!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                                                <div class="mat-button-focus-overlay"></div>-->
+<!--                                            </button>-->
+<!--                                            <button *ngIf="fuelInspection.bsNumberStatus && fuelInspection.compliantStatusAdded && fuelInspection?.remediationScheduledStatus-->
+<!--                                            && fuelInspection.sampleLabResults.ssfResultsList.complianceStatus && fuelInspection.remendiationCompleteStatus == false"-->
+<!--                                                    (click)="openModalAddDetails('addRemediationDetails')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                    data-target="#myModal1"-->
+<!--                                                    class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                    class="mat-button-wrapper">REMEDIATION</span>-->
+<!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                                                <div class="mat-button-focus-overlay"></div>-->
+<!--                                            </button>-->
                                             <button  *ngIf="fuelInspection.bsNumberStatus && fuelInspection.compliantStatusAdded &&
                                             fuelInspection.sampleLabResults.ssfResultsList.complianceStatus == false && fuelInspection?.fuelRemediation == null"
                                                      (click)="openModalAddDetails('notCompliantInvoice')" mat-raised-button="" data-toggle="modal"
@@ -647,7 +664,7 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="fuelInspection.remendiationCompleteStatus"
+                                            <button *ngIf="fuelInspection.remendiationCompleteStatus && fuelInspection?.fuelReportId==null"
                                                     (click)="openModalAddDetails('uploadReportFiles')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -656,7 +673,9 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button *ngIf="fuelInspection.remendiationCompleteStatus && fuelInspection?.endInspectionStatus == false"
+
+                                            <button *ngIf="fuelInspection.remendiationCompleteStatus &&
+                                            fuelInspection?.endInspectionStatus == false && fuelInspection?.fuelReportId!=null"
                                                     (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END FUEL</span>
@@ -724,7 +743,7 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="rapidTestStatus"><b>Select Test Results</b></label>
+                                        <label for="rapidTestStatus"><b>Select Overall Test Results</b></label>
                                         <mat-form-field id="rapidTestStatus">
                                             <mat-select placeholder="Please Select an option"
                                                         formControlName="rapidTestStatus"
@@ -756,9 +775,9 @@
                                             <input id="productName" matInput type="text" placeholder="Please Enter Product Name" formControlName="productName" name="productName"
                                                    [class.is-invalid]="formRapidTestProductForm.productName.invalid && formRapidTestProductForm.productName.touched">
                                         </mat-form-field>
-                                        <label for="exportMarkerTest"><b>Export Marker Test</b></label>
+                                        <label for="exportMarkerTest"><b>Export Marker Test Percentage</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="exportMarkerTest" matInput type="text" placeholder="Please Enter Export Marker Test" formControlName="exportMarkerTest" name="exportMarkerTest"
+                                            <input id="exportMarkerTest" matInput type="number" min="0" maxlength="2" placeholder="Please Enter Export Marker Test Percentage" formControlName="exportMarkerTest" name="exportMarkerTest"
                                                    [class.is-invalid]="formRapidTestProductForm.exportMarkerTest.invalid && formRapidTestProductForm.exportMarkerTest.touched">
                                         </mat-form-field>
                                         <label for="exportMarkerTestStatus"><b>Select Export Marker Test Results</b></label>
@@ -771,9 +790,9 @@
                                                 <mat-option [value]="0">FAIL</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="domesticKeroseneMarkerTest"><b>Domestic Kerosene Marker Test</b></label>
+                                        <label for="domesticKeroseneMarkerTest"><b>Domestic Kerosene Marker Test Percentage</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="domesticKeroseneMarkerTest" matInput type="text" placeholder="Please Enter Export Marker Test" formControlName="domesticKeroseneMarkerTest" name="domesticKeroseneMarkerTest"
+                                            <input id="domesticKeroseneMarkerTest" matInput type="number" min="0" maxlength="2" placeholder="Please Enter Export Marker Test Percentage" formControlName="domesticKeroseneMarkerTest" name="domesticKeroseneMarkerTest"
                                                    [class.is-invalid]="formRapidTestProductForm.domesticKeroseneMarkerTest.invalid && formRapidTestProductForm.domesticKeroseneMarkerTest.touched">
                                         </mat-form-field>
                                         <label for="domesticKeroseneMarkerTestStatus"><b>Select Domestic Kerosene Marker Test Results</b></label>
@@ -786,9 +805,9 @@
                                                 <mat-option [value]="0">FAIL</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="sulphurMarkerTest"><b>Sulphur Marker Test</b></label>
+                                        <label for="sulphurMarkerTest"><b>Sulphur Marker Test Percentage</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="sulphurMarkerTest" matInput type="text" placeholder="Please Enter Export Marker Test" formControlName="sulphurMarkerTest" name="sulphurMarkerTest"
+                                            <input id="sulphurMarkerTest" matInput type="number" min="0" maxlength="2" placeholder="Please Enter Export Marker Test Percentage" formControlName="sulphurMarkerTest" name="sulphurMarkerTest"
                                                    [class.is-invalid]="formRapidTestProductForm.sulphurMarkerTest.invalid && formRapidTestProductForm.sulphurMarkerTest.touched">
                                         </mat-form-field>
                                         <label for="sulphurMarkerTestStatus"><b>Select Sulphur Marker Test Results</b></label>
@@ -939,6 +958,11 @@
                                             <input id="subsistenceTotalNights" matInput type="number" min="1"  placeholder="Please Enter Subsistence Total Nights" formControlName="subsistenceTotalNights" name="subsistenceTotalNights"
                                                    [class.is-invalid]="formNotCompliantInvoiceForm.subsistenceTotalNights.invalid && formNotCompliantInvoiceForm.subsistenceTotalNights.touched">
                                         </mat-form-field>
+                                        <label for="subsistenceTotalNightsRate"><b>Subsistence Total Nights</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="subsistenceTotalNightsRate" matInput type="number" min="1"  placeholder="Please Enter Subsistence Total Nights rate" formControlName="subsistenceTotalNightsRate" name="subsistenceTotalNightsRate"
+                                                   [class.is-invalid]="formNotCompliantInvoiceForm.subsistenceTotalNightsRate.invalid && formNotCompliantInvoiceForm.subsistenceTotalNightsRate.touched">
+                                        </mat-form-field>
                                         <label for="remarks"><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarksrmediatVolume" matInput type="text"
@@ -961,30 +985,32 @@
                                             <input id="productType" matInput type="text" placeholder="Please Enter Product Type" formControlName="productType" name="productType"
                                                    [class.is-invalid]="formRemediationForm.productType.invalid && formRemediationForm.productType.touched">
                                         </mat-form-field>
-                                        <label for="quantityOfFuel"><b>Quantity Of Fuel</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="quantityOfFuel" matInput type="text"  placeholder="Please Enter Quantity Of Fuel" formControlName="quantityOfFuel" name="quantityOfFuel"
-                                                   [class.is-invalid]="formRemediationForm.quantityOfFuel.invalid && formRemediationForm.quantityOfFuel.touched">
-                                        </mat-form-field>
+                                        <div *ngIf="fuelInspection.fuelRemediation.invoiceCreated==false">
+                                            <label for="quantityOfFuel"><b>Quantity Of Fuel</b></label>
+                                            <mat-form-field class="example-full-width">
+                                                <input id="quantityOfFuel" matInput type="text"  placeholder="Please Enter Quantity Of Fuel" formControlName="quantityOfFuel" name="quantityOfFuel"
+                                                       [class.is-invalid]="formRemediationForm.quantityOfFuel.invalid && formRemediationForm.quantityOfFuel.touched">
+                                            </mat-form-field>
+                                        </div>
                                         <label for="contaminatedFuelType"><b>Contaminated Fuel Type</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="contaminatedFuelType" matInput type="text"  placeholder="Please Enter Contaminated Fuel Type" formControlName="contaminatedFuelType" name="contaminatedFuelType"
                                                    [class.is-invalid]="formRemediationForm.contaminatedFuelType.invalid && formRemediationForm.contaminatedFuelType.touched">
                                         </mat-form-field>
                                         <label for="applicableKenyaStandard"><b>Applicable Kenya Standard</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="applicableKenyaStandard" matInput type="text"  placeholder="Please Enter Applicable Kenya Standard" formControlName="applicableKenyaStandard" name="applicableKenyaStandard"
-                                                   [class.is-invalid]="formRemediationForm.applicableKenyaStandard.invalid && formRemediationForm.applicableKenyaStandard.touched">
+                                        <mat-form-field id="applicableKenyaStandard">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="applicableKenyaStandard"
+                                                        [class.is-invalid]="formRemediationForm.applicableKenyaStandard.invalid && formRemediationForm.applicableKenyaStandard.touched"
+                                                        name="applicableKenyaStandard">
+                                                <mat-option [value]="'KS EAS 158:2019'">KS EAS 158:2019</mat-option>
+                                                <mat-option [value]="'KS EAS 177:2019'">KS EAS 177:2019</mat-option>
+                                            </mat-select>
                                         </mat-form-field>
-                                        <label for="remediationProcedure"><b>Remediation Procedure</b></label>
+                                        <label for="remediationProcedure"><b>Remediation Method</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="remediationProcedure" matInput type="text"  placeholder="Please Enter Remediation Procedure" formControlName="remediationProcedure" name="remediationProcedure"
                                                    [class.is-invalid]="formRemediationForm.remediationProcedure.invalid && formRemediationForm.remediationProcedure.touched">
-                                        </mat-form-field>
-                                        <label for="volumeOfProductContaminated"><b>Volume Of Product Contaminated</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="volumeOfProductContaminated" matInput type="number"  placeholder="Please Enter Volume Of Product Contaminated" formControlName="volumeOfProductContaminated" name="volumeOfProductContaminated"
-                                                   [class.is-invalid]="formRemediationForm.volumeOfProductContaminated.invalid && formRemediationForm.volumeOfProductContaminated.touched">
                                         </mat-form-field>
                                         <label for="volumeAdded"><b>Volume Added</b></label>
                                         <mat-form-field class="example-full-width">
@@ -1081,6 +1107,21 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'uploadScfFiles')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label ><b>Upload Report Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                                         [fileslimit]="1" accept=".pdf"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
 
@@ -1146,8 +1187,13 @@
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'uploadFiles')" mat-raised-button type="button" class="btn btn-success"
+                    <button *ngIf="(currDiv == 'uploadReportFiles')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveFilesResults('FUEL_REPORT_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadScfFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('SCF_FILE');"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -1369,25 +1415,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>BATCH NO</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="batchNo" name="batchNo" >
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>BATCH SIZE</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="batchSize" name="batchSize" required>
-                                    </div>
-                                </div>
-
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SAMPLE SIZE</b> </label>
@@ -1402,6 +1429,24 @@
                                     </div>
                                 </div>
 
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>BATCH NO</b> </label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="batchNo" name="batchNo" >
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>BATCH SIZE</b></label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="batchSize" name="batchSize">
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col">

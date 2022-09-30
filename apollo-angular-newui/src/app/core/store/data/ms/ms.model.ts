@@ -762,6 +762,7 @@ export class CompliantRemediationDto {
     remarks: string;
     volumeFuelRemediated: number;
     subsistenceTotalNights: number;
+    subsistenceTotalNightsRate: number;
     transportAirTicket: number;
     transportInkm: number;
 }
@@ -820,6 +821,7 @@ export class FuelInspectionDto {
     timelineOverDue: boolean;
     referenceNumber: string;
     company: string;
+    townName: string;
     petroleumProduct: string;
     physicalLocation: string;
     inspectionDateFrom: Date;
@@ -828,14 +830,17 @@ export class FuelInspectionDto {
     assignedOfficerStatus: boolean;
     rapidTestDone: boolean;
     sampleCollectionStatus: boolean;
+    scfUploadId: bigint;
     sampleSubmittedStatus: boolean;
     bsNumberStatus: boolean;
+    fuelReportId: bigint;
     compliantStatusAdded: boolean;
     remediationScheduledStatus: boolean;
     remendiationCompleteStatus: boolean;
     proFormaInvoiceStatus: boolean;
     endInspectionStatus: boolean;
     batchDetails: FuelBatchDetailsDto;
+    teamsDetails: TeamsFuelDetailsDto;
     officersList: MsUsersDto[];
     remarksDetails: MSRemarksDto[];
     officersAssigned: MsUsersDto;

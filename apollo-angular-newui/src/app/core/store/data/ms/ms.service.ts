@@ -2039,7 +2039,7 @@ export class MsService {
             .set('batchReferenceNo', batchReferenceNumber)
             .set('teamsReferenceNo', teamsReferenceNo)
             .set('countyReferenceNo', countyReferenceNo);
-        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+        return this.http.post<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
             }),
