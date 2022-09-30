@@ -160,6 +160,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
     toggleDisplayApproveEditRequest(){
       this.isShowApproveRequestForm=!this.isShowApproveRequestForm;
         this.isShowCompanyRemarks=true;
+        this.isShowCompanyDetails=true;
       this.isShowRejectRequestForm=true;
       this.isShowDocumentsTab=true;
         this.isShowRejectForm2 = true;
@@ -171,6 +172,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         this.isShowRejectRequestForm=!this.isShowRejectRequestForm;
         this.isShowApproveRequestForm=true;
         this.isShowDocumentsTab=true;
+        this.isShowCompanyDetails=true;
         this.isShowRejectForm2 = true;
         this.isShowApprovalForm2 = true;
         this.isShowApprovalForm1= true;
@@ -183,6 +185,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         this.isShowSiteCancelForm = !this.isShowSiteCancelForm;
         this.isShowSiteEdit= true;
         this.isShowSiteConfirmForm= true;
+        this.isShowCompanyDetails= true;
         this.isShowScheduleForm= true;
         this.isShowReportForm= true;
         this.isShowRemarksTab= true;
@@ -797,6 +800,10 @@ export class StdLevyPendingTasksComponent implements OnInit {
       if (mode === 'confirmDetails') {
           this.actionRequestPending = manufacturePendingTask;
           button.setAttribute('data-target', '#confirmDetails');
+          // this.approveCompanyLevelOneFormGroup.patchValue(
+          //     {
+          //
+          //     });
       }
       if (mode === 'approveDetails') {
           this.actionRequestPending = manufacturePendingTask;

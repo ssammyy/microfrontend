@@ -196,6 +196,9 @@ export interface ConfirmEditCompanyDTO {
     postalAddress: string;
     physicalAddress: string;
     ownership: string;
+    companyTelephone: string;
+    yearlyTurnover: string;
+    companyEmail: string;
     companyId: number;
     manufactureId: number
     closureOfOperations: string;

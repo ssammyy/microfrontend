@@ -705,16 +705,29 @@
                                                                formControlName="companyId" name="companyId"
                                                         >
                                                         <div class="form-group col-12">
-                                                            <label for="postalAddress8">Postal Address <span
+                                                            <label for="physicalAddressEdits">Physical Address <span
                                                                     style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                  <input type="hidden" ngModel="{{actionRequestList?.physicalAddress}}"
                                                         value="{{actionRequestList?.physicalAddress}}" class="form-control" formControlName="physicalAddress" name="physicalAddress" >
                                                         <textarea type="text"
                                                                   ngModel="{{actionRequestList?.physicalAddress}}"
                                                                   class="form-control"  value="{{actionRequestList?.physicalAddress}}"
-                                                                  id="postalAddress8" name="physicalAddressEdit"
+                                                                  id="physicalAddressEdits" name="physicalAddressEdit"
                                                                   formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
+                                                        </div>
+
+                                                        <div class="form-group col-12">
+                                                            <label for="postalAddress8">Postal Address <span
+                                                                    style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <input type="hidden" ngModel="{{actionRequestList?.postalAddress}}"
+                                                                   value="{{actionRequestList?.postalAddress}}" class="form-control" formControlName="postalAddress" name="postalAddress" >
+                                                            <textarea type="text"
+                                                                      ngModel="{{actionRequestList?.postalAddress}}"
+                                                                      class="form-control"  value="{{actionRequestList?.postalAddress}}"
+                                                                      id="postalAddress8" name="postalAddressEdit"
+                                                                      formControlName="postalAddressEdit"
+                                                                      placeholder="Postal Address"></textarea>
                                                         </div>
 
                                                     </div>
@@ -722,6 +735,9 @@
                                                     <div class="form-group col-12">
                                                         <label for="companyEmailEdit">Company Email <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{actionRequestList?.companyEmail}}"
+                                                               class="form-control" id="companyEmailEdit" formControlName="companyEmailEdit" name="companyEmailEdit"
+                                                               value="{{actionRequestList?.companyEmail}}">
                                                         <input type="hidden" ngModel="{{actionRequestList?.companyEmail}}"
                                                                class="form-control" value="{{actionRequestList?.companyEmail}}" formControlName="companyEmail" name="companyEmail" >
                                                     </div>
@@ -830,14 +846,15 @@
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="hidden"
                                                                ngModel="{{editedCompanyData?.manufactureId}}"
+                                                               value="{{editedCompanyData?.manufactureId}}"
                                                                class="form-control"
                                                                formControlName="companyId" name="companyId"
                                                         >
                                                         <textarea type="text"
                                                                   ngModel="{{editedCompanyData?.physicalAddress}}"
                                                                   class="form-control"
-                                                                  id="physicalAddressx" name="physicalAddress"
-                                                                  formControlName="physicalAddress"
+                                                                  id="physicalAddressx" name="physicalAddressEdit"
+                                                                  formControlName="physicalAddressEdit"
                                                                   placeholder="Main Physical Location"></textarea>
 
                                                     </div>
@@ -845,19 +862,54 @@
                                                         <label for="postalAddresss">Postal Address <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text"
+                                                               value="{{editedCompanyData?.postalAddress}}"
                                                                ngModel="{{editedCompanyData?.postalAddress}}"
                                                                class="form-control"
-                                                               id="postalAddresss" name="postalAddress"
-                                                               formControlName="postalAddress"
+                                                               id="postalAddresss" name="postalAddressEdit"
+                                                               formControlName="postalAddressEdit"
                                                                placeholder="Postal Address">
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label for="ownerships">Ownership <span
                                                                 style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <input type="text" ngModel="{{editedCompanyData?.ownership}}"
+                                                               value="{{editedCompanyData?.ownership}}"
                                                                class="form-control"
-                                                               id="ownerships" name="ownership"
-                                                               formControlName="ownership" placeholder="OwnerShip">
+                                                               id="ownerships" name="ownershipEdit"
+                                                               formControlName="ownershipEdit" placeholder="OwnerShip">
+
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="yearlyTurnoverEdits">Yearly Turnover <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{editedCompanyData?.yearlyTurnover}}"
+                                                               value="{{editedCompanyData?.yearlyTurnover}}"
+                                                               class="form-control"
+                                                               id="yearlyTurnoverEdits" name="yearlyTurnoverEdit"
+                                                               formControlName="yearlyTurnoverEdit" placeholder="Turn Over">
+
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="yearlyTurnoverEdits">Company Telephone <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{editedCompanyData?.companyTelephone}}"
+                                                               value="{{editedCompanyData?.companyTelephone}}"
+                                                               class="form-control"
+                                                               id="companyTelephoneEdits" name="companyTelephoneEdit"
+                                                               formControlName="companyTelephoneEdit" placeholder="Turn Over">
+
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="companyEmailEdits">Company Email <span
+                                                                style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input type="text" ngModel="{{editedCompanyData?.companyEmail}}"
+                                                               value="{{editedCompanyData?.companyEmail}}"
+                                                               class="form-control"
+                                                               id="companyEmailEdits" name="companyEmailEdit"
+                                                               formControlName="companyEmailEdit" placeholder="Email">
 
 
                                                     </div>
