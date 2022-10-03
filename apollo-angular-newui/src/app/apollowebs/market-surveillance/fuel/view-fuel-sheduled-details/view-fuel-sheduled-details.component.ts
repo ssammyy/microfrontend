@@ -579,11 +579,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       perPage: 20,
     },
   };
-  private addLabParamStatus: boolean;
-  private scfParamSelected: number;
-  private ssfSelectedID: number;
-  private scfParamSelectedName: string;
-  private selectedSSFDetails: SampleSubmissionDto;
+  addLabParamStatus: boolean;
+  public scfParamSelected: number;
+  public ssfSelectedID: number;
+  public scfParamSelectedName: string;
+  public selectedSSFDetails: SampleSubmissionDto;
 
 
 
