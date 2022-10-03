@@ -484,7 +484,6 @@ export class MsService {
        test101.officersList = testUserList;
        test101.officersAssigned = test101MSUserDetails;
        test101.sampleCollected = test101MSSampleCollectDetails;
-       test101.sampleSubmitted = test101SampleSubmissionDto;
        test101.sampleLabResults = test101LabResultsDto;
 
 
@@ -2286,6 +2285,56 @@ export class MsService {
         // console.log(da/ta);
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.END_INSPECTION);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
+        return this.http.put<FuelInspectionDto>(url, null, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msFuelInspectionEndSampleSubmissionAdding(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+    ): Observable<FuelInspectionDto> {
+        // console.log(da/ta);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.END_SSF_ADDING_INSPECTION);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
+        return this.http.put<FuelInspectionDto>(url, null, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msFuelInspectionEndSSFAddingBsNumber(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+    ): Observable<FuelInspectionDto> {
+        // console.log(da/ta);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.END_SSF_ADDING_BS_NUMBER_INSPECTION);
         const params = new HttpParams()
             .set('referenceNo', referenceNumber)
             .set('batchReferenceNo', batchReferenceNumber)

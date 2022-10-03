@@ -23,6 +23,18 @@ class MsFuelInspectionRapidTestProductsEntity : Serializable {
     var exportMarkerTest: String? = null
 
     @Basic
+    @Column(name = "SAMPLE_SIZE")
+    var sampleSize: String? = null
+
+    @Basic
+    @Column(name = "BATCH_SIZE")
+    var batchSize: String? = null
+
+    @Basic
+    @Column(name = "BATCH_NUMBER")
+    var batchNumber: String? = null
+
+    @Basic
     @Column(name = "DOMESTIC_KEROSENE_MARKER_TEST")
     var domesticKeroseneMarkerTest: String? = null
 

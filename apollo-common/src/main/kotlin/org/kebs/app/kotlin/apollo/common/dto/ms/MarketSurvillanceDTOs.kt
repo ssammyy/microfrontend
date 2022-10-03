@@ -134,8 +134,9 @@ data class FuelInspectionDto(
         var officersAssigned: MsUsersDto? = null,
         var rapidTest: FuelEntityRapidTestDto? = null,
         var rapidTestProducts: List<RapidTestProductsDetailsDto>? = null,
+        var fuelUploadedFiles: List<FuelFilesFoundDto>? = null,
         var sampleCollected: SampleCollectionDto? = null,
-        var sampleSubmitted: SampleSubmissionDto? = null,
+        var sampleSubmitted: List<SampleSubmissionDto>? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
         var fuelRemediation: FuelRemediationDto? = null,
 )
@@ -382,8 +383,9 @@ data class SampleCollectionDto(
 data class RapidTestProductsDto(
         var id: Long?= null,
         var productName: String?= null,
-        var exportMarkerTest: String?= null,
-        var domesticKeroseneMarkerTest: String?= null,
+        var sampleSize: String?= null,
+        var batchSize: String?= null,
+        var batchNumber: String?= null,
         var sulphurMarkerTest: String?= null,
         var exportMarkerTestStatus: Int?= null,
         var domesticKeroseneMarkerTestStatus: Int?= null,
@@ -564,6 +566,7 @@ data class SampleSubmissionDto(
         var disposal : String? = null,
         var remarks : String? = null,
         var sampleCollectionNumber : Long? = null,
+        var sampleCollectionProduct : Long? = null,
         var bsNumber : String? = null,
         var parametersList: List<SampleSubmissionItemsDto>? = null,
 )
@@ -590,6 +593,8 @@ data class BSNumberSaveDto(
         var bsNumber: String,
         @NotNull(message = "Required field")
         var submittedDate: Date,
+        @NotNull(message = "Required field")
+        var ssfID: Long,
         var remarks: String? = null,
 )
 
@@ -651,6 +656,13 @@ data class ComplaintsFilesFoundDto(
 )
 
 data class WorkPlanFilesFoundDto(
+        var id: Long? = null,
+        var fileName: String? = null,
+        var documentType: String? = null,
+        var fileContentType: String? = null,
+)
+
+data class FuelFilesFoundDto(
         var id: Long? = null,
         var fileName: String? = null,
         var documentType: String? = null,

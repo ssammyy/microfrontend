@@ -2,8 +2,8 @@ import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import swal from 'sweetalert2';
 import {
   BatchFileFuelSaveDto,
-  BSNumberSaveDto,
-  CompliantRemediationDto,
+  BSNumberSaveDto, ComplaintsFilesFoundDto,
+  CompliantRemediationDto, FuelBatchDetailsDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
   FuelInspectionDto,
@@ -108,7 +108,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-        // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+        {name: 'addSSf', title: '<i class="btn btn-sm btn-primary">ADD SSF</i>'},
       ],
       position: 'right', // left|right
     },
@@ -162,6 +162,59 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       perPage: 20,
     },
   };
+  public settingsSampleSubmitted = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW SSF DETAILS</i>'},
+        {name: 'addBSNumber', title: '<i class="btn btn-sm btn-primary">ADD BS NUMBER</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      nameProduct: {
+        title: 'PRODUCT BRAND NAME',
+        type: 'string',
+        filter: false,
+      },
+      fileRefNumber: {
+        title: 'FILE REF NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      disposal: {
+        title: 'DISPOSAL',
+        type: 'string',
+        filter: false,
+      },
+      bsNumber: {
+        title: 'BS NUMBER',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
   public settingsRapidTestProducts = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
@@ -193,33 +246,28 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      exportMarkerTest: {
-        title: 'EXPORT MARKER TEST',
-        type: 'string',
-        filter: false,
-      },
       exportMarkerTestStatus: {
-        title: 'TEST RESULTS',
-        type: 'string',
-        filter: false,
-      },
-      domesticKeroseneMarkerTest: {
-        title: 'DOMESTIC KEROSENE MARKER TEST',
+        title: 'EXPORT MARKER TEST COMPLIANCE RESULTS',
         type: 'string',
         filter: false,
       },
       domesticKeroseneMarkerTestStatus: {
-        title: 'TEST RESULTS',
+        title: 'DOMESTIC KEROSENE MARKER COMPLIANCE TEST RESULTS',
         type: 'string',
         filter: false,
       },
       sulphurMarkerTest: {
-        title: 'SULPHUR MARKER TEST',
+        title: 'SULPHUR MARKER (%) TEST',
         type: 'string',
         filter: false,
       },
       sulphurMarkerTestStatus: {
-        title: 'TEST RESULTS',
+        title: 'SULPHUR MARKER COMPLIANCE TEST RESULTS',
+        type: 'string',
+        filter: false,
+      },
+      overallComplianceStatus: {
+        title: 'OVERALL COMPLIANCE TEST RESULTS',
         type: 'string',
         filter: false,
       },
@@ -531,6 +579,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       perPage: 20,
     },
   };
+  private addLabParamStatus: boolean;
+  private scfParamSelected: number;
+  private ssfSelectedID: number;
+  private scfParamSelectedName: string;
+  private selectedSSFDetails: SampleSubmissionDto;
 
 
 
@@ -580,12 +633,14 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     this.rapidTestProductForm = this.formBuilder.group({
       productName: ['', Validators.required],
-      exportMarkerTest: ['', Validators.required],
-      domesticKeroseneMarkerTest: ['', Validators.required],
+      sampleSize: ['', Validators.required],
       sulphurMarkerTest: ['', Validators.required],
       exportMarkerTestStatus: ['', Validators.required],
       domesticKeroseneMarkerTestStatus: ['', Validators.required],
       sulphurMarkerTestStatus: ['', Validators.required],
+      overallComplianceStatus: ['', Validators.required],
+      batchSize: null,
+      batchNumber: null,
       rapidTestRemarks: null,
     });
 
@@ -632,6 +687,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       disposal: ['', Validators.required],
       remarks: ['', Validators.required],
       sampleCollectionNumber: ['', Validators.required],
+      sampleCollectionProduct: ['', Validators.required],
     });
 
 
@@ -642,6 +698,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     this.sampleSubmitBSNumberForm = this.formBuilder.group({
       bsNumber: ['', Validators.required],
+      ssfID: ['', Validators.required],
       submittedDate: ['', Validators.required],
       remarks: ['', Validators.required],
     });
@@ -756,7 +813,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       'ssfAddComplianceStatus', 'scheduleRemediation',
       'addRemediationDetails', 'notCompliantInvoice', 'rapidTestAddProducts'];
     const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID',
-      'SELECT OFFICER TO ASSIGN', 'RAPID TEST OVERALL RESULTS', 'ADD BS NUMBER', 'UPLOAD SCF FILE','UPLOAD REPORT FILE',
+      'SELECT OFFICER TO ASSIGN', 'RAPID TEST OVERALL RESULTS', 'ADD BS NUMBER', 'UPLOAD SCF FILE', 'UPLOAD REPORT FILE',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
       'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED', 'ADD PRODUCT RAPID TEST DETAILS'];
 
@@ -1210,13 +1267,69 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     // }
   }
 
+  onClickSaveEndSSFAdding() {
+    // if (valid) {
+      this.SpinnerService.show();
+      // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+      this.msService.msFuelInspectionEndSampleSubmissionAdding(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+      ).subscribe(
+          (data: any) => {
+            this.fuelInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FUEL INSPECTION UPDATED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    // }
+  }
+
+  onClickSaveEndSSFAddingBsNumber() {
+    // if (valid) {
+      this.SpinnerService.show();
+      // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+      this.msService.msFuelInspectionEndSSFAddingBsNumber(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+      ).subscribe(
+          (data: any) => {
+            this.fuelInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FUEL INSPECTION UPDATED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    // }
+  }
+
   onClickAddDataSampleCollectItems() {
-    this.dataSaveSampleCollectItems = this.sampleCollectItemsForm.value;
-    this.dataSaveSampleCollectItemsList.push(this.dataSaveSampleCollectItems);
-    this.sampleCollectItemsForm?.get('productBrandName')?.reset();
-    this.sampleCollectItemsForm?.get('batchNo')?.reset();
-    this.sampleCollectItemsForm?.get('batchSize')?.reset();
-    this.sampleCollectItemsForm?.get('sampleSize')?.reset();
+    const products = this.fuelInspection.rapidTestProducts;
+    for (let i = 0; i < products.length; i++) {
+      if (products[i].overallComplianceStatus !== true) {
+        const scfItems = new SampleCollectionItemsDto();
+        scfItems.productBrandName = products[i].productName;
+        scfItems.batchNo = products[i].batchNumber;
+        scfItems.batchSize = products[i].batchSize;
+        scfItems.sampleSize = products[i].sampleSize;
+        this.dataSaveSampleCollectItemsList.push(scfItems);
+      }
+    }
+
 
   }
 
@@ -1249,7 +1362,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   goBack() {
     console.log('TEST 101' + this.fuelInspection.batchDetails.referenceNumber);
-    this.router.navigate([`/epra`, this.fuelInspection.batchDetails.referenceNumber]);
+    this.router.navigate([`/epra/details/`,  this.batchReferenceNumber, this.teamsReferenceNo, this.countyReferenceNo]);
   }
 
   viewLIMSPDFRecord(data: LIMSFilesFoundDto, bsNumber: string) {
@@ -1295,6 +1408,59 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     // $('#myModal1').modal('show');
     // this.openModalAddDetails('assignOfficer')
     // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
+  }
+
+  saveSSFRecord(data: SampleCollectionItemsDto) {
+    this.scfParamSelected = data.id;
+    this.scfParamSelectedName = data.productBrandName;
+    this.addLabParamStatus = true;
+    window.$('#sampleSubmitModal').modal('show');
+  }
+
+  public onCustomSCFAction(event: any): void {
+    switch (event.action) {
+      case 'addSSf':
+        this.saveSSFRecord(event.data);
+        break;
+    }
+  }
+
+  viewSSFRecord(data: SampleSubmissionDto) {
+    this.sampleSubmitForm.patchValue(data);
+    const paramDetails = data.parametersList;
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    }
+    this.sampleSubmitForm.disable();
+    this.addLabParamStatus = false;
+    window.$('#sampleSubmitModal').modal('show');
+  }
+
+  addSSFBsNumberRecord(data: SampleSubmissionDto) {
+    this.currDivLabel = `ADD BS NUMBER FOR FILE REFERENCE NUMBER # ${data.fileRefNumber}`;
+    this.currDiv = 'addBsNumber';
+    this.ssfSelectedID = data.id;
+
+    window.$('#myModal1').modal('show');
+  }
+
+  onClickCloseSSF() {
+    this.sampleSubmitForm.reset();
+    this.sampleSubmitForm.enable();
+    this.addLabParamStatus = true;
+    this.dataSaveSampleSubmitParamList = [];
+  }
+
+
+  public onCustomSSFAction(event: any): void {
+    switch (event.action) {
+      case 'viewRecord':
+        this.viewSSFRecord(event.data);
+        break;
+      case 'addBSNumber':
+        this.addSSFBsNumberRecord(event.data);
+        break;
+    }
   }
 
   public onCustomLIMSPDFAction(event: any, bsNumber: string): void {
@@ -1358,6 +1524,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     } else {
       this.msService.showError('NO FILE IS UPLOADED FOR SAVING');
     }
+  }
+
+  viewFuelFileSaved(data: ComplaintsFilesFoundDto) {
+    this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
   }
 
 }

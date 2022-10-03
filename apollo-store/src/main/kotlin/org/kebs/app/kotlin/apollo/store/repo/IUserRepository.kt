@@ -151,7 +151,7 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     fun findOfficerUsersByRoleFromUserDetails(
         @Param("roleId") roleId: Long,
         @Param("status") status: Int
-    ): List<UsersEntity>?
+    ): MutableList<UsersEntity>?
 
     fun findAllByUserNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
         userName: String?,

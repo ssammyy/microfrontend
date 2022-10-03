@@ -295,6 +295,13 @@ export class  WorkPlanFilesFoundDto {
     fileContentType: string;
 }
 
+export class  FuelFilesFoundDto {
+    id: number;
+    fileName: string;
+    documentType: string;
+    fileContentType: string;
+}
+
 export class StandardDetailsDto {
     standardTitle: string;
     standardNumber: string;
@@ -799,8 +806,9 @@ export class RapidTestProductsDto {
 export class RapidTestProductsDetailsDto {
     id: bigint;
     productName: string;
-    exportMarkerTest: string;
-    domesticKeroseneMarkerTest: string;
+    sampleSize: string;
+    batchSize: string;
+    batchNumber: string;
     sulphurMarkerTest: string;
     exportMarkerTestStatus: boolean;
     domesticKeroseneMarkerTestStatus: boolean;
@@ -846,8 +854,9 @@ export class FuelInspectionDto {
     officersAssigned: MsUsersDto;
     rapidTest: FuelEntityRapidTestDto;
     rapidTestProducts: RapidTestProductsDetailsDto[];
+    fuelUploadedFiles: FuelFilesFoundDto[];
     sampleCollected: SampleCollectionDto;
-    sampleSubmitted: SampleSubmissionDto;
+    sampleSubmitted: SampleSubmissionDto[];
     sampleLabResults: MSSSFLabResultsDto;
     fuelRemediation: FuelRemediationDto;
 }
@@ -940,6 +949,7 @@ export class SampleSubmissionDto {
     disposal: string;
     remarks: string;
     sampleCollectionNumber: number;
+    sampleCollectionProduct: number;
     bsNumber: string;
     parametersList: SampleSubmissionItemsDto[];
 }
