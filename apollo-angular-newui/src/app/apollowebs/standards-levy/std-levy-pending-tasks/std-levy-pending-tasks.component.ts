@@ -411,7 +411,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
         accentTo: [],
         manufacturerEntity: [],
         taskId : [],
-        processId : []
+        processId : [],
+        remarks: []
     });
 
       this.siteConfirmFormGroup= this.formBuilder.group({
@@ -419,7 +420,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           manufacturerEntity: [],
           taskId : [],
           processId : [],
-          scheduledVisitDate: []
+          scheduledVisitDate: [],
+          remarks: []
       });
 
 
@@ -428,7 +430,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           manufacturerEntity: [],
           taskId : [],
           processId : [],
-          scheduledVisitDate: []
+          scheduledVisitDate: [],
+          remarks: []
       });
 
       this.approveEditRequestFormGroup = this.formBuilder.group({
@@ -445,7 +448,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId: [],
           accentTo:[],
           processId:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
       });
       this.rejectEditRequestFormGroup = this.formBuilder.group({
@@ -462,7 +466,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId: [],
           accentTo:[],
           processId:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
 
       });
@@ -481,7 +486,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId: [],
           accentTo:[],
           processId:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
 
       });
@@ -500,7 +506,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId: [],
           accentTo:[],
           processId:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
 
       });
@@ -519,7 +526,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId: [],
           accentTo:[],
           processId:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
 
       });
@@ -537,7 +545,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId: [],
           accentTo:[],
           processId:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
 
       });
@@ -549,7 +558,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       entryNumber: [],
       companyName: [],
       kraPin: [],
-      registrationNumber: []
+      registrationNumber: [],
+        processId: []
 
     });
 
@@ -565,7 +575,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       assigneeId: [],
       manufacturerEntity: [],
       userType: [],
-        complianceStatus:[]
+        complianceStatus:[],
+        processId: []
 
     });
     this.prepareFeedBackFormGroup = this.formBuilder.group({
@@ -573,7 +584,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       taskId: [],
       visitID: [],
       assigneeId: [],
-      manufacturerEntity: []
+      manufacturerEntity: [],
+        processId: []
 
     });
 
@@ -585,7 +597,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       taskId: [],
       manufacturerEntity: [],
         role:[],
-        status:[]
+        status:[],
+        processId: []
 
     });
     this.rejectFormGroup = this.formBuilder.group({
@@ -596,7 +609,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       taskId: [],
       manufacturerEntity: [],
         role:[],
-        status:[]
+        status:[],
+        processId: []
 
     });
 
@@ -608,7 +622,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       taskId: [],
       manufacturerEntity: [],
         role:[],
-        status:[]
+        status:[],
+        processId: []
 
     });
     this.approveTwoFormGroup = this.formBuilder.group({
@@ -619,7 +634,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       taskId: [],
       manufacturerEntity: [],
         role:[],
-        status:[]
+        status:[],
+        processId: []
 
     });
 
@@ -632,7 +648,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       manufacturerEntity: [],
       userType: [],
         role:[],
-        status:[]
+        status:[],
+        processId: []
 
     });
 
