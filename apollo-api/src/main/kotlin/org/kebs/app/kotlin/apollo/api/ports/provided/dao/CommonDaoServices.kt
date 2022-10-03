@@ -489,7 +489,7 @@ class CommonDaoServices(
 
     fun findOfficersListBasedOnRole(
         roleId: Long,
-    ): List<UsersEntity>? {
+    ): MutableList<UsersEntity>? {
         return usersRepo.findOfficerUsersByRoleFromUserDetails(roleId, 1)
     }
 

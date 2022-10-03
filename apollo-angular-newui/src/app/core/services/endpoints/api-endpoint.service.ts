@@ -590,6 +590,8 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_REMEDIATION_INVOICE: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation-invoice`,
         INSPECTION_SCHEDULED_ADD_REMEDIATION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation`,
         END_INSPECTION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/end-inspection`,
+        END_SSF_ADDING_INSPECTION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/end-ssf-adding`,
+        END_SSF_ADDING_BS_NUMBER_INSPECTION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/end-ssf-adding-bs-number`,
         // COUNTRY_DASHBOARD_DETAILS: `${ApiEndpointService.VERSION_THREE_CONTEXT}/country-dashboard-details`,
         // CLIENT_LIST: `${ApiEndpointService.VERSION_THREE_CONTEXT}/client-list`,
     };

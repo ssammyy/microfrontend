@@ -165,6 +165,10 @@ class MsFuelRemedyInvoicesEntity : Serializable {
     @Basic
     var subsistenceTotalNights: Long? = null
 
+    @Column(name = "SUBSISTENCE_TOTAL_NIGHTS_RATE")
+    @Basic
+    var subsistenceTotalNightsRate: Long? = null
+
     @Column(name = "SUBSISTENCE_RATE")
     @Basic
     var subsistenceRate: Long? = null
@@ -208,6 +212,10 @@ class MsFuelRemedyInvoicesEntity : Serializable {
     @Column(name = "TRANSPORT_GRAND_TOTAL")
     @Basic
     var transportGrandTotal: BigDecimal? = null
+
+    @Column(name = "AMOUNT_TO_PAY")
+    @Basic
+    var amountToPay: BigDecimal? = null
 
     @Column(name = "INSPECTION_ID")
     @Basic

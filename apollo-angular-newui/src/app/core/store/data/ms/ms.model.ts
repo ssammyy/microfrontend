@@ -295,6 +295,13 @@ export class  WorkPlanFilesFoundDto {
     fileContentType: string;
 }
 
+export class  FuelFilesFoundDto {
+    id: number;
+    fileName: string;
+    documentType: string;
+    fileContentType: string;
+}
+
 export class StandardDetailsDto {
     standardTitle: string;
     standardNumber: string;
@@ -762,6 +769,7 @@ export class CompliantRemediationDto {
     remarks: string;
     volumeFuelRemediated: number;
     subsistenceTotalNights: number;
+    subsistenceTotalNightsRate: number;
     transportAirTicket: number;
     transportInkm: number;
 }
@@ -798,8 +806,9 @@ export class RapidTestProductsDto {
 export class RapidTestProductsDetailsDto {
     id: bigint;
     productName: string;
-    exportMarkerTest: string;
-    domesticKeroseneMarkerTest: string;
+    sampleSize: string;
+    batchSize: string;
+    batchNumber: string;
     sulphurMarkerTest: string;
     exportMarkerTestStatus: boolean;
     domesticKeroseneMarkerTestStatus: boolean;
@@ -820,6 +829,7 @@ export class FuelInspectionDto {
     timelineOverDue: boolean;
     referenceNumber: string;
     company: string;
+    townName: string;
     petroleumProduct: string;
     physicalLocation: string;
     inspectionDateFrom: Date;
@@ -828,21 +838,25 @@ export class FuelInspectionDto {
     assignedOfficerStatus: boolean;
     rapidTestDone: boolean;
     sampleCollectionStatus: boolean;
+    scfUploadId: bigint;
     sampleSubmittedStatus: boolean;
     bsNumberStatus: boolean;
+    fuelReportId: bigint;
     compliantStatusAdded: boolean;
     remediationScheduledStatus: boolean;
     remendiationCompleteStatus: boolean;
     proFormaInvoiceStatus: boolean;
     endInspectionStatus: boolean;
     batchDetails: FuelBatchDetailsDto;
+    teamsDetails: TeamsFuelDetailsDto;
     officersList: MsUsersDto[];
     remarksDetails: MSRemarksDto[];
     officersAssigned: MsUsersDto;
     rapidTest: FuelEntityRapidTestDto;
     rapidTestProducts: RapidTestProductsDetailsDto[];
+    fuelUploadedFiles: FuelFilesFoundDto[];
     sampleCollected: SampleCollectionDto;
-    sampleSubmitted: SampleSubmissionDto;
+    sampleSubmitted: SampleSubmissionDto[];
     sampleLabResults: MSSSFLabResultsDto;
     fuelRemediation: FuelRemediationDto;
 }
@@ -935,6 +949,7 @@ export class SampleSubmissionDto {
     disposal: string;
     remarks: string;
     sampleCollectionNumber: number;
+    sampleCollectionProduct: number;
     bsNumber: string;
     parametersList: SampleSubmissionItemsDto[];
 }

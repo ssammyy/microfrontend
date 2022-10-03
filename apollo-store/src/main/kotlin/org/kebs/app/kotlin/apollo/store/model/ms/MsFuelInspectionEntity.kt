@@ -55,6 +55,10 @@ class MsFuelInspectionEntity : Serializable{
     @Basic
     var fuelReportId: Long? = null
 
+    @Column(name = "SCF_UPLOAD_ID")
+    @Basic
+    var scfUploadId: Long? = null
+
     @Column(name = "RAPID_TEST_FAILED_REMARKS")
     @Basic
     var rapidTestFailedRemarks: String? = null

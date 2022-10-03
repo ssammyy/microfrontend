@@ -106,4 +106,8 @@ class MsCollectionParametersEntity: Serializable {
     @Basic
     var sampleCollectionId: Long? = null
 
+    @Column(name = "SAMPLE_SUBMITTED_ID")
+    @Basic
+    var sampleSubmittedId: Long? = null
+
 }

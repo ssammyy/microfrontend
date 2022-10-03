@@ -164,9 +164,10 @@ interface IMSSampleSubmissionRepository : HazelcastRepository<MsSampleSubmission
 
     fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): MsSampleSubmissionEntity?
 
-    fun findByMsFuelInspectionId(msFuelInspectionId: Long): MsSampleSubmissionEntity?
+    fun findByMsFuelInspectionId(msFuelInspectionId: Long): List<MsSampleSubmissionEntity>?
 
     fun findBySampleCollectionNumber(sampleCollectionNumber: Long): MsSampleSubmissionEntity?
+    fun findBySampleCollectionNumberAndId(sampleCollectionNumber: Long, id: Long): MsSampleSubmissionEntity?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
@@ -197,5 +198,6 @@ interface IMsUploadsRepository : HazelcastRepository<MsUploadsEntity, Long> {
 
     fun findAllByMsComplaintIdAndComplaintUploads(msComplaintId: Long, complaintUploads: Int): List<MsUploadsEntity>?
     fun findAllByMsWorkplanGeneratedIdAndWorkPlanUploads(msWorkplanGeneratedId: Long, workPlanUploads: Int): List<MsUploadsEntity>?
+    fun findAllByMsFuelInspectionIdAndFuelPlanUploads(msFuelInspectionId: Long, fuelPlanUploads: Int): List<MsUploadsEntity>?
 
 }

@@ -518,6 +518,23 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun endsSampleSubmissionAdding(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
+            marketSurveillanceFuelDaoServices.postFuelInspectionEndSampleSubmission(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun setFuelScheduleSampleSubmissionBsNumber(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
@@ -538,6 +555,23 @@ class NewMarketSurveillanceHandler(
                     onValidationErrors(errors)
                 }
             }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun setFuelScheduleEndSampleSubmissionBsNumber(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
+            val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
+            marketSurveillanceFuelDaoServices.postFuelInspectionDetailsEndSampleSubmissionBSNumber(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
