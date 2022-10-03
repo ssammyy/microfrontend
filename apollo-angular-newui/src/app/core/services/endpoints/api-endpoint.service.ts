@@ -528,6 +528,7 @@ export class ApiEndpointService {
         STD_LEVY_COMPANY_REMARKS: `${ApiEndpointService.STL_CONTEXT}/getComEditRemarks`,
         STD_LEVY_COMPANY_EDIT_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirm`,
         STD_LEVY_NOTIFICATION_FORM_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSLNotificationStatus`,
+        STD_LEVY_NOTIFICATION_SL_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSlForm`,
         STD_LEVY_BRANCH_NAME: `${ApiEndpointService.STL_CONTEXT}/getBranchName`,
         STD_LEVY_SUSPEND_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/suspendCompanyOperations`,
         STD_LEVY_RESUME_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/resumeCompanyOperations`,

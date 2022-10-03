@@ -100,6 +100,7 @@ class StandardLevyService(
 //    }
 
 
+
     fun getManufacturerPenaltyHistory(): MutableIterable<StagingStandardsLevyManufacturerPenalty> {
         return iStagingStandardsLevyManufacturerPenaltyRepository.findAll()
     }
@@ -1701,6 +1702,31 @@ return getUserTasks();
                     }
             } ?: throw ExpectedDataNotFound("Branch Not Found")
 
+    }
+
+
+    fun getSlForm(): ResponseNotification {
+
+        commonDaoServices.loggedInUserDetailsEmail().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureId(id)
+                    .let {
+                        it?.let { it1 ->
+                            stdLevyNotificationFormRepository.countByManufacturerId(it1)
+                                ?.let {
+
+                                    //Manufacturer
+                                    return ResponseNotification(1)
+                                }
+                        }
+                            ?: run {
+                                //Contractor
+                                return ResponseNotification(0)
+                            }
+                    }
+
+            }
+            ?: return ResponseNotification(0)
     }
 
     fun getSLNotificationStatus(): ResponseNotification {
