@@ -93,7 +93,6 @@ export class QaService {
     }
 
 
-
     public loadInvoiceDetails(batchID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_DETAILS);
         const params = new HttpParams()
@@ -141,6 +140,21 @@ export class QaService {
 
     public loadPermitList(permitTypeID: string): Observable<PermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public deletePermit(permitTypeID: string): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.DELETE_PERMIT);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
         return this.http.get<PermitEntityDto[]>(url, {params}).pipe(

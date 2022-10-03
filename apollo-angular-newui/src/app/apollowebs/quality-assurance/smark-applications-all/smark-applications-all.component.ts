@@ -1,8 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {PermitEntityDto} from "../../../core/store/data/qa/qa.model";
 import {QaService} from "../../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
 import {ApiEndpointService} from "../../../core/services/endpoints/api-endpoint.service";
+import Swal from "sweetalert2";
+import swal from "sweetalert2";
+import {DataTableDirective} from "angular-datatables";
+import {Subject} from "rxjs";
+import {PublicReviewDraftWithName} from "../../../core/store/data/std/commitee-model";
+import {HttpErrorResponse} from "@angular/common/http";
+import {NgxSpinnerService} from "ngx-spinner";
 
 declare interface DataTable {
     headerRow: string[];
@@ -13,99 +20,115 @@ declare interface DataTable {
 declare const $: any;
 
 @Component({
-  selector: 'app-smark-applications-all',
-  templateUrl: './smark-applications-all.component.html',
-  styleUrls: ['./smark-applications-all.component.css']
+    selector: 'app-smark-applications-all',
+    templateUrl: './smark-applications-all.component.html',
+    styleUrls: ['./smark-applications-all.component.css']
 })
 export class SmarkApplicationsAllComponent implements OnInit {
-  public dataTable: DataTable;
+    public dataTable: DataTable;
     public allPermitData: PermitEntityDto[];
+    public publicReviewDrafts !: PublicReviewDraftWithName[];
+
     draftID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID);
     smarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID);
+    dtOptions: DataTables.Settings = {};
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtTrigger1: Subject<any> = new Subject<any>();
 
-  constructor(
-      private qaService: QaService,
-      private router: Router,
-  ) {
+    constructor(
+        private qaService: QaService,
+        private router: Router,
+        private SpinnerService: NgxSpinnerService
+    ) {
 
-  }
+    }
 
-  ngOnInit() {
-    let formattedArray = [];
-    this.dataTable;
+    ngOnInit() {
+        this.getAllPermitData()
+    }
 
-      this.qaService.loadPermitList(this.smarkID).subscribe(
-          (data: any) => {
+    public getAllPermitData(): void {
+        this.qaService.loadPermitList(this.smarkID).subscribe(
+            (response: PermitEntityDto[]) => {
+                console.log(response);
 
-              this.allPermitData = data;
-              // tslint:disable-next-line:max-line-length
-              formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id, i.processStatusID]);
+                this.allPermitData = response;
+                this.rerender()
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
 
-              this.dataTable = {
-                  // tslint:disable-next-line:max-line-length
-                  headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-                  footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-                dataRows: formattedArray
+    }
 
+    public deleteDraft(id: bigint) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-success'
+            },
+            buttonsStyling: false
+        });
 
-                // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure your want to Delete This Permit?',
+            text: 'You won\'t be able to reverse this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.SpinnerService.show();
+                this.qaService.deletePermit(String(id)).subscribe(
+                    (response) => {
+                        this.SpinnerService.hide();
+                        swalWithBootstrapButtons.fire(
+                            'Success!',
+                            'Successfully Deleted!',
+                            'success'
+                        );
+                        this.SpinnerService.hide();
+                        this.getAllPermitData();
+                    },
+                );
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'You have cancelled this operation',
+                    'error'
+                );
+            }
+        });
 
-            };
+    }
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger1.next();
+
 
         });
 
-
-    // this.dataTable = {
-    //   headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-    //   footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-    //   dataRows: []
-    //
-    //
-    //   // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
-    //
-    // }
-    // console.log(this.dataTable);
-    // this.allPermitData = this.Object.json().results;
-    // console.log(formattedArray);
-
-
-    //
-  }
-  ngAfterViewInit() {
-    $('#datatables').DataTable({
-      'pagingType': 'full_numbers',
-      'lengthMenu': [
-        [10, 25, 50, -1],
-        [10, 25, 50, 'All']
-      ],
-      responsive: true,
-        language: {
-            search: '_INPUT_',
-            searchPlaceholder: 'Search records',
-        }
-    });
-      let table: any;
-      table = $(`#datatables`).DataTable();
-
-  }
-
-    onSelect(rowElement: string, processStatusID: number) {
-        // if (this.draftID === processStatusID) {
-        //     this.router.navigate([`/smark/newSmarkPermit`], {fragment: rowElement});
-        //     //this.router.navigate(['/smark/newSmarkPermit'], { state: { id: '123' } });
-        // } else {
-        //     this.router.navigate([`/smarkpermitdetails`], {fragment: rowElement});
-        //     //this.router.navigate([`/smarkpermitdetails`], {fragment: rowElement});
-        // }
     }
 
-    onGoToSelect(string: string, string2: string) {
-        // if (this.draftID === Number(string2)) {
-        //     this.router.navigate([`/smark/newSmarkPermit`], {fragment: string});
-        //     //this.router.navigate(['/smark/newSmarkPermit'], { state: { id: '123' } });
-        // } else {
-        //     this.router.navigate([`/smarkpermitdetails`], {fragment: string});
-        //     //this.router.navigate([`/smarkpermitdetails`], {fragment: rowElement});
-        // }
+
+    ngOnDestroy(): void {
+        // Do not forget to unsubscribe the event
+        this.dtTrigger1.unsubscribe();
+
+
     }
 }

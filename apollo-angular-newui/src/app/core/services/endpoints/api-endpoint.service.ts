@@ -254,6 +254,7 @@ export class ApiEndpointService {
         PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
         PERMIT_LIST_ALL: `${ApiEndpointService.QA_CONTEXT}/permit/all-my-permits-loaded`,
         PERMIT_COMPLETELY_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-completely`,
+        DELETE_PERMIT: `${ApiEndpointService.QA_CONTEXT}/permit/delete`,
 
         PERMIT_LIST_TO_GENERATE_FMRK: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-fmark-generate`,
         PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
@@ -558,9 +559,6 @@ export class ApiEndpointService {
         STD_LEVY_CLOSED_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getClosedFirms`,
 
 
-
-
-
     };
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
@@ -673,6 +671,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_ADD_FINAL_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-report`,
 
     };
+
     /**
      * Constructor.
      */
