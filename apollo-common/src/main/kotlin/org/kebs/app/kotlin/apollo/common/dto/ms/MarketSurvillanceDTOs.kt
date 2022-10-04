@@ -137,7 +137,7 @@ data class FuelInspectionDto(
         var fuelUploadedFiles: List<FuelFilesFoundDto>? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: List<SampleSubmissionDto>? = null,
-        var sampleLabResults: MSSSFLabResultsDto? = null,
+        var sampleLabResults: List<MSSSFLabResultsDto>? = null,
         var fuelRemediation: FuelRemediationDto? = null,
         var ssfCountAdded: Int? = null,
         var bsNumberCountAdded: Int? = null,

@@ -857,7 +857,7 @@ export class FuelInspectionDto {
     fuelUploadedFiles: FuelFilesFoundDto[];
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto[];
-    sampleLabResults: MSSSFLabResultsDto;
+    sampleLabResults: MSSSFLabResultsDto[];
     fuelRemediation: FuelRemediationDto;
     ssfCountAdded: number;
     bsNumberCountAdded: number;

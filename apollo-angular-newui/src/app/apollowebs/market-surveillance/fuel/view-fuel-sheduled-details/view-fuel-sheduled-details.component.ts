@@ -9,7 +9,7 @@ import {
   FuelInspectionDto,
   LaboratoryDto,
   LIMSFilesFoundDto,
-  MSRemarksDto,
+  MSRemarksDto, MSSSFLabResultsDto,
   MSSSFPDFListDetailsDto,
   PDFSaveComplianceStatusDto,
   RapidTestProductsDetailsDto,
@@ -79,6 +79,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   dataSaveScheduleRemediation: CompliantRemediationDto;
   dataSaveNotCompliantInvoice: CompliantRemediationDto;
   dataSaveRemediation: RemediationDto;
+  selectedLabResults: MSSSFLabResultsDto;
 
   labList: LaboratoryDto[];
   roles: string[];
@@ -200,6 +201,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW SSF DETAILS</i>'},
         {name: 'addBSNumber', title: '<i class="btn btn-sm btn-primary">ADD BS NUMBER</i>'},
+        {name: 'viewLabResults', title: '<i class="btn btn-sm btn-primary">VIEW LAB RESULTS</i>'},
       ],
       position: 'right', // left|right
     },
@@ -865,8 +867,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   }
 
   onLoadData() {
-    const scfDetails = this.fuelInspection.sampleCollected.productsList;
-    const ssfDetails = this.fuelInspection.sampleSubmitted;
+    const scfDetails = this.fuelInspection?.sampleCollected?.productsList;
+    const ssfDetails = this.fuelInspection?.sampleSubmitted;
     // this.scfCountSSF = 0;
     // for (let h = 0; h < scfDetails.length; h++) {
     //   if (scfDetails[h].id === ssfDetails) {
@@ -875,10 +877,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     // }
 
     this.ssfCountBSNumber = 0;
-    for (let h = 0; h < ssfDetails.length; h++) {
-      if (ssfDetails[h].bsNumber !== null) {
+    for (let h = 0; h < ssfDetails?.length; h++) {
+      if (ssfDetails[h]?.bsNumber !== null) {
         this.ssfCountBSNumber++;
-        console.log(`BSNUMBER COUNT${this.ssfCountBSNumber}ANd ssf count${ssfDetails.length}` );
+        console.log(`BSNUMBER COUNT${this.ssfCountBSNumber}ANd ssf count${ssfDetails?.length}` );
       }
     }
   }
@@ -1163,10 +1165,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataPDFSaveComplianceStatus = {...this.dataPDFSaveComplianceStatus, ...this.pdfSaveComplianceStatusForm.value};
-      this.dataPDFSaveComplianceStatus.ssfID = this.fuelInspection.sampleLabResults.ssfResultsList.sffId;
-      this.dataPDFSaveComplianceStatus.bsNumber = this.fuelInspection.sampleLabResults.ssfResultsList.bsNumber;
+      this.dataPDFSaveComplianceStatus.ssfID = this.selectedLabResults.ssfResultsList.sffId;
+      this.dataPDFSaveComplianceStatus.bsNumber = this.selectedLabResults.ssfResultsList.bsNumber;
       this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      if (this.fuelInspection.sampleLabResults.savedPDFFiles.length === 0) {
+      if (this.selectedLabResults.savedPDFFiles.length === 0) {
         this.msService.msFuelInspectionScheduledSavePDFLIMS(
             this.batchReferenceNumber,
             this.teamsReferenceNo,
@@ -1186,7 +1188,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
             },
         );
       } else {
-        for (const savedPdf of this.fuelInspection.sampleLabResults.savedPDFFiles) {
+        for (const savedPdf of this.selectedLabResults.savedPDFFiles) {
           if (savedPdf.pdfName !== this.selectedPDFFileName) {
             this.msService.msFuelInspectionScheduledSavePDFLIMS(
                 this.batchReferenceNumber,
@@ -1219,8 +1221,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
-      this.dataSSFSaveComplianceStatus.ssfID = this.fuelInspection.sampleLabResults.ssfResultsList.sffId;
-      this.dataSSFSaveComplianceStatus.bsNumber = this.fuelInspection.sampleLabResults.ssfResultsList.bsNumber;
+      this.dataSSFSaveComplianceStatus.ssfID = this.selectedLabResults.ssfResultsList.sffId;
+      this.dataSSFSaveComplianceStatus.bsNumber = this.selectedLabResults.ssfResultsList.bsNumber;
       // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
       this.msService.msFuelInspectionScheduledSaveSSFComplianceStatus(
           this.batchReferenceNumber,
@@ -1459,7 +1461,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     this.currDiv = 'viewPdfSaveCompliance';
     this.pdfSaveComplianceStatusForm.patchValue(data);
 
-    window.$('#myModal1').modal('show');
+    window.$('#myModal2').modal('show');
     // this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
     // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
@@ -1480,7 +1482,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
     this.currDiv = 'pdfSaveCompliance';
 
-    window.$('#myModal1').modal('show');
+    window.$('#myModal2').modal('show');
     // $('#myModal1').modal('show');
     // this.openModalAddDetails('assignOfficer')
     // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
@@ -1516,13 +1518,24 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     window.$('#sampleSubmitModal').modal('show');
   }
 
-  addSSFBsNumberRecord(data: SampleSubmissionDto) {
-    this.currDivLabel = `ADD BS NUMBER FOR FILE REFERENCE NUMBER # ${data.fileRefNumber}`;
-    this.currDiv = 'addBsNumber';
-    this.sampleSubmitBSNumberForm.reset();
-    this.ssfSelectedID = data.id;
+  viewSSFLabResultsRecord(data: SampleSubmissionDto) {
 
-    window.$('#myModal1').modal('show');
+    this.selectedLabResults = this.fuelInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === data.bsNumber);
+
+    window.$('#sampleLabResultsModal').modal('show');
+  }
+
+  addSSFBsNumberRecord(data: SampleSubmissionDto) {
+
+    if (data.bsNumber !== null) {
+      this.msService.showError('BS Number Already Added');
+    } else {
+      this.currDivLabel = `ADD BS NUMBER FOR FILE REFERENCE NUMBER # ${data.fileRefNumber}`;
+      this.currDiv = 'addBsNumber';
+      this.sampleSubmitBSNumberForm.reset();
+      this.ssfSelectedID = data.id;
+      window.$('#myModal1').modal('show');
+    }
   }
 
   onClickCloseSSF() {
@@ -1540,6 +1553,9 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         break;
       case 'addBSNumber':
         this.addSSFBsNumberRecord(event.data);
+        break;
+      case 'viewLabResults':
+        this.viewSSFLabResultsRecord(event.data);
         break;
     }
   }

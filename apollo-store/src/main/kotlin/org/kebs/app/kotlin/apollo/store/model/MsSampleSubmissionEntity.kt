@@ -16,7 +16,7 @@ class MsSampleSubmissionEntity : Serializable{
     @SequenceGenerator(name = "DAT_KEBS_MS_SAMPLE_SUBMISSION_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_MS_SAMPLE_SUBMISSION_SEQ")
     @GeneratedValue(generator = "DAT_KEBS_MS_SAMPLE_SUBMISSION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
-    var id: Long? = 0
+    var id: Long = 0
 
     @Column(name = "LAB_RESULTS_STATUS")
     @Basic

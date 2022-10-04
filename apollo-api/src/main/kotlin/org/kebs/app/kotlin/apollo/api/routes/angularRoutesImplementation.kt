@@ -683,6 +683,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         POST("/end-ssf-adding-bs-number", handler::setFuelScheduleEndSampleSubmissionBsNumber)
                         PUT("/lab-results-pdf-save", handler::saveFuelScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveFuelScheduleSSFComplianceStatusAdd)
+                        PUT("/ssf-compliance-final-status-save", handler::saveFuelScheduleSSFFinalComplianceStatusAdd)
                         POST("/fuel-remediation-schedule", handler::saveFuelScheduleRemediationAfterPayment)
                         POST("/fuel-remediation-invoice", handler::saveFuelScheduledRemediationInvoice)
                         PUT("/fuel-remediation", handler::saveFuelScheduleUpdateRemediation)

@@ -484,7 +484,6 @@ export class MsService {
        test101.officersList = testUserList;
        test101.officersAssigned = test101MSUserDetails;
        test101.sampleCollected = test101MSSampleCollectDetails;
-       test101.sampleLabResults = test101LabResultsDto;
 
 
         return test101;
