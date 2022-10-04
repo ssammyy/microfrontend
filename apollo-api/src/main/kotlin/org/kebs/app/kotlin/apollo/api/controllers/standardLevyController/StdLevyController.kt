@@ -1276,6 +1276,17 @@ class StdLevyController(
 
     }
 
+    @GetMapping("/getSlForm")
+    @ResponseBody
+    fun getSlForm(): ResponseNotification
+    {
+
+        return standardLevyService.getSlForm()
+
+    }
+
+
+
     @GetMapping("/getUserEmail")
     @ResponseBody
     fun getUserEmail(): String {

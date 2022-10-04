@@ -254,6 +254,7 @@ export class ApiEndpointService {
         PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
         PERMIT_LIST_ALL: `${ApiEndpointService.QA_CONTEXT}/permit/all-my-permits-loaded`,
         PERMIT_COMPLETELY_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-completely`,
+        DELETE_PERMIT: `${ApiEndpointService.QA_CONTEXT}/permit/delete`,
 
         PERMIT_LIST_TO_GENERATE_FMRK: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-fmark-generate`,
         PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
@@ -528,6 +529,7 @@ export class ApiEndpointService {
         STD_LEVY_COMPANY_REMARKS: `${ApiEndpointService.STL_CONTEXT}/getComEditRemarks`,
         STD_LEVY_COMPANY_EDIT_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirm`,
         STD_LEVY_NOTIFICATION_FORM_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSLNotificationStatus`,
+        STD_LEVY_NOTIFICATION_SL_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSlForm`,
         STD_LEVY_BRANCH_NAME: `${ApiEndpointService.STL_CONTEXT}/getBranchName`,
         STD_LEVY_SUSPEND_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/suspendCompanyOperations`,
         STD_LEVY_RESUME_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/resumeCompanyOperations`,
@@ -555,9 +557,6 @@ export class ApiEndpointService {
         STD_LEVY_ACTIVE_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getActiveFirms`,
         STD_LEVY_DORMANT_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getDormantFirms`,
         STD_LEVY_CLOSED_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getClosedFirms`,
-
-
-
 
 
     };
@@ -672,6 +671,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_ADD_FINAL_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-report`,
 
     };
+
     /**
      * Constructor.
      */

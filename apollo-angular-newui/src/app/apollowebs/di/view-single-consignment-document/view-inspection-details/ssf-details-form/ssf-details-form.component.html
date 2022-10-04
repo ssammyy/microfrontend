@@ -15,20 +15,6 @@
             <input class="waiver-form-input-master" type="text" id="conditionOfSample" name="conditionOfSample"
                    formControlName="conditionOfSample">
         </div>
-        <div class="col-sm-7 col-md-6">
-            <label for="testParameters" class="waiver-form-label">List of test parameters</label>
-            <input class="waiver-form-input-master" type="text" id="testParameters" name="testParameters"
-                   formControlName="testParameters">
-        </div>
-        <div class="col-sm-7 col-md-6">
-            <label for="laboratoryName" class="waiver-form-label">Laboratory Name</label>
-            <select id="laboratoryName" name="laboratoryName" class="waiver-form-input-master"
-                    formControlName="laboratoryName">
-                <option value="" disabled selected>Select Laboratory</option>
-                <option *ngFor="let lab of laboratories" [value]="lab.labName">{{lab.labName}}
-                    -{{lab.description}}</option>
-            </select>
-        </div>
         <div class="col-sm-12 col-md-6">
             <label for="returnOrDispose" class="waiver-form-label">Disposal Method</label>
             <select id="returnOrDispose" name="returnOrDispose" class="waiver-form-input-master"
@@ -43,6 +29,47 @@
             <textarea class="waiver-form-input-master" id="description" name="description" formControlName="description"
                       rows="4">
             </textarea>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">
+            <h4>Laboratory Request(s)
+                <button class="btn btn-primary btn-sm float-right" (click)="addLaboratoryRequest(null)">Add Request</button>
+            </h4>
+        </div>
+        <div class="card-body">
+            <mat-table class="table-striped table-responsive table-condensed" [dataSource]="laboratoryRequests">
+                <ng-container matColumnDef="count">
+                    <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+                    <mat-cell *matCellDef="let element;let i=index"> {{i + 1}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="laboratoryName">
+                    <mat-header-cell *matHeaderCellDef>Laboratory Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.laboratoryName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="testParameters">
+                    <mat-header-cell *matHeaderCellDef>Test Parameters</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.testParameters}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="remarks">
+                    <mat-header-cell *matHeaderCellDef>Remarks</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.remarks}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef>Action/Download</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i=index">
+                        <button class="btn-sm btn-primary"
+                                (click)="customAction(element,'edit', i)"><i class="fa fa-pencil-alt"></i>Edit
+                        </button>
+                        <button class="btn-sm btn-primary"
+                                (click)="customAction(element,'delete', i)"><i class="fa fa-delete"></i>Delete
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
         </div>
         <mat-error *ngIf="message">{{message}}</mat-error>
     </div>

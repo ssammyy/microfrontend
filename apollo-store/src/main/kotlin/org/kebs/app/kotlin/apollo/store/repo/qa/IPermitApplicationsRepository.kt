@@ -591,6 +591,12 @@ interface IQaSampleCollectionRepository : HazelcastRepository<QaSampleCollection
 }
 
 @Repository
+interface IQaSampleCollectionLaboratoryRequestsRepository : HazelcastRepository<QaSCFLaboratoryRequestsEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaSCFLaboratoryRequestsEntity?
+    fun findBySsfId(ssfId: Long): List<QaSCFLaboratoryRequestsEntity>
+}
+
+@Repository
 interface IQaPersonnelInchargeEntityRepository : HazelcastRepository<QaPersonnelInchargeEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaPersonnelInchargeEntity>?
 

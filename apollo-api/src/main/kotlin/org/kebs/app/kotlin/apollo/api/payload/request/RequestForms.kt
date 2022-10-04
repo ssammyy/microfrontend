@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.payload.request
 
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSCFLaboratoryRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import java.sql.Date
@@ -286,19 +287,30 @@ class CheckListForm {
     }
 }
 
+class SSFLaboratoryRequest {
+    fun fillDetails(lab: QaSCFLaboratoryRequestsEntity) {
+        lab.laboratoryName=laboratoryName
+        lab.testParameters=testParameters
+        lab.remarks=remarks
+    }
+
+    val testParameters: String? = null
+    val laboratoryName: String? = null
+    val remarks: String? = null
+}
+
 class SsfForm {
     var permitNumber: String? = null
     var description: String? = null
     var ssfSubmissionDate: String? = null
-    val returnOrDispose: String? = null
-    val conditionOfSample: String? = null
-    val testParameters: String? = null
-    val laboratoryName: String? = null
+    var returnOrDispose: String? = null
+    var conditionOfSample: String? = null
+    var labRequests: List<SSFLaboratoryRequest>?=null
     fun ssf(): QaSampleSubmissionEntity {
         val df = QaSampleSubmissionEntity()
         df.description = description
-        df.laboratoryName = laboratoryName
-        df.testParameters = testParameters
+        df.laboratoryName = "N/A"
+        df.testParameters = "N/A"
         df.conditionOfSample = conditionOfSample
         df.returnOrDispose = returnOrDispose
         df.permitRefNumber = permitNumber

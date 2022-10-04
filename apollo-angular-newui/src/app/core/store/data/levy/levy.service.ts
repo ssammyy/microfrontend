@@ -413,6 +413,12 @@ export class LevyService {
         const params = new HttpParams();
         return this.http.get<NotificationStatus>(url, {params}).pipe();
     }
+    public getSlForm(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_NOTIFICATION_SL_STATUS);
+        const params = new HttpParams();
+        return this.http.get<NotificationStatus>(url, {params}).pipe();
+    }
+
 
     public getBranchName(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_BRANCH_NAME);

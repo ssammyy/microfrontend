@@ -770,7 +770,8 @@ import { StandardLevyPenaltyReportComponent } from './apollowebs/standards-levy/
 import { StandardLevyActiveFirmsComponent } from './apollowebs/standards-levy/standard-levy-active-firms/standard-levy-active-firms.component';
 import { StandardLevyDormantFirmsComponent } from './apollowebs/standards-levy/standard-levy-dormant-firms/standard-levy-dormant-firms.component';
 import { StandardLevyClosedFirmsComponent } from './apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component';
-// import {NgxDocViewerModule} from "ngx-doc-viewer";
+import { AddLaboratoryRequestComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/ssf-details-form/add-laboratory-request/add-laboratory-request.component';
+//import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({
     imports: [
@@ -1181,6 +1182,9 @@ import { StandardLevyClosedFirmsComponent } from './apollowebs/standards-levy/st
         ViewRfcCocDocumentsComponent,
         FuelListTeamsComponent,
         FuelListTeamsCountyComponent,
+        StandardLevyClosedFirmsComponent,
+        AddLaboratoryRequestComponent
+
     ],
     entryComponents: [],
     providers: [DatePipe, MatNativeDateModule],
