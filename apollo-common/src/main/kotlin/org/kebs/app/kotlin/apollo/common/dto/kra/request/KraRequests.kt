@@ -218,9 +218,9 @@ class PenaltyRequest {
 
 class DECLARATION {
     var commodityType: String? = null
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var periodFrom: Date? = null
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var periodTo: Date? = null
     var qtyManf: String? = null
     var exFactVal: String? = null
@@ -240,10 +240,10 @@ class Header {
     var kraPin: String? = null
     var manufacturerName: String? = null
     var paymentSlipNo: String? = null
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var paymentSlipDate: Date? = null
     var paymentType: String? = null
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var paymentDate: Date? = null
     var totalDeclAmt: String? = null
     var totalPenaltyAmt: String? = null
@@ -258,9 +258,9 @@ class Header {
 
 class PENALTY {
     var penaltyOrderNo: String? = null
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var periodFrom: Date? = null
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var periodTo: Date? = null
     var penaltyPaid: String? = null
 }
