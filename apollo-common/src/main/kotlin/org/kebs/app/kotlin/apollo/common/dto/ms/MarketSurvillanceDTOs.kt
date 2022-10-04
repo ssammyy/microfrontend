@@ -137,8 +137,10 @@ data class FuelInspectionDto(
         var fuelUploadedFiles: List<FuelFilesFoundDto>? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: List<SampleSubmissionDto>? = null,
-        var sampleLabResults: MSSSFLabResultsDto? = null,
+        var sampleLabResults: List<MSSSFLabResultsDto>? = null,
         var fuelRemediation: FuelRemediationDto? = null,
+        var ssfCountAdded: Int? = null,
+        var bsNumberCountAdded: Int? = null,
 )
 
 data class WorkPlanInspectionDto(
@@ -396,6 +398,9 @@ data class RapidTestProductsDto(
 data class RapidTestProductsDetailsDto(
         var id: Long?= null,
         var productName: String?= null,
+        var sampleSize: String?= null,
+        var batchSize: String?= null,
+        var batchNumber: String?= null,
         var exportMarkerTest: String?= null,
         var domesticKeroseneMarkerTest: String?= null,
         var sulphurMarkerTest: String?= null,
@@ -411,6 +416,7 @@ data class SampleCollectionItemsDto(
         var batchNo: String? = null,
         var batchSize: String? = null,
         var sampleSize: String? = null,
+        var ssfAdded: Boolean? = null,
 )
 
 data class RemarksToAddDto(

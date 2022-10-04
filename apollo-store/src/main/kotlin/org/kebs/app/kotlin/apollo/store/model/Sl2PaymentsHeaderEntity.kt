@@ -71,7 +71,7 @@ class Sl2PaymentsHeaderEntity : Serializable {
     var requestBankRefNo: String? = null
 
     @Column(name = "TRANSACTION_DATE", nullable = false)
-    var transactionDate: Timestamp? = null
+    var transactionDate: Date? = null
 
     @Column(name = "DESCRIPTION")
     var description: String? = null

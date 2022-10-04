@@ -484,7 +484,6 @@ export class MsService {
        test101.officersList = testUserList;
        test101.officersAssigned = test101MSUserDetails;
        test101.sampleCollected = test101MSSampleCollectDetails;
-       test101.sampleLabResults = test101LabResultsDto;
 
 
         return test101;
@@ -2315,7 +2314,7 @@ export class MsService {
             .set('batchReferenceNo', batchReferenceNumber)
             .set('teamsReferenceNo', teamsReferenceNo)
             .set('countyReferenceNo', countyReferenceNo);
-        return this.http.put<FuelInspectionDto>(url, null, {params}).pipe(
+        return this.http.post<FuelInspectionDto>(url, null, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
             }),
@@ -2340,7 +2339,7 @@ export class MsService {
             .set('batchReferenceNo', batchReferenceNumber)
             .set('teamsReferenceNo', teamsReferenceNo)
             .set('countyReferenceNo', countyReferenceNo);
-        return this.http.put<FuelInspectionDto>(url, null, {params}).pipe(
+        return this.http.post<FuelInspectionDto>(url, null, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
             }),

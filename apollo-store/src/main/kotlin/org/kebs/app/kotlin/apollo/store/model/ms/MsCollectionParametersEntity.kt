@@ -110,4 +110,8 @@ class MsCollectionParametersEntity: Serializable {
     @Basic
     var sampleSubmittedId: Long? = null
 
+    @Column(name = "SSF_ADDED")
+    @Basic
+    var ssfAdded: Int? = null
+
 }
