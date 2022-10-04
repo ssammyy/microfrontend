@@ -2315,7 +2315,7 @@ export class MsService {
             .set('batchReferenceNo', batchReferenceNumber)
             .set('teamsReferenceNo', teamsReferenceNo)
             .set('countyReferenceNo', countyReferenceNo);
-        return this.http.put<FuelInspectionDto>(url, null, {params}).pipe(
+        return this.http.post<FuelInspectionDto>(url, null, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
             }),
@@ -2340,7 +2340,7 @@ export class MsService {
             .set('batchReferenceNo', batchReferenceNumber)
             .set('teamsReferenceNo', teamsReferenceNo)
             .set('countyReferenceNo', countyReferenceNo);
-        return this.http.put<FuelInspectionDto>(url, null, {params}).pipe(
+        return this.http.post<FuelInspectionDto>(url, null, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
             }),

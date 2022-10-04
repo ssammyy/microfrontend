@@ -859,6 +859,8 @@ export class FuelInspectionDto {
     sampleSubmitted: SampleSubmissionDto[];
     sampleLabResults: MSSSFLabResultsDto;
     fuelRemediation: FuelRemediationDto;
+    ssfCountAdded: number;
+    bsNumberCountAdded: number;
 }
 
 export class MSSSFLabResultsDto {
@@ -987,6 +989,7 @@ export class SampleCollectionItemsDto {
     batchNo: string;
     batchSize: string;
     sampleSize: string;
+    ssfAdded: boolean;
 }
 
 export class MsUsersDto {

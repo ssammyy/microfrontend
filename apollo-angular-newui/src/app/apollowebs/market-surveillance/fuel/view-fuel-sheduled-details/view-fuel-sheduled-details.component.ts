@@ -27,6 +27,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {LoggedInUser, selectUserInfo} from '../../../../core/store';
+import {DatePipe} from '@angular/common';
 declare global {
   interface Window {
     $: any;
@@ -109,9 +110,17 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         {name: 'addSSf', title: '<i class="btn btn-sm btn-primary">ADD SSF</i>'},
+        // {name: 'addSSf', title: '<i class="fa fa-user-check"  title="Add"></i>'},
       ],
       position: 'right', // left|right
     },
+    // rowClassFunction: (row) => {
+    //   if (row.data.ssfAdded==false) {
+    //     return 'creation';
+    //   } else {
+    //     return 'flow';
+    //   }
+    // },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
       confirmDelete: true,
@@ -143,9 +152,16 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      // sampled: {
-      //   title: 'Sampled',
-      //   type: 'string'
+      // ssfAdded: {
+      //   title: 'SSF ADDED',
+      //   type: 'custom',
+      //   filter: false,
+      //   valuePrepareFunction: (ssfStatus, row) => {
+      //     if (ssfStatus) {
+      //       return 'TRUE';
+      //     }
+      //     return '<i class="btn btn-sm btn-primary" onclick="saveSSFRecord($event)">ADD SSF</i>';
+      //   },
       // },
       // inspectionDate: {
       //   title: 'Inspection Date',
@@ -157,6 +173,15 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       //   renderComponent: ConsignmentStatusComponent
       // }
     },
+    // rowClassFunction: (row) => {
+    //   // console.log(row)
+    //   if (row.data.ssfAdded) {
+    //     return '';
+    //   } else {
+    //     return '<i class="btn btn-sm btn-primary" (click)="saveSSFRecord(${row})">ADD SSF</i>';
+    //   }
+    //
+    // },
     pager: {
       display: true,
       perPage: 20,
@@ -247,28 +272,57 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         filter: false,
       },
       exportMarkerTestStatus: {
-        title: 'EXPORT MARKER TEST COMPLIANCE RESULTS',
+        title: 'EXPORT MARKER TEST RESULTS',
         type: 'string',
+        valuePrepareFunction: (dataTest) => {
+          if (dataTest) {
+            return 'PASSED';
+          }
+          return 'FAILED';
+        },
         filter: false,
       },
       domesticKeroseneMarkerTestStatus: {
-        title: 'DOMESTIC KEROSENE MARKER COMPLIANCE TEST RESULTS',
+        title: 'DOMESTIC KEROSENE MARKER TEST RESULTS',
         type: 'string',
+        valuePrepareFunction: (dataTest) => {
+          if (dataTest) {
+            return 'PASSED';
+          }
+          return 'FAILED';
+        },
         filter: false,
       },
       sulphurMarkerTest: {
         title: 'SULPHUR MARKER (%) TEST',
         type: 'string',
+        valuePrepareFunction: (dataTest) => {
+          if (dataTest) {
+            return `${dataTest} %`;
+          }
+        },
         filter: false,
       },
       sulphurMarkerTestStatus: {
-        title: 'SULPHUR MARKER COMPLIANCE TEST RESULTS',
+        title: 'SULPHUR MARKER TEST RESULTS',
         type: 'string',
+        valuePrepareFunction: (dataTest) => {
+          if (dataTest) {
+            return 'PASSED';
+          }
+          return 'FAILED';
+        },
         filter: false,
       },
       overallComplianceStatus: {
-        title: 'OVERALL COMPLIANCE TEST RESULTS',
+        title: 'OVERALL TEST RESULTS',
         type: 'string',
+        valuePrepareFunction: (dataTest) => {
+          if (dataTest) {
+            return 'PASSED';
+          }
+          return 'FAILED';
+        },
         filter: false,
       },
     },
@@ -584,6 +638,8 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   public ssfSelectedID: number;
   public scfParamSelectedName: string;
   public selectedSSFDetails: SampleSubmissionDto;
+  public ssfCountBSNumber: number;
+  public scfCountSSF: number;
 
 
 
@@ -804,16 +860,36 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
           this.msService.showError('AN ERROR OCCURRED');
         },
     );
+    this.onLoadData();
 
+  }
+
+  onLoadData() {
+    const scfDetails = this.fuelInspection.sampleCollected.productsList;
+    const ssfDetails = this.fuelInspection.sampleSubmitted;
+    // this.scfCountSSF = 0;
+    // for (let h = 0; h < scfDetails.length; h++) {
+    //   if (scfDetails[h].id === ssfDetails) {
+    //     this.scfCountSSF++;
+    //   }
+    // }
+
+    this.ssfCountBSNumber = 0;
+    for (let h = 0; h < ssfDetails.length; h++) {
+      if (ssfDetails[h].bsNumber !== null) {
+        this.ssfCountBSNumber++;
+        console.log(`BSNUMBER COUNT${this.ssfCountBSNumber}ANd ssf count${ssfDetails.length}` );
+      }
+    }
   }
 
   openModalAddDetails(divVal: string): void {
     const arrHead = ['scheduleRemediationInvoicePaid',
-      'assignOfficer', 'rapidTest', 'addBsNumber', 'uploadScfFiles', 'uploadReportFiles',
+      'assignOfficer', 'rapidTest',  'uploadScfFiles', 'uploadReportFiles',
       'ssfAddComplianceStatus', 'scheduleRemediation',
       'addRemediationDetails', 'notCompliantInvoice', 'rapidTestAddProducts'];
     const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID',
-      'SELECT OFFICER TO ASSIGN', 'RAPID TEST OVERALL RESULTS', 'ADD BS NUMBER', 'UPLOAD SCF FILE', 'UPLOAD REPORT FILE',
+      'SELECT OFFICER TO ASSIGN', 'RAPID TEST OVERALL RESULTS', 'UPLOAD SCF FILE', 'UPLOAD REPORT FILE',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
       'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED', 'ADD PRODUCT RAPID TEST DETAILS'];
 
@@ -1411,10 +1487,14 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   }
 
   saveSSFRecord(data: SampleCollectionItemsDto) {
-    this.scfParamSelected = data.id;
-    this.scfParamSelectedName = data.productBrandName;
-    this.addLabParamStatus = true;
-    window.$('#sampleSubmitModal').modal('show');
+    if (data.ssfAdded) {
+      this.msService.showError('Sample Submission Form Already Added');
+    } else {
+      this.scfParamSelected = data.id;
+      this.scfParamSelectedName = data.productBrandName;
+      this.addLabParamStatus = true;
+      window.$('#sampleSubmitModal').modal('show');
+    }
   }
 
   public onCustomSCFAction(event: any): void {
@@ -1439,6 +1519,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   addSSFBsNumberRecord(data: SampleSubmissionDto) {
     this.currDivLabel = `ADD BS NUMBER FOR FILE REFERENCE NUMBER # ${data.fileRefNumber}`;
     this.currDiv = 'addBsNumber';
+    this.sampleSubmitBSNumberForm.reset();
     this.ssfSelectedID = data.id;
 
     window.$('#myModal1').modal('show');

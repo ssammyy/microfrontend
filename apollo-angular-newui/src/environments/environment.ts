@@ -8,5 +8,4 @@ export const environment = {
     https_enabled: true,
      // base_url: 'localhost:8006',
     base_url: `kimsint.kebs.org:8006`,
-
 };

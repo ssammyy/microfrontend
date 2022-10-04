@@ -122,12 +122,16 @@
                                         <b class="text-primary">Rapid Test Overall Results Details</b>
                                         <ul class="w-list-unstyled">
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Test Status</div>
-                                                <div class="list-text-accordion">{{fuelInspection?.rapidTest?.rapidTestStatus}}
+                                                <div class="list-title-accordion">TEST STATUS</div>
+                                                <div *ngIf="fuelInspection?.rapidTest?.rapidTestStatus">
+                                                    <div class="list-text-accordion">PASSED</div>
+                                                </div>
+                                                <div *ngIf="fuelInspection?.rapidTest?.rapidTestStatus==false">
+                                                    <div class="list-text-accordion">FAILED</div>
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Test Remarks</div>
+                                                <div class="list-title-accordion">TEST REMARKS</div>
                                                 <div class="list-text-accordion">{{fuelInspection?.rapidTest?.rapidTestRemarks}}
                                                 </div>
                                             </li>
@@ -481,7 +485,7 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="fuelInspection?.sampleCollectionStatus == true
+                                            <button *ngIf="fuelInspection?.sampleCollectionStatus == true && this.fuelInspection.sampleCollected.productsList.length == this.fuelInspection.sampleSubmitted.length
                                                 && fuelInspection?.sampleSubmittedStatus== false && fuelInspection?.scfUploadId!=null"
                                                     (click)="onClickSaveEndSSFAdding()" mat-raised-button="" data-toggle="modal"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -496,11 +500,9 @@
 <!--                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
 <!--                                                <div class="mat-button-focus-overlay"></div>-->
 <!--                                            </button>-->
-                                            <button  *ngIf="fuelInspection?.sampleCollectionStatus &&
-                                                    fuelInspection?.sampleSubmittedStatus &&
+                                            <button  *ngIf="fuelInspection?.sampleSubmittedStatus && this.bsNumberCountAdded == this.fuelInspection.sampleSubmitted.length &&
                                                     fuelInspection?.bsNumberStatus== false"
-                                                     (click)="onClickSaveEndSSFAddingBsNumber()" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
+                                                     (click)="onClickSaveEndSSFAddingBsNumber()"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END BS NUMBER ADDING</span>
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
@@ -841,7 +843,7 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <input id="ssfID" matInput type="hidden" formControlName="ssfID" name="ssfID" ngModel="{{ssfSelectedID}}">
+                                        <input id="ssfID" type="hidden" formControlName="ssfID" name="ssfID" ngModel="{{ssfSelectedID}}">
                                         <label for="ssfID"><b>BS Number</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="bsNumber" matInput type="text" placeholder="Please Enter Bs Number" formControlName="bsNumber" name="bsNumber"

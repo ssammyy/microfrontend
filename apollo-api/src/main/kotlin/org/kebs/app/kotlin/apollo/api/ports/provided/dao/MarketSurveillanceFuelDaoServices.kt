@@ -638,6 +638,7 @@ class MarketSurveillanceFuelDaoServices(
                         body.sampleCollectionProduct?.let { it ->
                             findSampleCollectedParamByID(it)?.let {SCFParam->
                                 SCFParam.sampleSubmittedId = savedSampleSubmission.second.id
+                                SCFParam.ssfAdded = map.activeStatus
                                 sampleCollectParameterRepo.save(SCFParam)
                             }
                         }
@@ -1233,17 +1234,29 @@ class MarketSurveillanceFuelDaoServices(
         if (compliantDetailsStatus!=null){
             compliantStatusDone = true
         }
+
+        var ssfCountAdded = 0
         val sampleCollected = findSampleCollectedDetailByFuelInspectionID(fileInspectionDetail.id)
         val sampleCollectedParamList = sampleCollected?.id?.let { findAllSampleCollectedParametersBasedOnSampleCollectedID(it) }
         val sampleCollectedDtoValues = sampleCollectedParamList?.let { mapSampleCollectedParamListDto(it) }?.let { mapSampleCollectedDto(sampleCollected, it) }
+        sampleCollectedParamList?.forEach { scfParam->
+            if (scfParam.ssfAdded==map.activeStatus){
+                ssfCountAdded++
+            }
+        }
 
-        val sampleSubmittedDtoList = mutableListOf<SampleSubmissionDto>() 
+
+        val sampleSubmittedDtoList = mutableListOf<SampleSubmissionDto>()
+        var bsNumberCountAdded = 0
         findSampleSubmissionDetailByFuelInspectionID(fileInspectionDetail.id)
             ?.forEach { sampleSubmitted->
                 val sampleSubmittedParamList = sampleSubmitted.id?.let { findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
                 val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { mapSampleSubmissionParamListDto(it) }?.let { mapSampleSubmissionDto(sampleSubmitted, it) }
                 if (sampleSubmittedDtoValues != null) {
                     sampleSubmittedDtoList.add(sampleSubmittedDtoValues)
+                    if (sampleSubmittedDtoValues.bsNumber!=null){
+                        bsNumberCountAdded++
+                    }
                 }
         }
         
@@ -1280,7 +1293,9 @@ class MarketSurveillanceFuelDaoServices(
             sampleCollectedDtoValues,
             sampleSubmittedDtoList,
             null,
-            fuelRemediationDto
+            fuelRemediationDto,
+            ssfCountAdded,
+            bsNumberCountAdded
         )
     }
 
@@ -2748,7 +2763,9 @@ class MarketSurveillanceFuelDaoServices(
         sampleCollected: SampleCollectionDto?,
         sampleSubmitted: List<SampleSubmissionDto>?,
         sampleLabResults: MSSSFLabResultsDto?,
-        fuelRemediationDto: FuelRemediationDto?
+        fuelRemediationDto: FuelRemediationDto?,
+        ssfCountAdded: Int,
+        bsNumberCountAdded: Int
     ): FuelInspectionDto {
         return FuelInspectionDto(
             fuelInspectionList.id,
@@ -2787,7 +2804,9 @@ class MarketSurveillanceFuelDaoServices(
             sampleCollected,
             sampleSubmitted,
             sampleLabResults,
-            fuelRemediationDto
+            fuelRemediationDto,
+            ssfCountAdded,
+                    bsNumberCountAdded
         )
     }
 
@@ -3093,7 +3112,8 @@ class MarketSurveillanceFuelDaoServices(
                 it.productBrandName,
                 it.batchNo,
                 it.batchSize,
-                it.sampleSize
+                it.sampleSize,
+                it.ssfAdded==1
             )
         }
     }
@@ -3103,6 +3123,9 @@ class MarketSurveillanceFuelDaoServices(
             RapidTestProductsDetailsDto(
                 it.id,
                 it.productName,
+                it.sampleSize,
+                it.batchSize,
+                it.batchNumber,
                 it.exportMarkerTest,
                 it.domesticKeroseneMarkerTest,
                 it.sulphurMarkerTest,
