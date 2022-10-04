@@ -35,6 +35,7 @@ export class CustomerRegistrationComponent implements OnInit {
   slFormDetails !: SlModel;
   slBranchName !: Branch;
   notificationFormStatus !: NotificationStatus;
+  slNotificationFormStatus !: NotificationStatus;
   manufacturerInfoForm: FormGroup;
   manufacturingInfoForm: FormGroup;
   branchFormA: FormGroup;
@@ -63,6 +64,7 @@ export class CustomerRegistrationComponent implements OnInit {
   ngOnInit(): void {
       this.getCompanyProfile();
       this.getManufacturerStatus();
+      this.getSlForm();
       //this.getSLNotificationStatus();
 
       //this.getBranchName();
@@ -402,6 +404,20 @@ export class CustomerRegistrationComponent implements OnInit {
           '</div>'
     });
   }
+
+
+    public getSlForm(): void{
+        this.levyService.getSlForm().subscribe(
+            (response: NotificationStatus)=> {
+                this.slNotificationFormStatus = response;
+                console.log(this.slNotificationFormStatus);
+            },
+            (error: HttpErrorResponse)=>{
+                console.log(error.message)
+                //alert(error.message);
+            }
+        );
+    }
 
   public getSLNotificationStatus(): void{
     this.levyService.getSLNotificationStatus().subscribe(

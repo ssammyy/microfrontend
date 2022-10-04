@@ -2,7 +2,8 @@ package org.kebs.app.kotlin.apollo.store.model
 
 import java.io.Serializable
 import java.math.BigDecimal
-import java.util.*
+import java.sql.Date
+import java.sql.Timestamp
 import javax.persistence.*
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -21,7 +22,7 @@ class Sl2PaymentsHeaderEntity : Serializable {
 
     @Column(name = "REQUEST_HEADER_TRANSMISSION_DATE")
     @NotNull(message = "Required field")
-    var requestHeaderTransmissionDate: Date? = null
+    var requestHeaderTransmissionDate: Timestamp? = null
 
     @Column(name = "HEADER_TRANSMISSION_DATE")
     @NotNull(message = "Required field")
@@ -70,7 +71,7 @@ class Sl2PaymentsHeaderEntity : Serializable {
     var requestBankRefNo: String? = null
 
     @Column(name = "TRANSACTION_DATE", nullable = false)
-    var transactionDate: Date? = null
+    var transactionDate: Timestamp? = null
 
     @Column(name = "DESCRIPTION")
     var description: String? = null
@@ -115,7 +116,7 @@ class Sl2PaymentsHeaderEntity : Serializable {
     var createdBy: String? = null
 
     @Column(name = "CREATED_ON", nullable = false)
-    var createdOn: Date? = null
+    var createdOn: Timestamp? = null
 
     @Column(name = "LAST_MODIFIED_BY")
     var lastModifiedBy: String? = null

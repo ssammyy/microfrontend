@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api
 
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertNotNull
 import mu.KotlinLogging
 import org.apache.camel.CamelContext
 import org.apache.commons.io.FileUtils
@@ -50,8 +52,6 @@ import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 
 @SpringBootTest
@@ -932,7 +932,9 @@ class DITest {
         val country = iCountryTypeCodesRepository.findByCountryCode(physicalCountry)
         assertNotNull(country)
 
-        consignmentDoc.documentDetails?.consignmentDocDetails?.cdImporter?.physicalCountryName = country.countryName
+        if (country != null) {
+            consignmentDoc.documentDetails?.consignmentDocDetails?.cdImporter?.physicalCountryName = country.countryName
+        }
         assertEquals("KENYA", consignmentDoc.documentDetails?.consignmentDocDetails?.cdImporter?.physicalCountryName)
         consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, consignmentDocument.encodeToByteArray())
 

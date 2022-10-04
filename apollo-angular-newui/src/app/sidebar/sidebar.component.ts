@@ -64,18 +64,18 @@ export const ROUTES: RouteInfo[] = [
             {path: 'users', title: 'View Users ', ab: 'VU'},
         ],
     },
-    {
-        path: '/',
-        title: 'Operations',
-        type: 'sub',
-        icontype: 'class',
-        privilege: ['SL_IS_MANAGER'],
-        collapse: 'operations',
-        children: [
-            {path: 'slCompanySuspension', title: 'Suspend Company', ab: 'SC'},
-            {path: 'slCompanyClosure', title: 'Close Company ', ab: 'CC'},
-        ],
-    },
+    // {
+    //     path: '/',
+    //     title: 'Operations',
+    //     type: 'sub',
+    //     icontype: 'class',
+    //     privilege: ['SL_IS_MANAGER'],
+    //     collapse: 'operations',
+    //     children: [
+    //         {path: 'slCompanySuspension', title: 'Suspend Company', ab: 'SC'},
+    //         {path: 'slCompanyClosure', title: 'Close Company ', ab: 'CC'},
+    //     ],
+    // },
     {
         path: '/dmark',
         title: 'Diamond Mark',
@@ -383,7 +383,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'EPRA',
         type: 'link',
         collapse: 'epra',
-        privilege: ['EPRA', 'MS_MP_MODIFY', 'MS_IOP_MODIFY'],
+        privilege: ['FUEL_ASSISTANT_MANAGER_MODIFY', 'FUEL_HOD_MODIFY', 'MS_MP_MODIFY', 'MS_IOP_MODIFY'],
         icontype: 'receipt',
     },
     {

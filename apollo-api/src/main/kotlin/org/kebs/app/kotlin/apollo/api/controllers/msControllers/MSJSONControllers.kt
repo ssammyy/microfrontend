@@ -35,6 +35,7 @@ class MSJSONControllers(
     private val reportsDaoService: ReportsDaoService,
     private val marketSurveillanceDaoComplaintServices: MarketSurveillanceComplaintProcessDaoServices,
     private val msWorkPlanDaoService: MarketSurveillanceWorkPlanDaoServices,
+    private val msFuelDaoService: MarketSurveillanceFuelDaoServices,
     private val limsServices: LimsServices,
     private val resourceLoader: ResourceLoader,
     private val companyProfileRepo: ICompanyProfileRepository
@@ -92,6 +93,45 @@ class MSJSONControllers(
         }
 
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+    }
+
+    @PostMapping("/fuel/file/save")
+    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFuelFiles(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("teamsReferenceNo") teamsReferenceNo: String,
+        @RequestParam("countyReferenceNo") countyReferenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("docTypeName") docTypeName: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): FuelInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val batchDetail = msFuelDaoService.findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+        val teamsDetail = msFuelDaoService.findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+        val countyDetail = msFuelDaoService.findFuelCountyDetailByReferenceNumber(countyReferenceNo)
+        var fuelInspectionDetail = msFuelDaoService.findFuelInspectionDetailByReferenceNumber(referenceNo)
+//        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        var fileDocSaved: MsUploadsEntity? = null
+        docFile.forEach { fileDoc ->
+            with(fuelInspectionDetail){
+                when (docTypeName) {
+                    "FUEL_REPORT_FILE" -> {
+                        fileDocSaved = msFuelDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,fuelInspectionDetail).second
+                        fuelInspectionDetail.fuelReportId = fileDocSaved!!.id
+                    }
+                    "SCF_FILE" -> {
+                        fileDocSaved = msFuelDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,fuelInspectionDetail).second
+                        fuelInspectionDetail.scfUploadId = fileDocSaved!!.id
+                    }
+                }
+            }
+            fuelInspectionDetail = msFuelDaoService.updateFuelInspectionDetails(fuelInspectionDetail, map, loggedInUser).second
+        }
+
+        return msFuelDaoService.fuelInspectionMappingCommonDetails(fuelInspectionDetail, map, batchDetail,teamsDetail,countyDetail)
     }
 
     @PostMapping("/update/destruction-notice-upload")

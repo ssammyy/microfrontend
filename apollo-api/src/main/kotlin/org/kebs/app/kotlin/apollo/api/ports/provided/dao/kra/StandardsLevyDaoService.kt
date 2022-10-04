@@ -29,11 +29,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
-import java.util.*
 
 /**
  *
@@ -178,16 +178,16 @@ class StandardsLevyDaoService(
                 header.requestHeaderKraPin = paymentRequest.header?.kraPin
                 header.requestHeaderManufacturerName = paymentRequest.header?.manufacturerName
                 header.requestHeaderPaymentSlipNo = paymentRequest.header?.paymentSlipNo
-                header.requestHeaderPaymentSlipDate = SimpleDateFormat("MM-dd-yyyy").parse(paymentRequest.header?.paymentSlipDate)
+                header.requestHeaderPaymentSlipDate = SimpleDateFormat("MM-dd-yyyy").parse(paymentRequest.header?.paymentSlipDate.toString()) as java.sql.Date?
                 header.requestHeaderPaymentType = paymentRequest.header?.paymentType
                 header.requestHeaderTotalDeclAmt = paymentRequest.header?.totalDeclAmt?.toBigDecimal()
                 header.requestHeaderTotalPenaltyAmt = paymentRequest.header?.totalPenaltyAmt?.toBigDecimal()
                 header.requestHeaderTotalPaymentAmt = paymentRequest.header?.totalPaymentAmt?.toBigDecimal()
                 header.requestHeaderBank = paymentRequest.header?.bank
                 header.requestBankRefNo = paymentRequest.header?.bankRefNo
-                header.requestHeaderTransmissionDate = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").parse(paymentRequest.transmissionDate)
-                header.headerTransmissionDate = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").parse(paymentRequest.transmissionDate)
-                header.transactionDate = SimpleDateFormat("dd-MM-yyyy").parse(paymentRequest.header?.paymentDate)
+                header.requestHeaderTransmissionDate = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").parse(paymentRequest.transmissionDate.toString()) as Timestamp?
+                header.headerTransmissionDate = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").parse(paymentRequest.transmissionDate.toString()) as java.sql.Date?
+                header.transactionDate = SimpleDateFormat("dd-MM-yyyy").parse(paymentRequest.header?.paymentDate.toString()) as Timestamp?
                 header.status = 0
                 header.createdBy = paymentRequest.loginId
                 header.createdOn = Timestamp.from(Instant.now())
@@ -201,12 +201,12 @@ class StandardsLevyDaoService(
                     detail.headerId = header.id
                     detail.transactionType = "DECLARATION"
                     detail.commodityType = d.commodityType
-                    detail.periodFrom = SimpleDateFormat("dd-MM-yyyy").parse(d.periodFrom)
-                    detail.periodTo = SimpleDateFormat("dd-MM-yyyy").parse(d.periodTo)
+                    detail.periodFrom = SimpleDateFormat("dd-MM-yyyy").parse(d.periodFrom.toString()) as Date?
+                    detail.periodTo = SimpleDateFormat("dd-MM-yyyy").parse(d.periodTo.toString()) as Date?
                     detail.qtyManf = d.qtyManf?.toBigDecimal()
                     detail.exFactVal = d.exFactVal?.toBigDecimal()
                     detail.levyPaid = d.levyPaid?.toBigDecimal()
-                    detail.transactionDate = Date()
+                    detail.transactionDate = commonDaoServices.getCurrentDate()
                     detail.status = 0
                     detail.createdBy = paymentRequest.loginId
                     detail.createdOn = Timestamp.from(Instant.now())
@@ -218,10 +218,10 @@ class StandardsLevyDaoService(
                     detail.headerId = header.id
                     detail.transactionType = "PENALTY"
                     detail.penaltyOrderNo = p.penaltyOrderNo
-                    detail.periodFrom = SimpleDateFormat("dd-MM-yyyy").parse(p.periodFrom)
-                    detail.periodTo = SimpleDateFormat("dd-MM-yyyy").parse(p.periodTo)
+                    detail.periodFrom = SimpleDateFormat("dd-MM-yyyy").parse(p.periodFrom.toString()) as Date?
+                    detail.periodTo = SimpleDateFormat("dd-MM-yyyy").parse(p.periodTo.toString()) as Date?
                     detail.penaltyPaid = p.penaltyPaid?.toBigDecimal()
-                    detail.transactionDate = Date()
+                    detail.transactionDate = commonDaoServices.getCurrentDate()
                     detail.status = 0
                     detail.createdBy = paymentRequest.loginId
                     detail.createdOn = Timestamp.from(Instant.now())

@@ -2,15 +2,24 @@ import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import swal from 'sweetalert2';
 import {
   BatchFileFuelSaveDto,
-  BSNumberSaveDto, CompliantRemediationDto,
+  BSNumberSaveDto, ComplaintsFilesFoundDto,
+  CompliantRemediationDto, FuelBatchDetailsDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
-  FuelInspectionDto, LaboratoryDto,
-  LIMSFilesFoundDto, MSRemarksDto, MSSSFPDFListDetailsDto, PDFSaveComplianceStatusDto, RemediationDto,
+  FuelInspectionDto,
+  LaboratoryDto,
+  LIMSFilesFoundDto,
+  MSRemarksDto,
+  MSSSFPDFListDetailsDto,
+  PDFSaveComplianceStatusDto,
+  RapidTestProductsDetailsDto,
+  RapidTestProductsDto,
+  RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
   SampleSubmissionDto,
-  SampleSubmissionItemsDto, SSFSaveComplianceStatusDto,
+  SampleSubmissionItemsDto,
+  SSFSaveComplianceStatusDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -31,8 +40,10 @@ declare global {
 })
 export class ViewFuelSheduledDetailsComponent implements OnInit {
   active: Number = 0;
-  selectedRefNo: string;
-  selectedBatchRefNo: string;
+  batchReferenceNumber: string;
+  teamsReferenceNo: string;
+  countyReferenceNo: string;
+  referenceNumber: string;
   selectedPDFFileName: string;
   submitted = false;
   fuelInspection: FuelInspectionDto;
@@ -41,6 +52,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   assignOfficerForm!: FormGroup;
   remarksSavedForm!: FormGroup;
   rapidTestForm!: FormGroup;
+  rapidTestProductForm!: FormGroup;
   sampleCollectForm!: FormGroup;
   sampleCollectItemsForm!: FormGroup;
   sampleSubmitForm!: FormGroup;
@@ -53,6 +65,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   remediationForm!: FormGroup;
   dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
+  dataSaveRapidTestProducts: RapidTestProductsDto;
   dataSaveSampleCollect: SampleCollectionDto;
   dataSaveSampleCollectItems: SampleCollectionItemsDto;
   dataSaveSampleCollectItemsList: SampleCollectionItemsDto[] = [];
@@ -70,6 +83,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   roles: string[];
   userLoggedInID: number;
   userProfile: LoggedInUser;
+  uploadedFiles: FileList;
   blob: Blob;
 
   attachments: any[];
@@ -94,7 +108,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-        // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+        {name: 'addSSf', title: '<i class="btn btn-sm btn-primary">ADD SSF</i>'},
       ],
       position: 'right', // left|right
     },
@@ -142,6 +156,121 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       //   type: 'custom',
       //   renderComponent: ConsignmentStatusComponent
       // }
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsSampleSubmitted = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW SSF DETAILS</i>'},
+        {name: 'addBSNumber', title: '<i class="btn btn-sm btn-primary">ADD BS NUMBER</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      nameProduct: {
+        title: 'PRODUCT BRAND NAME',
+        type: 'string',
+        filter: false,
+      },
+      fileRefNumber: {
+        title: 'FILE REF NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      disposal: {
+        title: 'DISPOSAL',
+        type: 'string',
+        filter: false,
+      },
+      bsNumber: {
+        title: 'BS NUMBER',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsRapidTestProducts = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      productName: {
+        title: 'PRODUCT NAME',
+        type: 'string',
+        filter: false,
+      },
+      exportMarkerTestStatus: {
+        title: 'EXPORT MARKER TEST COMPLIANCE RESULTS',
+        type: 'string',
+        filter: false,
+      },
+      domesticKeroseneMarkerTestStatus: {
+        title: 'DOMESTIC KEROSENE MARKER COMPLIANCE TEST RESULTS',
+        type: 'string',
+        filter: false,
+      },
+      sulphurMarkerTest: {
+        title: 'SULPHUR MARKER (%) TEST',
+        type: 'string',
+        filter: false,
+      },
+      sulphurMarkerTestStatus: {
+        title: 'SULPHUR MARKER COMPLIANCE TEST RESULTS',
+        type: 'string',
+        filter: false,
+      },
+      overallComplianceStatus: {
+        title: 'OVERALL COMPLIANCE TEST RESULTS',
+        type: 'string',
+        filter: false,
+      },
     },
     pager: {
       display: true,
@@ -450,6 +579,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       perPage: 20,
     },
   };
+  addLabParamStatus: boolean;
+  public scfParamSelected: number;
+  public ssfSelectedID: number;
+  public scfParamSelectedName: string;
+  public selectedSSFDetails: SampleSubmissionDto;
 
 
 
@@ -478,9 +612,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     this.activatedRoute.paramMap.subscribe(
         rs => {
-          this.selectedRefNo = rs.get('referenceNumber');
-          this.selectedBatchRefNo = rs.get('batchReferenceNumber');
-          this.loadData(this.selectedRefNo, this.selectedBatchRefNo);
+          this.batchReferenceNumber = rs.get('batchReferenceNumber');
+          this.teamsReferenceNo = rs.get('teamsReferenceNo');
+          this.countyReferenceNo = rs.get('countyReferenceNo');
+          this.referenceNumber = rs.get('referenceNumber');
+          this.loadData(this.batchReferenceNumber, this.teamsReferenceNo, this.countyReferenceNo, this.referenceNumber);
         },
     );
 
@@ -492,6 +628,19 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     this.rapidTestForm = this.formBuilder.group({
       rapidTestStatus: ['', Validators.required],
+      rapidTestRemarks: null,
+    });
+
+    this.rapidTestProductForm = this.formBuilder.group({
+      productName: ['', Validators.required],
+      sampleSize: ['', Validators.required],
+      sulphurMarkerTest: ['', Validators.required],
+      exportMarkerTestStatus: ['', Validators.required],
+      domesticKeroseneMarkerTestStatus: ['', Validators.required],
+      sulphurMarkerTestStatus: ['', Validators.required],
+      overallComplianceStatus: ['', Validators.required],
+      batchSize: null,
+      batchNumber: null,
       rapidTestRemarks: null,
     });
 
@@ -511,9 +660,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     this.sampleCollectItemsForm = this.formBuilder.group({
       productBrandName: ['', Validators.required],
-      batchNo: ['', Validators.required],
-      batchSize: ['', Validators.required],
       sampleSize: ['', Validators.required],
+      batchNo: null,
+      batchSize: null,
+
     });
 
     this.sampleSubmitForm = this.formBuilder.group({
@@ -523,20 +673,21 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       fileRefNumber: ['', Validators.required],
       referencesStandards: ['', Validators.required],
       sizeTestSample: ['', Validators.required],
-      sizeRefSample: ['', Validators.required],
+      sizeRefSample: null,
       condition: ['', Validators.required],
-      sampleReferences: ['', Validators.required],
+      sampleReferences: null,
       sendersName: ['', Validators.required],
       designation: ['', Validators.required],
       address: ['', Validators.required],
       sendersDate: ['', Validators.required],
-      receiversName: ['', Validators.required],
-      testChargesKsh: ['', Validators.required],
-      receiptLpoNumber: ['', Validators.required],
-      invoiceNumber: ['', Validators.required],
+      receiversName: null,
+      testChargesKsh: null,
+      receiptLpoNumber: null,
+      invoiceNumber: null,
       disposal: ['', Validators.required],
       remarks: ['', Validators.required],
       sampleCollectionNumber: ['', Validators.required],
+      sampleCollectionProduct: ['', Validators.required],
     });
 
 
@@ -547,6 +698,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
     this.sampleSubmitBSNumberForm = this.formBuilder.group({
       bsNumber: ['', Validators.required],
+      ssfID: ['', Validators.required],
       submittedDate: ['', Validators.required],
       remarks: ['', Validators.required],
     });
@@ -570,17 +722,17 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       remarks: ['', Validators.required],
       volumeFuelRemediated: ['', Validators.required],
       subsistenceTotalNights: ['', Validators.required],
+      subsistenceTotalNightsRate: ['', Validators.required],
       transportAirTicket: ['', Validators.required],
       transportInkm: ['', Validators.required],
     });
 
     this.remediationForm = this.formBuilder.group({
       productType: ['', Validators.required],
-      quantityOfFuel: ['', Validators.required],
+      quantityOfFuel: null,
       contaminatedFuelType: ['', Validators.required],
       applicableKenyaStandard: ['', Validators.required],
       remediationProcedure: ['', Validators.required],
-      volumeOfProductContaminated: ['', Validators.required],
       volumeAdded: ['', Validators.required],
       totalVolume: ['', Validators.required],
     });
@@ -593,6 +745,10 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   get formRapidTestForm(): any {
     return this.rapidTestForm.controls;
+  }
+
+  get formRapidTestProductForm(): any {
+    return this.rapidTestProductForm.controls;
   }
 
   get formPdfSaveComplianceStatusForm(): any {
@@ -634,30 +790,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     return this.remediationForm.controls;
   }
 
-  private loadData(referenceNumber: string, batchReferenceNumber: string ): any {
+  private loadData(batchReferenceNumber: string, teamsReferenceNo: string, countyReferenceNo: string, referenceNumber: string ): any {
     this.SpinnerService.show();
-    // let params = {'personal': this.personalTasks}
-    // this.fuelInspection = this.msService.fuelInspectionDetailsExamples()
-    // this.totalCount = this.loadedData.fuelInspectionDto.length;
-    // this.dataSet.load(this.loadedData.fuelInspectionDto);
-    // this.SpinnerService.hide();
-    this.msService.msFuelInspectionScheduledDetails(batchReferenceNumber, referenceNumber).subscribe(
+    this.msService.msFuelInspectionScheduledDetails(batchReferenceNumber, teamsReferenceNo, countyReferenceNo, referenceNumber).subscribe(
         (data) => {
           this.fuelInspection = data;
-          // if(this.fuelInspection.sampleSubmittedStatus!= true){
-          //   this.msService.loadMSLabList().subscribe(
-          //       (data) => {
-          //         this.labList = data;
-          //         console.log(data);
-          //       },
-          //       error => {
-          //         console.log(error);
-          //         this.msService.showError('AN ERROR OCCURRED');
-          //       }
-          //   );
-          // }
-          // this.totalCount = this.loadedData.length;
-          // this.dataSet.load(this.loadedData);
           this.SpinnerService.hide();
           console.log(data);
         },
@@ -668,42 +805,17 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         },
     );
 
-
-
-    // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
-    // console.log(this.activeStatus)
-    // // Clear list before loading
-    // this.dataSet.load([])
-    // // Switch
-    // if (this.activeStatus === "completed") {
-    //   data = this.diService.listCompletedCd(documentTypeUuid, page, size)
-    // } else if (this.activeStatus === "ongoing") {
-    //   data = this.diService.listSectionOngoingCd(documentTypeUuid, page, size)
-    // } else if (this.activeStatus === "not-assigned") {
-    //   data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
-    // }
-    // data.subscribe(
-    //     result => {
-    //       if (result.responseCode === "00") {
-    //         let listD: any[] = result.data;
-    //         this.totalCount = result.totalCount
-    //         this.dataSet.load(listD)
-    //       } else {
-    //         console.log(result)
-    //       }
-    //     }
-    // );
   }
 
   openModalAddDetails(divVal: string): void {
     const arrHead = ['scheduleRemediationInvoicePaid',
-      'assignOfficer', 'rapidTest', 'addBsNumber',
+      'assignOfficer', 'rapidTest', 'addBsNumber', 'uploadScfFiles', 'uploadReportFiles',
       'ssfAddComplianceStatus', 'scheduleRemediation',
-      'addRemediationDetails', 'notCompliantInvoice'];
+      'addRemediationDetails', 'notCompliantInvoice', 'rapidTestAddProducts'];
     const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID',
-      'SELECT OFFICER TO ASSIGN', 'RAPID TEST RESULTS', 'ADD BS NUMBER',
+      'SELECT OFFICER TO ASSIGN', 'RAPID TEST OVERALL RESULTS', 'ADD BS NUMBER', 'UPLOAD SCF FILE', 'UPLOAD REPORT FILE',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
-      'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED'];
+      'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED', 'ADD PRODUCT RAPID TEST DETAILS'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -810,7 +922,14 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveAssignOfficer = {...this.dataSaveAssignOfficer, ...this.assignOfficerForm.value};
-      this.msService.msFuelInspectionScheduledAssignOfficer(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveAssignOfficer).subscribe(
+      // tslint:disable-next-line:max-line-length
+      this.msService.msFuelInspectionScheduledAssignOfficer(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+          this.dataSaveAssignOfficer,
+      ).subscribe(
           (data: any) => {
             this.fuelInspection = data;
             console.log(data);
@@ -830,12 +949,42 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveRapidTest = {...this.dataSaveRapidTest, ...this.rapidTestForm.value};
-      this.msService.msFuelInspectionScheduledRapidTest(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveRapidTest).subscribe(
+      this.msService.msFuelInspectionScheduledRapidTest(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+          this.dataSaveRapidTest).subscribe(
           (data: any) => {
             this.fuelInspection = data;
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('RAPID TEST RESULTS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveRapidTestProductsResults(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveRapidTestProducts = {...this.dataSaveRapidTestProducts, ...this.rapidTestProductForm.value};
+      this.msService.msFuelInspectionScheduledRapidTestProducts(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+          this.dataSaveRapidTestProducts).subscribe(
+          (data: any) => {
+            this.fuelInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('RAPID TEST PRODUCTS RESULTS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -857,7 +1006,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       this.dataSaveSampleCollect = {...this.dataSaveSampleCollect, ...this.sampleCollectForm.value};
       this.dataSaveSampleCollect.productsList = this.dataSaveSampleCollectItemsList;
 
-      this.msService.msFuelInspectionScheduledAddSampleCollection(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleCollect).subscribe(
+      this.msService.msFuelInspectionScheduledAddSampleCollection(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+          this.dataSaveSampleCollect).subscribe(
           (data: any) => {
             this.fuelInspection = data;
             console.log(data);
@@ -883,7 +1037,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
       this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
 
-      this.msService.msFuelInspectionScheduledAddSampleSubmission(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleSubmit).subscribe(
+      this.msService.msFuelInspectionScheduledAddSampleSubmission(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+          this.dataSaveSampleSubmit).subscribe(
           (data: any) => {
             this.fuelInspection = data;
             console.log(data);
@@ -903,7 +1062,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmitBSNumber = {...this.dataSaveSampleSubmitBSNumber, ...this.sampleSubmitBSNumberForm.value};
-      this.msService.msFuelInspectionScheduledAddSampleSubmissionBSNumber(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveSampleSubmitBSNumber).subscribe(
+      this.msService.msFuelInspectionScheduledAddSampleSubmissionBSNumber(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+          this.dataSaveSampleSubmitBSNumber).subscribe(
           (data: any) => {
             this.fuelInspection = data;
             console.log(data);
@@ -927,8 +1091,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       this.dataPDFSaveComplianceStatus.bsNumber = this.fuelInspection.sampleLabResults.ssfResultsList.bsNumber;
       this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
       if (this.fuelInspection.sampleLabResults.savedPDFFiles.length === 0) {
-        this.msService.msFuelInspectionScheduledSavePDFLIMS(this.fuelInspection.batchDetails.referenceNumber,
-            this.fuelInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+        this.msService.msFuelInspectionScheduledSavePDFLIMS(
+            this.batchReferenceNumber,
+            this.teamsReferenceNo,
+            this.countyReferenceNo,
+            this.referenceNumber,
+            this.dataPDFSaveComplianceStatus).subscribe(
             (data: any) => {
               this.fuelInspection = data;
               console.log(data);
@@ -944,8 +1112,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       } else {
         for (const savedPdf of this.fuelInspection.sampleLabResults.savedPDFFiles) {
           if (savedPdf.pdfName !== this.selectedPDFFileName) {
-            this.msService.msFuelInspectionScheduledSavePDFLIMS(this.fuelInspection.batchDetails.referenceNumber,
-                this.fuelInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+            this.msService.msFuelInspectionScheduledSavePDFLIMS(
+                this.batchReferenceNumber,
+                this.teamsReferenceNo,
+                this.countyReferenceNo,
+                this.referenceNumber,
+                this.dataPDFSaveComplianceStatus).subscribe(
                 (data: any) => {
                   this.fuelInspection = data;
                   console.log(data);
@@ -974,7 +1146,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       this.dataSSFSaveComplianceStatus.ssfID = this.fuelInspection.sampleLabResults.ssfResultsList.sffId;
       this.dataSSFSaveComplianceStatus.bsNumber = this.fuelInspection.sampleLabResults.ssfResultsList.bsNumber;
       // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      this.msService.msFuelInspectionScheduledSaveSSFComplianceStatus(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSSFSaveComplianceStatus).subscribe(
+      this.msService.msFuelInspectionScheduledSaveSSFComplianceStatus(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+          this.dataSSFSaveComplianceStatus).subscribe(
           (data: any) => {
             this.fuelInspection = data;
             console.log(data);
@@ -994,7 +1171,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveScheduleRemediation = {...this.dataSaveScheduleRemediation, ...this.scheduleRemediationForm.value};
-      this.msService.msFuelInspectionScheduledRemediation(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveScheduleRemediation).subscribe(
+      this.msService.msFuelInspectionScheduledRemediation(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+          this.dataSaveScheduleRemediation).subscribe(
           (data: any) => {
             this.fuelInspection = data;
             console.log(data);
@@ -1014,7 +1196,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveNotCompliantInvoice = {...this.dataSaveNotCompliantInvoice, ...this.notCompliantInvoiceForm.value};
-      this.msService.msFuelInspectionNotCompliantRemediationInvoice(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveNotCompliantInvoice).subscribe(
+      this.msService.msFuelInspectionNotCompliantRemediationInvoice(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+          this.dataSaveNotCompliantInvoice).subscribe(
           (data: any) => {
             this.fuelInspection = data;
             console.log(data);
@@ -1034,7 +1221,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
-      this.msService.msFuelInspectionRemediation(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber, this.dataSaveRemediation).subscribe(
+      this.msService.msFuelInspectionRemediation(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+          this.dataSaveRemediation).subscribe(
           (data: any) => {
             this.fuelInspection = data;
             console.log(data);
@@ -1054,7 +1246,12 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     // if (valid) {
       this.SpinnerService.show();
       // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
-      this.msService.msFuelInspectionEnd(this.fuelInspection.batchDetails.referenceNumber, this.fuelInspection.referenceNumber).subscribe(
+      this.msService.msFuelInspectionEnd(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+      ).subscribe(
           (data: any) => {
             this.fuelInspection = data;
             console.log(data);
@@ -1070,13 +1267,69 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     // }
   }
 
+  onClickSaveEndSSFAdding() {
+    // if (valid) {
+      this.SpinnerService.show();
+      // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+      this.msService.msFuelInspectionEndSampleSubmissionAdding(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+      ).subscribe(
+          (data: any) => {
+            this.fuelInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FUEL INSPECTION UPDATED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    // }
+  }
+
+  onClickSaveEndSSFAddingBsNumber() {
+    // if (valid) {
+      this.SpinnerService.show();
+      // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+      this.msService.msFuelInspectionEndSSFAddingBsNumber(
+          this.batchReferenceNumber,
+          this.teamsReferenceNo,
+          this.countyReferenceNo,
+          this.referenceNumber,
+      ).subscribe(
+          (data: any) => {
+            this.fuelInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FUEL INSPECTION UPDATED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    // }
+  }
+
   onClickAddDataSampleCollectItems() {
-    this.dataSaveSampleCollectItems = this.sampleCollectItemsForm.value;
-    this.dataSaveSampleCollectItemsList.push(this.dataSaveSampleCollectItems);
-    this.sampleCollectItemsForm?.get('productBrandName')?.reset();
-    this.sampleCollectItemsForm?.get('batchNo')?.reset();
-    this.sampleCollectItemsForm?.get('batchSize')?.reset();
-    this.sampleCollectItemsForm?.get('sampleSize')?.reset();
+    const products = this.fuelInspection.rapidTestProducts;
+    for (let i = 0; i < products.length; i++) {
+      if (products[i].overallComplianceStatus !== true) {
+        const scfItems = new SampleCollectionItemsDto();
+        scfItems.productBrandName = products[i].productName;
+        scfItems.batchNo = products[i].batchNumber;
+        scfItems.batchSize = products[i].batchSize;
+        scfItems.sampleSize = products[i].sampleSize;
+        this.dataSaveSampleCollectItemsList.push(scfItems);
+      }
+    }
+
 
   }
 
@@ -1109,7 +1362,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   goBack() {
     console.log('TEST 101' + this.fuelInspection.batchDetails.referenceNumber);
-    this.router.navigate([`/epra`, this.fuelInspection.batchDetails.referenceNumber]);
+    this.router.navigate([`/epra/details/`,  this.batchReferenceNumber, this.teamsReferenceNo, this.countyReferenceNo]);
   }
 
   viewLIMSPDFRecord(data: LIMSFilesFoundDto, bsNumber: string) {
@@ -1157,6 +1410,59 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
+  saveSSFRecord(data: SampleCollectionItemsDto) {
+    this.scfParamSelected = data.id;
+    this.scfParamSelectedName = data.productBrandName;
+    this.addLabParamStatus = true;
+    window.$('#sampleSubmitModal').modal('show');
+  }
+
+  public onCustomSCFAction(event: any): void {
+    switch (event.action) {
+      case 'addSSf':
+        this.saveSSFRecord(event.data);
+        break;
+    }
+  }
+
+  viewSSFRecord(data: SampleSubmissionDto) {
+    this.sampleSubmitForm.patchValue(data);
+    const paramDetails = data.parametersList;
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    }
+    this.sampleSubmitForm.disable();
+    this.addLabParamStatus = false;
+    window.$('#sampleSubmitModal').modal('show');
+  }
+
+  addSSFBsNumberRecord(data: SampleSubmissionDto) {
+    this.currDivLabel = `ADD BS NUMBER FOR FILE REFERENCE NUMBER # ${data.fileRefNumber}`;
+    this.currDiv = 'addBsNumber';
+    this.ssfSelectedID = data.id;
+
+    window.$('#myModal1').modal('show');
+  }
+
+  onClickCloseSSF() {
+    this.sampleSubmitForm.reset();
+    this.sampleSubmitForm.enable();
+    this.addLabParamStatus = true;
+    this.dataSaveSampleSubmitParamList = [];
+  }
+
+
+  public onCustomSSFAction(event: any): void {
+    switch (event.action) {
+      case 'viewRecord':
+        this.viewSSFRecord(event.data);
+        break;
+      case 'addBSNumber':
+        this.addSSFBsNumberRecord(event.data);
+        break;
+    }
+  }
+
   public onCustomLIMSPDFAction(event: any, bsNumber: string): void {
     switch (event.action) {
       case 'viewRecord':
@@ -1186,4 +1492,42 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
         break;
     }
   }
+
+  onClickSaveFilesResults(docTypeName: string) {
+    if (this.uploadedFiles.length > 0) {
+      this.SpinnerService.show();
+      const file = this.uploadedFiles;
+      const formData = new FormData();
+      formData.append('batchReferenceNo', this.batchReferenceNumber);
+      formData.append('teamsReferenceNo', this.teamsReferenceNo );
+      formData.append('countyReferenceNo', this.countyReferenceNo );
+      formData.append('referenceNo', this.referenceNumber );
+      formData.append('docTypeName', docTypeName);
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+        // this.uploadedFiles.item(i).slice();
+      }
+      this.msService.saveFuelFiles(formData).subscribe(
+          (data: any) => {
+            this.fuelInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    } else {
+      this.msService.showError('NO FILE IS UPLOADED FOR SAVING');
+    }
+  }
+
+  viewFuelFileSaved(data: ComplaintsFilesFoundDto) {
+    this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
+  }
+
 }

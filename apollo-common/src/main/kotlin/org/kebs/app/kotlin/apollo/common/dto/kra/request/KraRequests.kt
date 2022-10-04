@@ -218,8 +218,10 @@ class PenaltyRequest {
 
 class DECLARATION {
     var commodityType: String? = null
-    var periodFrom: String? = null
-    var periodTo: String? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var periodFrom: Date? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var periodTo: Date? = null
     var qtyManf: String? = null
     var exFactVal: String? = null
     var levyPaid: String? = null
@@ -238,9 +240,11 @@ class Header {
     var kraPin: String? = null
     var manufacturerName: String? = null
     var paymentSlipNo: String? = null
-    var paymentSlipDate: String? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var paymentSlipDate: Date? = null
     var paymentType: String? = null
-    var paymentDate: String? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var paymentDate: Date? = null
     var totalDeclAmt: String? = null
     var totalPenaltyAmt: String? = null
 
@@ -254,8 +258,10 @@ class Header {
 
 class PENALTY {
     var penaltyOrderNo: String? = null
-    var periodFrom: String? = null
-    var periodTo: String? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var periodFrom: Date? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    var periodTo: Date? = null
     var penaltyPaid: String? = null
 }
 
@@ -263,7 +269,9 @@ class Request {
     var loginId: String? = null
     var password: String? = null
     var hash: String? = null
-    var transmissionDate: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")
+    var transmissionDate: Timestamp? = Timestamp.from(Instant.now())
 
     @JsonProperty("HEADER")
     var header: Header? = null

@@ -89,21 +89,6 @@ export class EpraBatchListComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      region: {
-        title: 'REGION',
-        type: 'string',
-        filter: false,
-      },
-      county: {
-        title: 'COUNTY',
-        type: 'string',
-        filter: false,
-      },
-      town: {
-        title: 'TOWN',
-        type: 'string',
-        filter: false,
-      },
       batchFileYear: {
         title: 'BATCH FILE YEAR',
         type: 'string',
@@ -113,12 +98,7 @@ export class EpraBatchListComponent implements OnInit {
         title: 'BATCH FILE MONTH',
         type: 'string',
         filter: false,
-      },
-      batchClosed: {
-        title: 'BATCH CLOSED',
-        type: 'boolean',
-        filter: false,
-      },
+      }
     },
     pager: {
       display: true,
@@ -160,8 +140,8 @@ export class EpraBatchListComponent implements OnInit {
 
     this.loadData(this.defaultPage, this.defaultPageSize);
     this.addNewBatchForm = this.formBuilder.group({
-      county: ['', Validators.required],
-      town: ['', Validators.required],
+      county: null,
+      town: null,
       remarks: ['', Validators.required],
     });
   }
@@ -184,30 +164,6 @@ export class EpraBatchListComponent implements OnInit {
           this.msService.showError('AN ERROR OCCURRED');
         },
     );
-
-    // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
-    // console.log(this.activeStatus)
-    // // Clear list before loading
-    // this.dataSet.load([])
-    // // Switch
-    // if (this.activeStatus === "completed") {
-    //   data = this.diService.listCompletedCd(documentTypeUuid, page, size)
-    // } else if (this.activeStatus === "ongoing") {
-    //   data = this.diService.listSectionOngoingCd(documentTypeUuid, page, size)
-    // } else if (this.activeStatus === "not-assigned") {
-    //   data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
-    // }
-    // data.subscribe(
-    //     result => {
-    //       if (result.responseCode === "00") {
-    //         let listD: any[] = result.data;
-    //         this.totalCount = result.totalCount
-    //         this.dataSet.load(listD)
-    //       } else {
-    //         console.log(result)
-    //       }
-    //     }
-    // );
   }
 
 

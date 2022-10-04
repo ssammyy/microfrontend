@@ -125,6 +125,7 @@ interface AllLevyPayments{
     fun getPenaltyPaid(): String?
     fun getTotalPenaltyAmt(): String?
     fun getAmountDue(): String?
+    fun getMonthsLate() : String?
 
 
 }
@@ -189,6 +190,7 @@ interface LevyPenalty{
     fun getBusinessNatures(): Long?
     fun getBusinessLineName(): String?
     fun getBusinessNatureName(): String?
+    fun getMonthsLate(): String?
 }
 interface ManufactureListHolder {
     fun getId(): Long?
@@ -408,6 +410,19 @@ interface RegisteredFirms{
     fun getCreatedOn(): String?
     fun getAdminLocation(): String?
     fun getDateOfClosure(): String?
+}
+
+interface ReviewStandards{
+    fun getId(): Long?
+    fun getTitle(): String?
+    fun getScope(): String?
+    fun getNormativeReference(): String?
+    fun getSymbolsAbbreviatedTerms(): String?
+    fun getClause(): String?
+    fun getSpecial(): String?
+    fun getStandardNumber(): String?
+    fun getStandardType(): String?
+    fun getDateFormed(): String?
 }
 
 

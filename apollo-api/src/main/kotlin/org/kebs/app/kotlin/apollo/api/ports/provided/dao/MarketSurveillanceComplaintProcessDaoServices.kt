@@ -1134,13 +1134,13 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val (comp, complaintCustomersDetails, complaintLocationDetails) = complaintDetails(cp)
         val complaintFilesSaved = findUploadedFileForComplaints(comp.id?: throw ExpectedDataNotFound("MISSING COMPLAINT ID"))
         val complaintRemarks = findRemarksForComplaints(comp.id?: throw ExpectedDataNotFound("MISSING COMPLAINT ID"))
-        val officerList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(
+        val officerList = commonDaoServices.findOfficersListBasedOnRole(
             applicationMapProperties.mapMSComplaintWorkPlanMappedOfficerROLEID,
             complaintLocationDetails.county ?: throw ExpectedDataNotFound("MISSING COMPLAINT COUNTY ID"),
             complaintLocationDetails.region ?: throw ExpectedDataNotFound("MISSING COMPLAINT REGION ID")
         )
 
-        val hofList = commonDaoServices.findOfficersListBasedOnRegionCountyAndRole(
+        val hofList = commonDaoServices.findOfficersListBasedOnRole(
             applicationMapProperties.mapMSComplaintWorkPlanMappedHOFROLEID,
             complaintLocationDetails.county ?: throw ExpectedDataNotFound("MISSING COMPLAINT COUNTY ID"),
             complaintLocationDetails.region ?: throw ExpectedDataNotFound("MISSING COMPLAINT REGION ID")

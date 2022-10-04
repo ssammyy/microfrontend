@@ -55,6 +55,7 @@ class NWAService(private val runtimeService: RuntimeService,
                  private val userListRepository: UserListRepository,
                  private val standardNwaRemarksRepository: StandardNwaRemarksRepository,
                  private val companyStandardRepository: CompanyStandardRepository,
+                 private val standardRepository: StandardRepository
 
 
                  ) {
@@ -1177,7 +1178,8 @@ class NWAService(private val runtimeService: RuntimeService,
     // Upload NWA Standard
     fun uploadNwaStandard(
         nWAStandard: NWAStandard,
-        standardNwaRemarks: StandardNwaRemarks
+        standardNwaRemarks: StandardNwaRemarks,
+        standard: Standard
         ) : ProcessInstanceUS
     {
         val variable:MutableMap<String, Any> = HashMap()
@@ -1194,6 +1196,18 @@ class NWAService(private val runtimeService: RuntimeService,
         standardNwaRemarks.processId= nWAStandard.processId
         nWAStandard.assignedTo= companyStandardRepository.getHoSicId()
 
+        standard.title=nWAStandard.title
+        standard.scope= nWAStandard.scope
+        standard.normativeReference= nWAStandard.normativeReference
+        standard.symbolsAbbreviatedTerms= nWAStandard.symbolsAbbreviatedTerms
+        standard.clause= nWAStandard.clause
+        standard.special=nWAStandard.special
+        standard.standardNumber= nWAStandard.ksNumber
+        standard.status=1
+        standard.standardType="KNWA"
+        standard.dateFormed=nWAStandard.dateSdUploaded
+
+
         var userList= companyStandardRepository.getSacSecEmailList()
         val targetUrl = "https://kimsint.kebs.org/";
         userList.forEach { item->
@@ -1208,6 +1222,7 @@ class NWAService(private val runtimeService: RuntimeService,
 
         //print(nWAStandard.toString())
         val nwaDetails = nwaStandardRepository.save(nWAStandard)
+        standardRepository.save(standard)
         // Send email to Legal
         variable["ID"] = nwaDetails.id
         runtimeService.createProcessInstanceQuery()

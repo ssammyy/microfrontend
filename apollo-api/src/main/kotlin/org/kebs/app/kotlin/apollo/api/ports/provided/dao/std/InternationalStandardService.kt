@@ -43,7 +43,8 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
                                     private val isJustificationUploadsRepository: ISJustificationUploadsRepository,
                                     private val isStandardUploadsRepository: ISStandardUploadsRepository,
                                     private val sdisGazetteNoticeUploadsRepository: SDISGazetteNoticeUploadsRepository,
-                                    private val notifications: Notifications
+                                    private val notifications: Notifications,
+                                    private val standardRepository : StandardRepository
 
                                     )
 {
@@ -383,7 +384,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
     }
 
     // Upload NWA Standard
-    fun uploadISStandard(iSUploadStandard: ISUploadStandard): ProcessInstanceResponseValues
+    fun uploadISStandard(iSUploadStandard: ISUploadStandard,standard: Standard): ProcessInstanceResponseValues
     {
         val variable:MutableMap<String, Any> = HashMap()
         iSUploadStandard.title?.let{variable.put("title", it)}
@@ -394,16 +395,30 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         iSUploadStandard.special?.let{variable.put("special", it)}
         iSUploadStandard.taskId?.let{variable.put("taskId", it)}
         //iSUploadStandard.iSNumber?.let{variable.put("ISNumber", it)}
-
-
+        val isStandard= getISNumber()
         iSUploadStandard.uploadDate = Timestamp(System.currentTimeMillis())
         variable["uploadDate"] = iSUploadStandard.uploadDate!!
+
+        standard.title=iSUploadStandard.title
+        standard.scope= iSUploadStandard.scope
+        standard.normativeReference= iSUploadStandard.normativeReference
+        standard.symbolsAbbreviatedTerms= iSUploadStandard.symbolsAbbreviatedTerms
+        standard.clause= iSUploadStandard.clause
+        standard.special=iSUploadStandard.special
+        standard.standardNumber= isStandard
+        standard.status=1
+        standard.standardType="International Standard"
+        standard.dateFormed=iSUploadStandard.uploadDate
+
+
+
 
         iSUploadStandard.iSNumber = getISNumber()
 
         variable["iSNumber"] = iSUploadStandard.iSNumber!!
 
         val isuDetails = iSUploadStandardRepository.save(iSUploadStandard)
+        standardRepository.save(standard)
         //email to legal
         val recipient= "Catherine.Kariuki@bskglobaltech.com"
         val subject = "International Standard Uploaded"

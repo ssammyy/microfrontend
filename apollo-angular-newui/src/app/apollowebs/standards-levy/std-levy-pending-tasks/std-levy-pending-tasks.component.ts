@@ -53,6 +53,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
   public actionRequestPending: ManufacturePendingTask | undefined;
     slFormDetails !: SlModel;
   public scheduleVisitFormGroup!: FormGroup;
+  public cancelVisitFormGroup!: FormGroup;
+  public siteConfirmFormGroup!: FormGroup;
+  public siteEditFormGroup!: FormGroup;
   public prepareReportFormGroup!: FormGroup;
   public prepareFeedBackFormGroup!: FormGroup;
   public approvalFormGroup!: FormGroup;
@@ -82,6 +85,10 @@ export class StdLevyPendingTasksComponent implements OnInit {
     isShowSLForm = true;
     isShowCompanyDetails=true;
     isShowCompanyRemarks=true;
+    isShowSiteCancelForm=true;
+    isShowSiteEdit=true;
+    isShowSiteConfirmForm=true;
+
 
     toggleDisplaySLForm(manufactureId: number) {
         this.loadingText = "Loading ...."
@@ -152,6 +159,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
 
     toggleDisplayApproveEditRequest(){
       this.isShowApproveRequestForm=!this.isShowApproveRequestForm;
+        this.isShowCompanyRemarks=true;
+        this.isShowCompanyDetails=true;
       this.isShowRejectRequestForm=true;
       this.isShowDocumentsTab=true;
         this.isShowRejectForm2 = true;
@@ -163,11 +172,64 @@ export class StdLevyPendingTasksComponent implements OnInit {
         this.isShowRejectRequestForm=!this.isShowRejectRequestForm;
         this.isShowApproveRequestForm=true;
         this.isShowDocumentsTab=true;
+        this.isShowCompanyDetails=true;
         this.isShowRejectForm2 = true;
         this.isShowApprovalForm2 = true;
         this.isShowApprovalForm1= true;
         this.isShowRejectForm1= true;
     }
+
+
+
+    toggleCancelScheduleForm() {
+        this.isShowSiteCancelForm = !this.isShowSiteCancelForm;
+        this.isShowSiteEdit= true;
+        this.isShowSiteConfirmForm= true;
+        this.isShowCompanyDetails= true;
+        this.isShowScheduleForm= true;
+        this.isShowReportForm= true;
+        this.isShowRemarksTab= true;
+        this.isShowDocumentsTab= true;
+        this.isShowApproveRequestForm=true;
+        this.isShowRejectRequestForm=true;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
+        this.isShowApprovalForm1= true;
+        this.isShowRejectForm1= true;
+    }
+
+    toggleEditScheduleForm() {
+        this.isShowSiteEdit = !this.isShowSiteEdit;
+        this.isShowSiteCancelForm= true;
+        this.isShowSiteConfirmForm= true;
+        this.isShowScheduleForm = true;
+        this.isShowReportForm= true;
+        this.isShowRemarksTab= true;
+        this.isShowDocumentsTab= true;
+        this.isShowApproveRequestForm=true;
+        this.isShowRejectRequestForm=true;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
+        this.isShowApprovalForm1= true;
+        this.isShowRejectForm1= true;
+    }
+
+    toggleConfirmScheduleForm() {
+        this.isShowSiteConfirmForm = !this.isShowSiteConfirmForm;
+        this.isShowSiteCancelForm= true;
+        this.isShowSiteEdit= true;
+        this.isShowScheduleForm = true;
+        this.isShowReportForm= true;
+        this.isShowRemarksTab= true;
+        this.isShowDocumentsTab= true;
+        this.isShowApproveRequestForm=true;
+        this.isShowRejectRequestForm=true;
+        this.isShowRejectForm2 = true;
+        this.isShowApprovalForm2 = true;
+        this.isShowApprovalForm1= true;
+        this.isShowRejectForm1= true;
+    }
+
   toggleDisplayScheduleForm() {
     this.isShowScheduleForm = !this.isShowScheduleForm;
     this.isShowReportForm= true;
@@ -345,64 +407,97 @@ export class StdLevyPendingTasksComponent implements OnInit {
         this.userType=62;
         this.role='Chief Manager';
     }
+    this.cancelVisitFormGroup= this.formBuilder.group({
+        accentTo: [],
+        manufacturerEntity: [],
+        taskId : [],
+        processId : [],
+        remarks: []
+    });
+
+      this.siteConfirmFormGroup= this.formBuilder.group({
+          accentTo: [],
+          manufacturerEntity: [],
+          taskId : [],
+          processId : [],
+          scheduledVisitDate: [],
+          remarks: []
+      });
+
+
+      this.siteEditFormGroup= this.formBuilder.group({
+          accentTo: [],
+          manufacturerEntity: [],
+          taskId : [],
+          processId : [],
+          scheduledVisitDate: [],
+          remarks: []
+      });
 
       this.approveEditRequestFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
-          ownership: [],
           userType:[],
           taskType:[],
           assignedTo: [],
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
       });
       this.rejectEditRequestFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
-          ownership: [],
           userType:[],
           taskType:[],
           assignedTo: [],
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
 
       });
 
       this.approveCompanyLevelOneFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
-          ownership: [],
           userType:[],
           taskType:[],
           assignedTo: [],
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
 
       });
       this.rejectCompanyLevelOneFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
           ownership: [],
           userType:[],
@@ -411,47 +506,47 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
 
       });
 
       this.approveEditRequestLevelTwoFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
-          ownership: [],
           userType:[],
           taskType:[],
           assignedTo:[],
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
 
       });
       this.rejectEditRequestLevelTwoFormGroup = this.formBuilder.group({
-          postalAddress: [],
-          physicalAddress: [],
+          postalAddressEdit: [],
+          physicalAddressEdit: [],
+          companyEmailEdit:[],
+          companyTelephoneEdit:[],
+          yearlyTurnoverEdit:[],
+          ownershipEdit: [],
           companyId: [],
-          ownership: [],
           userType:[],
           taskType:[],
           assignedTo:[],
           taskId: [],
           accentTo:[],
           processId:[],
-          companyEmail:[],
-          companyTelephone:[],
-          yearlyTurnover:[],
-          editID:[]
+          editID:[],
+          remarks: []
 
 
       });
@@ -463,7 +558,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       entryNumber: [],
       companyName: [],
       kraPin: [],
-      registrationNumber: []
+      registrationNumber: [],
+        processId: []
 
     });
 
@@ -479,7 +575,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       assigneeId: [],
       manufacturerEntity: [],
       userType: [],
-        complianceStatus:[]
+        complianceStatus:[],
+        processId: []
 
     });
     this.prepareFeedBackFormGroup = this.formBuilder.group({
@@ -487,7 +584,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       taskId: [],
       visitID: [],
       assigneeId: [],
-      manufacturerEntity: []
+      manufacturerEntity: [],
+        processId: []
 
     });
 
@@ -499,7 +597,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       taskId: [],
       manufacturerEntity: [],
         role:[],
-        status:[]
+        status:[],
+        processId: []
 
     });
     this.rejectFormGroup = this.formBuilder.group({
@@ -510,7 +609,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       taskId: [],
       manufacturerEntity: [],
         role:[],
-        status:[]
+        status:[],
+        processId: []
 
     });
 
@@ -522,7 +622,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       taskId: [],
       manufacturerEntity: [],
         role:[],
-        status:[]
+        status:[],
+        processId: []
 
     });
     this.approveTwoFormGroup = this.formBuilder.group({
@@ -533,7 +634,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       taskId: [],
       manufacturerEntity: [],
         role:[],
-        status:[]
+        status:[],
+        processId: []
 
     });
 
@@ -546,7 +648,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
       manufacturerEntity: [],
       userType: [],
         role:[],
-        status:[]
+        status:[],
+        processId: []
 
     });
 
@@ -714,6 +817,10 @@ export class StdLevyPendingTasksComponent implements OnInit {
       if (mode === 'confirmDetails') {
           this.actionRequestPending = manufacturePendingTask;
           button.setAttribute('data-target', '#confirmDetails');
+          // this.approveCompanyLevelOneFormGroup.patchValue(
+          //     {
+          //
+          //     });
       }
       if (mode === 'approveDetails') {
           this.actionRequestPending = manufacturePendingTask;
@@ -737,11 +844,49 @@ export class StdLevyPendingTasksComponent implements OnInit {
             registrationNumber: this.actionRequestPending.taskData.registrationNumber,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
             taskId: this.actionRequestPending.taskId,
+              processId: this.actionRequestPending.processId,
 
           });
 
 
     }
+      if (mode === 'viewSchedule') {
+          this.actionRequestPending = manufacturePendingTask;
+          button.setAttribute('data-target', '#viewSchedule');
+          // this.scheduleVisitFormGroup.controls.entry.setValue(this.actionRequestPending.taskData.entryNumber)
+
+          this.cancelVisitFormGroup.patchValue(
+              {
+                  manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+                  taskId: this.actionRequestPending.taskId,
+                  processId: this.actionRequestPending.processId,
+                  accentTo: this.reject
+
+
+              });
+
+          this.siteConfirmFormGroup.patchValue(
+              {
+                  manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+                  taskId: this.actionRequestPending.taskId,
+                  processId: this.actionRequestPending.processId,
+                  accentTo: this.approve,
+                  scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate
+
+              });
+
+          this.siteEditFormGroup.patchValue(
+              {
+                  manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
+                  taskId: this.actionRequestPending.taskId,
+                  processId: this.actionRequestPending.processId,
+                  accentTo: this.approve,
+                  scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate
+
+              });
+
+
+      }
     if (mode === 'prepareSiteVisitReport') {
       this.actionRequestPending = manufacturePendingTask;
       button.setAttribute('data-target', '#prepareSiteVisitReport');
@@ -750,7 +895,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
-              userType: this.userType
+              userType: this.userType,
+              processId: this.actionRequestPending.processId,
 
           }
       );
@@ -766,7 +912,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
               accentTo: this.approve,
               role:this.role,
-              status:this.approveStatus
+              status:this.approveStatus,
+              processId: this.actionRequestPending.processId,
           }
       );
       this.rejectFormGroup.patchValue(
@@ -777,7 +924,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
               accentTo: this.reject,
               assigneeId: this.actionRequestPending.taskData.originator,
               role:this.role,
-              status:this.rejectStatus
+              status:this.rejectStatus,
+              processId: this.actionRequestPending.processId,
           }
       );
 
@@ -793,7 +941,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             assigneeId: this.actionRequestPending.taskData.originator,
               accentTo: this.approve,
               role:this.role,
-              status:this.approveStatus
+              status:this.approveStatus,
+              processId: this.actionRequestPending.processId,
           }
       );
       this.rejectTwoFormGroup.patchValue(
@@ -804,7 +953,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             assigneeId: this.actionRequestPending.taskData.levelOneId,
               accentTo: this.reject,
               role:this.role,
-              status:this.rejectStatus
+              status:this.rejectStatus,
+              processId: this.actionRequestPending.processId,
           }
       );
     }
@@ -819,7 +969,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             assigneeId: this.actionRequestPending.taskData.originator,
               accentTo: this.approve,
               role:this.role,
-              status:this.approveStatus
+              status:this.approveStatus,
+              processId: this.actionRequestPending.processId,
           }
       );
       this.rejectFormGroup.patchValue(
@@ -830,7 +981,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             assigneeId: this.actionRequestPending.taskData.originator,
               accentTo: this.reject,
               role:this.role,
-              status:this.rejectStatus
+              status:this.rejectStatus,
+              processId: this.actionRequestPending.processId,
           }
       );
     }
@@ -842,7 +994,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
             visitID: this.actionRequestPending.taskData.visitID,
             taskId: this.actionRequestPending.taskId,
             manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
-            assigneeId: this.actionRequestPending.taskData.contactId
+            assigneeId: this.actionRequestPending.taskData.contactId,
+              processId: this.actionRequestPending.processId,
           }
       );
 
@@ -951,6 +1104,66 @@ export class StdLevyPendingTasksComponent implements OnInit {
     );
     this.hideModelCloseModalReportOne();
   }
+    cancelVisit(): void {
+        this.loadingText = "Cancelling Scheduled Site Visit...";
+        this.SpinnerService.show();
+        this.levyService.decisionOnSiteVisitSchedule(this.cancelVisitFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.getMnPendingTask();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Schedule Cancelled`);
+                this.cancelVisitFormGroup.reset();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Cancelling Schedule Try Again`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelCloseModalScheduling();
+    }
+
+    confirmSiteVisit(): void {
+        this.loadingText = "Confirming Site Visit Schedule...";
+        this.SpinnerService.show();
+        this.levyService.decisionOnSiteVisitSchedule(this.siteConfirmFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.getMnPendingTask();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Site Visit Schedule Confirmed`);
+                this.siteConfirmFormGroup.reset();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Confirming Site Visit Schedule Try Again`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelCloseModalScheduling();
+    }
+
+    editSiteVisit(): void {
+        this.loadingText = "Editing Site Visit Schedule...";
+        this.SpinnerService.show();
+        this.levyService.decisionOnSiteVisitSchedule(this.siteEditFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.getMnPendingTask();
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Site Visit Schedule Edited`);
+                this.siteEditFormGroup.reset();
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Editing Site Visit Schedule Try Again`);
+                console.log(error.message);
+            }
+        );
+        this.hideModelCloseModalScheduling();
+    }
+
 
   onDecisionReject(): void {
       this.loadingText = "Rejecting Report...";
@@ -1305,6 +1518,14 @@ export class StdLevyPendingTasksComponent implements OnInit {
     public hideModelCloseModalFeedback() {
         this.closeModalFeedback?.nativeElement.click();
     }
+
+    @ViewChild('closeModalScheduling') private closeModalScheduling: ElementRef | undefined;
+
+    public hideModelCloseModalScheduling() {
+        this.closeModalScheduling?.nativeElement.click();
+    }
+
+
 
     rerender(): void {
         this.dtElements.forEach((dtElement: DataTableDirective) => {

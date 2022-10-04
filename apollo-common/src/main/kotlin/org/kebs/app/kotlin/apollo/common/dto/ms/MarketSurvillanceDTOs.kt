@@ -7,11 +7,22 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 data class BatchFileFuelSaveDto(
-        @NotNull(message = "Required field")
-        var county: Long,
-        @NotNull(message = "Required field")
-        var town: Long,
+        var county: Long? = null,
+        var town: Long? = null,
+        var remarks: String? = null,
+)
 
+data class TeamsFuelSaveDto(
+        var teamName: String? = null,
+        var assignedOfficerID: Long? = null,
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var remarks: String? = null,
+        var countList : List<TeamsCountyFuelSaveDto>? = null,
+)
+
+data class TeamsCountyFuelSaveDto(
+        var countyId: Long? = null,
         var remarks: String? = null,
 )
 
@@ -40,6 +51,15 @@ data class FuelBatchDetailsDto(
         var remarks: String? = null,
         var batchClosed: Boolean? = null,
 )
+data class TeamsFuelDetailsDto(
+        var id: Long? = null,
+        var referenceNumber: String? = null,
+        var teamName: String? = null,
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var countyName : String? = null,
+        var countyID : Long? = null,
+)
 
 data class WorkPlanScheduleListDetailsDto(
         var workPlanList: List<WorkPlanInspectionDto>? = null,
@@ -48,7 +68,35 @@ data class WorkPlanScheduleListDetailsDto(
 
 data class FuelInspectionScheduleListDetailsDto(
         var fuelInspectionDto: List<FuelInspectionDto>? = null,
+        var fuelBatchDetailsDto: FuelBatchDetailsDto? = null,
+        var fuelTeamsDto: TeamsFuelDetailsDto? = null
+)
+
+data class FuelScheduleTeamsListDetailsDto(
+        var fuelTeamsDto: List<FuelTeamsDto>? = null,
+        var fuelBatchDetailsDto: FuelBatchDetailsDto? = null,
+        var officersList: List<MsUsersDto>? = null,
+)
+
+data class FuelScheduleCountyListDetailsDto(
+        var fuelCountyDtoList: List<FuelCountyDto>? = null,
+        var fuelTeamsDto: TeamsFuelDetailsDto? = null,
         var fuelBatchDetailsDto: FuelBatchDetailsDto? = null
+)
+
+data class FuelTeamsDto(
+        var id: Long? = null,
+        var referenceNumber: String? = null,
+        var teamName: String? = null,
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var officerAssignedName: String? = null
+)
+
+data class FuelCountyDto(
+        var id: Long? = null,
+        var referenceNumber: String? = null,
+        var countyName: String? = null,
 )
 
 
@@ -60,6 +108,7 @@ data class FuelInspectionDto(
         var timelineOverDue: Boolean? = null,
         var referenceNumber: String? = null,
         var company: String? = null,
+        var townName: String? = null,
         var companyKraPin: String? = null,
         var petroleumProduct: String? = null,
         var physicalLocation: String? = null,
@@ -70,19 +119,24 @@ data class FuelInspectionDto(
         var endInspectionStatus: Boolean? = null,
         var rapidTestDone: Boolean? = null,
         var sampleCollectionStatus: Boolean? = null,
+        var scfUploadId: Long? = null,
         var sampleSubmittedStatus: Boolean? = null,
         var bsNumberStatus: Boolean? = null,
+        var fuelReportId: Long? = null,
         var compliantStatusAdded: Boolean? = null,
         var remediationScheduledStatus: Boolean? = null,
         var remendiationCompleteStatus: Boolean? = null,
         var proFormaInvoiceStatus: Boolean? = null,
         var batchDetails: FuelBatchDetailsDto?= null,
+        var teamsDetails: TeamsFuelDetailsDto?= null,
         var officersList: List<MsUsersDto>? = null,
         var remarksDetails: List<MSRemarksDto>? = null,
         var officersAssigned: MsUsersDto? = null,
         var rapidTest: FuelEntityRapidTestDto? = null,
+        var rapidTestProducts: List<RapidTestProductsDetailsDto>? = null,
+        var fuelUploadedFiles: List<FuelFilesFoundDto>? = null,
         var sampleCollected: SampleCollectionDto? = null,
-        var sampleSubmitted: SampleSubmissionDto? = null,
+        var sampleSubmitted: List<SampleSubmissionDto>? = null,
         var sampleLabResults: MSSSFLabResultsDto? = null,
         var fuelRemediation: FuelRemediationDto? = null,
 )
@@ -231,6 +285,10 @@ data class FuelEntityDto(
         @NotEmpty(message = "Required field")
         var stationKraPin: String,
 
+        @NotNull(message = "Required field")
+        @NotEmpty(message = "Required field")
+        var townID: Long,
+
         var remarks: String? = null,
 )
 
@@ -320,6 +378,31 @@ data class SampleCollectionDto(
         var designationWitness: String?= null,
         var dateWitness: Date?= null,
         var productsList: List<SampleCollectionItemsDto>? = null,
+)
+
+data class RapidTestProductsDto(
+        var id: Long?= null,
+        var productName: String?= null,
+        var sampleSize: String?= null,
+        var batchSize: String?= null,
+        var batchNumber: String?= null,
+        var sulphurMarkerTest: String?= null,
+        var exportMarkerTestStatus: Int?= null,
+        var domesticKeroseneMarkerTestStatus: Int?= null,
+        var sulphurMarkerTestStatus: Int?= null,
+        var overallComplianceStatus: Int?= null,
+)
+
+data class RapidTestProductsDetailsDto(
+        var id: Long?= null,
+        var productName: String?= null,
+        var exportMarkerTest: String?= null,
+        var domesticKeroseneMarkerTest: String?= null,
+        var sulphurMarkerTest: String?= null,
+        var exportMarkerTestStatus: Boolean,
+        var domesticKeroseneMarkerTestStatus: Boolean,
+        var sulphurMarkerTestStatus: Boolean,
+        var overallComplianceStatus: Boolean,
 )
 
 data class SampleCollectionItemsDto(
@@ -483,6 +566,7 @@ data class SampleSubmissionDto(
         var disposal : String? = null,
         var remarks : String? = null,
         var sampleCollectionNumber : Long? = null,
+        var sampleCollectionProduct : Long? = null,
         var bsNumber : String? = null,
         var parametersList: List<SampleSubmissionItemsDto>? = null,
 )
@@ -509,6 +593,8 @@ data class BSNumberSaveDto(
         var bsNumber: String,
         @NotNull(message = "Required field")
         var submittedDate: Date,
+        @NotNull(message = "Required field")
+        var ssfID: Long,
         var remarks: String? = null,
 )
 
@@ -576,6 +662,13 @@ data class WorkPlanFilesFoundDto(
         var fileContentType: String? = null,
 )
 
+data class FuelFilesFoundDto(
+        var id: Long? = null,
+        var fileName: String? = null,
+        var documentType: String? = null,
+        var fileContentType: String? = null,
+)
+
 data class PDFSaveComplianceStatusDto(
         @NotNull(message = "Required field")
         var ssfID: Long,
@@ -633,6 +726,7 @@ data class CompliantRemediationDto(
         var dateOfRemediation: Date? = null,
         var volumeFuelRemediated: Long?= null,
         var subsistenceTotalNights: Long?= null,
+        var subsistenceTotalNightsRate: Long?= null,
         var transportAirTicket: Long?= null,
         var transportInkm: Long?= null,
 )

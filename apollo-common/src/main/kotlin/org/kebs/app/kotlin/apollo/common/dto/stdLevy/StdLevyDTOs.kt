@@ -52,6 +52,7 @@ data class StdLevyScheduleSiteVisitDTO(
     var createdBy: Long? = null,
     var createdOn:  Timestamp? = null,
     var taskId: String? = null,
+    var processId: String? = null,
     var entryNumber: String? = null,
     var companyName: String? = null,
     var kraPin: String? = null,
@@ -59,24 +60,35 @@ data class StdLevyScheduleSiteVisitDTO(
 
 
 )
+
 data class EditCompanyTaskToDTO(
-    var postalAddress: String? = null,
-    var physicalAddress: String? = null,
-    var ownership: String? = null,
+    var companyName: String? = null,
+    var kraPin: String? = null,
+    var otherBusinessNatureType: String? = null,
+    var registrationNumber: String? = null,
+    var entryNumber: String? = null,
     var companyId: Long? = null,
+    var physicalAddressEdit: String? = null,
+    var physicalAddress: String? = null,
+    var postalAddress: String? = null,
+    var postalAddressEdit: String? = null,
+    var companyEmailEdit: String? = null,
+    var companyEmail: String? = null,
+    var companyTelephoneEdit: String? = null,
+    var companyTelephone: String? = null,
+    var yearlyTurnoverEdit: BigDecimal? = null,
+    var yearlyTurnover: BigDecimal? = null,
+    var ownership: String? = null,
+    var ownershipEdit: String? = null,
     var taskType: Long? = null,
-    var assignedTo: Long? = null,
     var userType: Long? = null,
+    var typeOfManufacture: Int? = null,
+    var remarks: String? = null,
+    var assignedTo: Long? = null,
     var processId: String?= null,
     var taskId: String? = null,
     var accentTo: Boolean? = null,
-    var companyName: String? = null,
-    var kraPin: String? = null,
-    var registrationNumber: String? = null,
-    var entryNumber: String? = null,
-    var otherBusinessNatureType: String? = null,
-    var typeOfManufacture: Int? = null,
-    var remarks: String? = null,
+
     var editID: Long? = null
 
 )
@@ -133,6 +145,7 @@ data class ReportOnSiteVisitDTO(
     var cheifManagerRemarks: String? = null,
     var officersFeedback: String? = null,
     var taskId: String? = null,
+    var processId: String? = null,
     var visitID: Long? = null,
     var assigneeId: Long? = null,
     var manufacturerEntity: Long? = null,
@@ -178,6 +191,7 @@ data class CloseCompanyDto(
 
 data class SiteVisitReportDecisionDTO(
     var taskId: String? = null,
+    var processId: String? = null,
     var accentTo: Boolean? = null,
     var visitID: Long? = null,
     var assigneeId: Long? = null,
@@ -190,7 +204,9 @@ data class SiteVisitReportDecisionDTO(
     var status: String? = null,
     var remarkBy: String? = null,
     var role: String? = null,
-    var description: String? =null
+    var description: String? =null,
+    var scheduledVisitDate: java.util.Date? = null
+
 
 ){
 

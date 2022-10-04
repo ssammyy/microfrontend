@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -10,7 +11,6 @@ class Standard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
     var id:Long=0
-
 
     @Column(name="TITLE")
     @Basic
@@ -42,7 +42,15 @@ class Standard {
 
     @Column(name="STATUS")
     @Basic
-    var status:String? =null
+    var status:Long? =null
+
+    @Column(name="STANDARD_TYPE")
+    @Basic
+    var standardType:String? =null
+
+    @Column(name="DATE_FORMED")
+    @Basic
+    var dateFormed: Date? =null
 
 
 }

@@ -254,6 +254,7 @@ export class ApiEndpointService {
         PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
         PERMIT_LIST_ALL: `${ApiEndpointService.QA_CONTEXT}/permit/all-my-permits-loaded`,
         PERMIT_COMPLETELY_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-completely`,
+        DELETE_PERMIT: `${ApiEndpointService.QA_CONTEXT}/permit/delete`,
 
         PERMIT_LIST_TO_GENERATE_FMRK: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-fmark-generate`,
         PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
@@ -491,6 +492,7 @@ export class ApiEndpointService {
         STD_LEVY_MANUFACTURE_STATUS: `${ApiEndpointService.STL_CONTEXT}/getManufacturerStatus`,
         STD_LEVY_SL10_FORM: `${ApiEndpointService.STL_CONTEXT}/save-sl-notification-form`,
         STD_LEVY_SCHEDULE_SITE_VISIT: `${ApiEndpointService.STL_CONTEXT}/scheduleSiteVisit`,
+        STD_LEVY_SCHEDULE_SITE_VISIT_DECISION: `${ApiEndpointService.STL_CONTEXT}/decisionOnSiteVisitSchedule`,
         STD_LEVY_SCHEDULED_SITE_VISITS: `${ApiEndpointService.STL_CONTEXT}/getScheduledVisits`,
         STD_LEVY_ASSIGN_COMPANY_TASK: `${ApiEndpointService.STL_CONTEXT}/assignCompany`,
         STD_LEVY_SAVE_VISIT_REPORT: `${ApiEndpointService.STL_CONTEXT}/reportOnSiteVisit`,
@@ -527,6 +529,7 @@ export class ApiEndpointService {
         STD_LEVY_COMPANY_REMARKS: `${ApiEndpointService.STL_CONTEXT}/getComEditRemarks`,
         STD_LEVY_COMPANY_EDIT_COMPANY_DATA: `${ApiEndpointService.STL_CONTEXT}/editCompanyDetailsConfirm`,
         STD_LEVY_NOTIFICATION_FORM_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSLNotificationStatus`,
+        STD_LEVY_NOTIFICATION_SL_STATUS: `${ApiEndpointService.STL_CONTEXT}/getSlForm`,
         STD_LEVY_BRANCH_NAME: `${ApiEndpointService.STL_CONTEXT}/getBranchName`,
         STD_LEVY_SUSPEND_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/suspendCompanyOperations`,
         STD_LEVY_RESUME_OPERATIONS: `${ApiEndpointService.STL_CONTEXT}/resumeCompanyOperations`,
@@ -556,9 +559,6 @@ export class ApiEndpointService {
         STD_LEVY_CLOSED_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getClosedFirms`,
 
 
-
-
-
     };
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
@@ -570,11 +570,16 @@ export class ApiEndpointService {
         ALL_BATCH_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/all-batch-list`,
         ADD_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/add`,
         CLOSE_BATCH: `${ApiEndpointService.MS_FUEL_CONTEXT}/close`,
+        UPLOAD_FUEL_FILE: `${ApiEndpointService.MS_CONTEXT}/fuel/file/save`,
         INSPECTION_SCHEDULED_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/list`,
+        INSPECTION_ADD_TEAMS: `${ApiEndpointService.MS_FUEL_CONTEXT}/teams/add`,
+        INSPECTION_TEAMS_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/teams/list`,
+        INSPECTION_TEAM_COUNTY_LIST: `${ApiEndpointService.MS_FUEL_CONTEXT}/teams/county/list`,
         INSPECTION_SCHEDULED_ADD_NEW: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/add`,
         INSPECTION_SCHEDULED_DETAILS: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/details`,
         INSPECTION_SCHEDULED_DETAILS_ASSIGN_OFFICER: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/assign`,
         INSPECTION_SCHEDULED_DETAILS_RAPID_TEST: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/rapid-test`,
+        INSPECTION_SCHEDULED_DETAILS_RAPID_TEST_PRODUCTS: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/rapid-test-products`,
         INSPECTION_SCHEDULED_DETAILS_SAMPLE_COLLECT: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-collect`,
         INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-submission`,
         INSPECTION_SCHEDULED_DETAILS_SAMPLE_SUBMISSION_BS_NUMBER: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/sample-submission-bs-number`,
@@ -584,6 +589,8 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_REMEDIATION_INVOICE: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation-invoice`,
         INSPECTION_SCHEDULED_ADD_REMEDIATION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/fuel-remediation`,
         END_INSPECTION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/end-inspection`,
+        END_SSF_ADDING_INSPECTION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/end-ssf-adding`,
+        END_SSF_ADDING_BS_NUMBER_INSPECTION: `${ApiEndpointService.MS_FUEL_CONTEXT}/inspection/update/end-ssf-adding-bs-number`,
         // COUNTRY_DASHBOARD_DETAILS: `${ApiEndpointService.VERSION_THREE_CONTEXT}/country-dashboard-details`,
         // CLIENT_LIST: `${ApiEndpointService.VERSION_THREE_CONTEXT}/client-list`,
     };
@@ -664,6 +671,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_ADD_FINAL_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-report`,
 
     };
+
     /**
      * Constructor.
      */

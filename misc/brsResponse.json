@@ -414,20 +414,20 @@ curl -k --location --request POST 'https://kimsint.kebs.org:8006/api/v1/kra/rece
 "loginId": "vmuriuki",
 "password": "password",
 "hash": "1f27c4ea6dac5215e7639bd2ecead6fc87f93802560dbae99e3a250a81004a69",
-"transmissionDate": "31-03-2021T16:31:25",
+"transmissionDate": "28-09-2022T16:31:25",
 "HEADER": {
-"entryNo": "7890087",
-"kraPin": "P051510365Z",
-"manufacturerName": "ENAPE 051510TEST",
+"entryNo": "20220927440829",
+"kraPin": "P051578722Z",
+"manufacturerName": "MINERAL MASTERS LIMITED",
 "paymentSlipNo": "2020210001919154",
-"paymentSlipDate": "06-07-2021",
+"paymentSlipDate": "09-28-2022",
 "paymentType": "Cheque",
-"paymentDate": "06-07-2021T09:01:39",
+"paymentDate": "28-09-2022",
 "totalDeclAmt": "27265",
-"totalPenaltyAmt": "0",
+"totalPenaltyAmt": "11000",
 "Bank": "VICTORIA COMMERCIAL BANK LIMITED",
 "bankRefNo": "2020210001919154",
-"TotalPaymentAmt": "27265"
+"TotalPaymentAmt": "38625"
 },
 "DETAILS": {
 "DECLARATION": [
@@ -445,13 +445,13 @@ curl -k --location --request POST 'https://kimsint.kebs.org:8006/api/v1/kra/rece
 "penaltyOrderNo": "4",
 "periodFrom": "01-01-2022",
 "periodTo": "31-01-2022",
-"penaltyPaid": "100"
+"penaltyPaid": "6000"
 },
 {
 "penaltyOrderNo": "5",
 "periodFrom": "01-02-2022",
 "periodTo": "28-02-2022",
-"penaltyPaid": "200"
+"penaltyPaid": "5000"
 }
 ]
 }

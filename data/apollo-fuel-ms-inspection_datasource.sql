@@ -169,3 +169,176 @@ end;
 create index DAT_KEBS_MS_UPLOADS_seq_idx on DAT_KEBS_MS_UPLOADS (MS_WORKPLAN_GENERATED_ID,MS_FUEL_INSPECTION_ID,
 ORDINARY_STATUS,SSF_UPLOADS,STATUS) TABLESPACE qaimssdb_idx;
 /
+
+
+create table DAT_KEBS_MS_FUEL_TEAMS
+(
+    ID                       NUMBER PRIMARY KEY,
+    TEAM_NAME                VARCHAR2(200),
+    START_DATE         DATE,
+    END_DATE         DATE,
+    STATUS                   NUMBER(2, 0),
+    DESCRIPTION              VARCHAR2(200),
+    VAR_FIELD_1              VARCHAR2(350 char),
+    VAR_FIELD_2              VARCHAR2(350 char),
+    VAR_FIELD_3              VARCHAR2(350 char),
+    VAR_FIELD_4              VARCHAR2(350 char),
+    VAR_FIELD_5              VARCHAR2(350 char),
+    VAR_FIELD_6              VARCHAR2(350 char),
+    VAR_FIELD_7              VARCHAR2(350 char),
+    VAR_FIELD_8              VARCHAR2(350 char),
+    VAR_FIELD_9              VARCHAR2(350 char),
+    VAR_FIELD_10             VARCHAR2(350 char),
+    CREATED_BY               VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON               TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY              VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON              TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY                VARCHAR2(100 char)          default 'admin',
+    DELETED_ON               TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_KEBS_MS_FUEL_TEAMS_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+-- DAT_KEBS_MS_FUEL_TEAMS_SEQ_TRG
+
+
+
+create or replace trigger DAT_KEBS_MS_FUEL_TEAMS_SEQ_TRG
+    before
+        insert
+    on DAT_KEBS_MS_FUEL_TEAMS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_MS_FUEL_TEAMS_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+    end if;
+end;
+
+create index DAT_KEBS_MS_FUEL_TEAMS_seq_idx on DAT_KEBS_MS_FUEL_TEAMS (TEAM_NAME,STATUS) TABLESPACE qaimssdb_idx;
+/
+
+create table DAT_KEBS_MS_FUEL_TEAMS_COUNTY
+(
+    ID                       NUMBER PRIMARY KEY,
+    region_id             NUMBER references CFG_KEBS_REGIONS (ID),
+    county_id             NUMBER references CFG_KEBS_COUNTIES (ID),
+    TEAM_ID             NUMBER references DAT_KEBS_MS_FUEL_TEAMS (ID),
+    STATUS                   NUMBER(2, 0),
+    DESCRIPTION              VARCHAR2(200),
+    VAR_FIELD_1              VARCHAR2(350 char),
+    VAR_FIELD_2              VARCHAR2(350 char),
+    VAR_FIELD_3              VARCHAR2(350 char),
+    VAR_FIELD_4              VARCHAR2(350 char),
+    VAR_FIELD_5              VARCHAR2(350 char),
+    VAR_FIELD_6              VARCHAR2(350 char),
+    VAR_FIELD_7              VARCHAR2(350 char),
+    VAR_FIELD_8              VARCHAR2(350 char),
+    VAR_FIELD_9              VARCHAR2(350 char),
+    VAR_FIELD_10             VARCHAR2(350 char),
+    CREATED_BY               VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON               TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY              VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON              TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY                VARCHAR2(100 char)          default 'admin',
+    DELETED_ON               TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_KEBS_MS_FUEL_TEAMS_COUNTY_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_KEBS_MS_FUEL_TEAMS_COUNTY_SEQ_trg
+    before
+        insert
+    on DAT_KEBS_MS_FUEL_TEAMS_COUNTY
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_MS_FUEL_TEAMS_COUNTY_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+    end if;
+end;
+
+create index DAT_KEBS_MS_FUEL_TEAMS_COUNTY_seq_idx on DAT_KEBS_MS_FUEL_TEAMS_COUNTY (TEAM_ID,region_id,county_id,STATUS) TABLESPACE qaimssdb_idx;
+/
+
+create table DAT_KEBS_MS_FUEL_INSPECTION_RAPID_TEST_PRODUCTS
+(
+    ID                       NUMBER PRIMARY KEY,
+    PRODUCT_NAME              VARCHAR2(200),
+    EXPORT_MARKER_TEST              VARCHAR2(200),
+    DOMESTIC_KEROSENE_MARKER_TEST    VARCHAR2(200),
+    SULPHUR_MARKER_TEST    VARCHAR2(200),
+    EXPORT_MARKER_TEST_STATUS              NUMBER(2, 0),
+    DOMESTIC_KEROSENE_MARKER_TEST_STATUS    NUMBER(2, 0),
+    SULPHUR_MARKER_TEST_STATUS    NUMBER(2, 0),
+    OVERALL_COMPLIANCE_STATUS    NUMBER(2, 0),
+    FUEL_INSPECTION_ID        NUMBER references DAT_KEBS_MS_FUEL_INSPECTION (ID),
+    STATUS                   NUMBER(2, 0),
+    DESCRIPTION              VARCHAR2(200),
+    VAR_FIELD_1              VARCHAR2(350 char),
+    VAR_FIELD_2              VARCHAR2(350 char),
+    VAR_FIELD_3              VARCHAR2(350 char),
+    VAR_FIELD_4              VARCHAR2(350 char),
+    VAR_FIELD_5              VARCHAR2(350 char),
+    VAR_FIELD_6              VARCHAR2(350 char),
+    VAR_FIELD_7              VARCHAR2(350 char),
+    VAR_FIELD_8              VARCHAR2(350 char),
+    VAR_FIELD_9              VARCHAR2(350 char),
+    VAR_FIELD_10             VARCHAR2(350 char),
+    CREATED_BY               VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON               TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY              VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON              TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY                VARCHAR2(100 char)          default 'admin',
+    DELETED_ON               TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_KEBS_MS_FUEL_INSPECTION_RAPID_TEST_PRODUCTS_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_KEBS_MS_FUEL_INSPECTION_RAPID_TEST_PRODUCTS_SEQ_trg
+    before
+        insert
+    on DAT_KEBS_MS_FUEL_INSPECTION_RAPID_TEST_PRODUCTS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_MS_FUEL_INSPECTION_RAPID_TEST_PRODUCTS_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+    end if;
+end;
+
+create index DAT_KEBS_MS_FUEL_INSPECTION_RAPID_TEST_PRODUCTS_seq_idx on DAT_KEBS_MS_FUEL_INSPECTION_RAPID_TEST_PRODUCTS (OVERALL_COMPLIANCE_STATUS,FUEL_INSPECTION_ID,STATUS) TABLESPACE qaimssdb_idx;
+/
+
+
+alter table DAT_KEBS_MS_UPLOADS
+    add FUEL_PLAN_UPLOADS NUMBER(2)
+/
+
+alter table DAT_KEBS_MS_FUEL_TEAMS_COUNTY
+    add REFERENCE_NO VARCHAR2(20)
+/
+
+
+alter table DAT_KEBS_MS_FUEL_INSPECTION
+    add MS_TEAMS_ID NUMBER REFERENCES DAT_KEBS_MS_FUEL_TEAMS(ID)
+/
+
+alter table DAT_KEBS_MS_FUEL_INSPECTION
+    add MS_COUNTY_ID NUMBER REFERENCES DAT_KEBS_MS_FUEL_TEAMS_COUNTY(ID)
+/
+
+-- alter table DAT_KEBS_MS_FUEL_INSPECTION
+--     add TOWN_ID NUMBER REFERENCES CFG_KEBS_TOWNS(ID)
+-- /

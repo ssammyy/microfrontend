@@ -479,12 +479,18 @@ class CommonDaoServices(
         return "ERROR STATUS CODE= ${sr.responseStatus} AND MESSAGE = ${sr.responseMessage}"
     }
 
-    fun findOfficersListBasedOnRegionCountyAndRole(
+    fun findOfficersListBasedOnRole(
             roleId: Long,
             countyId: Long,
             regionId: Long
     ): List<UsersEntity>? {
         return usersRepo.findOfficerUsersByRegionAndCountyAndRoleFromUserDetails(roleId, countyId, regionId, 1)
+    }
+
+    fun findOfficersListBasedOnRole(
+        roleId: Long,
+    ): MutableList<UsersEntity>? {
+        return usersRepo.findOfficerUsersByRoleFromUserDetails(roleId, 1)
     }
 
 

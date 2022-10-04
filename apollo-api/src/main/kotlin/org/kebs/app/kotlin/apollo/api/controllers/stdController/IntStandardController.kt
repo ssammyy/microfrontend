@@ -274,9 +274,9 @@ class IntStandardController(
     @PostMapping("/uploadISStandard")
     @ResponseBody
     fun uploadISStandard(@RequestBody iSUploadStandard: ISUploadStandard,isJustificationDecision: ISJustificationDecision,
-                         internationalStandardRemarks: InternationalStandardRemarks): ServerResponse
+                         internationalStandardRemarks: InternationalStandardRemarks,standard: Standard): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",internationalStandardService.uploadISStandard(iSUploadStandard,isJustificationDecision,internationalStandardRemarks))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",internationalStandardService.uploadISStandard(iSUploadStandard,isJustificationDecision,internationalStandardRemarks,standard))
     }
 
     @PostMapping("/std-file-upload")
