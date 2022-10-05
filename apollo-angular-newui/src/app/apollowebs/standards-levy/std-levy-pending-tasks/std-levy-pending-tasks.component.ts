@@ -413,7 +413,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
         taskId : [],
         processId : [],
         visitID : [],
-        remarks: []
+        remarks: [],
+        companyName:[]
     });
 
       this.siteConfirmFormGroup= this.formBuilder.group({
@@ -423,7 +424,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           processId : [],
           scheduledVisitDate: [],
           visitID: [],
-          remarks: []
+          remarks: [],
+          companyName:[]
       });
 
 
@@ -434,7 +436,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
           processId : [],
           scheduledVisitDate: [],
           visitID: [],
-          remarks: []
+          remarks: [],
+          companyName:[]
       });
 
       this.approveEditRequestFormGroup = this.formBuilder.group({
@@ -864,7 +867,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
                   taskId: this.actionRequestPending.taskId,
                   processId: this.actionRequestPending.processId,
                   visitID: this.actionRequestPending.taskData.visitID,
-                  accentTo: this.reject
+                  accentTo: this.reject,
+                  companyName: this.actionRequestPending.taskData.companyName
 
 
               });
@@ -876,7 +880,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
                   processId: this.actionRequestPending.processId,
                   accentTo: this.approve,
                   visitID: this.actionRequestPending.taskData.visitID,
-                  scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate
+                  scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate,
+                  companyName: this.actionRequestPending.taskData.companyName
 
               });
 
@@ -887,7 +892,8 @@ export class StdLevyPendingTasksComponent implements OnInit {
                   processId: this.actionRequestPending.processId,
                   accentTo: this.approve,
                   visitID: this.actionRequestPending.taskData.visitID,
-                  scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate
+                  scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate,
+                  companyName: this.actionRequestPending.taskData.companyName
 
               });
 
