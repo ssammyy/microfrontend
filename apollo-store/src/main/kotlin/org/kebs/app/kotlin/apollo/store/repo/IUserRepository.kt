@@ -45,10 +45,12 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.util.*
+import javax.transaction.Transactional
 
 
 @Repository
@@ -617,11 +619,13 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     )
     fun updatePenaltyStatus(id: Long): Long
 
-    @Query(
-        value = "UPDATE DAT_KEBS_COMPANY_PROFILE SET ASSIGN_STATUS=:assignStatus,ASSIGNED_TO=:assignedTo WHERE ID=:id ",
-        nativeQuery = true
-    )
-    fun updateCompanyStatus(id: Long, assignedTo: Int, assignStatus: Int): Long
+//   @Transactional
+//   @Modifying
+//    @Query(
+//        value = "UPDATE DAT_KEBS_COMPANY_PROFILE SET ASSIGN_STATUS=:assignStatus,ASSIGNED_TO=:assignedTo WHERE ID=:id ",
+//        nativeQuery = true
+//    )
+//    fun updateCompanyStatus(id: Long, assignedTo: Int, assignStatus: Int): Long
 
 
 

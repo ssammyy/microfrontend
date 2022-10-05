@@ -757,10 +757,18 @@ return getUserTasks();
                 }
                 ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
         } else if (variables["No"] == false) {
-            val assignedTo=0
-            val assignStatus=0
+
             try{
-                standardLevyFactoryVisitReportEntity.manufacturerEntity?.let { companyProfileRepo.updateCompanyStatus(it,assignedTo,assignStatus) }
+                companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                    ?.let { comEntity ->
+
+                        comEntity.apply {
+                            assignStatus=0
+                            assignedTo=0
+                        }
+                        companyProfileRepo.save(comEntity)
+                    } ?: throw Exception("COMPANY NOT FOUND")
+
                 taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
             }catch (e: Exception) {
                 KotlinLogging.logger { }.error(e.message)
