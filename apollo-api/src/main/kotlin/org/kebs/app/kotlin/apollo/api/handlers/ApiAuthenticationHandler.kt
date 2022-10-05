@@ -167,7 +167,9 @@ class ApiAuthenticationHandler(
                     val otp = commonDaoServices.randomNumber(6)
                     val tokenValidation = commonDaoServices.generateVerificationToken(
                         otp,
-                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required"),
+                        user.email ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+
                     )
                     commonDaoServices.sendOtpViaSMS(tokenValidation)
 
@@ -188,7 +190,9 @@ class ApiAuthenticationHandler(
 
             val usernamePassAuth = UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
 
+
             val auth = customAuthenticationProvider.authenticate(usernamePassAuth)
+
 
             SecurityContextHolder.getContext().authentication = auth
 
@@ -199,13 +203,16 @@ class ApiAuthenticationHandler(
                      *SEND OTP TO USER LOGIN throw phone number
                      */
                     val request = ServletServerHttpRequest(req.servletRequest())
-                    val token = tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
+                    val token =
+                        tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
                     val otp = commonDaoServices.randomNumber(6)
                     val tokenValidation = commonDaoServices.generateVerificationToken(
                         otp,
                         user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required"),
-                        user.id
-                    )
+                        user.email ?: throw NullValueNotAllowedException("Valid Email is required"),
+                        user.id,
+
+                        )
                     val userEmail = user.email
                     commonDaoServices.sendOtpViaSMS(tokenValidation)
                     runBlocking {
@@ -224,13 +231,17 @@ class ApiAuthenticationHandler(
 
         } catch (e: Exception) {
             e.printStackTrace()
-            val response = CustomResponse().apply {
-                response = "99"
-                payload = "Invalid OTP received " + e.message
-                status = 500
-            }
+//            val response = CustomResponse().apply {
+//                response = "99"
+//                payload = "Invalid Username And Password"
+//                status = 500
+//            }
+            val response ="Invalid Username And Password"
             KotlinLogging.logger { }.trace(e.message, e)
-            ServerResponse.badRequest().body(response)
+
+            ServerResponse.status(500).body(response)
+            throw NullValueNotAllowedException("Invalid Username And Password")
+
         }
 
 //    fun uiLogin(req: ServerRequest): ServerResponse =

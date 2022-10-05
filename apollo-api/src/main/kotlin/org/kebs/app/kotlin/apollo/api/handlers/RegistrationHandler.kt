@@ -969,7 +969,7 @@ class RegistrationHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    val data = ValidatePhoneNumberTokenRequestDto(commonDaoServices.loggedInUserDetailsEmail().cellphone?:"", body.token)
+                    val data = ValidatePhoneNumberTokenRequestDto(commonDaoServices.loggedInUserDetailsEmail().cellphone?:"", commonDaoServices.loggedInUserDetailsEmail().email?:"",body.token)
                     systemsAdminDaoService.validatePhoneNumberAndTokenB(data, req)
                         ?.let { ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")

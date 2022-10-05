@@ -71,7 +71,7 @@ class Notifications(
 
 
     fun sendEmail(delegateTask: DelegateTask?) {
-        val task: Task? = delegateTask as Task
+        val task: Task = delegateTask as Task
         buildEmail(task, defaultEmailNotificationId.toInt(), null, null)
     }
 
