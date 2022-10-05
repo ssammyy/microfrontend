@@ -190,6 +190,11 @@ class DestinationInspectionService(
                         consignmentDocument.compliantStatus = map.inactiveStatus
                         consignmentDocument.varField10 = "Waiting for QUERY response"
                     }
+                    "AMENDMENT" -> {
+                        consignmentDocument.status = ConsignmentApprovalStatus.REJECTED_AMEND.code
+                        consignmentDocument.compliantStatus = map.inactiveStatus
+                        consignmentDocument.varField10 = "Waiting for amendment response"
+                    }
                     else -> {
                         consignmentDocument.varField10 = "Consignment ${cdStatusType.category}"
                         consignmentDocument.status = ConsignmentApprovalStatus.REJECTED.code

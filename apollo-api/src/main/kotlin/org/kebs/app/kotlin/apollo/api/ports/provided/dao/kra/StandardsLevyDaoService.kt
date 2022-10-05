@@ -186,7 +186,7 @@ class StandardsLevyDaoService(
                 header.requestHeaderBank = paymentRequest.header?.bank
                 header.requestBankRefNo = paymentRequest.header?.bankRefNo
                 header.requestHeaderTransmissionDate = paymentRequest.transmissionDate
-//                header.headerTransmissionDate = paymentRequest.header?.paymentDate
+               // header.headerTransmissionDate = paymentRequest.transmissionDate
                 header.transactionDate = paymentRequest.header?.paymentDate
                 header.status = 0
                 header.createdBy = paymentRequest.loginId

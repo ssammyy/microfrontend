@@ -308,6 +308,7 @@ export interface ReportDecisionLevelOne{
 export interface SiteVisitReportDecision{
     taskId: string;
     processId :string;
+    companyName :string;
     accentTo : boolean;
     visitID : number;
     manufacturerEntity: number;
@@ -602,6 +603,10 @@ export interface OperationStatus {
 }
 export interface NotificationStatus {
     responseMessage: number;
+}
+
+export interface SlFormStatus{
+    countSlForm: number;
 }
 
 export interface Branch {

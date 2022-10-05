@@ -13,6 +13,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.kra.SendEntryNumberToKraSer
 import org.kebs.app.kotlin.apollo.api.ports.provided.kra.request.PDFGeneratorVehicle
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.CompanySl1DTO
+import org.kebs.app.kotlin.apollo.common.dto.CompanySlFormDto
 import org.kebs.app.kotlin.apollo.common.dto.ManufactureSubmitEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.std.ResponseMessage
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
@@ -605,8 +606,11 @@ class StdLevyController(
             scheduledVisitDate= siteVisitReportDecisionDTO.scheduledVisitDate
 
         }
+        val comProfileEntity = CompanyProfileEntity().apply {
+            name=siteVisitReportDecisionDTO.companyName
+        }
 
-        return ServerResponse(HttpStatus.OK,"Action On Schedule",standardLevyService.decisionOnSiteVisitSchedule(standardLevyFactoryVisitReportEntity))
+        return ServerResponse(HttpStatus.OK,"Action On Schedule",standardLevyService.decisionOnSiteVisitSchedule(standardLevyFactoryVisitReportEntity,comProfileEntity))
 
     }
 
@@ -1278,7 +1282,7 @@ class StdLevyController(
 
     @GetMapping("/getSlForm")
     @ResponseBody
-    fun getSlForm(): ResponseNotification
+    fun getSlForm(): CompanySlFormDto?
     {
 
         return standardLevyService.getSlForm()

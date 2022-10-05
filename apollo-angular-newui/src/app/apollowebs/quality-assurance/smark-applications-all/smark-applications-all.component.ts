@@ -45,6 +45,15 @@ export class SmarkApplicationsAllComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.dtOptions = {
+            processing:true,
+            retrieve: true,
+            language: {
+                'loadingRecords': '&nbsp;',
+                'processing': 'Loading...'
+            }
+        }
+
         this.getAllPermitData()
     }
 
@@ -83,8 +92,8 @@ export class SmarkApplicationsAllComponent implements OnInit {
         }).then((result) => {
             if (result.isConfirmed) {
                 this.SpinnerService.show();
-                this.qaService.deletePermit(String(id)).subscribe(
-                    (response) => {
+                this.qaService.deletePermit(String(id), this.allPermitData).subscribe(
+                    (response = 'Successful Deletion') => {
                         this.SpinnerService.hide();
                         swalWithBootstrapButtons.fire(
                             'Success!',

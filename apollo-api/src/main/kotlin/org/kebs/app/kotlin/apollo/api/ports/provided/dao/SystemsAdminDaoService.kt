@@ -528,7 +528,8 @@ class SystemsAdminDaoService(
             val b = verificationTokensRepo.findTokenByUserId(user.id)
             val token = commonDaoServices.generateVerificationToken(
                 b,
-                commonDaoServices.makeKenyanMSISDNFormat(user.personalContactNumber)
+                commonDaoServices.makeKenyanMSISDNFormat(user.personalContactNumber),
+                user.email  ?: throw NullValueNotAllowedException("Invalid Email provided")
             )
             commonDaoServices.sendOtpViaSMS(token)
 
@@ -1249,7 +1250,8 @@ class SystemsAdminDaoService(
             val otp = commonDaoServices.randomNumber(6)
             val token = commonDaoServices.generateVerificationToken(
                 otp,
-                commonDaoServices.makeKenyanMSISDNFormat(request.phone)
+                commonDaoServices.makeKenyanMSISDNFormat(request.phone),
+                request.email
             )
             commonDaoServices.sendOtpViaSMS(token)
 
@@ -1300,6 +1302,7 @@ class SystemsAdminDaoService(
         commonDaoServices.validateOTPTokenB(
             request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
             commonDaoServices.makeKenyanMSISDNFormat(request.phone),
+            request.email ?: throw NullValueNotAllowedException("Invalid Email provided"),
             req
         )
 

@@ -7,6 +7,7 @@ import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
+import org.kebs.app.kotlin.apollo.common.dto.CompanySlFormDto
 import org.kebs.app.kotlin.apollo.common.dto.ms.LevyPaymentDTO
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
@@ -673,7 +674,8 @@ return getUserTasks();
     }
 
     fun decisionOnSiteVisitSchedule(
-        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
+        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
+        comProfileEntity: CompanyProfileEntity
     ): List<TaskDetailsBody> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
@@ -683,29 +685,7 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.manufacturerEntity?.let { variables["manufacturerEntity"] = it }
         standardLevyFactoryVisitReportEntity.scheduledVisitDate?.let { variables["scheduledVisitDate"] = it }
 
-
         if (variables["Yes"] == true) {
-            val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
-            var userList= companyStandardRepository.getUserEmail(loggedInUser.id)
-            userList.forEach { item->
-                val recipient= item.getUserEmail()
-                val subject = "Site Visit"
-                val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${standardLevyFactoryVisitReportEntity.companyName} has been done. NB. Auto Generated E-Mail From KEBS "
-                if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
-                }
-            }
-
-            var manufacturerList= companyStandardRepository.getUserEmail(userID)
-            manufacturerList.forEach { item->
-                val recipient= item.getUserEmail()
-                val subject = "Site Visit"
-                val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${standardLevyFactoryVisitReportEntity.companyName} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
-                if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
-                }
-            }
-
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { entity ->
 
@@ -752,11 +732,48 @@ return getUserTasks();
                         }
                         ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${standardLevyFactoryVisitReportEntity.slProcessInstanceId} ")
 
+                    val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                    var userList= companyStandardRepository.getUserEmail(loggedInUser.id)
+                    userList.forEach { item->
+                        val recipient= item.getUserEmail()
+                        val subject = "Site Visit"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${comProfileEntity.name} has been done. NB. Auto Generated E-Mail From KEBS "
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
+
+                    var manufacturerList= companyStandardRepository.getUserEmail(userID)
+                    manufacturerList.forEach { item->
+                        val recipient= item.getUserEmail()
+                        val subject = "Site Visit"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${comProfileEntity.name} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
                 }
                 ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
         } else if (variables["No"] == false) {
 
-            taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+            try{
+                companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                    ?.let { comEntity ->
+
+                        comEntity.apply {
+                            assignStatus=0
+                            assignedTo=0
+                        }
+                        companyProfileRepo.save(comEntity)
+                    } ?: throw Exception("COMPANY NOT FOUND")
+
+                taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+            }catch (e: Exception) {
+                KotlinLogging.logger { }.error(e.message)
+                KotlinLogging.logger { }.trace(e.message, e)
+
+            }
+
         }
         return getUserTasks()
 
@@ -1705,28 +1722,18 @@ return getUserTasks();
     }
 
 
-    fun getSlForm(): ResponseNotification {
+    fun getSlForm(): CompanySlFormDto? {
+        val user = commonDaoServices.loggedInUserDetailsEmail()
+        user.companyId?.let {
+        val countSlForm = user.companyId?.let {
+            stdLevyNotificationFormRepository.countByManufacturerId(
+                it
+            )
+        }
+            return CompanySlFormDto(countSlForm)
+        }
+        return null
 
-        commonDaoServices.loggedInUserDetailsEmail().id
-            ?.let { id ->
-                companyProfileRepo.getManufactureId(id)
-                    .let {
-                        it?.let { it1 ->
-                            stdLevyNotificationFormRepository.countByManufacturerId(it1)
-                                ?.let {
-
-                                    //Manufacturer
-                                    return ResponseNotification(1)
-                                }
-                        }
-                            ?: run {
-                                //Contractor
-                                return ResponseNotification(0)
-                            }
-                    }
-
-            }
-            ?: return ResponseNotification(0)
     }
 
     fun getSLNotificationStatus(): ResponseNotification {

@@ -2,13 +2,15 @@ package org.kebs.app.kotlin.apollo.store.repo.qa
 
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
-    fun findByUserId(userId: Long): List<PermitApplicationsEntity>?
+    fun findByUserIdAndVarField9IsNull(userId: Long): List<PermitApplicationsEntity>?
     fun findByAwardedPermitNumber(awardedPermitNumber: String): PermitApplicationsEntity?
     fun findTopByAwardedPermitNumberOrderByIdDesc(awardedPermitNumber: String): PermitApplicationsEntity?
     fun countByCompanyIdAndPermitAwardStatus(companyId: Long, permitAwardStatus: Int): Long
@@ -17,7 +19,6 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitAwardStatus: Int,
         permitExpiredStatus: Int
     ): Long
-
 
 
     fun findByUserIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
@@ -31,7 +32,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 //    ): List<PermitApplicationsEntity>?
 
     @Query(
-        value="SELECT max(ch.PERMIT_REF_NUMBER) FROM DAT_KEBS_PERMIT_TRANSACTION ch",
+        value = "SELECT max(ch.PERMIT_REF_NUMBER) FROM DAT_KEBS_PERMIT_TRANSACTION ch",
         nativeQuery = true
     )
     fun getMaxId(): String?
@@ -168,16 +169,19 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
 
     //    @Procedure(procedureName = "proc_load_new_user_permits")
-    @Query(value = "{CALL PROC_LOAD_NEW_USER_PERMITS(:VAR_USER_ID,:VAR_PERMIT_NUMBER, :VAR_ATTACHED_PLANT_ID)}", nativeQuery = true)
+    @Query(
+        value = "{CALL PROC_LOAD_NEW_USER_PERMITS(:VAR_USER_ID,:VAR_PERMIT_NUMBER, :VAR_ATTACHED_PLANT_ID)}",
+        nativeQuery = true
+    )
 
     fun findByUserIdAndPermitRefNumberAndAttachedPlantId(
         @Param("VAR_USER_ID") userId: Long,
         @Param("VAR_PERMIT_NUMBER") permitNumber: String,
         @Param("VAR_ATTACHED_PLANT_ID") attachedPlantId: Long,
 
-        ):Int
+        ): Int
 
-   // @Query(value = "{call sp_findBetween(:min, :max)}", nativeQuery = true)
+    // @Query(value = "{call sp_findBetween(:min, :max)}", nativeQuery = true)
     //fun findAllBetweenStoredProcedure(@Param("min") min: BigDecimal?, @Param("max") max: BigDecimal?): List<Product?>?
 
 
@@ -190,7 +194,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         companyID: Long
     ): List<PermitApplicationsEntity>?
 
-    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNull(
+    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNull(
         companyId: Long, permitType: Long
     ): List<PermitApplicationsEntity>?
 
@@ -446,12 +450,18 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
 
-
-
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): PermitApplicationsEntity?
 
     fun findTopByPermitRefNumberOrderByIdAsc(permitRefNumber: String): PermitApplicationsEntity?
     fun findByIdAndAttachedPlantId(id: Long, attachedPlantId: Long): PermitApplicationsEntity?
+    @Transactional
+    @Modifying
+    @Query(
+        value = "UPDATE  APOLLO.DAT_KEBS_PERMIT_TRANSACTION t1 SET t1.VAR_FIELD_9='1' WHERE t1.ID =:permitID ",
+        nativeQuery = true
+    )
+    fun deletePermit(@Param("permitID") permitID: Long)
+
 }
 
 
@@ -469,10 +479,11 @@ interface IQaProcessStatusRepository : HazelcastRepository<QaProcessStatusEntity
     fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
     fun findByStatus(status: Int): List<QaProcessStatusEntity>?
 }
+
 @Repository
 interface IQaAwardedPermitTrackerEntityRepository : HazelcastRepository<QaAwardedPermitTrackerEntity, Long> {
     @Query(
-        value="SELECT max(ch.AWARDED_PERMIT_NUMBER) FROM DAT_KEBS_AWARDED_PERMIT_TRACKER ch",
+        value = "SELECT max(ch.AWARDED_PERMIT_NUMBER) FROM DAT_KEBS_AWARDED_PERMIT_TRACKER ch",
         nativeQuery = true
     )
     fun getMaxId(): Long?
@@ -602,12 +613,14 @@ interface IQaPersonnelInchargeEntityRepository : HazelcastRepository<QaPersonnel
     fun findBySta10Id(sta10Id: Long): List<QaPersonnelInchargeEntity>?
 
 
-    @Query(value="INSERT INTO DAT_KEBS_QA_PERSONNEL_INCHARGE t1\n" +
-            "(\n" +
-            " t1.PERSONNEL_NAME,t1.QUALIFICATION_INSTITUTION,t1.DATE_OF_EMPLOYMENT,t1.STATUS,t1.STA10_ID\n" +
-            ")\n" +
-            "SELECT   t2.PERSONNEL_NAME,t2.QUALIFICATION_INSTITUTION,t2.DATE_OF_EMPLOYMENT,t2.STATUS,:sta10IdToBeUpdated\n" +
-            "FROM DAT_KEBS_QA_PERSONNEL_INCHARGE t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true)
+    @Query(
+        value = "INSERT INTO DAT_KEBS_QA_PERSONNEL_INCHARGE t1\n" +
+                "(\n" +
+                " t1.PERSONNEL_NAME,t1.QUALIFICATION_INSTITUTION,t1.DATE_OF_EMPLOYMENT,t1.STATUS,t1.STA10_ID\n" +
+                ")\n" +
+                "SELECT   t2.PERSONNEL_NAME,t2.QUALIFICATION_INSTITUTION,t2.DATE_OF_EMPLOYMENT,t2.STATUS,:sta10IdToBeUpdated\n" +
+                "FROM DAT_KEBS_QA_PERSONNEL_INCHARGE t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true
+    )
     fun updatePersonnel(
         @Param("sta10Id") sta10Id: Long,
         @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
@@ -747,15 +760,18 @@ interface IQaSampleLabTestParametersRepository : HazelcastRepository<QaSampleLab
 @Repository
 interface IQaMachineryRepository : HazelcastRepository<QaMachineryEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaMachineryEntity>?
-    @Query(value="INSERT INTO DAT_KEBS_QA_MACHINE t1\n" +
-            "(\n" +
-            " t1.COUNTRY_OF_ORIGIN,t1.MACHINE_NAME,t1.TYPE_MODEL,t1.STATUS,t1.STA10_ID\n" +
-            ")\n" +
-            "SELECT   t2.COUNTRY_OF_ORIGIN,t2.MACHINE_NAME,t2.TYPE_MODEL,t2.STATUS,:sta10IdToBeUpdated\n" +
-            "FROM DAT_KEBS_QA_MACHINE t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true)
+
+    @Query(
+        value = "INSERT INTO DAT_KEBS_QA_MACHINE t1\n" +
+                "(\n" +
+                " t1.COUNTRY_OF_ORIGIN,t1.MACHINE_NAME,t1.TYPE_MODEL,t1.STATUS,t1.STA10_ID\n" +
+                ")\n" +
+                "SELECT   t2.COUNTRY_OF_ORIGIN,t2.MACHINE_NAME,t2.TYPE_MODEL,t2.STATUS,:sta10IdToBeUpdated\n" +
+                "FROM DAT_KEBS_QA_MACHINE t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true
+    )
     fun updateMachinery(
         @Param("sta10Id") sta10Id: Long,
-    @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
+        @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
     ): String
 
 }
@@ -764,12 +780,15 @@ interface IQaMachineryRepository : HazelcastRepository<QaMachineryEntity, Long> 
 @Repository
 interface IQaRawMaterialRepository : HazelcastRepository<QaRawMaterialEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaRawMaterialEntity>?
-    @Query(value="INSERT INTO DAT_KEBS_QA_RAW_MATERIAL tt1\n" +
-            "(\n" +
-            "    tt1.NAME,tt1.ORIGIN,tt1.STATUS,tt1.SPECIFICATIONS,tt1.QUALITY_CHECKS_TESTING_RECORDS,tt1.STA10_ID\n" +
-            ")\n" +
-            "SELECT   tt2.NAME,tt2.ORIGIN,tt2.STATUS,tt2.SPECIFICATIONS,tt2.QUALITY_CHECKS_TESTING_RECORDS,:sta10IdToBeUpdated\n" +
-            "FROM DAT_KEBS_QA_RAW_MATERIAL tt2 WHERE tt2.STA10_ID =:sta10Id", nativeQuery = true)
+
+    @Query(
+        value = "INSERT INTO DAT_KEBS_QA_RAW_MATERIAL tt1\n" +
+                "(\n" +
+                "    tt1.NAME,tt1.ORIGIN,tt1.STATUS,tt1.SPECIFICATIONS,tt1.QUALITY_CHECKS_TESTING_RECORDS,tt1.STA10_ID\n" +
+                ")\n" +
+                "SELECT   tt2.NAME,tt2.ORIGIN,tt2.STATUS,tt2.SPECIFICATIONS,tt2.QUALITY_CHECKS_TESTING_RECORDS,:sta10IdToBeUpdated\n" +
+                "FROM DAT_KEBS_QA_RAW_MATERIAL tt2 WHERE tt2.STA10_ID =:sta10Id", nativeQuery = true
+    )
     fun updateRawMaterials(
         @Param("sta10Id") sta10Id: Long,
         @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
@@ -781,13 +800,16 @@ interface IQaRawMaterialRepository : HazelcastRepository<QaRawMaterialEntity, Lo
 @Repository
 interface IQaManufactureProcessRepository : HazelcastRepository<QaManufacturingProcessEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaManufacturingProcessEntity>?
-    @Query(value="INSERT INTO DAT_KEBS_QA_MANUFACTURING_PROCESS t1\n" +
-            "(\n" +
-            "    t1.PROCESS_FLOW_OF_PRODUCTION,t1.OPERATIONS,t1.CRITICAL_PROCESS_PARAMETERS_MONITORED,t1.FREQUENCY,t1.PROCESS_MONITORING_RECORDS,t1.STATUS,t1.STA10_ID\n" +
-            ")\n" +
-            "SELECT\n" +
-            "    t2.PROCESS_FLOW_OF_PRODUCTION,t2.OPERATIONS,t2.CRITICAL_PROCESS_PARAMETERS_MONITORED,t2.FREQUENCY,t2.PROCESS_MONITORING_RECORDS,t2.STATUS,:sta10IdToBeUpdated\n" +
-            "FROM DAT_KEBS_QA_MANUFACTURING_PROCESS t2 WHERE t2.STA10_ID =:sta10Id\n", nativeQuery = true)
+
+    @Query(
+        value = "INSERT INTO DAT_KEBS_QA_MANUFACTURING_PROCESS t1\n" +
+                "(\n" +
+                "    t1.PROCESS_FLOW_OF_PRODUCTION,t1.OPERATIONS,t1.CRITICAL_PROCESS_PARAMETERS_MONITORED,t1.FREQUENCY,t1.PROCESS_MONITORING_RECORDS,t1.STATUS,t1.STA10_ID\n" +
+                ")\n" +
+                "SELECT\n" +
+                "    t2.PROCESS_FLOW_OF_PRODUCTION,t2.OPERATIONS,t2.CRITICAL_PROCESS_PARAMETERS_MONITORED,t2.FREQUENCY,t2.PROCESS_MONITORING_RECORDS,t2.STATUS,:sta10IdToBeUpdated\n" +
+                "FROM DAT_KEBS_QA_MANUFACTURING_PROCESS t2 WHERE t2.STA10_ID =:sta10Id\n", nativeQuery = true
+    )
     fun updateManufacturing(
         @Param("sta10Id") sta10Id: Long,
         @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
@@ -797,11 +819,14 @@ interface IQaManufactureProcessRepository : HazelcastRepository<QaManufacturingP
 @Repository
 interface IQaProductBrandEntityRepository : HazelcastRepository<QaProductManufacturedEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaProductManufacturedEntity>?
-    @Query(value="INSERT INTO DAT_KEBS_QA_PRODUCT t1\n" +
-            "    (t1.AVAILABLE, t1.PRODUCT_BRAND, t1.PRODUCT_NAME, t1.STATUS, t1.STA10_ID)\n" +
-            "SELECT '0', t2.TRADE_MARK, t2.PRODUCT_NAME, '1', :sta10IdToBeUpdated\n" +
-            "FROM DAT_KEBS_PERMIT_TRANSACTION t2\n" +
-            "WHERE t2.ID = :permit", nativeQuery = true)
+
+    @Query(
+        value = "INSERT INTO DAT_KEBS_QA_PRODUCT t1\n" +
+                "    (t1.AVAILABLE, t1.PRODUCT_BRAND, t1.PRODUCT_NAME, t1.STATUS, t1.STA10_ID)\n" +
+                "SELECT '0', t2.TRADE_MARK, t2.PRODUCT_NAME, '1', :sta10IdToBeUpdated\n" +
+                "FROM DAT_KEBS_PERMIT_TRANSACTION t2\n" +
+                "WHERE t2.ID = :permit", nativeQuery = true
+    )
     fun updateProduct(
         @Param("permit") permit: Long,
         @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
@@ -878,7 +903,7 @@ interface IQaWorkplanRepository : HazelcastRepository<QaWorkplanEntity, Long> {
 @Repository
 interface IQaBatchInvoiceRepository : HazelcastRepository<QaBatchInvoiceEntity, Long> {
     fun findByUserIdAndInvoiceNumber(userId: Long, refNumber: String): QaBatchInvoiceEntity?
-    fun findByInvoiceNumber( refNumber: String): QaBatchInvoiceEntity?
+    fun findByInvoiceNumber(refNumber: String): QaBatchInvoiceEntity?
     fun findByInvoiceBatchNumberId(invoiceBatchNumberId: Long): QaBatchInvoiceEntity?
     fun findByUserIdAndInvoiceNumberAndPlantId(
         userId: Long,

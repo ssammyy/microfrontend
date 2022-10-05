@@ -1648,8 +1648,10 @@
 
                                                     <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{reject}}" >
                                                     <input type="hidden"  formControlName="manufacturerEntity" name="manufacturerEntity" value="{{actionRequestPending?.taskData?.manufacturerEntity}}" >
+                                                    <input type="hidden"  formControlName="companyName" name="companyName" value="{{actionRequestPending?.taskData?.companyName}}" >
                                                     <input type="hidden"  formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                     <input type="hidden"  formControlName="processId" name="processId" value="{{actionRequestPending?.processId}}" >
+                                                        <input type="hidden"  formControlName="visitID" name="visitID" value="{{actionRequestPending?.taskData?.visitID}}" >
                                                 </div>
                                                 <div class="col-12">
                                                     <button  class="btn btn-sm btn-primary float-right" type="submit">Save</button>
@@ -1668,8 +1670,10 @@
                                                         <p>Are you sure you want to Confirm this Site Visit?</p>
                                                         <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
                                                         <input type="hidden"  formControlName="scheduledVisitDate" name="scheduledVisitDate" value="{{actionRequestPending?.taskData?.scheduledVisitDate}}" >
+                                                        <input type="hidden"  formControlName="visitID" name="visitID" value="{{actionRequestPending?.taskData?.visitID}}" >
                                                         <input type="hidden"  formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                         <input type="hidden"  formControlName="processId" name="processId" value="{{actionRequestPending?.processId}}" >
+                                                        <input type="hidden"  formControlName="companyName" name="companyName" value="{{actionRequestPending?.taskData?.companyName}}" >
                                                     </div>
                                                     <div class="col-12">
                                                         <button  class="btn btn-sm btn-primary float-right" type="submit">Confirm</button>
@@ -1697,6 +1701,8 @@
                                                     <input type="hidden" formControlName="accentTo" name="accentTo"  value="{{approve}}" >
                                                     <input type="hidden"  formControlName="taskId" name="taskId" value="{{actionRequestPending?.taskId}}" >
                                                     <input type="hidden"  formControlName="processId" name="processId" value="{{actionRequestPending?.processId}}" >
+                                                    <input type="hidden"  formControlName="visitID" name="visitID" value="{{actionRequestPending?.taskData?.visitID}}" >
+                                                    <input type="hidden"  formControlName="companyName" name="companyName" value="{{actionRequestPending?.taskData?.companyName}}" >
                                                 </div>
                                                 <div class="col-12">
                                                     <button  class="btn btn-sm btn-primary float-right" type="submit">Change</button>

@@ -9,6 +9,7 @@ type="ball-scale-multiple"
 <p style="font-size: 20px; color: white">Loading Please Wait...</p>
 </ngx-spinner>
 </div>
+
 <div class="main-content">
 <div class="container-fluid">
 <div class="row col-lg-12 col-md-12 col-sm-12">
@@ -21,7 +22,7 @@ type="ball-scale-multiple"
 </div>
 
 <div *ngFor="let companyDetail of companyDetails">
-    <div class="card-body" *ngIf="slNotificationFormStatus.responseMessage==0">
+    <div class="card-body" *ngIf="slStatus==0">
     <div class="toolbar">
 
     </div>
@@ -415,7 +416,7 @@ type="ball-scale-multiple"
 </div>
 </div>
     <div *ngFor="let companyDetail of companyDetails">
- <div class="card-body" *ngIf="slNotificationFormStatus.responseMessage==1">
+ <div class="card-body" *ngIf="slStatus==1">
      <div *ngIf="manufacturingStatus?.businessType==1" class="row col-12">
          <div class="card-body text-center">
              <h2 style="color: red; font-weight: bold; font-size: medium">Form Has already been filled</h2>

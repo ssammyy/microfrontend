@@ -153,12 +153,12 @@ export class QaService {
         );
     }
 
-    public deletePermit(permitTypeID: string): Observable<PermitEntityDto[]> {
+    public deletePermit(permitID: string, data: PermitEntityDto[]): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.DELETE_PERMIT);
         const params = new HttpParams()
-            .set('permitTypeID', permitTypeID);
-        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
-            map(function (response: PermitEntityDto[]) {
+            .set('permitID', permitID);
+        return this.http.post<PermitEntityDto>(url, data, {params}).pipe(
+            map(function (response: PermitEntityDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
