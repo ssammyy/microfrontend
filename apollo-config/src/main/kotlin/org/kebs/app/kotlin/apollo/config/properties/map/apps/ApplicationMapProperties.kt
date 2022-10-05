@@ -1241,6 +1241,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.email.password}")
     val mapApplicationEmailPassword: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.email.from}")
+    val mapApplicationEmailFrom: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.email.smtp.start.tls.enable}")
     val mapApplicationEmailSmtpStartTlsEnable: String = ""
 

@@ -605,7 +605,7 @@
 
                                     <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1}"
 
-                                       th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}"
+                                       th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.encryptedID}, userID=${permitDetails?.encryptedUserId})}"
                                        class="filter-link" style="color: white">STA 10</a>
 
                                     <a th:if="${permitDetails?.invoiceGenerated == 1}"

@@ -317,7 +317,7 @@ class QADaoServices(
 
     fun findAllUserPermits(user: UsersEntity): List<PermitApplicationsEntity>? {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
-        permitRepo.findByUserId(userId)?.let { permitList ->
+        permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
             return permitList
         }
         return null
@@ -333,7 +333,7 @@ class QADaoServices(
     }
 
     fun findAllFirmPermitsWithPermitType(companyID: Long, permitTypeID: Long): List<PermitApplicationsEntity> {
-        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNull(companyID, permitTypeID)
+        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNull(companyID, permitTypeID)
             ?.let { permitList ->
                 return permitList
             }
@@ -470,14 +470,14 @@ class QADaoServices(
         try {
             val response = permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
             KotlinLogging.logger { }.info("The response is $response")
-            permitRepo.findByUserId(userId)?.let { permitList ->
+            permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
                 return permitList
             }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
 
         }
-        permitRepo.findByUserId(userId)?.let { permitList ->
+        permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
             return permitList
         }
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
@@ -487,7 +487,7 @@ class QADaoServices(
     fun findAllMyPermits(user: UsersEntity): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         KotlinLogging.logger { }.info { userId }
-        permitRepo.findByUserId(userId)?.let { permitList ->
+        permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
             return permitList
         }
             ?: throw ExpectedDataNotFound("No Permits Found for the following user with USERNAME = ${user.userName}")
@@ -6559,6 +6559,19 @@ class QADaoServices(
         }
 
 
+    }
+
+    fun deletePermit(permitID: Long) {
+        try {
+            println("+++++++++++++++________"+permitID)
+            permitRepo.deletePermit(permitID)
+            KotlinLogging.logger { }.info("The response is ok")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            e.printStackTrace();
+
+
+        }
     }
 
 }
