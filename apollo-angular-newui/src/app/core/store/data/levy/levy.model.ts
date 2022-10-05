@@ -604,6 +604,10 @@ export interface NotificationStatus {
     responseMessage: number;
 }
 
+export interface SlFormStatus{
+    countSlForm: number;
+}
+
 export interface Branch {
     branchName: string;
 }

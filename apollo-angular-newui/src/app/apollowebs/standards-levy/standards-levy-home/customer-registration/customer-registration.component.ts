@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  Branch,
-  CompanyModel, DirectorsList,
-  ManufactureBranchDto, ManufactureDetailList,
-  ManufactureInfo,
-  ManufacturingBranchDto,
-  ManufacturingInfo, ManufacturingStatus, NotificationStatus, SlModel
+    Branch,
+    CompanyModel, DirectorsList,
+    ManufactureBranchDto, ManufactureDetailList,
+    ManufactureInfo,
+    ManufacturingBranchDto,
+    ManufacturingInfo, ManufacturingStatus, NotificationStatus, SlFormStatus, SlModel
 } from "../../../../core/store/data/levy/levy.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -35,7 +35,7 @@ export class CustomerRegistrationComponent implements OnInit {
   slFormDetails !: SlModel;
   slBranchName !: Branch;
   notificationFormStatus !: NotificationStatus;
-  slNotificationFormStatus !: NotificationStatus;
+  slNotificationFormStatus !: SlFormStatus;
   manufacturerInfoForm: FormGroup;
   manufacturingInfoForm: FormGroup;
   branchFormA: FormGroup;
@@ -48,6 +48,7 @@ export class CustomerRegistrationComponent implements OnInit {
   manufacturingBranchDetail: ManufacturingBranchDto;
   loadingText: string;
   stepSoFar: | undefined;
+  message="check";
   step = 1;
   slStatus: number;
   constructor(
@@ -69,19 +70,22 @@ export class CustomerRegistrationComponent implements OnInit {
 
       //this.getBranchName();
       this.getCompanyDirectors();
-      this.store$.select(selectCompanyInfoDtoStateData).subscribe(
-          (d) => {
-              if (d) {
-                  console.log(d.countSlForm);
-                  if(d.countSlForm == 0)
-                  {
-                      this.slStatus=0;
-                  }else{
-                      this.getCompanySLForm();
-                      this.slStatus=1;
-                  }
-              }
-          });
+
+
+
+      // this.store$.select(selectCompanyInfoDtoStateData).subscribe(
+      //     (d) => {
+      //         if (d) {
+      //             console.log(d.countSlForm);
+      //             if(d.countSlForm == 0)
+      //             {
+      //                 this.slStatus=0;
+      //             }else{
+      //                 this.getCompanySLForm();
+      //                 this.slStatus=1;
+      //             }
+      //         }
+      //     });
 
     this.manufacturerInfoForm = this.formBuilder.group({
       businessCompanyName: [],
@@ -150,7 +154,7 @@ export class CustomerRegistrationComponent implements OnInit {
     this.levyService.getManufacturerStatus().subscribe(
         (response: ManufacturingStatus)=> {
           this.manufacturingStatus = response;
-          console.log(this.manufacturingStatus);
+          //console.log(this.manufacturingStatus);
         },
         (error: HttpErrorResponse)=>{
           console.log(error.message)
@@ -408,9 +412,17 @@ export class CustomerRegistrationComponent implements OnInit {
 
     public getSlForm(): void{
         this.levyService.getSlForm().subscribe(
-            (response: NotificationStatus)=> {
+            (response: SlFormStatus)=> {
                 this.slNotificationFormStatus = response;
+
+                if(this.slNotificationFormStatus.countSlForm==0){
+                    this.slStatus=0;
+                }else if(this.slNotificationFormStatus.countSlForm==1){
+                    this.getCompanySLForm();
+                    this.slStatus=1;
+                }
                 console.log(this.slNotificationFormStatus);
+                //console.log(this.slNotificationFormStatus);
             },
             (error: HttpErrorResponse)=>{
                 console.log(error.message)
@@ -423,7 +435,7 @@ export class CustomerRegistrationComponent implements OnInit {
     this.levyService.getSLNotificationStatus().subscribe(
         (response: NotificationStatus)=> {
           this.notificationFormStatus = response;
-          console.log(this.notificationFormStatus);
+          //console.log(this.notificationFormStatus);
         },
         (error: HttpErrorResponse)=>{
           console.log(error.message)

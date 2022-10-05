@@ -412,6 +412,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
         manufacturerEntity: [],
         taskId : [],
         processId : [],
+        visitID : [],
         remarks: []
     });
 
@@ -421,6 +422,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId : [],
           processId : [],
           scheduledVisitDate: [],
+          visitID: [],
           remarks: []
       });
 
@@ -431,6 +433,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId : [],
           processId : [],
           scheduledVisitDate: [],
+          visitID: [],
           remarks: []
       });
 
@@ -860,6 +863,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
                   manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
                   taskId: this.actionRequestPending.taskId,
                   processId: this.actionRequestPending.processId,
+                  visitID: this.actionRequestPending.taskData.visitID,
                   accentTo: this.reject
 
 
@@ -871,6 +875,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
                   taskId: this.actionRequestPending.taskId,
                   processId: this.actionRequestPending.processId,
                   accentTo: this.approve,
+                  visitID: this.actionRequestPending.taskData.visitID,
                   scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate
 
               });
@@ -881,6 +886,7 @@ export class StdLevyPendingTasksComponent implements OnInit {
                   taskId: this.actionRequestPending.taskId,
                   processId: this.actionRequestPending.processId,
                   accentTo: this.approve,
+                  visitID: this.actionRequestPending.taskData.visitID,
                   scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate
 
               });
