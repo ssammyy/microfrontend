@@ -841,7 +841,9 @@ export class FuelInspectionDto {
     scfUploadId: bigint;
     sampleSubmittedStatus: boolean;
     bsNumberStatus: boolean;
+    fuelCompliantStatus: boolean;
     fuelReportId: bigint;
+    invoiceDocFile: bigint;
     compliantStatusAdded: boolean;
     remediationScheduledStatus: boolean;
     remendiationCompleteStatus: boolean;
@@ -861,6 +863,8 @@ export class FuelInspectionDto {
     fuelRemediation: FuelRemediationDto;
     ssfCountAdded: number;
     bsNumberCountAdded: number;
+    analysisLabCountDone: number;
+    quotationGeneratedStatus: boolean;
 }
 
 export class MSSSFLabResultsDto {
@@ -875,6 +879,7 @@ export class MSSSFComplianceStatusDetailsDto {
     bsNumber: string;
     complianceRemarks: string;
     complianceStatus: boolean;
+    analysisDone: boolean;
 }
 
 export class FuelRemediationDto {

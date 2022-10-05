@@ -59,6 +59,10 @@ class MsFuelInspectionEntity : Serializable{
     @Basic
     var scfUploadId: Long? = null
 
+    @Column(name = "INVOICE_DOC_FILE")
+    @Basic
+    var invoiceDocFile: Long? = null
+
     @Column(name = "RAPID_TEST_FAILED_REMARKS")
     @Basic
     var rapidTestFailedRemarks: String? = null
@@ -127,6 +131,10 @@ class MsFuelInspectionEntity : Serializable{
     @Basic
     var remediationPaymentStatus: Int? = null
 
+    @Column(name = "QUOTATION_GENERATED_STATUS")
+    @Basic
+    var quotationGeneratedStatus: Int? = null
+
     @Column(name = "OWNER_ALL_LAB_RESULTS_STATUS")
     @Basic
     var ownerAllLabResultsStatus: Int? = null
@@ -134,6 +142,10 @@ class MsFuelInspectionEntity : Serializable{
     @Column(name = "COMPLIANT_STATUS")
     @Basic
     var compliantStatus: Int? = null
+
+    @Column(name = "FUEL_COMPLIANT_STATUS")
+    @Basic
+    var fuelCompliantStatus: Int? = null
 
     @Column(name = "NOT_COMPLIANT_STATUS")
     @Basic

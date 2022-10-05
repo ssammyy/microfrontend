@@ -122,7 +122,9 @@ data class FuelInspectionDto(
         var scfUploadId: Long? = null,
         var sampleSubmittedStatus: Boolean? = null,
         var bsNumberStatus: Boolean? = null,
+        var fuelCompliantStatus: Boolean? = null,
         var fuelReportId: Long? = null,
+        var invoiceDocFile: Long? = null,
         var compliantStatusAdded: Boolean? = null,
         var remediationScheduledStatus: Boolean? = null,
         var remendiationCompleteStatus: Boolean? = null,
@@ -141,6 +143,8 @@ data class FuelInspectionDto(
         var fuelRemediation: FuelRemediationDto? = null,
         var ssfCountAdded: Int? = null,
         var bsNumberCountAdded: Int? = null,
+        var analysisLabCountDone: Int? = null,
+        var quotationGeneratedStatus: Boolean? = null,
 )
 
 data class WorkPlanInspectionDto(
@@ -647,6 +651,7 @@ data class MSSSFComplianceStatusDetailsDto(
         var bsNumber: String? = null,
         var complianceRemarks: String? = null,
         var complianceStatus: Boolean? = null,
+        var analysisDone: Boolean? = null,
 )
 
 data class LIMSFilesFoundDto(

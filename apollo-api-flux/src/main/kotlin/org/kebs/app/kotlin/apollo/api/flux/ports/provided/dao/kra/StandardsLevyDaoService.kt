@@ -165,7 +165,7 @@ class StandardsLevyDaoService(
                  */
                 var header = Sl2PaymentsHeaderEntity()
 
-                header.transactionDate = paymentReceiveSL2PaymentRequest.transmissionDate
+//                header.transactionDate = paymentReceiveSL2PaymentRequest.transmissionDate
                 header.requestHeaderEntryNo = paymentReceiveSL2PaymentRequest.header?.entryNo
                 header.requestHeaderKraPin = paymentReceiveSL2PaymentRequest.header?.kraPin
                 header.requestHeaderManufacturerName = paymentReceiveSL2PaymentRequest.header?.manufacturerName
@@ -178,7 +178,7 @@ class StandardsLevyDaoService(
                 header.requestHeaderBank = paymentReceiveSL2PaymentRequest.header?.bank
                 header.requestBankRefNo = paymentReceiveSL2PaymentRequest.header?.bankRefNo
                 header.requestHeaderTransmissionDate = paymentReceiveSL2PaymentRequest.transmissionDate
-                header.transactionDate = Timestamp.from(Instant.now())
+//                header.transactionDate = Timestamp.from(Instant.now())
                 header.status = 0
                 header.createdBy = paymentReceiveSL2PaymentRequest.loginId
                 header.createdOn = Timestamp.from(Instant.now())
