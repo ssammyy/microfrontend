@@ -24,9 +24,9 @@ class Sl2PaymentsHeaderEntity : Serializable {
     @NotNull(message = "Required field")
     var requestHeaderTransmissionDate: Timestamp? = null
 
-    @Column(name = "HEADER_TRANSMISSION_DATE")
-    @NotNull(message = "Required field")
-    var headerTransmissionDate: Date? = null
+//    @Column(name = "HEADER_TRANSMISSION_DATE")
+//    @NotNull(message = "Required field")
+//    var headerTransmissionDate: Date? = null
 
     @Column(name = "REQUEST_HEADER_ENTRY_NO")
     @NotEmpty(message = "Required field")

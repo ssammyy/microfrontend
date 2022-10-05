@@ -528,7 +528,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
     @Query(
         value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId," +
-                "d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.TRANSACTION_DATE as paymentDate,d.PENALTY_PAID as penaltyPaid," +
+                "p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,h.TRANSACTION_DATE as paymentDate,d.PENALTY_PAID as penaltyPaid," +
                 "h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,p.NET_PENALTY_AMT as amountDue,p.MONTHS_LATE as monthsLate" +
                 " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID " +
                 "LEFT JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
@@ -539,7 +539,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
 
     @Query(
-        value = "SELECT d.ID as id,p.ENTRY_NUMBER as entryNumber,cast(d.PERIOD_FROM as varchar(200)) as periodFrom ,cast(d.PERIOD_TO as varchar(200)) as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_NO as paymentSlipNo,cast(h.REQUEST_HEADER_PAYMENT_SLIP_DATE as varchar(200)) as paymentSlipDate," +
+        value = "SELECT d.ID as id,p.ENTRY_NUMBER as entryNumber,cast(p.PERIOD_FROM as varchar(200)) as periodFrom ,cast(p.PERIOD_TO as varchar(200)) as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_NO as paymentSlipNo,cast(h.REQUEST_HEADER_PAYMENT_SLIP_DATE as varchar(200)) as paymentSlipDate," +
                 "h.REQUEST_HEADER_PAYMENT_TYPE as paymentType,h.REQUEST_HEADER_TOTAL_DECL_AMT as totalDeclAmt,h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,h.REQUEST_BANK_REF_NO as bankRefNo," +
                 "h.REQUEST_HEADER_TOTAL_PAYMENT_AMT as totalPaymentAmt,h.REQUEST_HEADER_BANK as bankName,d.COMMODITY_TYPE as commodityType,cast(h.TRANSACTION_DATE as varchar(200)) as paymentDate," +
                 "d.LEVY_PAID as levyPaid,d.PENALTY_PAID as penaltyPaid," +

@@ -266,6 +266,11 @@ class CommonDaoServices(
         return sdf.format(dateChange)
     }
 
+    fun convertDateToKraSqlDate(dateChange: Date): String {
+        val sdf = SimpleDateFormat("dd-MM-YYYY")
+        return sdf.format(dateChange)
+    }
+
     fun convertDateToString(date: LocalDateTime, format: String): String {
         val format = DateTimeFormatter.ofPattern(format)
         return format.format(date)
