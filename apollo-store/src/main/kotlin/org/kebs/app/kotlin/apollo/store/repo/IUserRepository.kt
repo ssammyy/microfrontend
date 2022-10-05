@@ -617,6 +617,12 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     )
     fun updatePenaltyStatus(id: Long): Long
 
+    @Query(
+        value = "UPDATE DAT_KEBS_COMPANY_PROFILE SET ASSIGN_STATUS=:assignStatus,ASSIGNED_TO=:assignedTo WHERE ID=:id ",
+        nativeQuery = true
+    )
+    fun updateCompanyStatus(id: Long, assignedTo: Int, assignStatus: Int): Long
+
 
 
     @Query(

@@ -686,26 +686,7 @@ return getUserTasks();
 
 
         if (variables["Yes"] == true) {
-            val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
-            var userList= companyStandardRepository.getUserEmail(loggedInUser.id)
-            userList.forEach { item->
-                val recipient= item.getUserEmail()
-                val subject = "Site Visit"
-                val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${standardLevyFactoryVisitReportEntity.companyName} has been done. NB. Auto Generated E-Mail From KEBS "
-                if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
-                }
-            }
 
-            var manufacturerList= companyStandardRepository.getUserEmail(userID)
-            manufacturerList.forEach { item->
-                val recipient= item.getUserEmail()
-                val subject = "Site Visit"
-                val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${standardLevyFactoryVisitReportEntity.companyName} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
-                if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
-                }
-            }
 
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { entity ->
@@ -753,11 +734,40 @@ return getUserTasks();
                         }
                         ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${standardLevyFactoryVisitReportEntity.slProcessInstanceId} ")
 
+                    val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                    var userList= companyStandardRepository.getUserEmail(loggedInUser.id)
+                    userList.forEach { item->
+                        val recipient= item.getUserEmail()
+                        val subject = "Site Visit"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${standardLevyFactoryVisitReportEntity.companyName} has been done. NB. Auto Generated E-Mail From KEBS "
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
+
+                    var manufacturerList= companyStandardRepository.getUserEmail(userID)
+                    manufacturerList.forEach { item->
+                        val recipient= item.getUserEmail()
+                        val subject = "Site Visit"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${standardLevyFactoryVisitReportEntity.companyName} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
                 }
                 ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
         } else if (variables["No"] == false) {
+            val assignedTo=0
+            val assignStatus=0
+            try{
+                standardLevyFactoryVisitReportEntity.manufacturerEntity?.let { companyProfileRepo.updateCompanyStatus(it,assignedTo,assignStatus) }
+                taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+            }catch (e: Exception) {
+                KotlinLogging.logger { }.error(e.message)
+                KotlinLogging.logger { }.trace(e.message, e)
 
-            taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
+            }
+
         }
         return getUserTasks()
 
