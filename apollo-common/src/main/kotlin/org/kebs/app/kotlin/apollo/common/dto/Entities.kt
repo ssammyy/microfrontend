@@ -841,6 +841,10 @@ data class UserCompanyDetailsDto(
 
 
 )
+data class CompanySlFormDto(
+        @JsonProperty("countSlForm")
+        val countSlForm: Long? = null,
+)
 
 class CorItemsEntityDto {
     @JsonProperty("COR No.")
