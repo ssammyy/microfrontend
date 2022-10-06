@@ -607,7 +607,10 @@ class ForeignPvocIntegrations(
         timeline.docIssueDate = entity.corIssueDate
         timeline.dateOfInspection = entity.inspectionDate
         timeline.paymentDate = entity.inspectionFeePaymentDate
-        timeline.certType = "COR"
+        timeline.certType = when (entity.compliant) {
+            "N", "n" -> "NCR"
+            else -> "COR"
+        }
         timeline.ucrNumber = entity.ucrNumber
         timeline.requestDateOfInspection = entity.inspectionDate
         timeline.route = entity.route
@@ -633,8 +636,89 @@ class ForeignPvocIntegrations(
         } ?: run {
             // Fill checklist details
             with(localCor) {
+                documentsType = "F"
+                compliant = "Y"
                 corNumber = cor.corNumber
                 corIssueDate = cor.corIssueDate ?: commonDaoServices.getTimestamp()
+                countryOfSupply = cor.countryOfSupply
+                inspectionCenter = cor.inspectionCenter
+                inspectionZone = cor.inspectionZone
+                inspectionProvince = cor.inspectionProvince
+                exporterName = cor.exporterName
+                exporterAddress1 = cor.exporterAddress1
+                exporterAddress2 = cor.exporterAddress2
+                exporterEmail = cor.exporterEmail
+                acceptableDocDate = cor.acceptableDocDate
+                finalDocDate = cor.finalDocDate
+                inspectionFeePaymentDate = cor.inspectionFeePaymentDate
+                applicationBookingDate = cor.applicationBookingDate ?: commonDaoServices.getTimestamp()
+                inspectionDate = cor.inspectionDate ?: commonDaoServices.getTimestamp()
+                make = cor.make
+                model = cor.model ?: "UNKNOWN"
+                engineNumber = cor.engineNumber
+                engineCapacity = cor.engineCapacity
+                yearOfManufacture = cor.yearOfManufacture
+                yearOfFirstRegistration = cor.yearOfFirstRegistration ?: "UNKNOWN"
+                inspectionMileage = cor.inspectionMileage ?: "UNKNOWN"
+                unitsOfMileage = cor.unitsOfMileage ?: "KM"
+                inspectionRemarks = cor.inspectionRemarks ?: "UNKNOWN"
+                previousRegistrationNumber = cor.previousRegistrationNumber ?: "NA"
+                previousCountryOfRegistration = cor.previousCountryOfRegistration ?: "test"
+                chasisNumber = cor.chasisNumber
+                tareWeight = cor.tareWeight ?: 0.0
+                loadCapacity = cor.loadCapacity ?: 0.0
+                grossWeight = cor.grossWeight ?: 0.0
+                numberOfAxles = cor.numberOfAxles ?: 0
+                typeOfVehicle = cor.typeOfVehicle
+                numberOfPassangers = cor.numberOfPassengers ?: 0
+                typeOfBody = cor.typeOfBody ?: "NA"
+                bodyColor = cor.bodyColor ?: "NA"
+                fuelType = cor.fuelType ?: "NA"
+                customsIeNo = "NA"
+                transmission = cor.transmission ?: "NA"
+                route = cor.route
+                version = cor.version ?: 1
+                approvalStatus = "!"
+                ucrNumber = cor.ucrNumber ?: ""
+                inspectionFeeCurrency = cor.inspectionFeeCurrency ?: "USD"
+                inspectionFee = cor.inspectionFee ?: 0.0
+                inspectionFeeReceipt = cor.inspectionFeeReceipt ?: "NA"
+                inspectionOfficer = cor.inspectionOfficer ?: "NA"
+                inspectionFeeExchangeRate = cor.inspectionFeeExchangeRate ?: 0.0
+                inspectionFeePaymentDate = cor.inspectionFeePaymentDate ?: commonDaoServices.getTimestamp()
+                inspectionRemarks = cor.inspectionRemarks ?: "No Remarks"
+                status = s.activeStatus
+                partner = user.id
+                reviewStatus = ReviewStatus.NEW.code
+                createdBy = commonDaoServices.loggedInUserAuthentication().name
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            KotlinLogging.logger { }.info("COR: $localCor")
+            localCor = corsBakRepository.save(localCor)
+            // Check document compliance
+            this.checkCorDocumentCompliance(localCor, cor.rfcDate, user)
+            KotlinLogging.logger { }.info { "Save Foreign CoR WITH id = ${localCor.id}" }
+        }
+        return localCor
+    }
+
+    @Transactional
+    fun foreignNcrCor(
+            cor: NcrCorEntityForm,
+            s: ServiceMapsEntity,
+            user: PvocPartnersEntity,
+    ): CorsBakEntity? {
+        var localCor = CorsBakEntity()
+        //Get CD Item by cd doc id
+        this.corsBakRepository.findByChasisNumberAndVersion(cor.chasisNumber!!, cor.version)?.let {
+            return null
+        } ?: run {
+            // Fill checklist details
+            with(localCor) {
+                corNumber = cor.ncrNumber
+                corIssueDate = cor.ncrIssueDate ?: commonDaoServices.getTimestamp()
+                documentsType = "F"
+                compliant = "N"
                 countryOfSupply = cor.countryOfSupply
                 inspectionCenter = cor.inspectionCenter
                 inspectionZone = cor.inspectionZone

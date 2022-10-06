@@ -30,6 +30,7 @@ class ExternalRouter {
             POST("/coc", handler::foreignCoc)
             POST("/cor", handler::foreignCor)
             POST("/ncr", handler::foreignNcr)
+            POST("/ncr/cor", handler::foreignNcrCor)
             POST("/risk/profile", handler::riskProfile)
             GET("/risk/profiles", handler::listRiskProfile)
             GET("/invoice/{inv_date}", handler::listMonthlyInvoiceDetails)
