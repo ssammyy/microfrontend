@@ -869,26 +869,26 @@ class MarketSurveillanceFuelDaoServices(
                 /*
                 * Todo: ADD function for sending Lab results
                 * */
-                val labReportSentStatus = false
-                findSampleSubmittedListPdfBYSSFid(savedSSfComplianceStatus.second.id?: throw ExpectedDataNotFound("Missing SSF ID"))
-                    ?.forEach {saveSSFPdf->
-                        val fileUploaded = findUploadedFileBYId(saveSSFPdf.msPdfSavedId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS"))
-                        val fileContent = limsServices.mainFunctionLimsGetPDF(
-                            savedSSfComplianceStatus.second.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
-                            saveSSFPdf.pdfName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
-                        )
-
-                        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-                        runBlocking { commonDaoServices.sendEmailWithUserEmail(
-                            fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
-                            applicationMapProperties.mapMsFuelInspectionLabResultsNotification,
-                            dataValue,
-                            map,
-                            savedSSfComplianceStatus.first,
-                            fileContent.path
-                        )
-                        }
-                    }
+//                val labReportSentStatus = false
+//                findSampleSubmittedListPdfBYSSFid(savedSSfComplianceStatus.second.id?: throw ExpectedDataNotFound("Missing SSF ID"))
+//                    ?.forEach {saveSSFPdf->
+//                        val fileUploaded = findUploadedFileBYId(saveSSFPdf.msPdfSavedId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS"))
+//                        val fileContent = limsServices.mainFunctionLimsGetPDF(
+//                            savedSSfComplianceStatus.second.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
+//                            saveSSFPdf.pdfName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
+//                        )
+//
+//                        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+//                        runBlocking { commonDaoServices.sendEmailWithUserEmail(
+//                            fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
+//                            applicationMapProperties.mapMsFuelInspectionLabResultsNotification,
+//                            dataValue,
+//                            map,
+//                            savedSSfComplianceStatus.first,
+//                            fileContent.path
+//                        )
+//                        }
+//                    }
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             }else {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
@@ -938,6 +938,7 @@ class MarketSurveillanceFuelDaoServices(
                         timelineEndDate = null
                         msProcessId = applicationMapProperties.mapMSEndFuel
                         compliantStatus = 1
+                        fuelCompliantStatus = 1
                         notCompliantStatus =  0
                         remediationStatus =0
                         remediationPaymentStatus = 1
@@ -956,8 +957,10 @@ class MarketSurveillanceFuelDaoServices(
                         notCompliantStatusRemarks = body.complianceRemarks
                         remediationStatus = 0
                         remediationPaymentStatus = 0
+                        fuelCompliantStatus = 0
                     }
                 }
+
             }
             fileInspectionDetail = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
             val dataValue = FuelScheduledLabResultsDTO()
@@ -984,7 +987,7 @@ class MarketSurveillanceFuelDaoServices(
 //                        )
 //
 //                        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-//                        runBlocking { commonDaoServices.sendEmailWithUserEmail(
+////                        runBlocking { commonDaoServices.sendEmailWithUserEmail(
 //                            fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
 //                            applicationMapProperties.mapMsFuelInspectionLabResultsNotification,
 //                            dataValue,
@@ -1053,6 +1056,7 @@ class MarketSurveillanceFuelDaoServices(
                 with(fileInspectionDetail){
                     msProcessId = applicationMapProperties.mapMsPayment
                     remediationPaymentStatus = map.inactiveStatus
+                    quotationGeneratedStatus = map.activeStatus
                     userTaskId = applicationMapProperties.mapMSUserTaskNameSTATIONOWNER
                 }
                 fileInspectionDetail= updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser).second
@@ -1061,14 +1065,15 @@ class MarketSurveillanceFuelDaoServices(
                 val remarksSaved = fuelAddRemarksDetails(fileInspectionDetail.id,remarksDto, map, loggedInUser)
 
 
-                runBlocking { commonDaoServices.sendEmailWithUserEmail(
-                    fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
-                    applicationMapProperties.mapMsFuelInspectionRemediationInvoiceNotification,
-                    fileInspectionDetail, map,
-                    savedRemediationInvoice.first,
-                    invoiceRemediationPDF(fileInspectionDetail.id).path
-                )
-                }
+//                runBlocking {
+//                    commonDaoServices.sendEmailWithUserEmail(
+//                    fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
+//                    applicationMapProperties.mapMsFuelInspectionRemediationInvoiceNotification,
+//                    fileInspectionDetail, map,
+//                    savedRemediationInvoice.first,
+//                    invoiceRemediationPDF(fileInspectionDetail.id).path
+//                )
+//                }
 
                 return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
             }
@@ -1076,6 +1081,53 @@ class MarketSurveillanceFuelDaoServices(
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(savedRemediationInvoice.first))
             }
         }
+    }
+
+//    @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun postFuelInspectionDetailsSendRemediationInvoice(
+    fileInspectionDetail: MsFuelInspectionEntity,
+    batchDetails: MsFuelBatchInspectionEntity,
+    teamsDetail: MsFuelTeamsEntity,
+    countyDetail: MsFuelTeamsCountyEntity,
+        docFile: MultipartFile
+    ) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+//        val batchDetails = findFuelBatchDetailByReferenceNumber(batchReferenceNo)
+//        val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
+//        val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
+//        val savedSSfComplianceStatus = ssfLabUpdateDetails(body,loggedInUser,map)
+        val fuelRemediationInvoice = findFuelRemediationInvoice(fileInspectionDetail.id)
+
+        with(fileInspectionDetail){
+            msProcessId = applicationMapProperties.mapMsPayment
+            remediationPaymentStatus = map.inactiveStatus
+//            quotationGeneratedStatus = map.activeStatus
+            userTaskId = applicationMapProperties.mapMSUserTaskNameSTATIONOWNER
+        }
+        val fetched = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
+
+        runBlocking {
+            commonDaoServices.sendEmailWithUserEmail(
+                fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                applicationMapProperties.mapMsFuelInspectionRemediationInvoiceNotification,
+                fileInspectionDetail, map,
+                fetched.first,
+                invoiceRemediationPDF(fileInspectionDetail.id).path
+            )
+
+            commonDaoServices.sendEmailWithUserEmail(
+                fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
+                applicationMapProperties.mapMsFuelInspectionRemediationInvoiceNotification,
+                fileInspectionDetail,
+                map,
+                fetched.first,
+                commonDaoServices.convertMultipartFileToFile(docFile).path
+            )
+        }
+
+//        return fuelInspectionMappingCommonDetails(fileInspectionDetail, map, batchDetails,teamsDetail,countyDetail)
     }
 
 
@@ -1145,7 +1197,8 @@ class MarketSurveillanceFuelDaoServices(
                     remediationDate = savedRemediation.second.dateOfRemediation
                 }
 
-                runBlocking {commonDaoServices.sendEmailWithUserEmail(
+                runBlocking {
+                    commonDaoServices.sendEmailWithUserEmail(
                     fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
                     applicationMapProperties.mapMsFuelInspectionRemediationScheduleNotification,
                     emailValue,
@@ -1325,9 +1378,10 @@ class MarketSurveillanceFuelDaoServices(
         val sampleSubmittedDtoList = mutableListOf<SampleSubmissionDto>()
         val labResultsDtoList = mutableListOf<MSSSFLabResultsDto>()
         var bsNumberCountAdded = 0
+        var analysisLabCountDone = 0
         findSampleSubmissionDetailByFuelInspectionID(fileInspectionDetail.id)
             ?.forEach { sampleSubmitted->
-                val sampleSubmittedParamList = sampleSubmitted.id?.let { findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
+                val sampleSubmittedParamList = sampleSubmitted.id.let { findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
                 val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { mapSampleSubmissionParamListDto(it) }?.let { mapSampleSubmissionDto(sampleSubmitted, it) }
                 if (sampleSubmittedDtoValues != null) {
                     sampleSubmittedDtoList.add(sampleSubmittedDtoValues)
@@ -1338,6 +1392,9 @@ class MarketSurveillanceFuelDaoServices(
                         val savedPDFFilesLims = ssfDetailsLab?.id?.let { findSampleSubmittedListPdfBYSSFid(it)?.let { ssfDetails->mapLabPDFFilesListDto(ssfDetails) } }
 //        val savedPDFFilesLims = ssfDetailsLab?.id?.let { findSampleSubmittedListPdfBYSSFid(it)?.let { mapLabPDFFilesListDto(it) } }
                         val ssfResultsListCompliance = ssfDetailsLab?.let { mapSSFComplianceStatusDetailsDto(it) }
+                        if (ssfDetailsLab?.analysisDone==map.activeStatus){
+                            analysisLabCountDone++
+                        }
                         val limsPDFFiles = ssfDetailsLab?.bsNumber?.let { mapLIMSSavedFilesDto(it,savedPDFFilesLims)}
                         val labResultsDto = mapLabResultsDetailsDto(ssfResultsListCompliance,savedPDFFilesLims,limsPDFFiles,labResultsParameters?.let { mapLabResultsParamListDto(it) })
                         labResultsDtoList.add(labResultsDto)
@@ -1355,7 +1412,7 @@ class MarketSurveillanceFuelDaoServices(
         if (invoiceRemediationDetails.isNotEmpty()){
             invoiceCreatedStatus = true
         }
-        val fuelRemediationDto = remediationDetails?.let { mapFuelRemediationDto(it,invoiceCreatedStatus) }
+        val fuelRemediationDto = remediationDetails?.let { mapFuelRemediationDto(it,invoiceRemediationDetails,invoiceCreatedStatus) }
         return mapFuelInspectionDto(
             fileInspectionDetail,
             batchDetailsDto,
@@ -1374,7 +1431,8 @@ class MarketSurveillanceFuelDaoServices(
             labResultsDtoList,
             fuelRemediationDto,
             ssfCountAdded,
-            bsNumberCountAdded
+            bsNumberCountAdded,
+            analysisLabCountDone
         )
     }
 
@@ -2031,14 +2089,8 @@ class MarketSurveillanceFuelDaoServices(
 
             with(saveSSF) {
                 complianceRemarks = body.complianceRemarks
-                resultsAnalysis = when {
-                    body.complianceStatus -> {
-                        1
-                    }
-                    else -> {
-                        0
-                    }
-                }
+                analysisDone = map.activeStatus
+                resultsAnalysis = when {body.complianceStatus -> { 1 }else -> { 0 } }
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
             }
@@ -2844,7 +2896,8 @@ class MarketSurveillanceFuelDaoServices(
         sampleLabResults: List<MSSSFLabResultsDto>?,
         fuelRemediationDto: FuelRemediationDto?,
         ssfCountAdded: Int,
-        bsNumberCountAdded: Int
+        bsNumberCountAdded: Int,
+        analysisLabCountDone: Int
     ): FuelInspectionDto {
         return FuelInspectionDto(
             fuelInspectionList.id,
@@ -2867,7 +2920,9 @@ class MarketSurveillanceFuelDaoServices(
             fuelInspectionList.scfUploadId,
             fuelInspectionList.sampleSubmittedStatus==1,
             fuelInspectionList.bsNumberStatus==1,
+            fuelInspectionList.fuelCompliantStatus==1,
             fuelInspectionList.fuelReportId,
+            fuelInspectionList.invoiceDocFile,
             compliantStatusDone,
             fuelInspectionList.remediationStatus==1,
             fuelInspectionList.remendiationCompleteStatus==1,
@@ -2885,7 +2940,9 @@ class MarketSurveillanceFuelDaoServices(
             sampleLabResults,
             fuelRemediationDto,
             ssfCountAdded,
-            bsNumberCountAdded
+            bsNumberCountAdded,
+            analysisLabCountDone,
+            fuelInspectionList.quotationGeneratedStatus==1
         )
     }
 
@@ -3183,7 +3240,8 @@ class MarketSurveillanceFuelDaoServices(
             ssf.id,
             ssf.bsNumber,
             ssf.complianceRemarks,
-            ssf.resultsAnalysis == 1
+            ssf.resultsAnalysis == 1,
+            ssf.analysisDone == 1
         )
 
     }
@@ -3449,7 +3507,11 @@ class MarketSurveillanceFuelDaoServices(
         )
     }
 
-    fun mapFuelRemediationDto(data: MsFuelRemediationEntity,invoiceCreated: Boolean): FuelRemediationDto {
+    fun mapFuelRemediationDto(
+        data: MsFuelRemediationEntity,
+        invoiceRemediationDetails: List<MsFuelRemedyInvoicesEntity>,
+        invoiceCreated: Boolean
+    ): FuelRemediationDto {
         return FuelRemediationDto(
             data.productType,
             data.applicableKenyaStandard,
@@ -3462,6 +3524,7 @@ class MarketSurveillanceFuelDaoServices(
             data.proFormaInvoiceStatus == 1,
             data.proFormaInvoiceNo,
             data.invoiceAmount,
+            invoiceRemediationDetails[0].amountToPay,
             data.feePaidReceiptNo,
             data.dateOfRemediation,
             data.dateOfPayment,

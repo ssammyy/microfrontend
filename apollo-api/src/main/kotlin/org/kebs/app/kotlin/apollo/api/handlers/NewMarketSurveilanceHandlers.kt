@@ -698,7 +698,9 @@ class NewMarketSurveillanceHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsScheduleRemediationAfterPayment(referenceNo,batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
+                    marketSurveillanceFuelDaoServices.postFuelInspectionDetailsScheduleRemediationAfterPayment(
+                        referenceNo,teamsReferenceNo,countyReferenceNo,batchReferenceNo,body
+                    )
                         .let {
                             ServerResponse.ok().body(it)
                         }

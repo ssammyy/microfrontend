@@ -308,6 +308,7 @@ export interface ReportDecisionLevelOne{
 export interface SiteVisitReportDecision{
     taskId: string;
     processId :string;
+    companyName :string;
     accentTo : boolean;
     visitID : number;
     manufacturerEntity: number;

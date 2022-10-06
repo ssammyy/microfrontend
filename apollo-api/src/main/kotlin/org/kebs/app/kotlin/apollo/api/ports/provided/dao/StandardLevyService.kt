@@ -674,7 +674,8 @@ return getUserTasks();
     }
 
     fun decisionOnSiteVisitSchedule(
-        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
+        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
+        comProfileEntity: CompanyProfileEntity
     ): List<TaskDetailsBody> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
@@ -684,10 +685,7 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.manufacturerEntity?.let { variables["manufacturerEntity"] = it }
         standardLevyFactoryVisitReportEntity.scheduledVisitDate?.let { variables["scheduledVisitDate"] = it }
 
-
         if (variables["Yes"] == true) {
-
-
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { entity ->
 
@@ -739,7 +737,7 @@ return getUserTasks();
                     userList.forEach { item->
                         val recipient= item.getUserEmail()
                         val subject = "Site Visit"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${standardLevyFactoryVisitReportEntity.companyName} has been done. NB. Auto Generated E-Mail From KEBS "
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${comProfileEntity.name} has been done. NB. Auto Generated E-Mail From KEBS "
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
@@ -749,7 +747,7 @@ return getUserTasks();
                     manufacturerList.forEach { item->
                         val recipient= item.getUserEmail()
                         val subject = "Site Visit"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${standardLevyFactoryVisitReportEntity.companyName} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${comProfileEntity.name} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
@@ -757,10 +755,18 @@ return getUserTasks();
                 }
                 ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
         } else if (variables["No"] == false) {
-            val assignedTo=0
-            val assignStatus=0
+
             try{
-                standardLevyFactoryVisitReportEntity.manufacturerEntity?.let { companyProfileRepo.updateCompanyStatus(it,assignedTo,assignStatus) }
+                companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                    ?.let { comEntity ->
+
+                        comEntity.apply {
+                            assignStatus=0
+                            assignedTo=0
+                        }
+                        companyProfileRepo.save(comEntity)
+                    } ?: throw Exception("COMPANY NOT FOUND")
+
                 taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
             }catch (e: Exception) {
                 KotlinLogging.logger { }.error(e.message)

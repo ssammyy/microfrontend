@@ -606,8 +606,11 @@ class StdLevyController(
             scheduledVisitDate= siteVisitReportDecisionDTO.scheduledVisitDate
 
         }
+        val comProfileEntity = CompanyProfileEntity().apply {
+            name=siteVisitReportDecisionDTO.companyName
+        }
 
-        return ServerResponse(HttpStatus.OK,"Action On Schedule",standardLevyService.decisionOnSiteVisitSchedule(standardLevyFactoryVisitReportEntity))
+        return ServerResponse(HttpStatus.OK,"Action On Schedule",standardLevyService.decisionOnSiteVisitSchedule(standardLevyFactoryVisitReportEntity,comProfileEntity))
 
     }
 
