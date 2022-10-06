@@ -114,6 +114,26 @@ class PvocClientHandler(
         return ServerResponse.ok().body(response)
     }
 
+    fun foreignNcrCor(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        try {
+            val form = req.body(NcrCorEntityForm::class.java)
+            validatorService.validateInputWithInjectedValidator(form)?.let {
+                response.message = "Request validation failed"
+                response.errors = it
+                response.responseCode = ResponseCodes.INVALID_CODE
+                response.data = form
+                response
+            } ?: run {
+                return ServerResponse.ok().body(pvocService.receiveNcrCor(form))
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid request data"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
     fun foreignCoiRfc(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {

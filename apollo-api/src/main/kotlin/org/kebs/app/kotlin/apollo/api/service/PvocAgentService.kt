@@ -249,6 +249,29 @@ class PvocAgentService(
         return response
     }
 
+    fun receiveNcrCor(ncr: NcrCorEntityForm): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val activeUser = commonDaoServices.loggedInPartnerDetails()
+            this.pvocIntegrations.foreignNcrCor(ncr, commonDaoServices.serviceMapDetails(properties.mapImportInspection), activeUser)?.let { ncrEntity ->
+                // Create response
+                response.data = ncr
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "NCR COR with ucr: " + ncr.ucrNumber + " received"
+                response
+            } ?: run {
+                response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
+                response.message = "NCR COR with ucr: " + ncr.ucrNumber + " already exists"
+                response
+            }
+        } catch (ex: Exception) {
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed to add NCR COR with ucr number" + ncr.ucrNumber
+            response.errors = ex.message
+        }
+        return response
+    }
+
     fun addRiskProfile(form: RiskProfileForm): ApiResponseModel {
         val response = ApiResponseModel()
         try {

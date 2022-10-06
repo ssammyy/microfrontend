@@ -375,6 +375,12 @@ data class ValidatePhoneNumberTokenRequestDto(
     @NotEmpty(message = "is required")
     val token: String?
 )
+data class ValidatePhoneNumberRegistrationTokenRequestDto(
+    @NotEmpty(message = "is required")
+    val phone: String,
+    @NotEmpty(message = "is required")
+    val token: String?
+)
 
 data class MPesaPushDto(
     @NotEmpty(message = "is required")

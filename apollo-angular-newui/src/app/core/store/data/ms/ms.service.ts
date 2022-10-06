@@ -2198,6 +2198,32 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
+    public msFuelInspectionScheduledSaveSSFFinalComplianceStatus(
+        batchReferenceNumber: string,
+        teamsReferenceNo: string,
+        countyReferenceNo: string,
+        referenceNumber: string,
+        data: SSFSaveComplianceStatusDto): Observable<FuelInspectionDto> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_FUEL_ENDPOINT.INSPECTION_SCHEDULED_DETAILS_SSF_FINAL_COMPLIANCE_STATUS);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNumber)
+            .set('batchReferenceNo', batchReferenceNumber)
+            .set('teamsReferenceNo', teamsReferenceNo)
+            .set('countyReferenceNo', countyReferenceNo);
+        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
+            map(function (response: FuelInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
     public msFuelInspectionScheduledRemediation(
         batchReferenceNumber: string,
         teamsReferenceNo: string,

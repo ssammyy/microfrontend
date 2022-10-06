@@ -466,7 +466,8 @@ data class PermitDetailsDto(
     var fmarkGeneratedID: Long? = null,
     var oldPermitStatus: Boolean? = null,
     var varField7: String? = null,
-
+    var encryptedPermitId:String?=null,
+    var encryptedUserId:String?=null,
     )
 
 data class AllPermitDetailsDto(

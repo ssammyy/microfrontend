@@ -77,6 +77,10 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var resultsAnalysis: Int? = null
 
+    @Column(name = "ANALYSIS_DONE")
+    @Basic
+    var analysisDone: Int? = null
+
     @Column(name = "DESCRIPTION")
     @Basic
     var description: String? = null
