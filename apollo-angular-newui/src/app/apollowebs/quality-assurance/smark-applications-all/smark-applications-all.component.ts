@@ -35,38 +35,41 @@ export class SmarkApplicationsAllComponent implements OnInit {
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger1: Subject<any> = new Subject<any>();
+    displayUsers: boolean = false;
 
     constructor(
         private qaService: QaService,
         private router: Router,
-        private SpinnerService: NgxSpinnerService
+        private SpinnerService: NgxSpinnerService,
     ) {
 
     }
 
     ngOnInit() {
-        this.dtOptions = {
-            processing:true,
-            retrieve: true,
-            language: {
-                'loadingRecords': '&nbsp;',
-                'processing': 'Loading...'
-            }
-        }
-
         this.getAllPermitData()
+
     }
 
+
     public getAllPermitData(): void {
+        this.SpinnerService.show();
+
         this.qaService.loadPermitList(this.smarkID).subscribe(
             (response: PermitEntityDto[]) => {
                 console.log(response);
-
                 this.allPermitData = response;
                 this.rerender()
+                this.SpinnerService.hide();
+                this.displayUsers = true;
+
+
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.displayUsers = true;
+                this.SpinnerService.hide();
+
+
             }
         );
 

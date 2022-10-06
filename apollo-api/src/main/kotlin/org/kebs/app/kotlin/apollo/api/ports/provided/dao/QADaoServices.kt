@@ -2364,6 +2364,8 @@ class QADaoServices(
                 fmarkGeneratedID = permit.id?.let { findFmarkWithSmarkId(it).fmarkId }
             }
             oldPermitStatus = permit.oldPermitStatus == 1
+            encryptedPermitId = jasyptStringEncryptor.encrypt(permit.id.toString())
+            encryptedUserId = jasyptStringEncryptor.encrypt(permit.userId.toString())
 
 
         }
@@ -6563,7 +6565,7 @@ class QADaoServices(
 
     fun deletePermit(permitID: Long) {
         try {
-            println("+++++++++++++++________"+permitID)
+            println("+++++++++++++++________" + permitID)
             permitRepo.deletePermit(permitID)
             KotlinLogging.logger { }.info("The response is ok")
         } catch (e: Exception) {

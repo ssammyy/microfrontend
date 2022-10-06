@@ -558,6 +558,9 @@ class QualityAssuranceHandler(
         req.attributes().putAll(loadCommonPermitComponents(map, permit))
         req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
 
+        req.attributes()["encryptedPermitId"] = jasyptStringEncryptor.encrypt(permit.id.toString())
+        req.attributes()["encryptedUserId"] = jasyptStringEncryptor.encrypt(permit.userId.toString())
+
         return ok().render(qaPermitDetailPage, req.attributes())
     }
 
@@ -847,8 +850,11 @@ class QualityAssuranceHandler(
         val map = commonDaoServices.serviceMapDetails(appId)
 //        val permitUserId = req.paramOrNull("userID")?.toLong() ?: throw ExpectedDataNotFound("Required User ID, check config")
 
-        val permitID =
-            req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+
+        val encryptedPermitId =
+            req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+
         val permit = qaDaoServices.findPermitBYID(permitID)
         val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
             permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
