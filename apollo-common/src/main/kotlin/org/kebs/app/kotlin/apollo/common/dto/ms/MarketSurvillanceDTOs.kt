@@ -633,6 +633,7 @@ data class FuelRemediationDto(
         var proFormaInvoiceStatus: Boolean? = null,
         var proFormaInvoiceNo: String? = null,
         var invoiceAmount: BigDecimal? = null,
+        var payableAmount: BigDecimal? = null,
         var feePaidReceiptNo: String? = null,
         var dateOfRemediation: Date? = null,
         var dateOfPayment: Timestamp? = null,

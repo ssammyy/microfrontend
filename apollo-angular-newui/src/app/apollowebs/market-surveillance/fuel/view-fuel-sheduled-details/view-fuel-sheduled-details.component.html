@@ -236,6 +236,53 @@
                                             </div>
                                         </div>
                                     </mat-tab>
+                                    <mat-tab *ngIf="fuelInspection?.fuelRemediation?.invoiceCreated" label="6">
+                                        <ng-template mat-tab-label>
+                                            Remediation Invoice Payment Details
+                                        </ng-template>
+                                        <label style="color: #0082f3">Remediation Invoice Payment Details</label>
+                                        <div class="panel" style="max-height: 388px;">
+                                            <ul class="w-list-unstyled">
+                                                <div>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Pro Forma Invoice No</div>
+                                                        <div class="list-text-accordion">
+                                                            {{fuelInspection?.fuelRemediation?.proFormaInvoiceNo}}</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Receipt No</div>
+                                                        <div class="list-text-accordion">
+                                                            {{fuelInspection?.fuelRemediation?.feePaidReceiptNo}}</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Quotation Amount</div>
+                                                        <div class="list-text-accordion">
+                                                            {{fuelInspection?.fuelRemediation?.invoiceAmount}}</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Payable Amount</div>
+                                                        <div class="list-text-accordion">
+                                                            {{fuelInspection?.fuelRemediation?.payableAmount}}</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Date Of Payment</div>
+                                                        <div class="list-text-accordion">
+                                                            {{fuelInspection?.fuelRemediation?.dateOfPayment| date}}</div>
+                                                    </li>
+                                                </div>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Quantity Of Fuel</div>
+                                                    <div class="list-text-accordion">
+                                                        {{fuelInspection?.fuelRemediation?.quantityOfFuel}}</div>
+                                                </li>
+                                            </ul>
+                                            <br>
+                                            <div *ngIf="fuelInspection?.fuelRemediation.invoiceCreated">
+                                                <button class="btn-sm btn-primary" (click)="viewRemediationInvoicePdfFile(fuelInspection?.id, fuelInspection?.referenceNumber,'application/pdf')">VIEW QUOTATION</button>
+                                            </div>
+
+                                        </div>
+                                    </mat-tab>
                                     <mat-tab *ngIf="fuelInspection?.fuelRemediation" label="7">
                                         <ng-template mat-tab-label>
                                             Remediation Details
@@ -248,28 +295,6 @@
                                                     <div class="list-text-accordion">
                                                         {{fuelInspection?.fuelRemediation?.dateOfRemediation| date}}</div>
                                                 </li>
-                                                <div *ngIf="fuelInspection?.fuelRemediation?.invoiceCreated">
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Pro Forma Invoice No</div>
-                                                        <div class="list-text-accordion">
-                                                            {{fuelInspection?.fuelRemediation?.proFormaInvoiceNo}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Receipt No</div>
-                                                        <div class="list-text-accordion">
-                                                            {{fuelInspection?.fuelRemediation?.feePaidReceiptNo}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Invoice Amount</div>
-                                                        <div class="list-text-accordion">
-                                                            {{fuelInspection?.fuelRemediation?.invoiceAmount}}</div>
-                                                    </li>
-                                                    <li class="list-item-accordion">
-                                                        <div class="list-title-accordion">Date Of Payment</div>
-                                                        <div class="list-text-accordion">
-                                                            {{fuelInspection?.fuelRemediation?.dateOfPayment| date}}</div>
-                                                    </li>
-                                                </div>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Product Type</div>
                                                     <div class="list-text-accordion">
@@ -311,10 +336,6 @@
                                                         {{fuelInspection?.fuelRemediation?.totalVolume}}</div>
                                                 </li>
                                             </ul>
-                                            <br>
-                                            <div *ngIf="fuelInspection?.fuelRemediation.invoiceCreated">
-                                                <button class="btn-sm btn-primary" (click)="viewRemediationInvoicePdfFile(fuelInspection?.id, fuelInspection?.referenceNumber,'application/pdf')">VIEW INVOICE</button>
-                                            </div>
 
                                         </div>
                                     </mat-tab>

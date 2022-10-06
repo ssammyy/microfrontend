@@ -1197,7 +1197,8 @@ class MarketSurveillanceFuelDaoServices(
                     remediationDate = savedRemediation.second.dateOfRemediation
                 }
 
-                runBlocking {commonDaoServices.sendEmailWithUserEmail(
+                runBlocking {
+                    commonDaoServices.sendEmailWithUserEmail(
                     fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("MISSING USER ID"),
                     applicationMapProperties.mapMsFuelInspectionRemediationScheduleNotification,
                     emailValue,
@@ -1411,7 +1412,7 @@ class MarketSurveillanceFuelDaoServices(
         if (invoiceRemediationDetails.isNotEmpty()){
             invoiceCreatedStatus = true
         }
-        val fuelRemediationDto = remediationDetails?.let { mapFuelRemediationDto(it,invoiceCreatedStatus) }
+        val fuelRemediationDto = remediationDetails?.let { mapFuelRemediationDto(it,invoiceRemediationDetails,invoiceCreatedStatus) }
         return mapFuelInspectionDto(
             fileInspectionDetail,
             batchDetailsDto,
@@ -3506,7 +3507,11 @@ class MarketSurveillanceFuelDaoServices(
         )
     }
 
-    fun mapFuelRemediationDto(data: MsFuelRemediationEntity,invoiceCreated: Boolean): FuelRemediationDto {
+    fun mapFuelRemediationDto(
+        data: MsFuelRemediationEntity,
+        invoiceRemediationDetails: List<MsFuelRemedyInvoicesEntity>,
+        invoiceCreated: Boolean
+    ): FuelRemediationDto {
         return FuelRemediationDto(
             data.productType,
             data.applicableKenyaStandard,
@@ -3519,6 +3524,7 @@ class MarketSurveillanceFuelDaoServices(
             data.proFormaInvoiceStatus == 1,
             data.proFormaInvoiceNo,
             data.invoiceAmount,
+            invoiceRemediationDetails[0].amountToPay,
             data.feePaidReceiptNo,
             data.dateOfRemediation,
             data.dateOfPayment,

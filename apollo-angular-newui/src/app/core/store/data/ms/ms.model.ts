@@ -894,6 +894,7 @@ export class FuelRemediationDto {
     proFormaInvoiceStatus: boolean;
     proFormaInvoiceNo: string;
     invoiceAmount: string;
+    payableAmount: string;
     feePaidReceiptNo: string;
     dateOfRemediation: Date;
     dateOfPayment: Date;

@@ -888,11 +888,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
 
   openModalAddDetails(divVal: string): void {
     const arrHead = ['scheduleRemediationInvoicePaid', 'finalLabComplianceStatus',
-      'assignOfficer', 'rapidTest',  'uploadScfFiles', 'uploadReportFiles',
+      'assignOfficer', 'rapidTest',  'uploadScfFiles', 'uploadReportFiles', 'uploadInvoiceDocFiles',
       'ssfAddComplianceStatus', 'scheduleRemediation',
       'addRemediationDetails', 'notCompliantInvoice', 'rapidTestAddProducts'];
     const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID', 'FINAL LAB RESULTS COMPLIANCE STATUS',
-      'SELECT OFFICER TO ASSIGN', 'RAPID TEST OVERALL RESULTS', 'UPLOAD SCF FILE', 'UPLOAD REPORT FILE',
+      'SELECT OFFICER TO ASSIGN', 'RAPID TEST OVERALL RESULTS', 'UPLOAD SCF FILE', 'UPLOAD REPORT FILE', 'UPLOAD INVOICE ATTACHMENT WITH FILE',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
       'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED', 'ADD PRODUCT RAPID TEST DETAILS'];
 
