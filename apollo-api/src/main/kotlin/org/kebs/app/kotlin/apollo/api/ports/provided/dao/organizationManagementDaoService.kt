@@ -359,7 +359,9 @@ class RegistrationManagementDaoService(
                     val otp = commonDaoServices.randomNumber(6)
                     val token = commonDaoServices.generateVerificationToken(
                         otp,
-                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required"),
+                        user.email ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+
                     )
                     commonDaoServices.sendOtpViaSMS(token)
 

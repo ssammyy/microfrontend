@@ -412,7 +412,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
         manufacturerEntity: [],
         taskId : [],
         processId : [],
-        remarks: []
+        visitID : [],
+        remarks: [],
+        companyName:[]
     });
 
       this.siteConfirmFormGroup= this.formBuilder.group({
@@ -421,7 +423,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId : [],
           processId : [],
           scheduledVisitDate: [],
-          remarks: []
+          visitID: [],
+          remarks: [],
+          companyName:[]
       });
 
 
@@ -431,7 +435,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
           taskId : [],
           processId : [],
           scheduledVisitDate: [],
-          remarks: []
+          visitID: [],
+          remarks: [],
+          companyName:[]
       });
 
       this.approveEditRequestFormGroup = this.formBuilder.group({
@@ -860,7 +866,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
                   manufacturerEntity: this.actionRequestPending.taskData.manufacturerEntity,
                   taskId: this.actionRequestPending.taskId,
                   processId: this.actionRequestPending.processId,
-                  accentTo: this.reject
+                  visitID: this.actionRequestPending.taskData.visitID,
+                  accentTo: this.reject,
+                  companyName: this.actionRequestPending.taskData.companyName
 
 
               });
@@ -871,7 +879,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
                   taskId: this.actionRequestPending.taskId,
                   processId: this.actionRequestPending.processId,
                   accentTo: this.approve,
-                  scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate
+                  visitID: this.actionRequestPending.taskData.visitID,
+                  scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate,
+                  companyName: this.actionRequestPending.taskData.companyName
 
               });
 
@@ -881,7 +891,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
                   taskId: this.actionRequestPending.taskId,
                   processId: this.actionRequestPending.processId,
                   accentTo: this.approve,
-                  scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate
+                  visitID: this.actionRequestPending.taskData.visitID,
+                  scheduledVisitDate: this.actionRequestPending.taskData.scheduledVisitDate,
+                  companyName: this.actionRequestPending.taskData.companyName
 
               });
 

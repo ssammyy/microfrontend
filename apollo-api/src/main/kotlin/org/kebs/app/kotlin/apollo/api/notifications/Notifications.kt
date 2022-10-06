@@ -24,6 +24,16 @@ import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
+import kotlin.Any
+import kotlin.Array
+import kotlin.Boolean
+import kotlin.Exception
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.let
+import kotlin.run
+import kotlin.toString
 
 
 @Component
@@ -36,8 +46,7 @@ class Notifications(
     val applicationMapProperties: ApplicationMapProperties,
     val jasyptStringEncryptor: StringEncryptor,
     val companyProfileRepo: ICompanyProfileRepository
-)
-{
+) {
 //    @Value("\${qa.bpmn.email.smtpStartTlsEnable}")
 //    lateinit var smtpStartTlsEnable: String
 //    @Value("\${qa.bpmn.email.smtpHost}")
@@ -61,81 +70,93 @@ class Notifications(
     lateinit var defaultEmailNotificationId: String
 
 
-    fun sendEmail(delegateTask: DelegateTask?){
-        val task:Task? = delegateTask as Task
+    fun sendEmail(delegateTask: DelegateTask?) {
+        val task: Task = delegateTask as Task
         buildEmail(task, defaultEmailNotificationId.toInt(), null, null)
     }
 
-    fun sendEmail(delegateExecution: DelegateExecution, notificationId: Int, parameter1: String?){
+    fun sendEmail(delegateExecution: DelegateExecution, notificationId: Int, parameter1: String?) {
         bpmnCommonFunctions.getTaskByProcessInstanceId(delegateExecution.processInstanceId)?.let { task ->
-            try{
+            try {
                 val num = Double.parseDouble(parameter1)
-                parameter1?.let{
+                parameter1?.let {
                     buildEmail(task, notificationId, null, parameter1.toLong())
                 }
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 buildEmail(task, notificationId, parameter1, null)
             }
         }
     }
 
-    fun sendEmail(recipientEmail: String, subject: String, messageText: String, attachmentFilePath: String? = null){
+    fun sendEmail(recipientEmail: String, subject: String, messageText: String, attachmentFilePath: String? = null) {
         processEmail(recipientEmail, subject, messageText, attachmentFilePath)
     }
 
-    fun sendEmailServiceTask(recipientEmail: String, notificationId: Int){
+    fun sendEmailServiceTask(recipientEmail: String, notificationId: Int) {
         //get the notification
         notificationsRepo.findByIdOrNull(notificationId)?.let { notifEntity ->
             val message = notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
-            KotlinLogging.logger { }.info("Sending email below to $recipientEmail \n ${notifEntity.subject.toString()} \n $message")
+            KotlinLogging.logger { }
+                .info("Sending email below to $recipientEmail \n ${notifEntity.subject.toString()} \n $message")
             processEmail(recipientEmail, notifEntity.subject.toString(), message, null)
-        }?: run{KotlinLogging.logger { }.info("No notification found with id $notificationId")}
+        } ?: run { KotlinLogging.logger { }.info("No notification found with id $notificationId") }
     }
 
-    fun sendEmailServiceTask(userId: Long, notificationId: Int) : Boolean{
+    fun sendEmailServiceTask(userId: Long, notificationId: Int): Boolean {
         //get the notification
         notificationsRepo.findByIdOrNull(notificationId)?.let { notifEntity ->
             var message = notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
             userRepo.findByIdOrNull(userId)?.let { usersEntity ->
                 message = message.replace("<first_name>", usersEntity.firstName.toString(), true)
                 message = message.replace("<last_name>", usersEntity.lastName.toString(), true)
-                KotlinLogging.logger { }.info("Sending email below to ${usersEntity.email.toString()} \n ${notifEntity.subject.toString()} \n $message")
+                KotlinLogging.logger { }
+                    .info("Sending email below to ${usersEntity.email.toString()} \n ${notifEntity.subject.toString()} \n $message")
                 processEmail(usersEntity.email.toString(), notifEntity.subject.toString(), message, null)
                 return true
             }
-        }?: run{KotlinLogging.logger { }.info("No notification found with id $notificationId")}
+        } ?: run { KotlinLogging.logger { }.info("No notification found with id $notificationId") }
         return false
     }
 
-    fun sendEmailServiceTask(userId: Long, notificationId: Int, isManufacturer:Boolean) : Boolean{
+    fun sendEmailServiceTask(userId: Long, notificationId: Int, isManufacturer: Boolean): Boolean {
         //get the notification
         if (isManufacturer) {
             notificationsRepo.findByIdOrNull(notificationId)?.let { notifEntity ->
-                var message = notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
+                var message =
+                    notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
                 companyProfileRepo.findByIdOrNull(userId)?.let { companyEntity ->
                     message = message.replace("<company_name>", companyEntity.name.toString(), true)
-                    KotlinLogging.logger { }.info("Sending email below to ${companyEntity.companyEmail.toString()} \n ${notifEntity.subject.toString()} \n $message")
+                    KotlinLogging.logger { }
+                        .info("Sending email below to ${companyEntity.companyEmail.toString()} \n ${notifEntity.subject.toString()} \n $message")
                     processEmail(companyEntity.companyEmail.toString(), notifEntity.subject.toString(), message, null)
                     return true
                 }
-            }?: run{KotlinLogging.logger { }.info("No notification found with id $notificationId")}
+            } ?: run { KotlinLogging.logger { }.info("No notification found with id $notificationId") }
             return false
         } else {
             notificationsRepo.findByIdOrNull(notificationId)?.let { notifEntity ->
-                var message = notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
+                var message =
+                    notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
                 userRepo.findByIdOrNull(userId)?.let { usersEntity ->
                     message = message.replace("<first_name>", usersEntity.firstName.toString(), true)
                     message = message.replace("<last_name>", usersEntity.lastName.toString(), true)
-                    KotlinLogging.logger { }.info("Sending email below to ${usersEntity.email.toString()} \n ${notifEntity.subject.toString()} \n $message")
+                    KotlinLogging.logger { }
+                        .info("Sending email below to ${usersEntity.email.toString()} \n ${notifEntity.subject.toString()} \n $message")
                     processEmail(usersEntity.email.toString(), notifEntity.subject.toString(), message, null)
                     return true
                 }
-            }?: run{KotlinLogging.logger { }.info("No notification found with id $notificationId")}
+            } ?: run { KotlinLogging.logger { }.info("No notification found with id $notificationId") }
             return false
         }
     }
 
-    fun sendEmailServiceTask(userId: Long, assigneeId:Long, notificationId: Int, task: Task?, messageBody:String?) : Boolean{
+    fun sendEmailServiceTask(
+        userId: Long,
+        assigneeId: Long,
+        notificationId: Int,
+        task: Task?,
+        messageBody: String?
+    ): Boolean {
         //get the notification
         notificationsRepo.findByIdOrNull(notificationId)?.let { notifEntity ->
             var message = notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
@@ -146,38 +167,39 @@ class Notifications(
                     message = message.replace("<assignee_first_name>", aUsersEntity.firstName.toString(), true)
                     message = message.replace("<assignee_last_name>", aUsersEntity.lastName.toString(), true)
                 }
-                task?.let{ task->
+                task?.let { task ->
                     message = message.replace("<task_name>", task.name, true)
                 }
-                messageBody?.let{ messageBody->
+                messageBody?.let { messageBody ->
                     message = message.replace("<message>", messageBody, true)
                 }
-                KotlinLogging.logger { }.info("Sending email below to ${usersEntity.email.toString()} \n ${notifEntity.subject.toString()} \n $message")
+                KotlinLogging.logger { }
+                    .info("Sending email below to ${usersEntity.email.toString()} \n ${notifEntity.subject.toString()} \n $message")
                 processEmail(usersEntity.email.toString(), notifEntity.subject.toString(), message, null)
                 return true
             }
-        }?: run{KotlinLogging.logger { }.info("No notification found with id $notificationId")}
+        } ?: run { KotlinLogging.logger { }.info("No notification found with id $notificationId") }
         return false
     }
 
-    fun buildEmail(task: Task?, notificationId: Int, emailAddress: String?, userId: Long?){
+    fun buildEmail(task: Task?, notificationId: Int, emailAddress: String?, userId: Long?) {
         //var finalEmailMessage = ""
         var message = ""
         var finalEmailAddress = ""
-        var firstName=""
+        var firstName = ""
         var lastName = ""
-        try{
+        try {
             notificationsRepo.findByIdOrNull(notificationId)?.let { notifEntity ->
                 message = notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
-                task?.let{ task ->
+                task?.let { task ->
 
-                    val variables:Map<String, Any>? = bpmnCommonFunctions.getTaskVariables(task.id)
+                    val variables: Map<String, Any>? = bpmnCommonFunctions.getTaskVariables(task.id)
 
-                    emailAddress?.let{
+                    emailAddress?.let {
                         finalEmailAddress = it
-                    }?: run{
-                        var assigneeId:Long = task.assignee.toLong()
-                        userId?.let{
+                    } ?: run {
+                        var assigneeId: Long = task.assignee.toLong()
+                        userId?.let {
                             assigneeId = it
                         }
                         userRepo.findByIdOrNull(assigneeId)?.let { usersEntity ->
@@ -188,12 +210,13 @@ class Notifications(
                         message = message.replace("<first_name>", firstName, true)
                         message = message.replace("<last_name>", lastName, true)
                         message = message.replace("<task_name>", task.name, true)
-                        repositoryService.createProcessDefinitionQuery().processDefinitionId(task.processDefinitionId).list()[0].let { processDefinition->
+                        repositoryService.createProcessDefinitionQuery().processDefinitionId(task.processDefinitionId)
+                            .list()[0].let { processDefinition ->
                             message = message.replace("<process_name>", processDefinition.name, true)
                         }
                     }
-                    variables?.let{
-                        it["paymentAmount"]?.let { taskVariable->
+                    variables?.let {
+                        it["paymentAmount"]?.let { taskVariable ->
                             message = message.replace("<paymentAmount>", taskVariable.toString(), true)
                         }
                     }
@@ -202,12 +225,12 @@ class Notifications(
                 processEmail(finalEmailAddress, notifEntity.subject.toString(), message, null)
             }
 
-        } catch (e: Exception){
+        } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
         }
     }
 
-    fun processEmail(recipientEmail: String, subject: String, messageText: String, attachmentFilePath: String?){
+    fun processEmail(recipientEmail: String, subject: String, messageText: String, attachmentFilePath: String?) {
         KotlinLogging.logger { }.info("Sending email to=$recipientEmail, Attachments=$attachmentFilePath")
 
         val props = Properties()
@@ -236,16 +259,21 @@ class Notifications(
             val address: Array<InternetAddress> = InternetAddress.parse(recipientEmail, true)
             msg.setRecipients(Message.RecipientType.TO, address)
             msg.subject = subject
-            msg.sentDate= Date()
+            msg.sentDate = Date()
             msg.setHeader("XPriority", "1")
-            msg.setFrom(InternetAddress(applicationMapProperties.mapApplicationEmailUsername, applicationMapProperties.mapApplicationEmailPassword))
+            msg.setFrom(
+                InternetAddress(
+                    applicationMapProperties.mapApplicationEmailUsername,
+                    applicationMapProperties.mapApplicationEmailFrom
+                )
+            )
             //val messageText = message
             var messageBodyPart: BodyPart = MimeBodyPart()
             messageBodyPart.setText(messageText)
             val multipart: Multipart = MimeMultipart()
             multipart.addBodyPart(messageBodyPart)
-            attachmentFilePath?.let{ filepath->
-                if(!filepath.isBlank()){
+            attachmentFilePath?.let { filepath ->
+                if (!filepath.isBlank()) {
                     // Add the attachment
                     messageBodyPart = MimeBodyPart()
                     val source = FileDataSource(filepath)
@@ -256,8 +284,11 @@ class Notifications(
             }
             msg.setContent(multipart)
             val transport: Transport = session.getTransport(applicationMapProperties.mapApplicationEmailProtocol)
-            transport.connect(applicationMapProperties.mapApplicationEmailSmtpHost, applicationMapProperties.mapApplicationEmailUsername,
-                applicationMapProperties.mapApplicationEmailPassword)
+            transport.connect(
+                applicationMapProperties.mapApplicationEmailSmtpHost,
+                applicationMapProperties.mapApplicationEmailUsername,
+                applicationMapProperties.mapApplicationEmailPassword
+            )
             //TODO: Add mail delivery check, update status if mail failed
             transport.sendMessage(msg, msg.allRecipients)
             KotlinLogging.logger { }.info("Mail has been sent successfully")
