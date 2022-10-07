@@ -1055,7 +1055,7 @@ class RegistrationDaoServices(
 
         if (countOfSlForm != null) {
 //            if (countOfSlForm == toCheckSl){
-            if (countOfSlForm.equals(0)) {
+            if (countOfSlForm == toCheckSl) {
                 var eNumber = generateEntryNumber(map, loggedInUser)
 
 
