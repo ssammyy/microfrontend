@@ -1053,6 +1053,10 @@ class RegistrationDaoServices(
        var countOfSlForm= stdLevyNotificationFormDTO.companyProfileID?.let { stdLevyNotificationFormRepository.countByManufacturerId(it) }
         var toCheckSl: Long = 0
 
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "SL ID" + gson.toJson(countOfSlForm) }
+        println("SL FORM ID$countOfSlForm");
+
         if (countOfSlForm != null) {
 //            if (countOfSlForm == toCheckSl){
             if (countOfSlForm == toCheckSl) {
