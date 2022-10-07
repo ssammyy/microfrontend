@@ -227,11 +227,14 @@ class QualityAssuranceHandler(
             var permitListMyTasksAddedTogether = mutableListOf<PermitEntityDto>()
             var permitListAllApplicationsAddedTogether = mutableListOf<PermitEntityDto>()
             var permitListAllCompleteAddedTogether = mutableListOf<PermitEntityDto>()
+            var permitListPsc = mutableListOf<PermitEntityDto>()
 
 
             //Get logged in user Task required there attention
             permitListMyTasksAddedTogether =
                 findLoggedInUserTask(auth, loggedInUser, permitTypeID, map, permitListMyTasksAddedTogether)
+
+            permitListPsc = findPscUserTask(loggedInUser, permitTypeID, map, permitListPsc)
 
             //All permit applications And Awarded List
             val results = loggedInUserAwardedPermitsAndApplicationPermits(
@@ -250,6 +253,8 @@ class QualityAssuranceHandler(
             req.attributes()["permitListAllApplications"] = permitListAllApplicationsAddedTogether.distinct()
             req.attributes()["permitListAllComplete"] = permitListAllCompleteAddedTogether.distinct()
             req.attributes()["permitListMyTasks"] = permitListMyTasksAddedTogether.distinct()
+            req.attributes()["permitListPsc"] = permitListPsc
+
             return ok().render(qaPermitListPage, req.attributes())
 
         } catch (e: Exception) {
@@ -511,6 +516,29 @@ class QualityAssuranceHandler(
             }
 
         }
+
+        return permitListMyTasksAddedTogether
+    }
+
+
+    fun findPscUserTask(
+        loggedInUser: UsersEntity,
+        permitTypeID: Long,
+        map: ServiceMapsEntity,
+        permitListMyTasksAddedTogether: MutableList<PermitEntityDto>
+    ): MutableList<PermitEntityDto> {
+
+        qaDaoServices.findAllUserTasksForPsc(
+            loggedInUser,
+            permitTypeID,
+            applicationMapProperties.mapUserTaskNamePSC
+        )?.let {
+            qaDaoServices.listPermits(
+                it, map
+            ).let { permitListMyTasksAddedTogether.addAll(it) }
+        }
+
+
 
         return permitListMyTasksAddedTogether
     }
