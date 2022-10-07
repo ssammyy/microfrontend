@@ -882,9 +882,9 @@ class RegistrationHandler(
     @PreAuthorize("isAnonymous()")
     fun handleSendValidationTokenToCellphoneNumber(req: ServerRequest): ServerResponse {
         return try {
-            val body = req.body<ValidatePhoneNumberRequestDto>()
+            val body = req.body<ValidatePhoneNumberRegistrationTokenRequestDto>()
 
-            val errors: Errors = BeanPropertyBindingResult(body, ValidatePhoneNumberRequestDto::class.java.name)
+            val errors: Errors = BeanPropertyBindingResult(body, ValidatePhoneNumberRegistrationTokenRequestDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
