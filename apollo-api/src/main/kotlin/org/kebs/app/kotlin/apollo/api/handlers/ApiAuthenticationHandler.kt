@@ -240,7 +240,7 @@ class ApiAuthenticationHandler(
             KotlinLogging.logger { }.trace(e.message, e)
 
             ServerResponse.status(500).body(response)
-            throw NullValueNotAllowedException("Invalid Username And Password")
+//            throw NullValueNotAllowedException("Invalid Username And Password")
 
         }
 

@@ -15,7 +15,7 @@ POST https://localhost:8006/api/v1/login/b
 Content-Type: application/json
 
 {
-  "username": "chegejames60@gmail.com",
+  "username": "qamgarissa@mail.com",
   "password": "password"
 }
 
@@ -24,11 +24,11 @@ Content-Type: application/json
 %}
 
 ###
-POST https://kimsint.kebs.org:8006/api/v1/login
+POST https://localhost:8006/api/v1/login
 Content-Type: application/json
 
 {
-  "username": "Tia",
+  "username": "qamgarissa@mail.com",
   "password": "password"
 }
 

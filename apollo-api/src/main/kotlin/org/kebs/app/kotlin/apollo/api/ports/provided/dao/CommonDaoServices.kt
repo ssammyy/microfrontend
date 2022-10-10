@@ -2395,6 +2395,28 @@ class CommonDaoServices(
 
         return emailVerificationTokenEntityRepo.save(tokensEntity)
     }
+    fun generateRegistrationVerificationToken(
+        input: String,
+        phone: String,
+        id: Long? = 0L
+    ): EmailVerificationTokenEntity {
+        val tokensEntity = EmailVerificationTokenEntity()
+        with(tokensEntity) {
+            token = input
+            email = phone
+            status = 10
+            createdBy = phone
+            createdOn = Timestamp.from(Instant.now())
+            tokenExpiryDate = Timestamp.from(Instant.now().plus(10, ChronoUnit.MINUTES))
+            transactionDate = Date(java.util.Date().time)
+            varField1 = UUID.randomUUID().toString()
+            varField10 = "$id"
+
+        }
+
+
+        return emailVerificationTokenEntityRepo.save(tokensEntity)
+    }
 
     fun sendOtpViaSMS(token: EmailVerificationTokenEntity): CustomResponse {
         try {

@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.store.model.std.PenaltyDetails
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
+import java.time.Instant
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -377,6 +378,9 @@ class KraResponse {
 
 
 class KraPenaltyRequest {
+    companion object {
+        var globalVariable = ""
+    }
     var entryNo: String? = null
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     var periodTo: String? = null
@@ -387,7 +391,9 @@ class KraPenaltyRequest {
     var PenaltyOrderNo: Long?  = null
     var penaltyPayable : Long? = null
     var kraPin: String? = null
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")
+    var penaltyGenDate: String? = globalVariable
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")
-    var penaltyGenDate: String? = null
+   // var penaltyGenDate: String? = null
     var manufacName: String? = null
 }
