@@ -909,6 +909,10 @@ export class MSSSFPDFListDetailsDto {
     complianceStatus: boolean;
 }
 
+export class EndFuelDto {
+    remarks: string;
+}
+
 export class LIMSFilesFoundDto {
     fileSavedStatus: boolean;
     fileName: string;

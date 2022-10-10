@@ -967,6 +967,10 @@ data class DestructionNotificationDto(
 //        val complaintFilesDetails: ComplaintFilesDto,
 )
 
+data class EndFuelDto(
+        val remarks: String? = null
+)
+
 data class ComplaintFilesDto(
         val fileDetails: List<FileDTO>? = null
 )

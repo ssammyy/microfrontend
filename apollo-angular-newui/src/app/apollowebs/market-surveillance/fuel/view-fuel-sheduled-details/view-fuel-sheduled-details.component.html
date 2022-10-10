@@ -863,10 +863,18 @@
                                             <input id="productType" matInput type="text" placeholder="Please Enter Product Type" formControlName="productType" name="productType"
                                                    [class.is-invalid]="formRemediationForm.productType.invalid && formRemediationForm.productType.touched">
                                         </mat-form-field>
-                                        <div *ngIf="fuelInspection.fuelRemediation.invoiceCreated==false">
+                                        <div *ngIf="fuelInspection?.fuelRemediation?.invoiceCreated==false">
                                             <label for="quantityOfFuel"><b>Quantity Of Fuel</b></label>
                                             <mat-form-field class="example-full-width">
                                                 <input id="quantityOfFuel" matInput type="text"  placeholder="Please Enter Quantity Of Fuel" formControlName="quantityOfFuel" name="quantityOfFuel"
+                                                       [class.is-invalid]="formRemediationForm.quantityOfFuel.invalid && formRemediationForm.quantityOfFuel.touched">
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="fuelInspection?.fuelRemediation?.invoiceCreated">
+                                            <label for="quantityOfFuel5"><b>Quantity Of Fuel</b></label>
+                                            <mat-form-field class="example-full-width">
+                                                <input id="quantityOfFuel5" matInput type="text"  placeholder="Please Enter Quantity Of Fuel"
+                                                       formControlName="quantityOfFuel" name="quantityOfFuel" disabled ngModel="{{fuelInspection?.fuelRemediation?.quantityOfFuel}}"
                                                        [class.is-invalid]="formRemediationForm.quantityOfFuel.invalid && formRemediationForm.quantityOfFuel.touched">
                                             </mat-form-field>
                                         </div>
@@ -958,6 +966,23 @@
                                         <mat-form-field class="example-full-width">
                                             <input id="processBy" matInput type="text" readonly formControlName="processBy" name="processBy">
                                         </mat-form-field>
+                                        <label for="remarks"><b>Remarks/ Feed back:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea readonly id="remarksDescription" matInput type="text"
+                                                      formControlName="remarksDescription"
+                                                      name="remarksDescription">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'endFuelRemarks')">
+                        <form [formGroup]="remarksSavedForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
                                         <label for="remarks"><b>Remarks/ Feed back:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea readonly id="remarksDescription" matInput type="text"
@@ -1356,7 +1381,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Fill Sample Submitted Details</h4>
+                    <h4 class="modal-title">Fill Sample Submission Details</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
