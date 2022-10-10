@@ -1146,15 +1146,15 @@ class QualityAssuranceHandler(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
 
-        val permitID =
-            req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-        val permit = qaDaoServices.findPermitBYID(permitID)
-        val allInspectionReportDetailsList = qaDaoServices.findInspectionReportListBYPermitRefNumberAndPermitID(
-            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
-            map.activeStatus,
-            permitID
-        )
+        val encryptedPermitId =
+            req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 
+        val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+
+        val permit = qaDaoServices.findPermitBYID(permitID)
+        val allInspectionReportDetailsList = qaDaoServices.listInspectionReports(  qaDaoServices.findInspectionReportListBYPermitRefNumberAndPermitID(
+            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+            map.activeStatus, permitID),map)
         req.attributes()["allInspectionReportDetailsList"] = allInspectionReportDetailsList
         req.attributes()["permitDetails"] = permit
 
@@ -1193,8 +1193,11 @@ class QualityAssuranceHandler(
         val map = commonDaoServices.serviceMapDetails(appId)
 //        val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 //
-        val inspectReportID = req.paramOrNull("inspectionReportID")?.toLong()
-            ?: throw ExpectedDataNotFound("Required Inspection ID, check config")
+
+        val encryptedInspectReportID = req.paramOrNull("inspectionReportID") ?: throw ExpectedDataNotFound("Required Inspection ID, check config")
+
+        val inspectReportID = jasyptStringEncryptor.decrypt(encryptedInspectReportID).toLong()
+
         val inspectionReportRecommendation = qaDaoServices.findQaInspectionReportRecommendationBYID(inspectReportID)
         val permit = qaDaoServices.findPermitBYID(
             inspectionReportRecommendation.permitId ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -1243,8 +1246,12 @@ class QualityAssuranceHandler(
     fun newInspectionReport(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        val permitID =
-            req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+
+        val encryptedPermitId =
+            req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+
+        val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+
         val permit = qaDaoServices.findPermitBYID(permitID)
 
         req.attributes()["OPCDetailsList"] = qaDaoServices.findAllQaInspectionOPCWithPermitRefNumber(
@@ -1334,8 +1341,11 @@ class QualityAssuranceHandler(
             Pair(
                 "oldVersionList",
                 qaDaoServices.findAllOldPermitWithPermitRefNumber(
-                    permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
-                )
+                    permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))?.let {
+                    qaDaoServices.listPermits(
+                        it,s
+                    )
+                }
             ),
             Pair(
                 "permitType",

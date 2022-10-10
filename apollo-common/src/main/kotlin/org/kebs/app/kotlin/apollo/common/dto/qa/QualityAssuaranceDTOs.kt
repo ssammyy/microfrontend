@@ -80,7 +80,7 @@ data class ConsolidatedInvoiceDto(
     var paidStatus: Int? = null,
     var submittedStatus: Int? = null,
     var receiptNo: String? = null,
-    var sageInvoiceNumber: String?=null,
+    var sageInvoiceNumber: String? = null,
 
     )
 
@@ -256,13 +256,13 @@ data class PermitUploads(
     var sta10Status: Int? = null,
     var sscUploadStatus: Int? = null,
     var scfStatus: Int? = null,
-    var ssfStatus: Int?= null,
-    var cocStatus: Int?= null,
-    var assessmentReportStatus: Int?= null,
-    var labResultsStatus: Int?= null,
+    var ssfStatus: Int? = null,
+    var cocStatus: Int? = null,
+    var assessmentReportStatus: Int? = null,
+    var labResultsStatus: Int? = null,
     var docFileName: String,
 //    var docFile: MultipartFile,
-    var assessmentRecommendations: String?= null,
+    var assessmentRecommendations: String? = null,
 )
 
 data class STA10ManufacturingProcessDto(
@@ -402,8 +402,8 @@ data class PermitEntityDto(
     var permitType: Long? = null,
     var processStatusID: Long? = null,
     var versionNumber: Long? = null,
-    var encryptedPermitId:String?=null,
-    var encryptedUserId:String?=null,
+    var encryptedPermitId: String? = null,
+    var encryptedUserId: String? = null,
 
     )
 
@@ -466,9 +466,9 @@ data class PermitDetailsDto(
     var fmarkGeneratedID: Long? = null,
     var oldPermitStatus: Boolean? = null,
     var varField7: String? = null,
-    var encryptedPermitId:String?=null,
-    var encryptedUserId:String?=null,
-    )
+    var encryptedPermitId: String? = null,
+    var encryptedUserId: String? = null,
+)
 
 data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
@@ -548,5 +548,50 @@ data class PlantsDetailsDto(
     var designation: String? = null,
     var contactPerson: String? = null,
 )
+
+
+data class InspectionReportDto
+    (
+    var id: Long? = null,
+    var recommendations: String? = null,
+    var refNo: String? = null,
+    var inspectorComments: String? = null,
+    var inspectorName: String? = null,
+    var inspectorDate: Date? = null,
+    var supervisorComments: String? = null,
+    var supervisorName: String? = null,
+    var supervisorDate: Date? = null,
+    var description: String? = null,
+    var permitId: Long? = null,
+    var permitRefNumber: String? = null,
+    var filledQpsmsStatus: Int? = null,
+    var filledInspectionTestingStatus: Int? = null,
+    var filledStandardizationMarkSchemeStatus: Int? = null,
+    var filledOpcStatus: Int? = null,
+    var filledHaccpImplementationStatus: Int? = null,
+    var submittedInspectionReportStatus: Int? = null,
+    var supervisorFilledStatus: Int? = null,
+    var approvedRejectedStatus: Int? = null,
+    var status: Int? = null,
+    var varField1: String? = null,
+    var varField2: String? = null,
+    var varField3: String? = null,
+    var varField4: String? = null,
+    var varField5: String? = null,
+    var varField6: String? = null,
+    var varField7: String? = null,
+    var varField8: String? = null,
+    var varField9: String? = null,
+    var varField10: String? = null,
+    var createdBy: String? = null,
+    var createdOn: Timestamp? = null,
+    var modifiedBy: String? = null,
+    var modifiedOn: Timestamp? = null,
+    var deleteBy: String? = null,
+    var deletedOn: Timestamp? = null,
+    var encryptedInspectionId: String? = null,
+
+
+    )
 
 
