@@ -676,7 +676,7 @@
 
                                         <div sec:authorize="hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
 
-                                            <div th:if="${permitDetails?.permitAwardStatus == 1}">
+                                            <div th:if="${permitDetails?.permitAwardStatus != 1}">
                                                 <a style="color: white" onclick="popUpFunction('updateSection');"
                                                    class="filter-link">Update Section</a>
 
@@ -697,19 +697,6 @@
                                                    class="filter-link">Re-assign Officer</a>
                                             </div>
 
-
-                                            <!--                                            <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated != null}"-->
-                                            <!--                                               style="color: white"-->
-                                            <!--                                               th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"-->
-                                            <!--                                               class="filter-link">GENERATED INSPECTION REPORT'S</a>-->
-
-
-                                            <!--                                            <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == null and permitDetails?.inspectionReportId != null}"-->
-                                            <!--                                               style="color: white" onclick="popUpFunction('approveInspectionReport');"-->
-                                            <!--                                               class="filter-link">APPROVE/REJECT FACTORY INSPECTION REPORT</a>-->
-
-
-                                            <!--                                        <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == null}" style="color: white" onclick="popUpFunction('approveRecommendation');" class="filter-link">APPROVE/REJECT RECOMMENDATION</a>-->
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
@@ -966,13 +953,11 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_PCM_MODIFY')">
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.hodQamApproveRejectStatus == 1
-                                                and permitDetails?.pscMemberApprovalStatus == 1}"
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.hodQamApproveRejectStatus == 1 and permitDetails?.pscMemberApprovalStatus == 1}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
 
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.hodQamApproveRejectStatus == 1
-                                                and permitDetails?.pscMemberApprovalStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.hodQamApproveRejectStatus == 1 and permitDetails?.pscMemberApprovalStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
@@ -1176,13 +1161,11 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_PCM_MODIFY')">
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.hodQamApproveRejectStatus == 1
-                                                and permitDetails?.pscMemberApprovalStatus == 1}"
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.hodQamApproveRejectStatus == 1 and permitDetails?.pscMemberApprovalStatus == 1}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
 
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.hodQamApproveRejectStatus == 1
-                                                and permitDetails?.pscMemberApprovalStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.hodQamApproveRejectStatus == 1 and permitDetails?.pscMemberApprovalStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
@@ -1535,8 +1518,7 @@
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
 
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.pacDecisionStatus == 1
-                                             and permitDetails?.resubmitApplicationStatus == 10}"
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.pacDecisionStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
