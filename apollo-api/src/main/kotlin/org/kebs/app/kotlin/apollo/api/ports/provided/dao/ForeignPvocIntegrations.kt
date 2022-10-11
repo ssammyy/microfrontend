@@ -543,7 +543,8 @@ class ForeignPvocIntegrations(
         timeline.certType = documentType
         timeline.ucrNumber = entity.ucrNumber
         timeline.route = entity.route
-        timeline.docConfirmationDate = entity.acceptableDocDate
+        //TODO: Get from RFC
+        timeline.docConfirmationDate = entity.acceptableDocDate ?: Timestamp.from(Instant.now())
         timeline.dateOfInspection = entity.dateOfInspection
         timeline.finalDocumentsSubmissionDate = entity.finalDocDate?.let { Timestamp(it.time) }
         timeline.requestDateOfInspection = entity.dateOfInspection

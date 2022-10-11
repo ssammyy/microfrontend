@@ -93,9 +93,10 @@ class PvocAgentService(
                 response
             }
         } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add COC", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Failed to add COC with ucr number" + coc.ucrNumber
-            response.errors = ex.message
+//            response.errors = ex.message
         }
         return response
     }
