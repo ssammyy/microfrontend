@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
 
 import mu.KotlinLogging
+import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -45,6 +46,7 @@ class QualityAssuranceController(
     private val qaInvoiceCalculation: QaInvoiceCalculationDaoServices,
     private val commonDaoServices: CommonDaoServices,
     private val iQaAwardedPermitTrackerEntityRepository: IQaAwardedPermitTrackerEntityRepository,
+    private val jasyptStringEncryptor: StringEncryptor,
 
     ) {
 
@@ -66,7 +68,8 @@ class QualityAssuranceController(
         result = qaDaoServices.permitSave(permit, permitType, loggedInUser, map).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        val permitId = jasyptStringEncryptor.encrypt(result.varField1.toString())
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "You have Successful Filled STA 1, Complete your application"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -90,7 +93,9 @@ class QualityAssuranceController(
         result = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        val permitId = jasyptStringEncryptor.encrypt(result.varField1.toString())
+
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "You have Successful Generated FMARK application, Proceed to Submit Your application"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -203,7 +208,9 @@ class QualityAssuranceController(
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        val permitId = jasyptStringEncryptor.encrypt(result.varField1.toString())
+
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "Your Request has been Successful Submitted"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -249,7 +256,9 @@ class QualityAssuranceController(
         result = updateResults.first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
+        val permitId = jasyptStringEncryptor.encrypt(permitID.toString())
+
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "Amount was added succesfully"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -264,18 +273,17 @@ class QualityAssuranceController(
     fun updatePermitDetails(
         @ModelAttribute("permit") permit: PermitApplicationsEntity,
         @ModelAttribute("invoiceDetails") invoiceDetails: QaInvoiceDetailsEntity?,
-        @RequestParam("permitID") permitID: Long,
+        @RequestParam("permitID") permitId: Long,
         model: Model
     ): String? {
 
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
         var result: ServiceRequestsEntity?
 
 
         //Find Permit with permit ID
-        var permitDetails = qaDaoServices.findPermitBYID(permitID)
+        var permitDetails = qaDaoServices.findPermitBYID(permitId)
         val permitType =
             qaDaoServices.findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
@@ -702,8 +710,10 @@ class QualityAssuranceController(
             )
         }
 
+        val permitID = jasyptStringEncryptor.encrypt(permitDetailsDB.id.toString())
 
-        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
         return Pair(permitDetailsDB, closeLink)
     }
 
@@ -768,8 +778,10 @@ class QualityAssuranceController(
             map,
             loggedInUser
         )
+        val permitID = jasyptStringEncryptor.encrypt(permitDetailsDB.id.toString())
 
-        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
         return Pair(permitDetailsDB, closeLink)
     }
 
@@ -843,7 +855,9 @@ class QualityAssuranceController(
         loggedInUser: UsersEntity
     ): Pair<PermitApplicationsEntity, String> {
         var permitDetailsDB = permitDetails
-        var closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+        val permitID = jasyptStringEncryptor.encrypt(permitDetailsDB.id.toString())
+
+        var closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
         when (permit.recommendationApprovalStatus) {
             map.activeStatus -> {
 //                with(permit) {
@@ -868,7 +882,7 @@ class QualityAssuranceController(
                     applicationMapProperties.mapQaStatusPHodQamApproval,
                     loggedInUser
                 )
-                closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+                closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
 //                qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetailsDB)
 
             }
@@ -1023,6 +1037,7 @@ class QualityAssuranceController(
 //        )
 
 
+
         val closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
         return Pair(permitDetailsDB, closeLink)
@@ -1038,7 +1053,10 @@ class QualityAssuranceController(
             applicationMapProperties.mapQaStatusPfactoryInsForms,
             loggedInUser
         )
-        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+
+        val permitID = jasyptStringEncryptor.encrypt(permitDetailsFromDB.id.toString())
+
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
         return Pair(permitDetailsDB, closeLink)
 
     }
@@ -1093,10 +1111,12 @@ class QualityAssuranceController(
         permitFromInterface: PermitApplicationsEntity,
         map: ServiceMapsEntity,
         permitDetailsFromDB: PermitApplicationsEntity,
-        loggedInUser: UsersEntity
+        loggedInUser: UsersEntity,
     ): Pair<PermitApplicationsEntity, String> {
         var permitDetailsDB = permitDetailsFromDB
-        var closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+        val permitID = jasyptStringEncryptor.encrypt(permitDetailsFromDB.id.toString())
+
+        var closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
         when (permitFromInterface.hofQamCompletenessStatus) {
             map.activeStatus -> {
                 with(permitDetailsDB) {
@@ -1149,6 +1169,7 @@ class QualityAssuranceController(
         loggedInUser: UsersEntity
     ): Pair<PermitApplicationsEntity, String> {
         var permitDetailsDB = permitDetailsFromDB
+        val permitID = jasyptStringEncryptor.encrypt(permitDetailsFromDB.id.toString())
 
         when (permitDetailsDB.permitType) {
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
@@ -1174,19 +1195,19 @@ class QualityAssuranceController(
             }
         }
 
-        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
         return Pair(permitDetailsDB, closeLink)
     }
 
     fun assignDefalutDetailsDetails(
         map: ServiceMapsEntity,
         permitDetailsFromDB: PermitApplicationsEntity,
-        loggedInUser: UsersEntity
+        loggedInUser: UsersEntity,
     ): Pair<PermitApplicationsEntity, String> {
-        val permitDetailsDB = permitDetailsFromDB
 
-        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
-        return Pair(permitDetailsDB, closeLink)
+        val permitID = jasyptStringEncryptor.encrypt(permitDetailsFromDB.id.toString())
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
+        return Pair(permitDetailsFromDB, closeLink)
     }
 
 
@@ -1438,8 +1459,10 @@ class QualityAssuranceController(
             map,
             loggedInUser
         )
+        val permitID = jasyptStringEncryptor.encrypt(permitDetailsFromDB.id.toString())
 
-        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
         return Pair(permitDetailsDB, closeLink)
     }
 
@@ -1571,9 +1594,13 @@ class QualityAssuranceController(
 
         result = myresult.first
 
+
+        val encryptedInspectionId = jasyptStringEncryptor.encrypt(myresult.second.inspectionRecommendationId.toString())
+
+
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${myresult.second.inspectionRecommendationId}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${encryptedInspectionId}"
         sm.message = "Inspection Report has Been Generated(DRAFT)"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1595,8 +1622,10 @@ class QualityAssuranceController(
         var permitFound = qaDaoServices.findPermitBYID(permitID)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
+        val encryptedInspectionId = jasyptStringEncryptor.encrypt(inspectionReportID.toString())
+
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${encryptedInspectionId}"
         sm.message = "Inspection Report has Been updated successfully"
 
         var qaInspectionReportRecommendation =
@@ -1675,9 +1704,10 @@ class QualityAssuranceController(
                     }
                 }
 
+
 //
                 sm.closeLink =
-                    "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
+                    "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${encryptedInspectionId}"
 
             }
 
@@ -1705,9 +1735,11 @@ class QualityAssuranceController(
                                 )
                             }
                         }
+                        val permitId = jasyptStringEncryptor.encrypt(permitFound.id.toString())
+
 
                         sm.closeLink =
-                            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitFound.id}"
+                            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
                     }
                     0 -> {
 
@@ -1776,6 +1808,7 @@ class QualityAssuranceController(
 
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val encryptedInspectionId = jasyptStringEncryptor.encrypt(inspectionReportID.toString())
 
         val result: ServiceRequestsEntity?
 
@@ -1791,8 +1824,9 @@ class QualityAssuranceController(
         )
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
+
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${encryptedInspectionId}"
         sm.message = "Inspection Report Details have Been added Successful"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1822,9 +1856,11 @@ class QualityAssuranceController(
             qaInspectionReportRecommendation
         )
 
+        val encryptedInspectionId = jasyptStringEncryptor.encrypt(inspectionReportID.toString())
+
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${encryptedInspectionId}"
         sm.message = "Inspection Report Details have Been added Successful"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1856,10 +1892,11 @@ class QualityAssuranceController(
             qaInspectionReportRecommendation,
 
             )
+        val encryptedInspectionId = jasyptStringEncryptor.encrypt(inspectionReportID.toString())
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${encryptedInspectionId}"
         sm.message = "Inspection Report Details Have Been Updated Successfully"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1972,8 +2009,11 @@ class QualityAssuranceController(
         val myResults = qaDaoServices.ssfUpdateComplianceDetails(complianceSaveID, complianceDetails, loggedInUser, map)
         result = myResults.first
 
+        val ssfID = jasyptStringEncryptor.encrypt(myResults.second.id.toString())
+
+
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/inspection/ssf-details?ssfID=${myResults.second.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/inspection/ssf-details?ssfID=${ssfID}"
         sm.message = "You have Successful Filled Sample Submission Details"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1995,9 +2035,10 @@ class QualityAssuranceController(
         //updating of Details in DB
         val myResults = qaDaoServices.ssfUpdateDetails(ssfID, SampleSubmissionDetails, loggedInUser, map)
         result = myResults.first
+        val ssfId = jasyptStringEncryptor.encrypt(myResults.second.id.toString())
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/inspection/ssf-details?ssfID=${myResults.second.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/inspection/ssf-details?ssfID=${ssfId}"
         sm.message = "You have Successful Filled Sample Submission Details"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -2023,7 +2064,9 @@ class QualityAssuranceController(
         result = qaDaoServices.permitRequests(requestDetails, permitID, loggedInUser, map).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        val permitId = jasyptStringEncryptor.encrypt(permit.id.toString())
+
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "Your request has been submitted Successful Details"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -2050,8 +2093,11 @@ class QualityAssuranceController(
         result = myResults.first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
+        val permitId = jasyptStringEncryptor.encrypt(myResults.second.permitId.toString())
+
+
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${myResults.second.permitId}"
+            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "Your request has been submitted Successful Details"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -2178,8 +2224,10 @@ class QualityAssuranceController(
         ).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
+        val permitId = jasyptStringEncryptor.encrypt(permitID.toString())
+
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
+            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "You have Successful Filled STA 3 and has been submitted successful , Submit your application"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -2443,7 +2491,9 @@ class QualityAssuranceController(
         var permitDetails = qaDaoServices.findPermitBYID(permitID)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+        val permitId = jasyptStringEncryptor.encrypt(permitDetails.id.toString())
+
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "Document Uploaded successful"
 
         val result: ServiceRequestsEntity?
@@ -2592,8 +2642,10 @@ class QualityAssuranceController(
                         )
                         permitDetails = pair.first
                         uploadResults = pair.second
+                        val encryptedInspectionId = jasyptStringEncryptor.encrypt(inspectionReportID.toString())
+
                         sm.closeLink =
-                            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${inspectionReportID}"
+                            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?inspectionReportID=${encryptedInspectionId}"
 //                        qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPApprSSC, loggedInUser)
 
                     }
@@ -2774,13 +2826,15 @@ class QualityAssuranceController(
         } else if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
             userPermit = permitDetails.qamId?.let { commonDaoServices.findUserByID(it) }
         }
+        val permitId = jasyptStringEncryptor.encrypt(permitDetails.id.toString())
+
 
         val subject = "FACTORY INSPECTION REPORT"
         val messageBody = "Dear ${userPermit?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "Factory Inspection Report has been sent for approval :" +
                 "\n " +
-                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
 
         userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -2855,7 +2909,9 @@ class QualityAssuranceController(
         KotlinLogging.logger { }.info("SAVE FILE SUCCESSFUL")
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/inspection/ssf-details?ssfID=${myResults.second.id}"
+        val ssfId = jasyptStringEncryptor.encrypt(myResults.second.id.toString())
+
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/inspection/ssf-details?ssfID=${ssfId}"
         sm.message = "You have successful Saved The Lab Results That Will be sent To manufacture"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -2955,9 +3011,11 @@ class QualityAssuranceController(
         result = myResults.first
 
         qaDaoServices.sendNotificationForJustification(myResults.second)
+        val permitId = jasyptStringEncryptor.encrypt(permit.id.toString())
+
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "Justification report successfully submitted for Approval"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -3027,7 +3085,9 @@ class QualityAssuranceController(
 //        pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+        val permitId = jasyptStringEncryptor.encrypt(permitDetails.id.toString())
+
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "Factory Assessment report successfully uploaded"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -3055,7 +3115,9 @@ class QualityAssuranceController(
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        val permitId = jasyptStringEncryptor.encrypt(permit.id.toString())
+
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "Permit Suspended"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -3081,7 +3143,9 @@ class QualityAssuranceController(
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        val permitId = jasyptStringEncryptor.encrypt(permit.id.toString())
+
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
         sm.message = "Permit Suspended"
 
         return commonDaoServices.returnValues(result, map, sm)

@@ -1241,17 +1241,16 @@ class SystemsAdminDaoService(
      * @param request object containing the phone number to be validated
      *
      */
-    fun sendValidationTokenToCellphoneNumber(request: ValidatePhoneNumberRequestDto): CustomResponse? {
+    fun sendValidationTokenToCellphoneNumber(request: ValidatePhoneNumberRegistrationTokenRequestDto): CustomResponse? {
         val result = CustomResponse()
         try {
             /**
              * Generate token
              */
             val otp = commonDaoServices.randomNumber(6)
-            val token = commonDaoServices.generateVerificationToken(
+            val token = commonDaoServices.generateRegistrationVerificationToken(
                 otp,
                 commonDaoServices.makeKenyanMSISDNFormat(request.phone),
-                request.email
             )
             commonDaoServices.sendOtpViaSMS(token)
 
@@ -1278,7 +1277,7 @@ class SystemsAdminDaoService(
      * Receive payload with OTP and Phone number and validate that it is valid for anonymous user
      * @param request
      */
-    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto, req: ServerRequest): CustomResponse? =
+    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberRegistrationTokenRequestDto, req: ServerRequest): CustomResponse? =
         commonDaoServices.validateOTPToken(
             request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
           commonDaoServices.makeKenyanMSISDNFormat(request.phone),

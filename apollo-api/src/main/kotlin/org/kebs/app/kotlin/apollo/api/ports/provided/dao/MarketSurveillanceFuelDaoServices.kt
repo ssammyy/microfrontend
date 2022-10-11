@@ -377,7 +377,7 @@ class MarketSurveillanceFuelDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun endFuelInspectionDetailsBasedOnRefNo(referenceNo: String, batchReferenceNo: String,teamsReferenceNo: String,countyReferenceNo: String): FuelInspectionDto {
+    fun endFuelInspectionDetailsBasedOnRefNo(referenceNo: String, batchReferenceNo: String,teamsReferenceNo: String,countyReferenceNo: String, body:EndFuelDto): FuelInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var fileInspectionDetail = findFuelInspectionDetailByReferenceNumber(referenceNo)
@@ -391,6 +391,16 @@ class MarketSurveillanceFuelDaoServices(
         }
         val detailsSaved = updateFuelInspectionDetails(fileInspectionDetail, map, loggedInUser)
         fileInspectionDetail = detailsSaved.second
+
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.remarks
+            remarksStatus= "N/A"
+            processID = fileInspectionDetail.msProcessId
+            userId= loggedInUser.id
+        }
+        val remarksSaved = fuelAddRemarksDetails(detailsSaved.second.id,remarksDto, map, loggedInUser)
+
         val emailValuesStationOwner = FuelScheduledRemediationEndedDTO()
         with(emailValuesStationOwner) {
             baseUrl = applicationMapProperties.baseUrlValue
@@ -398,12 +408,12 @@ class MarketSurveillanceFuelDaoServices(
             refNumber = fileInspectionDetail.referenceNumber
             remediationDate= fileInspectionDetail.inspectionDateFrom
         }
-        runBlocking {
-            commonDaoServices.sendEmailWithUserEmail(
-            fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
-            applicationMapProperties.mapMsFuelInspectionScheduleEndedNotification,
-            emailValuesStationOwner, map, detailsSaved.first)
-        }
+//        runBlocking {
+//            commonDaoServices.sendEmailWithUserEmail(
+//            fileInspectionDetail.stationOwnerEmail ?: throw ExpectedDataNotFound("Missing Station Owner Email"),
+//            applicationMapProperties.mapMsFuelInspectionScheduleEndedNotification,
+//            emailValuesStationOwner, map, detailsSaved.first)
+//        }
 //        val emailValuesEpra = FuelScheduledRemediationEndedDTO()
 //        with(emailValuesEpra) {
 //            baseUrl = applicationMapProperties.baseUrlValue

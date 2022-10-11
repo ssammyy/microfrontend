@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import org.springframework.format.annotation.DateTimeFormat
+import java.sql.Timestamp
 import java.util.*
 
 
@@ -164,7 +165,7 @@ interface PenaltyDetails{
     fun getManufacName(): String?
     fun getPeriodFrom(): Date?
     fun getPeriodTo(): Date?
-    fun getPenaltyGenDate(): String?
+    fun getPenaltyGenDate(): Timestamp?
     fun getPenaltyPayable(): Long?
 }
 

@@ -749,10 +749,20 @@ class NewMarketSurveillanceHandler(
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
             val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
             val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
-            marketSurveillanceFuelDaoServices.endFuelInspectionDetailsBasedOnRefNo(referenceNo, batchReferenceNo,teamsReferenceNo,countyReferenceNo)
-                .let {
-                    ServerResponse.ok().body(it)
+            val body = req.body<EndFuelDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, EndFuelDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceFuelDaoServices.endFuelInspectionDetailsBasedOnRefNo(referenceNo, batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
                 }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)

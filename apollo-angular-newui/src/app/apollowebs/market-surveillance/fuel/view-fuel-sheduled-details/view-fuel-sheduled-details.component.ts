@@ -3,7 +3,7 @@ import swal from 'sweetalert2';
 import {
   BatchFileFuelSaveDto,
   BSNumberSaveDto, ComplaintsFilesFoundDto,
-  CompliantRemediationDto, FuelBatchDetailsDto,
+  CompliantRemediationDto, EndFuelDto, FuelBatchDetailsDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
   FuelInspectionDto,
@@ -65,6 +65,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   scheduleRemediationForm!: FormGroup;
   notCompliantInvoiceForm!: FormGroup;
   remediationForm!: FormGroup;
+  endFuelForm!: FormGroup;
   dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
   dataSaveRapidTestProducts: RapidTestProductsDto;
@@ -80,6 +81,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   dataSaveScheduleRemediation: CompliantRemediationDto;
   dataSaveNotCompliantInvoice: CompliantRemediationDto;
   dataSaveRemediation: RemediationDto;
+  dataSaveEndFuel: EndFuelDto;
   selectedLabResults: MSSSFLabResultsDto;
 
   labList: LaboratoryDto[];
@@ -796,10 +798,18 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       totalVolume: ['', Validators.required],
     });
 
+    this.endFuelForm = this.formBuilder.group({
+      remarks: ['', Validators.required]
+    });
+
   }
 
   get formAssignOfficerForm(): any {
     return this.assignOfficerForm.controls;
+  }
+
+  get formEndFuelForm(): any {
+    return this.endFuelForm.controls;
   }
 
   get formRapidTestForm(): any {
@@ -1353,7 +1363,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   onClickSaveEndRemediation() {
     // if (valid) {
       this.SpinnerService.show();
-      // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+      this.dataSaveEndFuel = {...this.dataSaveEndFuel, ...this.remediationForm.value};
       this.msService.msFuelInspectionEnd(
           this.batchReferenceNumber,
           this.teamsReferenceNo,

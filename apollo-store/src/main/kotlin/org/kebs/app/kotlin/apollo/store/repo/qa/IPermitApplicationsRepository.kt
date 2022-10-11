@@ -43,6 +43,15 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long
     ): List<PermitApplicationsEntity>?
 
+
+
+    fun findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitTypeAndPermitStatus(
+        userTaskId: Long,
+        permitType: Long,
+        permitStatus: Long
+
+    ): List<PermitApplicationsEntity>?
+
     @Query(
         value = "{ CALL PROC_MIGRATE_NEW_USER_PERMITS(:VAR_USER_ID,:VAR_PERMIT_NUMBER, :VAR_ATTACHED_PLANT_ID ) }",
         nativeQuery = true
