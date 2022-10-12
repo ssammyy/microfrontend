@@ -596,8 +596,7 @@
                                                             formControlName="countyID"
                                                             id="countyID" name="countyID" placeholder="Please Select an option">
                                                     <option [value]="" selected>Please select</option>
-                                                    <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
-                                                    >{{app.county}}</option>
+                                                    <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id">{{app.county}}</option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>

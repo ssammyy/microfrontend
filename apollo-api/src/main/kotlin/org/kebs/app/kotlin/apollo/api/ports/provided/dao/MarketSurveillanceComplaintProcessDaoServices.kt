@@ -81,7 +81,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun saveNewComplaint(body: NewComplaintDto, docFile: List<MultipartFile>): MSComplaintSubmittedSuccessful {
+    fun saveNewComplaint(body: NewComplaintDto, docFile: List<MultipartFile>?): MSComplaintSubmittedSuccessful {
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val msType = findMsTypeDetailsWithUuid(applicationMapProperties.mapMsComplaintTypeUuid)
@@ -97,7 +97,12 @@ class MarketSurveillanceComplaintProcessDaoServices(
             val complaintLocation = saveNewComplaintLocation(body.locationDetails, body.complaintDetails, map, complaint.second)
             payload += "${commonDaoServices.createJsonBodyFromEntity(complaintLocation)}"
 
-            saveComplaintFiles(docFile, map, complaint.second)
+            when {
+                docFile!=null -> {
+                    saveComplaintFiles(docFile, map, complaint.second)
+                }
+            }
+
 
 
             val designationsEntity = commonDaoServices.findDesignationByID(applicationMapProperties.mapMsComplaintAndWorkPlanDesignationHOD)
@@ -733,7 +738,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
     }
 
-    @PreAuthorize("hasAuthority('MS_HOF_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_HOF_MODIFY') or hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateComplaintAssignIOStatus(
         referenceNo: String,

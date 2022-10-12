@@ -781,18 +781,18 @@ class NewMarketSurveillanceHandler(
 
     fun saveNewComplaint(req: ServerRequest): ServerResponse {
         return try {
-//            val body = req.body<NewComplaintDto>()
-            val docFile = req.paramOrNull("docFile") ?: throw ExpectedDataNotFound("Required  docFile, check parameters")
-            val data = req.paramOrNull("data") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
-            val gson = Gson()
-            val body = gson.fromJson(data, NewComplaintDto::class.java)
+            val body = req.body<NewComplaintDto>()
+//            val docFile = req.paramOrNull("docFile") ?: throw ExpectedDataNotFound("Required  docFile, check parameters")
+//            val data = req.paramOrNull("data") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+//            val gson = Gson()
+//            val body = gson.fromJson(data, NewComplaintDto::class.java)
 //            val referenceNo = req.headers().contentType().MultipartFile("docFile") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
             val errors: Errors = BeanPropertyBindingResult(body, NewComplaintDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
                     val page = commonDaoServices.extractPageRequest(req)
-                    marketSurveillanceComplaintDaoServices.saveNewComplaint(body,docFile as List<MultipartFile>)
+                    marketSurveillanceComplaintDaoServices.saveNewComplaint(body,null)
                         .let {
                             ServerResponse.ok().body(it)
                         }

@@ -369,7 +369,6 @@ class AngularRoutes (private val daoService: DaoFluxService) {
 
                 }
                 "/complaint".nest {
-//                    GET("/list", handler::getAllFuelInspectionList)
                     POST("/new", msHandler::saveNewComplaint)
                 }
             }

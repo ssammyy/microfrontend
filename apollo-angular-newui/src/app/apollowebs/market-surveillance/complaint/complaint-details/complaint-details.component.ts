@@ -74,7 +74,6 @@ export class ComplaintDetailsComponent implements OnInit {
   submitted = false;
   selectedRefNo: string;
   county$: Observable<County[]>;
-  region$: Observable<Region[]>;
   town$: Observable<Town[]>;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
@@ -252,10 +251,8 @@ export class ComplaintDetailsComponent implements OnInit {
       private townService: TownService,
       private router: Router) {
     this.county$ = countyService.entities$;
-    this.region$ = regionService.entities$;
     this.town$ = townService.entities$;
     countyService.getAll().subscribe();
-    regionService.getAll().subscribe();
   }
 
   ngOnInit(): void {

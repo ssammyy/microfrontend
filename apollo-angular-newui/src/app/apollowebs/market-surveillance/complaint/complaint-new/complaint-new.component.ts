@@ -281,7 +281,7 @@ export class ComplaintNewComponent implements OnInit {
   }
 
   saveDetailsFirst(): any {
-    // if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFiles.length > 0) {
       this.SpinnerService.show();
       const file = this.uploadedFiles;
       const newComplaintDto = new NewComplaintDto();
@@ -308,7 +308,26 @@ export class ComplaintNewComponent implements OnInit {
             this.msService.showError('AN Error Occurred, Try Again Later');
           },
       );
-    // }
+    } else {
+      const newComplaintDto = new NewComplaintDto();
+      newComplaintDto.customerDetails = this.stepOneForm.value;
+      newComplaintDto.complaintDetails = this.stepTwoForm.value;
+      newComplaintDto.locationDetails = this.stepThreeForm.value;
+      this.msService.createNewComplaint(newComplaintDto).subscribe(
+          (data2: MSComplaintSubmittedSuccessful) => {
+            console.log(data2);
+            this.savedDetails = data2;
+            this.msService.showSuccess(data2.successMessage);
+            this.SpinnerService.hide();
+            return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN Error Occurred, Try Again Later');
+          },
+      );
+    }
 
   }
 
