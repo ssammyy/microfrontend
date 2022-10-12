@@ -6,7 +6,6 @@ import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "DAT_KEBS_COCS")
@@ -71,22 +70,18 @@ class CocsEntity : Serializable {
     @Basic
     var coiRemarks: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "ISSUING_OFFICE", nullable = false, length = 4000)
     @Basic
     var issuingOffice: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "IMPORTER_NAME", nullable = false, length = 1000)
     @Basic
     var importerName: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "IMPORTER_PIN", nullable = false, length = 150)
     @Basic
     var importerPin: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "IMPORTER_ADDRESS_1", nullable = false, length = 1000)
     @Basic
     var importerAddress1: String? = null
@@ -96,22 +91,18 @@ class CocsEntity : Serializable {
     @Basic
     var importerAddress2: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "IMPORTER_CITY", nullable = false, length = 100)
     @Basic
     var importerCity: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "IMPORTER_COUNTRY", nullable = false, length = 100)
     @Basic
     var importerCountry: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "IMPORTER_ZIPCODE", nullable = false, length = 100)
     @Basic
     var importerZipCode: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "IMPORTER_TELEPHONE_NUMBER", nullable = false, length = 100)
     @Basic
     var importerTelephoneNumber: String? = null
@@ -121,23 +112,18 @@ class CocsEntity : Serializable {
     @Basic
     var importerFaxNumber: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "IMPORTER_EMAIL", nullable = false, length = 150)
     @Basic
     var importerEmail: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "EXPORTER_NAME", nullable = false, length = 1000)
     @Basic
     var exporterName: String? = null
 
-    @NotEmpty(message = "Required field")
-    @NotNull(message = "exporterPin param missing")
     @Column(name = "EXPORTER_PIN", nullable = false, length = 150)
     @Basic
     var exporterPin: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "EXPORTER_ADDRESS_1", nullable = false, length = 1000)
     @Basic
     var exporterAddress1: String? = null
@@ -147,22 +133,18 @@ class CocsEntity : Serializable {
     @Basic
     var exporterAddress2: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "EXPORTER_CITY", nullable = false, length = 100)
     @Basic
     var exporterCity: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "EXPORTER_COUNTRY", nullable = false, length = 100)
     @Basic
     var exporterCountry: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "EXPORTER_ZIPCODE", nullable = false, length = 100)
     @Basic
     var exporterZipCode: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "EXPORTER_TELEPHONE_NUMBER", nullable = false, length = 100)
     @Basic
     var exporterTelephoneNumber: String? = null
@@ -171,12 +153,10 @@ class CocsEntity : Serializable {
     @Basic
     var exporterFaxNumber: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "EXPORTER_EMAIL", nullable = false, length = 150)
     @Basic
     var exporterEmail: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "PLACE_OF_INSPECTION", nullable = false, length = 4000)
     @Basic
     var placeOfInspection: String? = null
@@ -190,42 +170,34 @@ class CocsEntity : Serializable {
     @Basic
     var inspectionProvince: String? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "DATE_OF_INSPECTION", nullable = false)
     @Basic
     var dateOfInspection: Timestamp? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "PORT_OF_DESTINATION", nullable = false, length = 3000)
     @Basic
     var portOfDestination: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "SHIPMENT_MODE", nullable = false, length = 200)
     @Basic
     var shipmentMode: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "COUNTRY_OF_SUPPLY", nullable = false, length = 4000)
     @Basic
     var countryOfSupply: String? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "FINAL_INVOICE_FOB_VALUE", nullable = false, precision = 17, scale = 2)
     @Basic
     var finalInvoiceFobValue: Double = 0.0
 
-    //    @NotNull(message = "Required field")
     @Column(name = "FINAL_INVOICE_NUMBER", nullable = false)
     @Basic
     var finalInvoiceNumber: String? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "FINAL_INVOICE_EXCHANGE_RATE", precision = 17, scale = 2)
     @Basic
     var finalInvoiceExchangeRate: Double = 0.0
 
-    @NotEmpty(message = "Required field")
     @Column(name = "FINAL_INVOICE_CURRENCY", length = 10)
     @Basic
     var finalInvoiceCurrency: String? = null
@@ -239,12 +211,10 @@ class CocsEntity : Serializable {
     @Basic
     var invoicePaymentDate: Timestamp? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "SHIPMENT_PARTIAL_NUMBER")
     @Basic
     var shipmentPartialNumber: Long = 0
 
-    @NotEmpty(message = "Required field")
     @Column(name = "SHIPMENT_SEAL_NUMBERS", nullable = false, length = 4000)
     @Basic
     var shipmentSealNumbers: String? = null
@@ -253,27 +223,18 @@ class CocsEntity : Serializable {
     @Basic
     var shipmentContainerNumber: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "SHIPMENT_GROSS_WEIGHT", nullable = false, length = 10)
     @Basic
     var shipmentGrossWeight: String? = null
 
-//    @NotEmpty(message = "Required field")
-//    @Column(name = "SHIPMENT_GROSS_WEIGHT_UNIT", nullable = false, length = 50)
-//    @Basic
-//    var shipmentGrossWeightUnit: String? = null
-
-    @NotEmpty(message = "Required field")
     @Column(name = "SHIPMENT_QUANTITY_DELIVERED")
     @Basic
     var shipmentQuantityDelivered: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "ROUTE", nullable = false, length = 10)
     @Basic
     var route: String? = null
 
-    @NotEmpty(message = "Required field")
     @Column(name = "PRODUCT_CATEGORY", nullable = false, length = 2500)
     @Basic
     var productCategory: String? = null

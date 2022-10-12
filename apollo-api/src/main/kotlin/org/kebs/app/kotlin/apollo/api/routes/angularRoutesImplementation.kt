@@ -597,7 +597,9 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                     PUT("/accept", handler::updateComplaintByAccepting)
                     PUT("/reject", handler::updateComplaintByRejecting)
                     PUT("/advice-where", handler::updateComplaintByMandatedForOga)
+                    PUT("/reject-for-amendment", handler::updateComplaintByForAmendmentUser)
                     PUT("/assign-hof", handler::updateComplaintByAssigningHof)
+                    PUT("/re-assign-region", handler::updateComplaintByReAssigningRegion)
                     PUT("/assign-io", handler::updateComplaintByAssigningIO)
                     PUT("/add-classification-details", handler::updateComplaintByAddingClassificationDetails)
                     PUT("/start-ms-process", handler::updateComplaintByAddingClassificationDetails)
@@ -654,9 +656,6 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
                 }
-
-
-
             }
             "/fuel".nest {
                 GET("/all-batch-list", handler::getAllFuelBatchList)

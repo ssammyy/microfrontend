@@ -749,10 +749,20 @@ class NewMarketSurveillanceHandler(
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
             val teamsReferenceNo = req.paramOrNull("teamsReferenceNo") ?: throw ExpectedDataNotFound("Required  teamsReferenceNo, check parameters")
             val countyReferenceNo = req.paramOrNull("countyReferenceNo") ?: throw ExpectedDataNotFound("Required  countyReferenceNo, check parameters")
-            marketSurveillanceFuelDaoServices.endFuelInspectionDetailsBasedOnRefNo(referenceNo, batchReferenceNo,teamsReferenceNo,countyReferenceNo)
-                .let {
-                    ServerResponse.ok().body(it)
+            val body = req.body<EndFuelDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, EndFuelDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceFuelDaoServices.endFuelInspectionDetailsBasedOnRefNo(referenceNo, batchReferenceNo,teamsReferenceNo,countyReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
                 }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
@@ -940,6 +950,54 @@ class NewMarketSurveillanceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     marketSurveillanceComplaintDaoServices.updateComplaintMandateForOgaStatus(referenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updateComplaintByForAmendmentUser(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val body = req.body<ComplaintAdviceRejectDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ComplaintAdviceRejectDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.updateComplaintForAmendmentByUser(referenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updateComplaintByReAssigningRegion(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val body = req.body<RegionReAssignDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, RegionReAssignDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.updateComplaintReAssignRegionStatus(referenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -1263,8 +1321,9 @@ class NewMarketSurveillanceHandler(
     fun getAllWorkPlanList(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required Complaint Status, check parameters")
             val page = commonDaoServices.extractPageRequest(req)
-            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionListBasedOnBatchRefNo(batchReferenceNo,page)
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionListBasedOnBatchRefNo(batchReferenceNo,commonDaoServices.toBoolean(complaintStatus),page)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -1279,7 +1338,8 @@ class NewMarketSurveillanceHandler(
         return try {
             val page = commonDaoServices.extractPageRequest(req)
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllNotCompletedLists(batchReferenceNo,page)
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required Complaint Status, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllNotCompletedLists(batchReferenceNo,commonDaoServices.toBoolean(complaintStatus),page)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -1308,7 +1368,8 @@ class NewMarketSurveillanceHandler(
         return try {
             val page = commonDaoServices.extractPageRequest(req)
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllCompletedLists(batchReferenceNo,page)
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required Complaint Status, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllCompletedLists(batchReferenceNo,commonDaoServices.toBoolean(complaintStatus),page)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -1323,7 +1384,8 @@ class NewMarketSurveillanceHandler(
         return try {
             val page = commonDaoServices.extractPageRequest(req)
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionListMyTask(batchReferenceNo,page)
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required Complaint Status, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionListMyTask(batchReferenceNo,commonDaoServices.toBoolean(complaintStatus),page)
                 .let {
                     ServerResponse.ok().body(it)
                 }

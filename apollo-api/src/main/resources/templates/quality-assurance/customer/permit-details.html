@@ -268,60 +268,6 @@
                                     </div>
                                 </div>
 
-
-                                <!--                                <button class="accordion">Remarks Details</button>-->
-                                <!--                                <div class="panel">-->
-                                <!--                                    <ul class="w-list-unstyled">-->
-                                <!--                                        <li th:if="${permitDetails?.hofQamCompletenessStatus != null}"-->
-                                <!--                                            class="list-item-accordion">-->
-                                <!--                                            <div class="list-title-accordion">Completeness Remarks BY QAM/HOD</div>-->
-                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitRemarksCompleteness');">VIEW</a>-->
-                                <!--                                            </div>-->
-                                <!--                                        </li>-->
-                                <!--                                        <li th:if="${permitDetails?.resubmitApplicationStatus == 10}" class="list-item-accordion">-->
-                                <!--                                            <div class="list-title-accordion">Resubmit Remarks BY Manufacture/QAO</div>-->
-                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitResubmitRemarks');">VIEW</a>-->
-                                <!--                                            </div>-->
-                                <!--                                        </li>-->
-                                <!--                                        <li th:if="${permitDetails?.pcmApprovalStatus != null}"-->
-                                <!--                                            class="list-item-accordion">-->
-                                <!--                                            <div class="list-title-accordion">Review Remarks BY PCM</div>-->
-                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitRemarksPCMReview');">VIEW</a>-->
-                                <!--                                            </div>-->
-                                <!--                                        </li>-->
-                                <!--                                        <li th:if="${permitDetails?.recommendationApprovalStatus != null}"-->
-                                <!--                                            class="list-item-accordion">-->
-                                <!--                                            <div class="list-title-accordion">Recommendation Review Remarks BY QAO</div>-->
-                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"-->
-                                <!--                                                                                onclick="popUpRemarksFunction('permitRemarksRecommendationReview');">VIEW</a>-->
-                                <!--                                            </div>-->
-                                <!--                                        </li>-->
-                                <!--                                        <li th:if="${permitDetails?.justificationReportStatus != null}"-->
-                                <!--                                            class="list-item-accordion">-->
-                                <!--                                            <div class="list-title-accordion">Justification Review Remarks BY HOD</div>-->
-                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"-->
-                                <!--                                                                                onclick="popUpRemarksFunction('permitRemarksJustificationReview');">VIEW</a>-->
-                                <!--                                            </div>-->
-                                <!--                                        </li>-->
-                                <!--                                        <li th:if="${permitDetails?.pscMemberApprovalStatus != null}"-->
-                                <!--                                            class="list-item-accordion">-->
-                                <!--                                            <div class="list-title-accordion">PSC members approval/rejection Remarks-->
-                                <!--                                            </div>-->
-                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"-->
-                                <!--                                                                                onclick="popUpRemarksFunction('permitRemarksPscApproval');">VIEW</a>-->
-                                <!--                                            </div>-->
-                                <!--                                        </li>-->
-                                <!--                                        <li th:if="${permitDetails?.pcmApprovalStatus != null}"-->
-                                <!--                                            class="list-item-accordion">-->
-                                <!--                                            <div class="list-title-accordion">PCM approval/rejection Remarks</div>-->
-                                <!--                                            <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"-->
-                                <!--                                                                                onclick="popUpRemarksFunction('permitRemarksPCMApproval');">VIEW</a>-->
-                                <!--                                            </div>-->
-                                <!--                                        </li>-->
-                                <!--                                    </ul>-->
-                                <!--                                </div>-->
-
-
                                 <button class="accordion">Recommendation Details</button>
                                 <div class="panel">
                                     <ul class="w-list-unstyled">
@@ -579,7 +525,7 @@
                                                 <td th:text="${olderVersion?.awardedPermitNumber}"></td>
                                                 <td th:text="${olderVersion?.versionNumber}"></td>
                                                 <td><a class="btn btn-primary itemViewBtn"
-                                                       th:href="@{/api/qa/permit-details(permitID=${olderVersion.id},userID=${olderVersion?.userId})}">VIEW</a>
+                                                       th:href="@{/api/qa/permit-details(permitID=${olderVersion.encryptedPermitId},userID=${olderVersion?.encryptedUserId})}">VIEW</a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -647,7 +593,7 @@
 
                                         <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated != null and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 }"
                                            style="color: white"
-                                           th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                           th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                            class="filter-link">GENERATED INSPECTION REPORT'S</a>
 
                                         <a th:if="${permitDetails?.testReportId != null}"
@@ -729,37 +675,28 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
-                                            <a style="color: white" onclick="popUpFunction('updateSection');"
-                                               class="filter-link">Update Section</a>
 
-                                            <a th:if="${permitDetails?.hofQamCompletenessStatus == null}"
-                                               style="color: white" onclick="popUpFunction('permitCompleteness');"
-                                               class="filter-link">COMPLETE ?</a>
+                                            <div th:if="${permitDetails?.permitAwardStatus != 1}">
+                                                <a style="color: white" onclick="popUpFunction('updateSection');"
+                                                   class="filter-link">Update Section</a>
 
-                                            <a th:if="${permitDetails?.hofQamCompletenessStatus == 0 and permitDetails?.resubmitApplicationStatus == 10 }"
-                                               style="color: white" onclick="popUpFunction('permitCompleteness');"
-                                               class="filter-link">COMPLETE ?</a>
+                                                <a th:if="${permitDetails?.hofQamCompletenessStatus == null}"
+                                                   style="color: white" onclick="popUpFunction('permitCompleteness');"
+                                                   class="filter-link">COMPLETE ?</a>
 
-                                            <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}"
-                                               style="color: white" onclick="popUpFunction('assignOfficer');"
-                                               class="filter-link">Assign Officer</a>
+                                                <a th:if="${permitDetails?.hofQamCompletenessStatus == 0 and permitDetails?.resubmitApplicationStatus == 10 }"
+                                                   style="color: white" onclick="popUpFunction('permitCompleteness');"
+                                                   class="filter-link">COMPLETE ?</a>
 
-                                            <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == 1}"
-                                               style="color: white" onclick="popUpFunction('assignOfficer');"
-                                               class="filter-link">Re-assign Officer</a>
+                                                <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}"
+                                                   style="color: white" onclick="popUpFunction('assignOfficer');"
+                                                   class="filter-link">Assign Officer</a>
 
-                                            <!--                                            <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated != null}"-->
-                                            <!--                                               style="color: white"-->
-                                            <!--                                               th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"-->
-                                            <!--                                               class="filter-link">GENERATED INSPECTION REPORT'S</a>-->
+                                                <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == 1}"
+                                                   style="color: white" onclick="popUpFunction('assignOfficer');"
+                                                   class="filter-link">Re-assign Officer</a>
+                                            </div>
 
-
-                                            <!--                                            <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == null and permitDetails?.inspectionReportId != null}"-->
-                                            <!--                                               style="color: white" onclick="popUpFunction('approveInspectionReport');"-->
-                                            <!--                                               class="filter-link">APPROVE/REJECT FACTORY INSPECTION REPORT</a>-->
-
-
-                                            <!--                                        <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == null}" style="color: white" onclick="popUpFunction('approveRecommendation');" class="filter-link">APPROVE/REJECT RECOMMENDATION</a>-->
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
@@ -779,7 +716,7 @@
 
                                             <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated != null and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null}"
                                                style="color: white"
-                                               th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                               th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                class="filter-link">GENERATED INSPECTION REPORT</a>
 
 
@@ -801,7 +738,7 @@
                                             <div th:if="${permitDetails?.resubmitApplicationStatus == 1}">
                                                 <a th:if="${permitDetails?.inspectionReportGenerated != null and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0}"
                                                    style="color: white"
-                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                    class="filter-link">RE-GENERATED INSPECTION REPORT</a>
 
                                             </div>
@@ -864,10 +801,11 @@
 
                                             <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
                                                style="color: white"
-                                               th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                               th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
 
-                                            <a th:if="${permitDetails?.hodQamApproveRejectStatus == null and permitDetails?.inspectionReportGenerated == 1 and permitDetails?.recommendationApprovalStatus == 1}"
+                                            <a th:if="${permitDetails?.hodQamApproveRejectStatus == null
+                                                and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.recommendationApprovalStatus == 1}"
                                                style="color: white" onclick="popUpFunction('approvePermitQAMHOD');"
                                                class="filter-link">APPROVE/REJECT PERMIT</a>
 
@@ -880,10 +818,11 @@
 
                                                 <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0 }"
                                                    style="color: white"
-                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                    class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION REPORT</a>
 
-                                                <a th:if="${permitDetails?.hodQamApproveRejectStatus == 0 }"
+                                                <a th:if="${permitDetails?.hodQamApproveRejectStatus == 0
+                                                    and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.recommendationApprovalStatus == 1}"
                                                    style="color: white" onclick="popUpFunction('approvePermitQAMHOD');"
                                                    class="filter-link">APPROVE/REJECT PERMIT</a>
                                             </div>
@@ -892,7 +831,7 @@
                                             <!-- PSC REJECTS PERMIT ACTIVE BUTTONS-->
                                             <div th:if="${ permitDetails?.pscMemberApprovalStatus == 0 and permitDetails?.resubmitApplicationStatus == 10}">
                                                 <a style="color: white"
-                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                    class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION
                                                     REPORT </a>
 
@@ -909,7 +848,7 @@
                                             <!-- PCM REJECTS PERMIT ACTIVE BUTTONS-->
                                             <div th:if="${ permitDetails?.pcmApprovalStatus == 0 and permitDetails?.resubmitApplicationStatus == 10}">
                                                 <a style="color: white"
-                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                    class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION
                                                     REPORT </a>
 
@@ -937,7 +876,7 @@
 
                                             <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == null}"
                                                style="color: white"
-                                               th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
+                                               th:href="@{/api/qa/inspection/new-inspection-report(permitID=${encryptedPermitId})}"
                                                class="filter-link">GENERATE INSPECTION REPORT</a>
 
                                             <a th:if="${permitDetails?.recommendationRemarks == null and permitDetails?.compliantStatus == 1}"
@@ -964,7 +903,7 @@
                                                        class="filter-link">RE-INSPECT ADD SSF & BS NUMBER</a>
 
                                                     <a style="color: white"
-                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                        class="filter-link">RE-GENERATED INSPECTION REPORT</a>
 
                                                     <a style="color: white"
@@ -983,7 +922,7 @@
                                                        class="filter-link">RE-INSPECT ADD SSF & BS NUMBER</a>
 
                                                     <a style="color: white"
-                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                        class="filter-link">RE-GENERATED INSPECTION REPORT</a>
 
                                                     <a style="color: white"
@@ -1000,7 +939,7 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_MODIFY')">
-                                            <a th:if="${ permitDetails?.pscMemberApprovalStatus == null }"
+                                            <a th:if="${permitDetails?.pscMemberApprovalStatus == null and permitDetails?.hodQamApproveRejectStatus == 1}"
                                                style="color: white" onclick="popUpFunction('pscMemberApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
 
@@ -1014,11 +953,11 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_PCM_MODIFY')">
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.pscMemberApprovalStatus == 1}"
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.hodQamApproveRejectStatus == 1 and permitDetails?.pscMemberApprovalStatus == 1}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
 
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.pscMemberApprovalStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.hodQamApproveRejectStatus == 1 and permitDetails?.pscMemberApprovalStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
@@ -1070,10 +1009,11 @@
 
                                             <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
                                                style="color: white"
-                                               th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                               th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
 
-                                            <a th:if="${permitDetails?.hodQamApproveRejectStatus == null and permitDetails?.inspectionReportGenerated == 1 and permitDetails?.recommendationApprovalStatus == 1}"
+                                            <a th:if="${permitDetails?.hodQamApproveRejectStatus == null
+                                                and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.recommendationApprovalStatus == 1}"
                                                style="color: white" onclick="popUpFunction('approvePermitQAMHOD');"
                                                class="filter-link">APPROVE/REJECT PERMIT</a>
 
@@ -1086,10 +1026,11 @@
 
                                                 <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0 }"
                                                    style="color: white"
-                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                    class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION REPORT</a>
 
-                                                <a th:if="${permitDetails?.hodQamApproveRejectStatus == 0 }"
+                                                <a th:if="${permitDetails?.hodQamApproveRejectStatus == 0
+                                                    and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.recommendationApprovalStatus == 1}"
                                                    style="color: white" onclick="popUpFunction('approvePermitQAMHOD');"
                                                    class="filter-link">APPROVE/REJECT PERMIT</a>
                                             </div>
@@ -1098,7 +1039,7 @@
                                             <!-- PSC REJECTS PERMIT ACTIVE BUTTONS-->
                                             <div th:if="${ permitDetails?.pscMemberApprovalStatus == 0 and permitDetails?.resubmitApplicationStatus == 10}">
                                                 <a style="color: white"
-                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                    class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION
                                                     REPORT </a>
 
@@ -1115,7 +1056,7 @@
                                             <!-- PCM REJECTS PERMIT ACTIVE BUTTONS-->
                                             <div th:if="${ permitDetails?.pcmApprovalStatus == 0 and permitDetails?.resubmitApplicationStatus == 10}">
                                                 <a style="color: white"
-                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                    class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION
                                                     REPORT </a>
 
@@ -1143,7 +1084,7 @@
 
                                             <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == null}"
                                                style="color: white"
-                                               th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
+                                               th:href="@{/api/qa/inspection/new-inspection-report(permitID=${encryptedPermitId})}"
                                                class="filter-link">GENERATE INSPECTION REPORT</a>
 
                                             <a th:if="${permitDetails?.recommendationRemarks == null and permitDetails?.compliantStatus == 1}"
@@ -1170,7 +1111,7 @@
                                                        class="filter-link">RE-INSPECT ADD SSF & BS NUMBER</a>
 
                                                     <a style="color: white"
-                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                        class="filter-link">RE-GENERATED INSPECTION REPORT</a>
 
                                                     <a style="color: white"
@@ -1189,7 +1130,7 @@
                                                        class="filter-link">RE-INSPECT ADD SSF & BS NUMBER</a>
 
                                                     <a style="color: white"
-                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                        class="filter-link">RE-GENERATED INSPECTION REPORT</a>
 
                                                     <a style="color: white"
@@ -1206,7 +1147,7 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_MODIFY')">
-                                            <a th:if="${ permitDetails?.pscMemberApprovalStatus == null }"
+                                            <a th:if="${ permitDetails?.pscMemberApprovalStatus == null and permitDetails?.hodQamApproveRejectStatus == 1}"
                                                style="color: white" onclick="popUpFunction('pscMemberApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
 
@@ -1220,11 +1161,11 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_PCM_MODIFY')">
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.pscMemberApprovalStatus == 1}"
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.hodQamApproveRejectStatus == 1 and permitDetails?.pscMemberApprovalStatus == 1}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
 
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.pscMemberApprovalStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 10 and permitDetails?.hodQamApproveRejectStatus == 1 and permitDetails?.pscMemberApprovalStatus == 1 and permitDetails?.resubmitApplicationStatus == 10}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
@@ -1316,7 +1257,7 @@
 
                                             <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
                                                style="color: white"
-                                               th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                               th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
 
                                             <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.resubmitApplicationStatus != 10}"
@@ -1324,26 +1265,17 @@
                                                style="color: white" class="filter-link">Approve/Reject Justification
                                                 for Diamond Mark Assessment</a>
 
-                                            <!--                                            <a th:if="${permitDetails?.hodQamApproveRejectStatus == null and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.justificationReportStatus == 1}"-->
-                                            <!--                                               style="color: white" onclick="popUpFunction('approvePermitQAMHOD');"-->
-                                            <!--                                               class="filter-link">APPROVE/REJECT PERMIT</a>-->
-
                                             <div th:if="${permitDetails?.resubmitApplicationStatus == 10 }">
 
                                                 <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0 }"
                                                    style="color: white"
-                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                    class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION REPORT</a>
 
                                                 <!--                                                <a th:if="${permitDetails?.hodQamApproveRejectStatus == 0 }"-->
                                                 <!--                                                   style="color: white" onclick="popUpFunction('approvePermitQAMHOD');"-->
                                                 <!--                                                   class="filter-link">APPROVE/REJECT PERMIT</a>-->
                                             </div>
-
-                                            <!--                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 0}"-->
-                                            <!--                                               th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"-->
-                                            <!--                                               style="color: white" class="filter-link">RE-Generate-->
-                                            <!--                                                Justification for Diamond Mark Assessment</a>-->
 
                                             <a th:if="${permitDetails?.assignAssessorStatus == null and permitDetails?.justificationReportStatus == 1}"
                                                style="color: white" onclick="popUpFunction('assignAssessor');"
@@ -1372,7 +1304,7 @@
                                             <!-- PAC REJECTS PERMIT ACTIVE BUTTONS-->
                                             <div th:if="${ permitDetails?.pacDecisionStatus == 0 and permitDetails?.resubmitApplicationStatus == 10}">
                                                 <a style="color: white"
-                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                    class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION
                                                     REPORT </a>
 
@@ -1394,7 +1326,7 @@
                                             <!-- PCM REJECTS PERMIT ACTIVE BUTTONS-->
                                             <div th:if="${ permitDetails?.pcmApprovalStatus == 0 and permitDetails?.resubmitApplicationStatus == 10}">
                                                 <a style="color: white"
-                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                   th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                    class="filter-link">RE-APPROVE/REJECT GENERATED INSPECTION
                                                     REPORT </a>
 
@@ -1423,7 +1355,7 @@
 
                                             <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == null}"
                                                style="color: white"
-                                               th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
+                                               th:href="@{/api/qa/inspection/new-inspection-report(permitID=${encryptedPermitId})}"
                                                class="filter-link">GENERATE INSPECTION REPORT</a>
 
                                             <a th:if="${ permitDetails?.inspectionReportGenerated == 1 and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
@@ -1467,7 +1399,7 @@
                                                        class="filter-link">RE-INSPECT ADD SSF & BS NUMBER</a>
 
                                                     <a style="color: white"
-                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                        class="filter-link">RE-GENERATED INSPECTION REPORT</a>
 
                                                     <a style="color: white"
@@ -1494,7 +1426,7 @@
                                                        class="filter-link">RE-INSPECT ADD SSF & BS NUMBER</a>
 
                                                     <a style="color: white"
-                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${permitDetails?.id})}"
+                                                       th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                        class="filter-link">RE-GENERATED INSPECTION REPORT</a>
 
                                                     <a style="color: white"

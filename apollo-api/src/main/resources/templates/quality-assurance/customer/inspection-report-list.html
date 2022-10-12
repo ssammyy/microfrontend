@@ -59,7 +59,7 @@
                                         <!--                                        <td th:text="${complaint?.}"></td>-->
                                         <!--                                        <td sec:authorize="hasAuthority('CD_SUPERVISOR_READ')" th:if="${coc?.assignedStatus == 1}"  th:text="${coc?.assignIoId?.firstName}  + ' ' + ${coc?.assignIoId?.lastName}"></td>-->
                                         <td><a class="filter-link"
-                                               th:href="@{/api/qa/inspection/inspection-report-details(inspectionReportID=${inspectDetails.id})}">VIEW</a>
+                                               th:href="@{/api/qa/inspection/inspection-report-details(inspectionReportID=${inspectDetails.encryptedInspectionId})}">VIEW</a>
                                         </td>
                                         <!--                                        <td><a class="filter-link" th:href="@{/api/kebs/qa/report/proforma-invoice-with-Item(ID=${ssfDetails?.permitId})}">VIEW</a></td>-->
                                     </tr>

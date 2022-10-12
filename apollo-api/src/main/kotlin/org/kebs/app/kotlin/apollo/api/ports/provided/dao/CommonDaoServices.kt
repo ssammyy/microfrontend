@@ -527,6 +527,15 @@ class CommonDaoServices(
         return anyValue
     }
 
+    fun toBoolean(s: String): Boolean {
+        return s.toBoolean()
+    }
+
+    fun Boolean.toInt() = when {
+        this -> 1
+        else -> 0
+    }
+
     fun extractPageRequest(req: ServerRequest, field: String = "id"): PageRequest {
         var page = 0
         var records = 20

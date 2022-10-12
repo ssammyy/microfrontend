@@ -14,7 +14,7 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons" *ngIf="workPlanInspection">Work Plan Scheduled</i>
+                            <i class="material-icons" *ngIf="workPlanInspection">Complaint Plan Scheduled</i>
                         </div>
                         <h4 class="card-title" *ngIf="workPlanInspection">Ref No #{{workPlanInspection?.referenceNumber}}
                             <button class="btn btn-sm btn-default float-right mr-7"
@@ -1668,12 +1668,12 @@
                                                         class="mat-button-wrapper">UPLOAD DATA REPORT</span>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-<!--                                                <button *ngIf="workPlanInspection?.chargeSheetStatus ==false"  mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#chargeSheetModal"-->
-<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                        class="mat-button-wrapper">ADD CHARGE SHEET</span>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
+                                                <!--                                                <button *ngIf="workPlanInspection?.chargeSheetStatus ==false"  mat-raised-button="" data-toggle="modal"-->
+                                                <!--                                                        data-target="#chargeSheetModal"-->
+                                                <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+                                                <!--                                                        class="mat-button-wrapper">ADD CHARGE SHEET</span>-->
+                                                <!--                                                    <div class="mat-button-focus-overlay"></div>-->
+                                                <!--                                                </button>-->
                                                 <div *ngIf="workPlanInspection?.dataReportStatus">
                                                     <button  *ngIf="workPlanInspection?.scfDocId ==null"  (click)="openModalAddDetails('uploadSCFFiles')" mat-raised-button="" data-toggle="modal"
                                                              data-target="#myModal1"
@@ -1723,20 +1723,20 @@
                                                     </div>
                                                 </div>
 
-<!--                                                <button *ngIf="workPlanInspection?.sampleCollectionStatus ==false"  mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#sampleCollectModal"-->
-<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                        class="mat-button-wrapper">ADD SAMPLE COLLECTION</span>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
+                                                <!--                                                <button *ngIf="workPlanInspection?.sampleCollectionStatus ==false"  mat-raised-button="" data-toggle="modal"-->
+                                                <!--                                                        data-target="#sampleCollectModal"-->
+                                                <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+                                                <!--                                                        class="mat-button-wrapper">ADD SAMPLE COLLECTION</span>-->
+                                                <!--                                                    <div class="mat-button-focus-overlay"></div>-->
+                                                <!--                                                </button>-->
 
 
-<!--                                                <button *ngIf="workPlanInspection?.seizureDeclarationStatus ==false" (click)="openModalAddDetails('seizureDeclarationDetails')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#seizureDeclarationModal"-->
-<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                        class="mat-button-wrapper">ADD SEIZURE DECLARATION</span>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
+                                                <!--                                                <button *ngIf="workPlanInspection?.seizureDeclarationStatus ==false" (click)="openModalAddDetails('seizureDeclarationDetails')" mat-raised-button="" data-toggle="modal"-->
+                                                <!--                                                        data-target="#seizureDeclarationModal"-->
+                                                <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+                                                <!--                                                        class="mat-button-wrapper">ADD SEIZURE DECLARATION</span>-->
+                                                <!--                                                    <div class="mat-button-focus-overlay"></div>-->
+                                                <!--                                                </button>-->
                                             </div>
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
                                                 && workPlanInspection?.approvedStatus && workPlanInspection?.onsiteStartStatus
@@ -4377,7 +4377,7 @@
                                             <thead>
                                             <tr>
                                                 <th>Inspector Name</th>
-<!--                                                <th>Institution</th>-->
+                                                <!--                                                <th>Institution</th>-->
                                                 <th>Designation</th>
                                                 <th>Action</th>
                                             </tr>
@@ -4385,7 +4385,7 @@
                                             <tbody>
                                             <tr *ngFor="let r of dataSaveDataInspectorInvestList; let i=index">
                                                 <td>{{r.inspectorName}}</td>
-<!--                                                <td>{{r.institution}}</td>-->
+                                                <!--                                                <td>{{r.institution}}</td>-->
                                                 <td>{{r.designation}}</td>
                                                 <td>
                                                     <button (click)="removeDataInvestInspectReportInspectors(i)"
@@ -5765,42 +5765,42 @@
                                 </div>
 
                             </div>
-<!--                            <div class="row">-->
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group" *ngIf="county$ | async as apps">-->
-<!--                                        <label><b>County</b></label>-->
-<!--                                        <select (change)="updateSelectedCounty()"-->
-<!--                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-<!--                                                class="form-control" formControlName="county" name="county" required>-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"-->
-<!--                                            >{{app.county}}</option>-->
-<!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                            <div class="row">-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group" *ngIf="county$ | async as apps">-->
+                            <!--                                        <label><b>County</b></label>-->
+                            <!--                                        <select (change)="updateSelectedCounty()"-->
+                            <!--                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+                            <!--                                                class="form-control" formControlName="county" name="county" required>-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"-->
+                            <!--                                            >{{app.county}}</option>-->
+                            <!--                                        </select>-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group" *ngIf="town$ | async as apps">-->
-<!--                                        <label><b>Town/Market center</b></label>-->
-<!--                                        <select (change)="updateSelectedTown()"-->
-<!--                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"-->
-<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-<!--                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>-->
-<!--                                            <option [value]="" selected>Please select</option>-->
-<!--                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"-->
-<!--                                                    [ngValue]="app.id">{{app.town}}</option>-->
-<!--                                        </select>-->
-<!--                                        <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                                <div class="col">-->
+                            <!--                                    <div class="form-group" *ngIf="town$ | async as apps">-->
+                            <!--                                        <label><b>Town/Market center</b></label>-->
+                            <!--                                        <select (change)="updateSelectedTown()"-->
+                            <!--                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"-->
+                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+                            <!--                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>-->
+                            <!--                                            <option [value]="" selected>Please select</option>-->
+                            <!--                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"-->
+                            <!--                                                    [ngValue]="app.id">{{app.town}}</option>-->
+                            <!--                                        </select>-->
+                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">-->
+                            <!--                                            <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
 
-<!--                            </div>-->
+                            <!--                            </div>-->
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">

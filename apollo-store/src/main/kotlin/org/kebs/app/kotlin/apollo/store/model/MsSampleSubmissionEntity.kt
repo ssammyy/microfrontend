@@ -48,11 +48,11 @@ class MsSampleSubmissionEntity : Serializable{
 
     @Column(name = "SIZE_TEST_SAMPLE")
     @Basic
-    var sizeTestSample: Long? = null
+    var sizeTestSample: String? = null
 
     @Column(name = "SIZE_REF_SAMPLE")
     @Basic
-    var sizeRefSample: Long? = null
+    var sizeRefSample: String? = null
 
     @Column(name = "FILE_REF_NUMBER")
     @Basic

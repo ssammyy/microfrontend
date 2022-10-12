@@ -5,7 +5,7 @@
                 color="#fff"
                 size="medium"
                 type="ball-scale-multiple">
-            <p style="font-size: 20px; color: white">Loading Please Wait...</p>
+            <p style="font-size: 20px color: white">Loading Please Wait...</p>
         </ngx-spinner>
     </div>
     <div class="container-fluid">
@@ -164,7 +164,7 @@
                                         <ng-template mat-tab-label>
                                             Complainant Photos/Documents
                                         </ng-template>
-                                        <div class="panel" style="max-height: 388px;">
+                                        <div class="panel" style="max-height: 388px">
                                             <div *ngIf="complaintInspection?.complaintsDetails?.complaintFiles.length!=0">
                                                 <div class="form-row">
                                                     <!--                                                    <div class="col-md-12 mb-3">-->
@@ -186,7 +186,7 @@
                                         <ng-template mat-tab-label>
                                             Remarks Details
                                         </ng-template>
-                                        <div class="panel" style="max-height: 388px;">
+                                        <div class="panel" style="max-height: 388px">
                                             <div *ngIf="complaintInspection?.remarksDetails.length!=0">
                                                 <div class="form-row">
                                                     <!--                                                    <div class="col-md-12 mb-3">-->
@@ -346,6 +346,24 @@
                                             <div class="mat-ripple mat-button-ripple" matripple=""></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
+                                        <button (click)="openModalAddDetails('assignOfficer')"
+                                                *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == true && complaintInspection?.officersAssigned == null && complaintInspection?.hofAssigned == null" class="btn btn-sm btn-primary mr-2"
+                                                data-target="#myModal1"
+                                                data-toggle="modal"
+                                                mat-raised-button=""><span
+                                                class="mat-button-wrapper">ASSIGN IO</span>
+                                            <div class="mat-ripple mat-button-ripple" matripple=""></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button (click)="openModalAddDetails('reassignRegion')"
+                                                class="btn btn-sm btn-primary mr-2"
+                                                data-target="#myModal1"
+                                                data-toggle="modal"
+                                                mat-raised-button=""><span
+                                                class="mat-button-wrapper">RE-ASSIGN REGION</span>
+                                            <div class="mat-ripple mat-button-ripple" matripple=""></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
                                     </div>
                                     <div *ngIf="role == 'MS_HOF_MODIFY' && userLoggedInID == complaintInspection?.hofAssigned?.id">
                                         <button (click)="openModalAddDetails('assignOfficer')"
@@ -393,7 +411,7 @@
                     </div>
                     <!--                    <ng-template #loadingView>-->
                     <!--                        <div class="card-body text-center">-->
-                    <!--                            <div class="loader-view text-center spinner-border" style="width: 7rem; height: 7rem;"-->
+                    <!--                            <div class="loader-view text-center spinner-border" style="width: 7rem height: 7rem"-->
                     <!--                                 role="status">-->
                     <!--                                <span class="sr-only">Loading...</span>-->
                     <!--                            </div>-->
@@ -498,6 +516,7 @@
                                                             placeholder="Please Select an option">
                                                     <mat-option [value]="0">REJECT ONLY</mat-option>
                                                     <mat-option [value]="1">REJECT WITH MANDATE</mat-option>
+                                                    <mat-option [value]="2">REJECT FOR AMENDMENT</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                             <div *ngIf="(selectComplaintRejectionStatus == 'Accept')">
@@ -508,6 +527,15 @@
                                                               matInput
                                                               name="advisedWhereToRemarks"
                                                               type="text">
+                                                    </textarea>
+                                                </mat-form-field>
+
+                                            </div>
+                                            <div *ngIf="(selectComplaintRejectionStatus == 'RejectAmendment')">
+                                                <label for="amendmentRemarks"><b>Please write, in detail, What should be Amended:</b></label>
+                                                <mat-form-field class="example-full-width">
+                                                    <textarea [class.is-invalid]="formAcceptRejectForm.amendmentRemarks.invalid && formAcceptRejectForm.amendmentRemarks.touched" formControlName="amendmentRemarks" id="amendmentRemarks"
+                                                              matInput name="amendmentRemarks" type="text">
                                                     </textarea>
                                                 </mat-form-field>
 
@@ -527,32 +555,6 @@
                             </div>
                         </form>
                     </div>
-                    <!--                    <div *ngIf="(currDiv == 'notKebsMandate')">-->
-                    <!--                        <form [formGroup]="adviceComplaintForm" class="form">-->
-                    <!--                            <div class="form-body">-->
-                    <!--                                <div class="form-group">-->
-                    <!--                                    <div>-->
-                    <!--                                        <label for="advisedWhereToRemarks"><b>Please write, in detail, Where The Complaint belongs:</b></label>-->
-                    <!--                                        <mat-form-field class="example-full-width">-->
-                    <!--                                            <textarea id="advisedWhereToRemarks" matInput type="text"-->
-                    <!--                                                      formControlName="advisedWhereToRemarks"-->
-                    <!--                                                      [class.is-invalid]="formAdviceComplaintForm.advisedWhereToRemarks.invalid && formAdviceComplaintForm.advisedWhereToRemarks.touched"-->
-                    <!--                                                      name="advisedWhereToRemarks">-->
-                    <!--                                            </textarea>-->
-                    <!--                                        </mat-form-field>-->
-                    <!--                                        <label for="rejectedRemarks"><b>Please write, in detail, your feedback :</b></label>-->
-                    <!--                                        <mat-form-field class="example-full-width">-->
-                    <!--                                            <textarea id="rejectedRemarks" matInput type="text"-->
-                    <!--                                                      formControlName="rejectedRemarks"-->
-                    <!--                                                      [class.is-invalid]="formAdviceComplaintForm.rejectedRemarks.invalid && formAdviceComplaintForm.rejectedRemarks.touched"-->
-                    <!--                                                      name="rejectedRemarks">-->
-                    <!--                                            </textarea>-->
-                    <!--                                        </mat-form-field>-->
-                    <!--                                    </div>-->
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!--                        </form>-->
-                    <!--                    </div>-->
                     <div *ngIf="(currDiv == 'assignHOF')">
                         <form [formGroup]="assignOfficerForm" class="form">
                             <div class="form-body">
@@ -574,6 +576,49 @@
                                             <textarea formControlName="assignedRemarks" id="assignedRemarks" matInput
                                                       name="assignedRemarks"
                                                       type="text">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'reassignRegion')">
+                        <form [formGroup]="reAssignRegionForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group" >
+                                    <div>
+                                        <div *ngIf="county$ | async as apps">
+                                            <label for="assignedIo"><b>Select County</b></label>
+                                            <mat-form-field>
+                                                <mat-select (change)="updateSelectedCounty()"
+                                                            [class.is-invalid]="formReAssignRegionForm.countyID.invalid && formReAssignRegionForm.countyID.touched"
+                                                            formControlName="countyID"
+                                                            id="countyID" name="countyID" placeholder="Please Select an option">
+                                                    <option [value]="" selected>Please select</option>
+                                                    <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
+                                                    >{{app.county}}</option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="town$ | async as apps">
+                                            <label for="assignedIo"><b>Select Town</b></label>
+                                            <mat-form-field>
+                                                <mat-select (change)="updateSelectedTown()"
+                                                            [class.is-invalid]="formReAssignRegionForm.townID.invalid && formReAssignRegionForm.townID.touched"
+                                                            formControlName="townID"
+                                                            id="townID" name="townID" placeholder="Please Select an option">
+                                                    <option [value]="" selected>Please select</option>
+                                                    <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
+                                                            [ngValue]="app.id">{{app.town}}</option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for
+                                            re-assigning the Count, Town:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea formControlName="reassignedRemarks" id="reassignedRemarks" matInput name="reassignedRemarks" type="text"
+                                                      [class.is-invalid]="formReAssignRegionForm.reassignedRemarks.invalid && formReAssignRegionForm.reassignedRemarks.touched">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -690,24 +735,6 @@
                         <form [formGroup]="assignOfficerForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
-                                    <!--                                    <div>-->
-                                    <!--                                        <label for="assignedIo"><b>Select officer</b></label>-->
-                                    <!--                                        <mat-form-field>-->
-                                    <!--                                            <mat-select placeholder="Please Select an option"-->
-                                    <!--                                                        [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"-->
-                                    <!--                                                        formControlName="assignedIo" id="assignedIo" name="assignedIo" >-->
-                                    <!--                                                <mat-option *ngFor="let app of complaintInspection.officersList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>-->
-
-                                    <!--                                            </mat-select>-->
-                                    <!--                                        </mat-form-field>-->
-                                    <!--                                        <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>-->
-                                    <!--                                        <mat-form-field class="example-full-width">-->
-                                    <!--                                            <textarea id="assignedRemarks" matInput type="text"-->
-                                    <!--                                                      formControlName="assignedRemarks"-->
-                                    <!--                                                      name="assignedRemarks">-->
-                                    <!--                                            </textarea>-->
-                                    <!--                                        </mat-form-field>-->
-                                    <!--                                    </div>-->
                                 </div>
                             </div>
                         </form>
@@ -718,33 +745,39 @@
 
                     <button class="btn btn-danger" data-dismiss="modal" mat-raised-button type="button">Close
                     </button>
-                    <button (click)="onClickSaveAssignIO(assignOfficerForm.valid);" *ngIf="(currDiv == 'assignOfficer')" [disabled]="!assignOfficerForm.valid" class="btn btn-success"
+                    <button (click)="onClickSaveAssignIO(assignOfficerForm.valid)" *ngIf="(currDiv == 'assignOfficer')" [disabled]="!assignOfficerForm.valid" class="btn btn-success"
                             data-dismiss="modal"
                             mat-raised-button
                             type="button"
                     >SUBMIT
                     </button>
-                    <button (click)="onClickSaveAssignHof(assignOfficerForm.valid);" *ngIf="(currDiv == 'assignHOF')" [disabled]="!assignOfficerForm.valid" class="btn btn-success"
+                    <button (click)="onClickSaveAssignHof(assignOfficerForm.valid)" *ngIf="(currDiv == 'assignHOF')" [disabled]="!assignOfficerForm.valid" class="btn btn-success"
                             data-dismiss="modal"
                             mat-raised-button
                             type="button"
                     >SUBMIT
                     </button>
-                    <button (click)="onClickSaveAcceptRejectFormResults(acceptRejectComplaintForm.valid);" *ngIf="(currDiv == 'acceptRejectComplaint')" [disabled]="!acceptRejectComplaintForm.valid"
+                    <button (click)="onClickSaveReAssignHof(reAssignRegionForm.valid)" *ngIf="(currDiv == 'reassignRegion')" [disabled]="!reAssignRegionForm.valid" class="btn btn-success"
+                            data-dismiss="modal"
+                            mat-raised-button
+                            type="button"
+                    >SUBMIT
+                    </button>
+                    <button (click)="onClickSaveAcceptRejectFormResults(acceptRejectComplaintForm.valid)" *ngIf="(currDiv == 'acceptRejectComplaint')" [disabled]="!acceptRejectComplaintForm.valid"
                             class="btn btn-success"
                             data-dismiss="modal"
                             mat-raised-button
                             type="button"
                     >SUBMIT
                     </button>
-                    <button (click)="onClickSaveAdviceWhereFormResults(adviceComplaintForm.valid);" *ngIf="(currDiv == 'notKebsMandate')" [disabled]="!adviceComplaintForm.valid"
+                    <button (click)="onClickSaveAdviceWhereFormResults(adviceComplaintForm.valid)" *ngIf="(currDiv == 'notKebsMandate')" [disabled]="!adviceComplaintForm.valid"
                             class="btn btn-success"
                             data-dismiss="modal"
                             mat-raised-button
                             type="button"
                     >SUBMIT
                     </button>
-                    <button (click)="onClickSaveClassificationDetails(classificationForm.valid);" *ngIf="(currDiv == 'addClassificationDetails')" [disabled]="!classificationForm.valid"
+                    <button (click)="onClickSaveClassificationDetails(classificationForm.valid)" *ngIf="(currDiv == 'addClassificationDetails')" [disabled]="!classificationForm.valid"
                             class="btn btn-success"
                             data-dismiss="modal"
                             mat-raised-button

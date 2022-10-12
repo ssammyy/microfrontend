@@ -66,6 +66,8 @@ class MSJSONControllers(
                     "SCF_FILE" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         scfDocId = fileDocSaved!!.id
+                        userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                        sampleCollectionStatus = map.activeStatus
                     }
                     "SSF_FILE" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
@@ -74,6 +76,8 @@ class MSJSONControllers(
                     "SEIZURE_FILE" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         seizureDocId = fileDocSaved!!.id
+                        userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                        seizureDeclarationStatus = map.activeStatus
                     }
                     "DECLARATION_FILE" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
@@ -82,6 +86,8 @@ class MSJSONControllers(
                     "CHARGE_SHEET_FILE" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         chargeSheetDocId = fileDocSaved!!.id
+                        userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                        chargeSheetStatus = map.activeStatus
                     }
                     "DATA_REPORT_FILE" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second

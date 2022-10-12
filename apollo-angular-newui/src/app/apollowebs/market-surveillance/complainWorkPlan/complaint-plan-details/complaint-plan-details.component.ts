@@ -1,33 +1,46 @@
 import { Component, OnInit } from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
   ApprovalDto,
   BSNumberSaveDto,
   ChargeSheetDto,
-  ComplaintAssignDto,
-  ComplaintsFilesFoundDto,
+  ComplaintAssignDto, ComplaintsFilesFoundDto,
   CompliantRemediationDto,
   DataInspectorInvestDto,
   DataReportDto,
-  DataReportParamsDto, DestructionNotificationDto,
+  DataReportParamsDto,
+  DestructionNotificationDto,
   FuelEntityRapidTestDto,
-  InspectionInvestigationReportDto, LaboratoryDto,
-  LIMSFilesFoundDto, MsBroadProductCategory,
+  InspectionInvestigationReportDto,
+  LaboratoryDto, LIMSFilesFoundDto, MsBroadProductCategory,
   MsDepartment,
-  MsDivisionDetails, MsProducts, MsProductSubcategory, MsRecommendationDto,
-  MSRemarksDto,
-  MSSSFPDFListDetailsDto, MsStandardProductCategory,
+  MsDivisionDetails, MsProducts, MsProductSubcategory,
+  MsRecommendationDto, MSRemarksDto, MSSSFPDFListDetailsDto,
+  MsStandardProductCategory,
   PDFSaveComplianceStatusDto,
-  PreliminaryReportDto, PreliminaryReportFinal, PreliminaryReportItemsDto,
+  PreliminaryReportDto,
+  PreliminaryReportFinal,
+  PreliminaryReportItemsDto,
   RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
   SampleSubmissionDto,
-  SampleSubmissionItemsDto, SeizureDeclarationDto,
-  SSFSaveComplianceStatusDto, WorkPlanEntityDto, WorkPlanFeedBackDto, WorkPlanFinalRecommendationDto,
+  SampleSubmissionItemsDto,
+  SeizureDeclarationDto,
+  SSFSaveComplianceStatusDto,
+  WorkPlanEntityDto,
+  WorkPlanFeedBackDto,
+  WorkPlanFinalRecommendationDto,
   WorkPlanInspectionDto,
-  WorkPlanScheduleApprovalDto,
+  WorkPlanScheduleApprovalDto
 } from '../../../../core/store/data/ms/ms.model';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {
+  BroadProductCategory,
+  ProductCategories,
+  Products,
+  ProductSubcategory,
+  StandardProductCategory
+} from '../../../../core/store/data/master/master.model';
 import {
   County,
   CountyService,
@@ -36,27 +49,20 @@ import {
   selectCountyIdData,
   selectUserInfo,
   Town,
-  TownService,
+  TownService
 } from '../../../../core/store';
+import {Observable, throwError} from 'rxjs';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {Store} from '@ngrx/store';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ActivatedRoute, Router} from '@angular/router';
-import {
-  BroadProductCategory,
-  ProductCategories,
-  Products,
-  ProductSubcategory,
-  StandardProductCategory,
-} from '../../../../core/store/data/master/master.model';
-import {Observable, throwError} from 'rxjs';
 
 @Component({
-  selector: 'app-work-plan-details',
-  templateUrl: './work-plan-details.component.html',
-  styleUrls: ['./work-plan-details.component.css'],
+  selector: 'app-complaint-plan-details',
+  templateUrl: './complaint-plan-details.component.html',
+  styleUrls: ['./complaint-plan-details.component.css']
 })
-export class WorkPlanDetailsComponent implements OnInit {
+export class ComplaintPlanDetailsComponent implements OnInit {
 
   active: Number = 0;
   selectedRefNo: string;
@@ -1298,17 +1304,17 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   openModalAddDetails(divVal: string): void {
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails',
-       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
+      'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
-    'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
-    'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
-    'addNewScheduleDetails'];
+      'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
+      'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
+      'addNewScheduleDetails'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS',
       'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/REJECT FINAL REPORT', 'APPROVE/REJECT FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
-     , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
+      , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE'];
 
@@ -1633,68 +1639,68 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickStartOnsiteActivities() {
     // if (valid) {
-      this.SpinnerService.show();
-      this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
-      this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-      ).subscribe(
-          (data: any) => {
-            this.workPlanInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('WORK-PLAN DETAILS SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
+    this.SpinnerService.show();
+    this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+    this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('WORK-PLAN DETAILS SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
     // }
   }
 
   onClickSubmitForApproval() {
     // if (valid) {
-      this.SpinnerService.show();
-      this.msService.msWorkPlanScheduleDetailsSubmitForApproval(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-      ).subscribe(
-          (data: any) => {
-            this.workPlanInspection = data;
-            // console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('WORK-PLAN DETAILS SUBMITTED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
+    this.SpinnerService.show();
+    this.msService.msWorkPlanScheduleDetailsSubmitForApproval(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          // console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('WORK-PLAN DETAILS SUBMITTED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 
   onClickEndOnsiteActivities() {
     // if (valid) {
-      this.SpinnerService.show();
-      this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
-      this.msService.msWorkPlanScheduleDetailsEndOnsiteActivities(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-      ).subscribe(
-          (data: any) => {
-            this.workPlanInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('WORK-PLAN ON-SITE DETAILS SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
+    this.SpinnerService.show();
+    this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+    this.msService.msWorkPlanScheduleDetailsEndOnsiteActivities(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('WORK-PLAN ON-SITE DETAILS SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
     // }
   }
 
@@ -2002,7 +2008,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   goBack() {
     console.log('TEST 101' + this.workPlanInspection.batchDetails.referenceNumber);
-    this.router.navigate([`/workPlan`, this.workPlanInspection.batchDetails.referenceNumber]);
+    this.router.navigate([`/complaintPlan`, this.workPlanInspection.batchDetails.referenceNumber]);
   }
 
   viewWorkPlanFileSaved(data: ComplaintsFilesFoundDto) {
@@ -2461,7 +2467,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             console.log(data);
             this.workPlanInspection = data;
             this.SpinnerService.hide();
-            this.msService.showSuccess('WORK PLAN SCHEDULED UPDATED SUCCESSFULLY');
+            this.msService.showSuccess('COMPLAINT PLAN SCHEDULED UPDATED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();

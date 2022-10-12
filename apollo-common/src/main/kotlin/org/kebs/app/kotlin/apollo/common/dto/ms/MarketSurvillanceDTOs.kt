@@ -504,6 +504,7 @@ data class InspectionInvestigationReportDto(
         var dateInvestigationInspection: Date? = null,
         var kebsInspectors: List<KebsOfficersName>? = null,
         var methodologyEmployed: String? = null,
+        var findings: String? = null,
         var conclusion: String? = null,
         var recommendations: String? = null,
         var statusActivity: String? = null,
@@ -561,8 +562,8 @@ data class SampleSubmissionDto(
         var labellingIdentification : String? = null,
         var fileRefNumber : String? = null,
         var referencesStandards : String? = null,
-        var sizeTestSample : Long? = null,
-        var sizeRefSample : Long? = null,
+        var sizeTestSample : String? = null,
+        var sizeRefSample : String? = null,
         var condition : String? = null,
         var sampleReferences : String? = null,
         var sendersName : String? = null,
@@ -811,12 +812,19 @@ data class ComplaintSearchValues(
 data class ComplaintAdviceRejectDto(
         var mandateForOga: Int? = null,
         var advisedWhereToRemarks: String? = null,
+        var amendmentRemarks: String? = null,
         var rejectedRemarks: String? = null
 )
 
 data class ComplaintAssignDto(
         var assignedRemarks: String? = null,
         var assignedIo: Long? = null
+)
+
+data class RegionReAssignDto(
+        var reassignedRemarks: String? = null,
+        var countyID: Long? = null,
+        var townID: Long? = null
 )
 
 data class StandardDetailsDto(
@@ -965,6 +973,10 @@ data class DestructionNotificationDto(
         val clientEmail: String? = null,
         val remarks: String? = null,
 //        val complaintFilesDetails: ComplaintFilesDto,
+)
+
+data class EndFuelDto(
+        val remarks: String? = null
 )
 
 data class ComplaintFilesDto(

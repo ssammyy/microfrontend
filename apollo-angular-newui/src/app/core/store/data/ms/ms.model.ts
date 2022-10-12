@@ -23,6 +23,7 @@ export class ComplaintApproveRejectAdviceWhereDto {
 export class ComplaintAdviceRejectDto {
     mandateForOga: number;
     advisedWhereToRemarks: string;
+    amendmentRemarks: string;
     rejectedRemarks: string;
 }
 
@@ -392,6 +393,7 @@ export class InspectionInvestigationReportDto {
     dateInvestigationInspection: Date;
     kebsInspectors: KebsOfficersName[];
     methodologyEmployed: string;
+    findings: string;
     conclusion: string;
     recommendations: string;
     statusActivity: string;
@@ -763,6 +765,12 @@ export class ComplaintAssignDto {
     assignedIo: bigint;
 }
 
+export class RegionReAssignDto {
+    reassignedRemarks: string;
+    countyID: bigint;
+    townID: bigint;
+}
+
 export class CompliantRemediationDto {
     proFormaInvoiceStatus: boolean;
     dateOfRemediation: Date;
@@ -909,6 +917,10 @@ export class MSSSFPDFListDetailsDto {
     complianceStatus: boolean;
 }
 
+export class EndFuelDto {
+    remarks: string;
+}
+
 export class LIMSFilesFoundDto {
     fileSavedStatus: boolean;
     fileName: string;
@@ -942,8 +954,8 @@ export class SampleSubmissionDto {
     labellingIdentification: string;
     fileRefNumber: string;
     referencesStandards: string;
-    sizeTestSample: number;
-    sizeRefSample: number;
+    sizeTestSample: string;
+    sizeRefSample: string;
     condition: string;
     sampleReferences: string;
     sendersName: string;

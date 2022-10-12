@@ -3,7 +3,7 @@ import swal from 'sweetalert2';
 import {
   BatchFileFuelSaveDto,
   BSNumberSaveDto, ComplaintsFilesFoundDto,
-  CompliantRemediationDto, FuelBatchDetailsDto,
+  CompliantRemediationDto, EndFuelDto, FuelBatchDetailsDto,
   FuelEntityAssignOfficerDto,
   FuelEntityRapidTestDto,
   FuelInspectionDto,
@@ -65,6 +65,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   scheduleRemediationForm!: FormGroup;
   notCompliantInvoiceForm!: FormGroup;
   remediationForm!: FormGroup;
+  endFuelForm!: FormGroup;
   dataSaveAssignOfficer: FuelEntityAssignOfficerDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
   dataSaveRapidTestProducts: RapidTestProductsDto;
@@ -80,6 +81,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   dataSaveScheduleRemediation: CompliantRemediationDto;
   dataSaveNotCompliantInvoice: CompliantRemediationDto;
   dataSaveRemediation: RemediationDto;
+  dataSaveEndFuel: EndFuelDto;
   selectedLabResults: MSSSFLabResultsDto;
 
   labList: LaboratoryDto[];
@@ -796,10 +798,18 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
       totalVolume: ['', Validators.required],
     });
 
+    this.endFuelForm = this.formBuilder.group({
+      remarks: ['', Validators.required],
+    });
+
   }
 
   get formAssignOfficerForm(): any {
     return this.assignOfficerForm.controls;
+  }
+
+  get formEndFuelForm(): any {
+    return this.endFuelForm.controls;
   }
 
   get formRapidTestForm(): any {
@@ -889,11 +899,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   openModalAddDetails(divVal: string): void {
     const arrHead = ['scheduleRemediationInvoicePaid', 'finalLabComplianceStatus',
       'assignOfficer', 'rapidTest',  'uploadScfFiles', 'uploadReportFiles', 'uploadInvoiceDocFiles',
-      'ssfAddComplianceStatus', 'scheduleRemediation',
+      'ssfAddComplianceStatus', 'scheduleRemediation', 'endFuelRemarks',
       'addRemediationDetails', 'notCompliantInvoice', 'rapidTestAddProducts'];
     const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID', 'FINAL LAB RESULTS COMPLIANCE STATUS',
       'SELECT OFFICER TO ASSIGN', 'RAPID TEST OVERALL RESULTS', 'UPLOAD SCF FILE', 'UPLOAD REPORT FILE', 'UPLOAD INVOICE ATTACHMENT WITH FILE',
-      'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
+      'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE', 'END FUEL INSPECTION',
       'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED', 'ADD PRODUCT RAPID TEST DETAILS'];
 
     for (let h = 0; h < arrHead.length; h++) {
@@ -1350,15 +1360,16 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveEndRemediation() {
+  onClickSaveEndFuel() {
     // if (valid) {
       this.SpinnerService.show();
-      // this.dataSaveRemediation = {...this.dataSaveRemediation, ...this.remediationForm.value};
+      this.dataSaveEndFuel = {...this.dataSaveEndFuel, ...this.endFuelForm.value};
       this.msService.msFuelInspectionEnd(
           this.batchReferenceNumber,
           this.teamsReferenceNo,
           this.countyReferenceNo,
           this.referenceNumber,
+          this.dataSaveEndFuel
       ).subscribe(
           (data: any) => {
             this.fuelInspection = data;

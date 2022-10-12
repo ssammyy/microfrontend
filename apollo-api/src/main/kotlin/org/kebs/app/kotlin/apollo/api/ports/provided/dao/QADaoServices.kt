@@ -2011,6 +2011,52 @@ fun listPermits(permits: List<PermitApplicationsEntity>, map: ServiceMapsEntity)
     }
 }
 
+
+    fun listInspectionReports(inspectionReports: List<QaInspectionReportRecommendationEntity>,map:ServiceMapsEntity):List<InspectionReportDto>
+    {
+        return inspectionReports.map { i->InspectionReportDto(
+            i.id,
+            i.recommendations,
+            i.refNo,
+            i.inspectorComments,
+            i.inspectorName,
+            i.inspectorDate,
+            i.supervisorComments,
+            i.supervisorName,
+            i.supervisorDate,
+            i.description,
+            i.permitId,
+            i.permitRefNumber,
+            i.filledQpsmsStatus,
+            i.filledInspectionTestingStatus,
+            i.filledStandardizationMarkSchemeStatus,
+            i.filledOpcStatus,
+            i.filledHaccpImplementationStatus,
+            i.submittedInspectionReportStatus,
+            i.supervisorFilledStatus,
+            i.approvedRejectedStatus,
+            i.status,
+            i.varField1,
+            i.varField2,
+            i.varField3,
+            i.varField4,
+            i.varField5,
+            i.varField6,
+            i.varField7,
+            i.varField8,
+            i.varField9,
+            i.varField10,
+            i.createdBy,
+            i.createdOn,
+            i.modifiedBy,
+            i.modifiedOn,
+            i.deleteBy,
+            i.deletedOn,
+            encryptedInspectionId=  jasyptStringEncryptor.encrypt(i.id.toString())
+            )
+        }
+    }
+
 fun listSTA10Product(sta10Products: List<QaProductManufacturedEntity>): List<STA10ProductsManufactureDto> {
     return sta10Products.map { p ->
         STA10ProductsManufactureDto(

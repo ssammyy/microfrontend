@@ -822,7 +822,7 @@
                             </div>
                             <div>
                                 <a style="color: white"
-                                   th:href="@{/api/qa/permit-details(permitID=${permit?.id})}"
+                                   th:href="@{/api/qa/permit-details(permitID=${permit?.encryptedPermitId})}"
                                    class="filter-link">GO TO PERMIT DETAILS</a>
 
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">

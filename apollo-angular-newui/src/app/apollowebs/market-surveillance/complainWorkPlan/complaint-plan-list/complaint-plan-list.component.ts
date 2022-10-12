@@ -2,37 +2,32 @@ import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
   BatchFileFuelSaveDto,
-  ComplaintsListDto,
-  ComplaintsTaskAndAssignedDto,
-  MsBroadProductCategory,
+  ComplaintsTaskAndAssignedDto, MsBroadProductCategory,
   MsDepartment,
-  MsDivisionDetails,
-  MsProducts, MsProductSubcategory,
-  MsStandardProductCategory, WorkPlanEntityDto,
-  WorkPlanListDto,
-  WorkPlanScheduleListDetailsDto,
+  MsDivisionDetails, MsProducts, MsProductSubcategory, MsStandardProductCategory, WorkPlanEntityDto, WorkPlanListDto,
+  WorkPlanScheduleListDetailsDto
 } from '../../../../core/store/data/ms/ms.model';
 import {Observable, Subject, throwError} from 'rxjs';
 import {County, CountyService, loadCountyId, selectCountyIdData, selectUserInfo, Town, TownService} from '../../../../core/store';
-import {LocalDataSource} from 'ng2-smart-table';
-import {Store} from '@ngrx/store';
-import {ActivatedRoute, Router} from '@angular/router';
-import {NgxSpinnerService} from 'ngx-spinner';
-import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {
   BroadProductCategory,
   ProductCategories,
   Products,
   ProductSubcategory,
-  StandardProductCategory,
+  StandardProductCategory
 } from '../../../../core/store/data/master/master.model';
+import {LocalDataSource} from 'ng2-smart-table';
+import {Store} from '@ngrx/store';
+import {ActivatedRoute, Router} from '@angular/router';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {MsService} from '../../../../core/store/data/ms/ms.service';
 
 @Component({
-  selector: 'app-work-plan-list',
-  templateUrl: './work-plan-list.component.html',
-  styleUrls: ['./work-plan-list.component.css'],
+  selector: 'app-complaint-plan-list',
+  templateUrl: './complaint-plan-list.component.html',
+  styleUrls: ['./complaint-plan-list.component.css']
 })
-export class WorkPlanListComponent implements OnInit {
+export class ComplaintPlanListComponent implements OnInit {
   @ViewChild('editModal') editModal !: TemplateRef<any>;
   currDiv!: string;
   currDivLabel!: string;
@@ -198,7 +193,7 @@ export class WorkPlanListComponent implements OnInit {
   private loadData(page: number, records: number, referenceNumber: string, routeTake: string): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
-    this.msService.loadMSWorkPlanList(String(page), String(records), referenceNumber, routeTake, 'false').subscribe(
+    this.msService.loadMSWorkPlanList(String(page), String(records), referenceNumber, routeTake, 'true').subscribe(
         (data) => {
           console.log(`TEST DATA===${data}`);
           this.loadedData = data;
@@ -292,7 +287,7 @@ export class WorkPlanListComponent implements OnInit {
 
   goBack() {
     // console.log('TEST 101' + this.loadedData.createdWorkPlan.referenceNumber);
-    this.router.navigate([`/workPlan`]);
+    this.router.navigate([`/complaintPlan`]);
   }
 
   onManagerPetroleumChange(event: any) {
@@ -322,7 +317,7 @@ export class WorkPlanListComponent implements OnInit {
 
   viewRecord(data: WorkPlanListDto) {
     console.log('TEST 101 ' + data.referenceNumber);
-    this.router.navigate([`/workPlan/details/`, data.referenceNumber, this.selectedBatchRefNo]);
+    this.router.navigate([`/complaintPlan/details/`, data.referenceNumber, this.selectedBatchRefNo]);
   }
 
   get formNewScheduleForm(): any {
@@ -352,29 +347,9 @@ export class WorkPlanListComponent implements OnInit {
     console.log(`town set to ${this.selectedTown}`);
   }
 
-  onClickSaveNewBatch(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSave = {...this.dataSave, ...this.addNewScheduleForm.value};
-      this.msService.addNewMSFuelBatch(this.dataSave).subscribe(
-          (data: any) => {
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('NEW FUEL BATCH CREATED SUCCESSFUL');
-          },
-          // ,
-          // (err: HttpErrorResponse) => {
-          //   console.warn(err.error);
-          //   this.SpinnerService.hide();
-          //   this.msService.showError(err.message);
-          // }
-      );
-    }
-  }
-
   openModalAddDetails(divVal: string): void {
     const arrHead = ['addNewScheduleDetails'];
-    const arrHeadSave = ['ADD NEW WORK-PLAN SCHEDULE DETAILS FILE'];
+    const arrHeadSave = ['ADD NEW COMPLAINT-PLAN SCHEDULE DETAILS FILE'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -413,7 +388,7 @@ export class WorkPlanListComponent implements OnInit {
   onClickCloseBatch() {
     this.msService.showSuccessWith2Message('Are you sure your want to close this Work-Plan?', 'You won\'t be able to add new schedule after submission!',
         // tslint:disable-next-line:max-line-length
-        'You can click the \'ADD NEW WORK-PLAN FILE\' button to add another Work Plan', 'YEARLY WORK-PLAN SENT FOR APPROVAL SUCCESSFUL', () => {
+        'You can click the \'ADD NEW COMPLAINT-PLAN FILE\' button to add another Work Plan', 'YEARLY COMPLAINT-PLAN SENT FOR APPROVAL SUCCESSFUL', () => {
           this.closeBatch();
         });
   }
@@ -427,8 +402,8 @@ export class WorkPlanListComponent implements OnInit {
           console.log(data);
           this.SpinnerService.hide();
           resultStatus  = true;
-          this.msService.showSuccess('YEARLY WORK-PLAN SENT FOR APPROVAL SUCCESSFUL');
-          this.router.navigate([`/workPlan`]);
+          this.msService.showSuccess('YEARLY COMPLAINT-PLAN SENT FOR APPROVAL SUCCESSFUL');
+          this.router.navigate([`/complaintPlan`]);
         },
         error => {
           this.SpinnerService.hide();
@@ -493,7 +468,7 @@ export class WorkPlanListComponent implements OnInit {
             console.log(data);
             this.SpinnerService.hide();
             this.addNewScheduleForm.reset();
-            this.msService.showSuccess('WORK PLAN SCHEDULED DETAILS, SAVED SUCCESSFULLY');
+            this.msService.showSuccess('COMPLAINT SCHEDULED DETAILS, SAVED SUCCESSFULLY');
             this.loadData(this.defaultPage, this.defaultPageSize, this.selectedBatchRefNo , this.activeStatus);
           },
           error => {
@@ -506,4 +481,5 @@ export class WorkPlanListComponent implements OnInit {
 
     }
   }
+
 }
