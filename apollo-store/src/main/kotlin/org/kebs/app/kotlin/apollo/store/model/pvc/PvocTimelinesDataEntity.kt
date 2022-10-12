@@ -60,29 +60,24 @@ class PvocTimelinesDataEntity : Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var docIssueDate: Timestamp? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "REQUEST_DATE_OF_INSPECTION", nullable = false)
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var requestDateOfInspection: Timestamp? = null
 
-    @NotNull(message = "Required field")
-    @Column(name = "DOC_CONFIRMATION_DATE", nullable = false)
+    @Column(name = "DOC_CONFIRMATION_DATE", nullable = true)
     @Basic
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var docConfirmationDate: Timestamp? = null
 
-    @NotNull(message = "Required field")
     @Column(name = "RFC_TO_INSPECTION_DAYS", nullable = false)
     @Basic
     var rfcToInspectionDays: Long = 0
 
-    @NotNull(message = "Required field")
     @Column(name = "RFC_TO_INSPECTION_VIOLATION")
     @Basic
     var rfcToInspectionViolation: Boolean = false
 
-    @NotNull(message = "Required field")
     @Column(name = "INSPECTION_TO_ISSUANCE_DAYS", nullable = false)
     @Basic
     var inspectionToIssuanceDays: Long = 0
@@ -92,7 +87,6 @@ class PvocTimelinesDataEntity : Serializable {
     @Basic
     var inspectionToIssuanceViolation: Boolean = false
 
-    @NotNull(message = "Required field")
     @Column(name = "RFC_TO_ISSUANCE_DAYS", nullable = false)
     @Basic
     var rfcToIssuanceDays: Long = 0
