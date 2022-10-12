@@ -1808,7 +1808,7 @@ class MarketSurveillanceFuelDaoServices(
                 nameProduct = body.nameProduct
                 packaging = body.packaging
                 labellingIdentification = body.labellingIdentification
-                fileRefNumber = "REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+
                 referencesStandards = body.referencesStandards
                 sizeTestSample = body.sizeTestSample
                 sizeRefSample = body.sizeRefSample
@@ -1831,9 +1831,11 @@ class MarketSurveillanceFuelDaoServices(
 
                 if (fuelInspectionDetail !=null){
                     msFuelInspectionId = fuelInspectionDetail.id
+                    fileRefNumber = "REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
 
                 }else if (workPlanInspectionDetail != null){
                     workPlanGeneratedID = workPlanInspectionDetail.id
+                    fileRefNumber = body.sampleReferences
                 }
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)

@@ -95,8 +95,16 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
     fun findByWorkPlanYearIdAndComplaintIdIsNotNull(workPlanYearId: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
     fun findByWorkPlanYearIdAndApproved(workPlanYearId: Long, approved: String, pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
     fun findByWorkPlanYearIdAndMsProcessEndedStatus(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+    fun findByWorkPlanYearIdAndMsProcessEndedStatusAndComplaintIdIsNotNull(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
 
     fun findByWorkPlanYearIdAndOfficerIdAndUserTaskId(
+        workPlanYearId: Long,
+        officerId: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
+    fun findByWorkPlanYearIdAndOfficerIdAndUserTaskIdAndComplaintIdIsNotNull(
         workPlanYearId: Long,
         officerId: Long,
         userTaskId: Long,
@@ -110,6 +118,13 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
         pageable: Pageable
     ): Page<MsWorkPlanGeneratedEntity>?
 
+    fun findByWorkPlanYearIdAndHofAssignedAndUserTaskIdAndComplaintIdIsNotNull(
+        workPlanYearId: Long,
+        hofAssigned: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
     fun findByWorkPlanYearIdAndHodRmAssignedAndUserTaskId(
         workPlanYearId: Long,
         hodRmAssigned: Long,
@@ -117,7 +132,20 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
         pageable: Pageable
     ): Page<MsWorkPlanGeneratedEntity>?
 
+    fun findByWorkPlanYearIdAndHodRmAssignedAndUserTaskIdAndComplaintIdIsNotNull(
+        workPlanYearId: Long,
+        hodRmAssigned: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
     fun findByWorkPlanYearIdAndUserTaskId(
+        workPlanYearId: Long,
+        userTaskId: Long,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
+
+    fun findByWorkPlanYearIdAndUserTaskIdAndComplaintIdIsNotNull(
         workPlanYearId: Long,
         userTaskId: Long,
         pageable: Pageable

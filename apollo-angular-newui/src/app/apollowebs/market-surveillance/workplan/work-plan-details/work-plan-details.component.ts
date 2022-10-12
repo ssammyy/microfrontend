@@ -845,6 +845,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       dateInvestigationInspection: ['', Validators.required],
       kebsInspectors: null,
       methodologyEmployed: ['', Validators.required],
+      findings: ['', Validators.required],
       conclusion: ['', Validators.required],
       recommendations: ['', Validators.required],
       statusActivity: ['', Validators.required],
@@ -862,7 +863,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.investInspectReportInspectorsForm = this.formBuilder.group({
       inspectorName: ['', Validators.required],
-      institution: ['', Validators.required],
+      institution: null,
       designation: ['', Validators.required],
     });
 

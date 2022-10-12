@@ -76,6 +76,10 @@ class MsInspectionInvestigationReportEntity: Serializable {
     @Basic
     var methodologyEmployed: String? = null
 
+    @Column(name = "FINDINGS")
+    @Basic
+    var findings: String? = null
+
     @Column(name = "CONCLUSION")
     @Basic
     var conclusion: String? = null

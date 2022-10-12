@@ -377,7 +377,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
     fun createNewWorkPlanScheduleFromComplaint(referenceNo: String,body: WorkPlanEntityDto): AllComplaintsDetailsDto {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val msType = findMsTypeDetailsWithUuid(applicationMapProperties.mapMsWorkPlanTypeUuid)
+        val msType = findMsTypeDetailsWithUuid(applicationMapProperties.mapMsComplaintTypeUuid)
         val complaintFound = findComplaintByRefNumber(referenceNo)
         val currentYear = msWorkPlanDaoServices.getCurrentYear()
         val workPlanYearCodes = msWorkPlanDaoServices.findWorkPlanYearsCodesEntity(currentYear, map)
@@ -399,6 +399,15 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                     msProcessStatus = map.activeStatus
                                 }
                                 val complaintUpdated = updateComplaintDetailsInDB(complaintFound, map, loggedInUser).second
+                                with(userWorkPlan) {
+                                    endedDate = commonDaoServices.getCurrentDate()
+                                    endedStatus = map.activeStatus
+                                    status = map.activeStatus
+                                    batchClosed = map.activeStatus
+                                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
+                                }
+
+                                msWorkPlanDaoServices.updateWorkPlanBatch(userWorkPlan, map, loggedInUser)
 
                                 return complaintInspectionMappingCommonDetails(complaintUpdated, map)
                             }

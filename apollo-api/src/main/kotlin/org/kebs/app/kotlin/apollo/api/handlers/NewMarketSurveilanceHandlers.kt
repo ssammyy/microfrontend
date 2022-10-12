@@ -1338,7 +1338,8 @@ class NewMarketSurveillanceHandler(
         return try {
             val page = commonDaoServices.extractPageRequest(req)
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllNotCompletedLists(batchReferenceNo,page)
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required Complaint Status, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllNotCompletedLists(batchReferenceNo,commonDaoServices.toBoolean(complaintStatus),page)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -1367,7 +1368,8 @@ class NewMarketSurveillanceHandler(
         return try {
             val page = commonDaoServices.extractPageRequest(req)
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllCompletedLists(batchReferenceNo,page)
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required Complaint Status, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionAllCompletedLists(batchReferenceNo,commonDaoServices.toBoolean(complaintStatus),page)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -1382,7 +1384,8 @@ class NewMarketSurveillanceHandler(
         return try {
             val page = commonDaoServices.extractPageRequest(req)
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionListMyTask(batchReferenceNo,page)
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required Complaint Status, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorPlanInspectionListMyTask(batchReferenceNo,commonDaoServices.toBoolean(complaintStatus),page)
                 .let {
                     ServerResponse.ok().body(it)
                 }

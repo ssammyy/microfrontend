@@ -193,7 +193,7 @@ export class ComplaintPlanListComponent implements OnInit {
   private loadData(page: number, records: number, referenceNumber: string, routeTake: string): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
-    this.msService.loadMSWorkPlanList(String(page), String(records), referenceNumber, routeTake).subscribe(
+    this.msService.loadMSWorkPlanList(String(page), String(records), referenceNumber, routeTake, 'true').subscribe(
         (data) => {
           console.log(`TEST DATA===${data}`);
           this.loadedData = data;
