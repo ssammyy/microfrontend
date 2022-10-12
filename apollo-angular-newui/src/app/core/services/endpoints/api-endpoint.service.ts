@@ -557,6 +557,7 @@ export class ApiEndpointService {
         STD_LEVY_ACTIVE_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getActiveFirms`,
         STD_LEVY_DORMANT_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getDormantFirms`,
         STD_LEVY_CLOSED_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getClosedFirms`,
+        STD_LEVY_REJECTED_FIRM_EDITS: `${ApiEndpointService.STL_CONTEXT}/getRejectedCompanyDetails`,
 
 
     };

@@ -379,6 +379,18 @@ export const ROUTES: RouteInfo[] = [
         ],
     },
     {
+        path: '',
+        title: 'Company Edits',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['SL_MANUFACTURE_VIEW'],
+        collapse: 'edits',
+        children: [
+            {path: 'slRejectedEdits', title: 'Rejected Changes', ab: 'RC'}
+
+        ],
+    },
+    {
         path: '/epra',
         title: 'EPRA',
         type: 'link',

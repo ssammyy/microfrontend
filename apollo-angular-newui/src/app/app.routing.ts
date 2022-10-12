@@ -484,6 +484,7 @@ import {StandardLevyDormantFirmsComponent} from './apollowebs/standards-levy/sta
 import {StandardLevyClosedFirmsComponent} from './apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component';
 import {FuelListTeamsComponent} from './apollowebs/market-surveillance/fuel/fuel-list-teams/fuel-list-teams.component';
 import {FuelListTeamsCountyComponent} from './apollowebs/market-surveillance/fuel/fuel-list-teams-county/fuel-list-teams-county.component';
+import {StandardLevyRejectedChangesComponent} from "./apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component";
 
 export const routes: Routes = [
     {
@@ -1841,6 +1842,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: StandardLevyClosedFirmsComponent}],
     },
+    {
+        path: 'slRejectedEdits', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyRejectedChangesComponent}],
+    },
+
 
     /****************MS COMPONENTS ENDS HERE**********************************/
 

@@ -26,6 +26,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.RejectedCompanyDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
@@ -667,7 +668,8 @@ class StdLevyController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetailsConfirm(
         @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
-        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks,
+        rejectedCompanyDetailsEntity: RejectedCompanyDetailsEntity
     ): ServerResponse
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
@@ -690,7 +692,7 @@ class StdLevyController(
             siteVisitId = editCompanyDTO.editID
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirm(companyProfileEntity,standardLevySiteVisitRemarks))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirm(companyProfileEntity,standardLevySiteVisitRemarks,rejectedCompanyDetailsEntity))
 
     }
 
@@ -700,7 +702,8 @@ class StdLevyController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetailsConfirmLvlOne(
         @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
-        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks,
+        rejectedCompanyDetailsEntity: RejectedCompanyDetailsEntity
     ): ServerResponse
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
@@ -723,7 +726,7 @@ class StdLevyController(
             siteVisitId = editCompanyDTO.editID
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlOne(companyProfileEntity,standardLevySiteVisitRemarks))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlOne(companyProfileEntity,standardLevySiteVisitRemarks,rejectedCompanyDetailsEntity))
 
     }
 
@@ -733,7 +736,8 @@ class StdLevyController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun editCompanyDetailsConfirmLvlTwo(
         @RequestBody editCompanyDTO: EditCompanyTaskToDTO,
-        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks,
+        rejectedCompanyDetailsEntity: RejectedCompanyDetailsEntity
     ): ServerResponse
     {
         val companyProfileEntity= CompanyProfileEntity().apply {
@@ -756,7 +760,7 @@ class StdLevyController(
             siteVisitId = editCompanyDTO.editID
         }
 
-        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlTwo(companyProfileEntity,standardLevySiteVisitRemarks))
+        return ServerResponse(HttpStatus.OK,"Company Details Edited",standardLevyService.editCompanyDetailsConfirmLvlTwo(companyProfileEntity,standardLevySiteVisitRemarks,rejectedCompanyDetailsEntity))
 
     }
 
@@ -1743,6 +1747,14 @@ class StdLevyController(
     {
         return standardLevyService.getAllLevyPayments()
     }
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getRejectedCompanyDetails")
+    @ResponseBody
+    fun getRejectedCompanyDetails(): MutableList<RejectedComDetails>
+    {
+        return standardLevyService.getRejectedCompanyDetails()
+    }
+
 
     //Get List of Penalty Report
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")

@@ -17,6 +17,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEditEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.RejectedCompanyDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.std.CompanyStandardRepository
@@ -73,6 +74,7 @@ class StandardLevyService(
     private val iUserRepository: IUserRepository,
     private val companyRepo: ICompanyProfileRepository,
     private val companyStandardRepository: CompanyStandardRepository,
+    private val rejectedCompanyDetailsRepository: RejectedCompanyDetailsRepository,
 
 
     ) {
@@ -228,7 +230,8 @@ class StandardLevyService(
 
     fun editCompanyDetailsConfirm(
         companyProfileEntity: CompanyProfileEntity,
-        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks,
+        rejectedCompanyDetailsEntity: RejectedCompanyDetailsEntity
     ): List<TaskDetailsBody> {
 
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
@@ -250,6 +253,27 @@ class StandardLevyService(
                 companyProfileEntity.slBpmnProcessInstance?.let { variables.put("processId", it) }
                 companyProfileEntity.assignedTo?.let { variables.put("assignedTo", it) }
 
+                rejectedCompanyDetailsEntity.companyId=companyProfileEntity.id
+                rejectedCompanyDetailsEntity.companyEmailEdit=companyProfileEntity.companyEmail
+                rejectedCompanyDetailsEntity.editID= standardLevySiteVisitRemarks.siteVisitId
+                rejectedCompanyDetailsEntity.physicalAddressEdit=companyProfileEntity.physicalAddress
+                rejectedCompanyDetailsEntity.postalAddressEdit=companyProfileEntity.postalAddress
+                rejectedCompanyDetailsEntity.ownershipEdit=companyProfileEntity.ownership
+                rejectedCompanyDetailsEntity.companyTelephoneEdit=companyProfileEntity.companyTelephone
+                rejectedCompanyDetailsEntity.assignedTo=companyProfileEntity.assignedTo
+
+
+                val companyDetails=companyProfileRepo.getCompanyData(companyProfileEntity.id)
+                for(companyDetail in companyDetails){
+                    rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
+                    rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
+                    rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
+                    rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
+                    rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                    rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
+                }
+
+
                 companyProfileEntity.accentTo?.let { variables["No"] = it }
                 companyProfileEntity.accentTo?.let { variables["Yes"] = it }
                 standardLevySiteVisitRemarks.siteVisitId?.let { variables.put("editID", it) }
@@ -263,6 +287,8 @@ class StandardLevyService(
                 standardLevySiteVisitRemarks.remarkBy = approveName
 
                 standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
+
+
 
 
                 if (variables["Yes"] == true) {
@@ -301,6 +327,8 @@ class StandardLevyService(
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
                     }
+
+                    rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
                     taskService.complete(companyProfileEntity.taskId, variables)
 
                 }
@@ -312,7 +340,8 @@ return getUserTasks();
 
     fun editCompanyDetailsConfirmLvlOne(
         companyProfileEntity: CompanyProfileEntity,
-        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks,
+        rejectedCompanyDetailsEntity: RejectedCompanyDetailsEntity
     ): List<TaskDetailsBody> {
 
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
@@ -346,6 +375,26 @@ return getUserTasks();
                 standardLevySiteVisitRemarks.remarkBy = approveName
 
                 standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
+
+                rejectedCompanyDetailsEntity.companyId=companyProfileEntity.id
+                rejectedCompanyDetailsEntity.companyEmailEdit=companyProfileEntity.companyEmail
+                rejectedCompanyDetailsEntity.editID= standardLevySiteVisitRemarks.siteVisitId
+                rejectedCompanyDetailsEntity.physicalAddressEdit=companyProfileEntity.physicalAddress
+                rejectedCompanyDetailsEntity.postalAddressEdit=companyProfileEntity.postalAddress
+                rejectedCompanyDetailsEntity.ownershipEdit=companyProfileEntity.ownership
+                rejectedCompanyDetailsEntity.companyTelephoneEdit=companyProfileEntity.companyTelephone
+                rejectedCompanyDetailsEntity.assignedTo=companyProfileEntity.assignedTo
+
+
+                val companyDetails=companyProfileRepo.getCompanyData(companyProfileEntity.id)
+                for(companyDetail in companyDetails){
+                    rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
+                    rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
+                    rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
+                    rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
+                    rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                    rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
+                }
 
 
                 if (variables["Yes"] == true) {
@@ -403,6 +452,7 @@ return getUserTasks();
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
                     }
+                    rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
                     taskService.complete(companyProfileEntity.taskId, variables)
 
                 }
@@ -415,7 +465,8 @@ return getUserTasks();
 
     fun editCompanyDetailsConfirmLvlTwo(
         companyProfileEntity: CompanyProfileEntity,
-        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks,
+        rejectedCompanyDetailsEntity: RejectedCompanyDetailsEntity
     ): List<TaskDetailsBody> {
 
         companyProfileRepo.findByIdOrNull(companyProfileEntity.id)
@@ -446,6 +497,29 @@ return getUserTasks();
                 standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
                 standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
                 standardLevySiteVisitRemarks.remarkBy = approveName
+
+                rejectedCompanyDetailsEntity.companyId=companyProfileEntity.id
+                rejectedCompanyDetailsEntity.companyEmailEdit=companyProfileEntity.companyEmail
+                rejectedCompanyDetailsEntity.editID= standardLevySiteVisitRemarks.siteVisitId
+                rejectedCompanyDetailsEntity.physicalAddressEdit=companyProfileEntity.physicalAddress
+                rejectedCompanyDetailsEntity.postalAddressEdit=companyProfileEntity.postalAddress
+                rejectedCompanyDetailsEntity.ownershipEdit=companyProfileEntity.ownership
+                rejectedCompanyDetailsEntity.companyTelephoneEdit=companyProfileEntity.companyTelephone
+                rejectedCompanyDetailsEntity.assignedTo=companyProfileEntity.assignedTo
+
+
+                val companyDetails=companyProfileRepo.getCompanyData(companyProfileEntity.id)
+                for(companyDetail in companyDetails){
+                    rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
+                    rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
+                    rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
+                    rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
+                    rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                    rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
+                }
+
+
+
 
                 standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
 
@@ -489,6 +563,7 @@ return getUserTasks();
                         .processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
                         ?.let { l ->
                             val processInstance = l[0]
+                            rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
                             taskService.complete(companyProfileEntity.taskId, variables)
 
                             taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -612,6 +687,8 @@ return getUserTasks();
 
 
 
+
+
     fun scheduleSiteVisit(
         standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
     ): ProcessInstanceResponseSite {
@@ -637,6 +714,26 @@ return getUserTasks();
                     .processInstanceId(standardLevyFactoryVisitReportEntity.slProcessInstanceId).list()
                     ?.let { l ->
                         val processInstance = l[0]
+                        var userList= companyStandardRepository.getUserEmail(loggedInUser.id)
+                        userList.forEach { item->
+                            val recipient= item.getUserEmail()
+                            val subject = "Site Visit"
+                            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, You have scheduled a site visit to ${standardLevyFactoryVisitReportEntity.companyName} for ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} . NB. Auto Generated E-Mail From KEBS "
+                            if (recipient != null) {
+                                notifications.sendEmail(recipient, subject, messageBody)
+                            }
+                        }
+
+                        val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                        var manufacturerList= companyStandardRepository.getUserEmail(userID)
+                        manufacturerList.forEach { item->
+                            val recipient= item.getUserEmail()
+                            val subject = "Site Visit"
+                            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${standardLevyFactoryVisitReportEntity.companyName} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
+                            if (recipient != null) {
+                                notifications.sendEmail(recipient, subject, messageBody)
+                            }
+                        }
 
                         taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
                         taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -737,7 +834,7 @@ return getUserTasks();
                     userList.forEach { item->
                         val recipient= item.getUserEmail()
                         val subject = "Site Visit"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${comProfileEntity.name} has been done. NB. Auto Generated E-Mail From KEBS "
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${comProfileEntity.name} has been confirmed for ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} Kindly make time. NB. Auto Generated E-Mail From KEBS "
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
@@ -747,7 +844,7 @@ return getUserTasks();
                     manufacturerList.forEach { item->
                         val recipient= item.getUserEmail()
                         val subject = "Site Visit"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${comProfileEntity.name} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},Scheduled site visit to Your Firm,  ${comProfileEntity.name}  on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers has been confirmed. NB. Auto Generated E-Mail From KEBS "
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
@@ -766,6 +863,16 @@ return getUserTasks();
                         }
                         companyProfileRepo.save(comEntity)
                     } ?: throw Exception("COMPANY NOT FOUND")
+                val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                var manufacturerList= companyStandardRepository.getUserEmail(userID)
+                manufacturerList.forEach { item->
+                    val recipient= item.getUserEmail()
+                    val subject = "Site Visit"
+                    val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},Scheduled site visit to Your Firm,  ${comProfileEntity.name}  on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers has been cancelled.Apologies for inconveniences. NB. Auto Generated E-Mail From KEBS."
+                    if (recipient != null) {
+                        notifications.sendEmail(recipient, subject, messageBody)
+                    }
+                }
 
                 taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
             }catch (e: Exception) {
@@ -2346,6 +2453,10 @@ return getUserTasks();
 
     fun getAllLevyPayments(): MutableList<AllLevyPayments> {
         return companyProfileRepo.getAllLevyPayments()
+    }
+
+    fun getRejectedCompanyDetails(): MutableList<RejectedComDetails>{
+        return rejectedCompanyDetailsRepository.getRejectedCompanyDetails()
     }
 
     fun getPenaltyReport(): MutableList<AllLevyPayments> {

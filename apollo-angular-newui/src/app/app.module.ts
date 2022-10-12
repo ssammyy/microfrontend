@@ -771,6 +771,7 @@ import { StandardLevyActiveFirmsComponent } from './apollowebs/standards-levy/st
 import { StandardLevyDormantFirmsComponent } from './apollowebs/standards-levy/standard-levy-dormant-firms/standard-levy-dormant-firms.component';
 import { StandardLevyClosedFirmsComponent } from './apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component';
 import { AddLaboratoryRequestComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/ssf-details-form/add-laboratory-request/add-laboratory-request.component';
+import { StandardLevyRejectedChangesComponent } from './apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component';
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({
@@ -1183,7 +1184,8 @@ import { AddLaboratoryRequestComponent } from './apollowebs/di/view-single-consi
         FuelListTeamsComponent,
         FuelListTeamsCountyComponent,
         StandardLevyClosedFirmsComponent,
-        AddLaboratoryRequestComponent
+        AddLaboratoryRequestComponent,
+        StandardLevyRejectedChangesComponent
 
     ],
     entryComponents: [],

@@ -584,6 +584,14 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturesLevyPenaltyList(@Param("companyId") companyId: Long?): MutableList<LevyPenalty>
 
     @Query(
+        value = "SELECT COMPANY_EMAIL as companyEmail,name as companyName,PHYSICAL_ADDRESS as physicalAddress," +
+                "POSTAL_ADDRESS as postalAddress,OWNERSHIP as ownership,COMPANY_TELEPHONE as companyTelephone FROM DAT_KEBS_COMPANY_PROFILE",
+        nativeQuery = true
+    )
+
+    fun getCompanyData(@Param("companyId") companyId: Long?): MutableList<CompanyData>
+
+    @Query(
         value = "SELECT DISTINCT c.ENTRY_NUMBER as entryNumber,c.ID as companyId,c.NAME as companyName,c.KRA_PIN as kraPin," +
                 "c.REGISTRATION_NUMBER as registrationNumber,p.STATUS as status,c.POSTAL_ADDRESS as postalAddress," +
                 "c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.BUSINESS_LINE_NAME as businessLineName," +
@@ -636,6 +644,21 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findPenaltyCount(): String
 
 }
+@Repository
+interface RejectedCompanyDetailsRepository : JpaRepository<RejectedCompanyDetailsEntity, Long> {
+    @Query(
+        value = "SELECT ID as id,COMPANY_ID as companyId,COMPANY_NAME as companyName,EDIT_ID as editId," +
+                "PHYSICAL_ADDRESS_EDIT as physicalAddressEdit,PHYSICAL_ADDRESS as physicalAddress,POSTAL_ADDRESS_EDIT as postalAddressEdit," +
+                "POSTAL_ADDRESS as postalAddress,OWNERSHIP_EDIT as ownershipEdit,OWNERSHIP as ownership,COMPANY_EMAIL_EDIT as companyEmailEdit," +
+                "COMPANY_EMAIL as companyEmail,COMPANY_TELEPHONE_EDIT as companyTelephoneEdit,COMPANY_TELEPHONE as companyTelephone,ASSIGNED_TO as assignedTo" +
+                " FROM DAT_KEBS_REJECTED_COMPANY_DETAILS ",
+        nativeQuery = true
+    )
+    fun getRejectedCompanyDetails(): MutableList<RejectedComDetails>
+
+}
+
+
 
 @Repository
 interface UsersEntityRepository : JpaRepository<UsersEntity, Long> {

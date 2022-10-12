@@ -169,6 +169,15 @@ interface PenaltyDetails{
     fun getPenaltyPayable(): Long?
 }
 
+interface CompanyData{
+    fun getCompanyEmail():String?
+    fun getCompanyName():String?
+    fun getPhysicalAddress():String?
+    fun getPostalAddress():String?
+    fun getOwnership():String?
+    fun getCompanyTelephone():String?
+}
+
 interface LevyPenalty{
     fun getId(): Long?
     fun getEntryNumber(): String?
@@ -424,6 +433,24 @@ interface ReviewStandards{
     fun getStandardNumber(): String?
     fun getStandardType(): String?
     fun getDateFormed(): String?
+}
+
+interface RejectedComDetails{
+    fun getId(): Long?
+    fun getCompanyId(): Long?
+    fun getCompanyName(): String?
+    fun getEditId(): Long?
+    fun getPhysicalAddressEdit(): String?
+    fun getPhysicalAddress(): String?
+    fun getPostalAddressEdit(): String?
+    fun getPostalAddress(): String?
+    fun getOwnershipEdit(): String?
+    fun getOwnership(): String?
+    fun getCompanyEmailEdit(): String?
+    fun getCompanyEmail(): String?
+    fun getCompanyTelephoneEdit(): String?
+    fun getCompanyTelephone(): String?
+    fun getAssignedTo(): String?
 }
 
 

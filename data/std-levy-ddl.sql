@@ -2117,6 +2117,43 @@ begin
 end;
 /
 
+create  table DAT_KEBS_REJECTED_COMPANY_DETAILS
+(
+        id                   number   not null primary key,
+        COMPANY_ID            int,
+        COMPANY_NAME           varchar(350 char),
+        EDIT_ID           int default 0,
+        ASSIGNED_TO           int default 0,
+        PHYSICAL_ADDRESS_EDIT          VARCHAR2(350 CHAR),
+        PHYSICAL_ADDRESS          VARCHAR2(350 CHAR),
+        POSTAL_ADDRESS_EDIT          VARCHAR2(350 CHAR),
+        POSTAL_ADDRESS          VARCHAR2(350 CHAR),
+        OWNERSHIP_EDIT          VARCHAR2(350 CHAR),
+        OWNERSHIP          VARCHAR2(350 CHAR),
+        COMPANY_EMAIL_EDIT          VARCHAR2(350 CHAR),
+        COMPANY_EMAIL          VARCHAR2(350 CHAR),
+        COMPANY_TELEPHONE_EDIT          VARCHAR2(350 CHAR),
+        COMPANY_TELEPHONE          VARCHAR2(350 CHAR)
+)
+/
+create sequence DAT_KEBS_REJECTED_COMPANY_DETAILS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_REJECTED_COMPANY_DETAILS_trg
+    before
+        insert
+    on DAT_KEBS_REJECTED_COMPANY_DETAILS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_REJECTED_COMPANY_DETAILS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
 
 
 
