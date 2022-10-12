@@ -413,8 +413,6 @@ export class MsService {
        test101SampleSubmissionDto.labellingIdentification = 'stringTest';
        test101SampleSubmissionDto.fileRefNumber = 'stringTest';
        test101SampleSubmissionDto.referencesStandards = 'stringTest';
-       test101SampleSubmissionDto.sizeTestSample = 455;
-       test101SampleSubmissionDto.sizeRefSample = 3465;
        test101SampleSubmissionDto.condition = 'stringTest';
        test101SampleSubmissionDto.sampleReferences = 'stringTest';
        test101SampleSubmissionDto.sendersName = 'stringTest';
