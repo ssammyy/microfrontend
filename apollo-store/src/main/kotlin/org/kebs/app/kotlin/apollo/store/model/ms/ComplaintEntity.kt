@@ -159,6 +159,14 @@ class ComplaintEntity : Serializable {
     @Basic
     var mandateForOga: Int? = null
 
+    @Column(name = "AMENDMENT_STATUS")
+    @Basic
+    var amendmentStatus: Int? = null
+
+    @Column(name = "AMENDMENT_REMARKS")
+    @Basic
+    var amendmentRemarks: String? = null
+
     @Column(name = "MS_COMPLAINT_ENDED_STATUS")
     @Basic
     var msComplaintEndedStatus: Int? = null

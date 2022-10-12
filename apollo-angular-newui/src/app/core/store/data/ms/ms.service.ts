@@ -66,7 +66,7 @@ import {
     WorkPlanFeedBackDto,
     FuelScheduleTeamsListDetailsDto,
     TeamsFuelSaveDto,
-    FuelScheduleCountyListDetailsDto, RapidTestProductsDto,
+    FuelScheduleCountyListDetailsDto, RapidTestProductsDto, EndFuelDto, RegionReAssignDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -1641,10 +1641,44 @@ export class MsService {
         );
     }
 
+    public msComplaintUpdateForAmendmentDetails(referenceNo: string, data: ComplaintAdviceRejectDto): Observable<AllComplaintsDetailsDto> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_REJECT_FOR_AMENDMENT);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNo);
+        return this.http.put<AllComplaintsDetailsDto>(url, data, {params}).pipe(
+            map(function (response: AllComplaintsDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public msComplaintUpdateAssignHOFDetails(referenceNo: string, data: ComplaintAssignDto): Observable<AllComplaintsDetailsDto> {
         console.log(data);
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_ASSIGN_HOF);
+        const params = new HttpParams()
+            .set('referenceNo', referenceNo);
+        return this.http.put<AllComplaintsDetailsDto>(url, data, {params}).pipe(
+            map(function (response: AllComplaintsDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msComplaintUpdateReAssignRegionDetails(referenceNo: string, data: RegionReAssignDto): Observable<AllComplaintsDetailsDto> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLAINT_DETAILS_UPDATE_RE_ASSIGN_REGION);
         const params = new HttpParams()
             .set('referenceNo', referenceNo);
         return this.http.put<AllComplaintsDetailsDto>(url, data, {params}).pipe(
@@ -2306,6 +2340,7 @@ export class MsService {
         teamsReferenceNo: string,
         countyReferenceNo: string,
         referenceNumber: string,
+        data: EndFuelDto,
     ): Observable<FuelInspectionDto> {
         // console.log(da/ta);
          // tslint:disable-next-line:max-line-length
@@ -2315,7 +2350,7 @@ export class MsService {
             .set('batchReferenceNo', batchReferenceNumber)
             .set('teamsReferenceNo', teamsReferenceNo)
             .set('countyReferenceNo', countyReferenceNo);
-        return this.http.put<FuelInspectionDto>(url, null, {params}).pipe(
+        return this.http.put<FuelInspectionDto>(url, data, {params}).pipe(
             map(function (response: FuelInspectionDto) {
                 return response;
             }),

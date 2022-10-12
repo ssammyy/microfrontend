@@ -402,6 +402,14 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
         icontype: 'receipt',
     },
+    {
+        path: '/complaintPlan',
+        title: 'MS COMPLAINT PLAN',
+        type: 'link',
+        collapse: 'complaintPlan',
+        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
+        icontype: 'receipt',
+    },
 
     //Standards Development
     {

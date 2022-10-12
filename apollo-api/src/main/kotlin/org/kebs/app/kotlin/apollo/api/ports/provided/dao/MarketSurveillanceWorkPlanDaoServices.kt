@@ -386,7 +386,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllWorPlanInspectionListBasedOnBatchRefNo(batchReferenceNo: String,page: PageRequest): WorkPlanScheduleListDetailsDto {
+    fun getAllWorPlanInspectionListBasedOnBatchRefNo(batchReferenceNo: String, complaintStatus:Boolean, page: PageRequest): WorkPlanScheduleListDetailsDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val auth = commonDaoServices.loggedInUserAuthentication()
         val loggedInUserProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
@@ -396,18 +396,40 @@ class MarketSurveillanceWorkPlanDaoServices(
         when {
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
                 createdWorkPlan = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-                workPlanList = findALlWorkPlanDetailsAssociatedWithWorkPlanID(createdWorkPlan.id,page).toList()
+                workPlanList = when {
+                    complaintStatus -> {
+                        findALlWorkPlanDetailsAssociatedWithWorkPlanIDWithComplaintIN(createdWorkPlan.id,page).toList()
+                    }
+                    else -> {
+                        findALlWorkPlanDetailsAssociatedWithWorkPlanID(createdWorkPlan.id,page).toList()
+                    }
+                }
+
             }
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ"
                         || authority.authority == "MS_RM_READ"
                         || authority.authority == "MS_HOF_READ"
             } -> {
                 createdWorkPlan = findCreatedWorkPlanWIthRefNumberAndRegion(batchReferenceNo, loggedInUserProfile.regionId?.id?:throw ExpectedDataNotFound("Missing region value on your user profile  details"))
-                workPlanList = findALlWorkPlanDetailsAssociatedWithWorkPlanID(createdWorkPlan.id,page).toList()
+                workPlanList = when {
+                    complaintStatus -> {
+                        findALlWorkPlanDetailsAssociatedWithWorkPlanIDWithComplaintIN(createdWorkPlan.id,page).toList()
+                    }
+                    else -> {
+                        findALlWorkPlanDetailsAssociatedWithWorkPlanID(createdWorkPlan.id,page).toList()
+                    }
+                }
             }
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
                 createdWorkPlan = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-                workPlanList = findALlWorkPlanDetailsAssociatedWithWorkPlanID(createdWorkPlan.id,page).toList()
+                workPlanList = when {
+                    complaintStatus -> {
+                        findALlWorkPlanDetailsAssociatedWithWorkPlanIDWithComplaintIN(createdWorkPlan.id,page).toList()
+                    }
+                    else -> {
+                        findALlWorkPlanDetailsAssociatedWithWorkPlanID(createdWorkPlan.id,page).toList()
+                    }
+                }
             }
             else -> {
                 throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
@@ -3308,6 +3330,14 @@ class MarketSurveillanceWorkPlanDaoServices(
                 return it
             }
             ?: throw ExpectedDataNotFound("No workPlan Details Associated with the following workPlan [ID = ${createdWorkPlanID}]")
+    }
+
+    fun findALlWorkPlanDetailsAssociatedWithWorkPlanIDWithComplaintIN(createdWorkPlanID: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity> {
+        generateWorkPlanRepo.findByWorkPlanYearIdAndComplaintIdIsNotNull(createdWorkPlanID,pageable)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Complaint Plan Details Associated with the following workPlan [ID = ${createdWorkPlanID}]")
     }
 
     fun findCreatedWorkPlanWIthRefNumber(referenceNumber: String): WorkPlanCreatedEntity {

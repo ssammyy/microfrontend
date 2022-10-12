@@ -811,12 +811,19 @@ data class ComplaintSearchValues(
 data class ComplaintAdviceRejectDto(
         var mandateForOga: Int? = null,
         var advisedWhereToRemarks: String? = null,
+        var amendmentRemarks: String? = null,
         var rejectedRemarks: String? = null
 )
 
 data class ComplaintAssignDto(
         var assignedRemarks: String? = null,
         var assignedIo: Long? = null
+)
+
+data class RegionReAssignDto(
+        var reassignedRemarks: String? = null,
+        var countyID: Long? = null,
+        var townID: Long? = null
 )
 
 data class StandardDetailsDto(

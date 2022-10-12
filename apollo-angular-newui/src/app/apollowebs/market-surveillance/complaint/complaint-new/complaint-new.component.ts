@@ -278,63 +278,37 @@ export class ComplaintNewComponent implements OnInit {
   async onSubmitComplaint() {
     this.submitted = true;
     this.saveDetailsFirst();
-
-    // Promise.resolve(this.saveDetailsFirst()).then(res => {
-    //   const file = this.uploadedFiles;
-    //   const formData = new FormData();
-    //   for (let i = 0; i < file.length; i++) {
-    //     console.log(file[i]);
-    //     formData.append('docFile', file[i], file[i].name);
-    //   }
-    //
-    // }).catch(error => {
-    //   this.msService.showError(error.message);
-    // });
-
   }
 
   saveDetailsFirst(): any {
-    if (this.uploadedFiles.length > 0) {
+    // if (this.uploadedFiles.length > 0) {
       this.SpinnerService.show();
-      // this.msService.createNewComplaint( this.stepOneForm.value, this.stepTwoForm.value, this.stepThreeForm.value)
-      //     .subscribe(
-      //         (data: MSComplaintSubmittedSuccessful) => {
-      //           console.log(data);
-      //           this.savedDetails = data;
-                const file = this.uploadedFiles;
-                const newComplaintDto = new NewComplaintDto();
-                newComplaintDto.customerDetails = this.stepOneForm.value;
-                newComplaintDto.complaintDetails = this.stepTwoForm.value;
-                newComplaintDto.locationDetails = this.stepThreeForm.value;
-                const formData = new FormData();
-                formData.append('data', JSON.stringify(newComplaintDto));
-                for (let i = 0; i < file.length; i++) {
-                  console.log(file[i]);
-                  formData.append('docFile', file[i], file[i].name);
-                }
-                this.msService.saveComplaintFiles(formData).subscribe(
-                    (data2: MSComplaintSubmittedSuccessful) => {
-                      console.log(data2);
-                      this.savedDetails = data2;
-                      this.msService.showSuccess(data2.successMessage);
-                      this.SpinnerService.hide();
-                      return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
-                    },
-                    error => {
-                      this.SpinnerService.hide();
-                      console.log(error);
-                      this.msService.showError('AN Error Occurred, Try Again Later');
-                    },
-                );
-
-          //     },
-          //     error => {
-          //       this.SpinnerService.hide();
-          //       console.log(error);
-          //       this.msService.showError('AN Error Occurred, Try Again Later');
-          //     }
-          // );
-    }
+      const file = this.uploadedFiles;
+      const newComplaintDto = new NewComplaintDto();
+      newComplaintDto.customerDetails = this.stepOneForm.value;
+      newComplaintDto.complaintDetails = this.stepTwoForm.value;
+      newComplaintDto.locationDetails = this.stepThreeForm.value;
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(newComplaintDto));
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+      }
+      this.msService.saveComplaintFiles(formData).subscribe(
+          (data2: MSComplaintSubmittedSuccessful) => {
+            console.log(data2);
+            this.savedDetails = data2;
+            this.msService.showSuccess(data2.successMessage);
+            this.SpinnerService.hide();
+            return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN Error Occurred, Try Again Later');
+          },
+      );
+    // }
 
   }
 

@@ -25,7 +25,7 @@ import {
   MSRemarksDto,
   MSSSFPDFListDetailsDto,
   MsStandardProductCategory,
-  PDFSaveComplianceStatusDto,
+  PDFSaveComplianceStatusDto, RegionReAssignDto,
   RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
@@ -38,7 +38,7 @@ import {
   County,
   CountyService,
   loadCountyId,
-  LoggedInUser,
+  LoggedInUser, Region, RegionService,
   selectCountyIdData,
   selectUserInfo,
   Town,
@@ -74,6 +74,7 @@ export class ComplaintDetailsComponent implements OnInit {
   submitted = false;
   selectedRefNo: string;
   county$: Observable<County[]>;
+  region$: Observable<Region[]>;
   town$: Observable<Town[]>;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
@@ -88,6 +89,7 @@ export class ComplaintDetailsComponent implements OnInit {
   acceptRejectComplaintForm!: FormGroup;
   adviceComplaintForm!: FormGroup;
   assignOfficerForm!: FormGroup;
+  reAssignRegionForm!: FormGroup;
   classificationForm!: FormGroup;
   addNewScheduleForm!: FormGroup;
 
@@ -104,6 +106,7 @@ export class ComplaintDetailsComponent implements OnInit {
   notCompliantInvoiceForm!: FormGroup;
   remediationForm!: FormGroup;
   dataSaveAssignOfficer: ComplaintAssignDto;
+  dataSaveReAssignRegion: RegionReAssignDto;
   dataSaveAcceptance: ComplaintApproveRejectAdviceWhereDto;
   dataSaveAdviceWhere: ComplaintAdviceRejectDto;
   dataSaveComplaintClassification: ComplaintClassificationDto;
@@ -245,11 +248,14 @@ export class ComplaintDetailsComponent implements OnInit {
       private SpinnerService: NgxSpinnerService,
       private activatedRoute: ActivatedRoute,
       private countyService: CountyService,
+      private regionService: RegionService,
       private townService: TownService,
       private router: Router) {
     this.county$ = countyService.entities$;
+    this.region$ = regionService.entities$;
     this.town$ = townService.entities$;
     countyService.getAll().subscribe();
+    regionService.getAll().subscribe();
   }
 
   ngOnInit(): void {
@@ -273,6 +279,12 @@ export class ComplaintDetailsComponent implements OnInit {
       assignedRemarks: null,
     });
 
+    this.reAssignRegionForm = this.formBuilder.group({
+      reassignedRemarks: ['', Validators.required],
+      countyID: ['', Validators.required],
+      townID: ['', Validators.required],
+    });
+
     this.acceptRejectComplaintForm = this.formBuilder.group({
       approved: ['', Validators.required],
       mandateForOga: null,
@@ -280,6 +292,7 @@ export class ComplaintDetailsComponent implements OnInit {
       division: null,
       approvedRemarks: ['', Validators.required],
       advisedWhereToRemarks: null,
+      amendmentRemarks: null,
     });
 
     this.adviceComplaintForm = this.formBuilder.group({
@@ -326,6 +339,10 @@ export class ComplaintDetailsComponent implements OnInit {
 
   get formAssignOfficerForm(): any {
     return this.assignOfficerForm.controls;
+  }
+
+  get formReAssignRegionForm(): any {
+    return this.reAssignRegionForm.controls;
   }
 
   get formAcceptRejectForm(): any {
@@ -469,7 +486,7 @@ export class ComplaintDetailsComponent implements OnInit {
   }
 
   updateSelectedCounty() {
-    this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
+    this.selectedCounty = this.reAssignRegionForm?.get('countyID')?.value;
     console.log(`county set to ${this.selectedCounty}`);
     this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
     this.store$.select(selectCountyIdData).subscribe(
@@ -486,13 +503,13 @@ export class ComplaintDetailsComponent implements OnInit {
   }
 
   updateSelectedTown() {
-    this.selectedTown = this.addNewScheduleForm?.get('town')?.value;
+    this.selectedTown = this.reAssignRegionForm?.get('townID')?.value;
     console.log(`town set to ${this.selectedTown}`);
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['acceptRejectComplaint', 'notKebsMandate', 'assignHOF', 'assignOfficer', 'addClassificationDetails', 'startMSProcess'];
-    const arrHeadSave = ['ACCEPT/REJECT COMPLAINT', 'NOT WITHIN KEBS MANDATE', 'ASSIGN HOF', 'ASSIGN IO', 'ADD COMPLAINT PRODUCT CLASSIFICATION DETAILS', 'FILL IN MS-PROCESS DETAILS BELOW'];
+    const arrHead = ['acceptRejectComplaint', 'notKebsMandate', 'assignHOF', 'assignOfficer', 'addClassificationDetails', 'startMSProcess', 'reassignRegion'];
+    const arrHeadSave = ['ACCEPT/REJECT COMPLAINT', 'NOT WITHIN KEBS MANDATE', 'ASSIGN HOF', 'ASSIGN IO', 'ADD COMPLAINT PRODUCT CLASSIFICATION DETAILS', 'FILL IN MS-PROCESS DETAILS BELOW', 'RE-ASSIGN REGION'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -536,6 +553,27 @@ export class ComplaintDetailsComponent implements OnInit {
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('HOF ASSIGNED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveReAssignHof(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSaveReAssignRegion = {...this.dataSaveReAssignRegion, ...this.reAssignRegionForm.value};
+      // tslint:disable-next-line:max-line-length
+      this.msService.msComplaintUpdateReAssignRegionDetails(this.complaintInspection.complaintsDetails.refNumber,  this.dataSaveReAssignRegion).subscribe(
+          (data: any) => {
+            this.complaintInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('LOCATION DETAILS UPDATED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -630,6 +668,27 @@ export class ComplaintDetailsComponent implements OnInit {
                     console.log(data);
                     this.SpinnerService.hide();
                     this.msService.showSuccess('COMPLAINT REJECTION, SAVED SUCCESSFULLY');
+                  },
+                  error => {
+                    this.SpinnerService.hide();
+                    this.acceptRejectComplaintForm.reset();
+                    console.log(error);
+                    this.msService.showError('AN ERROR OCCURRED');
+                  },
+              );
+              break;
+            case 'RejectAmendment':
+              const newRejectAmendmentDto = new ComplaintAdviceRejectDto();
+              newRejectAmendmentDto.amendmentRemarks = this.dataSaveAcceptance.advisedWhereToRemarks;
+              newRejectAmendmentDto.rejectedRemarks = this.dataSaveAcceptance.approvedRemarks;
+              // tslint:disable-next-line:max-line-length
+              this.msService.msComplaintUpdateForAmendmentDetails(this.complaintInspection.complaintsDetails.refNumber, newRejectAmendmentDto).subscribe(
+                  (data: any) => {
+                    this.complaintInspection = data;
+                    console.log(data);
+                    this.acceptRejectComplaintForm.reset();
+                    this.SpinnerService.hide();
+                    this.msService.showSuccess('COMPLAINANT TO AMEND, SENT SUCCESSFULLY');
                   },
                   error => {
                     this.SpinnerService.hide();
@@ -749,7 +808,9 @@ export class ComplaintDetailsComponent implements OnInit {
     const valueSelected = this.acceptRejectComplaintForm?.get('mandateForOga')?.value;
     if (valueSelected === 1) {
       this.selectComplaintRejectionStatus = 'Accept';
-    } else {
+    } else if (valueSelected === 2) {
+      this.selectComplaintRejectionStatus = 'RejectAmendment';
+    } else if (valueSelected === 0) {
       this.selectComplaintRejectionStatus = 'Reject';
     }
       console.log(`rejectAccept set to ${this.selectComplaintRejectionStatus}`);
@@ -796,7 +857,7 @@ export class ComplaintDetailsComponent implements OnInit {
             this.classificationForm.reset();
             this.SpinnerService.hide();
             this.msService.showSuccess('MS-PROCESS DETAILS, SAVED SUCCESSFULLY');
-          }
+          },
           // ,
           // error => {
           //   this.SpinnerService.hide();

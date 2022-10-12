@@ -481,6 +481,69 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateComplaintForAmendmentByUser(
+        referenceNo: String,
+        body: ComplaintAdviceRejectDto
+    ): AllComplaintsDetailsDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val complaintFound = findComplaintByRefNumber(referenceNo)
+
+        with(complaintFound) {
+            hodAssigned = loggedInUser.id
+            msProcessId = applicationMapProperties.msComplaintProcessNotMandate
+            userTaskId = null
+            msComplaintEndedStatus = map.activeStatus
+//            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameComplainant
+            amendmentStatus = map.activeStatus
+            amendmentRemarks = body.amendmentRemarks
+            rejectedRemarks = body.rejectedRemarks
+            rejectedBy = commonDaoServices.getUserName(loggedInUser)
+            rejectedDate = commonDaoServices.getCurrentDate()
+        }
+
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.rejectedRemarks
+            remarksStatus= "REJECTED FOR AMENDMENT"
+            processID = complaintFound.msProcessId
+            userId= loggedInUser.id
+        }
+
+        val complaintUpdated = updateComplaintDetailsInDB(complaintFound, map, loggedInUser)
+
+        when (complaintUpdated.first.status) {
+            map.successStatus -> {
+                val remarksSaved = fuelAddRemarksDetails(complaintFound.id?: throw ExpectedDataNotFound("Missing Complaint ID"),remarksDto, map, loggedInUser)
+                 when (remarksSaved.first.status) {
+                    map.successStatus -> {
+                        val complainantEmailComposed = complaintRejectedWithAdviceOGADTOEmailCompose(complaintUpdated.second)
+                        runBlocking {
+                            commonDaoServices.sendEmailWithUserEmail(
+                                findComplaintCustomerByComplaintID(complaintFound.id?: throw ExpectedDataNotFound("Missing Complaint ID")).emailAddress?: throw ExpectedDataNotFound("Missing Complainant Email Address"),
+                                applicationMapProperties.mapMsComplaintAcknowledgementRejectionRejectedForAmendmentNotification,
+                                complainantEmailComposed,
+                                map,
+                                complaintUpdated.first
+                            )
+                        }
+                        return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
+                    }
+                    else -> {
+                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
+                    }
+                }
+
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(complaintUpdated.first))
+            }
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateComplaintMandateForOgaStatus(
         referenceNo: String,
         body: ComplaintAdviceRejectDto
@@ -527,6 +590,59 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 complaintUpdated.first
                             )
                         }
+                        return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
+                    }
+                    else -> {
+                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
+                    }
+                }
+
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(complaintUpdated.first))
+            }
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateComplaintReAssignRegionStatus(
+        referenceNo: String,
+        body: RegionReAssignDto
+    ): AllComplaintsDetailsDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val complaintFound = findComplaintByRefNumber(referenceNo)
+        var complaintLocationDetails = findComplaintLocationByComplaintID(complaintFound.id?: throw ExpectedDataNotFound("Missing complaint ID"))
+
+        with(complaintLocationDetails) {
+            county = body.countyID
+            town = body.townID
+            region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
+        }
+        complaintLocationDetails = complaintLocationRepo.save(complaintLocationDetails)
+
+//        with(complaintFound){
+//            msProcessId = applicationMapProperties.msComplaintProcessAssignHOF
+//            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
+//        }
+
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.reassignedRemarks
+            remarksStatus= "N/A"
+//            processID = complaintFound.msProcessId
+            userId= loggedInUser.id
+        }
+
+        val complaintUpdated = updateComplaintDetailsInDB(complaintFound, map, loggedInUser)
+
+        when (complaintUpdated.first.status) {
+            map.successStatus -> {
+                val remarksSaved = fuelAddRemarksDetails(complaintFound.id?: throw ExpectedDataNotFound("Missing Complaint ID"),remarksDto, map, loggedInUser)
+                 when (remarksSaved.first.status) {
+                    map.successStatus -> {
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
                     }
                     else -> {

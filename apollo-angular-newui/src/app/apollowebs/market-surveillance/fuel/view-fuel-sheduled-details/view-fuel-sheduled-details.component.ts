@@ -799,7 +799,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     });
 
     this.endFuelForm = this.formBuilder.group({
-      remarks: ['', Validators.required]
+      remarks: ['', Validators.required],
     });
 
   }
@@ -899,11 +899,11 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
   openModalAddDetails(divVal: string): void {
     const arrHead = ['scheduleRemediationInvoicePaid', 'finalLabComplianceStatus',
       'assignOfficer', 'rapidTest',  'uploadScfFiles', 'uploadReportFiles', 'uploadInvoiceDocFiles',
-      'ssfAddComplianceStatus', 'scheduleRemediation',
+      'ssfAddComplianceStatus', 'scheduleRemediation', 'endFuelRemarks',
       'addRemediationDetails', 'notCompliantInvoice', 'rapidTestAddProducts'];
     const arrHeadSave = ['SCHEDULE REMEDIATION DATE INVOICE PAID', 'FINAL LAB RESULTS COMPLIANCE STATUS',
       'SELECT OFFICER TO ASSIGN', 'RAPID TEST OVERALL RESULTS', 'UPLOAD SCF FILE', 'UPLOAD REPORT FILE', 'UPLOAD INVOICE ATTACHMENT WITH FILE',
-      'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE',
+      'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'SCHEDULE REMEDIATION DATE', 'END FUEL INSPECTION',
       'ADD REMEDIATION INVOICE DETAILS', 'ADD REMEDIATION INVOICE DETAILS TO BE GENERATED', 'ADD PRODUCT RAPID TEST DETAILS'];
 
     for (let h = 0; h < arrHead.length; h++) {
@@ -1360,15 +1360,16 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveEndRemediation() {
+  onClickSaveEndFuel() {
     // if (valid) {
       this.SpinnerService.show();
-      this.dataSaveEndFuel = {...this.dataSaveEndFuel, ...this.remediationForm.value};
+      this.dataSaveEndFuel = {...this.dataSaveEndFuel, ...this.endFuelForm.value};
       this.msService.msFuelInspectionEnd(
           this.batchReferenceNumber,
           this.teamsReferenceNo,
           this.countyReferenceNo,
           this.referenceNumber,
+          this.dataSaveEndFuel
       ).subscribe(
           (data: any) => {
             this.fuelInspection = data;

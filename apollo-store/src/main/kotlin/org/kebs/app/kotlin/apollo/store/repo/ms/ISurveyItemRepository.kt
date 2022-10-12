@@ -92,7 +92,8 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
     override fun findAll( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
     fun findByWorkPlanYearId(workPlanYearId: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
-    fun findByWorkPlanYearIdAndApproved(workPlanYearId: Long,approvedStatus: Int, pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+    fun findByWorkPlanYearIdAndComplaintIdIsNotNull(workPlanYearId: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+    fun findByWorkPlanYearIdAndApproved(workPlanYearId: Long, approved: String, pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
     fun findByWorkPlanYearIdAndMsProcessEndedStatus(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
 
     fun findByWorkPlanYearIdAndOfficerIdAndUserTaskId(

@@ -23,6 +23,7 @@ export class ComplaintApproveRejectAdviceWhereDto {
 export class ComplaintAdviceRejectDto {
     mandateForOga: number;
     advisedWhereToRemarks: string;
+    amendmentRemarks: string;
     rejectedRemarks: string;
 }
 
@@ -761,6 +762,12 @@ export class ChargeSheetDto {
 export class ComplaintAssignDto {
     assignedRemarks: string;
     assignedIo: bigint;
+}
+
+export class RegionReAssignDto {
+    reassignedRemarks: string;
+    countyID: bigint;
+    townID: bigint;
 }
 
 export class CompliantRemediationDto {

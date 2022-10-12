@@ -771,6 +771,9 @@ import { StandardLevyActiveFirmsComponent } from './apollowebs/standards-levy/st
 import { StandardLevyDormantFirmsComponent } from './apollowebs/standards-levy/standard-levy-dormant-firms/standard-levy-dormant-firms.component';
 import { StandardLevyClosedFirmsComponent } from './apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component';
 import { AddLaboratoryRequestComponent } from './apollowebs/di/view-single-consignment-document/view-inspection-details/ssf-details-form/add-laboratory-request/add-laboratory-request.component';
+import { ComplaintPlanBatchListComponent } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-batch-list/complaint-plan-batch-list.component';
+import { ComplaintPlanListComponent } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-list/complaint-plan-list.component';
+import { ComplaintPlanDetailsComponent } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-details/complaint-plan-details.component';
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({
@@ -1183,7 +1186,10 @@ import { AddLaboratoryRequestComponent } from './apollowebs/di/view-single-consi
         FuelListTeamsComponent,
         FuelListTeamsCountyComponent,
         StandardLevyClosedFirmsComponent,
-        AddLaboratoryRequestComponent
+        AddLaboratoryRequestComponent,
+        ComplaintPlanBatchListComponent,
+        ComplaintPlanListComponent,
+        ComplaintPlanDetailsComponent
 
     ],
     entryComponents: [],

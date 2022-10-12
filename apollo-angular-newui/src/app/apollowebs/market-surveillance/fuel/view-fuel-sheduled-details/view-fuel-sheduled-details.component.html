@@ -409,7 +409,7 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                         <button *ngIf="fuelInspection?.rapidTest?.rapidTestStatus == true && fuelInspection?.rapidTestDone == true && fuelInspection?.endInspectionStatus == false"
-                                                (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"
+                                                (click)="onClickSaveEndFuel()" mat-raised-button="" data-toggle="modal"
                                                 class="btn btn-sm btn-primary mr-2"><span
                                                 class="mat-button-wrapper">END FUEL</span>
                                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
@@ -480,7 +480,8 @@
                                             </button>
                                             <button *ngIf=" fuelInspection?.endInspectionStatus == false && fuelInspection?.fuelReportId!=null
                                                         && this.fuelInspection?.compliantStatusAdded && this.fuelInspection?.fuelCompliantStatus"
-                                                    (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"
+                                                    (click)="openModalAddDetails('endFuelRemarks')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END FUEL</span>
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
@@ -552,7 +553,7 @@
 
                                             <button *ngIf="fuelInspection?.remendiationCompleteStatus &&
                                             fuelInspection?.endInspectionStatus == false && fuelInspection?.fuelReportId!=null"
-                                                    (click)="onClickSaveEndRemediation()" mat-raised-button="" data-toggle="modal"
+                                                    (click)="onClickSaveEndFuel()" mat-raised-button="" data-toggle="modal"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END FUEL</span>
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
@@ -979,15 +980,16 @@
                         </form>
                     </div>
                     <div *ngIf="(currDiv == 'endFuelRemarks')">
-                        <form [formGroup]="remarksSavedForm" class="form">
+                        <form [formGroup]="endFuelForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="remarks"><b>Remarks/ Feed back:</b></label>
+                                        <label for="remarks9"><b>Remarks/ Feed back:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea readonly id="remarksDescription" matInput type="text"
-                                                      formControlName="remarksDescription"
-                                                      name="remarksDescription">
+                                            <textarea readonly id="remarks9" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required
+                                                      [class.is-invalid]="formEndFuelForm.remarks.invalid && formEndFuelForm.remarks.touched">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -1096,6 +1098,12 @@
                     <button *ngIf="(currDiv == 'addRemediationDetails')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveRemediationForm(remediationForm.valid);"
                             [disabled]="!remediationForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'endFuelRemarks')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveEndFuel();"
+                            [disabled]="!endFuelForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
