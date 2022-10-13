@@ -129,6 +129,11 @@ interface IComplaintLocationRepository : HazelcastRepository<ComplaintLocationEn
 }
 
 @Repository
+interface IPredefinedResourcesRequiredRepository : HazelcastRepository<PredefinedResourcesRequiredEntity, Long>{
+    fun findAllByStatus(status: Long): PredefinedResourcesRequiredEntity?
+}
+
+@Repository
 interface IMsRemarksComplaintRepository : HazelcastRepository<MsRemarksEntity, Long>{
     fun findAllByComplaintId(complaintId: Long): List<MsRemarksEntity>?
     fun findAllByComplaintIdOrderByIdAsc(complaintId: Long): List<MsRemarksEntity>?

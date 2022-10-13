@@ -1017,6 +1017,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             with(complaint) {
                 complaintTitle = complaintDto.complaintTitle
                 complaintDetails = complaintDto.complaintDescription
+                complaintSampleDetails = complaintDto.complaintSampleDetails
+                remedySought = complaintDto.remedySought
                 targetedProducts = complaintDto.productBrand
 //                complaintDepartment = complaintDto.complaintCategory
 //                standardCategory = complaintDto.productClassification
@@ -1182,6 +1184,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             mobilePhoneNumber = complaintCustomersDto.phoneNumber
             emailAddress = complaintCustomersDto.emailAddress
             postalAddress = complaintCustomersDto.postalAddress
+            physicalAddress = complaintCustomersDto.physicalAddress
             transactionDate = commonDaoServices.getCurrentDate()
             status = map.activeStatus
             createdBy = complaintCustomersDto.firstName?.let { complaintCustomersDto.lastName?.let { it1 -> commonDaoServices.concatenateName(it, it1) } }
@@ -1197,6 +1200,11 @@ class MarketSurveillanceComplaintProcessDaoServices(
         with(complaintLocation) {
             county = complaintLocationDto.county
             town = complaintLocationDto.town
+            email = complaintLocationDto.email
+            nameContactPerson = complaintLocationDto.nameContactPerson
+            phoneNumber = complaintLocationDto.phoneNumber
+            telephoneNumber = complaintLocationDto.telephoneNumber
+            businessAddress = complaintLocationDto.businessAddress
             marketCenter = complaintLocationDto.marketCenter
             building = complaintLocationDto.buildingName
             productBrand = complaintDto.productBrand
@@ -1413,6 +1421,14 @@ class MarketSurveillanceComplaintProcessDaoServices(
             complaintCustomersDetails.emailAddress,
             complaintCustomersDetails.mobilePhoneNumber,
             complaintCustomersDetails.postalAddress,
+            complaintCustomersDetails.physicalAddress,
+            comp.complaintSampleDetails,
+            comp.remedySought,
+            complaintLocationDetails.email,
+            complaintLocationDetails.nameContactPerson,
+            complaintLocationDetails.phoneNumber,
+            complaintLocationDetails.telephoneNumber,
+            complaintLocationDetails.businessAddress,
             comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
             comp.complaintTitle,
             comp.complaintDetails,

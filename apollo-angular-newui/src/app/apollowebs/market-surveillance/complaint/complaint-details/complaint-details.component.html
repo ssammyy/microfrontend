@@ -27,8 +27,7 @@
                     <div *ngIf="complaintInspection" class="card-body">
                         <div class="row">
                             <div class="col-md-10">
-                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTab
-                                               class="tab-wraps">
+                                <mat-tab-group [(selectedIndex)]="active" [disablePagination]="true" appMatMultilineTab class="tab-wraps">
                                     <mat-tab *ngIf="complaintInspection?.complaintsDetails.refNumber" label="1">
                                         <ng-template mat-tab-label>
                                             Complainant Information Details
@@ -62,6 +61,11 @@
                                                 <div class="list-text-accordion">
                                                     {{complaintInspection?.complaintsDetails?.complainantPostalAddress}}</div>
                                             </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Physical Address</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.complaintsDetails?.complainantPhysicalAddress}}</div>
+                                            </li>
                                         </ul>
                                     </mat-tab>
                                     <mat-tab *ngIf="complaintInspection?.complaintsDetails.refNumber" label="2">
@@ -86,12 +90,6 @@
                                                     {{complaintInspection?.complaintsDetails?.complaintDescription}}
                                                 </div>
                                             </li>
-                                            <!--                                            <li class="list-item-accordion">-->
-                                            <!--                                                <div class="list-title-accordion">Region</div>-->
-                                            <!--                                                <div class="list-text-accordion">-->
-                                            <!--                                                    {{complaintInspection?.complaintsDetails?.county}}-->
-                                            <!--                                                </div>-->
-                                            <!--                                            </li>-->
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">County</div>
                                                 <div class="list-text-accordion">
@@ -112,6 +110,31 @@
                                                 <div class="list-title-accordion">Building Name</div>
                                                 <div class="list-text-accordion">
                                                     {{complaintInspection?.complaintsDetails?.buildingName}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Business Address</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.complaintsDetails?.businessAddress}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.complaintsDetails?.email}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name Contact Person</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.complaintsDetails?.nameContactPerson}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Phone Number</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.complaintsDetails?.phoneNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Telephone Number</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.complaintsDetails?.telephoneNumber}}</div>
                                             </li>
                                         </ul>
                                     </mat-tab>
@@ -338,7 +361,8 @@
                                         <!--                                            <div class="mat-button-focus-overlay"></div>-->
                                         <!--                                        </button>-->
                                         <button (click)="openModalAddDetails('assignHOF')"
-                                                *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == true && complaintInspection?.hofAssigned ==null" class="btn btn-sm btn-primary mr-2"
+                                                *ngIf="complaintInspection?.complaintsDetails?.approvedStatus == true && complaintInspection?.hofAssigned ==null
+                                                                 && complaintInspection?.officersAssigned == null" class="btn btn-sm btn-primary mr-2"
                                                 data-target="#myModal1"
                                                 data-toggle="modal"
                                                 mat-raised-button=""><span
@@ -588,31 +612,22 @@
                             <div class="form-body">
                                 <div class="form-group" >
                                     <div>
-                                        <div *ngIf="county$ | async as apps">
-                                            <label for="assignedIo"><b>Select County</b></label>
-                                            <mat-form-field>
-                                                <mat-select (change)="updateSelectedCounty()"
+                                            <label for="countyID"><b>Select County</b></label>
+                                            <mat-form-field *ngIf="county$ | async as apps">
+                                                <mat-select (selectionChange)="updateSelectedCounty()"
                                                             [class.is-invalid]="formReAssignRegionForm.countyID.invalid && formReAssignRegionForm.countyID.touched"
-                                                            formControlName="countyID"
-                                                            id="countyID" name="countyID" placeholder="Please Select an option">
-                                                    <option [value]="" selected>Please select</option>
-                                                    <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id">{{app.county}}</option>
+                                                            formControlName="countyID" id="countyID" name="countyID" placeholder="Please Select an option">
+                                                    <mat-option *ngFor="let app of apps| filterPipe: {status: true}" [value]="app.id">{{app.county}}</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
-                                        </div>
-                                        <div *ngIf="town$ | async as apps">
-                                            <label for="assignedIo"><b>Select Town</b></label>
-                                            <mat-form-field>
-                                                <mat-select (change)="updateSelectedTown()"
+                                            <label for="townID"><b>Select Town</b></label>
+                                            <mat-form-field *ngIf="town$ | async as appsTown">
+                                                <mat-select (selectionChange)="updateSelectedTown()"
                                                             [class.is-invalid]="formReAssignRegionForm.townID.invalid && formReAssignRegionForm.townID.touched"
-                                                            formControlName="townID"
-                                                            id="townID" name="townID" placeholder="Please Select an option">
-                                                    <option [value]="" selected>Please select</option>
-                                                    <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
-                                                            [ngValue]="app.id">{{app.town}}</option>
+                                                            formControlName="townID" id="townID" name="townID" placeholder="Please Select an option">
+                                                    <mat-option *ngFor="let appTown of appsTown| filterPipe: {status: true, countyId: selectedCounty}" [value]="appTown.id">{{appTown.town}}</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
-                                        </div>
                                         <label for="assignedRemarks"><b>Please write, in detail, your feedback for
                                             re-assigning the Count, Town:</b></label>
                                         <mat-form-field class="example-full-width">
@@ -804,44 +819,6 @@
                     <form [formGroup]="addNewScheduleForm">
                         <div class="form-group bmd-form-group is-filled">
                             <h5 class="mb-3" style="color: #0066B1">Work-Plan Details</h5>
-                            <!--                            <div class="row">-->
-                            <!--                                <div class="col">-->
-                            <!--                                    <div class="form-group">-->
-                            <!--                                        <label><b>Department</b></label>-->
-                            <!--                                        <select (change)="onChangeSelectedDepartment()"-->
-                            <!--                                                [class.is-invalid]="submitted && formNewScheduleForm.complaintDepartment.errors && formNewScheduleForm.complaintDepartment.invalid"-->
-                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-                            <!--                                                class="form-control" formControlName="complaintDepartment" name="complaintDepartment" required>-->
-                            <!--                                            <option [value]="" selected>Please select</option>-->
-                            <!--                                            <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>-->
-                            <!--                                        </select>-->
-                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.complaintDepartment.errors && formNewScheduleForm.complaintDepartment.invalid" class="invalid-feedback">-->
-                            <!--                                            <div *ngIf="formNewScheduleForm.complaintDepartment.errors.required">Department is-->
-                            <!--                                                required-->
-                            <!--                                            </div>-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-
-                            <!--                                <div class="col">-->
-                            <!--                                    <div class="form-group">-->
-                            <!--                                        <label><b>Division</b></label>-->
-                            <!--                                        <select [class.is-invalid]="formNewScheduleForm.divisionId.errors && formNewScheduleForm.divisionId.invalid"-->
-                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-                            <!--                                                class="form-control" formControlName="divisionId" name="divisionId" required>-->
-                            <!--                                            <option [value]="" selected>Please select</option>-->
-                            <!--                                            <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>-->
-                            <!--                                        </select>-->
-                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.divisionId.errors-->
-                            <!--                                        && formNewScheduleForm.divisionId.invalid" class="invalid-feedback">-->
-                            <!--                                            <div *ngIf="formNewScheduleForm.divisionId.errors.required">Division is-->
-                            <!--                                                required-->
-                            <!--                                            </div>-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-
-                            <!--                            </div>-->
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -880,141 +857,6 @@
                                 </div>
 
                             </div>
-                            <!--                            <div class="row">-->
-                            <!--                                <div class="col">-->
-                            <!--                                    <div class="form-group" *ngIf="county$ | async as apps">-->
-                            <!--                                        <label><b>County</b></label>-->
-                            <!--                                        <select (change)="updateSelectedCounty()"-->
-                            <!--                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"-->
-                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-                            <!--                                                class="form-control" formControlName="county" name="county" required>-->
-                            <!--                                            <option [value]="" selected>Please select</option>-->
-                            <!--                                            <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"-->
-                            <!--                                            >{{app.county}}</option>-->
-                            <!--                                        </select>-->
-                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">-->
-                            <!--                                            <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-
-                            <!--                                <div class="col">-->
-                            <!--                                    <div class="form-group" *ngIf="town$ | async as apps">-->
-                            <!--                                        <label><b>Town/Market center</b></label>-->
-                            <!--                                        <select (change)="updateSelectedTown()"-->
-                            <!--                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"-->
-                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-                            <!--                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>-->
-                            <!--                                            <option [value]="" selected>Please select</option>-->
-                            <!--                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"-->
-                            <!--                                                    [ngValue]="app.id">{{app.town}}</option>-->
-                            <!--                                        </select>-->
-                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">-->
-                            <!--                                            <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-
-                            <!--                            </div>-->
-                            <!--                            <div class="row">-->
-                            <!--                                <div class="col">-->
-                            <!--                                    <div class="form-group">-->
-                            <!--                                        <label><b>Other</b></label>-->
-                            <!--                                        <input type="text" class="form-control two-column-input"-->
-                            <!--                                               formControlName="locationActivityOther" name="locationActivityOther" required-->
-                            <!--                                               [class.is-invalid]="formNewScheduleForm.locationActivityOther.invalid && formNewScheduleForm.locationActivityOther.errors">-->
-                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.locationActivityOther.errors" class="invalid-feedback">-->
-                            <!--                                            <div *ngIf="formNewScheduleForm.locationActivityOther.errors.required">Other is required</div>-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-
-                            <!--                                <div class="col">-->
-                            <!--                                    <div class="form-group">-->
-                            <!--                                        <label><b>Select Product Category</b> </label>-->
-                            <!--                                        <select (change)="onChangeSelectedProductClassification()"-->
-                            <!--                                                [class.is-invalid]="formNewScheduleForm.standardCategory.invalid && formNewScheduleForm.standardCategory.errors"-->
-                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-                            <!--                                                class="form-control" formControlName="standardCategory" name="standardCategory" required>-->
-                            <!--                                            <option [value]="" selected>Please select</option>-->
-                            <!--                                            <option *ngFor="let app of standardProductCategory | filterPipe: {status: true}" [value]="app.id">{{app.standardCategory}}</option>-->
-                            <!--                                        </select>-->
-                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.standardCategory.errors" class="invalid-feedback">-->
-                            <!--                                            <div *ngIf="formNewScheduleForm.standardCategory.errors.required">Product Category is required</div>-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-
-                            <!--                            </div>-->
-                            <!--                            <div class="row">-->
-                            <!--                                <div class="col">-->
-                            <!--                                    <div class="form-group">-->
-                            <!--                                        <label><b>Select Broad Product Category</b> </label>-->
-                            <!--                                        <select (change)="onChangeSelectedBroadProductCategory()"-->
-                            <!--                                                [class.is-invalid]="formNewScheduleForm.broadProductCategory.invalid && formNewScheduleForm.broadProductCategory.errors"-->
-                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
-                            <!--                                                class="form-control" formControlName="broadProductCategory" name="broadProductCategory" required>-->
-                            <!--                                            <option [value]="" selected>Please select</option>-->
-                            <!--                                            <option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</option>-->
-                            <!--                                        </select>-->
-                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.broadProductCategory.errors" class="invalid-feedback">-->
-                            <!--                                            <div *ngIf="formNewScheduleForm.broadProductCategory.errors.required">Broad Product Category is required</div>-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-
-                            <!--                                <div class="col">-->
-                            <!--                                    <div class="form-group">-->
-                            <!--                                        <label><b>Select Product Category</b> </label>-->
-                            <!--                                        <select (change)="onChangeSelectedProductCategory()"-->
-                            <!--                                                [class.is-invalid]="formNewScheduleForm.productCategory.invalid && formNewScheduleForm.productCategory.errors"-->
-                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
-                            <!--                                                formControlName="productCategory" id="productCategory" name="productCategory" >-->
-                            <!--                                            <option [value]="" selected>Please select</option>-->
-                            <!--                                            <option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</option>-->
-                            <!--                                        </select>-->
-                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.productCategory.errors" class="invalid-feedback">-->
-                            <!--                                            <div *ngIf="formNewScheduleForm.productCategory.errors.required">Product Category is required</div>-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-
-                            <!--                            </div>-->
-                            <!--                            <div class="row">-->
-                            <!--                                <div class="col">-->
-                            <!--                                    <div class="form-group">-->
-                            <!--                                        <label><b>Select Product</b> </label>-->
-                            <!--                                        <select (change)="onChangeSelectedMyProduct()"-->
-                            <!--                                                [class.is-invalid]="formNewScheduleForm.product.invalid && formNewScheduleForm.product.errors"-->
-                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
-                            <!--                                                formControlName="product" id="product" name="product" >-->
-                            <!--                                            <option [value]="" selected>Please select</option>-->
-                            <!--                                            <option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</option>-->
-                            <!--                                        </select><div *ngIf="submitted && formNewScheduleForm.product.errors" class="invalid-feedback">-->
-                            <!--                                        <div *ngIf="formNewScheduleForm.product.errors.required">Product is required</div>-->
-                            <!--                                    </div>-->
-
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-
-                            <!--                                <div class="col">-->
-                            <!--                                    <div class="form-group">-->
-                            <!--                                        <label><b>Select Product Sub-Category</b> </label>-->
-                            <!--                                        <select (change)="onChangeSelectedProductSubcategory()"-->
-                            <!--                                                [class.is-invalid]="formNewScheduleForm.productSubCategory.invalid && formNewScheduleForm.productSubCategory.errors"-->
-                            <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"-->
-                            <!--                                                formControlName="productSubCategory" id="productSubCategory" name="productSubCategory" >-->
-                            <!--                                            <option [value]="" selected>Please select</option>-->
-                            <!--                                            <option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</option>-->
-                            <!--                                        </select>-->
-                            <!--                                        <div *ngIf="submitted && formNewScheduleForm.productSubCategory.errors" class="invalid-feedback">-->
-                            <!--                                            <div *ngIf="formNewScheduleForm.productSubCategory.errors.required">Product Sub-Category is required</div>-->
-                            <!--                                        </div>-->
-
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-
-                            <!--                            </div>-->
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">

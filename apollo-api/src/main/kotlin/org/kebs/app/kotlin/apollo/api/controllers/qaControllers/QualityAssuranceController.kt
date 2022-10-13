@@ -122,8 +122,7 @@ class QualityAssuranceController(
         if (schemeID != null && status != null) {
             QaSchemeForSupervisionEntity.status = status
             QaSchemeForSupervisionEntity.acceptedRejectedStatus = null
-            result =
-                qaDaoServices.schemeSupervisionUpdateSave(schemeID, QaSchemeForSupervisionEntity, loggedInUser, map)
+            result = qaDaoServices.schemeSupervisionUpdateSave(schemeID, QaSchemeForSupervisionEntity, loggedInUser, map)
             sm.message = "You have Successful UPDATED SSC"
         } else {
             result =

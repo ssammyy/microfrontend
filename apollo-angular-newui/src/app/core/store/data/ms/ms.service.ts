@@ -66,7 +66,7 @@ import {
     WorkPlanFeedBackDto,
     FuelScheduleTeamsListDetailsDto,
     TeamsFuelSaveDto,
-    FuelScheduleCountyListDetailsDto, RapidTestProductsDto, EndFuelDto, RegionReAssignDto,
+    FuelScheduleCountyListDetailsDto, RapidTestProductsDto, EndFuelDto, RegionReAssignDto, PredefinedResourcesRequired,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -1442,6 +1442,21 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_BROAD_PRODUCT_CATEGORY);
         return this.http.get<MsBroadProductCategory[]>(url).pipe(
             map(function (response: MsBroadProductCategory[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msPredefinedResourcesRequiredListDetails(): Observable<PredefinedResourcesRequired[]> {
+        // console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_PREDEFINED_RESOURCES_REQUIRED);
+        return this.http.get<PredefinedResourcesRequired[]>(url).pipe(
+            map(function (response: PredefinedResourcesRequired[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

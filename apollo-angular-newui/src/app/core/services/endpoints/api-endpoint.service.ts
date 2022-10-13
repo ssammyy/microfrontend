@@ -605,6 +605,7 @@ export class ApiEndpointService {
         MS_STANDARD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/standardProductCategory`,
         MS_PRODUCT_CATEGORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/productCategories`,
         MS_BROAD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/broadProductCategory`,
+        MS_PREDEFINED_RESOURCES_REQUIRED: `${ApiEndpointService.MS_COMMON_CONTEXT}/predefinedResourcesRequired`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
     };

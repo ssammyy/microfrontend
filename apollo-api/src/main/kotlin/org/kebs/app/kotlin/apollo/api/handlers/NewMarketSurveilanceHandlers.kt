@@ -133,6 +133,18 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun msPredefinedResources(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllPredefinedResourcesRequired()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Predefined Resources Required found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
     fun msProductCategories(req: ServerRequest): ServerResponse {
         try {
             masterDataDaoService.getAllProductCategories()

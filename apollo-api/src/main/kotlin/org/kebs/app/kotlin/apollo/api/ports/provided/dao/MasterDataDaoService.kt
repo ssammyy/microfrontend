@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestTypesEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.IPredefinedResourcesRequiredRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
@@ -29,6 +30,7 @@ class MasterDataDaoService(
     private val townsRepo: ITownsRepository,
     private val userRequestTypesRepo: IUserRequestTypesRepository,
     private val standardCategoryRepo: IStandardCategoryRepository,
+    private val predefinedResourcesRequiredRepo: IPredefinedResourcesRequiredRepository,
     private val productCategoriesRepo: IKebsProductCategoriesRepository,
     private val countriesRepo: ICountriesRepository,
     private val broadProductCategoryRepo: IBroadProductCategoryRepository,
@@ -65,6 +67,9 @@ class MasterDataDaoService(
         ?.map { DirectoratesEntityDto(it.id, it.directorate, it.status == 1) }
 
     fun getAllStandardProductCategory(): List<StandardProductCategoryEntityDto>? = standardCategoryRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { StandardProductCategoryEntityDto(it.id, it.standardCategory, it.standardNickname, it.standardId, it.status == 1) }
+
+    fun getAllPredefinedResourcesRequired(): List<PredefinedResourcesRequiredEntityDto>? = predefinedResourcesRequiredRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { PredefinedResourcesRequiredEntityDto(it.id, it.resourceName, it.status == 1) }
+
     fun getStandardProductCategoryByStatus(status: Int): List<StandardProductCategoryEntityDto>? = standardCategoryRepo.findByStatusOrderByStandardCategory(status)?.sortedBy { it.id }?.sortedBy { it.id }?.map { StandardProductCategoryEntityDto(it.id, it.standardCategory, it.standardNickname, it.standardId, it.status == 1) }
 
     fun getAllUserRequestTypes(): List<UserRequestTypesEntityDto>? = userRequestTypesRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { UserRequestTypesEntityDto(it.id, it.userRequest, it.description, it.status == 1) }

@@ -65,6 +65,14 @@ class ComplaintEntity : Serializable {
     @Basic
     var complaintDetails: String? = null
 
+    @Column(name = "COMPLAINT_SAMPLE_DETAILS")
+    @Basic
+    var complaintSampleDetails: String? = null
+
+    @Column(name = "REMEDY_SOUGHT")
+    @Basic
+    var remedySought: String? = null
+
     @NotNull(message = "This field is required")
     @Column(name = "COMPLAINT_TITLE")
     @Basic

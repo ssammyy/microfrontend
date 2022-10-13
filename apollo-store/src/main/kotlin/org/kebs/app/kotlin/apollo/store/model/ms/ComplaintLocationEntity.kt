@@ -45,6 +45,26 @@ class ComplaintLocationEntity : Serializable {
     @Basic
     var subcounty: String? = null
 
+    @Column(name = "EMAIL")
+    @Basic
+    var email: String? = null
+
+    @Column(name = "NAME_CONTACT_PERSON")
+    @Basic
+    var nameContactPerson: String? = null
+
+    @Column(name = "PHONE_NUMBER")
+    @Basic
+    var phoneNumber: String? = null
+
+    @Column(name = "TELEPHONE_NUMBER")
+    @Basic
+    var telephoneNumber: String? = null
+
+    @Column(name = "BUSINESS_ADDRESS")
+    @Basic
+    var businessAddress: String? = null
+
     @Column(name = "TOWN")
     @Basic
     var town: Long? = null

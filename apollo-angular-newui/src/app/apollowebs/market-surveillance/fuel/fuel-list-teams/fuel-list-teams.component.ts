@@ -275,8 +275,7 @@ export class FuelListTeamsComponent implements OnInit {
 
   updateSelectedCounty() {
     let countyDetail: County;
-    this.county$.subscribe(event => {
-          countyDetail = event.find(item => item.id === this.createTeamsCountyForm?.get('countyId')?.value);
+    this.county$.subscribe(event => {countyDetail = event.find(item => item.id === this.createTeamsCountyForm?.get('countyId')?.value);
     });
     this.selectedCounty = countyDetail.county;
     this.createTeamsCountyForm?.get('remarks')?.setValue(this.selectedCounty);

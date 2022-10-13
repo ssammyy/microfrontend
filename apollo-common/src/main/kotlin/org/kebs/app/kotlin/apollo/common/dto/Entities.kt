@@ -609,6 +609,12 @@ data class StandardProductCategoryEntityDto(
     var status: Boolean? = null
 )
 
+data class PredefinedResourcesRequiredEntityDto(
+    var id: Long? = null,
+    var resourceName: String? = null,
+    var status: Boolean? = null
+)
+
 data class UserRequestTypesEntityDto(
     var id: Long? = null,
     var userRequest: String? = null,
