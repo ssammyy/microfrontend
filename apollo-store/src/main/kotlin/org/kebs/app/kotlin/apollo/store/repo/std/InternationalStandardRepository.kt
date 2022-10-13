@@ -252,7 +252,7 @@ interface StandardRepository : JpaRepository<Standard, Long> {
     fun reviewedStandards(): Collection<Standard?>?
     @Query(
         value = "SELECT ID as id,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,STANDARD_NUMBER as standardNumber,STANDARD_TYPE as standardType,cast(DATE_FORMED as varchar(200)) AS dateFormed ," +
+                "SPECIAL as special,STANDARD_NUMBER as standardNumber,STANDARD_TYPE as standardType,cast(DATE_FORMED as varchar(200)) AS dateFormed " +
                 "FROM SD_STANDARD_TBL WHERE STATUS='2' ",
         nativeQuery = true
     )
@@ -271,7 +271,26 @@ interface StandardReviewRecommendationsRepository : JpaRepository<StandardReview
 }
 
 interface StandardReviewRepository : JpaRepository<StandardReview, Long> {
+    @Query(
+        value = "SELECT ID as id,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,STANDARD_NUMBER as standardNumber,STANDARD_TYPE as standardType " +
+                "FROM SD_STANDARD_REVIEW  ",
+        nativeQuery = true
+    )
+    fun getStandardsProposalForComment(): MutableList<ReviewStandards>
+
 }
+interface StandardReviewProposalCommentsRepository : JpaRepository<StandardReviewProposalComments, Long> {
+    @Query(
+        value = "SELECT ID as id,USER_NAME as userName,ADOPTION_COMMENT as adoptionComment,COMMENT_TIME as commentTime,PROPOSAL_ID as proposalId,TITLE as title," +
+                "DOCUMENT_TYPE as documentType,CLAUSE as clause,PARAGRAPH as paragraph,TYPE_OF_COMMENT as typeOfComment,PROPOSED_CHANGE as proposedChange " +
+                "FROM SD_REVIEW_PROPOSAL_COMMENTS  ",
+        nativeQuery = true
+    )
+    fun getStandardsProposalComments(id: Long): MutableList<ReviewStandards>
+
+}
+
 
 interface UserListRepository : JpaRepository<UsersEntity, Long> {
     @Query("SELECT u.firstName,u.lastName FROM UsersEntity u WHERE u.id =:id")

@@ -10,9 +10,11 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import java.sql.Timestamp
 import java.util.ArrayList
 
 
@@ -26,7 +28,10 @@ class StandardReviewService(
     private val standardRepository: StandardRepository,
     private val standardReviewRepository: StandardReviewRepository,
     private val standardReviewCommentsRepository: StandardReviewCommentsRepository,
-    private val standardReviewRecommendationsRepository: StandardReviewRecommendationsRepository
+    private val standardReviewRecommendationsRepository: StandardReviewRecommendationsRepository,
+    private val companyStandardRepository: CompanyStandardRepository,
+    private val notifications: Notifications,
+    private val standardReviewProposalCommentsRepository: StandardReviewProposalCommentsRepository
 ) {
 
     val PROCESS_DEFINITION_KEY = "sd_Review_Procedure_module"
@@ -78,20 +83,7 @@ class StandardReviewService(
     }
 
 
-    fun standardReviewForm(standardReview: StandardReview) : ProcessInstanceResponse
-    {
-        val variables: MutableMap<String, Any> = HashMap()
-        standardReview.title?.let{ variables.put("title", it)}
-        standardReview.standardNumber?.let{ variables.put("standardNumber", it)}
-        standardReview.documentType?.let{ variables.put("documentType", it)}
-        standardReview.preparedBy?.let{ variables.put("preparedBy", it)}
-        standardReview.datePrepared?.let{ variables.put("datePrepared", it)}
 
-
-        standardReviewRepository.save(standardReview)
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
-    }
 
 
     //Return task details for Stakeholders
@@ -177,6 +169,74 @@ class StandardReviewService(
     fun getStandardsForReview(): MutableList<ReviewStandards> {
         return standardRepository.getStandardsForReview()
     }
+
+    fun standardReviewForm(standardReview: StandardReview)
+    {
+        val variables: MutableMap<String, Any> = HashMap()
+        standardReview.title=standardReview.title
+        standardReview.standardNumber=standardReview.standardNumber
+        standardReview.documentType=standardReview.documentType
+        standardReview.preparedBy=standardReview.preparedBy
+        standardReview.datePrepared=standardReview.datePrepared
+        standardReview.scope=standardReview.scope
+        standardReview.normativeReference=standardReview.normativeReference
+        standardReview.symbolsAbbreviatedTerms=standardReview.symbolsAbbreviatedTerms
+        standardReview.clause=standardReview.clause
+        standardReview.special=standardReview.special
+        standardReview.standardType=standardReview.standardType
+
+
+        standardReviewRepository.save(standardReview)
+
+        var userList= companyStandardRepository.getStakeHoldersEmailList()
+
+        //email to stakeholders
+        val targetUrl = "https://kimsint.kebs.org/";
+        userList.forEach { item->
+            //val recipient="stephenmuganda@gmail.com"
+            val recipient= item.getUserEmail()
+            val subject = "New Adoption Proposal Review"+  standardReview.standardNumber
+            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
+            if (recipient != null) {
+                notifications.sendEmail(recipient, subject, messageBody)
+            }
+        }
+
+    }
+
+    fun getStandardsProposalForComment(): MutableList<ReviewStandards> {
+        return standardReviewRepository.getStandardsProposalForComment()
+    }
+
+    //Submit Adoption Proposal comments
+    fun submitAPComments(standardReviewProposalComments: StandardReviewProposalComments){
+        val variables: MutableMap<String, Any> = HashMap()
+        standardReviewProposalComments.userName?.let{ variables.put("userName", it)}
+        standardReviewProposalComments.adoptionComment?.let{ variables.put("adoptionComment", it)}
+        standardReviewProposalComments.proposalId?.let{ variables.put("proposalId", it)}
+        standardReviewProposalComments.title?.let{ variables.put("title", it)}
+        standardReviewProposalComments.documentType?.let{ variables.put("documentType", it)}
+        standardReviewProposalComments.clause?.let{ variables.put("clause", it)}
+        standardReviewProposalComments.paragraph?.let{ variables.put("paragraph", it)}
+        standardReviewProposalComments.typeOfComment?.let{ variables.put("typeOfComment", it)}
+        standardReviewProposalComments.proposedChange?.let{ variables.put("proposedChange", it)}
+
+        standardReviewProposalComments.commentTime = Timestamp(System.currentTimeMillis())
+        variables["commentTime"] = standardReviewProposalComments.commentTime!!
+
+        standardReviewProposalCommentsRepository.save(standardReviewProposalComments)
+
+    }
+
+    fun getStandardsProposalComments(proposalId: Long): MutableList<ReviewStandards> {
+        return standardReviewProposalCommentsRepository.getStandardsProposalComments(proposalId)
+    }
+
+
+
+
+
+
 
 
 }

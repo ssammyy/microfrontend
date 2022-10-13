@@ -433,6 +433,17 @@ interface ReviewStandards{
     fun getStandardNumber(): String?
     fun getStandardType(): String?
     fun getDateFormed(): String?
+    fun getUserName(): String?
+    fun getAdoptionComment(): String?
+    fun getCommentTime(): String?
+    fun getProposalId(): Long?
+    fun getDocumentType(): String?
+    fun getParagraph(): String?
+    fun getTypeOfComment(): String?
+    fun getProposedChange(): String?
+
+
+
 }
 
 interface RejectedComDetails{
