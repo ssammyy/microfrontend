@@ -255,3 +255,24 @@ interface VotesTally {
 
 
 }
+interface SampleSubmissionDTO {
+    fun getSSF_SUBMISSION_DATE(): Long?
+    fun getFIRM_NAME(): String?
+    fun getPHYSICAL_ADDRESS(): String?
+
+    fun getTELEPHONE_NO(): String?
+
+    fun getREGION(): String?
+
+    fun getSECTION(): String?
+
+    fun getPRODUCT(): String?
+
+    fun getBRAND_NAME(): String?
+    fun getSTANDARD_TITLE(): String?
+    fun getCOMPLIANCE_REMARKS(): String?
+    fun getCOMPLIANT_STATUS(): String?
+    fun getINSPECTION_DATE(): String?
+    fun getRESULTS_DATE(): String?
+
+}
