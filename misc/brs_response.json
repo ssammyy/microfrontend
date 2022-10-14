@@ -1,128 +1,23 @@
-curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendPenaltyDetails' \
---header 'Content-Type: application/json' \
---data-raw '{
+BODY{
   "REQUEST": {
     "HEADER": {
       "loginId": "KEBSUSER",
       "password": "password@1",
-      "hash": "a83a8e5265b7d935db9a6d588aa202615aa0e2661daf1e3133b0e919d60f4188",
+      "hash": "440653b660e5f7f3e8fdfac2e45936a51c9934eac411813fd61dac91b485efd7",
       "noOfRecords": "1",
-      "transmissionDate": "16-09-2022T14:15:25"
+      "transmissionDate": "13-10-2022T13:55:24"
     },
     "PENALTYINFO": [
-        {
-        "entryNo": "20220915554362",
-        "periodTo": "30-11-2020",
-        "periodFrom": "01-11-2020",
-        "PenaltyOrderNo": 33708,
-        "penaltyPayable": 50,
-        "kraPin": "P051950703Z",
-        "penaltyGenDate": "15-09-2022T00:00:00",
-        "manufacName": "MADINA BAKERS LIMITED"
-        }
+      {
+        "entryNo": "20220905038285",
+        "periodTo": "31-05-2022",
+        "periodFrom": "01-05-2022",
+        "PenaltyOrderNo": 33701,
+        "penaltyPayable": 500,
+        "kraPin": "P052075239B",
+        "penaltyGenDate": "15-09-2022T11:16:36",
+        "manufacName": "KITHUNGO DIARY LIMITED"
+      }
     ]
   }
-}'
-
-
-  {
-  "entryNo": "20220915192740",
-  "periodTo": "30-06-2022",
-"periodFrom": "01-06-2022",
-"PenaltyOrderNo": 33703,
-"penaltyPayable": 10000,
-"kraPin": "P051789182D",
-"penaltyGenDate": "09-03-2023T00:00:00",
-"manufacName": "WINPACK LIMITED"
-},
-
-{
-"entryNo": "20220915397258",
-"periodTo": "31-01-2022",
-"periodFrom": "01-01-2022",
-"PenaltyOrderNo": 33706,
-"penaltyPayable": 1,
-"kraPin": "P051979788S",
-"penaltyGenDate": "15-09-2022T00:00:00",
-"manufacName": "CLAIRES ARGAN GOLD COSMETICS LTD"
-},
-{
-"entryNo": "20220915470188",
-"periodTo": "31-12-2022",
-"periodFrom": "01-12-2021",
-"PenaltyOrderNo": 33712,
-"penaltyPayable": 1,
-"kraPin": "P052053594F",
-"penaltyGenDate": "15-09-2022T00:00:00",
-"manufacName": "RIVERSIDE WATER DROPS LIMITED"
-},
-{
-"entryNo": "20220915532732",
-"periodTo": "30-04-2022",
-"periodFrom": "01-04-2022",
-"PenaltyOrderNo": 33709,
-"penaltyPayable": 1,
-"kraPin": "P051949747E",
-"penaltyGenDate": "15-09-2022T00:00:00",
-"manufacName": "POLLO CHICKEN FARMS LIMITED"
-},
-{
-"entryNo": "20220915436482",
-"periodTo": "31-08-2021",
-"periodFrom": "01-08-2021",
-"PenaltyOrderNo": 33707,
-"penaltyPayable": 1,
-"kraPin": "P052039777S",
-"penaltyGenDate": "15-09-2022T00:00:00",
-"manufacName": "MEGA FLOUR MILLS LIMITED"
-},
-{
-"entryNo": "20220915536102",
-"periodTo": "30-06-2021",
-"periodFrom": "01-06-2021",
-"PenaltyOrderNo": 33710,
-"penaltyPayable": 1,
-"kraPin": "P052000984W",
-"penaltyGenDate": "15-09-2022T00:00:00",
-"manufacName": "LITTLE PACKS LIMITED"
-},
-{
-"entryNo": "20220915053363",
-"periodTo": "30-09-2021",
-"periodFrom": "01-09-2021",
-"PenaltyOrderNo": 33711,
-"penaltyPayable": 1,
-"kraPin": "P052028425Y",
-"penaltyGenDate": "15-09-2022T00:00:00",
-"manufacName": "NOON FOOD COMPANY LTD"
-},
-{
-"entryNo": "20220914084743",
-"periodTo": "31-05-2022",
-"periodFrom": "01-05-2022",
-"PenaltyOrderNo": 33700,
-"penaltyPayable": 1,
-"kraPin": "P051924746P",
-"penaltyGenDate": "14-09-2022T00:00:00",
-"manufacName": "TANVEER PAINT ( K ) LIMITED"
-},
-{
-"entryNo": "20220915922635",
-"periodTo": "31-10-2021",
-"periodFrom": "01-10-2021",
-"PenaltyOrderNo": 33704,
-"penaltyPayable": 1,
-"kraPin": "P051999289Q",
-"penaltyGenDate": "15-09-2022T00:00:00",
-"manufacName": "RICHLAND HONEY LIMITED"
-},
-{
-"entryNo": "20220915554362",
-"periodTo": "30-11-2020",
-"periodFrom": "01-11-2020",
-"PenaltyOrderNo": 33708,
-"penaltyPayable": 1,
-"kraPin": "P051950703Z",
-"penaltyGenDate": "15-09-2022T00:00:00",
-"manufacName": "MADINA BAKERS LIMITED"
 }

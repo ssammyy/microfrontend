@@ -30,21 +30,12 @@ class StandardReviewController(
         return ServerResponse(HttpStatus.OK,"Successfully deployed server", HttpStatus.OK)
     }
 
-    //********************************************************** Save Standard **********************************************************
-    @PostMapping("/saveStandard")
-    @ResponseBody
-    fun saveStandard(@RequestBody standard: Standard): ServerResponse
-    {
-        return ServerResponse(HttpStatus.OK,"Successfully saved Standard",standardReviewService.saveStandard(standard))
-    }
-
-    //**********************************************************Get Standards**********************************************************
     @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/reviewedStandards")
+    @GetMapping("/getStandardsForReview")
     @ResponseBody
-    fun reviewedStandards(): MutableList<Standard>
+    fun getStandardsForReview(): MutableList<ReviewStandards>
     {
-        return standardReviewService.reviewedStandards();
+        return standardReviewService.getStandardsForReview()
     }
 
     //********************************************************** Start Review Process **********************************************************
@@ -56,30 +47,82 @@ class StandardReviewController(
         return ServerResponse(HttpStatus.OK,"Successfully Uploaded Form",standardReviewService.standardReviewForm(standardReview))
     }
 
-    //********************************************************** get Stakeholders Tasks **********************************************************
-    @PreAuthorize("hasAuthority('STAKEHOLDERS_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getReviewForms")
-    fun getReviewForms():List<TaskDetails>
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('SPC_SEC_SD_READ')" +
+            " or hasAuthority('STAKEHOLDERS_SD_READ') or hasAuthority('SAC_SEC_SD_READ')" +
+            " or hasAuthority('TC_SEC_SD_READ') or hasAuthority('HOP_SD_READ') or" +
+            " hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')  ")
+    @GetMapping("/getUserTasks")
+    fun getUserTasks():List<StandardReviewTasks>
     {
-        return standardReviewService.getReviewForms()
+        return standardReviewService.getUserTasks()
     }
+
+   // @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getStandardsProposalForComment")
+    @ResponseBody
+    fun getStandardsProposalForComment(): MutableList<ReviewStandards>
+    {
+        return standardReviewService.getStandardsProposalForComment()
+    }
+
+    //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY')")
+    @PostMapping("/SubmitAPComments")
+    @ResponseBody
+    fun submitAPComments(@RequestBody standardReviewProposalComments: StandardReviewProposalComments): ServerResponse{
+        return ServerResponse(HttpStatus.OK,"Comment Has been submitted",standardReviewService.submitAPComments(standardReviewProposalComments))
+    }
+
+    @GetMapping("/getStandardsProposalComments")
+    fun getStandardsProposalComments(@RequestParam("proposalId") proposalId: Long):MutableIterable<ReviewStandards>?
+    {
+        return standardReviewService.getStandardsProposalComments(proposalId)
+    }
+
+    //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY')")
+    @PostMapping("/makeRecommendationsOnAdoptionProposal")
+    @ResponseBody
+    fun makeRecommendationsOnAdoptionProposal(@RequestBody standardReviewProposalRecommendations: StandardReviewProposalRecommendations): ServerResponse{
+        return ServerResponse(HttpStatus.OK,"Comment Has been submitted",standardReviewService.makeRecommendationsOnAdoptionProposal(standardReviewProposalRecommendations))
+    }
+
+    //decision on Adoption Recommendation
+   // @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/decisionOnRecommendation")
+    fun decisionOnRecommendation(@RequestBody iSDecision: ISDecision,
+                                 internationalStandardRemarks: InternationalStandardRemarks) : List<StandardReviewTasks>
+    {
+        return standardReviewService.decisionOnRecommendation(iSDecision,internationalStandardRemarks)
+    }
+
+    //Level Two Decision
+    @PostMapping("/levelUpDecisionOnRecommendations")
+    fun levelUpDecisionOnRecommendations(@RequestBody iSDecision: ISDecision,
+                                 internationalStandardRemarks: InternationalStandardRemarks,
+                                         standard: Standard ) : List<StandardReviewTasks>
+    {
+        return standardReviewService.levelUpDecisionOnRecommendations(iSDecision,internationalStandardRemarks,standard)
+    }
+
+
 
     //********************************************************** Submit Review Comments **********************************************************
-    @PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/commentsOnReview")
+    //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/updateGazette")
     @ResponseBody
-    fun commentsOnReview(@RequestBody standardReviewComments: StandardReviewComments): ServerResponse
+    fun updateGazette(@RequestBody internationalStandardRemarks: InternationalStandardRemarks,
+                      standard:Standard,iSDecision: ISDecision): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully Submitted Comments",standardReviewService.commentsOnReview(standardReviewComments))
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted Comments",standardReviewService.updateGazette(internationalStandardRemarks,standard,iSDecision))
     }
 
-    //********************************************************** get TSC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getReviewTasks")
-    fun getReviewTasks():List<TaskDetails>
+    @PostMapping("/updateGazettementDate")
+    @ResponseBody
+    fun updateGazettementDate(@RequestBody nWAGazettement: NWAGazettement,iSDecision: ISDecision): ServerResponse
     {
-        return standardReviewService.getReviewTasks()
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted Comments",standardReviewService.updateGazettementDate(nWAGazettement,iSDecision))
     }
+
+
 
     //********************************************************** Make Recommendations **********************************************************
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -90,13 +133,7 @@ class StandardReviewController(
         return ServerResponse(HttpStatus.OK,"Successfully Submitted Recommendations",standardReviewService.reviewRecommendations(standardReviewRecommendations))
     }
 
-    //********************************************************** get SPC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getRecommendations")
-    fun getRecommendations():List<TaskDetails>
-    {
-        return standardReviewService.getRecommendations()
-    }
+
 
     //decision on Adoption Recommendation
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -106,13 +143,7 @@ class StandardReviewController(
         standardReviewService.decisionOnRecommendation(standardReviewRecommendations)
     }
 
-    //********************************************************** get SAC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getSacList")
-    fun getSacList():List<TaskDetails>
-    {
-        return standardReviewService.getSacList()
-    }
+
 
     //decision on Adoption Recommendation
     @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -122,13 +153,6 @@ class StandardReviewController(
         standardReviewService.decisionOfSac(standardReviewRecommendations)
     }
 
-    //********************************************************** get HOP Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getPublishingTasks")
-    fun getPublishingTasks():List<TaskDetails>
-    {
-        return standardReviewService.getPublishingTasks()
-    }
 
 
     @PostMapping("/upload")
@@ -237,13 +261,7 @@ class StandardReviewController(
             .body(fileDB.data)
     }
 
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getStandardsForReview")
-    @ResponseBody
-    fun getStandardsForReview(): MutableList<ReviewStandards>
-    {
-        return standardReviewService.getStandardsForReview()
-    }
+
 
 
 

@@ -25,7 +25,7 @@ class StandardReview {
 
     @Column(name="PREPARED_BY")
     @Basic
-    var preparedBy:String? =null
+    var preparedBy:Long? =null
 
     @Column(name="DATE_PREPARED")
     @Basic
@@ -54,6 +54,10 @@ class StandardReview {
     @Column(name="STANDARD_TYPE")
     @Basic
     var standardType:String? =null
+
+    @Column(name="ASSIGNED_TO")
+    @Basic
+    var assignedTo:Long? =null
 
 
 

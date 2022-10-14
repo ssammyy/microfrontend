@@ -257,6 +257,8 @@ interface StandardRepository : JpaRepository<Standard, Long> {
         nativeQuery = true
     )
     fun getStandardsForReview(): MutableList<ReviewStandards>
+
+    fun findAllByOrderByIdDesc(): MutableList<Standard>
 }
 
 interface StandardReviewCommentsRepository : JpaRepository<StandardReviewComments, Long> {
@@ -288,6 +290,10 @@ interface StandardReviewProposalCommentsRepository : JpaRepository<StandardRevie
         nativeQuery = true
     )
     fun getStandardsProposalComments(id: Long): MutableList<ReviewStandards>
+
+}
+
+interface StandardReviewProposalRecommendationsRepo: JpaRepository<StandardReviewProposalRecommendations, Long>{
 
 }
 
