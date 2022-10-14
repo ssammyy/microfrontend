@@ -81,7 +81,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun saveNewComplaint(body: NewComplaintDto, docFile: List<MultipartFile>): MSComplaintSubmittedSuccessful {
+    fun saveNewComplaint(body: NewComplaintDto, docFile: List<MultipartFile>?): MSComplaintSubmittedSuccessful {
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val msType = findMsTypeDetailsWithUuid(applicationMapProperties.mapMsComplaintTypeUuid)
@@ -97,7 +97,12 @@ class MarketSurveillanceComplaintProcessDaoServices(
             val complaintLocation = saveNewComplaintLocation(body.locationDetails, body.complaintDetails, map, complaint.second)
             payload += "${commonDaoServices.createJsonBodyFromEntity(complaintLocation)}"
 
-            saveComplaintFiles(docFile, map, complaint.second)
+            when {
+                docFile!=null -> {
+                    saveComplaintFiles(docFile, map, complaint.second)
+                }
+            }
+
 
 
             val designationsEntity = commonDaoServices.findDesignationByID(applicationMapProperties.mapMsComplaintAndWorkPlanDesignationHOD)
@@ -733,7 +738,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
     }
 
-    @PreAuthorize("hasAuthority('MS_HOF_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_HOF_MODIFY') or hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateComplaintAssignIOStatus(
         referenceNo: String,
@@ -1012,6 +1017,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             with(complaint) {
                 complaintTitle = complaintDto.complaintTitle
                 complaintDetails = complaintDto.complaintDescription
+                complaintSampleDetails = complaintDto.complaintSampleDetails
+                remedySought = complaintDto.remedySought
                 targetedProducts = complaintDto.productBrand
 //                complaintDepartment = complaintDto.complaintCategory
 //                standardCategory = complaintDto.productClassification
@@ -1177,6 +1184,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             mobilePhoneNumber = complaintCustomersDto.phoneNumber
             emailAddress = complaintCustomersDto.emailAddress
             postalAddress = complaintCustomersDto.postalAddress
+            physicalAddress = complaintCustomersDto.physicalAddress
             transactionDate = commonDaoServices.getCurrentDate()
             status = map.activeStatus
             createdBy = complaintCustomersDto.firstName?.let { complaintCustomersDto.lastName?.let { it1 -> commonDaoServices.concatenateName(it, it1) } }
@@ -1192,6 +1200,11 @@ class MarketSurveillanceComplaintProcessDaoServices(
         with(complaintLocation) {
             county = complaintLocationDto.county
             town = complaintLocationDto.town
+            email = complaintLocationDto.email
+            nameContactPerson = complaintLocationDto.nameContactPerson
+            phoneNumber = complaintLocationDto.phoneNumber
+            telephoneNumber = complaintLocationDto.telephoneNumber
+            businessAddress = complaintLocationDto.businessAddress
             marketCenter = complaintLocationDto.marketCenter
             building = complaintLocationDto.buildingName
             productBrand = complaintDto.productBrand
@@ -1408,6 +1421,14 @@ class MarketSurveillanceComplaintProcessDaoServices(
             complaintCustomersDetails.emailAddress,
             complaintCustomersDetails.mobilePhoneNumber,
             complaintCustomersDetails.postalAddress,
+            complaintCustomersDetails.physicalAddress,
+            comp.complaintSampleDetails,
+            comp.remedySought,
+            complaintLocationDetails.email,
+            complaintLocationDetails.nameContactPerson,
+            complaintLocationDetails.phoneNumber,
+            complaintLocationDetails.telephoneNumber,
+            complaintLocationDetails.businessAddress,
             comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
             comp.complaintTitle,
             comp.complaintDetails,

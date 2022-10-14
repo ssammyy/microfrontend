@@ -472,17 +472,40 @@ import {
 } from './apollowebs/pvoc/manufacturer/manufacturer-complaint/complaint-details/manufacturer-complaint-details.component';
 import {RfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component';
 import {RfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component';
-import {StdLevyManufacturerPenaltyComponent} from './apollowebs/standards-levy/std-levy-manufacturer-penalty/std-levy-manufacturer-penalty.component';
-import {StandardLevyRegisteredFirmsComponent} from './apollowebs/standards-levy/standard-levy-registered-firms/standard-levy-registered-firms.component';
+import {
+    StdLevyManufacturerPenaltyComponent
+} from './apollowebs/standards-levy/std-levy-manufacturer-penalty/std-levy-manufacturer-penalty.component';
+import {
+    StandardLevyRegisteredFirmsComponent
+} from './apollowebs/standards-levy/standard-levy-registered-firms/standard-levy-registered-firms.component';
 // tslint:disable-next-line:max-line-length
-import {StandardLevyAllPaymentsComponent} from './apollowebs/standards-levy/standard-levy-all-payments/standard-levy-all-payments.component';
-import {StandardLevyPenaltyReportComponent} from './apollowebs/standards-levy/standard-levy-penalty-report/standard-levy-penalty-report.component';
+import {
+    StandardLevyAllPaymentsComponent
+} from './apollowebs/standards-levy/standard-levy-all-payments/standard-levy-all-payments.component';
+import {
+    StandardLevyPenaltyReportComponent
+} from './apollowebs/standards-levy/standard-levy-penalty-report/standard-levy-penalty-report.component';
 // tslint:disable-next-line:max-line-length
-import {StandardLevyActiveFirmsComponent} from './apollowebs/standards-levy/standard-levy-active-firms/standard-levy-active-firms.component';
-import {StandardLevyDormantFirmsComponent} from './apollowebs/standards-levy/standard-levy-dormant-firms/standard-levy-dormant-firms.component';
+import {
+    StandardLevyActiveFirmsComponent
+} from './apollowebs/standards-levy/standard-levy-active-firms/standard-levy-active-firms.component';
+import {
+    StandardLevyDormantFirmsComponent
+} from './apollowebs/standards-levy/standard-levy-dormant-firms/standard-levy-dormant-firms.component';
 // tslint:disable-next-line:max-line-length
-import {StandardLevyClosedFirmsComponent} from './apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component';
+import {
+    StandardLevyClosedFirmsComponent
+} from './apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component';
 import {FuelListTeamsComponent} from './apollowebs/market-surveillance/fuel/fuel-list-teams/fuel-list-teams.component';
+import {
+    FuelListTeamsCountyComponent
+} from './apollowebs/market-surveillance/fuel/fuel-list-teams-county/fuel-list-teams-county.component';
+import {
+    ApplicationsReceivedComponent
+} from "./apollowebs/quality-assurance/reports/smark/applications-received/applications-received.component";
+import {
+    PermitsGrantedComponent
+} from "./apollowebs/quality-assurance/reports/smark/permits-granted/permits-granted.component";
 import {FuelListTeamsCountyComponent} from './apollowebs/market-surveillance/fuel/fuel-list-teams-county/fuel-list-teams-county.component';
 import {StandardLevyRejectedChangesComponent} from "./apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component";
 import {ComplaintPlanBatchListComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-batch-list/complaint-plan-batch-list.component';
@@ -659,6 +682,23 @@ export const routes: Routes = [
 
         ],
     },
+    {
+        path: 'reports',
+        canActivate: [RouteGuard],
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: 'all_applications',
+                component: ApplicationsReceivedComponent,
+            },
+            {
+                path: 'permits_granted',
+                component: PermitsGrantedComponent,
+            },
+
+        ],
+    },
+
     {
         path: 'fmark/fMarkAllApp', component: AdminLayoutComponent,
         canActivate: [RouteGuard],

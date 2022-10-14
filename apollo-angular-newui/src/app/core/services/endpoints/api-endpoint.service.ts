@@ -270,6 +270,13 @@ export class ApiEndpointService {
         SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
         MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
 
+
+        PERMIT_REPORTS: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsWithNoFmarkGenerated`,
+        PERMIT_REPORTS_ALL_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwarded`,
+        PERMIT_REPORTS_ALL_RENEWED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsRenewed`,
+        PERMIT_REPORTS_ALL_SAMPLES_SUBMITTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allSamplesSubmitted`,
+
+
         VIEW_ALL_PAYMENTS: `${ApiEndpointService.QA_CONTEXT}/payments`,
 
 
@@ -606,6 +613,7 @@ export class ApiEndpointService {
         MS_STANDARD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/standardProductCategory`,
         MS_PRODUCT_CATEGORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/productCategories`,
         MS_BROAD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/broadProductCategory`,
+        MS_PREDEFINED_RESOURCES_REQUIRED: `${ApiEndpointService.MS_COMMON_CONTEXT}/predefinedResourcesRequired`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
     };

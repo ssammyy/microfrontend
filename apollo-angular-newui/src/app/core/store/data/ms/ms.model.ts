@@ -77,6 +77,12 @@ export class MsBroadProductCategory {
     divisionId?: number;
 }
 
+export class PredefinedResourcesRequired {
+    id: number;
+    resourceName: string;
+    status: boolean;
+}
+
 export class MsProducts {
     id?: number;
     name?: string;
@@ -224,6 +230,14 @@ export class ComplaintDetailsDto {
     complainantEmail: string;
     complainantPhoneNumber: string;
     complainantPostalAddress: string;
+    complainantPhysicalAddress: string;
+    complaintSampleDetails: string;
+    remedySought: string;
+    email: string;
+    nameContactPerson: string;
+    phoneNumber: string;
+    telephoneNumber: string;
+    businessAddress: string;
     complaintCategory: string;
     complaintTitle: string;
     complaintDescription: string;
@@ -315,13 +329,10 @@ export class StandardDetailsDto {
 export class ComplaintDto {
     // complaintCategory: number;
     complaintTitle: string;
-    // productClassification: number;
-    // broadProductCategory: number;
-    // productCategory: number;
-    // myProduct: number;
-    // productSubcategory: number;
     productBrand: string;
     complaintDescription: string;
+    complaintSampleDetails: string;
+    remedySought: string;
 }
 
 export class ComplaintCustomersDto {
@@ -330,6 +341,7 @@ export class ComplaintCustomersDto {
     phoneNumber: string;
     emailAddress: string;
     postalAddress: string;
+    physicalAddress: string;
 }
 
 export class PreliminaryReportItemsDto {
@@ -406,6 +418,11 @@ export class ComplaintLocationDto {
     town: number;
     marketCenter: string;
     buildingName: string;
+    email: string;
+    nameContactPerson: string;
+    phoneNumber: string;
+    telephoneNumber: string;
+    businessAddress: string;
 }
 
 export class WorkPlanBatchDetailsDto {

@@ -60,6 +60,10 @@ class ComplaintCustomersEntity : Serializable {
     @Basic
     var postalAddress: String? = null
 
+    @Column(name = "PHYSICAL_ADDRESS")
+    @Basic
+    var physicalAddress: String? = null
+
     @Column(name = "TRANSACTION_DATE")
     @Basic
     var transactionDate: Date? = null

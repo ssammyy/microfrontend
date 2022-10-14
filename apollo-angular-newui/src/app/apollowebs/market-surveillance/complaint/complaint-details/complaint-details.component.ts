@@ -18,7 +18,7 @@ import {
   LIMSFilesFoundDto,
   MsBroadProductCategory,
   MsDepartment,
-  MsDivisionDetails,
+  MsDivisionDetails, PredefinedResourcesRequired,
   MsProductCategories,
   MsProducts,
   MsProductSubcategory,
@@ -74,7 +74,6 @@ export class ComplaintDetailsComponent implements OnInit {
   submitted = false;
   selectedRefNo: string;
   county$: Observable<County[]>;
-  region$: Observable<Region[]>;
   town$: Observable<Town[]>;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
@@ -117,6 +116,7 @@ export class ComplaintDetailsComponent implements OnInit {
   msDepartments: MsDepartment[];
   msDivisions: MsDivisionDetails[];
   standardProductCategory!: StandardProductCategory[];
+  predefinedResourcesRequired!: PredefinedResourcesRequired[];
   productCategories!: ProductCategories[];
   broadProductCategory!: BroadProductCategory[];
   products!: Products[];
@@ -252,10 +252,8 @@ export class ComplaintDetailsComponent implements OnInit {
       private townService: TownService,
       private router: Router) {
     this.county$ = countyService.entities$;
-    this.region$ = regionService.entities$;
     this.town$ = townService.entities$;
     countyService.getAll().subscribe();
-    regionService.getAll().subscribe();
   }
 
   ngOnInit(): void {
@@ -370,6 +368,7 @@ export class ComplaintDetailsComponent implements OnInit {
     this.msService.msComplaintDetails(referenceNumber).subscribe(
         (data) => {
           this.complaintInspection = data;
+          console.log(this.countyService);
           // tslint:disable-next-line:max-line-length
           if (this.complaintInspection.complaintsDetails.approvedStatus === false && this.complaintInspection.complaintsDetails.rejectedStatus === false) {
             this.msService.msDepartmentListDetails().subscribe(
@@ -415,6 +414,17 @@ export class ComplaintDetailsComponent implements OnInit {
                   this.msService.showError('AN ERROR OCCURRED');
                 },
             );
+
+          this.msService.msPredefinedResourcesRequiredListDetails().subscribe(
+              (data1: PredefinedResourcesRequired[]) => {
+                this.predefinedResourcesRequired = data1;
+                console.log(data1);
+              },
+              error => {
+                console.log(error);
+                this.msService.showError('AN ERROR OCCURRED');
+              },
+          );
 
 
           // tslint:disable-next-line:max-line-length

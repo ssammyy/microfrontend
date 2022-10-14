@@ -877,6 +877,14 @@ data class ComplaintsDetailsDto(
         var complainantEmail: String? = null,
         var complainantPhoneNumber: String? = null,
         var complainantPostalAddress: String? = null,
+        var complainantPhysicalAddress: String? = null,
+        var complaintSampleDetails: String? = null,
+        var remedySought: String? = null,
+        var email: String? = null,
+        var nameContactPerson: String? = null,
+        var phoneNumber: String? = null,
+        var telephoneNumber: String? = null,
+        var businessAddress: String? = null,
         var complaintCategory: String? = null,
         var complaintTitle: String? = null,
         var complaintDescription: String? = null,
@@ -1021,7 +1029,9 @@ data class ComplaintDto(
         var myProduct: Long? = null,
         var productSubcategory: Long? = null,
         var productBrand: String? = null,
-        var complaintDescription: String? = null
+        var complaintDescription: String? = null,
+        var complaintSampleDetails: String? = null,
+        var remedySought: String? = null
 )
 
 data class ComplaintCustomersDto(
@@ -1029,14 +1039,20 @@ data class ComplaintCustomersDto(
         var lastName: String? = null,
         var phoneNumber: String? = null,
         var emailAddress: String? = null,
-        var postalAddress: String? = null
+        var postalAddress: String? = null,
+        var physicalAddress: String? = null
 )
 
 data class ComplaintLocationDto(
         var county: Long? = null,
         var town: Long? = null,
         var marketCenter: String? = null,
-        var buildingName: String? = null
+        var buildingName: String? = null,
+        var email: String? = null,
+        var nameContactPerson: String? = null,
+        var phoneNumber: String? = null,
+        var telephoneNumber: String? = null,
+        var businessAddress: String? = null
 )
 
 

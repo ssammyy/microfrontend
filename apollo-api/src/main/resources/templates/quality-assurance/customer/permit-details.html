@@ -720,7 +720,8 @@
                                                class="filter-link">GENERATED INSPECTION REPORT</a>
 
 
-                                            <a th:if="${permitDetails?.generateSchemeStatus == 1  and permitDetails?.inspectionReportGenerated == 1  and permitDetails?.ssfCompletedStatus == null and permitDetails?.testReportId == null}"
+                                            <a th:if="${permitDetails?.generateSchemeStatus == 1  and permitDetails?.inspectionReportGenerated == 1
+                                                and permitDetails?.ssfCompletedStatus == null and permitDetails?.testReportId == null}"
                                                style="color: white" onclick="popUpSSFFunction('addSSFDetails');"
                                                class="filter-link">ADD SSF & BS NUMBER</a>
 
@@ -1007,7 +1008,8 @@
                                                style="color: white" onclick="popUpFunction('approveRecommendation');"
                                                class="filter-link">APPROVE/REJECT RECOMMENDATION</a>
 
-                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.recommendationRemarks != null
+                                            and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
                                                style="color: white"
                                                th:href="@{/api/qa/inspection/inspection-report-list(permitID=${encryptedPermitId})}"
                                                class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>

@@ -10,7 +10,7 @@ import org.springframework.web.servlet.function.router
 
 
 @Configuration
-class AngularRoutes (private val daoService: DaoFluxService) {
+class AngularRoutes(private val daoService: DaoFluxService) {
 
     @Bean
     fun systemsAdministrationMigrationRoutes(handler: SystemsAdministrationHandler) = router {
@@ -320,7 +320,11 @@ class AngularRoutes (private val daoService: DaoFluxService) {
     }
 
     @Bean
-    fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler,msHandler: NewMarketSurveillanceHandler) = router {
+    fun migrationRegistrationRoutes(
+        handler: RegistrationHandler,
+        otherHandler: MasterDataHandler,
+        msHandler: NewMarketSurveillanceHandler
+    ) = router {
         "/api/v1/migration/".nest {
             "anonymous".nest {
                 "/validateBrs".nest {
@@ -369,7 +373,6 @@ class AngularRoutes (private val daoService: DaoFluxService) {
 
                 }
                 "/complaint".nest {
-//                    GET("/list", handler::getAllFuelInspectionList)
                     POST("/new", msHandler::saveNewComplaint)
                 }
             }
@@ -567,6 +570,16 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                     GET("/ordinary-file-list", handler::permitAttachGetOrdinaryFilesListMigration)
                     POST("/ordinary", handler::permitAttachUploadOrdinaryMigration)
                 }
+
+                "reports".nest {
+                    GET("/allPermitsWithNoFmarkGenerated", handler::loadAllPermitsForReports)
+                    GET("/allPermitsAwarded", handler::loadAllAwardedPermitsForReports)
+                    GET("/allPermitsRenewed", handler::loadAllRenewedPermitsForReports)
+                    GET("/allSamplesSubmitted", handler::loadAllSamplesSubmittedForReports)
+
+
+                }
+
             }
 
         }
@@ -579,6 +592,7 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                 GET("/departments", handler::msDepartments)
                 GET("/divisions", handler::msDivisions)
                 GET("/standardProductCategory", handler::msStandardsCategory)
+                GET("/predefinedResourcesRequired", handler::msPredefinedResources)
                 GET("/productCategories", handler::msProductCategories)
                 GET("/countries", handler::msCountries)
                 GET("/broadProductCategory", handler::msBroadProductCategory)
@@ -630,13 +644,25 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/client-appealed-successfully", handler::updateWorkPlanClientAppealSuccesful)
                         "/hof".nest {
                             PUT("/assign-io", handler::updateWorkPlanByAssigningIO)
-                            PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
-                            PUT("/approval-final-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF)
+                            PUT(
+                                "/approval-preliminary-report",
+                                handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF
+                            )
+                            PUT(
+                                "/approval-final-preliminary-report",
+                                handler::updateWorkPlanScheduleApprovalPreliminaryReportHOF
+                            )
                         }
                         "/hod".nest {
                             PUT("/assign-hof", handler::updateWorkPlanByAssigningHof)
-                            PUT("/approval-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD)
-                            PUT("/approval-final-preliminary-report", handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD)
+                            PUT(
+                                "/approval-preliminary-report",
+                                handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD
+                            )
+                            PUT(
+                                "/approval-final-preliminary-report",
+                                handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD
+                            )
                             PUT("/final-recommendation", handler::addWorkPlanScheduleFinalRecommendationByHOD)
                             PUT("/feedBack-notification", handler::addWorkPlanScheduleFeedBackByHOD)
                         }
@@ -656,6 +682,8 @@ class AngularRoutes (private val daoService: DaoFluxService) {
                         PUT("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
                 }
+
+
             }
             "/fuel".nest {
                 GET("/all-batch-list", handler::getAllFuelBatchList)

@@ -147,12 +147,15 @@ export class ComplaintNewComponent implements OnInit {
       emailAddress: new FormControl('', [Validators.required]),
       phoneNumber: new FormControl('', [Validators.required]),
       postalAddress: new FormControl('', [Validators.required]),
+      physicalAddress: new FormControl('', [Validators.required]),
     });
 
     this.stepTwoForm = new FormGroup({
       // postalAddress: new FormControl(),
       complaintTitle: new FormControl('', [Validators.required]),
       complaintDescription: new FormControl('', [Validators.required]),
+      complaintSampleDetails: new FormControl('', [Validators.required]),
+      remedySought: new FormControl('', [Validators.required]),
       // complaintCategory: new FormControl('', [Validators.required]),
       // myProduct: new FormControl('', [Validators.required]),
       productBrand: new FormControl('', [Validators.required]),
@@ -163,6 +166,11 @@ export class ComplaintNewComponent implements OnInit {
       town: new FormControl('', [Validators.required]),
       marketCenter: new FormControl('', [Validators.required]),
       buildingName: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required]),
+      nameContactPerson: new FormControl('', [Validators.required]),
+      phoneNumber: new FormControl('', [Validators.required]),
+      telephoneNumber: new FormControl('', [Validators.nullValidator]),
+      businessAddress: new FormControl('', [Validators.required]),
     });
 
     this.stepFourForm = this.formBuilder.group({
@@ -281,7 +289,8 @@ export class ComplaintNewComponent implements OnInit {
   }
 
   saveDetailsFirst(): any {
-    // if (this.uploadedFiles.length > 0) {
+    console.log('Button Clicked');
+    if (this?.uploadedFiles?.length > 0) {
       this.SpinnerService.show();
       const file = this.uploadedFiles;
       const newComplaintDto = new NewComplaintDto();
@@ -308,7 +317,28 @@ export class ComplaintNewComponent implements OnInit {
             this.msService.showError('AN Error Occurred, Try Again Later');
           },
       );
-    // }
+    } else {
+      console.log('Button Clicked Moved To Else STatment');
+      this.SpinnerService.show();
+      const newComplaintDto = new NewComplaintDto();
+      newComplaintDto.customerDetails = this.stepOneForm.value;
+      newComplaintDto.complaintDetails = this.stepTwoForm.value;
+      newComplaintDto.locationDetails = this.stepThreeForm.value;
+      this.msService.createNewComplaint(newComplaintDto).subscribe(
+          (data2: MSComplaintSubmittedSuccessful) => {
+            console.log(data2);
+            this.savedDetails = data2;
+            this.msService.showSuccess(data2.successMessage);
+            this.SpinnerService.hide();
+            return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN Error Occurred, Try Again Later');
+          },
+      );
+    }
 
   }
 

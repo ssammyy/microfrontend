@@ -66,7 +66,7 @@ import {
     WorkPlanFeedBackDto,
     FuelScheduleTeamsListDetailsDto,
     TeamsFuelSaveDto,
-    FuelScheduleCountyListDetailsDto, RapidTestProductsDto, EndFuelDto, RegionReAssignDto,
+    FuelScheduleCountyListDetailsDto, RapidTestProductsDto, EndFuelDto, RegionReAssignDto, PredefinedResourcesRequired,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -1451,6 +1451,21 @@ export class MsService {
         );
     }
 
+    public msPredefinedResourcesRequiredListDetails(): Observable<PredefinedResourcesRequired[]> {
+        // console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_PREDEFINED_RESOURCES_REQUIRED);
+        return this.http.get<PredefinedResourcesRequired[]>(url).pipe(
+            map(function (response: PredefinedResourcesRequired[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public msProductSubCategoryListDetails(): Observable<MsProductSubcategory[]> {
         // console.log(data);
          // tslint:disable-next-line:max-line-length
@@ -1481,12 +1496,7 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public createNewComplaint(customerDetails: ComplaintCustomersDto, complaintDetails: ComplaintDto, locationDetails: ComplaintLocationDto): Observable<MSComplaintSubmittedSuccessful> {
-        const newComplaintDto = new NewComplaintDto();
-        newComplaintDto.customerDetails = customerDetails;
-        newComplaintDto.complaintDetails = complaintDetails;
-        newComplaintDto.locationDetails = locationDetails;
-        console.log(newComplaintDto);
+    public createNewComplaint(newComplaintDto: NewComplaintDto): Observable<MSComplaintSubmittedSuccessful> {
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.CREATE_NEW_COMPLAINT);
         return this.http.post<MSComplaintSubmittedSuccessful>(url, newComplaintDto).pipe(
@@ -1523,6 +1533,26 @@ export class MsService {
     public saveComplaintFiles(data: FormData): Observable<any> {
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.UPLOAD_COMPLIANT_FILE);
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public saveComplaintWithNoFiles(data: FormData): Observable<any> {
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.CREATE_NEW_COMPLAINT);
         // const params = new HttpParams()
         //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {

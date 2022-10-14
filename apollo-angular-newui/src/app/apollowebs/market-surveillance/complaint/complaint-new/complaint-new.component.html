@@ -766,67 +766,16 @@
             <p style="font-size: 20px; color: white">Loading Please Wait...</p>
         </ngx-spinner>
     </div>
-<!--    <div *ngSwitchCase="0">-->
-<!--        <form (ngSubmit)="onClickBrsLookup()" [formGroup]="stepZeroForm" action="" class="form"-->
-<!--              enctype="multipart/form-data" method="post">-->
-<!--            <h1 class="welcome">Let's ensure the safety of products </h1>-->
-<!--            <p class="welcome">Please fill in the details to report potentially harmful products in our markets</p>-->
-<!--            <hr>-->
-<!--            <h3 class="welcome">Step 1/4: Your information</h3>-->
-<!--            <div class="form-body">-->
-
-<!--                <div class="form-group" style="margin-top: 3%">-->
-<!--                    <label class="input-placeholder" for="compRegistrationNumber"><b>First name</b></label>-->
-<!--                    <input [ngClass]="{ 'is-invalid': submitted && formStepZeroForm.registrationNumber.errors }"-->
-<!--                           aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                           class="form-control two-column-input" formControlName="registrationNumber"-->
-<!--                           id="compRegistrationNumber" name="registrationNumber"-->
-<!--                           placeholder="Company registration number" style="width: 60%;color: white;font-size: 14px;"-->
-<!--                           type="text">-->
-<!--                    <div *ngIf="submitted && formStepZeroForm.registrationNumber.errors" class="invalid-feedback">-->
-<!--                        <div *ngIf="formStepZeroForm.registrationNumber.errors.required">Company registration number is-->
-<!--                            required-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="form-group" style="margin-top: 3%">-->
-<!--                    <label class="input-placeholder" for="compDirectorIdNumber"><b>Director's Id Number</b></label>-->
-<!--                    <input [ngClass]="{ 'is-invalid': submitted && formStepZeroForm.directorIdNumber.errors }"-->
-<!--                           aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                           class="form-control two-column-input" formControlName="directorIdNumber"-->
-<!--                           id="compDirectorIdNumber" name="directorIdNumber"-->
-<!--                           placeholder="The id number of one director" style="width: 60%;color: white;font-size: 14px;"-->
-<!--                           type="text">-->
-<!--                    <div *ngIf="submitted && formStepZeroForm.directorIdNumber.errors" class="invalid-feedback">-->
-<!--                        <div *ngIf="formStepZeroForm.directorIdNumber.errors.required">The id number of one director is-->
-<!--                            required-->
-<!--                        </div>-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <br>-->
-<!--                <div>-->
-<!--                    <button class="login-button" type="submit">VALIDATE</button>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--        </form>-->
-<!--        <span class="input-placeholder">-->
-<!--        Have an account? <a class="reset-credentials" href="#" routerLink="/login">Login</a>-->
-<!--      </span>-->
-<!--    </div>-->
-
     <div *ngSwitchCase="1">
         <form (ngSubmit)="onClickNext(stepOneForm.valid)" [formGroup]="stepOneForm" action="" class="form"
               enctype="multipart/form-data" method="post">
             <div class="form-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <h2 class="welcome">Let's ensure the safety of products </h2>
+                        <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
                         <p class="welcome">Please fill in the details to report potentially harmful products in our markets</p>
                         <hr>
-                        <h3 class="welcome">Step 1/4: Your information</h3>
+                        <h3 class="welcome">Step 1/4: Particulars Of Complainant</h3>
                     </div>
                     <div class="row input-row">
 
@@ -853,7 +802,7 @@
                         <div class="col">
 
                             <div class="form-group">
-                                <label class="input-placeholder"><b>Last name</b></label>
+                                <label class="input-placeholder"><b>Surname name</b></label>
                                 <input style="color: white;font-size: 14px;"
                                        [ngClass]="{ 'is-invalid': submitted && formStepOneForm.lastName.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -919,23 +868,22 @@
                                 <div *ngIf="submitted && formStepOneForm.postalAddress.errors" class="invalid-feedback">
                                     <div *ngIf="formStepOneForm.postalAddress.errors.required">The Postal Address is required</div>
                                 </div>
-
                             </div>
                         </div>
 
                         <div class="col">
-<!--                            <div class="form-group">-->
-<!--                                <label class="input-placeholder"><b>Phone number</b></label>-->
-<!--                                <input style="color: white;font-size: 14px;"-->
-<!--                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.phoneNumber.errors }"-->
-<!--                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                                       class="form-control two-column-input" formControlName="phoneNumber" id="phoneNumber"-->
-<!--                                       name="phoneNumber"-->
-<!--                                       placeholder="The Phone Number" required="required" type="text">-->
-<!--                                <div *ngIf="submitted && formStepOneForm.phoneNumber.errors" class="invalid-feedback">-->
-<!--                                    <div *ngIf="formStepOneForm.phoneNumber.errors.required">The Phone Number is required</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <div class="form-group">
+                                <label class="input-placeholder"><b>Physical Address</b></label>
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.physicalAddress.errors }"
+                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                       class="form-control two-column-input" formControlName="physicalAddress" id="physicalAddress"
+                                       name="physicalAddress"
+                                       placeholder="The Physical Address" required="required" type="text">
+                                <div *ngIf="submitted && formStepOneForm.physicalAddress.errors" class="invalid-feedback">
+                                    <div *ngIf="formStepOneForm.physicalAddress.errors.required">The Physical Address is required</div>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -959,8 +907,8 @@
             <div class="form-body">
                 <div class="container">
                     <div class="row">
-                        <h2 class="welcome">Let's ensure the safety of products </h2>
-                        <p class="welcome">Please fill in the details to report potentially harmful products in our markets</p>
+                        <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
+                        <p class="welcome">Kindly Complete this form to register you complaint</p>
                         <hr>
                         <h3 class="welcome">Step 2/4: Complaint Details</h3>
                     </div>
@@ -1024,24 +972,41 @@
                                 </div>
                             </div>
                         </div>
-<!--                        <div class="col">-->
-<!--                            <div class="form-group" style="margin-top: 3%">-->
-<!--                                <label class="input-placeholder"><b>Company Email</b></label>-->
-<!--                                <input style="color: white;font-size: 14px;"-->
-<!--                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.companyEmail.errors }"-->
-<!--                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                                       class="form-control two-column-input" formControlName="companyEmail"-->
-<!--                                       id="companyEmail"-->
-<!--                                       name="companyEmail" placeholder="The company email address" required="required"-->
-<!--                                       type="email">-->
-<!--                                <div *ngIf="submitted && formStepTwoForm.companyEmail.errors" class="invalid-feedback">-->
-<!--                                    <div *ngIf="formStepTwoForm.companyEmail.errors.required">The company email address-->
-<!--                                        is required-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                    </div><div class="row input-row">
+                        <div class="col">
+                            <div class="form-group" style="margin-top: 3%">
+                                <label class="input-placeholder"><b>Complaint sample Details</b></label>
+                                <textarea style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.complaintSampleDetails.errors }"
+                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                       class="form-control two-column-input" formControlName="complaintSampleDetails"
+                                       id="complaintSampleDetails"
+                                       name="complaintSampleDetails" placeholder="The Complaint Sample Details" required="required" type="text"></textarea>
+                                <div *ngIf="submitted && formStepTwoForm.complaintSampleDetails.errors" class="invalid-feedback">
+                                    <div *ngIf="formStepTwoForm.complaintSampleDetails.errors.required">The Complaint Sample Details is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="row input-row">
 
+                        <div class="col">
+                            <div class="form-group" style="margin-top: 3%">
+                                <label class="input-placeholder"><b>Remedy Sought</b></label>
+                                <textarea style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.remedySought.errors }"
+                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                       class="form-control two-column-input" formControlName="remedySought"
+                                       id="remedySought"
+                                       name="remedySought" placeholder="The Remedy Sought" required="required" type="text"></textarea>
+                                <div *ngIf="submitted && formStepTwoForm.remedySought.errors" class="invalid-feedback">
+                                    <div *ngIf="formStepTwoForm.remedySought.errors.required">The Remedy Sought is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row input-row">
@@ -1066,10 +1031,10 @@
               enctype="multipart/form-data" method="post">
             <div class="container">
                 <div class="row">
-                    <h2 class="welcome">Let's ensure the safety of products </h2>
-                    <p class="welcome">Please fill in the details to report potentially harmful products in our markets</p>
+                    <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
+                    <p class="welcome">Kindly Complete this form to register you complaint</p>
                     <hr>
-                    <h3 class="welcome">Step 3/4: Location Details</h3>
+                    <h3 class="welcome">Step 3/4: Particulars of Outlets/Bussiness Complained about</h3>
                 </div>
                 <div class="row input-row">
                     <div class="col">
@@ -1103,25 +1068,6 @@
 
                 </div>
                 <div class="row input-row">
-<!--                    <div class="col">-->
-<!--                        <div class="form-group" style="margin-top: 3%">-->
-<!--                            <label class="input-placeholder"><b>Region</b></label>-->
-<!--                            <br>-->
-<!--                            <ng-container *ngIf="region$ | async as apps">-->
-<!--                                <select (ngModelChange)="updateSelectedRegion()"-->
-<!--                                        [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.region.errors }"-->
-<!--                                        formControlName="region" id="region"-->
-<!--                                        name="region" required="required" style="width: 100%; height: 60%">-->
-<!--                                    <option ngValue="null" selected>Please select</option>-->
-<!--                                    <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"-->
-<!--                                            class="dropdown-item">{{app.region}}</option>-->
-<!--                                </select>-->
-<!--                                <div *ngIf="submitted && formStepThreeForm.region.errors" class="invalid-feedback">-->
-<!--                                    <div *ngIf="formStepThreeForm.region.errors.required">The Region is required</div>-->
-<!--                                </div>-->
-<!--                            </ng-container>-->
-<!--                        </div>-->
-<!--                    </div>-->
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>County</b></label>
@@ -1164,6 +1110,100 @@
                         </div>
                     </div>
                 </div>
+                <div class="row input-row">
+                    <div class="col">
+                        <div class="form-group" style="margin-top: 3%">
+                            <label class="input-placeholder"><b>Email</b></label>
+                            <input style="color: white;font-size: 14px;"
+                                   [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.email.errors }"
+                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                   class="form-control two-column-input" formControlName="email"
+                                   id="email"
+                                   name="email" placeholder="Email" required="required" type="text">
+                            <div *ngIf="submitted && formStepThreeForm.email.errors" class="invalid-feedback">
+                                <div *ngIf="formStepThreeForm.email.errors.required">The Email is
+                                    required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-group" style="margin-top: 3%">
+                            <label class="input-placeholder"><b>Name of Contact Person</b></label>
+                            <input style="color: white;font-size: 14px;"
+                                   [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.nameContactPerson.errors }"
+                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                   class="form-control two-column-input" formControlName="nameContactPerson"
+                                   id="nameContactPerson"
+                                   name="nameContactPerson" placeholder="Name of Contact Person" required="required" type="text">
+                            <div *ngIf="submitted && formStepThreeForm.nameContactPerson.errors" class="invalid-feedback">
+                                <div *ngIf="formStepThreeForm.nameContactPerson.errors.required">The Name of Contact Person is
+                                    required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row input-row">
+                    <div class="col">
+                        <div class="form-group" style="margin-top: 3%">
+                            <label class="input-placeholder"><b>Phone Number</b></label>
+                            <input style="color: white;font-size: 14px;"
+                                   [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.phoneNumber.errors }"
+                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                   class="form-control two-column-input" formControlName="phoneNumber"
+                                   id="phoneNumber"
+                                   name="phoneNumber" placeholder="Phone Number" required="required" type="text">
+                            <div *ngIf="submitted && formStepThreeForm.phoneNumber.errors" class="invalid-feedback">
+                                <div *ngIf="formStepThreeForm.phoneNumber.errors.required">The Phone Number is
+                                    required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-group" style="margin-top: 3%">
+                            <label class="input-placeholder"><b>Telephone Number</b></label>
+                            <input style="color: white;font-size: 14px;"
+                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                   class="form-control two-column-input" formControlName="telephoneNumber"
+                                   id="telephoneNumber"
+                                   name="telephoneNumber" placeholder="Telephone Number" required="required" type="text">
+<!--                            <div *ngIf="submitted && formStepThreeForm.telephoneNumber.errors" class="invalid-feedback">-->
+<!--                                <div *ngIf="formStepThreeForm.telephoneNumber.errors.required">The Telephone Number is-->
+<!--                                    required-->
+<!--                                </div>-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row input-row">
+                    <div class="col">
+                        <div class="form-group" style="margin-top: 3%">
+                            <label class="input-placeholder"><b>Business Address</b></label>
+                            <input style="color: white;font-size: 14px;"
+                                   [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.businessAddress.errors }"
+                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                   class="form-control two-column-input" formControlName="businessAddress"
+                                   id="businessAddress"
+                                   name="businessAddress" placeholder="Business Address" required="required" type="text">
+                            <div *ngIf="submitted && formStepThreeForm.businessAddress.errors" class="invalid-feedback">
+                                <div *ngIf="formStepThreeForm.businessAddress.errors.required">The Business Address is
+                                    required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+
+                    </div>
+
+                </div>
 
                 <div class="row mt-5">
                     <div class="col">
@@ -1175,7 +1215,6 @@
                 </div>
             </div>
         </form>
-
     </div>
 
     <div *ngSwitchCase="4">
@@ -1183,10 +1222,10 @@
               enctype="multipart/form-data" method="post">
             <div class="container">
                 <div class="row">
-                    <h2 class="welcome">Let's ensure the safety of products </h2>
-                    <p class="welcome">Please fill in the details to report potentially harmful products in our markets</p>
+                    <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
+                    <p class="welcome">Kindly Complete this form to register you complaint</p>
                     <hr>
-                    <h3 class="welcome">Step 4/4: Upload Documents Here</h3>
+                    <h3 class="welcome">Step 4/4: Upload Supporting Documents Here</h3>
                 </div>
 
 <!--                <div class="row input-row">-->
@@ -1211,8 +1250,6 @@
 
             </div>
         </form>
-
-
     </div>
 
 

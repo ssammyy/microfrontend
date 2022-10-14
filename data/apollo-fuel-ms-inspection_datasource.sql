@@ -342,3 +342,50 @@ alter table DAT_KEBS_MS_FUEL_INSPECTION
 -- alter table DAT_KEBS_MS_FUEL_INSPECTION
 --     add TOWN_ID NUMBER REFERENCES CFG_KEBS_TOWNS(ID)
 -- /
+
+
+create table CFG_MS_PREDEFINED_RESOURCES_REQUIRED
+(
+    ID                       NUMBER PRIMARY KEY,
+    RESOURCE_NAME              VARCHAR2(200),
+    STATUS                   NUMBER(2, 0),
+    DESCRIPTION              VARCHAR2(200),
+    VAR_FIELD_1              VARCHAR2(350 char),
+    VAR_FIELD_2              VARCHAR2(350 char),
+    VAR_FIELD_3              VARCHAR2(350 char),
+    VAR_FIELD_4              VARCHAR2(350 char),
+    VAR_FIELD_5              VARCHAR2(350 char),
+    VAR_FIELD_6              VARCHAR2(350 char),
+    VAR_FIELD_7              VARCHAR2(350 char),
+    VAR_FIELD_8              VARCHAR2(350 char),
+    VAR_FIELD_9              VARCHAR2(350 char),
+    VAR_FIELD_10             VARCHAR2(350 char),
+    CREATED_BY               VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON               TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY              VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON              TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY                VARCHAR2(100 char)          default 'admin',
+    DELETED_ON               TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence CFG_MS_PREDEFINED_RESOURCES_REQUIRED_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger CFG_MS_PREDEFINED_RESOURCES_REQUIRED_SEQ_trg
+    before
+        insert
+    on CFG_MS_PREDEFINED_RESOURCES_REQUIRED
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select CFG_MS_PREDEFINED_RESOURCES_REQUIRED_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+    end if;
+end;
+
+
+create index CFG_MS_PREDEFINED_RESOURCES_REQUIRED_seq_idx on CFG_MS_PREDEFINED_RESOURCES_REQUIRED (STATUS) TABLESPACE qaimssdb_idx;
+/

@@ -40,6 +40,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.*
+import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaBatchInvoiceRepository
@@ -1152,9 +1153,12 @@ class QualityAssuranceHandler(
         val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
 
         val permit = qaDaoServices.findPermitBYID(permitID)
-        val allInspectionReportDetailsList = qaDaoServices.listInspectionReports(  qaDaoServices.findInspectionReportListBYPermitRefNumberAndPermitID(
-            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
-            map.activeStatus, permitID),map)
+        val allInspectionReportDetailsList = qaDaoServices.listInspectionReports(
+            qaDaoServices.findInspectionReportListBYPermitRefNumberAndPermitID(
+                permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+                map.activeStatus, permitID
+            ), map
+        )
         req.attributes()["allInspectionReportDetailsList"] = allInspectionReportDetailsList
         req.attributes()["permitDetails"] = permit
 
@@ -1194,7 +1198,8 @@ class QualityAssuranceHandler(
 //        val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 //
 
-        val encryptedInspectReportID = req.paramOrNull("inspectionReportID") ?: throw ExpectedDataNotFound("Required Inspection ID, check config")
+        val encryptedInspectReportID =
+            req.paramOrNull("inspectionReportID") ?: throw ExpectedDataNotFound("Required Inspection ID, check config")
 
         val inspectReportID = jasyptStringEncryptor.decrypt(encryptedInspectReportID).toLong()
 
@@ -1341,9 +1346,10 @@ class QualityAssuranceHandler(
             Pair(
                 "oldVersionList",
                 qaDaoServices.findAllOldPermitWithPermitRefNumber(
-                    permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))?.let {
+                    permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+                )?.let {
                     qaDaoServices.listPermits(
-                        it,s
+                        it, s
                     )
                 }
             ),
@@ -3671,6 +3677,120 @@ class QualityAssuranceHandler(
 
 
         return ok().body(allpaidInvoices)
+
+    }
+
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllPermitsForReports(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+
+            var permitListAllApplications: List<PermitApplicationsEntity>? = null
+
+            permitListAllApplications = qaDaoServices.findReportAllPermitWithNoFmarkGenerated(
+                loggedInUser,
+                permitTypeID,
+                map.activeStatus,
+                map.inactiveStatus
+            )
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllAwardedPermitsForReports(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+
+            var permitListAllApplications: List<PermitEntityDto>? = null
+
+
+            permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findReportAllAwardedPermits(
+                loggedInUser,
+                permitTypeID,
+                map.activeStatus,
+                map.inactiveStatus
+            ),map)
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllRenewedPermitsForReports(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+
+            var permitListAllApplications: List<PermitEntityDto>? = null
+
+            permitListAllApplications =  qaDaoServices.listPermits(qaDaoServices.findReportAllRenewedPermits(
+                loggedInUser,
+                permitTypeID,
+                map.activeStatus,
+                map.inactiveStatus),map
+            )
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllSamplesSubmittedForReports(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+
+            var permitListAllApplications: List<SampleSubmissionDTO>? = null
+
+            permitListAllApplications = qaDaoServices.findReportAllSamplesSubmitted(
+                loggedInUser,
+                permitTypeID,
+                map.activeStatus,
+                map.inactiveStatus
+            )
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
 
     }
 }
