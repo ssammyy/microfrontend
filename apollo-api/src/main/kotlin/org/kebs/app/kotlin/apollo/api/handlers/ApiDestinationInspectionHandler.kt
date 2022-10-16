@@ -411,7 +411,12 @@ class ApiDestinationInspectionHandler(
                     cdType = daoServices.findCdTypeDetailsWithUuid(cdTypeUuid)
                 }
                 val usersEntity = commonDaoServices.findUserByUserName(auth.name)
-                val statuses = arrayListOf(ConsignmentApprovalStatus.APPROVED.code, ConsignmentApprovalStatus.REJECTED.code, ConsignmentApprovalStatus.REJECTED_AMEND.code)
+                val statuses = arrayListOf(
+                    ConsignmentApprovalStatus.APPROVED.code,
+                    ConsignmentApprovalStatus.CANCELLED.code,
+                    ConsignmentApprovalStatus.REJECTED.code,
+                    ConsignmentApprovalStatus.REJECTED_AMEND.code
+                )
                 when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
                         val pp = daoServices.findAllCompleteCdWithAssigner(usersEntity, cdType, statuses, page)

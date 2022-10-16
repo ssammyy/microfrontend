@@ -51,9 +51,21 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     fun findByUcrNumberAndIdNot(ucrNumber: String, id: Long?): List<ConsignmentDocumentDetailsEntity>
     fun findByUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun countByUcrNumberAndVersion(ucrNumber: String, version: Long): Long
+    fun countByUcrNumberAndVersionAndStatusNotIn(ucrNumber: String, version: Long, statuses: List<Int>): Long
     fun findByUcrNumberAndVersion(ucrNumber: String, version: Long): ConsignmentDocumentDetailsEntity?
+    fun findByUcrNumberAndVersionAndStatusNotIn(
+        ucrNumber: String,
+        version: Long,
+        statuses: List<Int>
+    ): ConsignmentDocumentDetailsEntity?
+
     fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
     fun findTopByUcrNumberOrderByIdDesc(ucrNumber: String): ConsignmentDocumentDetailsEntity?
+    fun findTopByUcrNumberAndStatusNotInOrderByIdDesc(
+        ucrNumber: String,
+        statuses: List<Int>
+    ): ConsignmentDocumentDetailsEntity?
+
     fun findByUuid(uuid: String): ConsignmentDocumentDetailsEntity?
     fun findByUuidIn(uuid: Iterable<String>): List<ConsignmentDocumentDetailsEntity>
     fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndCompliantStatusIn(

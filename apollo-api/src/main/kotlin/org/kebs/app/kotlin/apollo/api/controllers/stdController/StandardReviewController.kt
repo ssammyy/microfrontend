@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.StandardReviewFormService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.StandardReviewService
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.http.HttpHeaders
@@ -11,9 +12,6 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.stream.Collectors
-
-
-
 
 
 @RestController
@@ -81,26 +79,35 @@ class StandardReviewController(
     //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY')")
     @PostMapping("/makeRecommendationsOnAdoptionProposal")
     @ResponseBody
-    fun makeRecommendationsOnAdoptionProposal(@RequestBody standardReviewProposalRecommendations: StandardReviewProposalRecommendations): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Comment Has been submitted",standardReviewService.makeRecommendationsOnAdoptionProposal(standardReviewProposalRecommendations))
+    fun makeRecommendationsOnAdoptionProposal(@RequestBody standardReviewProposalRecommendations: StandardReviewProposalRecommendations): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Comment Has been submitted",
+            standardReviewService.makeRecommendationsOnAdoptionProposal(standardReviewProposalRecommendations)
+        )
     }
 
     //decision on Adoption Recommendation
-   // @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/decisionOnRecommendation")
-    fun decisionOnRecommendation(@RequestBody iSDecision: ISDecision,
-                                 internationalStandardRemarks: InternationalStandardRemarks) : List<StandardReviewTasks>
-    {
-        return standardReviewService.decisionOnRecommendation(iSDecision,internationalStandardRemarks)
-    }
+    // @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+//    @PostMapping("/decisionOnRecommendation")
+//    fun decisionOnRecommendation(@RequestBody iSDecision: ISDecision,
+//                                 internationalStandardRemarks: InternationalStandardRemarks) : List<StandardReviewTasks>
+//    {
+//        return standardReviewService.decisionOnRecommendation(iSDecision,internationalStandardRemarks)
+//    }
 
     //Level Two Decision
     @PostMapping("/levelUpDecisionOnRecommendations")
-    fun levelUpDecisionOnRecommendations(@RequestBody iSDecision: ISDecision,
-                                 internationalStandardRemarks: InternationalStandardRemarks,
-                                         standard: Standard ) : List<StandardReviewTasks>
-    {
-        return standardReviewService.levelUpDecisionOnRecommendations(iSDecision,internationalStandardRemarks,standard)
+    fun levelUpDecisionOnRecommendations(
+        @RequestBody iSDecision: ISDecision,
+        internationalStandardRemarks: InternationalStandardRemarks,
+        standard: Standard
+    ): List<StandardReviewTasks> {
+        return standardReviewService.levelUpDecisionOnRecommendations(
+            iSDecision,
+            internationalStandardRemarks,
+            standard
+        )
     }
 
 

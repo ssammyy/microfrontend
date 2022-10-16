@@ -31,6 +31,7 @@ import java.math.BigDecimal
 class ApplicationMapProperties {
 
     val mapKeswsErrorDocument: String? = "ERR_MSG"
+    val mapKeswsCancellationDocument: String? = "KRA_DCL_"
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.currency.code}")
     val applicationCurrencyCode: String = "KSH"
