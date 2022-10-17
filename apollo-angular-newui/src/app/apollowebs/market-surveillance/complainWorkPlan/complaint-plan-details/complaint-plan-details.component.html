@@ -14,7 +14,7 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons" *ngIf="workPlanInspection">Complaint Plan Scheduled</i>
+                            <i class="material-icons" *ngIf="workPlanInspection">Complaint Scheduled</i>
                         </div>
                         <h4 class="card-title" *ngIf="workPlanInspection">Ref No #{{workPlanInspection?.referenceNumber}}
                             <button class="btn btn-sm btn-default float-right mr-7"
@@ -56,11 +56,6 @@
                                                 </div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Resources Required</div>
-                                                <div class="list-text-accordion">
-                                                    {{workPlanInspection?.resourcesRequired}}</div>
-                                            </li>
-                                            <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Budget</div>
                                                 <div class="list-text-accordion">
                                                     {{workPlanInspection.budget}}</div>
@@ -71,6 +66,14 @@
                                                     {{workPlanInspection?.batchDetails?.yearName}}</div>
                                             </li>
                                         </ul>
+                                        <div class="form-row">
+                                            <div class="col-md-12 mb-3">
+                                                <label style="color: #0082f3">Resources Required</label>
+                                            </div>
+                                            <div class="table-striped table-condensed table-responsive">
+                                                <ng2-smart-table [settings]="settingsResourceRequierd" [source]="workPlanInspection?.resourcesRequired"></ng2-smart-table>
+                                            </div>
+                                        </div>
                                     </mat-tab>
                                     <mat-tab *ngIf="workPlanInspection" label="2">
                                         <ng-template mat-tab-label>LOCATION OF ACTIVITY
@@ -231,7 +234,7 @@
                                     <mat-tab *ngIf="workPlanInspection?.workPlanFiles?.length!=0" label="8">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
-                                            WORK-PLAN ALL PHOTOS/DOCUMENTS ATTACHED
+                                            COMPLAINT SCHEDULE ALL PHOTOS/DOCUMENTS ATTACHED
                                         </ng-template>
                                         <div class="panel" style="max-height: 388px;">
                                             <div *ngIf="workPlanInspection?.workPlanFiles.length!=0">
@@ -1662,6 +1665,12 @@
                                                         class="mat-button-wrapper">ADD DATA REPORT</span>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
+<!--                                                <button *ngIf="workPlanInspection?.dataReportStatus" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                        data-target="#dataReportModal"-->
+<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                        class="mat-button-wrapper">UPDATE DATA REPORT</span>-->
+<!--                                                    <div class="mat-button-focus-overlay"></div>-->
+<!--                                                </button>-->
                                                 <button  *ngIf="workPlanInspection?.dataReportDocId ==null && workPlanInspection?.dataReportStatus" (click)="openModalAddDetails('uploadDataReportFiles')" mat-raised-button="" data-toggle="modal"
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-2"><span
@@ -2845,18 +2854,6 @@
                     <button *ngIf="(currDiv == 'ssfAddComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
                             [disabled]="!ssfSaveComplianceStatusForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'scheduleRemediation')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveScheduleRemediation(scheduleRemediationForm.valid);"
-                            [disabled]="!scheduleRemediationForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'scheduleRemediationInvoicePaid')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveScheduleRemediation(scheduleRemediationForm.valid);"
-                            [disabled]="!scheduleRemediationForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

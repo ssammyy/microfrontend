@@ -227,14 +227,24 @@ class SFTPService(
     }
 
     fun processDeclarationDocumentType(exchange: Exchange) {
-        KotlinLogging.logger { }.info("DECLARATION DOC RES: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        KotlinLogging.logger { }
+            .info("DECLARATION DOC RES: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val declarationDocumentMessage = exchange.message.body as DeclarationDocumentMessage
         val docSaved = declarationDaoService.mapDeclarationMessageToEntities(declarationDocumentMessage)
         KotlinLogging.logger { }.info("DECLARATION DOC RES: ${exchange.message.headers} | Result: ${docSaved}|")
     }
 
+    fun processCancellationMessage(exchange: Exchange) {
+        KotlinLogging.logger { }
+            .info("CANCELLATION MESSAGE REQ: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        val cancellationMessage = exchange.message.body as KraCancellationMessage
+        val docSaved = consignmentDocumentDaoService.mapCancellationMessage(cancellationMessage)
+        KotlinLogging.logger { }.info("CANCELLATION MESSAGE RES: ${exchange.message.headers} | Result: ${docSaved}|")
+    }
+
     fun processBaseDocumentType(exchange: Exchange) {
-        KotlinLogging.logger { }.info("IDF Base Document Type: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        KotlinLogging.logger { }
+            .info("IDF Base Document Type: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val baseDocumentResponse = exchange.message.body as BaseDocumentResponse
         val docSaved = iDFDaoService.mapBaseDocumentToIDF(baseDocumentResponse)
         KotlinLogging.logger { }.info("IDF Base Document Type: ${exchange.message.headers} | Save status: ${docSaved}|")
@@ -517,16 +527,19 @@ class CamelSftpDownload(
                 .bean(SFTPService::class.java, "processManifestDocument")
                 .log("Manifest document \${in.headers.CamelFileName} processed.")
                 .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsDeclarationDoctype))
-                .unmarshal(createXmlMapper(DeclarationDocumentMessage::class.java))
-                .bean(SFTPService::class.java, "processDeclarationDocumentType")
-                .log("Manifest document \${in.headers.CamelFileName} processed.")
-                .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsBaseDocumentDoctype))
-                .unmarshal(createXmlMapper(BaseDocumentResponse::class.java))
-                .bean(SFTPService::class.java, "processBaseDocumentType")
-                .log("Base document type \${in.headers.CamelFileName} processed.")
-                .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsErrorDocument))
-                .unmarshal(createXmlMapper(KeswsErrorResponse::class.java))
-                .bean(SFTPService::class.java, "processErrorDocument")
+            .unmarshal(createXmlMapper(DeclarationDocumentMessage::class.java))
+            .bean(SFTPService::class.java, "processDeclarationDocumentType")
+            .log("Manifest document \${in.headers.CamelFileName} processed.")
+            .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsBaseDocumentDoctype))
+            .unmarshal(createXmlMapper(BaseDocumentResponse::class.java))
+            .bean(SFTPService::class.java, "processBaseDocumentType")
+            .log("Base document type \${in.headers.CamelFileName} processed.")
+            .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsErrorDocument))
+            .unmarshal(createXmlMapper(KeswsErrorResponse::class.java))
+            .bean(SFTPService::class.java, "processErrorDocument")
+            .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsErrorDocument))
+            .unmarshal(createXmlMapper(KraCancellationMessage::class.java))
+            .bean(SFTPService::class.java, "processCancellationMessage")
                 .otherwise()
                 .removeHeader(documentTypeHeader)
                 .setHeader(documentTypeHeader, constant(unprocesable))

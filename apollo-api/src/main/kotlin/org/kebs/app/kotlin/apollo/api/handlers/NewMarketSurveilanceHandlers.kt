@@ -1159,7 +1159,8 @@ class NewMarketSurveillanceHandler(
     fun getAllWorkPlanBatchList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
-            marketSurveillanceWorkPlanDaoServices.getAllWorkPlanBatchList(page)
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorkPlanBatchList(page,commonDaoServices.toBoolean(complaintStatus))
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -1173,7 +1174,8 @@ class NewMarketSurveillanceHandler(
     fun getAllWorkPlanBatchListClosed(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
-            marketSurveillanceWorkPlanDaoServices.getAllWorkPlanBatchListClosed(page)
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorkPlanBatchListClosed(page,commonDaoServices.toBoolean(complaintStatus))
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -1187,7 +1189,8 @@ class NewMarketSurveillanceHandler(
     fun getAllWorkPlanBatchListOpen(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
-            marketSurveillanceWorkPlanDaoServices.getAllWorkPlanBatchListOpen(page)
+            val complaintStatus = req.paramOrNull("complaintStatus") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            marketSurveillanceWorkPlanDaoServices.getAllWorkPlanBatchListOpen(page,commonDaoServices.toBoolean(complaintStatus))
                 .let {
                     ServerResponse.ok().body(it)
                 }

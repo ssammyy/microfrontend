@@ -87,23 +87,24 @@ class ConsignmentDocumentDaoService(
                 if (version == null) {
                     version = daoServices.getVersionCount(ucr)
                 }
+                val exempted = listOf(ConsignmentApprovalStatus.CANCELLED.code)
                 // Reject document with similar version
-                if (daoServices.countCdWithUcrNumberAndVersion(ucr, version) > 0) {
+                if (daoServices.countCdWithUcrNumberAndVersionAndStatusNotIn(ucr, version, exempted) > 0) {
                     throw ExpectedDataNotFound("Duplicate: Found document with the same version and ucr number")
                 }
 
-                daoServices.findCdWithUcrNumberLatest(ucr).let { CDDocumentDetails ->
+                daoServices.findCdWithUcrNumberLatestAndStatusNotIn(ucr, exempted).let { CDDocumentDetails ->
 
                     when (CDDocumentDetails) {
                         null -> {
                             KotlinLogging.logger { }
-                                    .info { ":::::::::::::::::::::CD With UCR = $ucr, Does Not exist::::::::::::::::::::::::::: " }
+                                .info(":::::::::::::::::::::CD With UCR = $ucr, Does Not exist::::::::::::::::::::::::::: ")
                             consignmentDoc.documentDetails?.consignmentDocDetails?.let { consignmentDocDetails ->
                                 val cdDoc = mainCDFunction(
-                                        consignmentDocDetails,
-                                        docSummary,
-                                        byteArray,
-                                        loggedInUser,
+                                    consignmentDocDetails,
+                                    docSummary,
+                                    byteArray,
+                                    loggedInUser,
                                         map,
                                         commonDaoServices.findProcesses(appId),
                                         1
@@ -1496,6 +1497,25 @@ class ConsignmentDocumentDaoService(
         KotlinLogging.logger { }.info { "Non standard Item Details saved ID = ${nonStandardEntity.id}" }
 
         return nonStandardEntity
+    }
+
+    fun mapCancellationMessage(message: KraCancellationMessage): String? {
+        return daoServices.findCdWithUcrNumberAndVersion(
+            message.data?.dataIn?.sad?.sadId ?: "",
+            message.data?.dataIn?.sad?.versionNumber ?: 0
+        )?.let { cd ->
+            cd.cancelStatus = message.data?.dataIn?.sad?.cdStatus
+            message.data?.dataIn?.sad?.canceledDate?.let { dt ->
+                cd.cancelDate = commonDaoServices.convertISO8601DateToTimestamp(dt)
+            }
+            cd.status = ConsignmentApprovalStatus.CANCELLED.code
+            cd.compliantStatus = -1
+            cd.cancelReference = message.header?.userId
+            cd.cancelReason = message.data?.dataIn?.sad?.messageNature
+            cd.varField10 = "Consignment cancelled: ${cd.cancelReason}"
+            daoServices.updateCDStatus(cd, ConsignmentDocumentStatus.CD_KRA_CANCELED)
+            cd.uuid
+        }
     }
 
 

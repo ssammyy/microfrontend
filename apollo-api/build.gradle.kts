@@ -40,6 +40,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootWar
 
 
 plugins {
+    kotlin("jvm")
     war
 }
 

@@ -194,7 +194,7 @@ export class WorkPlanEntityDto {
     productCategory: number;
     product: number;
     productSubCategory: number;
-    resourcesRequired: string;
+    resourcesRequired: PredefinedResourcesRequired[];
     budget: string;
     remarks: string;
 }
@@ -455,7 +455,7 @@ export class WorkPlanInspectionDto {
     officerName: string;
     nameActivity: string;
     targetedProducts: string;
-    resourcesRequired: string;
+    resourcesRequired: PredefinedResourcesRequired[];
     budget: string;
     approvedOn: Date;
     approvedStatus: boolean;

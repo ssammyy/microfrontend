@@ -619,7 +619,7 @@ export class MsService {
     /*******************************************************************START OF MARKET SURVEILLANCE*****************************************************************************/
 
     // tslint:disable-next-line:max-line-length
-    public loadMSWorkPlanBatchList(page: string, records: string, routeTake: string): Observable<WorkPlanBatchDetailsDto[]> {
+    public loadMSWorkPlanBatchList(page: string, records: string, routeTake: string, complaintStatus: string ): Observable<WorkPlanBatchDetailsDto[]> {
         let url = null;
         switch (routeTake) {
             case 'all-workPlan-batch':
@@ -633,6 +633,7 @@ export class MsService {
                 break;
         }
         const params = new HttpParams()
+            .set('complaintStatus', complaintStatus)
             .set('page', page)
             .set('records', records);
         return this.http.get<WorkPlanBatchDetailsDto[]>(url, {params}).pipe(

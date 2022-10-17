@@ -91,6 +91,7 @@ export class ComplaintDetailsComponent implements OnInit {
   reAssignRegionForm!: FormGroup;
   classificationForm!: FormGroup;
   addNewScheduleForm!: FormGroup;
+  addResourceRequiredForm!: FormGroup;
 
 
   rapidTestForm!: FormGroup;
@@ -131,6 +132,8 @@ export class ComplaintDetailsComponent implements OnInit {
   userLoggedInID: number;
   userProfile: LoggedInUser;
   dataSaveWorkPlan: WorkPlanEntityDto;
+  dataSaveResourcesRequired: PredefinedResourcesRequired;
+  dataSaveResourcesRequiredList: PredefinedResourcesRequired[] = [];
   blob: Blob;
 
   attachments: any[];
@@ -299,6 +302,10 @@ export class ComplaintDetailsComponent implements OnInit {
       mandateForOga: 1,
     });
 
+    this.addResourceRequiredForm = this.formBuilder.group({
+      resourceName: ['', Validators.required],
+    });
+
     this.classificationForm = this.formBuilder.group({
       productClassification: ['', Validators.required],
       broadProductCategory: ['', Validators.required],
@@ -321,7 +328,7 @@ export class ComplaintDetailsComponent implements OnInit {
       productCategory: null,
       product: null,
       productSubCategory: null,
-      resourcesRequired: ['', Validators.required],
+      resourcesRequired: null,
       budget: ['', Validators.required],
       // remarks: ['', Validators.required],
     });
@@ -337,6 +344,10 @@ export class ComplaintDetailsComponent implements OnInit {
 
   get formAssignOfficerForm(): any {
     return this.assignOfficerForm.controls;
+  }
+
+  get formAddResourceRequiredForm(): any {
+    return this.addResourceRequiredForm.controls;
   }
 
   get formReAssignRegionForm(): any {
@@ -517,6 +528,23 @@ export class ComplaintDetailsComponent implements OnInit {
     console.log(`town set to ${this.selectedTown}`);
   }
 
+  onClickAddResource() {
+    this.dataSaveResourcesRequired = this.addResourceRequiredForm.value;
+    console.log(this.dataSaveResourcesRequired);
+    this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+    this.addResourceRequiredForm?.get('resourceName')?.reset();
+  }
+
+  // Remove Form repeater values
+  removeDataResource(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveResourcesRequiredList.splice(index, 1);
+    } else {
+      this.dataSaveResourcesRequiredList.splice(index, index);
+    }
+  }
+
   openModalAddDetails(divVal: string): void {
     const arrHead = ['acceptRejectComplaint', 'notKebsMandate', 'assignHOF', 'assignOfficer', 'addClassificationDetails', 'startMSProcess', 'reassignRegion'];
     const arrHeadSave = ['ACCEPT/REJECT COMPLAINT', 'NOT WITHIN KEBS MANDATE', 'ASSIGN HOF', 'ASSIGN IO', 'ADD COMPLAINT PRODUCT CLASSIFICATION DETAILS', 'FILL IN MS-PROCESS DETAILS BELOW', 'RE-ASSIGN REGION'];
@@ -616,6 +644,14 @@ export class ComplaintDetailsComponent implements OnInit {
   }
 
   onClickSaveAcceptRejectFormResults(valid: boolean) {
+    this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can click the \'ACCEPT/REJECT COMPLAINT\' button to update details', 'COMPLAINT ACCEPT/REJECT SUCCESSFUL', () => {
+          this.SaveAcceptRejectFormResults(valid);
+        });
+  }
+
+  SaveAcceptRejectFormResults(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveAcceptance = {...this.dataSaveAcceptance, ...this.acceptRejectComplaintForm.value};
@@ -741,25 +777,33 @@ export class ComplaintDetailsComponent implements OnInit {
   }
 
   onClickSaveClassificationDetails(valid: boolean) {
+    this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can click the \'ADD CLASSIFICATION DETAILS\' button to update details Before Saving', 'CLASSIFICATION DETAILS ADDED SUCCESSFUL', () => {
+          this.saveClassificationDetails(valid);
+        });
+  }
+
+  saveClassificationDetails(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveComplaintClassification = {...this.dataSaveComplaintClassification, ...this.classificationForm.value};
-        // tslint:disable-next-line:max-line-length
-        this.msService.msComplaintUpdateSaveClassificationDetails(this.complaintInspection.complaintsDetails.refNumber, this.dataSaveComplaintClassification).subscribe(
-            (data: any) => {
-              this.complaintInspection = data;
-              console.log(data);
-              this.classificationForm.reset();
-              this.SpinnerService.hide();
-              this.msService.showSuccess('COMPLAINT PRODUCT CLASSIFICATION DETAILS, SAVED SUCCESSFULLY');
-            },
-            error => {
-              this.SpinnerService.hide();
-              this.classificationForm.reset();
-              console.log(error);
-              this.msService.showError('AN ERROR OCCURRED');
-            },
-        );
+      // tslint:disable-next-line:max-line-length
+      this.msService.msComplaintUpdateSaveClassificationDetails(this.complaintInspection.complaintsDetails.refNumber, this.dataSaveComplaintClassification).subscribe(
+          (data: any) => {
+            this.complaintInspection = data;
+            console.log(data);
+            this.classificationForm.reset();
+            this.SpinnerService.hide();
+            this.msService.showSuccess('COMPLAINT PRODUCT CLASSIFICATION DETAILS, SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            this.classificationForm.reset();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
 
     }
   }
@@ -853,12 +897,20 @@ export class ComplaintDetailsComponent implements OnInit {
 
   onClickSaveWorkPlanScheduled() {
     this.submitted = true;
-    if (this.addNewScheduleForm.invalid) {
-      return;
+    if (this.addNewScheduleForm.valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'START MS-PROCESS\' button to update details Before Saving', 'COMPLAINT SCHEDULE DETAILS SAVED SUCCESSFUL', () => {
+            this.saveWorkPlanScheduled();
+          });
     }
+  }
+
+  saveWorkPlanScheduled() {
     if (this.addNewScheduleForm.valid) {
       this.SpinnerService.show();
       this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
+      this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;
       // tslint:disable-next-line:max-line-length
       this.msService.msAddComplaintDetailsToWorkPlanScheduleDetails(this.complaintInspection.complaintsDetails.refNumber, this.dataSaveWorkPlan).subscribe(
           (data: any) => {
@@ -868,20 +920,20 @@ export class ComplaintDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             this.msService.showSuccess('MS-PROCESS DETAILS, SAVED SUCCESSFULLY');
           },
-          // ,
-          // error => {
-          //   this.SpinnerService.hide();
-          //   this.addNewScheduleForm.reset();
-          //   console.log(error);
-          //   this.msService.showError('AN ERROR OCCURRED');
-          // },
+          error => {
+            this.SpinnerService.hide();
+            this.addNewScheduleForm.reset();
+            console.log(error);
+            // this.msService.showError('AN ERROR OCCURRED');
+          },
       );
 
     }
   }
 
   viewWorkPlanCreated() {
-    this.router.navigate([`/workPlan/details/`, this.complaintInspection.workPlanRefNumber, this.complaintInspection.workPlanBatchRefNumber]);
+    // tslint:disable-next-line:max-line-length
+    this.router.navigate([`/complaintPlan/details/`, this.complaintInspection.workPlanRefNumber, this.complaintInspection.workPlanBatchRefNumber]);
   }
 
 }
