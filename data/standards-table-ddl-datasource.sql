@@ -797,7 +797,27 @@ alter table SD_IS_GAZETTEMENT
 alter table SD_IS_GAZETTEMENT
     add ASSIGNED_TO NUMBER ;
 /
-
+alter table SD_STANDARD_REVIEW
+  add SCOPE VARCHAR(350 char) ;
+/
+alter table SD_STANDARD_REVIEW
+    add SCOPE VARCHAR(350 char) ;
+/
+alter table SD_STANDARD_REVIEW
+    add NORMATIVE_REFERENCE VARCHAR(350 char) ;
+/
+alter table SD_STANDARD_REVIEW
+    add SYMBOLS_ABBREVIATED_TERMS VARCHAR(350 char) ;
+/
+alter table SD_STANDARD_REVIEW
+    add CLAUSE VARCHAR(350 char) ;
+/
+alter table SD_STANDARD_REVIEW
+    add SPECIAL VARCHAR(350 char) ;
+/
+alter table SD_STANDARD_REVIEW
+    add STANDARD_TYPE VARCHAR(350 char) ;
+/
 
 
 

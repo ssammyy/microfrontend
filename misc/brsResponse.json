@@ -520,6 +520,33 @@ curl -k --location --request POST 'https://kimsint.kebs.org:8006/api/v1/kra/rece
 }
 
 
+curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendPenaltyDetails' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"REQUEST": {
+"HEADER": {
+"loginId": "KEBSUSER",
+"password": "password@1",
+"hash": "440653b660e5f7f3e8fdfac2e45936a51c9934eac411813fd61dac91b485efd7",
+"noOfRecords": "1",
+"transmissionDate": "13-10-2022T13:55:24"
+},
+"PENALTYINFO": [
+{
+"entryNo": "20220905038285",
+"periodTo": "31-05-2022",
+"periodFrom": "01-05-2022",
+"PenaltyOrderNo": 33701,
+"penaltyPayable": 500,
+"kraPin": "P052075239B",
+"penaltyGenDate": "15-09-2022T11:16:36",
+"manufacName": "KITHUNGO DIARY LIMITED"
+}
+]
+}
+}'
+
+
 
 
 

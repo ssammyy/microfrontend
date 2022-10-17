@@ -17,6 +17,7 @@ class WorkShopAgreementTasks(val taskId:String, val name:String,val processId: S
 class InternationalStandardTasks(val taskId:String, val name:String,val processId: String,val taskData: Map<String,Any>) {
 }
 
+
 class StdUserTasks(val taskId:String, val name:String,val processId: String,val taskData: Map<String,Any>) {
 }
 data class DepartmentDto(
@@ -55,4 +56,7 @@ data class StandardsDto(
 
 
     )
+
+class StandardReviewTasks(val taskId:String, val name:String,val processId: String,val taskData: Map<String,Any>) {
+}
 

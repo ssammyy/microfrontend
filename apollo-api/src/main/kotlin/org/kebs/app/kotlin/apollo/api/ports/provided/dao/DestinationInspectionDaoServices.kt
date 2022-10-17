@@ -1923,31 +1923,53 @@ class DestinationInspectionDaoServices(
     }
 
     fun findCdWithUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity? =
-            iConsignmentDocumentDetailsRepo.findByUcrNumber(ucrNumber)
-                    ?.let {
-                        return it
-                    }
+        iConsignmentDocumentDetailsRepo.findByUcrNumber(ucrNumber)
+            ?.let {
+                return it
+            }
 
-    fun findCdWithUcrNumberExcept(ucrNumber: String, id: Long?) = iConsignmentDocumentDetailsRepo.findByUcrNumberAndIdNot(ucrNumber, id)
+    fun findCdWithUcrNumberExcept(ucrNumber: String, id: Long?) =
+        iConsignmentDocumentDetailsRepo.findByUcrNumberAndIdNot(ucrNumber, id)
 
 
-    fun countCdWithUcrNumberAndVersion(ucrNumber: String, version: Long): Long = iConsignmentDocumentDetailsRepo.countByUcrNumberAndVersion(ucrNumber, version)
+    fun countCdWithUcrNumberAndVersion(ucrNumber: String, version: Long): Long =
+        iConsignmentDocumentDetailsRepo.countByUcrNumberAndVersion(ucrNumber, version)
 
-    fun findCdWithUcrNumberAndVersion(ucrNumber: String, version: Long): ConsignmentDocumentDetailsEntity? = iConsignmentDocumentDetailsRepo.findByUcrNumberAndVersion(ucrNumber, version)
+    fun countCdWithUcrNumberAndVersionAndStatusNotIn(ucrNumber: String, version: Long, statuses: List<Int>): Long =
+        iConsignmentDocumentDetailsRepo.countByUcrNumberAndVersionAndStatusNotIn(ucrNumber, version, statuses)
+
+    fun findCdWithUcrNumberAndVersion(ucrNumber: String, version: Long): ConsignmentDocumentDetailsEntity? =
+        iConsignmentDocumentDetailsRepo.findByUcrNumberAndVersion(ucrNumber, version)
+
+    fun findCdWithUcrNumberAndVersion(
+        ucrNumber: String,
+        version: Long,
+        statuses: List<Int>
+    ): ConsignmentDocumentDetailsEntity? =
+        iConsignmentDocumentDetailsRepo.findByUcrNumberAndVersionAndStatusNotIn(ucrNumber, version, statuses)
 
     fun findCdWithUcrNumberLatest(ucrNumber: String): ConsignmentDocumentDetailsEntity? =
-            iConsignmentDocumentDetailsRepo.findTopByUcrNumberOrderByIdDesc(ucrNumber)
-                    ?.let {
-                        return it
-                    }
+        iConsignmentDocumentDetailsRepo.findTopByUcrNumberOrderByIdDesc(ucrNumber)
+            ?.let {
+                return it
+            }
+
+    fun findCdWithUcrNumberLatestAndStatusNotIn(
+        ucrNumber: String,
+        statuses: List<Int>
+    ): ConsignmentDocumentDetailsEntity? =
+        iConsignmentDocumentDetailsRepo.findTopByUcrNumberAndStatusNotInOrderByIdDesc(ucrNumber, statuses)
+            ?.let {
+                return it
+            }
 
     fun createCDTransactionLog(
-            map: ServiceMapsEntity,
-            user: UsersEntity,
-            CDID: Long,
-            transRemarks: String,
-            transProcess: String,
-            saveLog: Boolean = false,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        CDID: Long,
+        transRemarks: String,
+        transProcess: String,
+        saveLog: Boolean = false,
     ): CdTransactionsEntity {
         var cdTransactionLog = CdTransactionsEntity()
         with(cdTransactionLog) {

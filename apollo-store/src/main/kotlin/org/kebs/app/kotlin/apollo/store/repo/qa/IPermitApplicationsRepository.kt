@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
 import org.kebs.app.kotlin.apollo.store.model.qa.*
+import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -42,7 +43,6 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         userTaskId: Long,
         permitType: Long
     ): List<PermitApplicationsEntity>?
-
 
 
     fun findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitTypeAndPermitStatus(
@@ -276,6 +276,22 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         fmarkGenerated: Int
     ): List<PermitApplicationsEntity>?
 
+    fun findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusAndFmarkGenerated(
+        permitType: Long,
+        permitAwardStatus: Int,
+        fmarkGenerated: Int
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(
+        permitType: Long,
+        permitAwardStatus: Int,
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPermitTypeAndOldPermitStatusIsNotNullAndPermitAwardStatus(
+        permitType: Long,
+        permitAwardStatus: Int,
+        ): List<PermitApplicationsEntity>?
+
     fun findByQamIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByQamIdAndPermitTypeAndOldPermitStatusIsNull(
         userId: Long,
@@ -463,6 +479,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findTopByPermitRefNumberOrderByIdAsc(permitRefNumber: String): PermitApplicationsEntity?
     fun findByIdAndAttachedPlantId(id: Long, attachedPlantId: Long): PermitApplicationsEntity?
+
     @Transactional
     @Modifying
     @Query(
@@ -573,6 +590,17 @@ interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmission
     fun findByPermitId(permitId: Long): QaSampleSubmissionEntity?
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): QaSampleSubmissionEntity?
 
+    @Query(
+        "SELECT u.SSF_SUBMISSION_DATE,DKPT.FIRM_NAME,DKPT.PHYSICAL_ADDRESS,DKPT.TELEPHONE_NO,DKPT.REGION, sns.SECTION, DKPT.PRODUCT, u.BRAND_NAME, SS.STANDARD_TITLE, u.COMPLIANCE_REMARKS,dkpt.COMPLIANT_STATUS, DKPT.INSPECTION_DATE,u.RESULTS_DATE FROM DAT_KEBS_QA_SAMPLE_SUBMISSION u inner join APOLLO.DAT_KEBS_PERMIT_TRANSACTION DKPT on u.PERMIT_ID = DKPT.ID inner join CFG_SAMPLE_STANDARDS Ss on DKPT.PRODUCT_STANDARD = Ss.ID inner join CFG_KEBS_SECTIONS Sns on DKPT.SECTION_ID = Sns.ID  WHERE u.PERMIT_ID!=0 AND DKPT.PERMIT_TYPE= :permitType",
+        nativeQuery = true
+    )
+    fun findSamplesSubmitted(
+        @Param("permitType") permitType: Long,
+
+    ): MutableList<SampleSubmissionDTO>?
+
+
+
     //    fun findTopByPermitRefNumberOrderByIdDescAndStatus(permitRefNumber: String, status: Int): List<QaSampleSubmissionEntity>?
     fun findByPermitRefNumberAndStatusAndPermitId(
         permitRefNumber: String,
@@ -582,7 +610,7 @@ interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmission
 
     fun findByCdItemId(cdItemId: Long): QaSampleSubmissionEntity?
     fun findByFuelInspectionId(fuelInspectionId: Long): QaSampleSubmissionEntity?
-    fun findByFuelInspectionIdAndBsNumber(fuelInspectionId: Long,bsNumber: String): QaSampleSubmissionEntity?
+    fun findByFuelInspectionIdAndBsNumber(fuelInspectionId: Long, bsNumber: String): QaSampleSubmissionEntity?
     fun findByWorkplanGeneratedId(workPlanInspectionID: Long): QaSampleSubmissionEntity?
     fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
 }

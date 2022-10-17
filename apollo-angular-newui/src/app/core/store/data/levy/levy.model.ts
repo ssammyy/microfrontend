@@ -672,3 +672,21 @@ export interface VerifyEmailDto{
     verificationToken: string;
 }
 
+export interface RejectedComDetails{
+    id: number;
+    companyId: string;
+    companyName: string;
+    editId: number;
+    physicalAddressEdit: string;
+    physicalAddress: string;
+    postalAddressEdit: string;
+    postalAddress: string;
+    ownershipEdit: string;
+    ownership: string;
+    companyEmailEdit: string;
+    companyEmail: string;
+    companyTelephoneEdit: string;
+    companyTelephone: string;
+    assignedTo: number;
+}
+

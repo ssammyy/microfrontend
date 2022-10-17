@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
@@ -44,13 +45,26 @@ class Standard {
     @Basic
     var status:Long? =null
 
+    @Column(name="IS_GAZETTED")
+    @Basic
+    var isGazetted:Long? =null
+
     @Column(name="STANDARD_TYPE")
     @Basic
     var standardType:String? =null
 
+    @Column(name="DESCRIPTION")
+    @Basic
+    var description:String? =null
+
+    @Column(name="DATE_OF_GAZETTEMENT")
+    @Basic
+    var dateOfGazettement: Timestamp? =null
+
+
     @Column(name="DATE_FORMED")
     @Basic
-    var dateFormed: Date? =null
+    var dateFormed: Timestamp? =null
 
 
 }

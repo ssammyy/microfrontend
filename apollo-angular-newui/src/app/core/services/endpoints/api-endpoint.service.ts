@@ -270,6 +270,13 @@ export class ApiEndpointService {
         SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
         MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
 
+
+        PERMIT_REPORTS: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsWithNoFmarkGenerated`,
+        PERMIT_REPORTS_ALL_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwarded`,
+        PERMIT_REPORTS_ALL_RENEWED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsRenewed`,
+        PERMIT_REPORTS_ALL_SAMPLES_SUBMITTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allSamplesSubmitted`,
+
+
         VIEW_ALL_PAYMENTS: `${ApiEndpointService.QA_CONTEXT}/payments`,
 
 
@@ -558,6 +565,7 @@ export class ApiEndpointService {
         STD_LEVY_ACTIVE_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getActiveFirms`,
         STD_LEVY_DORMANT_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getDormantFirms`,
         STD_LEVY_CLOSED_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getClosedFirms`,
+        STD_LEVY_REJECTED_FIRM_EDITS: `${ApiEndpointService.STL_CONTEXT}/getRejectedCompanyDetails`,
 
 
     };
