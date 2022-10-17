@@ -148,13 +148,7 @@ class StandardReviewService(
 //        return getTaskDetails(tasks)
 //    }
 
-    // Decision on Recommendation
-    fun decisionOnRecommendation(standardReviewRecommendations: StandardReviewRecommendations)
-    {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["Yes"] = standardReviewRecommendations.accentTo
-        taskService.complete(standardReviewRecommendations.taskId, variables)
-    }
+
 
     //Return task details for SAC_SEC
 //    fun getSacList():List<TaskDetails>
@@ -659,9 +653,10 @@ class StandardReviewService(
 
     //Type 1
     //prepare justification
-    fun prepareJustification(iSAdoptionJustification: ISAdoptionJustification) : ProcessInstanceResponseValue
+    fun submitDraftForEditing(iSAdoptionJustification: ISAdoptionJustification) : ProcessInstanceResponseValue
     {
         val variables: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
         iSAdoptionJustification.meetingDate?.let{ variables.put("meetingDate", it)}
         //iSAdoptionJustification.tc_id?.let{ variables.put("tc_id", it)}
         iSAdoptionJustification.tcSec_id?.let{ variables.put("tcSec_id", it)}
@@ -693,7 +688,7 @@ class StandardReviewService(
         iSAdoptionJustification.departmentName = departmentListRepository.findNameById(iSAdoptionJustification.department?.toLong())
 
         val ispDetails = iSAdoptionJustificationRepository.save(iSAdoptionJustification)
-        //variables["ID"] = ispDetails.id
+        variables["drafterId"] = loggedInUser.id!!
 
         var userList= companyStandardRepository.getHopEmailList()
 
@@ -741,6 +736,108 @@ class StandardReviewService(
 
 
     }
+
+    // Decision on Recommendations
+    fun decisionOnDraft(iSDecision: ISDecision,
+                                 internationalStandardRemarks: InternationalStandardRemarks
+    ) : List<StandardReviewTasks> {
+        val variables: MutableMap<String, Any> = java.util.HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        variables["Yes"] = iSDecision.accentTo
+        variables["No"] = iSDecision.accentTo
+        iSDecision.comments.let { variables.put("comments", it) }
+        iSDecision.taskId.let { variables.put("taskId", it) }
+        iSDecision.processId.let { variables.put("processId", it) }
+        iSDecision.assignedTo.let { variables.put("assignedTo", it) }
+        val fname=loggedInUser.firstName
+        val sname=loggedInUser.lastName
+        val usersName= "$fname  $sname"
+        internationalStandardRemarks.proposalId= iSDecision.reviewID
+        internationalStandardRemarks.remarks= iSDecision.comments
+        internationalStandardRemarks.status = 1.toString()
+        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        internationalStandardRemarks.remarkBy = usersName
+
+
+        if(variables["Yes"]==true){
+
+            internationalStandardRemarksRepository.save(internationalStandardRemarks)
+            runtimeService.createProcessInstanceQuery()
+                .processInstanceId(iSDecision.processId).list()
+                ?.let { l ->
+                    val processInstance = l[0]
+                    taskService.complete(iSDecision.taskId, variables)
+                    taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                        ?.let { t ->
+                            t.list()[0]
+                                ?.let { task ->
+                                    task.assignee = "${
+                                        iSDecision.assignedTo ?: throw NullValueNotAllowedException(
+                                            " invalid user id provided"
+                                        )
+                                    }"  //set the assignee}"
+                                    //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                    taskService.saveTask(task)
+                                }
+                                ?: KotlinLogging.logger { }
+                                    .error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                        }
+                        ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                        bpmnService.slAssignTask(
+                            processInstance.processInstanceId,
+                            "editStandard",
+                            iSDecision.assignedTo
+                                ?: throw NullValueNotAllowedException("invalid user id provided")
+                        )
+
+                }
+                ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSDecision.processId} ")
+
+
+
+        }else if(variables["No"]==false) {
+            internationalStandardRemarksRepository.save(internationalStandardRemarks)
+            runtimeService.createProcessInstanceQuery()
+                .processInstanceId(iSDecision.processId).list()
+                ?.let { l ->
+                    val processInstance = l[0]
+                    taskService.complete(iSDecision.taskId, variables)
+
+                    taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+                        ?.let { t ->
+                            t.list()[0]
+                                ?.let { task ->
+                                    task.assignee = "${
+                                        iSDecision.drafterId ?: throw NullValueNotAllowedException(
+                                            " invalid user id provided"
+                                        )
+                                    }"  //set the assignee}"
+                                    //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+                                    taskService.saveTask(task)
+                                }
+                                ?: KotlinLogging.logger { }
+                                    .error("Task list empty for $PROCESS_DEFINITION_KEY ")
+
+
+                        }
+                        ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+                    bpmnService.slAssignTask(
+                        processInstance.processInstanceId,
+                        "submitDraftStandardForEditing",
+                        iSDecision.drafterId
+                            ?: throw NullValueNotAllowedException("invalid user id provided")
+                    )
+
+                }
+                ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSDecision.processId} ")
+        }
+
+        return  getUserTasks()
+
+    }
+
 
 
     fun getKSNumber(): String

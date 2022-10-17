@@ -133,6 +133,7 @@ class ISDecision(
     @JsonProperty("proposalId") val proposalId: Long,
     @JsonProperty("standardID") val standardID: Long,
     @JsonProperty("description") val description: String,
+    @JsonProperty("drafterId") val drafterId: Long,
 ) {
 }
 class ISJustificationDecision(
