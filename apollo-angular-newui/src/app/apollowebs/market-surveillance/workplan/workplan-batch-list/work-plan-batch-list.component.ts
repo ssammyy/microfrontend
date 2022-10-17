@@ -137,7 +137,7 @@ export class WorkPlanBatchListComponent implements OnInit {
 
   private loadData(page: number, records: number, routeTake: string): any {
     this.SpinnerService.show();
-    this.msService.loadMSWorkPlanBatchList(String(page), String(records), routeTake).subscribe(
+    this.msService.loadMSWorkPlanBatchList(String(page), String(records), routeTake, 'false').subscribe(
         (data) => {
           console.log(`TEST DATA===${data}`);
           this.loadedData = data;

@@ -3456,15 +3456,13 @@ class QualityAssuranceHandler(
             val permit = dto.permitRefNumber?.let { qaDaoServices.findPermitWithPermitRefNumberLatest(it) }
 
             //Pass invoice Dto to Sage
-            val permitType =
-                qaDaoServices.findPermitType(permit?.permitType ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
+            val permitType = qaDaoServices.findPermitType(permit?.permitType ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
 
 
             //Add created invoice consolidated id to my batch id to be submitted
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             with(newBatchInvoiceDto) {
-                batchID =
-                    batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID =batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
             //submit to staging invoices

@@ -386,50 +386,56 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val complaintFound = findComplaintByRefNumber(referenceNo)
         val currentYear = msWorkPlanDaoServices.getCurrentYear()
         val workPlanYearCodes = msWorkPlanDaoServices.findWorkPlanYearsCodesEntity(currentYear, map)
-        val userWorkPlan = msWorkPlanDaoServices.findWorkPlanCreatedEntity(loggedInUser, workPlanYearCodes)
+        var userWorkPlan = msWorkPlanDaoServices.findWorkPlanCreatedComplaintEntity(loggedInUser, workPlanYearCodes, map.activeStatus)
 //        val checkCreationDate = msWorkPlanDaoServices.isWithinRange(commonDaoServices.getCurrentDate(), workPlanYearCodes)
-        when {
+        return when {
             userWorkPlan != null -> {
-//                when (userWorkPlan.batchClosed) {
-//                    activeStatus -> {
-//                        throw ExpectedDataNotFound("The WorkPlan Batch Detail was closed for this current year, you can't add a new Work-Plan Schedule")
-//                    }
-//                    else -> {
-                        val fileSaved = msWorkPlanDaoServices.saveNewWorkPlanActivityFromComplaint(body,complaintFound,msType, userWorkPlan, map, loggedInUser)
-                        when (fileSaved.first.status) {
-                            map.successStatus -> {
-                                with(complaintFound) {
-                                    msProcessId = applicationMapProperties.msComplaintProcessStarted
-                                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
-                                    msProcessStatus = map.activeStatus
-                                }
-                                val complaintUpdated = updateComplaintDetailsInDB(complaintFound, map, loggedInUser).second
-                                with(userWorkPlan) {
-                                    endedDate = commonDaoServices.getCurrentDate()
-                                    endedStatus = map.activeStatus
-                                    status = map.activeStatus
-                                    batchClosed = map.activeStatus
-                                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
-                                }
-
-                                msWorkPlanDaoServices.updateWorkPlanBatch(userWorkPlan, map, loggedInUser)
-
-                                return complaintInspectionMappingCommonDetails(complaintUpdated, map)
-                            }
-                            else -> {
-                                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
-                            }
-                        }
-//                    }
-//                }
+                allWorkPlanComplaintsDetailsDto(body, complaintFound, msType, userWorkPlan, map, loggedInUser)
             }
             else -> {
-                throw ExpectedDataNotFound("Create a new Work-Plan Batch for this Year First before adding this Complaint")
+                userWorkPlan = msWorkPlanDaoServices.createWorkPlanYear(loggedInUser, map, workPlanYearCodes,true).second
+                allWorkPlanComplaintsDetailsDto(body, complaintFound, msType, userWorkPlan, map, loggedInUser)
+
             }
         }
 
     }
 
+
+    fun allWorkPlanComplaintsDetailsDto(
+        body: WorkPlanEntityDto,
+        complaintFound: ComplaintEntity,
+        msType: MsTypesEntity,
+        userWorkPlan: WorkPlanCreatedEntity,
+        map: ServiceMapsEntity,
+        loggedInUser: UsersEntity
+    ): AllComplaintsDetailsDto {
+        val fileSaved = msWorkPlanDaoServices.saveNewWorkPlanActivityFromComplaint(body, complaintFound, msType, userWorkPlan, map, loggedInUser)
+        when (fileSaved.first.status) {
+            map.successStatus -> {
+                with(complaintFound) {
+                    msProcessId = applicationMapProperties.msComplaintProcessStarted
+                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                    msProcessStatus = map.activeStatus
+                }
+                val complaintUpdated = updateComplaintDetailsInDB(complaintFound, map, loggedInUser).second
+                with(userWorkPlan) {
+                    endedDate = commonDaoServices.getCurrentDate()
+                    endedStatus = map.activeStatus
+                    status = map.activeStatus
+                    batchClosed = map.activeStatus
+                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
+                }
+
+                msWorkPlanDaoServices.updateWorkPlanBatch(userWorkPlan, map, loggedInUser)
+
+                return complaintInspectionMappingCommonDetails(complaintUpdated, map)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+            }
+        }
+    }
 
 
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")

@@ -32,14 +32,14 @@ import {
   WorkPlanFeedBackDto,
   WorkPlanFinalRecommendationDto,
   WorkPlanInspectionDto,
-  WorkPlanScheduleApprovalDto
+  WorkPlanScheduleApprovalDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {
   BroadProductCategory,
   ProductCategories,
   Products,
   ProductSubcategory,
-  StandardProductCategory
+  StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
 import {
   County,
@@ -49,7 +49,7 @@ import {
   selectCountyIdData,
   selectUserInfo,
   Town,
-  TownService
+  TownService,
 } from '../../../../core/store';
 import {Observable, throwError} from 'rxjs';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
@@ -60,7 +60,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 @Component({
   selector: 'app-complaint-plan-details',
   templateUrl: './complaint-plan-details.component.html',
-  styleUrls: ['./complaint-plan-details.component.css']
+  styleUrls: ['./complaint-plan-details.component.css'],
 })
 export class ComplaintPlanDetailsComponent implements OnInit {
 
@@ -181,6 +181,71 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   supervisorCharge = false;
   inspectionOfficer = false;
 
+  public settingsResourceRequierd = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View More</i>'}
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      resourceName: {
+        title: 'RESOURCE NAME',
+        type: 'string',
+        filter: false,
+      },
+      // batchNo: {
+      //   title: 'BATCH NO',
+      //   type: 'string',
+      //   filter: false,
+      // },
+      // batchSize: {
+      //   title: 'BATCH SIZE',
+      //   type: 'string',
+      //   filter: false,
+      // },
+      // sampleSize: {
+      //   title: 'SAMPLE SIZE',
+      //   type: 'string',
+      //   filter: false,
+      // },
+      // sampled: {
+      //   title: 'Sampled',
+      //   type: 'string'
+      // },
+      // inspectionDate: {
+      //   title: 'Inspection Date',
+      //   type: 'date'
+      // },
+      // sampleUpdated: {
+      //   title: 'Sample Updated',
+      //   type: 'custom',
+      //   renderComponent: ConsignmentStatusComponent
+      // }
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
   public settingsSampleCollectItems = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
@@ -820,6 +885,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     });
 
     this.dataReportForm = this.formBuilder.group({
+      id: null,
       referenceNumber: ['', Validators.required],
       inspectionDate: ['', Validators.required],
       inspectorName: ['', Validators.required],
@@ -1323,7 +1389,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         this.currDivLabel = arrHeadSave[h];
       }
     }
+
+    this.updateDataReport();
     this.currDiv = divVal;
+  }
+
+  updateDataReport() {
+    if (this.workPlanInspection?.dataReportStatus) {
+      this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
+      for (let prod = 0; prod < this.workPlanInspection?.dataReportDto?.productsList.length; prod++) {
+        this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
+      }
+    }
   }
 
 
@@ -1751,6 +1828,19 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickSaveFilesResults(docTypeName: string) {
     if (this.uploadedFiles.length > 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
+            this.saveFilesResults(docTypeName);
+          });
+    } else {
+      this.msService.showError('NO FILE SELECTED FOR UPLOADED');
+    }
+
+  }
+
+  saveFilesResults(docTypeName: string) {
+    if (this.uploadedFiles.length > 0) {
       this.SpinnerService.show();
       const file = this.uploadedFiles;
       const formData = new FormData();
@@ -1776,8 +1866,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
-    } else {
-      this.msService.showError('NO FILE IS UPLOADED FOR SAVING');
     }
   }
 
@@ -1879,9 +1967,17 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickSaveSampleSubmitted() {
     this.submitted = true;
-    if (this.sampleSubmitForm.invalid) {
-      return;
+
+    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'ADD SAMPLE SUBMISSION\' button to updated the Details before saving', 'SAMPLE SUBMISSION ADDED SUCCESSFUL', () => {
+            this.saveSampleSubmitted();
+          });
     }
+  }
+
+  saveSampleSubmitted() {
     if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
@@ -2265,9 +2361,16 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickSaveDataReport() {
     this.submitted = true;
-    if (this.dataReportForm.invalid) {
-      return;
+    if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'ADD DATA REPORT\' button to update details Before Saving', 'DATA REPORT DETAILS SAVED SUCCESSFUL', () => {
+            this.saveDataReport();
+          });
     }
+  }
+
+  saveDataReport() {
     if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveDataReport = {...this.dataSaveDataReport, ...this.dataReportForm.value};

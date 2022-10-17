@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsControlle
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.MarketSurveillanceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.common.dto.PredefinedResourcesRequiredEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -103,7 +104,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllWorkPlanBatchList(page: PageRequest): List<WorkPlanBatchDetailsDto> {
+    fun getAllWorkPlanBatchList(page: PageRequest, complaint: Boolean): List<WorkPlanBatchDetailsDto> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val auth = commonDaoServices.loggedInUserAuthentication()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -111,30 +112,49 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         val myWorkPlanCreated: Page<WorkPlanCreatedEntity>?
         when {
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedId(loggedInUser,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegion(regionID,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegion(regionID,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_RM_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegion(regionID,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findAll(page)
-            }
+            complaint -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedIdAndComplaintStatus(loggedInUser,page, map.activeStatus)
+                    }
+                    auth.authorities.stream().anyMatch { authority ->
+                        authority.authority == "MS_HOD_READ"
+                                || authority.authority == "MS_HOF_READ"
+                                || authority.authority == "MS_RM_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndComplaintStatus(regionID,page,map.activeStatus)
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findAllByComplaintStatus(map.activeStatus,page)
+                    }
 
-            else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+                    else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+                }
+            }
+            else -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedIdAndWorkPlanStatus(loggedInUser,page, map.activeStatus)
+                    }
+                    auth.authorities.stream().anyMatch { authority ->
+                        authority.authority == "MS_HOD_READ"
+                                || authority.authority == "MS_HOF_READ"
+                                || authority.authority == "MS_RM_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndWorkPlanStatus(regionID,page,map.activeStatus)
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findAllByWorkPlanStatus(map.activeStatus,page)
+                    }
+
+                    else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+                }
+            }
         }
         return mapWorkPlanBatchListDto(myWorkPlanCreated)
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllWorkPlanBatchListClosed(page: PageRequest): List<WorkPlanBatchDetailsDto> {
+    fun getAllWorkPlanBatchListClosed(page: PageRequest,complaint: Boolean): List<WorkPlanBatchDetailsDto> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val auth = commonDaoServices.loggedInUserAuthentication()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -142,30 +162,50 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         val myWorkPlanCreated: Page<WorkPlanCreatedEntity>?
         when {
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedIdAndBatchClosed(loggedInUser,map.activeStatus,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.activeStatus,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.activeStatus,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_RM_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.activeStatus,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findAllByBatchClosed(map.activeStatus,page)
-            }
+            complaint -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedIdAndBatchClosedAndComplaintStatus(loggedInUser,map.activeStatus,map.activeStatus,page)
+                    }
+                    auth.authorities.stream().anyMatch { authority ->
+                        authority.authority == "MS_HOD_READ"
+                                || authority.authority == "MS_HOF_READ"
+                                || authority.authority == "MS_RM_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosedAndComplaintStatus(regionID,map.activeStatus,map.activeStatus,page)
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findAllByBatchClosedAndComplaintStatus(map.activeStatus,map.activeStatus,page)
+                    }
 
-            else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+                    else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+                }
+            }
+            else -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedIdAndBatchClosedAndWorkPlanStatus(loggedInUser,map.activeStatus,map.activeStatus,page)
+                    }
+                    auth.authorities.stream().anyMatch { authority ->
+                        authority.authority == "MS_HOD_READ"
+                                || authority.authority == "MS_HOF_READ"
+                                || authority.authority == "MS_RM_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosedAndWorkPlanStatus(regionID,map.activeStatus,map.activeStatus,page)
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findAllByBatchClosedAndWorkPlanStatus(map.activeStatus,map.activeStatus,page)
+                    }
+
+                    else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+                }
+            }
         }
+
         return mapWorkPlanBatchListDto(myWorkPlanCreated)
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllWorkPlanBatchListOpen(page: PageRequest): List<WorkPlanBatchDetailsDto> {
+    fun getAllWorkPlanBatchListOpen(page: PageRequest,complaint: Boolean): List<WorkPlanBatchDetailsDto> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val auth = commonDaoServices.loggedInUserAuthentication()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -173,23 +213,42 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         val myWorkPlanCreated: Page<WorkPlanCreatedEntity>?
         when {
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedIdAndBatchClosed(loggedInUser,map.inactiveStatus,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.inactiveStatus,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.inactiveStatus,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_RM_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosed(regionID,map.inactiveStatus,page)
-            }
-            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
-                myWorkPlanCreated = workPlanCreatedRepository.findAllByBatchClosed(map.inactiveStatus,page)
-            }
+            complaint -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedIdAndBatchClosedAndComplaintStatus(loggedInUser,map.inactiveStatus,map.activeStatus,page)
+                    }
+                    auth.authorities.stream().anyMatch { authority ->
+                        authority.authority == "MS_HOD_READ"
+                                || authority.authority == "MS_HOF_READ"
+                                || authority.authority == "MS_RM_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosedAndComplaintStatus(regionID,map.inactiveStatus,map.activeStatus,page)
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findAllByBatchClosedAndComplaintStatus(map.inactiveStatus,map.activeStatus,page)
+                    }
 
-            else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+                    else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+                }
+            }
+            else -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByUserCreatedIdAndBatchClosedAndWorkPlanStatus(loggedInUser,map.inactiveStatus,map.activeStatus,page)
+                    }
+                    auth.authorities.stream().anyMatch { authority ->
+                        authority.authority == "MS_HOD_READ"
+                                || authority.authority == "MS_HOF_READ"
+                                || authority.authority == "MS_RM_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findByWorkPlanRegionAndBatchClosedAndWorkPlanStatus(regionID,map.inactiveStatus,map.activeStatus,page)
+                    }
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                        myWorkPlanCreated = workPlanCreatedRepository.findAllByBatchClosedAndWorkPlanStatus(map.inactiveStatus,map.activeStatus,page)
+                    }
+
+                    else -> throw ExpectedDataNotFound("Can not access this page Due to Invalid authorities")
+                }
+            }
         }
         return mapWorkPlanBatchListDto(myWorkPlanCreated)
     }
@@ -201,13 +260,13 @@ class MarketSurveillanceWorkPlanDaoServices(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val currentYear = getCurrentYear()
         val workPlanYearCodes = findWorkPlanYearsCodesEntity(currentYear, map)
-        val userWorkPlan = findWorkPlanCreatedEntity(loggedInUser, workPlanYearCodes)
+        val userWorkPlan = findWorkPlanCreatedEntity(loggedInUser, workPlanYearCodes, map.activeStatus)
         val checkCreationDate = isWithinRange(commonDaoServices.getCurrentDate(), workPlanYearCodes)
         when {
             checkCreationDate -> {
                 when (userWorkPlan) {
                     null -> {
-                        createWorkPlanYear(loggedInUser, map, workPlanYearCodes)
+                        createWorkPlanYear(loggedInUser, map, workPlanYearCodes,false)
                         val workPlanCreated = workPlanCreatedRepository.findByUserCreatedId(loggedInUser,page)
                         return mapWorkPlanBatchListDto(workPlanCreated)
                     }
@@ -1613,22 +1672,16 @@ class MarketSurveillanceWorkPlanDaoServices(
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val dataReportFileSaved = workPlanInspectionDetailsAddDataReport(body, workPlanScheduled, map, loggedInUser)
-//        val remarksDto = RemarksToAddDto()
-//        with(remarksDto){
-//            remarksDescription= body.remarks
-//            remarksStatus= "N/A"
-//            processID = workPlanScheduled.msProcessId
-//            userId= loggedInUser.id
-//        }
 
         when (dataReportFileSaved.first.status) {
             map.successStatus -> {
                 body.productsList?.forEach { param->
                     workPlanInspectionDetailsAddDataReportParams(param, dataReportFileSaved.second, map, loggedInUser)
                 }
+
+
                 with(workPlanScheduled) {
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
-//                    msProcessId = applicationMapProperties.mapMSRapidTest
                     dataReportStatus = map.activeStatus
                 }
                 val fileSaved2 = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
@@ -1636,15 +1689,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                     map.successStatus -> {
                         workPlanScheduled = fileSaved2.second
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
-//                        val remarksSaved = workPlanAddRemarksDetails(fileSaved2.second.id,remarksDto, map, loggedInUser)
-//                        when (remarksSaved.first.status) {
-//                            map.successStatus -> {
-//                                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
-//                            }
-//                            else -> {
-//                                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
-//                            }
-//                        }
                     }
                     else -> {
                         throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
@@ -2235,7 +2279,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             productCategory = body.productCategory
             product = body.product
             productSubCategory = body.productSubCategory
-            resourcesRequired = body.resourcesRequired
+            resourcesRequired =  body.resourcesRequired?.let { commonDaoServices.convertClassToJson(it) }
             budget = body.budget
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGenerateWorkPlan
@@ -2408,7 +2452,8 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     fun createWorkPlanYear(loggedInUser: UsersEntity,
                            map: ServiceMapsEntity,
-                           workPlanYearCodes: WorkplanYearsCodesEntity
+                           workPlanYearCodes: WorkplanYearsCodesEntity,
+                           complaint: Boolean
     ): Pair<ServiceRequestsEntity, WorkPlanCreatedEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
@@ -2420,6 +2465,14 @@ class MarketSurveillanceWorkPlanDaoServices(
                     referenceNumber = "WORKPLAN#${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
                     yearNameId = workPlanYearCodes
                     userCreatedId = loggedInUser
+                    when {
+                        complaint -> {
+                            complaintStatus = map.activeStatus
+                        }
+                        else -> {
+                            workPlanStatus = map.activeStatus
+                        }
+                    }
                     batchClosed = map.inactiveStatus
                     createdDate = commonDaoServices.getCurrentDate()
                     createdStatus = map.activeStatus
@@ -2529,27 +2582,55 @@ class MarketSurveillanceWorkPlanDaoServices(
         var sr = commonDaoServices.createServiceRequest(map)
         var saveDataReport = MsDataReportEntity()
         try {
+            when {
+                body.id!=null -> {
+                    dataReportRepo.findByIdOrNull(body.id)
+                        ?.let { updateDataReport->
+                            with(updateDataReport) {
+                                referenceNumber = body.referenceNumber
+                                inspectionDate = body.inspectionDate
+                                inspectorName = body.inspectorName
+                                function = body.function
+                                department = body.department
+                                regionName = body.regionName
+                                town = body.town
+                                marketCenter = body.marketCenter
+                                outletDetails = body.outletDetails
+                                personMet = body.personMet
+                                summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
+                                finalActionSeizedGoods = body.finalActionSeizedGoods
+                                workPlanGeneratedID = workPlanScheduled.id
+                                status = map.activeStatus
+                                modifiedBy = commonDaoServices.concatenateName(user)
+                                modifiedOn = commonDaoServices.getTimestamp()
+                            }
+                            saveDataReport = dataReportRepo.save(updateDataReport)
 
-            with(saveDataReport) {
-                referenceNumber = body.referenceNumber
-                inspectionDate = body.inspectionDate
-                inspectorName = body.inspectorName
-                function = body.function
-                department = body.department
-                regionName = body.regionName
-                town = body.town
-                marketCenter = body.marketCenter
-                outletDetails = body.outletDetails
-                personMet = body.personMet
-                summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
-                finalActionSeizedGoods = body.finalActionSeizedGoods
-                workPlanGeneratedID = workPlanScheduled.id
-                status = map.activeStatus
-                createdBy = commonDaoServices.concatenateName(user)
-                createdOn = commonDaoServices.getTimestamp()
+                        } ?: throw ExpectedDataNotFound("Data Report With ID ${body.id}, does Not Exists")
+                }
+                else -> {
+                    with(saveDataReport) {
+                        referenceNumber = body.referenceNumber
+                        inspectionDate = body.inspectionDate
+                        inspectorName = body.inspectorName
+                        function = body.function
+                        department = body.department
+                        regionName = body.regionName
+                        town = body.town
+                        marketCenter = body.marketCenter
+                        outletDetails = body.outletDetails
+                        personMet = body.personMet
+                        summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
+                        finalActionSeizedGoods = body.finalActionSeizedGoods
+                        workPlanGeneratedID = workPlanScheduled.id
+                        status = map.activeStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
 
+                    }
+                    saveDataReport = dataReportRepo.save(saveDataReport)
+                }
             }
-            saveDataReport = dataReportRepo.save(saveDataReport)
 
             sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveDataReport)}"
             sr.names = "Save Data Report Details"
@@ -2584,20 +2665,37 @@ class MarketSurveillanceWorkPlanDaoServices(
         var sr = commonDaoServices.createServiceRequest(map)
         var saveDataReport = MsDataReportParametersEntity()
         try {
+            if (body.id!=null){
+                dataReportParameterRepo.findByIdOrNull(body.id)?.let { param->
+                    with(param) {
+                        typeBrandName= body.typeBrandName
+                        localImport= body.localImport
+                        complianceInspectionParameter= body.complianceInspectionParameter
+                        measurementsResults= body.measurementsResults
+                        remarks= body.remarks
+                        dataReportId = dataReport.id
+                        status = map.activeStatus
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
 
-            with(saveDataReport) {
-                typeBrandName= body.typeBrandName
-                localImport= body.localImport
-                complianceInspectionParameter= body.complianceInspectionParameter
-                measurementsResults= body.measurementsResults
-                remarks= body.remarks
-                dataReportId = dataReport.id
-                status = map.activeStatus
-                createdBy = commonDaoServices.concatenateName(user)
-                createdOn = commonDaoServices.getTimestamp()
+                    }
+                    saveDataReport = dataReportParameterRepo.save(param)
+                }
+            } else {
+                with(saveDataReport) {
+                    typeBrandName= body.typeBrandName
+                    localImport= body.localImport
+                    complianceInspectionParameter= body.complianceInspectionParameter
+                    measurementsResults= body.measurementsResults
+                    remarks= body.remarks
+                    dataReportId = dataReport.id
+                    status = map.activeStatus
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
 
+                }
+                saveDataReport = dataReportParameterRepo.save(saveDataReport)
             }
-            saveDataReport = dataReportParameterRepo.save(saveDataReport)
 
             sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveDataReport)}"
             sr.names = "Save Data Report params Details"
@@ -2982,7 +3080,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             productCategory = body.productCategory
             product = body.product
             productSubCategory = body.productSubCategory
-            resourcesRequired = body.resourcesRequired
+            resourcesRequired =  body.resourcesRequired?.let { commonDaoServices.convertClassToJson(it) }
             budget = body.budget
             msProcessEndedStatus = map.inactiveStatus
             updatedStatus = map.inactiveStatus
@@ -3054,7 +3152,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             productCategory = comp.productCategory
             product = comp.product
             productSubCategory = comp.productSubCategory
-            resourcesRequired = body.resourcesRequired
+            resourcesRequired = body.resourcesRequired?.let { commonDaoServices.convertClassToJson(it) }
             budget = body.budget
             uuid = commonDaoServices.generateUUIDString()
             msTypeId = msType.id
@@ -3447,6 +3545,14 @@ class MarketSurveillanceWorkPlanDaoServices(
         return workPlanCreatedRepository.findByUserCreatedIdAndYearNameId(loggedInUser, workPlanYearCodes)
     }
 
+    fun findWorkPlanCreatedEntity(loggedInUser: UsersEntity, workPlanYearCodes: WorkplanYearsCodesEntity,workPlanStatus: Int): WorkPlanCreatedEntity? {
+        return workPlanCreatedRepository.findByUserCreatedIdAndYearNameIdAndWorkPlanStatus(loggedInUser, workPlanYearCodes,workPlanStatus)
+    }
+
+    fun findWorkPlanCreatedComplaintEntity(loggedInUser: UsersEntity, workPlanYearCodes: WorkplanYearsCodesEntity,complaintStatus: Int): WorkPlanCreatedEntity? {
+        return workPlanCreatedRepository.findByUserCreatedIdAndYearNameIdAndComplaintStatus(loggedInUser, workPlanYearCodes,complaintStatus)
+    }
+
     fun isWithinRange(checkDate: Date, workPlanYearCodes: WorkplanYearsCodesEntity): Boolean {
         return !(checkDate.before(workPlanYearCodes.workplanCreationStartDate) || checkDate.after(workPlanYearCodes.workplanCreationEndDate))
     }
@@ -3567,7 +3673,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     wkp.productCategory,
                     wkp.product,
                     wkp.productSubCategory,
-                    wkp.resourcesRequired,
+                    wkp.resourcesRequired?.let { mapPredefinedResourcesRequiredListDto(it) },
                     wkp.budget,
                     null,
         )
@@ -3604,14 +3710,14 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.productSubCategory?.let { commonDaoServices.findProductSubCategoryByID(it).name },
             wKP.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
             wKP.timelineStartDate,
-                    wKP.timelineEndDate,
+            wKP.timelineEndDate,
             timelineOverDue,
 //            wKP.sampleSubmittedId?.id,
             wKP.division,
             wKP.officerName,
             wKP.nameActivity,
             wKP.targetedProducts,
-            wKP.resourcesRequired,
+            wKP.resourcesRequired?.let { mapPredefinedResourcesRequiredListDto(it) },
             wKP.budget,
             wKP.approvedOn,
             wKP.approvedStatus == 1,
@@ -3760,6 +3866,12 @@ class MarketSurveillanceWorkPlanDaoServices(
         val gson = Gson()
         val userListType: Type = object : TypeToken<ArrayList<KebsOfficersName?>?>() {}.type
         return gson.fromJson(officersName, userListType)
+    }
+
+    fun mapPredefinedResourcesRequiredListDto(predefinedResourcesRequired: String): List<PredefinedResourcesRequiredEntityDto>? {
+        val gson = Gson()
+        val userListType: Type = object : TypeToken<ArrayList<PredefinedResourcesRequiredEntityDto?>?>() {}.type
+        return gson.fromJson(predefinedResourcesRequired, userListType)
     }
 
     fun mapPreliminaryReportDto(data: MsPreliminaryReportEntity, data2:List<PreliminaryReportItemsDto>): PreliminaryReportDto {

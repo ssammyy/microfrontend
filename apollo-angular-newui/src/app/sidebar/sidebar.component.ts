@@ -388,7 +388,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/complaint',
-        title: 'MS COMPLAINTS',
+        title: 'COMPLAINTS',
         type: 'link',
         collapse: 'complaint',
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
@@ -396,7 +396,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/workPlan',
-        title: 'MS WORK-PLAN',
+        title: 'WORK-PLAN SCHEDULE(S)',
         type: 'link',
         collapse: 'workPlan',
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
@@ -404,7 +404,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/complaintPlan',
-        title: 'MS COMPLAINT PLAN',
+        title: 'COMPLAINT SCHEDULE(S)',
         type: 'link',
         collapse: 'complaintPlan',
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
