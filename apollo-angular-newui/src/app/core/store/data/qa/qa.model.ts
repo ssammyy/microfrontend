@@ -42,6 +42,41 @@ export class PermitEntityDto {
     versionNumber: number;
 }
 
+export class ReportsPermitEntityDto {
+    id: bigint;
+    firmName: string;
+    permitRefNumber: string;
+    productName: string;
+    tradeMark: string;
+    awardedPermitNumber: string;
+    dateOfIssue: Date;
+    dateOfExpiry: Date;
+    permitStatus: string;
+    userId: bigint;
+    createdOn: string;
+    county: string;
+    town: string;
+    region: string;
+    divisionValue: string;
+    sectionValue: string;
+    permitAwardStatus: boolean;
+    permitExpiredStatus: boolean;
+    taskID: bigint;
+    companyId: bigint;
+    permitType: bigint;
+    processStatusID: number;
+    versionNumber: number;
+    firmTypeID: number
+    firmTypeName: string;
+    invoiceAmount: number;
+    standardNumber: number;
+    standardTitle: string;
+    physicalAddress: string;
+    telephoneNo: string;
+    email: string;
+
+}
+
 export class ConsolidatedInvoiceDto {
     id: bigint;
     invoiceNumber: string;
@@ -459,4 +494,20 @@ export interface Payments {
     permitId:number;
 }
 
+export interface SamplesSubmittedDto
+{
+    ssf_SUBMISSION_DATE:string;
+    firm_NAME:string;
+    physical_ADDRESS:string;
+    telephone_NO:string;
+    brand_NAME:string;
+    standard_TITLE: string;
+    compliance_REMARKS:string;
+    compliant_STATUS:number;
+    inspection_DATE:string;
+    results_DATE:string;
+    region:string;
+    section:string;
+    product:string
+    }
 

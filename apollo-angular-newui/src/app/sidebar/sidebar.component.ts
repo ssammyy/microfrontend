@@ -379,6 +379,23 @@ export const ROUTES: RouteInfo[] = [
         ],
     },
     {
+        path: '',
+        title: 'Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['QA_OFFICER_READ'],
+        collapse: 'reports',
+        children: [
+            {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
+            {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
+            {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
+            {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
+            {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
+
+
+        ],
+    },
+    {
         path: '/epra',
         title: 'EPRA',
         type: 'link',

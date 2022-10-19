@@ -502,13 +502,28 @@ import {
 } from './apollowebs/market-surveillance/fuel/fuel-list-teams-county/fuel-list-teams-county.component';
 import {
     ApplicationsReceivedComponent
-} from "./apollowebs/quality-assurance/reports/smark/applications-received/applications-received.component";
+} from "./apollowebs/quality-assurance/reports/applications-received/applications-received.component";
 import {
     PermitsGrantedComponent
-} from "./apollowebs/quality-assurance/reports/smark/permits-granted/permits-granted.component";
-import {ComplaintPlanBatchListComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-batch-list/complaint-plan-batch-list.component';
-import {ComplaintPlanListComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-list/complaint-plan-list.component';
-import {ComplaintPlanDetailsComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-details/complaint-plan-details.component';
+} from "./apollowebs/quality-assurance/reports/permits-granted/permits-granted.component";
+import {
+    ComplaintPlanBatchListComponent
+} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-batch-list/complaint-plan-batch-list.component';
+import {
+    ComplaintPlanListComponent
+} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-list/complaint-plan-list.component';
+import {
+    ComplaintPlanDetailsComponent
+} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-details/complaint-plan-details.component';
+import {
+    PermitsDeferredComponent
+} from "./apollowebs/quality-assurance/reports/permits-deferred/permits-deferred.component";
+import {
+    PermitsRenewedComponent
+} from "./apollowebs/quality-assurance/reports/permits-renewed/permits-renewed.component";
+import {
+    SamplesSubmittedComponent
+} from "./apollowebs/quality-assurance/reports/samples-submitted/samples-submitted.component";
 
 export const routes: Routes = [
     {
@@ -692,6 +707,18 @@ export const routes: Routes = [
             {
                 path: 'permits_granted',
                 component: PermitsGrantedComponent,
+            },
+            {
+                path: 'permits_deferred',
+                component: PermitsDeferredComponent,
+            },
+            {
+                path: 'permits_renewed',
+                component: PermitsRenewedComponent,
+            },
+            {
+                path: 'samples_submitted',
+                component: SamplesSubmittedComponent,
             },
 
         ],

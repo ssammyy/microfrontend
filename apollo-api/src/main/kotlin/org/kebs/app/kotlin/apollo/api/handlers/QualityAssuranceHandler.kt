@@ -3690,13 +3690,15 @@ class QualityAssuranceHandler(
             val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
 
-            var permitListAllApplications: List<PermitApplicationsEntity>? = null
+            var permitListAllApplications: List<ReportPermitEntityDto>? = null
 
-            permitListAllApplications = qaDaoServices.findReportAllPermitWithNoFmarkGenerated(
-                loggedInUser,
-                permitTypeID,
-                map.activeStatus,
-                map.inactiveStatus
+            permitListAllApplications = qaDaoServices.listPermitsReports(
+                qaDaoServices.findReportAllPermitWithNoFmarkGenerated(
+                    loggedInUser,
+                    permitTypeID,
+                    map.activeStatus,
+                    map.inactiveStatus
+                ), map
             )
 
             return ok().body(permitListAllApplications)
@@ -3718,15 +3720,17 @@ class QualityAssuranceHandler(
             val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
 
-            var permitListAllApplications: List<PermitEntityDto>? = null
+            var permitListAllApplications: List<ReportPermitEntityDto>? = null
 
 
-            permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findReportAllAwardedPermits(
-                loggedInUser,
-                permitTypeID,
-                map.activeStatus,
-                map.inactiveStatus
-            ),map)
+            permitListAllApplications = qaDaoServices.listPermitsReports(
+                qaDaoServices.findReportAllAwardedPermits(
+                    loggedInUser,
+                    permitTypeID,
+                    map.activeStatus,
+                    map.inactiveStatus
+                ), map
+            )
 
             return ok().body(permitListAllApplications)
 
@@ -3749,11 +3753,13 @@ class QualityAssuranceHandler(
 
             var permitListAllApplications: List<PermitEntityDto>? = null
 
-            permitListAllApplications =  qaDaoServices.listPermits(qaDaoServices.findReportAllRenewedPermits(
-                loggedInUser,
-                permitTypeID,
-                map.activeStatus,
-                map.inactiveStatus),map
+            permitListAllApplications = qaDaoServices.listPermits(
+                qaDaoServices.findReportAllRenewedPermits(
+                    loggedInUser,
+                    permitTypeID,
+                    map.activeStatus,
+                    map.inactiveStatus
+                ), map
             )
 
             return ok().body(permitListAllApplications)
