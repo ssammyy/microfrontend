@@ -16,7 +16,7 @@ import {
     PermitProcessStepDto,
     PlantDetailsDto,
     QRCodeScannedQADto,
-    ResubmitApplicationDto,
+    ResubmitApplicationDto, SamplesSubmittedDto,
     SSCApprovalRejectionDto,
     STA1,
     Sta10Dto,
@@ -160,6 +160,48 @@ export class QaService {
             .set('permitTypeID', permitTypeID);
         return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
             map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public loadPermitGrantedReports(permitTypeID: string): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_AWARDED);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public loadPermitRenewedReports(permitTypeID: string): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_RENEWED);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public loadPermitSamplesSubmittedReports(permitTypeID: string): Observable<SamplesSubmittedDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_SAMPLES_SUBMITTED);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<SamplesSubmittedDto[]>(url, {params}).pipe(
+            map(function (response: SamplesSubmittedDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
