@@ -389,3 +389,61 @@ end;
 
 create index CFG_MS_PREDEFINED_RESOURCES_REQUIRED_seq_idx on CFG_MS_PREDEFINED_RESOURCES_REQUIRED (STATUS) TABLESPACE qaimssdb_idx;
 /
+
+create table DAT_MS_SEIZURE
+(
+    ID                       NUMBER PRIMARY KEY,
+    MARKET_TOWN_CENTER       VARCHAR2(200),
+    NAME_OF_OUTLET       VARCHAR2(200),
+    DESCRIPTION_PRODUCTS_SEIZED VARCHAR2(200),
+    BRAND       VARCHAR2(200),
+    SECTOR       VARCHAR2(200),
+    REASON_SEIZURE       VARCHAR2(200),
+    NAME_SEIZING_OFFICER       VARCHAR2(200),
+    SEIZURE_SERIAL        VARCHAR2(200),
+    QUANTITY        VARCHAR2(200),
+    UNIT        VARCHAR2(200),
+    ESTIMATED_COST          VARCHAR2(200),
+    CURRENT_LOCATION          VARCHAR2(200),
+    PRODUCTS_DESTRUCTION         VARCHAR2(200),
+    STATUS                   NUMBER(2, 0),
+    DESCRIPTION              VARCHAR2(200),
+    VAR_FIELD_1              VARCHAR2(350 char),
+    VAR_FIELD_2              VARCHAR2(350 char),
+    VAR_FIELD_3              VARCHAR2(350 char),
+    VAR_FIELD_4              VARCHAR2(350 char),
+    VAR_FIELD_5              VARCHAR2(350 char),
+    VAR_FIELD_6              VARCHAR2(350 char),
+    VAR_FIELD_7              VARCHAR2(350 char),
+    VAR_FIELD_8              VARCHAR2(350 char),
+    VAR_FIELD_9              VARCHAR2(350 char),
+    VAR_FIELD_10             VARCHAR2(350 char),
+    CREATED_BY               VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON               TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY              VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON              TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY                VARCHAR2(100 char)          default 'admin',
+    DELETED_ON               TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_MS_SEIZURE_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_MS_SEIZURE_SEQ_trg
+    before
+        insert
+    on DAT_MS_SEIZURE
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_MS_SEIZURE_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+    end if;
+end;
+
+
+create index DAT_MS_SEIZURE_seq_idx on DAT_MS_SEIZURE (STATUS) TABLESPACE qaimssdb_idx;
+/

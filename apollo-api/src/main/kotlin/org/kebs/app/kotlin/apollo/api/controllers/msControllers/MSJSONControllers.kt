@@ -77,7 +77,6 @@ class MSJSONControllers(
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         seizureDocId = fileDocSaved!!.id
                         userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
-                        seizureDeclarationStatus = map.activeStatus
                     }
                     "DECLARATION_FILE" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second

@@ -596,6 +596,24 @@ export class SeizureDeclarationDto {
     remarks: string;
 }
 
+export class SeizureDto {
+    id: number;
+    marketTownCenter: string;
+    nameOfOutlet: string;
+    descriptionProductsSeized: string;
+    brand: string;
+    sector: string;
+    reasonSeizure: string;
+    nameSeizingOfficer: string;
+    seizureSerial: string;
+    quantity: string;
+    unit: string;
+    estimatedCost: string;
+    currentLocation: string;
+    productsDestruction: string;
+    remarks: string;
+}
+
 export class DataReportDto {
     id: number;
     referenceNumber: string;

@@ -66,7 +66,7 @@ import {
     WorkPlanFeedBackDto,
     FuelScheduleTeamsListDetailsDto,
     TeamsFuelSaveDto,
-    FuelScheduleCountyListDetailsDto, RapidTestProductsDto, EndFuelDto, RegionReAssignDto, PredefinedResourcesRequired,
+    FuelScheduleCountyListDetailsDto, RapidTestProductsDto, EndFuelDto, RegionReAssignDto, PredefinedResourcesRequired, SeizureDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -814,7 +814,7 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public msWorkPlanScheduleSaveSeizureDeclaration(batchReferenceNo: string, referenceNo: string, data: SeizureDeclarationDto): Observable<WorkPlanInspectionDto> {
+    public msWorkPlanScheduleSaveSeizureDeclaration(batchReferenceNo: string, referenceNo: string, data: SeizureDto[]): Observable<WorkPlanInspectionDto> {
         console.log(data);
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(

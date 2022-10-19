@@ -2292,28 +2292,28 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.seizureDeclarationForm.invalid) {
       return;
     }
-    if (this.seizureDeclarationForm.valid) {
-      this.SpinnerService.show();
-      this.dataSaveSeizureDeclaration = {...this.dataSaveSeizureDeclaration, ...this.seizureDeclarationForm.value};
-      this.msService.msWorkPlanScheduleSaveSeizureDeclaration(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-          this.dataSaveSeizureDeclaration,
-      ).subscribe(
-          (data: any) => {
-            this.workPlanInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
-
-    }
+    // if (this.seizureDeclarationForm.valid) {
+    //   this.SpinnerService.show();
+    //   this.dataSaveSeizureDeclaration = {...this.dataSaveSeizureDeclaration, ...this.seizureDeclarationForm.value};
+    //   this.msService.msWorkPlanScheduleSaveSeizureDeclaration(
+    //       this.workPlanInspection.batchDetails.referenceNumber,
+    //       this.workPlanInspection.referenceNumber,
+    //       this.dataSaveSeizureDeclaration,
+    //   ).subscribe(
+    //       (data: any) => {
+    //         this.workPlanInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       },
+    //   );
+    //
+    // }
   }
 
   onClickSaveInvestInspectReport() {

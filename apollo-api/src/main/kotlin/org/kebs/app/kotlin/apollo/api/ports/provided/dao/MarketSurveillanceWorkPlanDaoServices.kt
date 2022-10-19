@@ -50,7 +50,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val chargeSheetRepo: IChargeSheetRepository,
     private val dataReportRepo: IDataReportRepository,
     private val dataReportParameterRepo: IDataReportParameterRepository,
-    private val seizureDeclarationRepo: IMSSeizureDeclarationRepository,
+    private val seizureDeclarationRepo: IMsSeizureRepository,
     private val investInspectReportRepo: IMSInvestInspectReportRepository,
     private val preliminaryRepo: IPreliminaryReportRepository,
     private val preliminaryOutletRepo: IPreliminaryOutletsRepository,
@@ -1706,13 +1706,16 @@ class MarketSurveillanceWorkPlanDaoServices(
     fun addWorkPlanInspectionDetailsSeizureDeclaration(
         referenceNo: String,
         batchReferenceNo: String,
-        body: SeizureDeclarationDto
+        body: List<SeizureDto>
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-        val dataFileSaved = workPlanInspectionDetailsAddSeizureDeclaration(body, workPlanScheduled, map, loggedInUser)
+        val dataFileSaved: Pair<ServiceRequestsEntity, MsSeizureEntity>? = null
+        body.forEach {bd->
+             workPlanInspectionDetailsAddSeizureDeclaration(bd, workPlanScheduled, map, loggedInUser)
+        }
 //        val remarksDto = RemarksToAddDto()
 //        with(remarksDto){
 //            remarksDescription= body.remarks
@@ -1721,7 +1724,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 //            userId= loggedInUser.id
 //        }
 
-        when (dataFileSaved.first.status) {
+        when (dataFileSaved?.first?.status) {
             map.successStatus -> {
                 with(workPlanScheduled) {
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
@@ -1748,7 +1751,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 }
             }
             else -> {
-                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(dataFileSaved.first))
+                throw ExpectedDataNotFound(dataFileSaved?.first?.let { commonDaoServices.failedStatusDetails(it) })
             }
         }
     }
@@ -2721,49 +2724,30 @@ class MarketSurveillanceWorkPlanDaoServices(
     }
 
     fun workPlanInspectionDetailsAddSeizureDeclaration(
-        body: SeizureDeclarationDto,
+        body: SeizureDto,
         workPlanScheduled: MsWorkPlanGeneratedEntity,
         map: ServiceMapsEntity,
         user: UsersEntity
-    ): Pair<ServiceRequestsEntity, MsSeizureDeclarationEntity> {
+    ): Pair<ServiceRequestsEntity, MsSeizureEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
-        var saveData = MsSeizureDeclarationEntity()
+        var saveData = MsSeizureEntity()
         try {
 
             with(saveData) {
-                seizureTo = body.seizureTo
-                seizurePremises = body.seizurePremises
-                seizureRequirementsStandards = body.seizureRequirementsStandards
-                goodsName = body.goodsName
-                goodsManufactureTrader = body.goodsManufactureTrader
-                goodsAddress = body.goodsAddress
-                goodsPhysical = body.goodsPhysical
-                goodsLocation = body.goodsLocation
-                goodsMarkedBranded = body.goodsMarkedBranded
-                goodsPhysicalSeal = body.goodsPhysicalSeal
-                descriptionGoods = body.descriptionGoods
-                goodsQuantity = body.goodsQuantity
-                goodsThereforei = body.goodsThereforei
-                nameInspector = body.nameInspector
-                designationInspector = body.designationInspector
-                dateInspector = body.dateInspector
-                nameManufactureTrader = body.nameManufactureTrader
-                designationManufactureTrader = body.designationManufactureTrader
-                dateManufactureTrader = body.dateManufactureTrader
-                nameWitness = body.nameWitness
-                designationWitness = body.designationWitness
-                dateWitness = body.dateWitness
-                declarationTakenBy = body.declarationTakenBy
-                declarationOnThe = body.declarationOnThe
-                declarationDayOf = body.declarationDayOf
-                declarationMyName = body.declarationMyName
-                declarationIresideAt = body.declarationIresideAt
-                declarationIemployeedAs = body.declarationIemployeedAs
-                declarationIemployeedOf = body.declarationIemployeedOf
-                declarationSituatedAt = body.declarationSituatedAt
-                declarationStateThat = body.declarationStateThat
-                declarationIdNumber = body.declarationIdNumber
+                marketTownCenter = body.marketTownCenter
+                nameOfOutlet = body.nameOfOutlet
+                descriptionProductsSeized = body.descriptionProductsSeized
+                brand = body.brand
+                sector = body.sector
+                reasonSeizure = body.reasonSeizure
+                nameSeizingOfficer = body.nameSeizingOfficer
+                seizureSerial = body.seizureSerial
+                quantity = body.quantity
+                unit = body.unit
+                estimatedCost = body.estimatedCost
+                currentLocation = body.currentLocation
+                productsDestruction = body.productsDestruction
                 workPlanGeneratedID = workPlanScheduled.id
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
@@ -3372,43 +3356,27 @@ class MarketSurveillanceWorkPlanDaoServices(
     }
 
     fun mapSeizureDeclarationDetailsDto(
-        seizureDeclaration: MsSeizureDeclarationEntity
-    ): SeizureDeclarationDto {
-        return SeizureDeclarationDto(
+        data: List<MsSeizureEntity>
+    ): List<SeizureDto> {
+        return  data.map {seizureDeclaration->
+                SeizureDto(
                     seizureDeclaration.id,
-                    seizureDeclaration.seizureTo,
-                    seizureDeclaration.seizurePremises,
-                    seizureDeclaration.seizureRequirementsStandards,
-                    seizureDeclaration.goodsName,
-                    seizureDeclaration.goodsManufactureTrader,
-                    seizureDeclaration.goodsAddress,
-                    seizureDeclaration.goodsPhysical,
-                    seizureDeclaration.goodsLocation,
-                    seizureDeclaration.goodsMarkedBranded,
-                    seizureDeclaration.goodsPhysicalSeal,
-                    seizureDeclaration.descriptionGoods,
-                    seizureDeclaration.goodsQuantity,
-                    seizureDeclaration.goodsThereforei,
-                    seizureDeclaration.nameInspector,
-                    seizureDeclaration.designationInspector,
-                    seizureDeclaration.dateInspector,
-                    seizureDeclaration.nameManufactureTrader,
-                    seizureDeclaration.designationManufactureTrader,
-                    seizureDeclaration.dateManufactureTrader,
-                    seizureDeclaration.nameWitness,
-                    seizureDeclaration.designationWitness,
-                    seizureDeclaration.dateWitness,
-                    seizureDeclaration.declarationTakenBy,
-                    seizureDeclaration.declarationOnThe,
-                    seizureDeclaration.declarationDayOf,
-                    seizureDeclaration.declarationMyName,
-                    seizureDeclaration.declarationIresideAt,
-                    seizureDeclaration.declarationIemployeedAs,
-                    seizureDeclaration.declarationIemployeedOf,
-                    seizureDeclaration.declarationSituatedAt,
-                    seizureDeclaration.declarationStateThat,
-                    seizureDeclaration.declarationIdNumber,
-        )
+                    seizureDeclaration.marketTownCenter,
+                    seizureDeclaration.nameOfOutlet,
+                    seizureDeclaration.descriptionProductsSeized,
+                    seizureDeclaration.brand,
+                    seizureDeclaration.sector,
+                    seizureDeclaration.reasonSeizure,
+                    seizureDeclaration.nameSeizingOfficer,
+                    seizureDeclaration.seizureSerial,
+                    seizureDeclaration.quantity,
+                    seizureDeclaration.unit,
+                    seizureDeclaration.estimatedCost,
+                    seizureDeclaration.currentLocation,
+                    seizureDeclaration.productsDestruction,
+                )
+        }
+
     }
 
     fun mapDataReportDetailsDto(
@@ -3690,7 +3658,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         remarksList: List<MsRemarksEntity>?,
         workPlanFilesSaved: List<MsUploadsEntity>?,
         chargeSheet: ChargeSheetDto?,
-        seizureDeclarationDto: SeizureDeclarationDto?,
+        seizureDeclarationDto: List<SeizureDto>?,
         inspectionInvestigationDto: InspectionInvestigationReportDto?,
         dataReportDto: DataReportDto?,
         sampleCollected: SampleCollectionDto?,
@@ -3935,7 +3903,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         return  chargeSheetRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
     }
 
-    fun findSeizureDeclarationByWorkPlanInspectionID(workPlanInspectionID: Long): MsSeizureDeclarationEntity? {
+    fun findSeizureDeclarationByWorkPlanInspectionID(workPlanInspectionID: Long): List<MsSeizureEntity>? {
         return  seizureDeclarationRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
     }
 

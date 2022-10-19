@@ -26,7 +26,7 @@ import {
   SampleCollectionItemsDto,
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
-  SeizureDeclarationDto,
+  SeizureDeclarationDto, SeizureDto,
   SSFSaveComplianceStatusDto,
   WorkPlanEntityDto,
   WorkPlanFeedBackDto,
@@ -118,7 +118,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSaveDataReportParamList: DataReportParamsDto[] = [];
   dataSaveDataReportParam: DataReportParamsDto;
   dataSaveDataInspectorInvest: DataInspectorInvestDto;
-  dataSaveSeizureDeclaration: SeizureDeclarationDto;
+  dataSaveSeizureDeclaration: SeizureDto;
+  dataSaveSeizureDeclarationList: SeizureDto[] = [];
   dataSaveInvestInspectReport: InspectionInvestigationReportDto;
   dataSavePreliminaryReport: PreliminaryReportDto;
   dataSavePreliminaryReportParamList: PreliminaryReportItemsDto[] = [];
@@ -935,44 +936,25 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.investInspectReportInspectorsForm = this.formBuilder.group({
       inspectorName: ['', Validators.required],
-      institution: null,
       designation: ['', Validators.required],
+      institution: null,
     });
 
     this.seizureDeclarationForm = this.formBuilder.group({
-      seizureTo: ['', Validators.required],
-      seizurePremises: ['', Validators.required],
-      seizureRequirementsStandards: ['', Validators.required],
-      // goodsName: ['', Validators.required],
-      goodsManufactureTrader: ['', Validators.required],
-      goodsAddress: ['', Validators.required],
-      goodsPhysical: ['', Validators.required],
-      // goodsLocation: ['', Validators.required],
-      goodsMarkedBranded: ['', Validators.required],
-      goodsPhysicalSeal: ['', Validators.required],
-      descriptionGoods: ['', Validators.required],
-      goodsQuantity: ['', Validators.required],
-      goodsThereforei: ['', Validators.required],
-      nameInspector: ['', Validators.required],
-      designationInspector: ['', Validators.required],
-      dateInspector: ['', Validators.required],
-      nameManufactureTrader: ['', Validators.required],
-      designationManufactureTrader: ['', Validators.required],
-      dateManufactureTrader: ['', Validators.required],
-      nameWitness: ['', Validators.required],
-      designationWitness: ['', Validators.required],
-      dateWitness: ['', Validators.required],
-      declarationTakenBy: ['', Validators.required],
-      declarationOnThe: ['', Validators.required],
-      declarationDayOf: ['', Validators.required],
-      declarationMyName: ['', Validators.required],
-      declarationIresideAt: ['', Validators.required],
-      declarationIemployeedAs: ['', Validators.required],
-      declarationIemployeedOf: ['', Validators.required],
-      declarationSituatedAt: ['', Validators.required],
-      declarationStateThat: ['', Validators.required],
-      // declarationIdNumber: ['', Validators.required],
-      // remarks: ['', Validators.required],
+      id: null,
+      marketTownCenter: ['', Validators.required],
+      nameOfOutlet: ['', Validators.required],
+      descriptionProductsSeized: ['', Validators.required],
+      brand: ['', Validators.required],
+      sector: ['', Validators.required],
+      reasonSeizure: ['', Validators.required],
+      nameSeizingOfficer: ['', Validators.required],
+      seizureSerial: ['', Validators.required],
+      quantity: ['', Validators.required],
+      unit: ['', Validators.required],
+      estimatedCost: ['', Validators.required],
+      currentLocation: ['', Validators.required],
+      productsDestruction: ['', Validators.required]
     });
 
     this.sampleCollectForm = this.formBuilder.group({
@@ -2304,6 +2286,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   }
 
+  onClickAddDataSeizure() {
+    this.dataSaveSeizureDeclaration = this.seizureDeclarationForm.value;
+    this.dataSaveSeizureDeclarationList.push(this.dataSaveSeizureDeclaration);
+    this.seizureDeclarationForm.reset();
+  }
+
   onClickAddDataSampleSubmitParams() {
     this.dataSaveSampleSubmitParam = this.sampleSubmitParamsForm.value;
     this.dataSaveSampleSubmitParamList.push(this.dataSaveSampleSubmitParam);
@@ -2337,6 +2325,16 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.dataSaveSampleSubmitParamList.splice(index, 1);
     } else {
       this.dataSaveSampleSubmitParamList.splice(index, index);
+    }
+  }
+
+  // Remove Form repeater values
+  removeDataSeizureDeclarationList(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveSeizureDeclarationList.splice(index, 1);
+    } else {
+      this.dataSaveSeizureDeclarationList.splice(index, index);
     }
   }
 
@@ -2398,31 +2396,36 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
-    if (this.seizureDeclarationForm.invalid) {
-      return;
-    }
-    if (this.seizureDeclarationForm.valid) {
-      this.SpinnerService.show();
-      this.dataSaveSeizureDeclaration = {...this.dataSaveSeizureDeclaration, ...this.seizureDeclarationForm.value};
-      this.msService.msWorkPlanScheduleSaveSeizureDeclaration(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-          this.dataSaveSeizureDeclaration,
-      ).subscribe(
-          (data: any) => {
-            this.workPlanInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
+    if (this.dataSaveSeizureDeclarationList.length !== 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
+            this.saveDataReport();
+          });
 
     }
+  }
+
+  SaveSeizureDeclaration() {
+    this.SpinnerService.show();
+    this.dataSaveSeizureDeclaration = {...this.dataSaveSeizureDeclaration, ...this.seizureDeclarationForm.value};
+    this.msService.msWorkPlanScheduleSaveSeizureDeclaration(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+        this.dataSaveSeizureDeclarationList,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 
   onClickSaveInvestInspectReport() {

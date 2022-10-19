@@ -244,7 +244,7 @@ data class WorkPlanInspectionDto(
         var remarksDetails: List<MSRemarksDto>? = null,
         var workPlanFiles: List<WorkPlanFilesFoundDto>? = null,
         var chargeSheet: ChargeSheetDto? = null,
-        var seizureDeclarationDto: SeizureDeclarationDto? = null,
+        var seizureDeclarationDto: List<SeizureDto>? = null,
         var inspectionInvestigationDto: InspectionInvestigationReportDto? = null,
         var dataReportDto: DataReportDto? = null,
         var sampleCollected: SampleCollectionDto? = null,
@@ -517,6 +517,24 @@ data class KebsOfficersName (
         var inspectorName: String? = null,
         var institution: String? = null,
         var designation: String? = null,
+)
+
+data class SeizureDto(
+        var id: Long?= null,
+        var marketTownCenter: String?=null,
+        var nameOfOutlet: String?=null,
+        var descriptionProductsSeized: String?=null,
+        var brand: String?=null,
+        var sector: String?=null,
+        var reasonSeizure: String?=null,
+        var nameSeizingOfficer: String?=null,
+        var seizureSerial: String?=null,
+        var quantity: String?=null,
+        var unit: String?=null,
+        var estimatedCost: String?=null,
+        var currentLocation: String?=null,
+        var productsDestruction: String?=null,
+
 )
 
 data class SeizureDeclarationDto(
