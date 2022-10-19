@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.common.dto.ms
 
+import org.kebs.app.kotlin.apollo.common.dto.PredefinedResourcesRequiredEntityDto
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -163,7 +164,7 @@ data class WorkPlanInspectionDto(
         var officerName: String? = null,
         var nameActivity: String? = null,
         var targetedProducts: String? = null,
-        var resourcesRequired: String? = null,
+        var resourcesRequired: List<PredefinedResourcesRequiredEntityDto>? = null,
         var budget: String? = null,
         var approvedOn: Date? = null,
         var approvedStatus: Boolean? = null,
@@ -312,7 +313,7 @@ data class WorkPlanEntityDto(
         var productCategory: Long? = null,
         var product: Long? = null,
         var productSubCategory: Long? = null,
-        var resourcesRequired: String? = null,
+        var resourcesRequired: List<PredefinedResourcesRequiredEntityDto>? = null,
         var budget: String? = null,
         var remarks: String? = null,
 )

@@ -83,9 +83,7 @@ class ISAdoptionJustification {
     @Column(name = "ACCENT_TO")
     @Basic
     var accentTo: Boolean = false
-    @Column(name = "TASKID")
-    @Basic
-    var taskId: String? = null
+
 
     @Column(name = "ASSIGNED_TO")
     @Basic
@@ -94,6 +92,10 @@ class ISAdoptionJustification {
     @Column(name = "PROCESS_ID")
     @Basic
     var processId: String? = null
+
+    @Column(name = "TASKID")
+    @Basic
+    var taskId: String? = null
 
     @Column(name = "POSITIVE_VOTES")
     @Basic

@@ -16,7 +16,7 @@ import {
     ManufacturePenalty,
     ManufacturePendingTask,
     ManufacturingStatus, NotificationStatus, OperationStatus,
-    PaidLevy, PaymentDetails, PenaltyDetails,
+    PaidLevy, PaymentDetails, PenaltyDetails, RejectedComDetails,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo, SendEmailDto,
     SiteVisitFeedBack,
@@ -742,6 +742,13 @@ export class LevyService {
         const params = new HttpParams();
         return this.http.get<CompanyModel>(url, {params}).pipe();
     }
+
+    public getRejectedCompanyDetails(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REJECTED_FIRM_EDITS);
+        const params = new HttpParams();
+        return this.http.get<RejectedComDetails>(url, {params}).pipe();
+    }
+
     public getPenaltyReport(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PEN_REPORT);
         const params = new HttpParams();

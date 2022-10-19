@@ -47,6 +47,10 @@ class WorkPlanCreatedEntity : Serializable {
     @Basic
     var workPlanStatus: Int? = null
 
+    @Column(name = "COMPLAINT_STATUS")
+    @Basic
+    var complaintStatus: Int? = null
+
     @Column(name = "BATCH_CLOSED")
     @Basic
     var batchClosed: Int? = null
@@ -142,47 +146,4 @@ class WorkPlanCreatedEntity : Serializable {
     @JoinColumn(name = "YEAR_NAME_ID", referencedColumnName = "ID")
     @ManyToOne
     var yearNameId: WorkplanYearsCodesEntity? = null
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as WorkPlanCreatedEntity
-        return id == that.id &&
-                uuid == that.uuid &&
-                referenceNumber == that.referenceNumber &&
-                confirmYearNameId == that.confirmYearNameId &&
-                workPlanRegion == that.workPlanRegion &&
-                createdDate == that.createdDate &&
-                createdStatus == that.createdStatus &&
-                endedDate == that.endedDate &&
-                endedStatus == that.endedStatus &&
-                workPlanStatus == that.workPlanStatus &&
-                description == that.description &&
-                status == that.status &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(id,
-                confirmYearNameId,
-                workPlanRegion,
-                uuid,
-//                userCreatedId,
-                referenceNumber, workPlanStatus, createdDate, createdStatus, endedDate, endedStatus, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
-    }
 }

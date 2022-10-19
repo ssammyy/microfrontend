@@ -125,9 +125,14 @@ class ISDecision(
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
     @JsonProperty("approvalID")  val approvalID: Long,
+    @JsonProperty("preparedBy")  val preparedBy: Long,
+    @JsonProperty("reviewID")  val reviewID: Long,
+    @JsonProperty("taskType")  val taskType: Long,
     @JsonProperty("assignedTo")  var assignedTo: Long,
     @JsonProperty("comments") val comments: String,
     @JsonProperty("proposalId") val proposalId: Long,
+    @JsonProperty("standardID") val standardID: Long,
+    @JsonProperty("description") val description: String,
 ) {
 }
 class ISJustificationDecision(

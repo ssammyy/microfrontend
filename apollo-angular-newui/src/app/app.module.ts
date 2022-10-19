@@ -779,6 +779,7 @@ import { PermitsDeferredComponent } from './apollowebs/quality-assurance/reports
 import { ComplaintPlanBatchListComponent } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-batch-list/complaint-plan-batch-list.component';
 import { ComplaintPlanListComponent } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-list/complaint-plan-list.component';
 import { ComplaintPlanDetailsComponent } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-details/complaint-plan-details.component';
+import { StandardLevyRejectedChangesComponent } from './apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component';
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({
@@ -1191,6 +1192,8 @@ import { ComplaintPlanDetailsComponent } from './apollowebs/market-surveillance/
         FuelListTeamsComponent,
         FuelListTeamsCountyComponent,
         StandardLevyClosedFirmsComponent,
+        AddLaboratoryRequestComponent,
+        StandardLevyRejectedChangesComponent,
         AddLaboratoryRequestComponent,
         ApplicationsReceivedComponent,
         PermitsGrantedComponent,

@@ -363,6 +363,22 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var targetReason: String? = null
 
+    @Column(name = "CANCELLATION_DATE")
+    @Basic
+    var cancelDate: Timestamp? = null
+
+    @Column(name = "CANCEL_STATUS")
+    @Basic
+    var cancelStatus: String? = null
+
+    @Column(name = "CANCEL_REASON")
+    @Basic
+    var cancelReason: String? = null
+
+    @Column(name = "CANCEL_REFERENCE")
+    @Basic
+    var cancelReference: String? = null
+
     @Column(name = "DESCRIPTION")
     @Basic
     @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)

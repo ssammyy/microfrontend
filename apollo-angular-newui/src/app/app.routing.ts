@@ -524,6 +524,11 @@ import {
 import {
     SamplesSubmittedComponent
 } from "./apollowebs/quality-assurance/reports/samples-submitted/samples-submitted.component";
+} from "./apollowebs/quality-assurance/reports/smark/permits-granted/permits-granted.component";
+import {StandardLevyRejectedChangesComponent} from "./apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component";
+import {ComplaintPlanBatchListComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-batch-list/complaint-plan-batch-list.component';
+import {ComplaintPlanListComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-list/complaint-plan-list.component';
+import {ComplaintPlanDetailsComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-details/complaint-plan-details.component';
 
 export const routes: Routes = [
     {
@@ -1930,6 +1935,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: StandardLevyClosedFirmsComponent}],
     },
+    {
+        path: 'slRejectedEdits', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardLevyRejectedChangesComponent}],
+    },
+
 
     /****************MS COMPONENTS ENDS HERE**********************************/
 
