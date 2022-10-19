@@ -6648,11 +6648,10 @@ class QADaoServices(
         fmarkGeneratedStatus: Int
     ): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
-        permitRepo.findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusAndFmarkGenerated(
+        permitRepo.findByPermitTypeAndPaidStatusIsNotNull(
             permitType,
-            status,
-            fmarkGeneratedStatus
-        )
+
+            )
             ?.let { permitList ->
                 return permitList
             }
@@ -6696,6 +6695,7 @@ class QADaoServices(
 
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
+
     fun findReportAllSamplesSubmitted(
         user: UsersEntity,
         permitType: Long,
@@ -6713,9 +6713,12 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
-    fun listPermitsReports(permits: List<PermitApplicationsEntity>, map: ServiceMapsEntity): List<PermitEntityDto> {
+    fun listPermitsReports(
+        permits: List<PermitApplicationsEntity>,
+        map: ServiceMapsEntity
+    ): List<ReportPermitEntityDto> {
         return permits.map { p ->
-            PermitEntityDto(
+            ReportPermitEntityDto(
                 p.id,
                 p.attachedPlantId?.let {
                     commonDaoServices.findCompanyProfileWithID(
@@ -6755,15 +6758,28 @@ class QADaoServices(
                 p.permitType,
                 p.permitStatus,
                 p.versionNumber,
-                encryptedPermitId = jasyptStringEncryptor.encrypt(p.id.toString()),
-                encryptedUserId = jasyptStringEncryptor.encrypt(p.userId.toString())
-
+                jasyptStringEncryptor.encrypt(p.id.toString()),
+                jasyptStringEncryptor.encrypt(p.userId.toString()),
+                p.attachedPlantId?.let { findPlantDetails(it) }?.companyProfileId?.let {
+                    commonDaoServices.findCompanyProfileWithID(
+                        it
+                    )
+                }?.firmCategory,
+                p.attachedPlantId?.let { findPlantDetails(it) }?.companyProfileId?.let {
+                    commonDaoServices.findCompanyProfileWithID(
+                        it
+                    )
+                }?.firmCategory?.let { findFirmTypeById(it).firmType },
+                p.id?.let { invoiceMasterDetailsRepo.findByPermitId(it)?.totalAmount },
+                standardNumber = p.productStandard?.let { findStandardsByID(it).standardNumber },
+                standardTitle = p.productStandard?.let { findStandardsByID(it).standardTitle },
+                physicalAddress = p.attachedPlantId?.let { findPlantDetails(it) }?.physicalAddress,
+                telephoneNo = p.attachedPlantId?.let { findPlantDetails(it) }?.telephone,
+                email = p.attachedPlantId?.let { findPlantDetails(it) }?.emailAddress
             )
         }
+
     }
-
-
-
 
 
 }

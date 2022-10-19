@@ -256,7 +256,7 @@ interface VotesTally {
 
 }
 interface SampleSubmissionDTO {
-    fun getSSF_SUBMISSION_DATE(): Long?
+    fun getSSF_SUBMISSION_DATE(): String?
     fun getFIRM_NAME(): String?
     fun getPHYSICAL_ADDRESS(): String?
 
