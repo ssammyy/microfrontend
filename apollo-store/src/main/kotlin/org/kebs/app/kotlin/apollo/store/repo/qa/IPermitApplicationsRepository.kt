@@ -610,6 +610,7 @@ interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmission
     fun findByFuelInspectionId(fuelInspectionId: Long): QaSampleSubmissionEntity?
     fun findByFuelInspectionIdAndBsNumber(fuelInspectionId: Long, bsNumber: String): QaSampleSubmissionEntity?
     fun findByWorkplanGeneratedId(workPlanInspectionID: Long): QaSampleSubmissionEntity?
+    fun findByWorkplanGeneratedIdAndBsNumber(workPlanInspectionID: Long,bsNumber: String): QaSampleSubmissionEntity?
     fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
 }
 

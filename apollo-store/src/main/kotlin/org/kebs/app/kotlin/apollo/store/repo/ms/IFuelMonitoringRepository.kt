@@ -162,7 +162,8 @@ interface ISampleCollectionRepository : HazelcastRepository<MsSampleCollectionEn
 interface IMSSampleSubmissionRepository : HazelcastRepository<MsSampleSubmissionEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsSampleSubmissionEntity>
 
-    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): MsSampleSubmissionEntity?
+    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): List<MsSampleSubmissionEntity>?
+    fun findByWorkPlanGeneratedIDAndId(workPlanGeneratedID: Long,id: Long): MsSampleSubmissionEntity
 
     fun findByMsFuelInspectionId(msFuelInspectionId: Long): List<MsSampleSubmissionEntity>?
 

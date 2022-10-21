@@ -12,12 +12,12 @@ import {
   DestructionNotificationDto,
   FuelEntityRapidTestDto,
   InspectionInvestigationReportDto,
-  LaboratoryDto, LIMSFilesFoundDto, MsBroadProductCategory,
+  LaboratoryDto, LaboratoryEntityDto, LIMSFilesFoundDto, MsBroadProductCategory,
   MsDepartment,
   MsDivisionDetails, MsProducts, MsProductSubcategory,
-  MsRecommendationDto, MSRemarksDto, MSSSFPDFListDetailsDto,
+  MsRecommendationDto, MSRemarksDto, MSSSFLabResultsDto, MSSSFPDFListDetailsDto,
   MsStandardProductCategory,
-  PDFSaveComplianceStatusDto,
+  PDFSaveComplianceStatusDto, PredefinedResourcesRequired,
   PreliminaryReportDto,
   PreliminaryReportFinal,
   PreliminaryReportItemsDto,
@@ -26,7 +26,7 @@ import {
   SampleCollectionItemsDto,
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
-  SeizureDeclarationDto, SeizureDto,
+  SeizureDeclarationDto, SeizureDto, SeizureListDto,
   SSFSaveComplianceStatusDto,
   WorkPlanEntityDto,
   WorkPlanFeedBackDto,
@@ -71,11 +71,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   currDiv!: string;
   currDivLabel!: string;
   submitted = false;
+  addLabParamStatus = true;
   defaultPageSize = 20;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
   totalCount = 12;
+
+  totalCompliantValue = 0;
 
   addNewScheduleForm!: FormGroup;
   approveScheduleForm!: FormGroup;
@@ -126,6 +129,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSavePreliminaryReportParam: PreliminaryReportItemsDto;
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
   dataSaveDestructionNotification: DestructionNotificationDto;
+  laboratories: LaboratoryDto[] = [];
 
 
   dataSaveAssignOfficer: ComplaintAssignDto;
@@ -181,6 +185,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   supervisorTasks: any[];
   supervisorCharge = false;
   inspectionOfficer = false;
+
+  selectedLabResults: MSSSFLabResultsDto;
+  public scfParamSelected: number;
+  public ssfSelectedID: number;
+  public scfParamSelectedName: string;
+  public selectedSSFDetails: SampleSubmissionDto;
+  public ssfCountBSNumber: number;
+  public scfCountSSF: number;
 
   public settingsResourceRequierd = {
     selectMode: 'single',  // single|multi
@@ -306,6 +318,200 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       //   type: 'custom',
       //   renderComponent: ConsignmentStatusComponent
       // }
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsSeizedProducts = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        // {name: 'updateRecords', title: '<i class="btn btn-sm btn-primary">UPDATE</i>'}
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      marketTownCenter: {
+        title: 'Market Town Center',
+        type: 'string',
+        filter: false,
+      },
+      nameOfOutlet: {
+        title: 'Name Of Outlet',
+        type: 'string',
+        filter: false,
+      },
+      descriptionProductsSeized: {
+        title: 'Description Products Seized',
+        type: 'string',
+        filter: false,
+      },
+      brand: {
+        title: 'Brand',
+        type: 'string',
+        filter: false,
+      },
+      sector: {
+        title: 'Sector',
+        type: 'string',
+        filter: false,
+      },
+      reasonSeizure: {
+        title: 'Reason Seizure',
+        type: 'string',
+        filter: false,
+      },
+      nameSeizingOfficer: {
+        title: 'Name Seizing Officer',
+        type: 'string',
+        filter: false,
+      },
+      seizureSerial: {
+        title: 'Seizure Serial',
+        type: 'string',
+        filter: false,
+      },
+      quantity: {
+        title: 'Quantity',
+        type: 'string',
+        filter: false,
+      },
+      unit: {
+        title: 'Unit',
+        type: 'string',
+        filter: false,
+      },
+      estimatedCost: {
+        title: 'Estimated Cost',
+        type: 'string',
+        filter: false,
+      },
+      currentLocation: {
+        title: 'Current Location',
+        type: 'string',
+        filter: false,
+      },
+      productsDestruction: {
+        title: 'Products Destruction',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsSeizedProductsUpdate = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'updateRecords', title: '<i class="btn btn-sm btn-primary">UPDATE</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      marketTownCenter: {
+        title: 'Market Town Center',
+        type: 'string',
+        filter: false,
+      },
+      nameOfOutlet: {
+        title: 'Name Of Outlet',
+        type: 'string',
+        filter: false,
+      },
+      descriptionProductsSeized: {
+        title: 'Description Products Seized',
+        type: 'string',
+        filter: false,
+      },
+      brand: {
+        title: 'Brand',
+        type: 'string',
+        filter: false,
+      },
+      sector: {
+        title: 'Sector',
+        type: 'string',
+        filter: false,
+      },
+      reasonSeizure: {
+        title: 'Reason Seizure',
+        type: 'string',
+        filter: false,
+      },
+      nameSeizingOfficer: {
+        title: 'Name Seizing Officer',
+        type: 'string',
+        filter: false,
+      },
+      seizureSerial: {
+        title: 'Seizure Serial',
+        type: 'string',
+        filter: false,
+      },
+      quantity: {
+        title: 'Quantity',
+        type: 'string',
+        filter: false,
+      },
+      unit: {
+        title: 'Unit',
+        type: 'string',
+        filter: false,
+      },
+      estimatedCost: {
+        title: 'Estimated Cost',
+        type: 'string',
+        filter: false,
+      },
+      currentLocation: {
+        title: 'Current Location',
+        type: 'string',
+        filter: false,
+      },
+      productsDestruction: {
+        title: 'Products Destruction',
+        type: 'string',
+        filter: false,
+      },
     },
     pager: {
       display: true,
@@ -678,11 +884,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      institution: {
-        title: 'INSTITUTION',
-        type: 'string',
-        filter: false,
-      },
+      // institution: {
+      //   title: 'INSTITUTION',
+      //   type: 'string',
+      //   filter: false,
+      // },
       designation: {
         title: 'DESIGNATION',
         type: 'string',
@@ -787,6 +993,167 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       //   type: 'date',
       //   filter: false,
       // },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+
+  public settingsSampleSubmitted = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW SSF DETAILS</i>'},
+        // {name: 'addBSNumber', title: '<i class="btn btn-sm btn-primary">ADD BS NUMBER</i>'},
+        {name: 'viewLabResults', title: '<i class="btn btn-sm btn-primary">VIEW LAB RESULTS</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      nameProduct: {
+        title: 'PRODUCT BRAND NAME',
+        type: 'string',
+        filter: false,
+      },
+      fileRefNumber: {
+        title: 'FILE REF NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      disposal: {
+        title: 'DISPOSAL',
+        type: 'string',
+        filter: false,
+      },
+      bsNumber: {
+        title: 'BS NUMBER',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsSampleSubmittedAddBsNumber = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW SSF DETAILS</i>'},
+        {name: 'addBSNumber', title: '<i class="btn btn-sm btn-primary">ADD BS NUMBER</i>'},
+        // {name: 'viewLabResults', title: '<i class="btn btn-sm btn-primary">VIEW LAB RESULTS</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      nameProduct: {
+        title: 'PRODUCT BRAND NAME',
+        type: 'string',
+        filter: false,
+      },
+      fileRefNumber: {
+        title: 'FILE REF NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      disposal: {
+        title: 'DISPOSAL',
+        type: 'string',
+        filter: false,
+      },
+      bsNumber: {
+        title: 'BS NUMBER',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsSampleSubmittedUpdate = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'updateRecord', title: '<i  class="btn btn-sm btn-primary">UPDATE SSF DETAILS</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      nameProduct: {
+        title: 'PRODUCT BRAND NAME',
+        type: 'string',
+        filter: false,
+      },
+      fileRefNumber: {
+        title: 'FILE REF NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      disposal: {
+        title: 'DISPOSAL',
+        type: 'string',
+        filter: false,
+      },
+      bsNumber: {
+        title: 'BS NUMBER',
+        type: 'string',
+        filter: false,
+      },
     },
     pager: {
       display: true,
@@ -899,6 +1266,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       personMet: ['', Validators.required],
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
+      totalComplianceScore: ['', Validators.required],
       // remarks: ['', Validators.required],
     });
 
@@ -927,6 +1295,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     });
 
     this.dataReportParamForm = this.formBuilder.group({
+      id: null,
       typeBrandName: ['', Validators.required],
       localImport: ['', Validators.required],
       complianceInspectionParameter: ['', Validators.required],
@@ -954,7 +1323,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       unit: ['', Validators.required],
       estimatedCost: ['', Validators.required],
       currentLocation: ['', Validators.required],
-      productsDestruction: ['', Validators.required]
+      productsDestruction: ['', Validators.required],
     });
 
     this.sampleCollectForm = this.formBuilder.group({
@@ -979,23 +1348,24 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     });
 
     this.sampleSubmitForm = this.formBuilder.group({
+      id: null,
       nameProduct: ['', Validators.required],
       packaging: ['', Validators.required],
       labellingIdentification: ['', Validators.required],
       fileRefNumber: ['', Validators.required],
       referencesStandards: ['', Validators.required],
       sizeTestSample: ['', Validators.required],
-      sizeRefSample: ['', Validators.required],
+      sizeRefSample: null,
       condition: ['', Validators.required],
-      sampleReferences: ['', Validators.required],
+      sampleReferences: null,
       sendersName: ['', Validators.required],
       designation: ['', Validators.required],
       address: ['', Validators.required],
       sendersDate: ['', Validators.required],
-      receiversName: ['', Validators.required],
-      testChargesKsh: ['', Validators.required],
-      receiptLpoNumber: ['', Validators.required],
-      invoiceNumber: ['', Validators.required],
+      receiversName: null,
+      testChargesKsh: null,
+      receiptLpoNumber: null,
+      invoiceNumber: null,
       disposal: ['', Validators.required],
       remarks: ['', Validators.required],
       sampleCollectionNumber: null,
@@ -1003,12 +1373,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
 
     this.sampleSubmitParamsForm = this.formBuilder.group({
+      id: null,
       parameters: ['', Validators.required],
       laboratoryName: ['', Validators.required],
     });
 
     this.sampleSubmitBSNumberForm = this.formBuilder.group({
       bsNumber: ['', Validators.required],
+      ssfID: ['', Validators.required],
       submittedDate: ['', Validators.required],
       remarks: ['', Validators.required],
     });
@@ -1210,6 +1582,20 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       );
     }
 
+
+    if (this.workPlanInspection?.sampleSubmittedStatus === false && this.workPlanInspection?.scfDocId !== null) {
+      this.msService.msLaboratoriesListDetails().subscribe(
+          (data1: LaboratoryEntityDto[]) => {
+            this.laboratories = data1;
+            console.log(data1);
+          },
+          error => {
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+
     switch (this.workPlanInspection?.preliminaryReport?.approvedStatusHodFinal) {
       case true:
         this.msService.MsRecommendationListDetails().subscribe(
@@ -1351,7 +1737,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails',
+    const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails', 'finalLabComplianceStatus',
       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
@@ -1359,7 +1745,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       'addNewScheduleDetails'];
 
     // tslint:disable-next-line:max-line-length
-    const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS',
+    const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
       'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/REJECT FINAL REPORT', 'APPROVE/REJECT FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
       , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
@@ -1379,11 +1765,77 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   updateDataReport() {
     if (this.workPlanInspection?.dataReportStatus) {
       this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
+      this.dataSaveDataReportParamList = [];
       for (let prod = 0; prod < this.workPlanInspection?.dataReportDto?.productsList.length; prod++) {
         this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
       }
     }
   }
+
+  public onCustomSSFAction(event: any): void {
+    switch (event.action) {
+      case 'viewRecord':
+        this.viewSSFRecord(event.data);
+        break;
+      case 'updateRecord':
+        this.updateSSFRecord(event.data);
+        break;
+      case 'addBSNumber':
+        this.addSSFBsNumberRecord(event.data);
+        break;
+      case 'viewLabResults':
+        this.viewSSFLabResultsRecord(event.data);
+        break;
+    }
+  }
+
+  viewSSFLabResultsRecord(data: SampleSubmissionDto) {
+
+    this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === data.bsNumber);
+
+    window.$('#myModal2').modal('hide');
+    // window.$('.modal').remove();
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+    window.$('#sampleLabResultsModal').modal('show');
+  }
+
+  addSSFBsNumberRecord(data: SampleSubmissionDto) {
+    if (data.bsNumber !== null && this.workPlanInspection?.bsNumberStatus) {
+      this.msService.showError('BS Number Already Added And Pushed To LIMS');
+    } else {
+      this.currDivLabel = `ADD BS NUMBER FOR FILE REFERENCE NUMBER # ${data.fileRefNumber}`;
+      this.currDiv = 'addBsNumber';
+      this.sampleSubmitBSNumberForm.reset();
+      this.ssfSelectedID = data.id;
+      window.$('#myModal1').modal('show');
+    }
+  }
+
+  viewSSFRecord(data: SampleSubmissionDto) {
+    this.sampleSubmitForm.patchValue(data);
+    const paramDetails = data.parametersList;
+    this.dataSaveSampleSubmitParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    }
+    this.sampleSubmitForm.disable();
+    this.addLabParamStatus = false;
+    window.$('#sampleSubmitModal').modal('show');
+  }
+
+  updateSSFRecord(data: SampleSubmissionDto) {
+    this.sampleSubmitForm.patchValue(data);
+    const paramDetails = data.parametersList;
+    this.dataSaveSampleSubmitParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    }
+    this.sampleSubmitForm.enable();
+    this.addLabParamStatus = true;
+    window.$('#sampleSubmitModal').modal('show');
+  }
+
 
 
   viewLabResultsPdfFile(fileName: string, bsNumber: string, applicationType: string): void {
@@ -1741,6 +2193,22 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   onClickEndOnsiteActivities() {
+      this.msService.showSuccessWith2Message('Are you sure your want to End Onsite Activities?', 'You won\'t be able to revert back/Update Onsite Details after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and  update File(s) Before Saving', 'ONSITE ACTIVITIES ENDED SUCCESSFUL', () => {
+            this.endOnsiteActivities();
+          });
+  }
+
+  onClickSaveEndSSFAddingBsNumber() {
+    this.msService.showSuccessWith2Message('Are you sure your want to End BS Number Adding?', 'You won\'t be able to revert Update BS Number(s) after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and  update Bs Number Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          this.endSSFAddingBsNumber();
+        });
+  }
+
+  endOnsiteActivities() {
     // if (valid) {
     this.SpinnerService.show();
     this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
@@ -1752,7 +2220,30 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.workPlanInspection = data;
           console.log(data);
           this.SpinnerService.hide();
-          this.msService.showSuccess('WORK-PLAN ON-SITE DETAILS SAVED SUCCESSFULLY');
+          this.msService.showSuccess('SCHEDULE ON-SITE DETAILS SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    // }
+  }
+
+  endSSFAddingBsNumber() {
+    // if (valid) {
+    this.SpinnerService.show();
+    this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+    this.msService.msWorkPlanScheduleDetailsEndSSFAddingBsNumber(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('BS NUMBER ADDING ENDED SUCCESSFUL');
         },
         error => {
           this.SpinnerService.hide();
@@ -1947,13 +2438,45 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickEndSampleSubmitted() {
+    this.msService.showSuccessWith2Message('Are you sure your want to End Sample Submission?', 'You won\'t be able to revert back after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
+          this.endSampleSubmitted();
+        });
+  }
+
+  endSampleSubmitted() {
+    this.SpinnerService.show();
+    this.msService.msWorkPlanScheduleEndSampleSubmitted(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('SAMPLE SUBMISSION ENDED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+
   onClickSaveSampleSubmitted() {
     this.submitted = true;
-
+    let valuesToShow = '\'ADD SAMPLE SUBMISSION\'';
+    if (this.sampleSubmitForm.get('id').value !== null) {
+      valuesToShow = '\'UPDATE SSF DETAILS\'';
+    }
     if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can click the \'ADD SAMPLE SUBMISSION\' button to updated the Details before saving', 'SAMPLE SUBMISSION ADDED SUCCESSFUL', () => {
+          `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
     }
@@ -1987,6 +2510,17 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveBSNumber(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'ADD BS NUMBER\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+            this.saveBSNumber(valid);
+          });
+    }
+  }
+
+  saveBSNumber(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmitBSNumber = {...this.dataSaveSampleSubmitBSNumber, ...this.sampleSubmitBSNumberForm.value};
@@ -2012,10 +2546,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataPDFSaveComplianceStatus = {...this.dataPDFSaveComplianceStatus, ...this.pdfSaveComplianceStatusForm.value};
-      this.dataPDFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
-      this.dataPDFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
+      this.dataPDFSaveComplianceStatus.ssfID = this.selectedLabResults.ssfResultsList.sffId;
+      this.dataPDFSaveComplianceStatus.bsNumber = this.selectedLabResults.ssfResultsList.bsNumber;
       this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      if (this.workPlanInspection.sampleLabResults.savedPDFFiles.length === 0) {
+      if (this.selectedLabResults.savedPDFFiles.length === 0) {
         this.msService.msWorkPlanInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
             this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
             (data: any) => {
@@ -2031,7 +2565,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             },
         );
       } else {
-        for (const savedPdf of this.workPlanInspection.sampleLabResults.savedPDFFiles) {
+        for (const savedPdf of this.selectedLabResults.savedPDFFiles) {
           if (savedPdf.pdfName !== this.selectedPDFFileName) {
             this.msService.msWorkPlanInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
                 this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
@@ -2056,14 +2590,32 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickCloseSSF() {
+    this.sampleSubmitForm.reset();
+    this.sampleSubmitForm.enable();
+    this.addLabParamStatus = true;
+    this.dataSaveSampleSubmitParamList = [];
+  }
+
   onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'ADD FINAL LAB RESULTS STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+            this.saveSSFLabResultsComplianceStatus(valid);
+          });
+    }
+  }
+
+  saveSSFLabResultsComplianceStatus(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
-      this.dataSSFSaveComplianceStatus.ssfID = this.workPlanInspection.sampleLabResults.ssfResultsList.sffId;
-      this.dataSSFSaveComplianceStatus.bsNumber = this.workPlanInspection.sampleLabResults.ssfResultsList.bsNumber;
+      this.dataSSFSaveComplianceStatus.ssfID = 0;
+      this.dataSSFSaveComplianceStatus.bsNumber = 'EMPTY VALUES';
       // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
-      this.msService.msWorkPlanInspectionScheduledSaveSSFComplianceStatus(
+      this.msService.msWorkPlanInspectionScheduledSaveFinalSSFComplianceStatus(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
           this.dataSSFSaveComplianceStatus,
@@ -2072,7 +2624,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('LAB RESULTS COMPLIANCE STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('SCHEDULE COMPLIANCE STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -2133,6 +2685,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
   }
 
+  updateSeizedDetails(data: SeizureDto) {
+    this.seizureDeclarationForm.patchValue(data);
+    window.$('#seizureDeclarationModal').modal('show');
+  }
+
   viewLIMSPDFSavedRemarks(data: MSSSFPDFListDetailsDto) {
     console.log('TEST 101 REF NO VIEW FILE: ' + data.pdfSavedId);
     this.selectedPDFFileName = data.pdfName;
@@ -2141,8 +2698,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.pdfSaveComplianceStatusForm.patchValue(data);
 
     window.$('#myModal1').modal('show');
-    // this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
-    // this.router.navigate([`/epra/workPlanInspection/details/`,data.referenceNumber]);
   }
 
   viewSavedRemarks(data: MSRemarksDto) {
@@ -2169,10 +2724,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
     this.currDiv = 'pdfSaveCompliance';
 
-    window.$('#myModal1').modal('show');
-    // $('#myModal1').modal('show');
-    // this.openModalAddDetails('assignOfficer')
-    // this.router.navigate([`/epra/workPlanInspection/details/`,data.referenceNumber]);
+    window.$('#myModal2').modal('show');
   }
 
   public onCustomLIMSPDFAction(event: any, bsNumber: string): void {
@@ -2193,6 +2745,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         break;
       case 'viewPDFRemarks':
         this.viewLIMSPDFSavedRemarks(event.data);
+        break;
+    }
+  }
+
+  public onCustomSEIZEDAction(event: any): void {
+    switch (event.action) {
+      case 'updateRecords':
+        this.updateSeizedDetails(event.data);
         break;
     }
   }
@@ -2254,7 +2814,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.dataReportParamForm?.get('complianceInspectionParameter')?.reset();
     this.dataReportParamForm?.get('measurementsResults')?.reset();
     this.dataReportParamForm?.get('remarks')?.reset();
-    // this.sta10FormA.reset();
+    const compliantCount: number = this.dataSaveDataReportParamList.filter(s => s.complianceInspectionParameter === 100).length;
+    const totalCount: number = this.dataSaveDataReportParamList.length;
+
+    this.totalCompliantValue = (compliantCount / totalCount) * 100;
+    console.log(compliantCount);
+    console.log(totalCount);
+    console.log(this.totalCompliantValue);
   }
 
   onClickAddDataInspectorOfficer() {
@@ -2296,7 +2862,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.dataSaveSampleSubmitParam = this.sampleSubmitParamsForm.value;
     this.dataSaveSampleSubmitParamList.push(this.dataSaveSampleSubmitParam);
     this.sampleSubmitParamsForm?.get('parameters')?.reset();
-    this.sampleSubmitParamsForm?.get('laboratoryName')?.reset();
+    // this.sampleSubmitParamsForm?.get('laboratoryName')?.reset();
   }
 
   // Remove Form repeater values
@@ -2307,6 +2873,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     } else {
       this.dataSaveDataReportParamList.splice(index, index);
     }
+
+    const compliantCount: number = this.dataSaveDataReportParamList.filter(s => s.complianceInspectionParameter === 100).length;
+    const totalCount: number = this.dataSaveDataReportParamList.length;
+
+    this.totalCompliantValue = (compliantCount / totalCount) * 100;
+    console.log(compliantCount);
+    console.log(totalCount);
+    console.log(this.totalCompliantValue);
   }
 
   removePreliminaryReportParam(index) {
@@ -2365,6 +2939,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           'You can click the \'ADD DATA REPORT\' button to update details Before Saving', 'DATA REPORT DETAILS SAVED SUCCESSFUL', () => {
             this.saveDataReport();
           });
+    } else {
+      this.msService.showError('Parameter List Is Empty');
     }
   }
 
@@ -2394,31 +2970,59 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickEndSeizureDeclaration() {
+      this.msService.showSuccessWith2Message('Are you sure your want to End Seizure Adding Of Goods?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
+            this.endSeizureDeclaration();
+          });
+  }
+
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
-    if (this.dataSaveSeizureDeclarationList.length !== 0) {
+    if (this.seizureDeclarationForm.valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
-            this.saveDataReport();
+            this.saveSeizureDeclaration();
           });
 
     }
   }
 
-  SaveSeizureDeclaration() {
+  saveSeizureDeclaration() {
     this.SpinnerService.show();
     this.dataSaveSeizureDeclaration = {...this.dataSaveSeizureDeclaration, ...this.seizureDeclarationForm.value};
     this.msService.msWorkPlanScheduleSaveSeizureDeclaration(
         this.workPlanInspection.batchDetails.referenceNumber,
         this.workPlanInspection.referenceNumber,
-        this.dataSaveSeizureDeclarationList,
+        this.dataSaveSeizureDeclaration,
     ).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
           console.log(data);
           this.SpinnerService.hide();
           this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  endSeizureDeclaration() {
+    this.SpinnerService.show();
+    this.msService.msWorkPlanScheduleEndSeizureDeclaration(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('SEIZURE AND DECLARATION ENDED SUCCESSFULLY');
         },
         error => {
           this.SpinnerService.hide();
