@@ -276,10 +276,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         fmarkGenerated: Int
     ): List<PermitApplicationsEntity>?
 
-    fun findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusAndFmarkGenerated(
-        permitType: Long,
-        permitAwardStatus: Int,
-        fmarkGenerated: Int
+    fun findByPermitTypeAndPaidStatusIsNotNull(
+        permitType: Long
     ): List<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(
@@ -612,6 +610,7 @@ interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmission
     fun findByFuelInspectionId(fuelInspectionId: Long): QaSampleSubmissionEntity?
     fun findByFuelInspectionIdAndBsNumber(fuelInspectionId: Long, bsNumber: String): QaSampleSubmissionEntity?
     fun findByWorkplanGeneratedId(workPlanInspectionID: Long): QaSampleSubmissionEntity?
+    fun findByWorkplanGeneratedIdAndBsNumber(workPlanInspectionID: Long,bsNumber: String): QaSampleSubmissionEntity?
     fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
 }
 

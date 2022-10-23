@@ -89,6 +89,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var compliantStatus: Int? = null
 
+    @Column(name = "WORK_PLAN_COMPLIANT_STATUS")
+    @Basic
+    var workPlanCompliantStatus: Int? = null
+
     @Column(name = "SUBMITTED_FOR_APPROVAL_STATUS")
     @Basic
     var submittedForApprovalStatus: Int? = null

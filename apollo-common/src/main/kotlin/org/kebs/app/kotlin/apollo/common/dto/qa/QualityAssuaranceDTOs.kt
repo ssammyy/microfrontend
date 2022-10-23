@@ -407,6 +407,44 @@ data class PermitEntityDto(
 
     )
 
+data class ReportPermitEntityDto(
+    var id: Long? = null,
+    var firmName: String? = null,
+    var permitRefNumber: String? = null,
+    var productName: String? = null,
+    var tradeMark: String? = null,
+    var awardedPermitNumber: String? = null,
+    var dateOfIssue: Date? = null,
+    var dateOfExpiry: Date? = null,
+    var permitStatus: String? = null,
+    var userId: Long? = null,
+    var createdOn: Timestamp? = null,
+    var county: String? = null,
+    var town: String? = null,
+    var region: String? = null,
+    var divisionValue: String? = null,
+    var sectionValue: String? = null,
+    var permitAwardStatus: Boolean? = null,
+    var permitExpiredStatus: Boolean? = null,
+    var taskID: Long? = null,
+    var companyId: Long? = null,
+    var permitType: Long? = null,
+    var processStatusID: Long? = null,
+    var versionNumber: Long? = null,
+    var encryptedPermitId: String? = null,
+    var encryptedUserId: String? = null,
+    var firmTypeID: Long? = null,
+    var firmTypeName: String? = null,
+    var invoiceAmount: BigDecimal? = BigDecimal.ZERO,
+    var standardNumber: String? = null,
+    var standardTitle: String? = null,
+    var physicalAddress: String? = null,
+    var telephoneNo: String? = null,
+    var email: String? = null,
+
+
+    )
+
 data class PermitDetailsDto(
     var Id: Long? = null,
     var permitNumber: String? = null,

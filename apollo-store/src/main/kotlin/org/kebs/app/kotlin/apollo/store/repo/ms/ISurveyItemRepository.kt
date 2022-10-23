@@ -249,6 +249,15 @@ interface IMSSeizureDeclarationRepository : HazelcastRepository<MsSeizureDeclara
 }
 
 @Repository
+interface IMsSeizureRepository : HazelcastRepository<MsSeizureEntity, Long> {
+    override fun findAll( pageable: Pageable): Page<MsSeizureEntity>
+
+    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): List<MsSeizureEntity>?
+//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
+//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
+}
+
+@Repository
 interface IDataReportRepository : HazelcastRepository<MsDataReportEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsDataReportEntity>
 

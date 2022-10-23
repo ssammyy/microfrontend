@@ -609,6 +609,13 @@ data class StandardProductCategoryEntityDto(
     var status: Boolean? = null
 )
 
+data class LaboratoryEntityDto(
+    var id: Long? = null,
+    var labName: String? = null,
+    var description: String? = null,
+    var status: Boolean? = null
+)
+
 data class PredefinedResourcesRequiredEntityDto(
     var id: Long? = null,
     var resourceName: String? = null,

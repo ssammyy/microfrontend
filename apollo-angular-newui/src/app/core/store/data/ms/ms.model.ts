@@ -194,7 +194,7 @@ export class WorkPlanEntityDto {
     productCategory: number;
     product: number;
     productSubCategory: number;
-    resourcesRequired: string;
+    resourcesRequired: PredefinedResourcesRequired[];
     budget: string;
     remarks: string;
 }
@@ -455,7 +455,7 @@ export class WorkPlanInspectionDto {
     officerName: string;
     nameActivity: string;
     targetedProducts: string;
-    resourcesRequired: string;
+    resourcesRequired: PredefinedResourcesRequired[];
     budget: string;
     approvedOn: Date;
     approvedStatus: boolean;
@@ -535,12 +535,12 @@ export class WorkPlanInspectionDto {
     remarksDetails: MSRemarksDto[];
     workPlanFiles: WorkPlanFilesFoundDto[];
     chargeSheet: ChargeSheetDto;
-    seizureDeclarationDto: SeizureDeclarationDto;
+    seizureDeclarationDto: SeizureDto[];
     inspectionInvestigationDto: InspectionInvestigationReportDto;
     dataReportDto: DataReportDto;
     sampleCollected: SampleCollectionDto;
-    sampleSubmitted: SampleSubmissionDto;
-    sampleLabResults: MSSSFLabResultsDto;
+    sampleSubmitted: SampleSubmissionDto[];
+    sampleLabResults: MSSSFLabResultsDto[];
     compliantStatusAdded: boolean;
     destructionRecommended: boolean;
     finalReportGenerated: boolean;
@@ -552,6 +552,8 @@ export class WorkPlanInspectionDto {
     updateWorkPlan: WorkPlanEntityDto;
     updatedStatus: Boolean;
     resubmitStatus: Boolean;
+    bsNumberCountAdded: number;
+    analysisLabCountDone: number;
 }
 
 export class CountryListDto {
@@ -596,6 +598,36 @@ export class SeizureDeclarationDto {
     remarks: string;
 }
 
+
+export class SeizureListDto {
+    seizureList: SeizureDto[];
+}
+
+export class LaboratoryEntityDto {
+        id: number;
+        labName: string;
+        description: string;
+        status: boolean;
+}
+
+export class SeizureDto {
+    id: number;
+    marketTownCenter: string;
+    nameOfOutlet: string;
+    descriptionProductsSeized: string;
+    brand: string;
+    sector: string;
+    reasonSeizure: string;
+    nameSeizingOfficer: string;
+    seizureSerial: string;
+    quantity: string;
+    unit: string;
+    estimatedCost: string;
+    currentLocation: string;
+    productsDestruction: string;
+    remarks: string;
+}
+
 export class DataReportDto {
     id: number;
     referenceNumber: string;
@@ -610,6 +642,7 @@ export class DataReportDto {
     personMet: string;
     summaryFindingsActionsTaken: string;
     finalActionSeizedGoods: string;
+    totalComplianceScore: string;
     remarks: string;
     productsList: DataReportParamsDto[];
 }
@@ -992,6 +1025,7 @@ export class SampleSubmissionDto {
 }
 
 export class SampleSubmissionItemsDto {
+    id: number;
     parameters: string;
     laboratoryName: string;
 }

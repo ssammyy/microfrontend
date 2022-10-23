@@ -8,7 +8,7 @@ import {
   MsDepartment,
   MsDivisionDetails,
   MsProducts, MsProductSubcategory,
-  MsStandardProductCategory, WorkPlanEntityDto,
+  MsStandardProductCategory, PredefinedResourcesRequired, WorkPlanEntityDto,
   WorkPlanListDto,
   WorkPlanScheduleListDetailsDto,
 } from '../../../../core/store/data/ms/ms.model';
@@ -147,6 +147,11 @@ export class WorkPlanListComponent implements OnInit {
   loadedData!: WorkPlanScheduleListDetailsDto;
   dataSaveWorkPlan: WorkPlanEntityDto;
 
+  addResourceRequiredForm!: FormGroup;
+  predefinedResourcesRequired!: PredefinedResourcesRequired[];
+  dataSaveResourcesRequired: PredefinedResourcesRequired;
+  dataSaveResourcesRequiredList: PredefinedResourcesRequired[] = [];
+
 
   constructor(private store$: Store<any>,
               // private dialog: MatDialog,
@@ -176,6 +181,10 @@ export class WorkPlanListComponent implements OnInit {
         },
     );
 
+    this.addResourceRequiredForm = this.formBuilder.group({
+      resourceName: ['', Validators.required],
+    });
+
     this.addNewScheduleForm = this.formBuilder.group({
       complaintDepartment: ['', Validators.required],
       divisionId: ['', Validators.required],
@@ -195,6 +204,10 @@ export class WorkPlanListComponent implements OnInit {
     });
   }
 
+  get formAddResourceRequiredForm(): any {
+    return this.addResourceRequiredForm.controls;
+  }
+
   private loadData(page: number, records: number, referenceNumber: string, routeTake: string): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
@@ -207,6 +220,16 @@ export class WorkPlanListComponent implements OnInit {
 
           switch (this.loadedData.createdWorkPlan.batchClosed) {
             case false:
+              this.msService.msPredefinedResourcesRequiredListDetails().subscribe(
+                  (data1: PredefinedResourcesRequired[]) => {
+                    this.predefinedResourcesRequired = data1;
+                    console.log(data1);
+                  },
+                  error => {
+                    console.log(error);
+                    this.msService.showError('AN ERROR OCCURRED');
+                  },
+              );
               this.msService.msDepartmentListDetails().subscribe(
                   (dataDep: MsDepartment[]) => {
                     this.msDepartments = dataDep;
@@ -327,6 +350,23 @@ export class WorkPlanListComponent implements OnInit {
 
   get formNewScheduleForm(): any {
     return this.addNewScheduleForm.controls;
+  }
+
+  onClickAddResource() {
+    this.dataSaveResourcesRequired = this.addResourceRequiredForm.value;
+    console.log(this.dataSaveResourcesRequired);
+    this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+    this.addResourceRequiredForm?.get('resourceName')?.reset();
+  }
+
+  // Remove Form repeater values
+  removeDataResource(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveResourcesRequiredList.splice(index, 1);
+    } else {
+      this.dataSaveResourcesRequiredList.splice(index, index);
+    }
   }
 
 
@@ -481,12 +521,24 @@ export class WorkPlanListComponent implements OnInit {
 
   onClickSaveWorkPlanScheduled() {
     this.submitted = true;
+    if (this.addNewScheduleForm.valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'ADD NEW WORK-PLAN FILE\' button to update details Before Saving', 'COMPLAINT SCHEDULE DETAILS SAVED SUCCESSFUL', () => {
+            this.saveWorkPlanScheduled();
+          });
+    }
+  }
+
+  saveWorkPlanScheduled() {
+    this.submitted = true;
     if (this.addNewScheduleForm.invalid) {
       return;
     }
     if (this.addNewScheduleForm.valid) {
       this.SpinnerService.show();
       this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
+      this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;
       // tslint:disable-next-line:max-line-length
       this.msService.msAddWorkPlanScheduleDetails(this.loadedData.createdWorkPlan.referenceNumber, this.dataSaveWorkPlan).subscribe(
           (data: any) => {

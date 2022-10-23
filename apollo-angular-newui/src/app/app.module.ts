@@ -384,11 +384,6 @@ import {StandardLevyActiveFirmsComponent} from './apollowebs/standards-levy/stan
 import {StandardLevyDormantFirmsComponent} from './apollowebs/standards-levy/standard-levy-dormant-firms/standard-levy-dormant-firms.component';
 import {StandardLevyClosedFirmsComponent} from './apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component';
 import {AddLaboratoryRequestComponent} from './apollowebs/di/view-single-consignment-document/view-inspection-details/ssf-details-form/add-laboratory-request/add-laboratory-request.component';
-import {ApplicationsReceivedComponent} from './apollowebs/quality-assurance/reports/smark/applications-received/applications-received.component';
-import {PermitsGrantedComponent} from './apollowebs/quality-assurance/reports/smark/permits-granted/permits-granted.component';
-import {PermitsRenewedComponent} from './apollowebs/quality-assurance/reports/smark/permits-renewed/permits-renewed.component';
-import {SamplesSubmittedComponent} from './apollowebs/quality-assurance/reports/smark/samples-submitted/samples-submitted.component';
-import {PermitsDeferredComponent} from './apollowebs/quality-assurance/reports/smark/permits-deferred/permits-deferred.component';
 import {ComplaintPlanBatchListComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-batch-list/complaint-plan-batch-list.component';
 import {ComplaintPlanListComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-list/complaint-plan-list.component';
 import {ComplaintPlanDetailsComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-details/complaint-plan-details.component';
@@ -404,7 +399,11 @@ import {GenerateManifestReportComponent} from './apollowebs/di/other-documents/m
 import {GenerateGeneralReportComponent} from './apollowebs/certificates/general-certificates/generate-general-report/generate-general-report.component';
 import {GenerateCorReportComponent} from './apollowebs/certificates/cor-certificates/generate-cor-report/generate-cor-report.component';
 import {GenerateCDReportComponent} from './apollowebs/di/consignment-document-list/generate-cdreport/generate-cdreport.component';
-
+import { ApplicationsReceivedComponent } from './apollowebs/quality-assurance/reports/applications-received/applications-received.component';
+import { PermitsGrantedComponent } from './apollowebs/quality-assurance/reports/permits-granted/permits-granted.component';
+import { PermitsRenewedComponent } from './apollowebs/quality-assurance/reports/permits-renewed/permits-renewed.component';
+import { SamplesSubmittedComponent } from './apollowebs/quality-assurance/reports/samples-submitted/samples-submitted.component';
+import { PermitsDeferredComponent } from './apollowebs/quality-assurance/reports/permits-deferred/permits-deferred.component';
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({

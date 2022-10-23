@@ -420,6 +420,23 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '',
+        title: 'Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['QA_OFFICER_READ'],
+        collapse: 'reports',
+        children: [
+            {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
+            {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
+            {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
+            {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
+            {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
+
+
+        ],
+    },
+    {
+        path: '',
         title: 'Company Edits',
         type: 'sub',
         icontype: 'receipt',
@@ -440,7 +457,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/complaint',
-        title: 'MS COMPLAINTS',
+        title: 'COMPLAINTS',
         type: 'link',
         collapse: 'complaint',
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
@@ -448,7 +465,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/workPlan',
-        title: 'MS WORK-PLAN',
+        title: 'WORK-PLAN SCHEDULE(S)',
         type: 'link',
         collapse: 'workPlan',
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
@@ -456,7 +473,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/complaintPlan',
-        title: 'MS COMPLAINT PLAN',
+        title: 'COMPLAINT SCHEDULE(S)',
         type: 'link',
         collapse: 'complaintPlan',
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],

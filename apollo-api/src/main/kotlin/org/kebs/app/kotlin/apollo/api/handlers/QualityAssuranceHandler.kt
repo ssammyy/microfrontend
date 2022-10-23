@@ -2142,8 +2142,7 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID =req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             var permit = qaDaoServices.findPermitBYUserIDAndId(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
@@ -3462,15 +3461,13 @@ class QualityAssuranceHandler(
             val permit = dto.permitRefNumber?.let { qaDaoServices.findPermitWithPermitRefNumberLatest(it) }
 
             //Pass invoice Dto to Sage
-            val permitType =
-                qaDaoServices.findPermitType(permit?.permitType ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
+            val permitType = qaDaoServices.findPermitType(permit?.permitType ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
 
 
             //Add created invoice consolidated id to my batch id to be submitted
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             with(newBatchInvoiceDto) {
-                batchID =
-                    batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID =batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
             //submit to staging invoices
@@ -3690,13 +3687,15 @@ class QualityAssuranceHandler(
             val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
 
-            var permitListAllApplications: List<PermitApplicationsEntity>? = null
+            var permitListAllApplications: List<ReportPermitEntityDto>? = null
 
-            permitListAllApplications = qaDaoServices.findReportAllPermitWithNoFmarkGenerated(
-                loggedInUser,
-                permitTypeID,
-                map.activeStatus,
-                map.inactiveStatus
+            permitListAllApplications = qaDaoServices.listPermitsReports(
+                qaDaoServices.findReportAllPermitWithNoFmarkGenerated(
+                    loggedInUser,
+                    permitTypeID,
+                    map.activeStatus,
+                    map.inactiveStatus
+                ), map
             )
 
             return ok().body(permitListAllApplications)
@@ -3718,15 +3717,17 @@ class QualityAssuranceHandler(
             val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
 
-            var permitListAllApplications: List<PermitEntityDto>? = null
+            var permitListAllApplications: List<ReportPermitEntityDto>? = null
 
 
-            permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findReportAllAwardedPermits(
-                loggedInUser,
-                permitTypeID,
-                map.activeStatus,
-                map.inactiveStatus
-            ),map)
+            permitListAllApplications = qaDaoServices.listPermitsReports(
+                qaDaoServices.findReportAllAwardedPermits(
+                    loggedInUser,
+                    permitTypeID,
+                    map.activeStatus,
+                    map.inactiveStatus
+                ), map
+            )
 
             return ok().body(permitListAllApplications)
 
@@ -3749,11 +3750,13 @@ class QualityAssuranceHandler(
 
             var permitListAllApplications: List<PermitEntityDto>? = null
 
-            permitListAllApplications =  qaDaoServices.listPermits(qaDaoServices.findReportAllRenewedPermits(
-                loggedInUser,
-                permitTypeID,
-                map.activeStatus,
-                map.inactiveStatus),map
+            permitListAllApplications = qaDaoServices.listPermits(
+                qaDaoServices.findReportAllRenewedPermits(
+                    loggedInUser,
+                    permitTypeID,
+                    map.activeStatus,
+                    map.inactiveStatus
+                ), map
             )
 
             return ok().body(permitListAllApplications)
