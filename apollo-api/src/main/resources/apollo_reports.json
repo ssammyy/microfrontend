@@ -1,0 +1,110 @@
+{
+  "reports": {
+    "manifest_report": {
+      "base_query": "DAT_KEBS_MANIFEST_DETAILS md",
+      "filters": {
+        "date__range": "md.EXPECTED_DATE",
+        "manifest": "md.MANIFEST_NUMBER",
+        "bill_number": "md.TD_BILL_CODE",
+        "importer": "md.CONSIGNEE_PIN_NUMBER"
+      },
+      "fields": {
+        "MANIFEST_NUMBER": "MANIFEST NUMBER",
+        "VOYAGE_NUMBER": "VOYAGE NUMBER",
+        "EXPECTED_DATE": "DATE of ARRIVAL",
+        "CONSIGNEE_BUSINESS_NAME": "IMPORTER NAME",
+        "CONSIGNOR_BUSINESS_NAME": "EXPORTER NAME",
+        "VOLUME": "QUANTITY",
+        "CONSIGNOR_COUNTRY_CODE": "COUNTRY OF ORIGIN/SUPPLY",
+        "TD_BILL_CODE": "BILL OF LANDING",
+        "PLACE_OF_LOADING": "STATION OF CLEARANCE",
+        "PLACE_OF_DELIVERY": "PORT OF DESTINATION",
+        "CONSIGNEE_PIN_NUMBER": "IMPORTER PIN",
+        "CONSIGNOR_PIN_NUMBER": "EXPORTER PIN"
+      }
+    },
+    "cor_report": {
+      "base_query": "DAT_KEBS_CORS_BAK cb",
+      "filters": {
+        "chassis": "md.CHASIS_NUMBER",
+        "country": "md.COUNTRY_OF_SUPPLY",
+        "model": "cb.MODEL",
+        "date__range": "cb.COR_ISSUE_DATE"
+      },
+      "fields": {
+        "cb.COR_NUMBER": "COR NO.",
+        "cb.COR_ISSUE_DATE": "ISSUE DATE",
+        "cb.COUNTRY_OF_SUPPLY": "Country of Supply",
+        "cb.INSPECTION_CENTER": "Inspection Center",
+        "cb.APPLICATION_BOOKING_DATE": "Application Date",
+        "cb.INSPECTION_DATE": "Inspection Date",
+        "cb.UCR_NUMBER": "UCR NO.",
+        "cb.MAKE": "Make",
+        "cb.MODEL": "Model",
+        "cb.CHASIS_NUMBER": "Chassis No.",
+        "cb.ENGINE_NUMBER": "Engine Number",
+        "cb.ENGINE_CAPACITY": "Engine Capacity",
+        "cb.YEAR_OF_MANUFACTURE": "Year of Manufacture",
+        "cb.YEAR_OF_FIRST_REGISTRATION": "Year of First Reg.",
+        "cb.INSPECTION_MILEAGE": "Mileage",
+        "cb.UNITS_OF_MILEAGE": "Mileage Unit",
+        "cb.INSPECTION_REMARKS": "Remarks"
+      }
+    },
+    "coc_report": {
+      "base_query": "DAT_KEBS_COC_ITEMS citm left join DAT_KEBS_COCS c on (citm.COC_ID=c.ID)",
+      "filters": {
+        "hs_code": "citm.SHIPMENT_LINE_HSCODE",
+        "country": "c.COUNTRY_OF_SUPPLY",
+        "coc": "c.COC_NUMBER",
+        "assigned_to": "cdd.ASSIGNED_INSPECTION_OFFICER",
+        "assigned_by": "cdd.ASSIGNER",
+        "line_number": "citm.SHIPMENT_LINE_NUMBER",
+        "date__range": "cb.COR_ISSUE_DATE"
+      },
+      "fields": {
+        "c.IDF_NUMBER": "IDF NUMBER",
+        "c.RFC_DATE": "RFC DATE",
+        "c.COC_ISSUE_DATE": "ISSUE DATE",
+        "c.COC_NUMBER": "COC No.",
+        "c.IS_CLEAN": "Compliant",
+        "c.COC_REMARKS": "Remarks",
+        "c.COI_REMARKS": "Coi Remarks",
+        "c.ISSUING_OFFICE": "Issuing Office",
+        "c.ROUTE": "Route",
+        "c.UCR_NUMBER": "UCR No.",
+        "c.IMPORTER_NAME": "Importer Name",
+        "c.IMPORTER_EMAIL": "Importer Email",
+        "c.EXPORTER_NAME": "Exporter Name",
+        "c.EXPORTER_EMAIL": "Exporter Email",
+        "c.PLACE_OF_INSPECTION": "Place of Inspection",
+        "c.PORT_OF_DESTINATION": "Port of destination",
+        "c.COUNTRY_OF_SUPPLY": "Country of Supply",
+        "c.FINAL_INVOICE_FOB_VALUE": "FOB Value",
+        "c.FINAL_INVOICE_CURRENCY": "Currency",
+        "c.FINAL_INVOICE_NUMBER": "Invoice Number",
+        "citm.SHIPMENT_LINE_DESCRIPTION": "Line Description",
+        "citm.SHIPMENT_LINE_STANDARDS_REFERENCE": "Standard Ref.",
+        "citm.SHIPMENT_LINE_QUANTITY": "Quantity",
+        "citm.SHIPMENT_LINE_UNITOF_MEASURE": "Line Unit of Measure",
+        "citm.SHIPMENT_LINE_HSCODE": "Hs Code",
+        "citm.SHIPMENT_LINE_NUMBER": "Line Number"
+      }
+    },
+    "consignment_report": {
+      "base_query": "DAT_KEBS_CD_ITEM_DETAILS cid left join DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS cdd on (cid.CONSIGMENT_ID=cdd.ID) left join DAT_KEBS_CD_STANDARDS cs on(cdd.CD_STANDARD=cs.ID) left join DAT_KEBS_CD_STANDARDS_TWO cs2 on(cdd.CD_STANDARDS_TWO=cs2.ID)",
+      "filters": {
+        "hs_code": "cid.HSCODE",
+        "country": "cid.COUNTRY_OF_SUPPLY",
+        "coc": "cdd.COC_NUMBER",
+        "assigned_to": "cdd.ASSIGNED_INSPECTION_OFFICER",
+        "assigned_by": "cdd.ASSIGNER",
+        "line_number": "cid.SHIPMENT_LINE_NUMBER",
+        "date__range": "cb.COR_ISSUE_DATE"
+      },
+      "fields": {
+
+      }
+    }
+  }
+}

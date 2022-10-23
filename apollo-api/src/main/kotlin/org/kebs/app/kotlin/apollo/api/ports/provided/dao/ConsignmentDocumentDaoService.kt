@@ -89,8 +89,9 @@ class ConsignmentDocumentDaoService(
                 }
                 val exempted = listOf(ConsignmentApprovalStatus.CANCELLED.code)
                 // Reject document with similar version
-                if (daoServices.countCdWithUcrNumberAndVersionAndStatusNotIn(ucr, version, exempted) > 0) {
-                    throw ExpectedDataNotFound("Duplicate: Found document with the same version and ucr number")
+                val cdExists=daoServices.findCdWithUcrNumberAndCdRef(ucr,version,consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.applicationRefNo?:"")
+                if (cdExists.isPresent) {
+                    throw ExpectedDataNotFound("Duplicate: Found document with the same version, ucr number and Consignment Reference")
                 }
 
                 daoServices.findCdWithUcrNumberLatestAndStatusNotIn(ucr, exempted).let { CDDocumentDetails ->

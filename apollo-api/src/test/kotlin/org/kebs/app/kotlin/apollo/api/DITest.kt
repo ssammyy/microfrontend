@@ -9,6 +9,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 import org.junit.runner.RunWith
 import org.kebs.app.kotlin.apollo.api.payload.request.ConsignmentUpdateRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
@@ -18,6 +19,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.service.BillingService
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
+import org.kebs.app.kotlin.apollo.api.service.reports.DIReports
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
@@ -62,6 +64,9 @@ class DITest {
 
     @Autowired
     lateinit var diServices: DestinationInspectionService
+
+    @Autowired
+    lateinit var diReports: DIReports
 
     @Autowired
     lateinit var resourceLoader: ResourceLoader
@@ -1398,9 +1403,13 @@ class DITest {
 //        }
 //    }
 //
-//    @Test
-//    @Ignore
-//    fun testKebsEmailConfig() {
-//        notifications.sendEmail("anthonykihagi@gmail.com","Test subject","Test Message")
-//    }
+    @Test
+    fun testReports() {
+        val dataMap = mutableMapOf<String, Any>()
+        val res=this.diReports.generateReport(dataMap,"manifest_report",0,-1)
+        if(res.responseCode!="00"){
+            fail(res.message)
+        }
+    }
+
 }

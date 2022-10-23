@@ -154,14 +154,14 @@ export const ROUTES: RouteInfo[] = [
                 path: 'waiver/applications',
                 title: 'Waiver application',
                 ab: 'WA',
-                privilege: ['DI_INSPECTION_OFFICER_READ','PVOC_OFFICER_CHARGE_READ'],
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
             },
             {
                 path: 'exemption/applications',
                 title: 'Exemption applications',
                 ab: 'EA',
-                privilege: ['DI_INSPECTION_OFFICER_READ','PVOC_OFFICER_CHARGE_READ'],
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
             },
             {
@@ -175,14 +175,14 @@ export const ROUTES: RouteInfo[] = [
                 path: 'foreign/cors',
                 title: 'Foreign COR',
                 ab: 'CO',
-                privilege: ['DI_INSPECTION_OFFICER_READ','PVOC_OFFICER_CHARGE_READ'],
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
             },
             {
                 path: 'foreign/documents/coc',
                 title: 'Foreign COC',
                 ab: 'CN',
-                privilege: ['DI_INSPECTION_OFFICER_READ','PVOC_OFFICER_CHARGE_READ'],
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
             },
             {
@@ -222,7 +222,7 @@ export const ROUTES: RouteInfo[] = [
             },
         ],
         collapse: 'pvoc',
-        privilege: ['DI_INSPECTION_OFFICER_READ','PVOC_OFFICER_CHARGE_READ'],
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
         // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN', 'PVOC_ADMIN_READ'],
         icontype: 'diamond',
     },
@@ -269,6 +269,12 @@ export const ROUTES: RouteInfo[] = [
                 ab: 'ID',
                 privilege: ['DI_ADMIN', 'DI_ADMIN_READ', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
             },
+            {
+                path: 'kentrade/manifest/documents',
+                title: 'Manifest Documents',
+                ab: 'MD',
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
+            },
         ],
         collapse: 'import-inspection',
         privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN', 'DI_ADMIN_READ'],
@@ -307,6 +313,40 @@ export const ROUTES: RouteInfo[] = [
             },
         ],
         icontype: 'money',
+    },
+    {
+        path: '/certificates',
+        title: 'Issued Certificates',
+        type: 'sub',
+        collapse: 'certificates',
+        icontype: 'stars',
+        privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
+        children: [
+            {
+                path: 'coc',
+                title: 'COC Certificates',
+                ab: 'CC',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
+            },
+            {
+                path: 'coi',
+                title: 'COI Certificates',
+                ab: 'CI',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
+            },
+            {
+                path: 'cor',
+                title: 'COR Certificates',
+                ab: 'CR',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
+            },
+            {
+                path: 'ncr',
+                title: 'NCR Certificates',
+                ab: 'NR',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ'],
+            },
+        ],
     },
     {
         path: '/system',
@@ -440,7 +480,6 @@ export const ROUTES: RouteInfo[] = [
             {path: 'upload-workplan', title: 'Upload Workplan', ab: 'UW'},
 
 
-
         ],
     },
     {
@@ -456,7 +495,6 @@ export const ROUTES: RouteInfo[] = [
             {path: 'prepareCd', title: 'Prepare Committee Draft', ab: 'V'},
             {path: 'reviewCd', title: 'Review Committee Draft', ab: 'UJ'},
             {path: 'approveCD', title: 'Approve Committee Draft', ab: 'UW'},
-
 
 
         ],
@@ -475,8 +513,6 @@ export const ROUTES: RouteInfo[] = [
             {path: 'viewPrd', title: 'Review Public Review Draft', ab: 'V'},
 
 
-
-
         ],
     },
 
@@ -491,8 +527,6 @@ export const ROUTES: RouteInfo[] = [
             {path: 'prepareBallot', title: 'Prepare Ballot Draft', ab: 'PBD'},
             {path: 'voteOnBallot', title: 'Vote On Ballot Draft', ab: 'V'},
             {path: 'reviewBallotDraft', title: 'Review Ballot Draft', ab: 'RBD'},
-
-
 
 
         ],
@@ -514,7 +548,6 @@ export const ROUTES: RouteInfo[] = [
             {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
 
 
-
         ],
     },
     {
@@ -528,8 +561,6 @@ export const ROUTES: RouteInfo[] = [
             {path: 'requestForFormationOfTC', title: 'Request For Formation', ab: 'RFF'},
             {path: 'reviewJustificationOfTC', title: 'TC Justification', ab: 'RDS'},
             {path: 'reviewFeedbackSPC', title: 'Feedback Review', ab: 'EDS'},
-
-
 
 
         ],
@@ -554,8 +585,6 @@ export const ROUTES: RouteInfo[] = [
             {path: 'sendNotice', title: 'Send Notice', ab: 'SN'},
 
 
-
-
         ],
     },
     {
@@ -578,7 +607,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Workshop Agreement',
         type: 'sub',
         icontype: 'handshake',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN','TC_SEC_SD_READ','KNW_SEC_READ','SPC_SEC_SD_READ','DI_SDT_SD_READ','HOP_SD_READ','TC_SEC_SD_READ','TC_SEC_SD_MODIFY','SAC_SEC_SD_READ','HO_SIC_SD_READ','HOD_SIC_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_READ', 'SPC_SEC_SD_READ', 'DI_SDT_SD_READ', 'HOP_SD_READ', 'TC_SEC_SD_READ', 'TC_SEC_SD_MODIFY', 'SAC_SEC_SD_READ', 'HO_SIC_SD_READ', 'HOD_SIC_SD_READ'],
         collapse: 'nwa',
         children: [
             {
@@ -610,7 +639,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Company Standard',
         type: 'sub',
         icontype: 'business',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ','COM_SEC_SD_READ','HOP_SD_READ','SAC_SEC_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ'],
         collapse: 'cs',
         children: [
             {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
@@ -623,7 +652,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'International Standards',
         type: 'sub',
         icontype: 'quiz',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN','TC_SEC_SD_READ','SPC_SEC_SD_READ','SAC_SEC_SD_READ','HOP_SD_READ','HO_SIC_SD_READ','STAKEHOLDERS_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ'],
         collapse: 'is',
         children: [
             //{path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
@@ -635,7 +664,6 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'isJustificationApp', title: 'SPC Approval', ab: 'J'},
             // {path: 'isUploadStd', title: 'SAC Approval', ab: 'J'},
             // {path: 'isUploadNotice', title: 'Publishing', ab: 'PL'},
-
 
 
         ],

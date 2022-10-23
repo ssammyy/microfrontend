@@ -1,0 +1,50 @@
+<h2 mat-dialog-title> Generate IDF Report</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-8">
+            <label for="blacklistId" class="waiver-form-label">Select Station</label>
+            <select id="blacklistId" name="blacklistId" class="waiver-form-input-master"
+                    formControlName="blacklistId">
+                <option value="" disabled selected>Select One</option>
+                <option *ngFor="let station of data.stations" [value]="station.id">{{station.name}}</option>
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="startDate" class="waiver-form-label">Importer PIN</label>
+            <input id="startDate" type="date" class="waiver-form-input-master" formControlName="startDate">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="endDate" class="waiver-form-label">Importer PIN</label>
+            <input id="endDate" type="date" class="waiver-form-input-master" formControlName="endDate">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="importer" class="waiver-form-label">Importer PIN</label>
+            <input id="importer" class="waiver-form-input-master" formControlName="importer">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="exporter" class="waiver-form-label">Exporter PIN</label>
+            <input id="exporter" class="waiver-form-input-master" formControlName="exporter">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="clearing_agent" class="waiver-form-label">Clearing Agent</label>
+            <input id="clearing_agent" class="waiver-form-input-master" formControlName="clearing_agent">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="hs_code" class="waiver-form-label">HS Code</label>
+            <input id="hs_code" class="waiver-form-input-master" formControlName="hs_code">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <label for="ucr_number" class="waiver-form-label">UCR Number</label>
+            <input id="ucr_number" class="waiver-form-input-master" formControlName="ucr_number">
+        </div>
+    </div>
+    <mat-error *ngIf="message">{{message}}</mat-error>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

@@ -1930,6 +1930,8 @@ class DestinationInspectionDaoServices(
 
     fun findCdWithUcrNumberExcept(ucrNumber: String, id: Long?) =
         iConsignmentDocumentDetailsRepo.findByUcrNumberAndIdNot(ucrNumber, id)
+    fun findCdWithUcrNumberAndCdRef(ucrNumber: String, version: Long,cdRef: String?) =
+        iConsignmentDocumentDetailsRepo.findFirsByUcrNumberAndVersionAndCdStandard_ApplicationRefNoOrderByVersionAsc(ucrNumber,version, cdRef)
 
 
     fun countCdWithUcrNumberAndVersion(ucrNumber: String, version: Long): Long =
