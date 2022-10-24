@@ -210,7 +210,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
                     if (res) {
                         console.log(res)
                         // Download report
-                        this.diService.downloadDocument("api/v1/download/reports", {}, res)
+                        this.diService.downloadDocument("/api/v1/download/reports", {}, res)
                     }
                 },
                 error => {

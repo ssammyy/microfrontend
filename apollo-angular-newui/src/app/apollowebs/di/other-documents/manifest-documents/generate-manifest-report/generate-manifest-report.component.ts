@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
 
 @Component({
     selector: 'app-generate-manifest-report',
@@ -13,7 +14,7 @@ export class GenerateManifestReportComponent implements OnInit {
     message: any;
     loading = false
 
-    constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any) {
+    constructor(public dialogRef: MatDialogRef<any>, private diService: DestinationInspectionService, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
     ngOnInit(): void {
@@ -28,23 +29,8 @@ export class GenerateManifestReportComponent implements OnInit {
     }
 
     saveRecord() {
-        let filters = {}
-        Object.keys(this.form.value).forEach(k => {
-            if (this.form.value[k]) {
-                if (k == 'startDate') {
-                    filters['date__start'] = this.form.value[k]
-                } else if (k === 'endDate') {
-                    filters['date__end'] = this.form.value[k]
-                } else {
-                    filters[k] = this.form.value[k]
-                }
-            }
-        })
-        let data = {
-            filters: filters,
-            reportName: 'manifest_report'
-        }
-        this.dialogRef.close(data)
+
+        this.dialogRef.close(this.diService.formatDownloadReport(this.form, 'manifest_report'))
     }
 
 }
