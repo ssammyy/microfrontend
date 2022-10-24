@@ -73,11 +73,11 @@ export class DestinationInspectionService {
         })
     }
 
-    loadIdfDocuments(status: string, page: number, size: number,startDate?: string): Observable<any> {
+    loadIdfDocuments(status: string, page: number, size: number, startDate?: string): Observable<any> {
         let params = {
             status: status,
-            page: page,
-            size: size
+            page: String(page),
+            size: String(size)
         }
         if (startDate) {
             params["date"] = startDate ? startDate : ""

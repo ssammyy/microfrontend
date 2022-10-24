@@ -1347,52 +1347,52 @@
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Market Center</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.complaintsDetails?.marketCenter}}</div>
+                                {{newComplaintDto?.locationDetails?.marketCenter}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Building Name</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.complaintsDetails?.buildingName}}</div>
+                                {{newComplaintDto?.locationDetails?.buildingName}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Business Address</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.complaintsDetails?.businessAddress}}</div>
+                                {{newComplaintDto?.locationDetails?.businessAddress}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Email</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.complaintsDetails?.email}}</div>
+                                {{newComplaintDto?.locationDetails?.email}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Name Contact Person</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.complaintsDetails?.nameContactPerson}}</div>
+                                {{newComplaintDto?.locationDetails?.nameContactPerson}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Phone Number</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.complaintsDetails?.phoneNumber}}</div>
+                                {{newComplaintDto?.locationDetails?.phoneNumber}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Telephone Number</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.complaintsDetails?.telephoneNumber}}</div>
+                                {{newComplaintDto?.locationDetails?.telephoneNumber}}</div>
                         </li>
                     </ul>
                     <div class="modal-footer">
-                        <button  (click)="onClickCloseSSF()" mat-raised-button type="button" class="btn btn-danger"
+                        <button   mat-raised-button type="button" class="btn btn-danger"
                                  data-dismiss="modal">
                             Close
                         </button>
-                        <div *ngIf="addLabParamStatus">
-                            <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"
-                                     (click)="onClickSaveSampleSubmitted()">SUBMIT
-                            </button>
-                            <button *ngIf="sampleSubmitForm.valid"  mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"
-                                    (click)="onClickSaveSampleSubmitted()" >SUBMIT
-                            </button>
-                        </div>
+<!--                        <div *ngIf="addLabParamStatus">-->
+<!--                            <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"-->
+<!--                                     (click)="onClickSaveSampleSubmitted()">SUBMIT-->
+<!--                            </button>-->
+<!--                            <button *ngIf="sampleSubmitForm.valid"  mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"-->
+<!--                                    (click)="onClickSaveSampleSubmitted()" >SUBMIT-->
+<!--                            </button>-->
+<!--                        </div>-->
                     </div>
 
                 </div>
