@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ViewMessageComponent } from './view-message.component';
+import {ViewMessageComponent} from './view-message.component';
 
 describe('ViewMessageComponent', () => {
   let component: ViewMessageComponent;

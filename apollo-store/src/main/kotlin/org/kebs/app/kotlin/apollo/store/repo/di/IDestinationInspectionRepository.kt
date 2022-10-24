@@ -49,6 +49,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
 
     fun countByUcrNumber(ucrNumber: String): Long
     fun findByUcrNumberAndIdNot(ucrNumber: String, id: Long?): List<ConsignmentDocumentDetailsEntity>
+    fun findFirsByUcrNumberAndVersionAndCdStandard_ApplicationRefNoOrderByVersionAsc(ucrNumber: String, version: Long,cdRef: String?): Optional<ConsignmentDocumentDetailsEntity>
     fun findByUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun countByUcrNumberAndVersion(ucrNumber: String, version: Long): Long
     fun countByUcrNumberAndVersionAndStatusNotIn(ucrNumber: String, version: Long, statuses: List<Int>): Long
@@ -651,7 +652,8 @@ interface IIDFDetailsEntityRepository : HazelcastRepository<IDFDetailsEntity, Lo
     fun findByBaseDocRefNo(baseDocRefNo: String): IDFDetailsEntity?
     fun findFirstByUcrNo(ucrNo: String): IDFDetailsEntity?
     fun findByStatus(status: Long, page: Pageable): Page<IDFDetailsEntity>
-    fun findByStatusAndCreatedOnBetween(status: Long, startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<IDFDetailsEntity>
+    fun findByStatusAndCreatedOnBetween(status: Long,startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<IDFDetailsEntity>
+    fun findByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<IDFDetailsEntity>
 }
 
 @Repository
@@ -665,8 +667,10 @@ interface IIDFItemDetailsEntityRepository : HazelcastRepository<IDFItemDetailsEn
 @Repository
 interface IDeclarationDetailsEntityRepository : HazelcastRepository<DeclarationDetailsEntity, Long> {
     fun findFirstByRefNum(refNum: String): DeclarationDetailsEntity?
-
     fun findByDeclarationRefNo(declarationRefNo: String): DeclarationDetailsEntity?
+    fun findByStatus(status: Long, page: Pageable): Page<DeclarationDetailsEntity>
+    fun findByStatusAndCreatedOnBetween(status: Long,startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<DeclarationDetailsEntity>
+    fun findByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<DeclarationDetailsEntity>
 }
 
 @Repository
@@ -684,6 +688,9 @@ interface IDeclarationItemDetailsEntityRepository : HazelcastRepository<Declarat
 @Repository
 interface IManifestDetailsEntityRepository : HazelcastRepository<ManifestDetailsEntity, Long> {
     fun findByManifestNumber(manifestNumber: String): ManifestDetailsEntity?
+    fun findAllByStatus(status: Long,page: Pageable): Page<ManifestDetailsEntity>
+    fun findByStatusAndCreatedOnBetween(status: Long, startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<ManifestDetailsEntity>
+    fun findByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<ManifestDetailsEntity>
     fun findByUcrn(ucrNumber: String): ManifestDetailsEntity?
     fun findFirstByTdBillCode(tdBillCode: String): ManifestDetailsEntity?
 }

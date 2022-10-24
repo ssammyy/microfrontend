@@ -36,19 +36,19 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
     fun listForeignCoi(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
-        return ServerResponse.ok().body(pvocMonitoringService.listForeignCocCoi("COI", status?.toInt() ?: 0, page))
+        return ServerResponse.ok().body(pvocMonitoringService.listForeignCocCoi("COI", "F",status?.toInt() ?: 0, page))
     }
 
     fun listForeignNcr(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
-        return ServerResponse.ok().body(pvocMonitoringService.listForeignCocCoi("NCR", status?.toInt() ?: 0, page))
+        return ServerResponse.ok().body(pvocMonitoringService.listForeignCocCoi("NCR", "F",status?.toInt() ?: 0, page))
     }
 
     fun listForeignCoc(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
-        return ServerResponse.ok().body(pvocMonitoringService.listForeignCocCoi("COC", status?.toInt() ?: 0, page))
+        return ServerResponse.ok().body(pvocMonitoringService.listForeignCocCoi("COC", "F",status?.toInt() ?: 0, page))
     }
 
     fun getForeignCoiOrCoc(req: ServerRequest): ServerResponse {
@@ -59,7 +59,7 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
     fun listForeignCor(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
-        return ServerResponse.ok().body(pvocMonitoringService.listForeignCor(status?.toInt() ?: 0, page))
+        return ServerResponse.ok().body(pvocMonitoringService.listForeignCor("F",status?.toInt() ?: 0, page))
     }
 
     fun getForeignCor(req: ServerRequest): ServerResponse {

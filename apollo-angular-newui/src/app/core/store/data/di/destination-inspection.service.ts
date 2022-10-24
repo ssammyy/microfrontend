@@ -73,8 +73,28 @@ export class DestinationInspectionService {
         })
     }
 
-    loadIncompleteIdfDocuments(params): Observable<any> {
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/files/incomplete/idf"), {
+    loadIdfDocuments(status: string, page: number, size: number,startDate?: string): Observable<any> {
+        let params = {
+            status: status,
+            page: page,
+            size: size
+        }
+        if (startDate) {
+            params["date"] = startDate ? startDate : ""
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/documents/idf"), {
+            params: params
+        })
+    }
+
+    loadManifestDocuments(status: string, startDate?: string): Observable<any> {
+        let params = {
+            status: status,
+        }
+        if (startDate) {
+            params["date"] = startDate ? startDate : null
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/documents/manifest"), {
             params: params
         })
     }
@@ -703,6 +723,20 @@ export class DestinationInspectionService {
 
     deleteCustomOffice(labId: any): Observable<any> {
         return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/config/custom/office/" + labId))
+    }
+
+    // Certificates
+    loadCertificateDocument(keywords: string, category: string, documentType: string, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        params['category'] = category
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/certificates/" + documentType.toLowerCase()), {
+            params: params
+        });
     }
 
 }

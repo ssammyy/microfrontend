@@ -3,6 +3,8 @@ import {DatePipe} from "@angular/common";
 import {LocalDataSource} from "ng2-smart-table";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
+import {MatDialog} from "@angular/material/dialog";
+import {GenerateReportComponent} from "./generate-report/generate-report.component";
 
 @Component({
     selector: 'app-incomplete-idfdocuments',
@@ -10,7 +12,12 @@ import {DestinationInspectionService} from "../../../../core/store/data/di/desti
     styleUrls: ['./incomplete-idfdocuments.component.css']
 })
 export class IncompleteIDFDocumentsComponent implements OnInit {
-
+    page: number = 0
+    loadedData = false
+    pageSize: number = 20;
+    currentPageInternal: number = 0;
+    totalCount: number;
+    stations=[]
     activeTab = 1
     public settings = {
         selectMode: 'single',  // single|multi
@@ -33,13 +40,18 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
         },
         noDataMessage: 'No data found',
         columns: {
-            baseDocRefNo: {
+            sealsNum: {
+                title: "Serial Number",
+                type: "string",
+                filter: false
+            },
+            declarationRefNo: {
                 title: 'IDF NUMBER',
                 type: 'string',
                 filter: false
             },
-            ucrNo: {
-                title: 'UCR Number',
+            bondNum: {
+                title: 'Bond Number',
                 type: 'string',
                 filter: false
             },
@@ -47,8 +59,12 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
                 title: 'Office Code',
                 type: 'string'
             },
-            officeSubDivisionCode: {
+            officeSubCode: {
                 title: 'Office Code Division',
+                type: 'string'
+            },
+            placeOfLoading: {
+                title: 'Place of Loading',
                 type: 'string'
             },
             createdOn: {
@@ -73,41 +89,91 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
     };
 
     dataSet: LocalDataSource = new LocalDataSource();
-    activeDataSet: LocalDataSource = new LocalDataSource();
+    activeStatus = 'all'
     form: FormGroup
 
-    constructor(private diService: DestinationInspectionService, private fb: FormBuilder) {
+    constructor(private diService: DestinationInspectionService, private fb: FormBuilder, private dialog: MatDialog) {
     }
 
     ngOnInit(): void {
-        this.loadConversionRates(null, 0)
-        this.loadConversionRates(null, 1)
+        this.loadIdDocuments(null, "all")
         this.form = this.fb.group({
             startDate: [null, Validators.required],
             status: [0, Validators.required]
         })
+        this.loadStations()
+    }
+
+    loadStations() {
+        this.diService.listMyCfs()
+            .subscribe(
+                res => {
+                    if (res.responseCode === '00') {
+                        this.stations = res.data
+                    }
+                }
+            )
+    }
+
+    toggleStatus(status) {
+        if (this.activeStatus == status) {
+            return;
+        }
+        this.activeStatus = status
+        if (this.form.value.startDate) {
+            const startDate = new DatePipe('en-US').transform(this.form.value.startDate, 'dd-MM-yyyy');
+            this.loadIdDocuments(startDate, this.activeStatus)
+        } else {
+            this.loadIdDocuments(null, this.activeStatus)
+        }
+
+    }
+
+    pageChange(pageIndex) {
+        if (pageIndex) {
+            this.currentPageInternal = pageIndex - 1
+            this.page = pageIndex
+            if (this.form.value.startDate) {
+                const startDate = new DatePipe('en-US').transform(this.form.value.startDate, 'dd-MM-yyyy');
+                this.loadIdDocuments(startDate, this.activeStatus)
+            } else {
+                this.loadIdDocuments(null, this.activeStatus)
+            }
+        }
+    }
+
+    generateReport() {
+        this.dialog.open(GenerateReportComponent, {
+            data: {
+                stations: this.stations
+            }
+        })
+            .afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        console.log(res)
+                        // Download report
+                    }
+                },
+                error => {
+                }
+            )
     }
 
     filterByCurrency(event: any) {
         const startDate = new DatePipe('en-US').transform(this.form.value.startDate, 'dd-MM-yyyy');
-        this.loadConversionRates(startDate, parseInt(this.form.status))
+        this.loadIdDocuments(startDate, this.form.status)
 
     }
 
-    loadConversionRates(startDate: string, status: number) {
-        let params = {
-            status: status,
-        }
-        params["date"] = startDate ? startDate : ""
-        this.diService.loadIncompleteIdfDocuments(params)
+    loadIdDocuments(startDate: string, status: string) {
+        this.diService.loadIdfDocuments(status, this.page, this.pageSize, startDate)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {
-                        if (status == 1) {
-                            this.dataSet.load(res.data)
-                        } else {
-                            this.activeDataSet.load(res.data)
-                        }
+                        this.dataSet.load(res.data)
+                        this.totalCount = res.totalCount
                     } else {
                         this.diService.showError(res.message, null)
                     }

@@ -10,6 +10,7 @@ import {Store} from "@ngrx/store";
 import {interval, Subject} from "rxjs";
 import {debounce} from "rxjs/operators";
 import {PVOCService} from "../../../core/store/data/pvoc/pvoc.service";
+import {GenerateCDReportComponent} from "./generate-cdreport/generate-cdreport.component";
 
 @Component({
     selector: 'app-consignment-document-list',
@@ -139,6 +140,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     documentTypes: any[];
     message: any
     keywords: any;
+    stations = []
     pvocPartners: any[]
     prevRequest: any
     private documentTypeUuid: string
@@ -174,6 +176,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 this.loadData(this.documentTypeUuid, 0, this.defaultPageSize);
             })
             this.loadPartners()
+            this.loadStations()
             this.store$.select(selectUserInfo)
                 .subscribe((u) => {
                     this.supervisorCharge = this.diService.hasRole(['DI_OFFICER_CHARGE_READ'], u.roles)
@@ -181,6 +184,37 @@ export class ConsignmentDocumentListComponent implements OnInit {
                     this.isAdmin = this.diService.hasRole(['DI_ADMIN'], u.roles)
                 });
         })
+    }
+
+    loadStations() {
+        this.diService.listMyCfs()
+            .subscribe(
+                res => {
+                    if (res.responseCode === '00') {
+                        this.stations = res.data
+                    }
+                }
+            )
+    }
+
+    generateReport() {
+        this.dialog.open(GenerateCDReportComponent, {
+            data: {
+                stations: this.stations,
+                documentTypes: this.documentTypes
+            }
+        })
+            .afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        console.log(res)
+                        // Download report
+                    }
+                },
+                error => {
+                }
+            )
     }
 
     loadPartners() {
