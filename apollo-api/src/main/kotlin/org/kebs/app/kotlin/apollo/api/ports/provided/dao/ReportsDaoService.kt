@@ -12,22 +12,26 @@ import net.sf.jasperreports.engine.export.JRPdfExporter
 import net.sf.jasperreports.engine.xml.JRXmlLoader
 import net.sf.jasperreports.export.SimpleExporterInput
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.Row
+import org.apache.poi.ss.usermodel.Sheet
+import org.apache.poi.ss.usermodel.Workbook
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.springframework.core.io.ResourceLoader
 import org.springframework.stereotype.Service
 import org.springframework.util.ResourceUtils
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.InputStream
+import java.io.*
 import javax.servlet.http.HttpServletResponse
 
 
 @Service
 class ReportsDaoService(
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val resourceLoader: ResourceLoader,
-        private val commonDaoServices: CommonDaoServices,
-        private val invoiceDaoService: InvoiceDaoService
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val resourceLoader: ResourceLoader,
+    private val commonDaoServices: CommonDaoServices,
+    private val invoiceDaoService: InvoiceDaoService
 ) {
     //Get KEBS Logo
     final val logoImageResource = resourceLoader.getResource(applicationMapProperties.mapKebsLogoPath)
@@ -85,9 +89,9 @@ class ReportsDaoService(
     }
 
     fun extractReport(
-            map: HashMap<String, Any>,
-            filePath: String,
-            listCollect: List<Any>
+        map: HashMap<String, Any>,
+        filePath: String,
+        listCollect: List<Any>
     ): ByteArrayOutputStream {
 //        map["imagePath"] = logoImageFile
         val dataSource = JRBeanCollectionDataSource(listCollect)
@@ -108,6 +112,7 @@ class ReportsDaoService(
         pdfExporter.exportReport()
         return pdfReportStream
     }
+
     fun extractReport(
         map: HashMap<String, Any>,
         response: HttpServletResponse,
@@ -170,7 +175,11 @@ class ReportsDaoService(
    Note: Use this method if your report contains multiple data bands and you have not set any fields in the report,
    i.e you're using Parameters only.
     */
-    fun extractReportMapDataSource(map: HashMap<String, Any>, filePath: String, data: HashMap<String, List<Any>>): ByteArrayOutputStream {
+    fun extractReportMapDataSource(
+        map: HashMap<String, Any>,
+        filePath: String,
+        data: HashMap<String, List<Any>>
+    ): ByteArrayOutputStream {
         val file: InputStream?
         if (filePath.startsWith("classpath:")) {
             file = resourceLoader.getResource(filePath).inputStream
@@ -203,10 +212,10 @@ class ReportsDaoService(
 
 
     fun generateEmailPDFReportWithDataSource(
-            fileName: String,
-            map: HashMap<String, Any>,
-            filePath: String,
-            dataSourceList: List<Any>
+        fileName: String,
+        map: HashMap<String, Any>,
+        filePath: String,
+        dataSourceList: List<Any>
     ): File {
 
         val file = ResourceUtils.getFile(filePath)
@@ -238,6 +247,7 @@ class ReportsDaoService(
 
         return targetFile
     }
+
     /*
 Note: Use this method if your report contains multiple data bands and you have not set any fields in the report,
 i.e you're using Parameters only.
@@ -264,6 +274,52 @@ i.e you're using Parameters only.
             pdfReportStream.close()
         }
 
+    }
+
+    fun extractXlsReport(
+        fileName: String,
+        reportName: String,
+        reportDate: String,
+        data: Array<Map<String, Any>>,
+        fieldMapping: Map<String, String>
+    ): FileInputStream {
+        var workbook: Workbook? = null
+
+        workbook = if (fileName.endsWith("xlsx")) {
+            XSSFWorkbook()
+        } else if (fileName.endsWith("xls")) {
+            HSSFWorkbook()
+        } else {
+            throw Exception("invalid file name, should be xls or xlsx")
+        }
+
+        val sheet: Sheet = workbook.createSheet("Countries")
+        var rowIndex = 0
+        val header: Row = sheet.createRow(rowIndex++)
+        var cell0: Cell
+        fieldMapping.onEachIndexed { i, v ->
+            cell0 = header.createCell(i)
+            cell0.setCellValue(v.value)
+        }
+        val iterator = data.iterator()
+        while (iterator.hasNext()) {
+            val country: Map<String, Any> = iterator.next()
+            val row: Row = sheet.createRow(rowIndex++)
+            // ADD row Data
+            country.onEachIndexed { i, v ->
+                cell0 = row.createCell(i)
+                cell0.setCellValue(v.value.toString())
+            }
+        }
+
+        //lets write the excel data to file now
+
+        //lets write the excel data to file now
+        val fos = FileOutputStream(fileName)
+        workbook.write(fos)
+        fos.close()
+        println("$fileName written successfully")
+        return FileInputStream(fileName)
     }
 
 }

@@ -68,7 +68,7 @@ class DIReports(
                     "range" -> {
                         filters.get("${conditions[0]}__start")?.let { start ->
                             filters.get("${conditions[0]}__end")?.let { end ->
-                                if(qb.hasCriteria()) {
+                                if (qb.hasCriteria()) {
                                     qb.and().between(cond.value.toString(), start, end)
                                 } else {
                                     qb.between(cond.value.toString(), start, end)
@@ -163,10 +163,14 @@ class DIReports(
         val model = ApiResponseModel()
         try {
             if (this.reports.reports?.contains(reportName) == true) {
+
                 model.responseCode = ResponseCodes.SUCCESS_CODE
                 model.message = "Success"
                 val data = createWhereClause(0, -1, reportName, filters)
-                model.data = data.first
+                val mp = mutableMapOf<String, Any>()
+                mp["fields"] = this.reports.reports?.get(reportName)?.fields!!
+                mp["data"] = data.first
+                model.data = mp
                 model.totalCount = data.second.toString().toLongOrNull()
             } else {
                 model.responseCode = ResponseCodes.FAILED_CODE

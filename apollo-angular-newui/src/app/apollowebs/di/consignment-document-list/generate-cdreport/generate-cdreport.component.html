@@ -6,7 +6,7 @@
             <select id="stationId" name="stationId" class="waiver-form-input-master"
                     formControlName="stationId">
                 <option value="" disabled selected>Select One</option>
-                <option *ngFor="let station of data.stations" [value]="station.id">{{station.name}}</option>
+                <option *ngFor="let station of data.stations" [value]="station.id">{{station.cfsName}}</option>
             </select>
         </div>
         <div class="col-sm-6 col-md-4">

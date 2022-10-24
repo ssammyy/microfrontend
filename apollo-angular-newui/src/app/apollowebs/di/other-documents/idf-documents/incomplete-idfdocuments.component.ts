@@ -154,6 +154,7 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
                     if (res) {
                         console.log(res)
                         // Download report
+                        this.diService.downloadDocument("api/v1/download/reports", {}, res)
                     }
                 },
                 error => {

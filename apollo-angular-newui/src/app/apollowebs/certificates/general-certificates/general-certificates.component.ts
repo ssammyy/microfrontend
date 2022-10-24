@@ -185,6 +185,7 @@ export class GeneralCertificatesComponent implements OnInit {
                     if (res) {
                         console.log(res)
                         // Download report
+                        this.diServices.downloadDocument("api/v1/download/reports", {}, res)
                     }
                 },
                 error => {

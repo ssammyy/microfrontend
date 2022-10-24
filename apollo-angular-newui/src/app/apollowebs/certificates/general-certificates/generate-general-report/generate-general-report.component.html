@@ -1,35 +1,35 @@
 <h2 mat-dialog-title> Generate {{data.documentType.toUpperCase() }} Report</h2>
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
-        <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12 col-md-6">
             <label for="blacklistId" class="waiver-form-label">Select Station</label>
             <select id="blacklistId" name="blacklistId" class="waiver-form-input-master"
                     formControlName="blacklistId">
                 <option value="" disabled selected>Select One</option>
-                <option *ngFor="let station of data.stations" [value]="station.id">{{station.name}}</option>
+                <option *ngFor="let station of data.stations" [value]="station.id">{{station.cfsName}}</option>
             </select>
         </div>
-        <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12 col-md-6">
             <label for="startDate" class="waiver-form-label">Start Date</label>
             <input id="startDate" type="date" class="waiver-form-input-master" formControlName="startDate">
         </div>
-        <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12 col-md-6">
             <label for="endDate" class="waiver-form-label">End Date</label>
             <input id="endDate" type="date" class="waiver-form-input-master" formControlName="endDate">
         </div>
-        <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12 col-md-6">
             <label for="importer" class="waiver-form-label">Importer PIN</label>
             <input id="importer" class="waiver-form-input-master" formControlName="importer">
         </div>
-        <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12 col-md-6">
             <label for="country" class="waiver-form-label">Country of Origin</label>
             <input id="country" class="waiver-form-input-master" formControlName="country">
         </div>
-        <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12 col-md-6">
             <label for="hs_code" class="waiver-form-label">HS Code</label>
             <input id="hs_code" class="waiver-form-input-master" formControlName="hs_code">
         </div>
-        <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12 col-md-6">
             <label for="description" class="waiver-form-label">Description</label>
             <input id="description" class="waiver-form-input-master" formControlName="description">
         </div>
@@ -39,7 +39,7 @@
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
         <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
-        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">DOWNLOAD
             <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
         </button>
     </div>
