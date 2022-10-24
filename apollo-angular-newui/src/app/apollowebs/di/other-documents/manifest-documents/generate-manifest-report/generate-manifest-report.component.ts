@@ -28,7 +28,23 @@ export class GenerateManifestReportComponent implements OnInit {
     }
 
     saveRecord() {
-        this.dialogRef.close(this.form.value)
+        let filters = {}
+        Object.keys(this.form.value).forEach(k => {
+            if (this.form.value[k]) {
+                if (k == 'startDate') {
+                    filters['date__start'] = this.form.value[k]
+                } else if (k === 'endDate') {
+                    filters['date__end'] = this.form.value[k]
+                } else {
+                    filters[k] = this.form.value[k]
+                }
+            }
+        })
+        let data = {
+            filters: filters,
+            reportName: 'manifest_report'
+        }
+        this.dialogRef.close(data)
     }
 
 }

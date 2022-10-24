@@ -1,5 +1,5 @@
 export const environment = {
-    production: true,
+    production: false,
     https_enabled: true,
-    base_url: 'kimsint.kebs.org:8006'
+    base_url: 'localhost:8006'
 };

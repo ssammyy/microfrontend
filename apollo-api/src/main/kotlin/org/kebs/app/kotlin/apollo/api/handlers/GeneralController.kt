@@ -466,23 +466,24 @@ class GeneralController(
     }
 
     @CrossOrigin
-    @GetMapping("/reports")
+    @PostMapping("/reports")
     fun downloadDocumentReport(@RequestBody() form: ReportRequest, httResponse: HttpServletResponse) {
         val response = ApiResponseModel()
         try {
             val reportDetails = diReports.downloadReport(form.filters!!, form.reportName!!)
             if (reportDetails.responseCode == ResponseCodes.SUCCESS_CODE) {
-                val reportDate = commonDaoServices.convertDateToString(LocalDateTime.now(), "mm-dd-yyyy-HH")
+                KotlinLogging.logger {}.info("Download Report with count: ${reportDetails.totalCount}")
+                val date = LocalDateTime.now()
+                val reportDate = commonDaoServices.convertDateToString(date, "dd-MM-yyyy-HH")
                 val fileName = "${form.reportName?.toUpperCase()}-${reportDate}.xlsx"
                 val data = reportDetails.data as Map<String, Any>
                 val extractReport = reportsDaoService.extractXlsReport(
                     fileName,
                     form.reportName!!,
-                    reportDate,
-                    data.get("data") as Array<Map<String, Any>>,
+                    commonDaoServices.convertDateToString(date, "dd-MMM-yyyy HH:mm"),
+                    data.get("data") as ArrayList<Map<String, Any>>,
                     data.get("fields") as Map<String, String>
                 )
-
                 // Response with file
                 downloadFile(extractReport, fileName, httResponse)
             } else {
