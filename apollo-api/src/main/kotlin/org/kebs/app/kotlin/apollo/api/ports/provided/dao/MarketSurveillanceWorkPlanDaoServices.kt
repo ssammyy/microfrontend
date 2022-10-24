@@ -1387,19 +1387,28 @@ class MarketSurveillanceWorkPlanDaoServices(
         var remarkStatusValue = "N/A"
         var emailDetails = ""
         val scheduleEmailDetails =  WorkPlanScheduledDTO()
-        val recommendationDetails = recommendationRepo.findByIdOrNull(body.recommendationId) ?: throw ExpectedDataNotFound("Missing Recommendation details with ID ${body.recommendationId}, do Not Exists")
+        val recommendationList = mutableListOf<String>()
+        var destructionFound = false
+        body.recommendationId.forEach { rec->
+            val recommendationDetails = recommendationRepo.findByIdOrNull(rec.recommendationId) ?: throw ExpectedDataNotFound("Missing Recommendation details with ID ${body.recommendationId}, do Not Exists")
+            if (recommendationDetails.id == applicationMapProperties.mapMsWorkPlanDestrctionID){
+                destructionFound = true
+            }
+            recommendationDetails.recommendationName?.let { recommendationList.add(it) }
+        }
+
         with(workPlanScheduled){
             when {
                 workPlanScheduled.msFinalReportStatus == map.activeStatus && fetchedPreliminary.approvedStatusHodFinal == map.activeStatus -> {
                     hodRecommendationRemarks = body.hodRecommendationRemarks
-                    hodRecommendation = recommendationDetails.recommendationName
-                    remarkStatusValue = recommendationDetails.recommendationName.toString()
+                    hodRecommendation = commonDaoServices.convertClassToJson(recommendationList)
+                    remarkStatusValue = commonDaoServices.convertClassToJson(recommendationList).toString()
                     hodRecommendationStatus = map.activeStatus
-                    when (recommendationDetails.id) {
-                        applicationMapProperties.mapMsWorkPlanDestrctionID -> {
+                    when {
+                        destructionFound -> {
                             destructionRecommended = map.activeStatus
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionFinalRecommendationPendingDestruction
-                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameDirector
                             scheduleEmailDetails.approvalStatus = remarkStatusValue
                             emailDetails = applicationMapProperties.mapMsOfficerWorkPlanDestructionEmail
                         }
@@ -2271,7 +2280,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun createNewWorkPlanSchedule(body: WorkPlanEntityDto, referenceNumber: String, page: PageRequest): WorkPlanScheduleListDetailsDto {
+    fun createNewWorkPlanSchedule(body: AllWorkPlanDetails, referenceNumber: String, page: PageRequest): WorkPlanScheduleListDetailsDto {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val msType = findMsTypeDetailsWithUuid(applicationMapProperties.mapMsWorkPlanTypeUuid)
@@ -2281,15 +2290,26 @@ class MarketSurveillanceWorkPlanDaoServices(
                 throw ExpectedDataNotFound("The WorkPlan Batch Detail was closed, you can't add a new Work-Plan")
             }
             else -> {
-                val fileSaved = saveNewWorkPlanActivity(body,msType, batchDetail, map, loggedInUser)
+                var fileSaved : Pair<ServiceRequestsEntity, MsWorkPlanGeneratedEntity>? = null
+                body.countyTownDetails?.forEach { data->
+                    var saveData = body.mainDetails
+                    with(saveData){
+                        this?.county =data.countyID
+                        this?.townMarketCenter =data.townID
+                        this?.locationActivityOther =data.locationName
+                    }
+                    if (saveData != null) {
+                        fileSaved=  saveNewWorkPlanActivity(saveData,msType, batchDetail, map, loggedInUser)
+                    }
+                }
 
-                when (fileSaved.first.status) {
+                when (fileSaved?.first?.status) {
                     map.successStatus -> {
                         val workPlanList = findALlWorkPlanDetailsAssociatedWithWorkPlanID(batchDetail.id,page).toList()
                         return mapWorkPlanInspectionListDto(workPlanList,mapWorkPlanBatchDetailsDto(batchDetail, map))
                     }
                     else -> {
-                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved?.first?: throw ExpectedDataNotFound("Missing WorkPlan Details To save")))
                     }
                 }
             }

@@ -302,6 +302,17 @@ data class FuelEntityDto(
         var remarks: String? = null,
 )
 
+data class WorkPlanTownsDto(
+        var countyID: Long? = null,
+        var townID: Long? = null,
+        var locationName: String? = null
+)
+
+data class AllWorkPlanDetails(
+        var mainDetails: WorkPlanEntityDto? = null,
+        var countyTownDetails: List<WorkPlanTownsDto>? = null
+)
+
 data class WorkPlanEntityDto(
         var id: Long?= 0,
         var complaintDepartment: Long? = null,
@@ -335,9 +346,14 @@ data class ApprovalDto(
 
 data class WorkPlanFinalRecommendationDto(
         @NotNull(message = "Required field")
-        var recommendationId: Long,
+        var recommendationId: List<RecommendationDto>,
         @NotNull(message = "Required field")
         var hodRecommendationRemarks: String,
+)
+
+data class RecommendationDto (
+        var recommendationId: Long? = null,
+        var recommendationName: String? = null,
 )
 
 data class WorkPlanFeedBackDto(

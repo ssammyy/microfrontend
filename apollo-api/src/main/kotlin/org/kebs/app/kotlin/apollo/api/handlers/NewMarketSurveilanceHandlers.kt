@@ -38,7 +38,6 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 
-import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
@@ -50,7 +49,6 @@ import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
-import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.body
@@ -143,6 +141,21 @@ class NewMarketSurveillanceHandler(
             KotlinLogging.logger { }.debug(e.message, e)
             return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
         }
+    }
+
+
+    fun standardsList(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllStandardsDetails()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Standards List found")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
     }
 
     fun msPredefinedResources(req: ServerRequest): ServerResponse {
@@ -1296,8 +1309,8 @@ class NewMarketSurveillanceHandler(
     fun saveNewWorkPlanSchedule(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            val body = req.body<WorkPlanEntityDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, WorkPlanEntityDto::class.java.name)
+            val body = req.body<AllWorkPlanDetails>()
+            val errors: Errors = BeanPropertyBindingResult(body, AllWorkPlanDetails::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {

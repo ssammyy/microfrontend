@@ -616,11 +616,19 @@ data class LaboratoryEntityDto(
     var status: Boolean? = null
 )
 
+data class KebsStandardsDto(
+    var id: Long? = null,
+    var standardTitle: String? = null,
+    var standardNumber: String? = null,
+    var status: Boolean? = null,
+)
+
 data class PredefinedResourcesRequiredEntityDto(
     var id: Long? = null,
     var resourceName: String? = null,
     var status: Boolean? = null
 )
+
 
 data class UserRequestTypesEntityDto(
     var id: Long? = null,
