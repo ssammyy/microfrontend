@@ -140,24 +140,24 @@
                             <div class="btn-group btn-group-sm float-right" role="group"
                                  aria-label="Applications Status">
                                 <div *ngFor="let role of roles">
-                                    <div *ngIf="role == 'MS_IO_MODIFY'">
-                                        <button *ngIf="loadedData?.createdWorkPlan?.batchClosed==false" (click)="onClickCloseBatch()" mat-raised-button=""
-                                                class="btn btn-sm btn-warning mr-2"><span
-                                                class="mat-button-wrapper">SUBMIT WORK-PLAN FOR APPROVAL</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                    </div>
+<!--                                    <div *ngIf="role == 'MS_IO_MODIFY'">-->
+<!--                                        <button *ngIf="loadedData?.createdWorkPlan?.batchClosed==false" (click)="onClickCloseBatch()" mat-raised-button=""-->
+<!--                                                class="btn btn-sm btn-warning mr-2"><span-->
+<!--                                                class="mat-button-wrapper">SUBMIT WORK-PLAN FOR APPROVAL</span>-->
+<!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                                            <div class="mat-button-focus-overlay"></div>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
                                     <br>
-                                    <div *ngIf="role == 'MS_IO_MODIFY'">
-                                        <button *ngIf="loadedData?.createdWorkPlan?.batchClosed==false" (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
-                                                data-target="#workPlanModal"
-                                                class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">ADD NEW WORK-PLAN FILE</span>
-                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                            <div class="mat-button-focus-overlay"></div>
-                                        </button>
-                                    </div>
+<!--                                    <div *ngIf="role == 'MS_IO_MODIFY'">-->
+<!--                                        <button *ngIf="loadedData?.createdWorkPlan?.batchClosed==false" (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                data-target="#workPlanModal"-->
+<!--                                                class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                class="mat-button-wrapper">ADD NEW WORK-PLAN FILE</span>-->
+<!--                                            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                                            <div class="mat-button-focus-overlay"></div>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -536,12 +536,7 @@
                                             <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
                                             >{{app.county}}</option>
                                         </select>
-                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="hidden"
-                                                class="form-control" formControlName="countyName" name="countyName" required>
-                                            <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of apps| filterPipe: {status: true, id: selectedCounty}" [ngValue]="app.county"
-                                            >{{app.county}}</option>
-                                        </select>
+                                        <input class="form-control" formControlName="countyName" name="countyName"  ngModel="{{selectedCountyName}}" required type="text">
                                         <div *ngIf="submitted && formAddCountyTownForm.countyID.errors" class="invalid-feedback">
                                             <div *ngIf="formAddCountyTownForm.countyID.errors.required">County is required</div>
                                         </div>
@@ -559,12 +554,7 @@
                                             <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
                                                     [ngValue]="app.id">{{app.town}}</option>
                                         </select>
-                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="hidden"
-                                                class="form-control" formControlName="townName" name="townName" required>
-                                            <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty, id: selectedTown}"
-                                                    [ngValue]="app.town">{{app.town}}</option>
-                                        </select>
+                                        <input class="form-control" formControlName="townName" name="townName" ngModel="{{selectedTownName}}" required type="text">
                                         <div *ngIf="submitted && formAddCountyTownForm.townID.errors" class="invalid-feedback">
                                             <div *ngIf="formAddCountyTownForm.townID.errors.required">Town/Market center is required</div>
                                         </div>

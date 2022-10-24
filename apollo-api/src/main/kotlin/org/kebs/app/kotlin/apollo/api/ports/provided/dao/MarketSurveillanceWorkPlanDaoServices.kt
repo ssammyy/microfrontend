@@ -370,6 +370,24 @@ class MarketSurveillanceWorkPlanDaoServices(
         val batchDetail = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val loggedInUserProfile = commonDaoServices.findUserProfileByUserID(loggedInUser, map.activeStatus)
 
+        return workPlanUpdate(
+            batchDetail,
+            map,
+            loggedInUser,
+            workPlanScheduled,
+            loggedInUserProfile,
+            batchReferenceNo
+        )
+    }
+
+    fun workPlanUpdate(
+        batchDetail: WorkPlanCreatedEntity,
+        map: ServiceMapsEntity,
+        loggedInUser: UsersEntity,
+        workPlanScheduled: MsWorkPlanGeneratedEntity,
+        loggedInUserProfile: UserProfilesEntity,
+        batchReferenceNo: String
+    ): WorkPlanInspectionDto {
         with(batchDetail) {
             endedDate = commonDaoServices.getCurrentDate()
             endedStatus = map.activeStatus
@@ -383,33 +401,45 @@ class MarketSurveillanceWorkPlanDaoServices(
         when (fileSaved.first.status) {
             map.successStatus -> {
                 with(workPlanScheduled) {
-                    if (submittedForApprovalStatus == map.activeStatus){
+                    if (submittedForApprovalStatus == map.activeStatus) {
                         resubmitStatus = map.activeStatus
                     }
-                    submittedForApprovalStatus= map.activeStatus
+                    submittedForApprovalStatus = map.activeStatus
                     timelineStartDate = commonDaoServices.getCurrentDate()
-                    timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionSubmission.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                    timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionSubmission.let {
+                        findProcessNameByID(
+                            it,
+                            1
+                        ).timelinesDay?.let { it2 ->
+                            commonDaoServices.addYDayToDate(
+                                commonDaoServices.getCurrentDate(),
+                                it2
+                            )
+                        }
+                    }
                     msProcessId = applicationMapProperties.mapMSWorkPlanInspectionSubmission
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                 }
                 updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
 
-                val hodList = commonDaoServices.findOfficersListBasedOnRole(applicationMapProperties.mapMSComplaintWorkPlanMappedHODROLEID,
+                val hodList = commonDaoServices.findOfficersListBasedOnRole(
+                    applicationMapProperties.mapMSComplaintWorkPlanMappedHODROLEID,
                     loggedInUserProfile.countyID?.id ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
                     loggedInUserProfile.regionId?.id ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
                 )
 
-                val rmList = commonDaoServices.findOfficersListBasedOnRole(applicationMapProperties.mapMSComplaintWorkPlanMappedRMROLEID,
+                val rmList = commonDaoServices.findOfficersListBasedOnRole(
+                    applicationMapProperties.mapMSComplaintWorkPlanMappedRMROLEID,
                     loggedInUserProfile.countyID?.id ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
                     loggedInUserProfile.regionId?.id ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
                 )
 
                 runBlocking {
                     hodList
-                        ?.forEach { mp->
-                            val scheduleEmailDetails =  WorkPlanScheduledDTO()
-                            with(scheduleEmailDetails){
-                                baseUrl= applicationMapProperties.baseUrlValue
+                        ?.forEach { mp ->
+                            val scheduleEmailDetails = WorkPlanScheduledDTO()
+                            with(scheduleEmailDetails) {
+                                baseUrl = applicationMapProperties.baseUrlValue
                                 fullName = commonDaoServices.concatenateName(mp)
                                 refNumber = fileSaved.second.referenceNumber
                                 batchRefNumber = batchReferenceNo
@@ -417,13 +447,19 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 dateSubmitted = commonDaoServices.getCurrentDate()
 
                             }
-                            commonDaoServices.sendEmailWithUserEntity(mp, applicationMapProperties.mapMsWorkPlanScheduleSubmitedForApproval, scheduleEmailDetails, map, fileSaved.first)
+                            commonDaoServices.sendEmailWithUserEntity(
+                                mp,
+                                applicationMapProperties.mapMsWorkPlanScheduleSubmitedForApproval,
+                                scheduleEmailDetails,
+                                map,
+                                fileSaved.first
+                            )
                         }
                     rmList
-                        ?.forEach { mp->
-                            val scheduleEmailDetails =  WorkPlanScheduledDTO()
-                            with(scheduleEmailDetails){
-                                baseUrl= applicationMapProperties.baseUrlValue
+                        ?.forEach { mp ->
+                            val scheduleEmailDetails = WorkPlanScheduledDTO()
+                            with(scheduleEmailDetails) {
+                                baseUrl = applicationMapProperties.baseUrlValue
                                 fullName = commonDaoServices.concatenateName(mp)
                                 refNumber = fileSaved.second.referenceNumber
                                 batchRefNumber = batchReferenceNo
@@ -431,12 +467,19 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 dateSubmitted = commonDaoServices.getCurrentDate()
 
                             }
-                            commonDaoServices.sendEmailWithUserEntity(mp, applicationMapProperties.mapMsWorkPlanScheduleSubmitedForApproval, scheduleEmailDetails, map, fileSaved.first)
+                            commonDaoServices.sendEmailWithUserEntity(
+                                mp,
+                                applicationMapProperties.mapMsWorkPlanScheduleSubmitedForApproval,
+                                scheduleEmailDetails,
+                                map,
+                                fileSaved.first
+                            )
                         }
                 }
 
                 return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetail)
             }
+
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
             }
@@ -2292,7 +2335,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             else -> {
                 var fileSaved : Pair<ServiceRequestsEntity, MsWorkPlanGeneratedEntity>? = null
                 body.countyTownDetails?.forEach { data->
-                    var saveData = body.mainDetails
+                    val saveData = body.mainDetails
                     with(saveData){
                         this?.county =data.countyID
                         this?.townMarketCenter =data.townID
@@ -2322,6 +2365,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     fun updateNewWorkPlanSchedule(body: WorkPlanEntityDto, batchReferenceNo: String,referenceNo: String, page: PageRequest): WorkPlanInspectionDto {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val loggedInUserProfile = commonDaoServices.findUserProfileByUserID(loggedInUser, map.activeStatus)
         val batchDetails  = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         with(workPlanScheduled){
@@ -2350,9 +2394,26 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
 
+        val remarksDto = RemarksToAddDto()
+        with(remarksDto){
+            remarksDescription= body.remarks
+            remarksStatus= "WORK-PLAN UPDATED/CHANGED"
+            processID = workPlanScheduled.msProcessId
+            userId= loggedInUser.id
+        }
+        val remarksSaved = workPlanAddRemarksDetails(fileSaved.second.id,remarksDto, map, loggedInUser)
+
         when (fileSaved.first.status) {
             map.successStatus -> {
-               return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+
+                return workPlanUpdate(
+                    batchDetails,
+                    map,
+                    loggedInUser,
+                    workPlanScheduled,
+                    loggedInUserProfile,
+                    batchReferenceNo
+                )
             }
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
@@ -2531,9 +2592,12 @@ class MarketSurveillanceWorkPlanDaoServices(
                             workPlanStatus = map.activeStatus
                         }
                     }
-                    batchClosed = map.inactiveStatus
+                    batchClosed = map.activeStatus
                     createdDate = commonDaoServices.getCurrentDate()
                     createdStatus = map.activeStatus
+                    endedDate = commonDaoServices.getCurrentDate()
+                    endedStatus = map.activeStatus
+                    batchClosed = map.activeStatus
                     status = map.activeStatus
                     createdBy = commonDaoServices.concatenateName(loggedInUser)
                     createdOn = commonDaoServices.getTimestamp()
@@ -3657,6 +3721,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             workPlanScheduledDetails.region ?: throw ExpectedDataNotFound("MISSING WORK-PLAN REGION ID")
         )
 
+
         val chargeSheet = findChargeSheetByWorkPlanInspectionID(workPlanScheduledDetails.id)
         val chargeSheetDto = chargeSheet?.let { mapChargeSheetDetailsDto(it) }
 
@@ -3726,7 +3791,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
 
         var updateWorkPlan: WorkPlanEntityDto? = null
-        if (workPlanScheduledDetails.approvedStatus == map.inactiveStatus && workPlanScheduledDetails.rejectedStatus== map.activeStatus){
+        if (workPlanScheduledDetails.approvedStatus == map.inactiveStatus){
             updateWorkPlan = mapWorkPlanUpdateEntity(workPlanScheduledDetails)
         }
 
