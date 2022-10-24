@@ -298,10 +298,22 @@ i.e you're using Parameters only.
         var rowIndex = 0
         var cell0: Cell
         // Organization row
+        val fontOrg = workbook.createFont()
+        fontOrg.fontName = "Arial"
+        fontOrg.bold = true
+        fontOrg.color = IndexedColors.WHITE.getIndex()
+//        fontOrg.fontHeight = 18
+        val orgStyle: CellStyle = workbook.createCellStyle()
+//        orgStyle.fillBackgroundColor = IndexedColors.LIGHT_BLUE.getIndex()
+        orgStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
+        orgStyle.fillForegroundColor = IndexedColors.SKY_BLUE.getIndex()
+        orgStyle.setFont(fontOrg)
+
         val orgName: Row = sheet.createRow(rowIndex++)
-        cell0 = orgName.createCell(3)
+        cell0 = orgName.createCell(2)
+        cell0.cellStyle = orgStyle
         cell0.setCellValue("KENYA BUREAU OF STANDARDS")
-        val ca = CellRangeAddress(0, 0, 3, 7)
+        val ca = CellRangeAddress(0, 0, 2, 7)
         sheet.addMergedRegion(ca)
         // Report details
         val titleRow: Row = sheet.createRow(rowIndex++)
@@ -326,11 +338,13 @@ i.e you're using Parameters only.
         val font = workbook.createFont()
         font.fontName = "Arial"
         font.bold = true
-        font.fontHeight = 15
+        font.color = IndexedColors.WHITE.getIndex()
+//        font.fontHeightInPoints = 15
         val headerStyle: CellStyle = workbook.createCellStyle()
-        headerStyle.fillBackgroundColor = IndexedColors.LIGHT_BLUE.getIndex()
-        headerStyle.setFont(font)
+        //headerStyle.fillBackgroundColor = IndexedColors.LIGHT_BLUE.getIndex()
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
+        headerStyle.fillForegroundColor = IndexedColors.SKY_BLUE.getIndex()
+        headerStyle.setFont(font)
         fieldMapping.onEachIndexed { i, v ->
             cell0 = header.createCell(i)
             cell0.cellStyle = headerStyle
@@ -340,7 +354,7 @@ i.e you're using Parameters only.
         val fontText = workbook.createFont()
         font.fontName = "Arial"
         font.bold = false
-        font.fontHeight = 12
+//        font.fontHeightInPoints = 12
         val dataStyle: CellStyle = workbook.createCellStyle()
         dataStyle.setFont(fontText)
 
