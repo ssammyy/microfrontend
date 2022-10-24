@@ -463,21 +463,6 @@ export class ComplaintPlanListComponent implements OnInit {
       this.SpinnerService.show();
       this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
       // tslint:disable-next-line:max-line-length
-      this.msService.msAddWorkPlanScheduleDetails(this.loadedData.createdWorkPlan.referenceNumber, this.dataSaveWorkPlan).subscribe(
-          (data: any) => {
-            console.log(data);
-            this.SpinnerService.hide();
-            this.addNewScheduleForm.reset();
-            this.msService.showSuccess('COMPLAINT SCHEDULED DETAILS, SAVED SUCCESSFULLY');
-            this.loadData(this.defaultPage, this.defaultPageSize, this.selectedBatchRefNo , this.activeStatus);
-          },
-          error => {
-            this.SpinnerService.hide();
-            this.addNewScheduleForm.reset();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
 
     }
   }

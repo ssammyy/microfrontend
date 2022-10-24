@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import org.kebs.app.kotlin.apollo.common.dto.*
+import org.kebs.app.kotlin.apollo.common.dto.qa.StandardsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestTypesEntity
@@ -31,6 +32,7 @@ class MasterDataDaoService(
     private val townsRepo: ITownsRepository,
     private val userRequestTypesRepo: IUserRequestTypesRepository,
     private val standardCategoryRepo: IStandardCategoryRepository,
+    private val sampleStandardsRepo: ISampleStandardsRepository,
     private val laboratoryRepo: ILaboratoryRepository,
     private val predefinedResourcesRequiredRepo: IPredefinedResourcesRequiredRepository,
     private val productCategoriesRepo: IKebsProductCategoriesRepository,
@@ -69,6 +71,9 @@ class MasterDataDaoService(
         ?.map { DirectoratesEntityDto(it.id, it.directorate, it.status == 1) }
 
     fun getAllStandardProductCategory(): List<StandardProductCategoryEntityDto>? = standardCategoryRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { StandardProductCategoryEntityDto(it.id, it.standardCategory, it.standardNickname, it.standardId, it.status == 1) }
+
+
+    fun getAllStandardsDetails(): List<KebsStandardsDto>? = sampleStandardsRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { KebsStandardsDto(it.id, it.standardTitle, it.standardNumber, it.status == 1) }
 
     fun getAllLaboratories(): List<LaboratoryEntityDto>? = laboratoryRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { LaboratoryEntityDto(it.id, it.labName, it.description, it.status == 1) }
 

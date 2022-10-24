@@ -609,6 +609,7 @@ export class ApiEndpointService {
         MS_COUNTRIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/countries`,
         MS_DEPARTMENTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/departments`,
         MS_LABORATORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/laboratories`,
+        MS_STANDARDS: `${ApiEndpointService.MS_COMMON_CONTEXT}/standards`,
         MS_RECOMMENDATION: `${ApiEndpointService.MS_COMMON_CONTEXT}/recommendation-list`,
         MS_DIVISIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/divisions`,
         MS_STANDARD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/standardProductCategory`,

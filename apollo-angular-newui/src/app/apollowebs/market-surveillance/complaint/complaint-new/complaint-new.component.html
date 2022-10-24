@@ -1253,91 +1253,153 @@
     </div>
 
 
-<!--    <div *ngSwitchCase="5">-->
-<!--        <form (ngSubmit)="onClickRegisterCompany(stepFiveForm.valid)" [formGroup]="stepFiveForm" action="" class="form"-->
-<!--              enctype="multipart/form-data" method="post">-->
-<!--            <div class="container">-->
-
-<!--                <div class="row">-->
-<!--                    <h2 class="welcome">-->
-<!--                        Contact Person Phone Information-->
-<!--                    </h2>-->
-<!--                    <h4 class="welcome">-->
-<!--                        Please Enter Your Phone Number To Receive Your OTP-->
-<!--                    </h4>-->
-<!--                </div>-->
-
-<!--                <div class="row input-row">-->
-
-<!--                    <div class="col">-->
-<!--                        <label class="input-placeholder" for="cellphone">-->
-<!--                            Enter Your Phonenumber-->
-<!--                        </label>-->
-<!--                        <br>-->
-<!--                        <table>-->
-<!--                            <tr>-->
-<!--                                <td>-->
-<!--                                    <input   class="form-control" style="color: white;font-size: 14px; width: 35px;" value="+254" required="required" disabled>-->
-<!--                                </td>-->
-<!--                                <td>  <input style="color: white;font-size: 14px;"-->
-<!--                                             [ngClass]="{ 'is-invalid': submitted && formStepFiveForm.cellphone.errors }"-->
-<!--                                             class="form-control two-column-input" formControlName="cellphone" id="cellphone"-->
-<!--                                             name="cellphone"-->
-<!--                                             placeholder="xxxxxxxxx" required="required" type="tel">-->
-
-<!--                                </td>-->
-<!--                            </tr>-->
-<!--                        </table>-->
-
-<!--                        <div *ngIf="submitted && formStepFiveForm.cellphone.errors" class="invalid-feedback">-->
-<!--                            <div *ngIf="formStepFiveForm.cellphone.errors.required">The cell phone is required</div>-->
+    <!-- Sample Submit Modal -->
+    <div class="modal fade" id="complaintModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fill Sample Submission Details</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <b class="text-primary">Complainant Information Details</b>
+                    <ul class="w-list-unstyled">
+<!--                        <li class="list-item-accordion ">-->
+<!--                            <div class="list-title-accordion">Reference Number</div>-->
+<!--                            <div class="list-text-accordion">{{newComplaintDto?.complaintDetails?.refNumber}}-->
+<!--                            </div>-->
+<!--                        </li>-->
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Name</div>
+                            <div class="list-text-accordion">{{newComplaintDto?.customerDetails?.firstName}} {{newComplaintDto?.customerDetails?.lastName}}
+                            </div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Email Address</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.customerDetails?.emailAddress}}
+                            </div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Phone Number</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.customerDetails?.phoneNumber}}
+                            </div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Postal Address</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.customerDetails?.postalAddress}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Physical Address</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.customerDetails?.physicalAddress}}</div>
+                        </li>
+                    </ul>
+                    <b class="text-primary">Complaint Information Details</b>
+                    <ul class="w-list-unstyled">
+                        <li class="list-item-accordion ">
+                            <div class="list-title-accordion">Complaint Title</div>
+                            <div class="list-text-accordion">{{newComplaintDto?.complaintDetails?.complaintTitle}}
+                            </div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Targeted Product</div>
+                            <div class="list-text-accordion">{{newComplaintDto?.complaintDetails?.productBrand}}
+                            </div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Complaint Description</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.complaintDetails?.complaintDescription}}
+                            </div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Complaint Sample Details</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.complaintDetails?.complaintSampleDetails}}
+                            </div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Remedy Sought</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.complaintDetails?.remedySought}}
+                            </div>
+                        </li>
+                    </ul>
+                    <b class="text-primary">Complaint Location Details</b>
+                    <ul class="w-list-unstyled">
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">County</div>
+                            <div class="list-text-accordion">
+                                {{countyName}}
+                            </div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Town</div>
+                            <div class="list-text-accordion">
+                                {{townName}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Market Center</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.locationDetails?.marketCenter}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Building Name</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.locationDetails?.buildingName}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Business Address</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.locationDetails?.businessAddress}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Email</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.locationDetails?.email}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Name Contact Person</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.locationDetails?.nameContactPerson}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Phone Number</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.locationDetails?.phoneNumber}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Telephone Number</div>
+                            <div class="list-text-accordion">
+                                {{newComplaintDto?.locationDetails?.telephoneNumber}}</div>
+                        </li>
+                    </ul>
+                    <div class="modal-footer">
+                        <button   mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+<!--                        <div *ngIf="addLabParamStatus">-->
+<!--                            <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"-->
+<!--                                     (click)="onClickSaveSampleSubmitted()">SUBMIT-->
+<!--                            </button>-->
+<!--                            <button *ngIf="sampleSubmitForm.valid"  mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"-->
+<!--                                    (click)="onClickSaveSampleSubmitted()" >SUBMIT-->
+<!--                            </button>-->
 <!--                        </div>-->
-<!--                        <br>-->
-<!--                    </div>-->
-<!--                    <div class="col">-->
-<!--                        <button (throttledClick)="onClickSendOtp()" [disabled]="otpSent"-->
-<!--                                [hidden]="stepFiveForm.get('cellphone')?.invalid"-->
-<!--                                [throttleTime]="5000" appPreventDoubleClick-->
-<!--                                class="login-button mt-2"-->
-<!--                                type="button"-->
+                    </div>
 
-<!--                        >Send OTP {{secondsToHms(time)}} Secs-->
-<!--                        </button>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="row input-row">-->
-
-<!--                    <div class="col">-->
-<!--                        <label class="input-placeholder" for="otp">-->
-<!--                            OTP-->
-<!--                        </label>-->
-<!--                        <br>-->
-<!--                        <input style="color: white;font-size: 14px;" class="form-control two-column-input"-->
-<!--                               formControlName="otp" id="otp"-->
-<!--                               name="otp"-->
-<!--                               placeholder="The OTP" required="required" type="text">-->
-<!--                        <br>-->
-<!--                    </div>-->
-
-
-<!--                </div>-->
-
-<!--                <div class="row">-->
-<!--                    <div class="col">-->
-<!--                        <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>-->
-<!--                    </div>-->
-<!--                    <div class="col">-->
-<!--                        <button (click)="onClickValidateOtp()" [hidden]="stepFiveForm.get('otp')?.invalid"-->
-<!--                                class="login-button mt-2" type="button">-->
-<!--                            Validate And Create-->
-<!--                        </button>-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--            </div>-->
-<!--        </form>-->
-
-<!--    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Sample Collect Modal -->
 
 
 </div>

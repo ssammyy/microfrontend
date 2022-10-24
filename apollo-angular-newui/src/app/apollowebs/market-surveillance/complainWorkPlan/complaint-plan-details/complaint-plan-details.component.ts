@@ -11,7 +11,7 @@ import {
   DataReportParamsDto,
   DestructionNotificationDto,
   FuelEntityRapidTestDto,
-  InspectionInvestigationReportDto,
+  InspectionInvestigationReportDto, KebsStandardsDto,
   LaboratoryDto, LaboratoryEntityDto, LIMSFilesFoundDto, MsBroadProductCategory,
   MsDepartment,
   MsDivisionDetails, MsProducts, MsProductSubcategory,
@@ -20,7 +20,7 @@ import {
   PDFSaveComplianceStatusDto, PredefinedResourcesRequired,
   PreliminaryReportDto,
   PreliminaryReportFinal,
-  PreliminaryReportItemsDto,
+  PreliminaryReportItemsDto, RecommendationDto,
   RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
@@ -76,7 +76,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
-  totalCount = 12;
 
   totalCompliantValue = 0;
 
@@ -85,6 +84,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   approvePreliminaryForm!: FormGroup;
   finalRemarkHODForm!: FormGroup;
   finalRecommendationForm!: FormGroup;
+  finalRecommendationDetailsForm!: FormGroup;
   preliminaryRecommendationForm!: FormGroup;
   chargeSheetForm!: FormGroup;
   dataReportForm!: FormGroup;
@@ -124,12 +124,15 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSaveSeizureDeclaration: SeizureDto;
   dataSaveSeizureDeclarationList: SeizureDto[] = [];
   dataSaveInvestInspectReport: InspectionInvestigationReportDto;
+  dataSaveFinalRecommendationDetails: RecommendationDto;
+  dataSaveFinalRecommendationList: RecommendationDto[] = [];
   dataSavePreliminaryReport: PreliminaryReportDto;
   dataSavePreliminaryReportParamList: PreliminaryReportItemsDto[] = [];
   dataSavePreliminaryReportParam: PreliminaryReportItemsDto;
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
   dataSaveDestructionNotification: DestructionNotificationDto;
   laboratories: LaboratoryDto[] = [];
+  standards: KebsStandardsDto[] = [];
 
 
   dataSaveAssignOfficer: ComplaintAssignDto;
@@ -165,6 +168,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   labList: LaboratoryDto[];
   roles: string[];
   userLoggedInID: number;
+  selectedRecommendationID: number;
   userProfile: LoggedInUser;
   blob: Blob;
   uploadedFiles: FileList;
@@ -1208,8 +1212,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     });
 
     this.finalRecommendationForm = this.formBuilder.group({
-      recommendationId: ['', Validators.required],
+      recommendationId: null,
       hodRecommendationRemarks: ['', Validators.required],
+    });
+
+    this.finalRecommendationDetailsForm = this.formBuilder.group({
+      recommendationId: ['', Validators.required],
+      recommendationName: ['', Validators.required],
     });
 
     this.approvePreliminaryForm = this.formBuilder.group({
@@ -1594,6 +1603,16 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
+      this.msService.msStandardsListDetails().subscribe(
+          (data1: KebsStandardsDto[]) => {
+            this.standards = data1;
+            console.log(data1);
+          },
+          error => {
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
     }
 
     switch (this.workPlanInspection?.preliminaryReport?.approvedStatusHodFinal) {
@@ -1633,6 +1652,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   get formFinalRecommendationForm(): any {
     return this.finalRecommendationForm.controls;
+  }
+
+  get formFinalRecommendationDetailsForm(): any {
+    return this.finalRecommendationDetailsForm.controls;
   }
 
   get formPreliminaryRecommendationForm(): any {
@@ -1716,6 +1739,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   get formRemediationForm(): any {
     return this.remediationForm.controls;
+  }
+
+  updateSelectedRecommendation() {
+    this.selectedRecommendationID = this.sampleSubmitParamsForm?.get('recommendationId')?.value;
+    console.log(`town set to ${this.selectedTown}`);
   }
 
   private loadData(referenceNumber: string, batchReferenceNumber: string ): any {
@@ -2104,6 +2132,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveFinalRecommendation = {...this.dataSaveFinalRecommendation, ...this.finalRecommendationForm.value};
+      this.dataSaveFinalRecommendation.recommendationId = this.dataSaveFinalRecommendationList;
       this.msService.msWorkPlanScheduleDetailsFinalRecommendationHOD(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
@@ -2814,13 +2843,19 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.dataReportParamForm?.get('complianceInspectionParameter')?.reset();
     this.dataReportParamForm?.get('measurementsResults')?.reset();
     this.dataReportParamForm?.get('remarks')?.reset();
-    const compliantCount: number = this.dataSaveDataReportParamList.filter(s => s.complianceInspectionParameter === 100).length;
     const totalCount: number = this.dataSaveDataReportParamList.length;
+    let compliantCount = 0;
+
+    for (let i = 0; i < totalCount; i++) {
+      if (Number(this.dataSaveDataReportParamList[i].complianceInspectionParameter) === 100) {
+        compliantCount = compliantCount + 1;
+      }
+    }
 
     this.totalCompliantValue = (compliantCount / totalCount) * 100;
-    console.log(compliantCount);
-    console.log(totalCount);
-    console.log(this.totalCompliantValue);
+    console.log('compliant count' + compliantCount);
+    console.log('total count' + totalCount);
+    console.log('complinace Value count' + this.totalCompliantValue);
   }
 
   onClickAddDataInspectorOfficer() {
@@ -2865,6 +2900,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     // this.sampleSubmitParamsForm?.get('laboratoryName')?.reset();
   }
 
+  onClickAddDataRecommendationDetails() {
+    this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
+    this.dataSaveFinalRecommendationList.push(this.dataSaveFinalRecommendationDetails);
+    this.finalRecommendationDetailsForm?.reset();
+  }
+
   // Remove Form repeater values
   removeDataReportParam(index) {
     console.log(index);
@@ -2874,13 +2915,19 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.dataSaveDataReportParamList.splice(index, index);
     }
 
-    const compliantCount: number = this.dataSaveDataReportParamList.filter(s => s.complianceInspectionParameter === 100).length;
     const totalCount: number = this.dataSaveDataReportParamList.length;
+    let compliantCount = 0;
+
+    for (let i = 0; i < totalCount; i++) {
+      if (Number(this.dataSaveDataReportParamList[i].complianceInspectionParameter) === 100) {
+        compliantCount = compliantCount + 1;
+      }
+    }
 
     this.totalCompliantValue = (compliantCount / totalCount) * 100;
-    console.log(compliantCount);
-    console.log(totalCount);
-    console.log(this.totalCompliantValue);
+    console.log('compliant count' + compliantCount);
+    console.log('total count' + totalCount);
+    console.log('complinace Value count' + this.totalCompliantValue);
   }
 
   removePreliminaryReportParam(index) {
@@ -2899,6 +2946,16 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.dataSaveSampleSubmitParamList.splice(index, 1);
     } else {
       this.dataSaveSampleSubmitParamList.splice(index, index);
+    }
+  }
+
+  // Remove Form repeater values
+  removeDataRecommendation(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveFinalRecommendationList.splice(index, 1);
+    } else {
+      this.dataSaveFinalRecommendationList.splice(index, index);
     }
   }
 

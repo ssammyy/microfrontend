@@ -47,6 +47,14 @@ export class MsDepartment {
     status?: boolean;
 }
 
+
+export class KebsStandardsDto {
+    id: number;
+    standardTitle: string;
+    standardNumber: string;
+    status: boolean;
+}
+
 export class MsDivisionDetails {
     id?: string;
     division?: string;
@@ -81,6 +89,24 @@ export class PredefinedResourcesRequired {
     id: number;
     resourceName: string;
     status: boolean;
+}
+
+export class WorkPlanTownsDto{
+        countyID: number;
+        countyName: string;
+        townID: number;
+        townName: string;
+        locationName: string;
+}
+
+export class RecommendationDto {
+    recommendationId: number;
+    recommendationName: string;
+}
+
+export class AllWorkPlanDetails {
+     mainDetails: WorkPlanEntityDto;
+     countyTownDetails: WorkPlanTownsDto[];
 }
 
 export class MsProducts {
@@ -753,7 +779,7 @@ export class FuelTeamsDto {
 }
 
 export class WorkPlanFinalRecommendationDto {
-    recommendationId: bigint;
+    recommendationId: RecommendationDto[];
     hodRecommendationRemarks: string;
 }
 

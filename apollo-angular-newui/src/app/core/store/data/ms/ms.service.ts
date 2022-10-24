@@ -72,7 +72,7 @@ import {
     RegionReAssignDto,
     PredefinedResourcesRequired,
     SeizureDto,
-    SeizureListDto, LaboratoryEntityDto,
+    SeizureListDto, LaboratoryEntityDto, KebsStandardsDto, AllWorkPlanDetails,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -725,7 +725,7 @@ export class MsService {
         );
     }
 
-    public msAddWorkPlanScheduleDetails(referenceNo: string, data: WorkPlanEntityDto): Observable<WorkPlanScheduleListDetailsDto> {
+    public msAddWorkPlanScheduleDetails(referenceNo: string, data: AllWorkPlanDetails): Observable<WorkPlanScheduleListDetailsDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
          // tslint:disable-next-line:max-line-length
@@ -1484,6 +1484,21 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_COUNTRIES);
         return this.http.get<CountriesEntityDto[]>(url).pipe(
             map(function (response: CountriesEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msStandardsListDetails(): Observable<KebsStandardsDto[]> {
+        // console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_STANDARDS);
+        return this.http.get<KebsStandardsDto[]>(url).pipe(
+            map(function (response: KebsStandardsDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

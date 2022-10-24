@@ -52,6 +52,8 @@ export class ComplaintNewComponent implements OnInit {
   timer!: Observable<number>;
   timerObserver!: PartialObserver<number>;
   step = 1;
+  countyName: string;
+  townName: string;
 
   public clicked = false;
   stepOneForm!: FormGroup;
@@ -67,6 +69,7 @@ export class ComplaintNewComponent implements OnInit {
 
   uploadedFiles: FileList;
   savedDetails: MSComplaintSubmittedSuccessful;
+  newComplaintDto: NewComplaintDto;
 
   brsLookupRequest: BrsLookUpRequest;
   businessLines$: Observable<BusinessLines[]>;
@@ -223,6 +226,8 @@ export class ComplaintNewComponent implements OnInit {
 
   updateSelectedCounty() {
     this.selectedCounty = this.stepThreeForm?.get('county')?.value;
+    // this.countyName = this.countyService.getAll().filter(c => cc.id === this.selectedCounty);
+
     console.log(`county set to ${this.selectedCounty}`);
     this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
     this.store$.select(selectCountyIdData).subscribe(
@@ -293,12 +298,11 @@ export class ComplaintNewComponent implements OnInit {
     if (this?.uploadedFiles?.length > 0) {
       this.SpinnerService.show();
       const file = this.uploadedFiles;
-      const newComplaintDto = new NewComplaintDto();
-      newComplaintDto.customerDetails = this.stepOneForm.value;
-      newComplaintDto.complaintDetails = this.stepTwoForm.value;
-      newComplaintDto.locationDetails = this.stepThreeForm.value;
+      this.newComplaintDto.customerDetails = this.stepOneForm.value;
+      this.newComplaintDto.complaintDetails = this.stepTwoForm.value;
+      this.newComplaintDto.locationDetails = this.stepThreeForm.value;
       const formData = new FormData();
-      formData.append('data', JSON.stringify(newComplaintDto));
+      formData.append('data', JSON.stringify(this.newComplaintDto));
       for (let i = 0; i < file.length; i++) {
         console.log(file[i]);
         formData.append('docFile', file[i], file[i].name);
