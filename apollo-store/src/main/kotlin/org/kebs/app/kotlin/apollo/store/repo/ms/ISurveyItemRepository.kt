@@ -88,6 +88,12 @@ interface IChargeSheetRepository : HazelcastRepository<MsChargeSheetEntity, Long
 }
 
 @Repository
+interface IWorkPlanProductsEntityRepository : HazelcastRepository<WorkPlanProductsEntity, Long>{
+    fun findByWorkPlanId(workPlanId: Long): List<WorkPlanProductsEntity>?
+    fun findByReferenceNo(referenceNo: String): WorkPlanProductsEntity?
+}
+
+@Repository
 interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
