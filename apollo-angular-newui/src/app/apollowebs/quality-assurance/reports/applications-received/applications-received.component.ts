@@ -57,6 +57,11 @@ export class ApplicationsReceivedComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.dtOptions = {
+
+            processing: true,
+            dom: 'Bfrtip'
+        };
         this.getAllDMarkApplicationsReceived()
         this.getAllFMarkApplicationsReceived()
         this.getAllSMarkApplicationsReceived()

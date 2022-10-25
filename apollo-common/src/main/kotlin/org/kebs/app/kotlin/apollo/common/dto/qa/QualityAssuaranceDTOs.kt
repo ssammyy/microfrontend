@@ -441,6 +441,8 @@ data class ReportPermitEntityDto(
     var physicalAddress: String? = null,
     var telephoneNo: String? = null,
     var email: String? = null,
+    var pscApprovalDate: Timestamp?=null,
+    var inspectionDate:  Date? = null,
 
 
     )

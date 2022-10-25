@@ -74,6 +74,9 @@ export class ReportsPermitEntityDto {
     physicalAddress: string;
     telephoneNo: string;
     email: string;
+    inspectionDate: Date;
+    pscApprovalDate: Date;
+
 
 }
 
@@ -231,7 +234,7 @@ export class PermitEntityDetails {
     processStatusID: number;
     fmarkGeneratedID: number;
     oldPermitStatus: number;
-    varField7:string;
+    varField7: string;
 }
 
 
@@ -478,9 +481,10 @@ export class STA10ManufacturingProcessDto {
     frequency: string;
     processMonitoringRecords: string;
 }
+
 export interface Payments {
     id: number;
-    invoiceRef:string;
+    invoiceRef: string;
     userId: number;
     permitRefNumber: string;
     receiptNo: string;
@@ -488,26 +492,25 @@ export interface Payments {
     paymentStatus: number;
     generatedDate: string;
     itemCount: number;
-    totalAmount:number;
-    taxAmount:number;
-    subTotalBeforeTax:number;
-    permitId:number;
+    totalAmount: number;
+    taxAmount: number;
+    subTotalBeforeTax: number;
+    permitId: number;
 }
 
-export interface SamplesSubmittedDto
-{
-    ssf_SUBMISSION_DATE:string;
-    firm_NAME:string;
-    physical_ADDRESS:string;
-    telephone_NO:string;
-    brand_NAME:string;
+export interface SamplesSubmittedDto {
+    ssf_SUBMISSION_DATE: string;
+    firm_NAME: string;
+    physical_ADDRESS: string;
+    telephone_NO: string;
+    brand_NAME: string;
     standard_TITLE: string;
-    compliance_REMARKS:string;
-    compliant_STATUS:number;
-    inspection_DATE:string;
-    results_DATE:string;
-    region:string;
-    section:string;
-    product:string
-    }
+    compliance_REMARKS: string;
+    compliant_STATUS: number;
+    inspection_DATE: string;
+    results_DATE: string;
+    region: string;
+    section: string;
+    product: string
+}
 

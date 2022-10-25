@@ -6696,6 +6696,23 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findReportAllDejectedPermits(
+        user: UsersEntity,
+        permitType: Long,
+        status: Int,
+        fmarkGeneratedStatus: Int
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPermitTypeAndPermitAwardStatusIsNull(
+            permitType
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findReportAllSamplesSubmitted(
         user: UsersEntity,
         permitType: Long,
@@ -6775,8 +6792,20 @@ class QADaoServices(
                 standardTitle = p.productStandard?.let { findStandardsByID(it).standardTitle },
                 physicalAddress = p.attachedPlantId?.let { findPlantDetails(it) }?.physicalAddress,
                 telephoneNo = p.attachedPlantId?.let { findPlantDetails(it) }?.telephone,
-                email = p.attachedPlantId?.let { findPlantDetails(it) }?.emailAddress
+                email = p.attachedPlantId?.let { findPlantDetails(it) }?.emailAddress,
+                pscApprovalDate = p.id?.let { findPermitPscDate(it).createdOn },
+                p.inspectionDate
             )
+        }
+
+    }
+
+
+    fun findPermitPscDate(permitId: Long): QaRemarksEntity {
+        return if (remarksEntityRepo.findByPermitIdAndProcessBy(permitId, "PSC") != null) {
+            remarksEntityRepo.findByPermitIdAndProcessBy(permitId, "PSC")!!
+        } else {
+            QaRemarksEntity()
         }
 
     }

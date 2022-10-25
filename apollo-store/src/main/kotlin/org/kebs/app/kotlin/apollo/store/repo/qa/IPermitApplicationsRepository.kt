@@ -288,7 +288,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByPermitTypeAndOldPermitStatusIsNotNullAndPermitAwardStatus(
         permitType: Long,
         permitAwardStatus: Int,
-        ): List<PermitApplicationsEntity>?
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPermitTypeAndPermitAwardStatusIsNull(
+        permitType: Long,
+    ): List<PermitApplicationsEntity>?
 
     fun findByQamIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByQamIdAndPermitTypeAndOldPermitStatusIsNull(
@@ -525,8 +529,10 @@ interface IQaInvoiceDetailsRepository : HazelcastRepository<QaInvoiceDetailsEnti
 interface IQaRemarksEntityRepository : HazelcastRepository<QaRemarksEntity, Long> {
     //    fun findByStatusAndInvoiceMasterId(status: Int, invoiceMasterId: Long): List<QaRemarksEntity>?
     fun findByPermitId(invoiceMasterId: Long): List<QaRemarksEntity>?
-//    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
+
+    //    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
 //    fun findByStatus(status: Int): List<QaInvoiceDetailsEntity>?
+    fun findByPermitIdAndProcessBy(permitId: Long, processBy: String): QaRemarksEntity?
 }
 
 @Repository
@@ -595,8 +601,7 @@ interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmission
     fun findSamplesSubmitted(
         @Param("permitType") permitType: Long,
 
-    ): MutableList<SampleSubmissionDTO>?
-
+        ): MutableList<SampleSubmissionDTO>?
 
 
     //    fun findTopByPermitRefNumberOrderByIdDescAndStatus(permitRefNumber: String, status: Int): List<QaSampleSubmissionEntity>?
@@ -610,7 +615,7 @@ interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmission
     fun findByFuelInspectionId(fuelInspectionId: Long): QaSampleSubmissionEntity?
     fun findByFuelInspectionIdAndBsNumber(fuelInspectionId: Long, bsNumber: String): QaSampleSubmissionEntity?
     fun findByWorkplanGeneratedId(workPlanInspectionID: Long): QaSampleSubmissionEntity?
-    fun findByWorkplanGeneratedIdAndBsNumber(workPlanInspectionID: Long,bsNumber: String): QaSampleSubmissionEntity?
+    fun findByWorkplanGeneratedIdAndBsNumber(workPlanInspectionID: Long, bsNumber: String): QaSampleSubmissionEntity?
     fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
 }
 
