@@ -2,9 +2,9 @@
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
         <div class="col-sm-12 col-md-6">
-            <label for="blacklistId" class="waiver-form-label">Select Station</label>
-            <select id="blacklistId" name="blacklistId" class="waiver-form-input-master"
-                    formControlName="blacklistId">
+            <label for="stationId" class="waiver-form-label">Select Station</label>
+            <select id="stationId" name="blacklistId" class="waiver-form-input-master"
+                    formControlName="stationId">
                 <option value="" disabled selected>Select One</option>
                 <option *ngFor="let station of data.stations" [value]="station.id">{{station.cfsName}}</option>
             </select>

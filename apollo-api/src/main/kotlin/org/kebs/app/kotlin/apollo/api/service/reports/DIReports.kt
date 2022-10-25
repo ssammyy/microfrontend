@@ -6,7 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty
 import org.codehaus.jackson.map.ObjectMapper
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
-import org.springframework.context.ApplicationContext
+import org.springframework.core.io.ResourceLoader
 import org.springframework.stereotype.Service
 import javax.persistence.EntityManager
 import javax.persistence.Tuple
@@ -29,15 +29,15 @@ class Reports {
 
 @Service
 class DIReports(
-    final val applicationContext: ApplicationContext,
-    mapper: ObjectMapper,
+    private val resourceLoader: ResourceLoader,
+    private val mapper: ObjectMapper,
     private val entityManager: EntityManager
 ) {
     final val reports: Reports
 
     init {
         try {
-            val resource = applicationContext.getResource("classpath:apollo_reports.json")
+            val resource = resourceLoader.getResource("classpath:apollo_reports.json")
             reports = mapper.readValue(resource.file, Reports::class.java)
             KotlinLogging.logger {}.info("DDD-:${mapper.writeValueAsString(reports)}")
         } catch (ex: Exception) {
@@ -163,20 +163,21 @@ class DIReports(
         val model = ApiResponseModel()
         try {
             if (this.reports.reports?.contains(reportName) == true) {
-
-                model.responseCode = ResponseCodes.SUCCESS_CODE
-                model.message = "Success"
                 val data = createWhereClause(0, -1, reportName, filters)
                 val mp = mutableMapOf<String, Any>()
                 mp["fields"] = this.reports.reports?.get(reportName)?.fields!!
                 mp["data"] = data.first
                 model.data = mp
                 model.totalCount = data.second.toString().toLongOrNull()
+                model.responseCode = ResponseCodes.SUCCESS_CODE
+                model.message = "Success"
             } else {
                 model.responseCode = ResponseCodes.FAILED_CODE
                 model.message = "Invalid report name"
             }
         } catch (ex: Exception) {
+            model.responseCode = ResponseCodes.EXCEPTION_STATUS
+            model.message = "Failed to generate report"
             KotlinLogging.logger {}.error("DOWNLOAD REPORT", ex)
         }
         return model

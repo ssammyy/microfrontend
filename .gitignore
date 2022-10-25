@@ -55,6 +55,8 @@ package-lock.json
 
 *.zip
 *.txt
+*.xlsx
+*.xls
 DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS_IDX/
 *.pdf
 outbound/

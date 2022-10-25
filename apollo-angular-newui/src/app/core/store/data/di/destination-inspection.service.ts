@@ -16,6 +16,26 @@ export class DestinationInspectionService {
     constructor(private client: HttpClient) {
     }
 
+    formatDownloadReport(report: any, reportName: string): any {
+        let filters = {}
+        Object.keys(report).forEach(k => {
+            if (report[k]) {
+                if (k == 'startDate') {
+                    filters['date__start'] = report[k]
+                } else if (k === 'endDate') {
+                    filters['date__end'] = report[k]
+                } else {
+                    filters[k] = report[k]
+                }
+            }
+        })
+        let data = {
+            filters: filters,
+            reportName: reportName
+        }
+        return data
+    }
+
     // Check if role is in required privileges
     hasRole(privileges: string[], roles: any[]): boolean {
         for (let role of roles) {

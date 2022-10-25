@@ -28,203 +28,203 @@ enum class ReviewStatus(var code: Int) {
 
 @Service
 class ForeignPvocIntegrations(
-        private val cocRepo: ICocsRepository,
-        private val iCocItemRepository: ICocItemRepository,
-        private val corsBakRepository: ICorsBakRepository,
-        private val rfcRepository: IRfcEntityRepo,
-        private val rfcItemRepository: IRfcItemsRepository,
-        private val rfcCorRepository: IRfcCorRepository,
-        private val riskProfileRepository: IRiskProfileRepository,
-        private val timelinesConfigurationRepository: IPvocTimelinesConfigurationRepository,
-        private val timelinesRepository: IPvocTimelinesDataEntityRepository,
-        private val sealIssuesRepository: IPvocSealIssuesEntityRepository,
-        private val timelinePenaltiesRepository: IPvocTimelinePenaltiesRepository,
-        private val idfsRepository: IdfsEntityRepository,
-        private val idfsItemRepository: IdfItemsEntityRepository,
-        private val commonDaoServices: CommonDaoServices,
-        private val billingService: BillingService,
-        private val properties: ApplicationMapProperties,
-        private val monitoringService: PvocMonitoringService
+    private val cocRepo: ICocsRepository,
+    private val iCocItemRepository: ICocItemRepository,
+    private val corsBakRepository: ICorsBakRepository,
+    private val rfcRepository: IRfcEntityRepo,
+    private val rfcItemRepository: IRfcItemsRepository,
+    private val rfcCorRepository: IRfcCorRepository,
+    private val riskProfileRepository: IRiskProfileRepository,
+    private val timelinesConfigurationRepository: IPvocTimelinesConfigurationRepository,
+    private val timelinesRepository: IPvocTimelinesDataEntityRepository,
+    private val sealIssuesRepository: IPvocSealIssuesEntityRepository,
+    private val timelinePenaltiesRepository: IPvocTimelinePenaltiesRepository,
+    private val idfsRepository: IdfsEntityRepository,
+    private val idfsItemRepository: IdfItemsEntityRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val billingService: BillingService,
+    private val properties: ApplicationMapProperties,
+    private val monitoringService: PvocMonitoringService
 ) {
     private final val YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM")
     private final val REPORT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd")
 
     @Transactional
     fun foreignCoc(
-            user: PvocPartnersEntity,
-            coc: CocEntityForm,
-            map: ServiceMapsEntity,
+        user: PvocPartnersEntity,
+        coc: CocEntityForm,
+        map: ServiceMapsEntity,
     ): CocsEntity? {
         coc.ucrNumber?.let { ucrNumber ->
             cocRepo.findByUcrNumberAndCocTypeAndVersion(ucrNumber, "COC", coc.version)
-                    ?.let { coc ->
-                        return null
-                    }
-        }
-                ?: kotlin.run {
-                    var localCoc = CocsEntity()
-                    KotlinLogging.logger { }.debug("Starting background task")
-                    with(localCoc) {
-                        coiNumber = coc.cocNumber ?: "UNKNOWN"
-                        cocNumber = coc.cocNumber?.toUpperCase()
-                        idfNumber = coc.idfNumber ?: "UNKNOWN"
-                        rfiNumber = coc.rfiNumber ?: "UNKNOWN"
-                        ucrNumber = coc.ucrNumber
-                        finalDocDate = coc.finalDocDate
-                        rfcDate = coc.rfcDate
-                        shipmentQuantityDelivered = "UNKNOWN"
-                        cocIssueDate = coc.cocIssueDate
-                        clean = coc.compliant
-                        cocIssueDate = coc.cocIssueDate
-                        cocRemarks = coc.cocRemarks ?: "NA"
-                        coiRemarks = "UNKNOWN"
-                        issuingOffice = coc.issuingOffice ?: "UNKNOWN"
-                        importerName = coc.importerName
-                        importerPin = coc.importerPin
-                        importerAddress1 = coc.importerAddress1
-                        importerAddress2 = coc.importerAddress2 ?: "UNKNOWN"
-                        importerCity = coc.importerCity ?: "UNKNOWN"
-                        importerCountry = coc.importerCountry ?: "UNKNOWN"
-                        importerZipCode = "UNKNOWN"
-                        importerTelephoneNumber = coc.importerTelephoneNumber ?: "UNKNOWN"
-                        importerFaxNumber = coc.importerFaxNumber ?: "UNKNOWN"
-                        importerEmail = coc.importerEmail ?: "UNKNOWN"
-                        exporterName = coc.exporterName ?: "UNKNOWN"
-                        exporterPin = coc.importerPin ?: "UNKNOWN"
-                        exporterAddress1 = coc.exporterAddress1 ?: "UNKOWN"
-                        exporterAddress2 = coc.exporterAddress2 ?: "UNKNOWN"
-                        exporterCity = coc.exporterCity ?: "UNKNOWN"
-                        exporterCountry = coc.exporterCountry ?: "UNKNOWN"
-                        exporterZipCode = coc.exporterZipCode ?: "UNKNOWN"
-                        exporterTelephoneNumber = coc.exporterTelephoneNumber ?: "UNKOWN"
-                        exporterFaxNumber = coc.exporterFaxNumber ?: "UNKOWN"
-                        exporterEmail = coc.exporterEmail ?: "UNKNOWN"
-                        placeOfInspection = coc.placeOfInspection ?: "UNKNOWN"
-                        inspectionZone = coc.inspectionZone
-                        inspectionProvince = coc.inspectionProvince
-                        dateOfInspection = coc.dateOfInspection
-                        portOfDestination = coc.portOfDestination ?: "UNKOWN"
-                        shipmentMode = coc.shipmentMode ?: "UNKNOWN"
-                        countryOfSupply = coc.countryOfSupply ?: "UNKNOWN"
-                        finalInvoiceFobValue = coc.finalInvoiceFobValue ?: 0.0
-                        finalInvoiceExchangeRate = coc.finalInvoiceExchangeRate ?: 0.0
-                        finalInvoiceCurrency = coc.finalInvoiceCurrency ?: properties.applicationCurrencyCode
-                        finalInvoiceNumber = coc.finalInvoiceNumber ?: "NA"
-                        finalInvoiceDate = coc.finalInvoiceDate ?: commonDaoServices.getTimestamp()
-                        invoicePaymentDate = coc.invoicePaymentDate
-                        shipmentSealNumbers = coc.shipmentSealNumbers ?: "UNKNOWN"
-                        shipmentContainerNumber = coc.shipmentContainerNumber ?: "UNKNOWN"
-                        shipmentGrossWeight = coc.shipmentGrossWeight?.toString() ?: "UNKNOWN"
-                        cocRemarks = coc.cocRemarks ?: "UNKNOWN"
-                        route = coc.route ?: "Z"
-                        partner = user.id
-                        reviewStatus = ReviewStatus.NEW.code
-                        status = 1
-                        version = coc.version ?: 1
-                        cocType = "COC"
-                        documentsType = "F"
-                        productCategory = "UNKNOWN"
-                        partner = null
-                        createdBy = commonDaoServices.loggedInUserAuthentication().name
-                        createdOn = commonDaoServices.getTimestamp()
-                    }
-                    // Add invoice details
-                    localCoc = cocRepo.save(localCoc)
-                    KotlinLogging.logger { }.info { "FOREIGN = ${localCoc.id}, items=${coc.cocItems?.size}" }
-                    this.checkCocCoiDocumentCompliance(localCoc, user, "COC")
-                    foreignCocItems(coc.cocItems, localCoc, map)
-                    return localCoc
+                ?.let { coc ->
+                    return null
                 }
+        }
+            ?: kotlin.run {
+                var localCoc = CocsEntity()
+                KotlinLogging.logger { }.debug("Starting background task")
+                with(localCoc) {
+                    coiNumber = coc.cocNumber ?: "UNKNOWN"
+                    cocNumber = coc.cocNumber?.toUpperCase()
+                    idfNumber = coc.idfNumber ?: "UNKNOWN"
+                    rfiNumber = coc.rfiNumber ?: "UNKNOWN"
+                    ucrNumber = coc.ucrNumber
+                    finalDocDate = coc.finalDocDate
+                    rfcDate = coc.rfcDate
+                    shipmentQuantityDelivered = "UNKNOWN"
+                    cocIssueDate = coc.cocIssueDate
+                    clean = coc.compliant
+                    cocIssueDate = coc.cocIssueDate
+                    cocRemarks = coc.cocRemarks ?: "NA"
+                    coiRemarks = "UNKNOWN"
+                    issuingOffice = coc.issuingOffice ?: "UNKNOWN"
+                    importerName = coc.importerName
+                    importerPin = coc.importerPin
+                    importerAddress1 = coc.importerAddress1
+                    importerAddress2 = coc.importerAddress2 ?: "UNKNOWN"
+                    importerCity = coc.importerCity ?: "UNKNOWN"
+                    importerCountry = coc.importerCountry ?: "UNKNOWN"
+                    importerZipCode = "UNKNOWN"
+                    importerTelephoneNumber = coc.importerTelephoneNumber ?: "UNKNOWN"
+                    importerFaxNumber = coc.importerFaxNumber ?: "UNKNOWN"
+                    importerEmail = coc.importerEmail ?: "UNKNOWN"
+                    exporterName = coc.exporterName ?: "UNKNOWN"
+                    exporterPin = coc.importerPin ?: "UNKNOWN"
+                    exporterAddress1 = coc.exporterAddress1 ?: "UNKOWN"
+                    exporterAddress2 = coc.exporterAddress2 ?: "UNKNOWN"
+                    exporterCity = coc.exporterCity ?: "UNKNOWN"
+                    exporterCountry = coc.exporterCountry ?: "UNKNOWN"
+                    exporterZipCode = coc.exporterZipCode ?: "UNKNOWN"
+                    exporterTelephoneNumber = coc.exporterTelephoneNumber ?: "UNKOWN"
+                    exporterFaxNumber = coc.exporterFaxNumber ?: "UNKOWN"
+                    exporterEmail = coc.exporterEmail ?: "UNKNOWN"
+                    placeOfInspection = coc.placeOfInspection ?: "UNKNOWN"
+                    inspectionZone = coc.inspectionZone
+                    inspectionProvince = coc.inspectionProvince
+                    dateOfInspection = coc.dateOfInspection
+                    portOfDestination = coc.portOfDestination ?: "UNKOWN"
+                    shipmentMode = coc.shipmentMode ?: "UNKNOWN"
+                    countryOfSupply = coc.countryOfSupply ?: "UNKNOWN"
+                    finalInvoiceFobValue = coc.finalInvoiceFobValue ?: 0.0
+                    finalInvoiceExchangeRate = coc.finalInvoiceExchangeRate ?: 0.0
+                    finalInvoiceCurrency = coc.finalInvoiceCurrency ?: properties.applicationCurrencyCode
+                    finalInvoiceNumber = coc.finalInvoiceNumber ?: "NA"
+                    finalInvoiceDate = coc.finalInvoiceDate ?: commonDaoServices.getTimestamp()
+                    invoicePaymentDate = coc.invoicePaymentDate
+                    shipmentSealNumbers = "UNKNOWN"
+                    shipmentContainerNumber = "UNKNOWN"
+                    shipmentGrossWeight = "UNKNOWN"
+                    cocRemarks = coc.cocRemarks ?: "UNKNOWN"
+                    route = coc.route ?: "Z"
+                    partner = user.id
+                    reviewStatus = ReviewStatus.NEW.code
+                    status = 1
+                    version = coc.version ?: 1
+                    cocType = "COC"
+                    documentsType = "F"
+                    productCategory = "UNKNOWN"
+                    partner = null
+                    createdBy = commonDaoServices.loggedInUserAuthentication().name
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+                // Add invoice details
+                localCoc = cocRepo.save(localCoc)
+                KotlinLogging.logger { }.info { "FOREIGN = ${localCoc.id}, items=${coc.cocItems?.size}" }
+                this.checkCocCoiDocumentCompliance(localCoc, user, "COC")
+                foreignCocItems(coc.cocItems, localCoc, map)
+                return localCoc
+            }
 
     }
 
     @Transactional
     fun foreignNcr(
-            user: PvocPartnersEntity,
-            ncr: NcrEntityForm,
-            map: ServiceMapsEntity,
+        user: PvocPartnersEntity,
+        ncr: NcrEntityForm,
+        map: ServiceMapsEntity,
     ): CocsEntity? {
         ncr.ucrNumber?.let { ucrNumber ->
             cocRepo.findByUcrNumberAndCocTypeAndVersion(ucrNumber, "NCR", ncr.version)
-                    ?.let { coc ->
-                        return null
-                    }
-        }
-                ?: kotlin.run {
-                    var foreignNcr = CocsEntity()
-                    KotlinLogging.logger { }.debug("Starting background task")
-                    with(foreignNcr) {
-                        coiNumber = ncr.ncrNumber ?: "UNKNOWN"
-                        cocNumber = ncr.ncrNumber?.toUpperCase()
-                        idfNumber = ncr.idfNumber ?: "UNKNOWN"
-                        rfiNumber = ncr.rfiNumber ?: "UNKNOWN"
-                        ucrNumber = ncr.ucrNumber
-                        rfcDate = ncr.rfcDate
-                        acceptableDocDate = ncr.acceptableDocDate
-                        finalDocDate = ncr.finalDocDate
-                        shipmentQuantityDelivered = "UNKNOWN"
-                        cocIssueDate = ncr.ncrIssueDate
-                        clean = ncr.compliant
-                        cocRemarks = ncr.ncrRemarks ?: "NA"
-                        coiRemarks = "UNKNOWN"
-                        issuingOffice = ncr.issuingOffice ?: "UNKNOWN"
-                        importerName = ncr.importerName
-                        importerPin = ncr.importerPin
-                        importerAddress1 = ncr.importerAddress1
-                        importerAddress2 = ncr.importerAddress2 ?: "UNKNOWN"
-                        importerCity = ncr.importerCity ?: "UNKNOWN"
-                        importerCountry = ncr.importerCountry ?: "UNKNOWN"
-                        importerZipCode = "UNKNOWN"
-                        importerTelephoneNumber = ncr.importerTelephoneNumber ?: "UNKNOWN"
-                        importerFaxNumber = ncr.importerFaxNumber ?: "UNKNOWN"
-                        importerEmail = ncr.importerEmail ?: "UNKNOWN"
-                        exporterName = ncr.exporterName ?: "UNKNOWN"
-                        exporterPin = ncr.importerPin ?: "UNKNOWN"
-                        exporterAddress1 = ncr.exporterAddress1 ?: "UNKOWN"
-                        exporterAddress2 = ncr.exporterAddress2 ?: "UNKNOWN"
-                        exporterCity = ncr.exporterCity ?: "UNKNOWN"
-                        exporterCountry = ncr.exporterCountry ?: "UNKNOWN"
-                        exporterZipCode = ncr.exporterZipCode ?: "UNKNOWN"
-                        exporterTelephoneNumber = ncr.exporterTelephoneNumber ?: "UNKOWN"
-                        exporterFaxNumber = ncr.exporterFaxNumber ?: "UNKOWN"
-                        exporterEmail = ncr.exporterEmail ?: "UNKNOWN"
-                        placeOfInspection = ncr.placeOfInspection ?: "UNKNOWN"
-                        dateOfInspection = ncr.dateOfInspection
-                        portOfDestination = ncr.portOfDestination ?: "UNKOWN"
-                        shipmentMode = ncr.shipmentMode ?: "UNKNOWN"
-                        countryOfSupply = ncr.countryOfSupply ?: "UNKNOWN"
-                        finalInvoiceFobValue = ncr.finalInvoiceFobValue ?: 0.0
-                        finalInvoiceNumber = ncr.finalInvoiceNumber ?: "NA"
-                        finalInvoiceExchangeRate = ncr.finalInvoiceExchangeRate ?: 0.0
-                        finalInvoiceCurrency = ncr.finalInvoiceCurrency ?: properties.applicationCurrencyCode
-                        finalInvoiceDate = ncr.finalInvoiceDate ?: commonDaoServices.getTimestamp()
-                        invoicePaymentDate = ncr.paymentDate
-                        shipmentSealNumbers = ncr.shipmentSealNumbers ?: "UNKNOWN"
-                        shipmentContainerNumber = ncr.shipmentContainerNumber ?: "UNKNOWN"
-                        shipmentGrossWeight = ncr.shipmentGrossWeight?.toString() ?: "UNKNOWN"
-                        cocRemarks = ncr.ncrRemarks ?: "UNKNOWN"
-                        cocIssueDate = ncr.ncrIssueDate
-                        inspectionProvince = ncr.inspectionProvince
-                        inspectionZone = ncr.inspectionZone
-                        route = ncr.route ?: "Z"
-                        partner = user.id
-                        status = 1
-                        reviewStatus = ReviewStatus.NEW.code
-                        version = ncr.version ?: 1
-                        cocType = "NCR"
-                        documentsType = "F"
-                        productCategory = "UNKNOWN"
-                        partner = null
-                        createdBy = commonDaoServices.loggedInUserAuthentication().name
-                        createdOn = commonDaoServices.getTimestamp()
-                    }
-                    // Add invoice details
-                    foreignNcr = cocRepo.save(foreignNcr)
-                    KotlinLogging.logger { }.info { "Foreign NCR = ${foreignNcr.id}" }
-                    this.checkCocCoiDocumentCompliance(foreignNcr, user, "NCR")
-                    foreignCocItems(ncr.ncrItems, foreignNcr, map)
-                    return foreignNcr
+                ?.let { coc ->
+                    return null
                 }
+        }
+            ?: kotlin.run {
+                var foreignNcr = CocsEntity()
+                KotlinLogging.logger { }.debug("Starting background task")
+                with(foreignNcr) {
+                    coiNumber = ncr.ncrNumber ?: "UNKNOWN"
+                    cocNumber = ncr.ncrNumber?.toUpperCase()
+                    idfNumber = ncr.idfNumber ?: "UNKNOWN"
+                    rfiNumber = ncr.rfiNumber ?: "UNKNOWN"
+                    ucrNumber = ncr.ucrNumber
+                    rfcDate = ncr.rfcDate
+                    acceptableDocDate = ncr.acceptableDocDate
+                    finalDocDate = ncr.finalDocDate
+                    shipmentQuantityDelivered = "UNKNOWN"
+                    cocIssueDate = ncr.ncrIssueDate
+                    clean = ncr.compliant
+                    cocRemarks = ncr.ncrRemarks ?: "NA"
+                    coiRemarks = "UNKNOWN"
+                    issuingOffice = ncr.issuingOffice ?: "UNKNOWN"
+                    importerName = ncr.importerName
+                    importerPin = ncr.importerPin
+                    importerAddress1 = ncr.importerAddress1
+                    importerAddress2 = ncr.importerAddress2 ?: "UNKNOWN"
+                    importerCity = ncr.importerCity ?: "UNKNOWN"
+                    importerCountry = ncr.importerCountry ?: "UNKNOWN"
+                    importerZipCode = "UNKNOWN"
+                    importerTelephoneNumber = ncr.importerTelephoneNumber ?: "UNKNOWN"
+                    importerFaxNumber = ncr.importerFaxNumber ?: "UNKNOWN"
+                    importerEmail = ncr.importerEmail ?: "UNKNOWN"
+                    exporterName = ncr.exporterName ?: "UNKNOWN"
+                    exporterPin = ncr.importerPin ?: "UNKNOWN"
+                    exporterAddress1 = ncr.exporterAddress1 ?: "UNKOWN"
+                    exporterAddress2 = ncr.exporterAddress2 ?: "UNKNOWN"
+                    exporterCity = ncr.exporterCity ?: "UNKNOWN"
+                    exporterCountry = ncr.exporterCountry ?: "UNKNOWN"
+                    exporterZipCode = ncr.exporterZipCode ?: "UNKNOWN"
+                    exporterTelephoneNumber = ncr.exporterTelephoneNumber ?: "UNKOWN"
+                    exporterFaxNumber = ncr.exporterFaxNumber ?: "UNKOWN"
+                    exporterEmail = ncr.exporterEmail ?: "UNKNOWN"
+                    placeOfInspection = ncr.placeOfInspection ?: "UNKNOWN"
+                    dateOfInspection = ncr.dateOfInspection
+                    portOfDestination = ncr.portOfDestination ?: "UNKOWN"
+                    shipmentMode = ncr.shipmentMode ?: "UNKNOWN"
+                    countryOfSupply = ncr.countryOfSupply ?: "UNKNOWN"
+                    finalInvoiceFobValue = ncr.finalInvoiceFobValue ?: 0.0
+                    finalInvoiceNumber = ncr.finalInvoiceNumber ?: "NA"
+                    finalInvoiceExchangeRate = ncr.finalInvoiceExchangeRate ?: 0.0
+                    finalInvoiceCurrency = ncr.finalInvoiceCurrency ?: properties.applicationCurrencyCode
+                    finalInvoiceDate = ncr.finalInvoiceDate ?: commonDaoServices.getTimestamp()
+                    invoicePaymentDate = ncr.paymentDate
+                    shipmentSealNumbers = ncr.shipmentSealNumbers ?: "UNKNOWN"
+                    shipmentContainerNumber = ncr.shipmentContainerNumber ?: "UNKNOWN"
+                    shipmentGrossWeight = ncr.shipmentGrossWeight?.toString() ?: "UNKNOWN"
+                    cocRemarks = ncr.ncrRemarks ?: "UNKNOWN"
+                    cocIssueDate = ncr.ncrIssueDate
+                    inspectionProvince = ncr.inspectionProvince
+                    inspectionZone = ncr.inspectionZone
+                    route = ncr.route ?: "Z"
+                    partner = user.id
+                    status = 1
+                    reviewStatus = ReviewStatus.NEW.code
+                    version = ncr.version ?: 1
+                    cocType = "NCR"
+                    documentsType = "F"
+                    productCategory = "UNKNOWN"
+                    partner = null
+                    createdBy = commonDaoServices.loggedInUserAuthentication().name
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+                // Add invoice details
+                foreignNcr = cocRepo.save(foreignNcr)
+                KotlinLogging.logger { }.info { "Foreign NCR = ${foreignNcr.id}" }
+                this.checkCocCoiDocumentCompliance(foreignNcr, user, "NCR")
+                foreignCocItems(ncr.ncrItems, foreignNcr, map)
+                return foreignNcr
+            }
 
     }
 
@@ -237,7 +237,7 @@ class ForeignPvocIntegrations(
                     shipmentLineNumber = item.shipmentLineNumber
                     shipmentLineHscode = item.shipmentLineHscode
                     shipmentLineQuantity = item.shipmentLineQuantity.let { BigDecimal.valueOf(it) }
-                            ?: BigDecimal.ZERO
+                        ?: BigDecimal.ZERO
                     shipmentLineUnitofMeasure = item.shipmentLineUnitofMeasure
                     shipmentLineDescription = item.shipmentLineDescription
                     shipmentLineVin = item.shipmentLineVin ?: "UNKNOWN"
@@ -246,6 +246,12 @@ class ForeignPvocIntegrations(
                     shipmentLineStandardsReference = item.shipmentLineStandardsReference ?: "UNKNOWN"
                     shipmentLineLicenceReference = item.shipmentLineLicenceReference ?: "UNKNOWN"
                     shipmentLineRegistration = item.shipmentLineRegistration ?: "UNKNOWN"
+                    shipmentSealNumbers = item.shipmentSealNumbers
+                    shipmentContainerNumber = item.shipmentContainerNumber
+                    shipmentGrossWeight = item.shipmentGrossWeight
+                    shipmentQuantityDelivered =
+                        item.shipmentQuantityDelivered?.let { BigDecimal.valueOf(it) } ?: BigDecimal.ZERO
+                    productCategory = item.productCategory
                     ownerPin = localCoc.importerPin ?: "UNKNOWN"
                     ownerName = localCoc.importerName ?: "UNKNOWN"
                     status = map.activeStatus
@@ -253,6 +259,7 @@ class ForeignPvocIntegrations(
                     createdBy = commonDaoServices.loggedInUserAuthentication().name
                     createdOn = commonDaoServices.getTimestamp()
                 }
+
                 localCocItems = iCocItemRepository.save(localCocItems)
                 KotlinLogging.logger { }.info { "Generated foreign coc item WITH id = ${localCocItems.id}" }
             }
@@ -261,15 +268,15 @@ class ForeignPvocIntegrations(
 
     @Transactional
     fun foreignCoi(
-            user: PvocPartnersEntity,
-            coi: CoiEntityForm,
-            map: ServiceMapsEntity,
+        user: PvocPartnersEntity,
+        coi: CoiEntityForm,
+        map: ServiceMapsEntity,
     ): CocsEntity? {
         coi.ucrNumber?.let { ucrNumber ->
             cocRepo.findByUcrNumberAndCocTypeAndVersion(ucrNumber, "COI", coi.version)
-                    ?.let { coc ->
-                        return null
-                    }
+                ?.let { coc ->
+                    return null
+                }
         } ?: kotlin.run {
             var localCoi = CocsEntity()
             KotlinLogging.logger { }.debug("Starting background task")
@@ -386,9 +393,16 @@ class ForeignPvocIntegrations(
     /**
      * Apply penalty configured or apply the default 15% penalty
      */
-    private fun calculatePenalty(amount: BigDecimal?, first: Boolean, route: String?, user: PvocPartnersEntity): BigDecimal? {
-        return this.timelinePenaltiesRepository.findByPartnerTypeAndRoute(user.partnerType, route
-                ?: "OTHER")?.let { penalty ->
+    private fun calculatePenalty(
+        amount: BigDecimal?,
+        first: Boolean,
+        route: String?,
+        user: PvocPartnersEntity
+    ): BigDecimal? {
+        return this.timelinePenaltiesRepository.findByPartnerTypeAndRoute(
+            user.partnerType, route
+                ?: "OTHER"
+        )?.let { penalty ->
             if (first) {
                 return (amount?.times(penalty.firstPenalty ?: BigDecimal.ZERO))?.divide(BigDecimal.valueOf(100))
             }
@@ -396,7 +410,12 @@ class ForeignPvocIntegrations(
         } ?: amount?.times(BigDecimal.valueOf(15).divide(BigDecimal.valueOf(100)))
     }
 
-    private fun checkTimelineIssue(timeline: PvocTimelinesDataEntity, transaction: BillTransactionsEntity, user: PvocPartnersEntity, version: Long?): Boolean {
+    private fun checkTimelineIssue(
+        timeline: PvocTimelinesDataEntity,
+        transaction: BillTransactionsEntity,
+        user: PvocPartnersEntity,
+        version: Long?
+    ): Boolean {
         val rfcToIspectionDays = timeline.rfcDate?.let { rfcDate ->
             timeline.dateOfInspection?.let { inspectionDate ->
                 Duration.between(rfcDate.toLocalDateTime(), inspectionDate.toLocalDateTime()).toDays()
@@ -572,7 +591,14 @@ class ForeignPvocIntegrations(
             KotlinLogging.logger { }.info("Added $documentType timeline issue: ${timeline.id}")
         }
         // 2. Check seal issues
-        if ("A".equals(entity.route, true) && (entity.shipmentContainerNumber == null || "NA".equals(entity.shipmentContainerNumber, true) || "UNKNOWN".equals(entity.shipmentContainerNumber, true))) {
+        if ("A".equals(
+                entity.route,
+                true
+            ) && (entity.shipmentContainerNumber == null || "NA".equals(
+                entity.shipmentContainerNumber,
+                true
+            ) || "UNKNOWN".equals(entity.shipmentContainerNumber, true))
+        ) {
             val date = LocalDateTime.now()
             val sealIssue = PvocSealIssuesEntity()
             sealIssue.partnerId = user.id
@@ -626,9 +652,9 @@ class ForeignPvocIntegrations(
 
     @Transactional
     fun foreignCor(
-            cor: CorEntityForm,
-            s: ServiceMapsEntity,
-            user: PvocPartnersEntity,
+        cor: CorEntityForm,
+        s: ServiceMapsEntity,
+        user: PvocPartnersEntity,
     ): CorsBakEntity? {
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
@@ -705,9 +731,9 @@ class ForeignPvocIntegrations(
 
     @Transactional
     fun foreignNcrCor(
-            cor: NcrCorEntityForm,
-            s: ServiceMapsEntity,
-            user: PvocPartnersEntity,
+        cor: NcrCorEntityForm,
+        s: ServiceMapsEntity,
+        user: PvocPartnersEntity,
     ): CorsBakEntity? {
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
@@ -784,7 +810,12 @@ class ForeignPvocIntegrations(
 
 
     @Transactional
-    fun foreignRfc(rfc: RfcEntityForm, documentType: String, s: ServiceMapsEntity, user: PvocPartnersEntity): RfcEntity? {
+    fun foreignRfc(
+        rfc: RfcEntityForm,
+        documentType: String,
+        s: ServiceMapsEntity,
+        user: PvocPartnersEntity
+    ): RfcEntity? {
         val rfcEntity = RfcEntity()
         val auth = this.commonDaoServices.loggedInUserAuthentication()
         this.rfcRepository.findByRfcNumberAndVersion(rfc.rfcNumber!!, rfc.version ?: 1)?.let {
@@ -868,8 +899,12 @@ class ForeignPvocIntegrations(
         when (documentType.toUpperCase()) {
             "COR" -> {
                 val rfcEntity = when {
-                    StringUtils.hasLength(ucrNumber) -> this.rfcCorRepository.findFirstByUcrNumberOrderByVersionDesc(ucrNumber)
-                    StringUtils.hasLength(rfcNumber) -> this.rfcCorRepository.findFirstByRfcNumberOrderByVersionDesc(rfcNumber)
+                    StringUtils.hasLength(ucrNumber) -> this.rfcCorRepository.findFirstByUcrNumberOrderByVersionDesc(
+                        ucrNumber
+                    )
+                    StringUtils.hasLength(rfcNumber) -> this.rfcCorRepository.findFirstByRfcNumberOrderByVersionDesc(
+                        rfcNumber
+                    )
                     else -> null
                 }
                 return rfcEntity?.let {
@@ -878,8 +913,12 @@ class ForeignPvocIntegrations(
             }
             else -> {
                 val rfcEntity = when {
-                    StringUtils.hasLength(ucrNumber) -> this.rfcRepository.findFirstByUcrNumberOrderByVersionDesc(ucrNumber)
-                    StringUtils.hasLength(rfcNumber) -> this.rfcRepository.findFirstByRfcNumberOrderByVersionDesc(rfcNumber)
+                    StringUtils.hasLength(ucrNumber) -> this.rfcRepository.findFirstByUcrNumberOrderByVersionDesc(
+                        ucrNumber
+                    )
+                    StringUtils.hasLength(rfcNumber) -> this.rfcRepository.findFirstByRfcNumberOrderByVersionDesc(
+                        rfcNumber
+                    )
                     else -> null
                 }
                 return rfcEntity?.let {
