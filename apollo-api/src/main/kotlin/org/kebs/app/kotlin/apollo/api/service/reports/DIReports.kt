@@ -37,8 +37,8 @@ class DIReports(
 
     init {
         try {
-            val resource = resourceLoader.getResource("classpath:apollo_reports.json")
-            reports = mapper.readValue(resource.file, Reports::class.java)
+            val resource = resourceLoader.getResource("classpath:apollo_reports.json").inputStream
+            reports = mapper.readValue(resource, Reports::class.java)
             KotlinLogging.logger {}.info("DDD-:${mapper.writeValueAsString(reports)}")
         } catch (ex: Exception) {
             throw ex
