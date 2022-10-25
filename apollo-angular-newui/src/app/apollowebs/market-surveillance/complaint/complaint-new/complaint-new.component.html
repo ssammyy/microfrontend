@@ -1240,8 +1240,8 @@
                         <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
                     </div>
                     <div class="col">
-                        <button (click)="onSubmitComplaint()" class="login-button mt-2" type="button">
-                            SUBMIT COMPLAINT
+                        <button (click)="reviewComplaint()" class="login-button mt-2" type="button">
+                            REVIEW COMPLAINT
                         </button>
 <!--                        <button [disabled]="!stepFourForm.valid" class="login-button" type="submit">NEXT</button>-->
                     </div>
@@ -1267,11 +1267,6 @@
                 <div class="modal-body">
                     <b class="text-primary">Complainant Information Details</b>
                     <ul class="w-list-unstyled">
-<!--                        <li class="list-item-accordion ">-->
-<!--                            <div class="list-title-accordion">Reference Number</div>-->
-<!--                            <div class="list-text-accordion">{{newComplaintDto?.complaintDetails?.refNumber}}-->
-<!--                            </div>-->
-<!--                        </li>-->
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Name</div>
                             <div class="list-text-accordion">{{newComplaintDto?.customerDetails?.firstName}} {{newComplaintDto?.customerDetails?.lastName}}
@@ -1385,14 +1380,9 @@
                                  data-dismiss="modal">
                             Close
                         </button>
-<!--                        <div *ngIf="addLabParamStatus">-->
-<!--                            <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"-->
-<!--                                     (click)="onClickSaveSampleSubmitted()">SUBMIT-->
-<!--                            </button>-->
-<!--                            <button *ngIf="sampleSubmitForm.valid"  mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"-->
-<!--                                    (click)="onClickSaveSampleSubmitted()" >SUBMIT-->
-<!--                            </button>-->
-<!--                        </div>-->
+                        <button mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"
+                                (click)="onSubmitComplaint()" >SUBMIT
+                        </button>
                     </div>
 
                 </div>

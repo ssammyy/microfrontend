@@ -35,7 +35,7 @@ import {
   ComplaintDto,
   ComplaintLocationDto,
   MSComplaintSubmittedSuccessful,
-  NewComplaintDto,
+  NewComplaintDto, SampleSubmissionDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {NgxSpinnerService} from 'ngx-spinner';
@@ -226,8 +226,10 @@ export class ComplaintNewComponent implements OnInit {
 
   updateSelectedCounty() {
     this.selectedCounty = this.stepThreeForm?.get('county')?.value;
-    // this.countyName = this.countyService.getAll().filter(c => cc.id === this.selectedCounty);
-
+    this.countyService.getAll().subscribe((data: County[]) => {
+          this.countyName = data?.find(x => x.id === this.selectedCounty).county;
+        },
+    );
     console.log(`county set to ${this.selectedCounty}`);
     this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
     this.store$.select(selectCountyIdData).subscribe(
@@ -245,6 +247,11 @@ export class ComplaintNewComponent implements OnInit {
 
   updateSelectedTown() {
     this.selectedTown = this.stepThreeForm?.get('town')?.value;
+    // tslint:disable-next-line:no-shadowed-variable
+    this.townService.getAll().subscribe((data: Town[]) => {
+          this.townName = data?.find(x => x.id === this.selectedTown).town;
+        },
+    );
     console.log(`town set to ${this.selectedTown}`);
   }
 
@@ -288,9 +295,21 @@ export class ComplaintNewComponent implements OnInit {
 
   }
 
+  reviewComplaint() {
+    this.newComplaintDto.customerDetails = this.stepOneForm.value;
+    this.newComplaintDto.complaintDetails = this.stepTwoForm.value;
+    this.newComplaintDto.locationDetails = this.stepThreeForm.value;
+    window.$('#complaintModal').modal('show');
+  }
+
   async onSubmitComplaint() {
     this.submitted = true;
-    this.saveDetailsFirst();
+    this.msService.showSuccessWith2Message('By Clicking Yes', 'You hereby certify that the information provided above is true !',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and click the \'PREV\' buttons to Update Details Before Saving', 'COMPLAINT SUBMITTED SUCCESSFUL', () => {
+          this.saveDetailsFirst();
+        });
+
   }
 
   saveDetailsFirst(): any {
