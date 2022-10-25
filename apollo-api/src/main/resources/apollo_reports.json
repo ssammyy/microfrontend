@@ -23,6 +23,29 @@
         "CONSIGNOR_PIN_NUMBER": "EXPORTER PIN"
       }
     },
+    "idf_report": {
+      "base_query": "DAT_KEBS_MANIFEST_DETAILS md",
+      "filters": {
+        "date__range": "md.EXPECTED_DATE",
+        "manifest": "md.MANIFEST_NUMBER",
+        "bill_number": "md.TD_BILL_CODE",
+        "importer": "md.CONSIGNEE_PIN_NUMBER"
+      },
+      "fields": {
+        "MANIFEST_NUMBER": "MANIFEST NUMBER",
+        "VOYAGE_NUMBER": "VOYAGE NUMBER",
+        "TO_CHAR(EXPECTED_DATE, 'DD-MON-YYYY HH24:MI') EXPECTED_DATE": "DATE of ARRIVAL",
+        "CONSIGNEE_BUSINESS_NAME": "IMPORTER NAME",
+        "CONSIGNOR_BUSINESS_NAME": "EXPORTER NAME",
+        "VOLUME": "QUANTITY",
+        "CONSIGNOR_COUNTRY_CODE": "COUNTRY OF ORIGIN/SUPPLY",
+        "TD_BILL_CODE": "BILL OF LANDING",
+        "PLACE_OF_LOADING": "STATION OF CLEARANCE",
+        "PLACE_OF_DELIVERY": "PORT OF DESTINATION",
+        "CONSIGNEE_PIN_NUMBER": "IMPORTER PIN",
+        "CONSIGNOR_PIN_NUMBER": "EXPORTER PIN"
+      }
+    },
     "cor_report": {
       "base_query": "DAT_KEBS_CORS_BAK cb",
       "filters": {
@@ -33,11 +56,11 @@
       },
       "fields": {
         "cb.COR_NUMBER": "COR NO.",
-        "cb.COR_ISSUE_DATE": "ISSUE DATE",
+        "TO_CHAR(cb.COR_ISSUE_DATE, 'DD-MON-YYYY HH24:MI') as COR_ISSUE_DATE": "ISSUE DATE",
         "cb.COUNTRY_OF_SUPPLY": "Country of Supply",
         "cb.INSPECTION_CENTER": "Inspection Center",
-        "cb.APPLICATION_BOOKING_DATE": "Application Date",
-        "cb.INSPECTION_DATE": "Inspection Date",
+        "TO_CHAR(cb.APPLICATION_BOOKING_DATE, 'DD-MON-YYYY HH24:MI') as APPLICATION_BOOKING_DATE": "Application Date",
+        "TO_CHAR(cb.INSPECTION_DATE, 'DD-MON-YYYY HH24:MI') as INSPECTION_DATE": "Inspection Date",
         "cb.UCR_NUMBER": "UCR NO.",
         "cb.MAKE": "Make",
         "cb.MODEL": "Model",
@@ -64,8 +87,8 @@
       },
       "fields": {
         "c.IDF_NUMBER": "IDF NUMBER",
-        "c.RFC_DATE": "RFC DATE",
-        "c.COC_ISSUE_DATE": "ISSUE DATE",
+        "TO_CHAR(c.RFC_DATE, 'DD-MON-YYYY HH24:MI') as RFC_DATE": "RFC DATE",
+        "TO_CHAR(c.COC_ISSUE_DATE, 'DD-MON-YYYY HH24:MI') as COC_ISSUE_DATE": "ISSUE DATE",
         "c.COC_NUMBER": "COC No.",
         "c.IS_CLEAN": "Compliant",
         "c.COC_REMARKS": "Remarks",

@@ -170,6 +170,7 @@ export class CorCertificatesComponent implements OnInit {
                     if (res) {
                         console.log(res)
                         // Download report
+                        this.diSevice.downloadDocument("/api/v1/download/reports", {}, res)
                     }
                 },
                 error => {

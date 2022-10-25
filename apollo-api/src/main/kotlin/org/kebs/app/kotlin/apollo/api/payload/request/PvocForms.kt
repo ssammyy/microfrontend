@@ -74,28 +74,6 @@ class PvocPartnersForms {
 }
 
 class CocItem {
-    @NotNull(message = "Required field")
-    @JsonAlias("SHIPMENT_PARTIAL_NUMBER")
-    var shipmentPartialNumber: Long = 0
-
-    @NotEmpty(message = "Required field")
-    @Size(max = 150, message = "Description should be upto 150 characters")
-    @JsonAlias("SHIPMENT_SEAL_NUMBERS")
-    var shipmentSealNumbers: String? = null
-
-    @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
-    @Size(max = 200, message = "Description should be upto 200 characters")
-    var shipmentContainerNumber: String? = null
-
-    @NotEmpty(message = "Required field")
-    @Size(max = 200, message = "Description should be upto 200 characters")
-    @JsonAlias("SHIPMENT_GROSS_WEIGHT")
-    var shipmentGrossWeight: String? = null
-
-    @NotEmpty(message = "Required field")
-    @Size(max = 200, message = "Description should be upto 200 characters")
-    @JsonAlias("SHIPMENT_QUANTITY_DELIVERED")
-    var shipmentQuantityDelivered: String? = null
 
     @NotNull(message = "Required field")
     @JsonAlias("SHIPMENT_LINE_NUMBER")
@@ -154,6 +132,26 @@ class CocItem {
     @JsonAlias("PRODUCT_CATEGORY")
     var productCategory: String? = null
 
+    @NotEmpty(message = "Required field")
+    @Size(max = 200, message = "Description should be upto 200 characters")
+    @JsonAlias("SHIPMENT_QUANTITY_DELIVERED")
+    var shipmentQuantityDelivered: Double? = null
+
+    @JsonAlias("SHIPMENT_GROSS_WEIGHT")
+    var shipmentGrossWeight: Double? = null
+
+    @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
+    @Size(max = 200, message = "Description should be upto 200 characters")
+    var shipmentContainerNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Description should be upto 150 characters")
+    @JsonAlias("SHIPMENT_SEAL_NUMBERS")
+    var shipmentSealNumbers: String? = null
+
+    @NotNull(message = "Required field")
+    @JsonAlias("SHIPMENT_PARTIAL_NUMBER")
+    var shipmentPartialNumber: Long = 0
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -341,21 +339,6 @@ class CocEntityForm {
     @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("SHIPMENT_MODE")
     var shipmentMode: String? = null
-
-    @NotEmpty(message = "Required field")
-    @Size(max = 150, message = "should be upto 150 characters")
-    @JsonAlias("SHIPMENT_SEAL_NUMBER")
-    var shipmentSealNumbers: String? = null
-
-    @NotEmpty(message = "Required field")
-    @Size(max = 150, message = "should be upto 150 characters")
-    @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
-    var shipmentContainerNumber: String? = null
-
-    @NotNull(message = "Required field")
-    @Min(value = 0, message = "Gross weight should not be negative")
-    @JsonAlias("SHIPMENT_GROSS_WEIGHT")
-    var shipmentGrossWeight: Double? = null
 
     @NotEmpty(message = "Required field")
     @Size(max = 150, message = "should be upto 150 characters")
@@ -1908,15 +1891,15 @@ class IdfItem {
     companion object {
         fun fromEntity(idfItemsEntity: IdfItemsEntity): IdfItem {
             return IdfItem()
-                    .apply {
-                        itemDescription = idfItemsEntity.itemDescription
-                        hsCode = idfItemsEntity.hsCode
-                        quantity = idfItemsEntity.quantity
-                        used = !"NEW".equals(idfItemsEntity.newUsed, true)
-                        unitOfMeasure = idfItemsEntity.unitOfMeasure
-                        applicableStandard = idfItemsEntity.applicableStandard
-                        itemCost = idfItemsEntity.itemCost
-                    }
+                .apply {
+                    itemDescription = idfItemsEntity.itemDescription
+                    hsCode = idfItemsEntity.hsCode
+                    quantity = idfItemsEntity.quantity
+                    used = !"NEW".equals(idfItemsEntity.newUsed, true)
+                    unitOfMeasure = idfItemsEntity.unitOfMeasure
+                    applicableStandard = idfItemsEntity.applicableStandard
+                    itemCost = idfItemsEntity.itemCost
+                }
         }
 
         fun fromList(items: List<IdfItemsEntity>): List<IdfItem> {
@@ -2119,7 +2102,11 @@ class PvocResponseModel {
 class PvocKebsQueryForm {
     @NotEmpty(message = "Document type is required")
     @Size(min = 1, max = 10, message = "Document type should be upto 10 characters")
-    @Pattern(regexp = "coc|cor|coi|ncr|rfc", flags = [Pattern.Flag.CASE_INSENSITIVE], message = "Document type should be one of COC,COI,COR,NCR or RFC")
+    @Pattern(
+        regexp = "coc|cor|coi|ncr|rfc",
+        flags = [Pattern.Flag.CASE_INSENSITIVE],
+        message = "Document type should be one of COC,COI,COR,NCR or RFC"
+    )
     var documentType: String? = null
 
     @Size(min = 0, max = 100, message = "Certificate number should be upto 100 characters")
@@ -2441,7 +2428,12 @@ class PvocInvoiceData {
     var currency: String? = null
 
     companion object {
-        fun fromEntity(bill: BillPayments, clientId: String, corporateCode: String, amountInWordsService: AmountInWordsService): PvocInvoiceData {
+        fun fromEntity(
+            bill: BillPayments,
+            clientId: String,
+            corporateCode: String,
+            amountInWordsService: AmountInWordsService
+        ): PvocInvoiceData {
             val dt = PvocInvoiceData()
             dt.apply {
                 invoiceNumber = bill.invoiceNumber.orEmpty()
@@ -2461,8 +2453,10 @@ class PvocInvoiceData {
                 taxAmount = BigDecimal.ZERO
                 discountAmount = BigDecimal.ZERO
                 currency = bill.currencyCode
-                amountInWords = amountInWordsService.amountToWords(bill.totalAmount
-                        ?: BigDecimal.ZERO, bill.currencyCode.orEmpty())
+                amountInWords = amountInWordsService.amountToWords(
+                    bill.totalAmount
+                        ?: BigDecimal.ZERO, bill.currencyCode.orEmpty()
+                )
             }
             dt.paymentStatus = when (bill.billStatus) {
                 BillStatus.PAID.status -> "PAID"
@@ -2473,7 +2467,12 @@ class PvocInvoiceData {
             return dt
         }
 
-        fun fromList(toList: List<BillPayments>, clientId: String, corporateCode: String, amountInWordsService: AmountInWordsService): List<PvocInvoiceData> {
+        fun fromList(
+            toList: List<BillPayments>,
+            clientId: String,
+            corporateCode: String,
+            amountInWordsService: AmountInWordsService
+        ): List<PvocInvoiceData> {
             val bills = mutableListOf<PvocInvoiceData>()
             toList.forEach { bills.add(fromEntity(it, clientId, corporateCode, amountInWordsService)) }
             return bills

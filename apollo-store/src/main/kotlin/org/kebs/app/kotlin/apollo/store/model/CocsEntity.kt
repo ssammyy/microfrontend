@@ -215,7 +215,7 @@ class CocsEntity : Serializable {
     @Basic
     var shipmentPartialNumber: Long = 0
 
-    @Column(name = "SHIPMENT_SEAL_NUMBERS", nullable = false, length = 4000)
+    @Column(name = "SHIPMENT_SEAL_NUMBERS", nullable = true, length = 4000)
     @Basic
     var shipmentSealNumbers: String? = null
 
@@ -223,7 +223,7 @@ class CocsEntity : Serializable {
     @Basic
     var shipmentContainerNumber: String? = null
 
-    @Column(name = "SHIPMENT_GROSS_WEIGHT", nullable = false, length = 10)
+    @Column(name = "SHIPMENT_GROSS_WEIGHT", nullable = true, length = 10)
     @Basic
     var shipmentGrossWeight: String? = null
 

@@ -669,6 +669,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                             PUT("/final-recommendation", handler::addWorkPlanScheduleFinalRecommendationByHOD)
                             PUT("/feedBack-notification", handler::addWorkPlanScheduleFeedBackByHOD)
                         }
+                        "/director".nest {
+                            PUT("/recommendation", handler::addWorkPlanScheduleFeedBackByDirector)
+                        }
                     }
                     "/add".nest {
                         POST("/charge-sheet", handler::addWorkPlanScheduleChargeSheet)

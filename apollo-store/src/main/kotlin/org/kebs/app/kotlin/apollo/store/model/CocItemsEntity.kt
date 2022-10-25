@@ -26,6 +26,15 @@ class CocItemsEntity : Serializable {
     @Basic
     var itemId: Long? = 0
 
+    @Column(name = "SHIPMENT_SEAL_NUMBER")
+    var shipmentSealNumbers: String? = null
+
+    @Column(name = "SHIPMENT_CONTAINER_NUMBER")
+    var shipmentContainerNumber: String? = null
+
+    @Column(name = "SHIPMENT_GROSS_WEIGHT")
+    var shipmentGrossWeight: Double? = null
+
     @NotNull(message = "Required field")
     @Column(name = "SHIPMENT_LINE_NUMBER", nullable = false, precision = 2)
     @Basic
@@ -79,6 +88,14 @@ class CocItemsEntity : Serializable {
     @Column(name = "SHIPMENT_LINE_REGISTRATION", nullable = true, length = 100)
     @Basic
     var shipmentLineRegistration: String? = null
+
+    @Column(name = "PRODUCT_CATEGORY", nullable = true, length = 100)
+    @Basic
+    var productCategory: String? = null
+
+    @Column(name = "SHIPMENT_QUANTITY_DELIVERED", nullable = true, precision = 2)
+    @Basic
+    var shipmentQuantityDelivered: BigDecimal = BigDecimal.ZERO
 
     @Column(name = "OWNER_PIN", nullable = true, length = 100)
     @Basic
@@ -200,39 +217,39 @@ class CocItemsEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-                id,
-                cocId,
-                shipmentLineNumber,
-                shipmentLineHscode,
-                shipmentLineQuantity,
-                shipmentLineUnitofMeasure,
-                shipmentLineDescription,
-                shipmentLineVin,
-                shipmentLineStickerNumber,
-                shipmentLineIcs,
-                shipmentLineStandardsReference,
-                shipmentLineLicenceReference,
-                shipmentLineRegistration,
-                ownerPin,
-                ownerName,
-                status,
-                cocNumber,
-                coiNumber,
-                varField3,
-                varField4,
-                varField5,
-                varField6,
-                varField7,
-                varField8,
-                varField9,
-                varField10,
-                createdBy,
-                createdOn,
-                modifiedBy,
-                modifiedOn,
-                deleteBy,
-                deletedOn,
-                shipmentLineBrandName
+            id,
+            cocId,
+            shipmentLineNumber,
+            shipmentLineHscode,
+            shipmentLineQuantity,
+            shipmentLineUnitofMeasure,
+            shipmentLineDescription,
+            shipmentLineVin,
+            shipmentLineStickerNumber,
+            shipmentLineIcs,
+            shipmentLineStandardsReference,
+            shipmentLineLicenceReference,
+            shipmentLineRegistration,
+            ownerPin,
+            ownerName,
+            status,
+            cocNumber,
+            coiNumber,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            modifiedBy,
+            modifiedOn,
+            deleteBy,
+            deletedOn,
+            shipmentLineBrandName
         )
     }
 }

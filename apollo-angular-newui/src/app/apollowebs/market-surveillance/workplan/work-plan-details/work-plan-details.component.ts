@@ -1508,7 +1508,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       });
     }
 
-    if (this.workPlanInspection?.rejectedStatus && this.workPlanInspection?.approvedStatus === false ) {
+    if (this.workPlanInspection?.approvedStatus === false ) {
       this.addNewScheduleForm.patchValue(this.workPlanInspection?.updateWorkPlan);
       this.msService.msDepartmentListDetails().subscribe(
           (dataDep: MsDepartment[]) => {
@@ -1771,6 +1771,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       }
     }
   }
+
 
   public onCustomSSFAction(event: any): void {
     switch (event.action) {

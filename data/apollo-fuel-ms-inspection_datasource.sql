@@ -326,13 +326,13 @@ alter table DAT_KEBS_MS_UPLOADS
     add FUEL_PLAN_UPLOADS NUMBER(2)
 /
 
-alter table DAT_KEBS_MS_FUEL_TEAMS_COUNTY
+alter table DAT_KEBS_MS_WORKPLAN_PRODUCTS
     add REFERENCE_NO VARCHAR2(20)
 /
 
 
-alter table DAT_KEBS_MS_FUEL_INSPECTION
-    add MS_TEAMS_ID NUMBER REFERENCES DAT_KEBS_MS_FUEL_TEAMS(ID)
+alter table DAT_KEBS_MS_WORKPLAN_PRODUCTS
+    add SSF_ID NUMBER REFERENCES DAT_KEBS_MS_SAMPLE_SUBMISSION(ID)
 /
 
 alter table DAT_KEBS_MS_FUEL_INSPECTION
@@ -446,4 +446,72 @@ end;
 
 
 create index DAT_MS_SEIZURE_seq_idx on DAT_MS_SEIZURE (STATUS) TABLESPACE qaimssdb_idx;
+/
+
+
+create table DAT_KEBS_MS_WORKPLAN_PRODUCTS
+(
+    ID                       NUMBER PRIMARY KEY,
+    PRODUCT_NAME             VARCHAR2(200),
+    RECOMMENDATION       VARCHAR2(3000),
+    DESTRUCTION_RECOMMENDED       NUMBER(2, 0),
+    HOD_RECOMMENDATION_STATUS       NUMBER(2, 0),
+    HOD_RECOMMENDATION_REMARKS VARCHAR2(1000),
+    DIRECTOR_RECOMMENDATION_STATUS       NUMBER(2, 0),
+    DIRECTOR_RECOMMENDATION_REMARKS VARCHAR2(1000),
+    CLIENT_APPEALED        NUMBER(2, 0),
+    DESTRUCTION_STATUS        NUMBER(2, 0),
+    APPEAL_STATUS        NUMBER(2, 0),
+    DESTRUCTION_NOTIFICATION_STATUS        NUMBER(2, 0),
+    DESTRUCTION_NOTIFICATION_DOC_ID        NUMBER REFERENCES DAT_KEBS_MS_UPLOADS(ID),
+    DESTRUCTION_CLIENT_EMAIL       VARCHAR2(200),
+    DESTRUCTION_CLIENT_FULL_NAME       VARCHAR2(200),
+    DESTRUCTION_NOTIFICATION_DATE       DATE,
+    DESTRUCTION_DOC_ID        NUMBER REFERENCES DAT_KEBS_MS_UPLOADS(ID),
+    DESTRUCTED_STATUS        NUMBER(2, 0),
+    STATUS                   NUMBER(2, 0),
+    DESCRIPTION              VARCHAR2(200),
+    VAR_FIELD_1              VARCHAR2(350 char),
+    VAR_FIELD_2              VARCHAR2(350 char),
+    VAR_FIELD_3              VARCHAR2(350 char),
+    VAR_FIELD_4              VARCHAR2(350 char),
+    VAR_FIELD_5              VARCHAR2(350 char),
+    VAR_FIELD_6              VARCHAR2(350 char),
+    VAR_FIELD_7              VARCHAR2(350 char),
+    VAR_FIELD_8              VARCHAR2(350 char),
+    VAR_FIELD_9              VARCHAR2(350 char),
+    VAR_FIELD_10             VARCHAR2(350 char),
+    CREATED_BY               VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON               TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY              VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON              TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY                VARCHAR2(100 char)          default 'admin',
+    DELETED_ON               TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_KEBS_MS_WORKPLAN_PRODUCTS_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_KEBS_MS_WORKPLAN_PRODUCTS_SEQ_trg
+    before
+        insert
+    on DAT_KEBS_MS_WORKPLAN_PRODUCTS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_MS_WORKPLAN_PRODUCTS_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+    end if;
+end;
+
+
+create index DAT_KEBS_MS_WORKPLAN_PRODUCTS_seq_idx on DAT_KEBS_MS_WORKPLAN_PRODUCTS (STATUS,DESTRUCTION_RECOMMENDED,
+    CLIENT_APPEALED,
+DESTRUCTION_STATUS,
+DESTRUCTION_NOTIFICATION_DOC_ID,
+DESTRUCTION_DOC_ID,
+DESTRUCTED_STATUS) TABLESPACE qaimssdb_idx;
 /
