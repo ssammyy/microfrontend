@@ -2102,27 +2102,27 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveFinalRecommendationHOD(valid: boolean) {
-    if (valid) {
-      this.SpinnerService.show();
-      this.dataSaveFinalRecommendation = {...this.dataSaveFinalRecommendation, ...this.finalRecommendationForm.value};
-      this.msService.msWorkPlanScheduleDetailsFinalRecommendationHOD(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-          this.dataSaveFinalRecommendation,
-      ).subscribe(
-          (data: any) => {
-            this.workPlanInspection = data;
-            console.log(data);
-            this.SpinnerService.hide();
-            this.msService.showSuccess('FINAL RECOMMENDATION SAVED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
-    }
+    // if (valid) {
+    //   this.SpinnerService.show();
+    //   this.dataSaveFinalRecommendation = {...this.dataSaveFinalRecommendation, ...this.finalRecommendationForm.value};
+    //   this.msService.msWorkPlanScheduleDetailsFinalRecommendationHOD(
+    //       this.workPlanInspection.batchDetails.referenceNumber,
+    //       this.workPlanInspection.referenceNumber,
+    //       this.dataSaveFinalRecommendation,
+    //   ).subscribe(
+    //       (data: any) => {
+    //         this.workPlanInspection = data;
+    //         console.log(data);
+    //         this.SpinnerService.hide();
+    //         this.msService.showSuccess('FINAL RECOMMENDATION SAVED SUCCESSFULLY');
+    //       },
+    //       error => {
+    //         this.SpinnerService.hide();
+    //         console.log(error);
+    //         this.msService.showError('AN ERROR OCCURRED');
+    //       },
+    //   );
+    // }
   }
 
   onClickSaveFinalReport(valid: boolean) {

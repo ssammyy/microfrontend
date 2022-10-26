@@ -275,6 +275,7 @@ export class ApiEndpointService {
         PERMIT_REPORTS_ALL_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwarded`,
         PERMIT_REPORTS_ALL_RENEWED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsRenewed`,
         PERMIT_REPORTS_ALL_SAMPLES_SUBMITTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allSamplesSubmitted`,
+        PERMIT_REPORTS_ALL_DEJECTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allDejectedPermits`,
 
 
         VIEW_ALL_PAYMENTS: `${ApiEndpointService.QA_CONTEXT}/payments`,
@@ -666,7 +667,10 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_UPDATE_ASSIGN_HOF: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/assign-hof`,
         INSPECTION_SCHEDULED_APPROVE_HOD_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/approval-final-preliminary-report`,
         INSPECTION_SCHEDULED_APPROVE_HOD_FINAL_REMARKS: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/feedBack-notification`,
+        INSPECTION_SCHEDULED_ADD_DIRECTOR_FINAL_REMARKS_RECOMMENDATION: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/director/recommendation`,
         INSPECTION_SCHEDULED_HOD_ADD_FINAL_RECOMMENDATION: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/final-recommendation`,
+        INSPECTION_SCHEDULED_HOD_END_ADD_FINAL_RECOMMENDATION: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/end-adding-final-recommendation`,
+        INSPECTION_SCHEDULED_DIRECTOR_END_ADD_FINAL_REMARKS_RECOMMENDATION: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/director/end-recommendation`,
         INSPECTION_SCHEDULED_START_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/start-onsite-activities`,
         INSPECTION_SCHEDULED_SUBMIT_FOR_APPROVAL: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/submit-for-approval`,
         INSPECTION_SCHEDULED_END_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/end-onsite-activities`,

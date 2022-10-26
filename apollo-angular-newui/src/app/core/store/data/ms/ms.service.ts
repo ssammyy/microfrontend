@@ -621,6 +621,21 @@ export class MsService {
             }
         });
     }
+
+    public showWarning(message: string, fn?: Function) {
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'warning',
+        }).then(() => {
+            if (fn) {
+                fn();
+            }
+        });
+    }
     // tslint:disable-next-line:max-line-length
     /*******************************************************************START OF MARKET SURVEILLANCE*****************************************************************************/
 
@@ -1059,6 +1074,28 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleDetailsFinalRemarksDirector(workPlanProductRefNo: string, batchReferenceNo: string, referenceNo: string, data: WorkPlanFeedBackDto): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_DIRECTOR_FINAL_REMARKS_RECOMMENDATION);
+        const params = new HttpParams()
+            .set('productReferenceNo', workPlanProductRefNo)
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsApprovePreliminaryHOD(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
          // tslint:disable-next-line:max-line-length
@@ -1079,15 +1116,55 @@ export class MsService {
 
 
      // tslint:disable-next-line:max-line-length
-    public msWorkPlanScheduleDetailsFinalRecommendationHOD(batchReferenceNo: string, referenceNo: string, data: WorkPlanFinalRecommendationDto): Observable<WorkPlanInspectionDto> {
+    public msWorkPlanScheduleDetailsFinalRecommendationHOD(workPlanProductRefNo: string, batchReferenceNo: string, referenceNo: string, data: WorkPlanFinalRecommendationDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_HOD_ADD_FINAL_RECOMMENDATION);
+        const params = new HttpParams()
+            .set('productReferenceNo', workPlanProductRefNo)
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleDetailsEndFinalRecommendationHOD(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(
             ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_HOD_ADD_FINAL_RECOMMENDATION);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
-        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+        return this.http.put<WorkPlanInspectionDto>(url, null, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleDetailsEndFinalRecommendationRemarksDirector(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_DIRECTOR_END_ADD_FINAL_REMARKS_RECOMMENDATION);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, null, {params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
                 return response;
             }),
