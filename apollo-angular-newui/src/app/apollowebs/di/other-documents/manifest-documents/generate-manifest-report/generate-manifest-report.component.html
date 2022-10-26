@@ -3,10 +3,10 @@
     <div class="row no_margin" [formGroup]="form">
         <div class="col-sm-12 col-md-6">
             <label for="stationId" class="waiver-form-label">Select Station</label>
-            <select id="stationId" name="blacklistId" class="waiver-form-input-master"
-                    formControlName="stationId">
+            <select id="stationId" name="stationId" class="waiver-form-input-master"
+                    formControlName="station_id">
                 <option value="" disabled selected>Select One</option>
-                <option *ngFor="let station of data.stations" [value]="station.id">{{station.cfsName}}</option>
+                <option *ngFor="let station of data.stations" [value]="station.cfsCode">{{station.cfsName}}</option>
             </select>
         </div>
         <div class="col-sm-12 col-md-6">

@@ -280,6 +280,10 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var approveStatus: Int? = null
 
+    @Column(name = "APPROVE_BY")
+    @Basic
+    var approveBy: String? = null
+
     @Column(name = "APPROVE_DATE")
     @Basic
     var approveDate: Date? = null
@@ -324,6 +328,14 @@ class CdItemDetailsEntity : Serializable {
     @Column(name = "SAMPLED_STATUS")
     @Basic
     var sampledStatus: Int? = null
+
+    @Column(name = "SAMPLED_BY")
+    @Basic
+    var sampledBy: String? = null
+
+    @Column(name = "SAMPLED_DATE")
+    @Basic
+    var sampledDate: Timestamp? = null
 
     @Column(name = "SAMPLE_COLLECTED_STATUS")
     @Basic

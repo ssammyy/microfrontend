@@ -68,10 +68,20 @@ class DIReports(
                     "range" -> {
                         filters.get("${conditions[0]}__start")?.let { start ->
                             filters.get("${conditions[0]}__end")?.let { end ->
-                                if (qb.hasCriteria()) {
-                                    qb.and().between(cond.value.toString(), start, end)
+                                if (conditions[0].contains("date")) {
+                                    if (qb.hasCriteria()) {
+                                        qb.and()
+                                            .between(cond.value.toString(), start, end, true)
+                                    } else {
+                                        qb.between(cond.value.toString(), start, end, true)
+                                    }
                                 } else {
-                                    qb.between(cond.value.toString(), start, end)
+                                    if (qb.hasCriteria()) {
+                                        qb.and()
+                                            .between(cond.value.toString(), start, end);
+                                    } else {
+                                        qb.between(cond.value.toString(), start, end)
+                                    }
                                 }
                             }
                         }
@@ -163,14 +173,19 @@ class DIReports(
         val model = ApiResponseModel()
         try {
             if (this.reports.reports?.contains(reportName) == true) {
-                val data = createWhereClause(0, -1, reportName, filters)
-                val mp = mutableMapOf<String, Any>()
-                mp["fields"] = this.reports.reports?.get(reportName)?.fields!!
-                mp["data"] = data.first
-                model.data = mp
-                model.totalCount = data.second.toString().toLongOrNull()
-                model.responseCode = ResponseCodes.SUCCESS_CODE
-                model.message = "Success"
+                val data = createWhereClause(0, 100_000, reportName, filters)
+                if (data.first.isEmpty()) {
+                    model.responseCode = ResponseCodes.NOT_FOUND
+                    model.message = "No record found for these parameters"
+                } else {
+                    val mp = mutableMapOf<String, Any>()
+                    mp["fields"] = this.reports.reports?.get(reportName)?.fields!!
+                    mp["data"] = data.first
+                    model.data = mp
+                    model.totalCount = data.second.toString().toLongOrNull()
+                    model.responseCode = ResponseCodes.SUCCESS_CODE
+                    model.message = "Success"
+                }
             } else {
                 model.responseCode = ResponseCodes.FAILED_CODE
                 model.message = "Invalid report name"

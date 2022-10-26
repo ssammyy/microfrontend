@@ -9,6 +9,15 @@
                 <option *ngFor="let station of data.stations" [value]="station.id">{{station.cfsName}}</option>
             </select>
         </div>
+        <div class="col-sm-6 col-md-4">
+            <label for="doc_type" class="waiver-form-label">Select Document Type</label>
+            <select id="doc_type" name="doc_type" class="waiver-form-input-master"
+                    formControlName="doc_type">
+                <option value="" disabled selected>Select One</option>
+                <option value="L">Local Document</option>
+                <option value="F">Foreign Document</option>
+            </select>
+        </div>
         <div class="col-sm-12 col-md-6">
             <label for="startDate" class="waiver-form-label">Start Date</label>
             <input id="startDate" type="date" class="waiver-form-input-master" formControlName="startDate">
@@ -32,6 +41,14 @@
         <div class="col-sm-12 col-md-6">
             <label for="description" class="waiver-form-label">Description</label>
             <input id="description" class="waiver-form-input-master" formControlName="description">
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <label for="partner_id" class="waiver-form-label">Partner ID</label>
+            <select id="partner_id" name="partner_id" class="waiver-form-input-master"
+                    formControlName="partner_id">
+                <option value="" disabled selected>Select One</option>
+                <option *ngFor="let station of data.partners" [value]="station.id">{{station.name}}</option>
+            </select>
         </div>
     </div>
     <mat-error *ngIf="message">{{message}}</mat-error>

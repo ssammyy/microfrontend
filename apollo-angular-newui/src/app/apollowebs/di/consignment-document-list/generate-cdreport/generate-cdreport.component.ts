@@ -16,21 +16,21 @@ export class GenerateCDReportComponent implements OnInit {
     loading = false
     compliant = [
         {
-            name: 'Y',
+            name: '1',
             description: 'Complaint'
         },
         {
-            name: 'N',
+            name: '0',
             description: 'Non-Complaint'
         }
     ]
     sampled = [
         {
-            name: 'Y',
+            name: '1',
             description: 'Sampled'
         },
         {
-            name: 'N',
+            name: '0',
             description: 'Not Sampled'
         }
     ]
@@ -62,7 +62,7 @@ export class GenerateCDReportComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            stationId: [null],
+            station_id: [null],
             coc_type: [null],
             sampled: [null],
             doc_type: [null],
@@ -80,7 +80,7 @@ export class GenerateCDReportComponent implements OnInit {
     }
 
     saveRecord() {
-        this.dialogRef.close(this.diService.formatDownloadReport(this.form.value, 'consignment_documents'))
+        this.dialogRef.close(this.diService.formatDownloadReport(this.form.value, 'consignment_report'))
     }
 
 }

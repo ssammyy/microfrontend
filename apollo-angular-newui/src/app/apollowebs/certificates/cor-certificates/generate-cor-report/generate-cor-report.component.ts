@@ -20,6 +20,7 @@ export class GenerateCorReportComponent implements OnInit {
     ngOnInit(): void {
         this.form = this.fb.group({
             stationId: [null],
+            doc_type: [null],
             startDate: [null],
             endDate: [null],
             exporter: [null],

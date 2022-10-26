@@ -19,7 +19,7 @@ export class GenerateManifestReportComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            stationId: [null],
+            station_id: [null],
             startDate: [null],
             endDate: [null],
             importer: [null],
@@ -30,7 +30,7 @@ export class GenerateManifestReportComponent implements OnInit {
 
     saveRecord() {
 
-        this.dialogRef.close(this.diService.formatDownloadReport(this.form, 'manifest_report'))
+        this.dialogRef.close(this.diService.formatDownloadReport(this.form.value, 'manifest_report'))
     }
 
 }

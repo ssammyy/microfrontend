@@ -18,7 +18,7 @@ export class GenerateReportComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            stationId: [null],
+            station_id: [null],
             startDate: [null],
             endDate: [null],
             importer: [null],
