@@ -71,7 +71,7 @@
                                                 <label style="color: #0082f3">Resources Required</label>
                                             </div>
                                             <div class="table-striped table-condensed table-responsive">
-                                                <ng2-smart-table [settings]="settingsResourceRequierd" [source]="workPlanInspection?.resourcesRequired"></ng2-smart-table>
+                                                <ng2-smart-table [settings]="settingsResourceRequired" [source]="workPlanInspection?.resourcesRequired"></ng2-smart-table>
                                             </div>
                                         </div>
                                     </mat-tab>
@@ -497,6 +497,30 @@
                                             </div>
                                         </div>
                                     </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.productList?.length!=0" label="11">
+                                        <ng-template mat-tab-label>
+                                            WorkPlan Products Details
+                                        </ng-template>
+                                        <div class="form-row">
+                                            <div *ngFor="let role of roles">
+                                                <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY' && workPlanInspection?.hodRecommendationStatus == false"
+                                                     class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsWorkPlanProducts"
+                                                                     [source]="workPlanInspection?.productList"
+                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
+                                                    ></ng2-smart-table>
+                                                </div>
+                                                <div *ngIf="role == 'MS_DIRECTOR_MODIFY'  && workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false"
+                                                     class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsWorkPlanProductsDirector"
+                                                                     [source]="workPlanInspection?.productList"
+                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
+                                                    ></ng2-smart-table>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </mat-tab>
                                     <mat-tab *ngIf="workPlanInspection?.seizureDeclarationDto?.length!=0" label="13">
                                         <ng-template mat-tab-label>
                                             SEIZED PRODUCTS
@@ -904,23 +928,23 @@
                                             <div>
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Lab Results Details</label>
-                                                    <ul class="w-list-unstyled">
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">BS Number</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">Compliance Status</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
-                                                        </li>
-                                                        <br/>
-                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>
-                                                        <br/>
-                                                    </ul>
+<!--                                                    <ul class="w-list-unstyled">-->
+<!--                                                        <li class="list-item-accordion">-->
+<!--                                                            <div class="list-title-accordion">BS Number</div>-->
+<!--                                                            <div class="list-text-accordion">-->
+<!--                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>-->
+<!--                                                        </li>-->
+<!--                                                        <li class="list-item-accordion">-->
+<!--                                                            <div class="list-title-accordion">Compliance Status</div>-->
+<!--                                                            <div class="list-text-accordion">-->
+<!--                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>-->
+<!--                                                        </li>-->
+<!--                                                        <br/>-->
+<!--                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>-->
+<!--                                                        <p class="list-paragraph-accordion"><span>-->
+<!--                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>-->
+<!--                                                        <br/>-->
+<!--                                                    </ul>-->
                                                     <br>
                                                     <label style="color: #0082f3">Lab Results Param</label>
                                                     <div class="table-striped table-condensed table-responsive">
@@ -1039,23 +1063,23 @@
                                             <div>
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Lab Results Details</label>
-                                                    <ul class="w-list-unstyled">
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">BS Number</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">Compliance Status</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
-                                                        </li>
-                                                        <br/>
-                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>
-                                                        <br/>
-                                                    </ul>
+<!--                                                    <ul class="w-list-unstyled">-->
+<!--                                                        <li class="list-item-accordion">-->
+<!--                                                            <div class="list-title-accordion">BS Number</div>-->
+<!--                                                            <div class="list-text-accordion">-->
+<!--                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>-->
+<!--                                                        </li>-->
+<!--                                                        <li class="list-item-accordion">-->
+<!--                                                            <div class="list-title-accordion">Compliance Status</div>-->
+<!--                                                            <div class="list-text-accordion">-->
+<!--                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>-->
+<!--                                                        </li>-->
+<!--                                                        <br/>-->
+<!--                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>-->
+<!--                                                        <p class="list-paragraph-accordion"><span>-->
+<!--                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>-->
+<!--                                                        <br/>-->
+<!--                                                    </ul>-->
                                                     <br>
                                                     <label style="color: #0082f3">Lab Results Param</label>
                                                     <div class="table-striped table-condensed table-responsive">
@@ -1159,6 +1183,15 @@
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="workPlanInspection?.msProcessEndedStatus == false">
+                                        <div *ngIf="role == 'MS_DIRECTOR_MODIFY'">
+                                            <button  *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false
+                                                && workPlanInspection?.productList?.length == workPlanInspection?.productListRecommendationAddedCount"
+                                                     (click)="onClickSaveEndFinalRemarksDirector()" mat-raised-button=""
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">END ADDING FINAL REMARKS</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                        </div>
                                         <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1240,18 +1273,11 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
-                                                && workPlanInspection?.hodRecommendationStatus == false
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal
-                                                && workPlanInspection?.preliminaryReport?.approvedStatus
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
-                                                     (click)="openModalAddDetails('addFinalRecommendationHOD')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#finalRecommendationModal"
+                                            <button  *ngIf="workPlanInspection?.hodRecommendationStatus == false
+                                                && workPlanInspection?.productList?.length == workPlanInspection?.productListRecommendationAddedCount"
+                                                     (click)="onClickSaveEndFinalRecommendationHOD()" mat-raised-button=""
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD FINAL RECOMMENDATION</span>
+                                                    class="mat-button-wrapper">END ADDING FINAL RECOMMENDATION</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1297,6 +1323,7 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
+
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
                                             <div *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -2048,6 +2075,26 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'addFinalRemarksDirector')">
+                        <form [formGroup]="finalRemarkHODForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="hodFeedBackRemarks"><b>Please write, in detail, your feedback for MS Recommendations:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="hodFeedBackRemarks7"
+                                                      [class.is-invalid]="formFinalRemarkHODForm.hodFeedBackRemarks.invalid &&
+                                                        formFinalRemarkHODForm.hodFeedBackRemarks.touched"
+                                                      matInput type="text"
+                                                      formControlName="hodFeedBackRemarks"
+                                                      name="hodFeedBackRemarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'addPreliminaryRecommendation')">
                         <form [formGroup]="preliminaryRecommendationForm" class="form">
                             <div class="form-body">
@@ -2297,7 +2344,7 @@
                                 <div class="form-group">
                                     <div>
                                         <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
-                                        <mat-form-field id="complianceStatusSSF">
+                                        <mat-form-field id="complianceStatusSSF7">
                                             <mat-select placeholder="Please Select an option"
                                                         formControlName="complianceStatus"
                                                         [class.is-invalid]="formSSFSaveComplianceStatusForm.complianceStatus.invalid && formSSFSaveComplianceStatusForm.complianceStatus.touched"
@@ -2491,18 +2538,24 @@
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
+                    <button *ngIf="(currDiv == 'addFinalRemarksDirector')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFinalRemarksDirector();"
+                            [disabled]="!finalRemarkHODForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
                     <button *ngIf="(currDiv == 'approvePreliminaryHOD')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveApprovePreliminaryHOD(approvePreliminaryForm.valid);"
                             [disabled]="!approvePreliminaryForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'addFinalRecommendationHOD')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveFinalRecommendationHOD(finalRecommendationForm.valid);"
-                            [disabled]="!finalRecommendationForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
+<!--                    <button *ngIf="(currDiv == 'addFinalRecommendationHOD')" mat-raised-button type="button" class="btn btn-success"-->
+<!--                            (click)="onClickSaveFinalRecommendationHOD(finalRecommendationForm.valid);"-->
+<!--                            [disabled]="!finalRecommendationForm.valid"-->
+<!--                            data-dismiss="modal"-->
+<!--                    >SUBMIT-->
+<!--                    </button>-->
                     <button *ngIf="(currDiv == 'addPreliminaryRecommendation')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveFinalReport(preliminaryRecommendationForm.valid);"
                             [disabled]="!preliminaryRecommendationForm.valid"
@@ -5158,7 +5211,7 @@
                     <div>
                         <div class="material-datatables">
                             <div class="table-responsive">
-                                <table id="datatablesSampleSubmitParam"
+                                <table id="datatablesSampleSubmit7Param"
                                        class="table table-striped table-bordered table-hover"
                                 >
                                     <thead>
@@ -5215,7 +5268,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Fill Final Recommendation Details</h4>
+                    <h4 class="modal-title">Fill Final Recommendation(s) Details</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
@@ -5235,10 +5288,8 @@
                                                 <option [value]="" selected>Please select</option>
                                                 <option  *ngFor="let app of recommendationList| filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>
                                             </select>
-                                            <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="hidden"
-                                                    class="form-control" formControlName="recommendationName" name="recommendationName" required>
-                                                <option *ngFor="let app of recommendationList| filterPipe: {status: true, id: selectedRecommendationID}" [value]="app.recommendationName">{{app.recommendationName}}</option>
-                                            </select>
+                                            <input class="form-control two-column-input" type="hidden" ngModel="{{selectedRecommendationName}}"
+                                                    formControlName="recommendationName" name="recommendationName">
                                         </div>
                                     </div>
 
@@ -5255,7 +5306,7 @@
                         </form>
                         <div class="material-datatables">
                             <div class="table-responsive">
-                                <table id="datatablesSampleSubmitParam"
+                                <table id="datatablesSampleSubmit4Param"
                                        class="table table-striped table-bordered table-hover"
                                 >
                                     <thead>

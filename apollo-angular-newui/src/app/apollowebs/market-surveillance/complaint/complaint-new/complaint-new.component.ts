@@ -69,7 +69,7 @@ export class ComplaintNewComponent implements OnInit {
 
   uploadedFiles: FileList;
   savedDetails: MSComplaintSubmittedSuccessful;
-  newComplaintDto: NewComplaintDto;
+  newComplaintDto: Partial<NewComplaintDto> | undefined;
 
   brsLookupRequest: BrsLookUpRequest;
   businessLines$: Observable<BusinessLines[]>;
