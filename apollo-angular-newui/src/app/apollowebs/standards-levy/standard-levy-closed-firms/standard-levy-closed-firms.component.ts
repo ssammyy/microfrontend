@@ -27,6 +27,10 @@ export class StandardLevyClosedFirmsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      processing: true,
+      dom: 'Bfrtip'
+    };
     this.getClosedFirms();
   }
   ngOnDestroy(): void {

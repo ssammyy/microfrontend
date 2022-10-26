@@ -462,6 +462,7 @@ interface RejectedComDetails{
     fun getCompanyTelephoneEdit(): String?
     fun getCompanyTelephone(): String?
     fun getAssignedTo(): String?
+    fun getStatus(): Long?
 }
 
 

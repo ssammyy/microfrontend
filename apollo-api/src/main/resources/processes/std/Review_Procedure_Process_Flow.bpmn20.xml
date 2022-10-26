@@ -3,27 +3,27 @@
   <process id="sd_Review_Procedure_module" name="Review_Procedure_Process_Flow" isExecutable="true">
     <documentation>The process for review procedure</documentation>
     <startEvent id="startEvent" flowable:formFieldValidation="true"></startEvent>
-    <userTask id="makeRecommendations" name="makeRecommendations" flowable:formFieldValidation="true"></userTask>
-    <userTask id="viewRecommendations" name="viewRecommendations" flowable:formFieldValidation="true"></userTask>
+    <userTask id="makeRecommendations" name="makeRecommendations" flowable:candidateGroups="TC_SEC" flowable:formFieldValidation="true"></userTask>
+    <userTask id="viewRecommendations" name="viewRecommendations" flowable:candidateGroups="SPC_SEC" flowable:formFieldValidation="true"></userTask>
     <exclusiveGateway id="approveRecommendations"></exclusiveGateway>
     <sequenceFlow id="flow3" sourceRef="makeRecommendations" targetRef="viewRecommendations"></sequenceFlow>
     <sequenceFlow id="flow4" sourceRef="viewRecommendations" targetRef="approveRecommendations"></sequenceFlow>
     <exclusiveGateway id="sid-0EC1A5E1-368E-430F-BB04-6B3E757AD785"></exclusiveGateway>
-    <userTask id="recieveApprovedList" name="recieveApprovedList" flowable:formFieldValidation="true"></userTask>
+    <userTask id="recieveApprovedList" name="recieveApprovedList" flowable:candidateGroups="SAC_SEC" flowable:formFieldValidation="true"></userTask>
     <exclusiveGateway id="sid-B1BB2F31-50B1-47C2-8A17-CAF5996E9D65"></exclusiveGateway>
     <sequenceFlow id="sid-58675A4F-76B2-40B6-9B3C-22066FB7E852" sourceRef="recieveApprovedList" targetRef="sid-B1BB2F31-50B1-47C2-8A17-CAF5996E9D65"></sequenceFlow>
-    <userTask id="recieveGazzetteNotice" name="recieveGazzetteNotice" flowable:formFieldValidation="true"></userTask>
-    <userTask id="uploadNoticeOnWebsite" name="uploadNoticeOnWebsite" flowable:formFieldValidation="true"></userTask>
+    <userTask id="recieveGazzetteNotice" name="recieveGazzetteNotice" flowable:candidateGroups="HO_SIC" flowable:formFieldValidation="true"></userTask>
+    <userTask id="uploadNoticeOnWebsite" name="uploadNoticeOnWebsite" flowable:candidateGroups="HO_SIC" flowable:formFieldValidation="true"></userTask>
     <sequenceFlow id="sid-15D861B6-871B-4C57-B1F0-A77C624D1EA7" sourceRef="recieveGazzetteNotice" targetRef="uploadNoticeOnWebsite"></sequenceFlow>
     <endEvent id="sid-253C656E-B8C1-4420-B010-70E2457688A1"></endEvent>
     <sequenceFlow id="sid-0BA1A184-F2A7-4B9D-B652-DA3E9D1B05FE" sourceRef="uploadNoticeOnWebsite" targetRef="sid-253C656E-B8C1-4420-B010-70E2457688A1"></sequenceFlow>
-    <userTask id="submitDraftStandardForEditing" name="submitDraftStandardForEditing" flowable:formFieldValidation="true"></userTask>
-    <userTask id="checkRequirements" name="checkRequirements" flowable:formFieldValidation="true"></userTask>
+    <userTask id="submitDraftStandardForEditing" name="submitDraftStandardForEditing" flowable:candidateGroups="EDITOR" flowable:formFieldValidation="true"></userTask>
+    <userTask id="checkRequirements" name="checkRequirements" flowable:candidateGroups="HOP" flowable:formFieldValidation="true"></userTask>
     <exclusiveGateway id="sid-2EAF0EA9-F312-4F2B-BAFA-713391FC3412"></exclusiveGateway>
-    <userTask id="editStandard" name="editStandard" flowable:formFieldValidation="true"></userTask>
-    <userTask id="draughting" name="draughting" flowable:formFieldValidation="true"></userTask>
-    <userTask id="proofread" name="proofread" flowable:formFieldValidation="true"></userTask>
-    <userTask id="checkDraftStandard" name="checkDraftStandard" flowable:formFieldValidation="true"></userTask>
+    <userTask id="editStandard" name="editStandard" flowable:candidateGroups="EDITOR" flowable:formFieldValidation="true"></userTask>
+    <userTask id="draughting" name="draughting" flowable:candidateGroups="DRAUGHTSMAN" flowable:formFieldValidation="true"></userTask>
+    <userTask id="proofread" name="proofread" flowable:candidateGroups="PROOFREADER" flowable:formFieldValidation="true"></userTask>
+    <userTask id="checkDraftStandard" name="checkDraftStandard" flowable:candidateGroups="HOP" flowable:formFieldValidation="true"></userTask>
     <exclusiveGateway id="sid-9A64D9C2-333F-4FDD-9718-33773D5B76CB"></exclusiveGateway>
     <sequenceFlow id="sid-BF143A27-E2D1-40A4-9159-8099566FE72C" name="No" sourceRef="sid-B1BB2F31-50B1-47C2-8A17-CAF5996E9D65" targetRef="makeRecommendations">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!Yes}]]></conditionExpression>
@@ -48,12 +48,6 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${Yes}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="sid-0E9CDB29-9AEE-4E36-A930-1E1FD745DAD7" sourceRef="startEvent" targetRef="makeRecommendations"></sequenceFlow>
-    <sequenceFlow id="sid-FED7776D-0713-4C5F-885E-980AC2145715" name="Type 1" sourceRef="sid-0EC1A5E1-368E-430F-BB04-6B3E757AD785" targetRef="submitDraftStandardForEditing">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${type==1}]]></conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="sid-F9043C16-D4AB-4F3C-B975-33274CCD555E" name="Type 0" sourceRef="sid-0EC1A5E1-368E-430F-BB04-6B3E757AD785" targetRef="recieveApprovedList">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${type==0}]]></conditionExpression>
-    </sequenceFlow>
     <sequenceFlow id="sid-1FECB27A-E6E2-4C2C-9034-6FCC4A2C2617" sourceRef="submitDraftStandardForEditing" targetRef="checkRequirements"></sequenceFlow>
     <sequenceFlow id="sid-C7B7D5E8-64B4-415E-B00C-FE28500B3B3E" name="No" sourceRef="sid-2EAF0EA9-F312-4F2B-BAFA-713391FC3412" targetRef="submitDraftStandardForEditing">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!Yes}]]></conditionExpression>
@@ -61,6 +55,12 @@
     <sequenceFlow id="sid-9C80B5C1-E959-4532-AB82-F01897C23966" sourceRef="checkRequirements" targetRef="sid-2EAF0EA9-F312-4F2B-BAFA-713391FC3412"></sequenceFlow>
     <sequenceFlow id="sid-62799F9B-87D9-47F2-AE14-B66FD904AE77" name="Yes" sourceRef="sid-2EAF0EA9-F312-4F2B-BAFA-713391FC3412" targetRef="editStandard">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${Yes}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-FED7776D-0713-4C5F-885E-980AC2145715" name="Type 1" sourceRef="sid-0EC1A5E1-368E-430F-BB04-6B3E757AD785" targetRef="submitDraftStandardForEditing">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${taskType==1}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-F9043C16-D4AB-4F3C-B975-33274CCD555E" name="Type 0" sourceRef="sid-0EC1A5E1-368E-430F-BB04-6B3E757AD785" targetRef="recieveApprovedList">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${taskType==0}]]></conditionExpression>
     </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_sd_Review_Procedure_module">

@@ -27,6 +27,10 @@ export class StandardLevyAllPaymentsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      processing: true,
+      dom: 'Bfrtip'
+    };
     this.getAllLevyPayments();
   }
   ngOnDestroy(): void {

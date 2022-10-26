@@ -32,6 +32,10 @@ class StandardReviewProposalRecommendations {
     @Basic
     var assignedTo:Long? =null
 
+    @Column(name="FEEDBACK")
+    @Basic
+    var feedback:Long? =null
+
     @Column(name = "PROCESS_ID")
     @Basic
     var processId: String? = null

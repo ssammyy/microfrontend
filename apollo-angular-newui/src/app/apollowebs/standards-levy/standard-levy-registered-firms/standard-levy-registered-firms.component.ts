@@ -27,6 +27,10 @@ export class StandardLevyRegisteredFirmsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      processing: true,
+      dom: 'Bfrtip'
+    };
     this.getRegisteredFirms();
   }
   ngOnDestroy(): void {

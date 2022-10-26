@@ -1058,8 +1058,13 @@ export interface StandardReviewRecommendations{
     dateOfRecommendation: string;
     taskId: string;
     accentTo: string;
+    comments: string;
+    processId: string;
+    reviewID: string;
+    taskType: string;
 
 }
+
 
 // export interface RQNumber{
 //   requestNumber: string;
@@ -1223,4 +1228,126 @@ export interface StakeholderProposalComments{
     proposedChange: string;
 }
 
+export interface StandardsForReview{
+    id: number;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    standardNumber: string;
+    standardType: string;
+    dateFormed: string;
+    documentType: string;
+}
 
+export interface RevProposalComments{
+    id: number;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    standardNumber: string;
+    standardType: string;
+    reviewID: number;
+}
+
+export interface CommentsOnProposal{
+    adoptionComment: string;
+    title: string;
+    documentType: string;
+    paragraph: string;
+    typeOfComment: string;
+    proposedChange: string;
+    proposalID: number;
+}
+
+export interface StandardReviewTasks
+{
+    taskId: string;
+    name: string;
+    processId: string;
+    taskData: StandardReviews;
+
+}
+
+export interface StandardReviews{
+    title: string;
+    standardNumber: string;
+    documentType: string;
+    preparedBy: string;
+    datePrepared: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    standardType: string;
+    reviewID: number;
+    userName: string;
+    adoptionComment: string;
+    proposalId: number;
+    paragraph: string;
+    typeOfComment: string;
+    proposedChange: string;
+    feedback: number;
+    summaryOfRecommendations: string;
+    standardID:number;
+    requestNumber: string;
+    draftId: number;
+}
+
+export interface ReviewProposalComments{
+    id: number;
+    userName: string;
+    adoptionComment: string;
+    commentTime: string;
+    proposalId: number;
+    title: string;
+    documentType: string;
+    clause: string;
+    paragraph: string;
+    typeOfComment: string;
+    proposedChange: string;
+}
+export interface ReviewRecommendation{
+    proposalId:number;
+    summaryOfRecommendations:string;
+    processId:string;
+    taskId:string;
+    feedback:number;
+}
+
+export interface GazetteStandard{
+    standardID:number;
+    processId:string;
+    taskId:string;
+}
+
+export interface ReviewDraftEditing{
+    taskId: string;
+    processId: string;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    standardNumber: string;
+    standardType: string;
+    dateFormed: string;
+    documentType: string;
+    draftId: number;
+}
+
+export interface ReviewDecision{
+    taskId: string;
+    accentTo: string;
+    comments: string;
+    processId: string;
+    reviewID: string;
+
+}

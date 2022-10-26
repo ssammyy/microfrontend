@@ -780,6 +780,18 @@ import { ComplaintPlanBatchListComponent } from './apollowebs/market-surveillanc
 import { ComplaintPlanListComponent } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-list/complaint-plan-list.component';
 import { ComplaintPlanDetailsComponent } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-details/complaint-plan-details.component';
 import { StandardLevyRejectedChangesComponent } from './apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component';
+import { StandardsForReviewComponent } from './apollowebs/standards-development/systemic-review/standards-for-review/standards-for-review.component';
+import { SystemicReviewTcSecComponent } from './apollowebs/standards-development/systemic-review/systemic-review-tc-sec/systemic-review-tc-sec.component';
+import { SystemicReviewDraughtsManComponent } from './apollowebs/standards-development/systemic-review/systemic-review-draughts-man/systemic-review-draughts-man.component';
+import { SytemicReviewProofReaderComponent } from './apollowebs/standards-development/systemic-review/sytemic-review-proof-reader/sytemic-review-proof-reader.component';
+import { SystemicReviewEditorComponent } from './apollowebs/standards-development/systemic-review/systemic-review-editor/systemic-review-editor.component';
+import { SytemicReviewSacSecComponent } from './apollowebs/standards-development/systemic-review/sytemic-review-sac-sec/sytemic-review-sac-sec.component';
+import { SystemicReviewHopComponent } from './apollowebs/standards-development/systemic-review/systemic-review-hop/systemic-review-hop.component';
+import { SystemicReviewSpcSecComponent } from './apollowebs/standards-development/systemic-review/systemic-review-spc-sec/systemic-review-spc-sec.component';
+import { SystemicReviewSacSecComponent } from './apollowebs/standards-development/systemic-review/systemic-review-sac-sec/systemic-review-sac-sec.component';
+import { SystemicReviewProofReaderComponent } from './apollowebs/standards-development/systemic-review/systemic-review-proof-reader/systemic-review-proof-reader.component';
+import { SystemReviewGazetteStandardComponent } from './apollowebs/standards-development/systemic-review/system-review-gazette-standard/system-review-gazette-standard.component';
+import { SystemReviewUpdateGazetteComponent } from './apollowebs/standards-development/systemic-review/system-review-update-gazette/system-review-update-gazette.component';
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({
@@ -1203,7 +1215,19 @@ import { StandardLevyRejectedChangesComponent } from './apollowebs/standards-lev
         AddLaboratoryRequestComponent,
         ComplaintPlanBatchListComponent,
         ComplaintPlanListComponent,
-        ComplaintPlanDetailsComponent
+        ComplaintPlanDetailsComponent,
+        StandardsForReviewComponent,
+        SystemicReviewTcSecComponent,
+        SystemicReviewDraughtsManComponent,
+        SytemicReviewProofReaderComponent,
+        SystemicReviewEditorComponent,
+        SytemicReviewSacSecComponent,
+        SystemicReviewHopComponent,
+        SystemicReviewSpcSecComponent,
+        SystemicReviewSacSecComponent,
+        SystemicReviewProofReaderComponent,
+        SystemReviewGazetteStandardComponent,
+        SystemReviewUpdateGazetteComponent
 
     ],
     entryComponents: [],
