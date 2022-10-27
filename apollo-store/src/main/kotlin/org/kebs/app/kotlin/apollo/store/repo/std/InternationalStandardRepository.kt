@@ -52,6 +52,15 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
     )
     fun getStakeHoldersEmailList(): MutableList<UserEmailListHolder>
 
+
+    @Query(
+        value = "SELECT u.EMAIL as userEmail,u.FIRST_NAME as firstName,u.LAST_NAME as lastName  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='TC_SEC_SD'",
+        nativeQuery = true
+    )
+    fun getTcSecEmailList(): MutableList<UserEmailListHolder>
+
+
+
     @Query(
         value = "SELECT u.EMAIL as userEmail,u.FIRST_NAME as firstName,u.LAST_NAME as lastName  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='HOP_SD'",
         nativeQuery = true

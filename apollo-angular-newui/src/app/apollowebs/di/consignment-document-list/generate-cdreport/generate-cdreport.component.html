@@ -4,17 +4,18 @@
         <div class="col-sm-6 col-md-4">
             <label for="stationId" class="waiver-form-label">Select Station</label>
             <select id="stationId" name="stationId" class="waiver-form-input-master"
-                    formControlName="stationId">
+                    formControlName="station_id">
                 <option value="" disabled selected>Select One</option>
                 <option *ngFor="let station of data.stations" [value]="station.id">{{station.cfsName}}</option>
             </select>
         </div>
         <div class="col-sm-6 col-md-4">
-            <label for="coc_type" class="waiver-form-label">Document Type</label>
-            <select id="coc_type" name="stationId" class="waiver-form-input-master"
-                    formControlName="coc_type">
+            <label for="doc_type" class="waiver-form-label">Document Type</label>
+            <select id="doc_type" name="doc_type" class="waiver-form-input-master"
+                    formControlName="doc_type">
                 <option value="" disabled selected>Select One</option>
-                <option *ngFor="let station of data.documentTypes" [value]="station.id">{{station.name}}</option>
+                <option *ngFor="let station of data.documentTypes" [value]="station.id">{{station.category}}
+                    -{{station.description}}</option>
             </select>
         </div>
         <div class="col-sm-6 col-md-4">
@@ -50,9 +51,9 @@
             </select>
         </div>
         <div class="col-sm-6 col-md-4">
-            <label for="doc_type" class="waiver-form-label">Document Type(F/L)</label>
-            <select id="doc_type" name="doc_type" class="waiver-form-input-master"
-                    formControlName="doc_type">
+            <label for="coc_type" class="waiver-form-label">COC Type(F/L)</label>
+            <select id="coc_type" name="coc_type" class="waiver-form-input-master"
+                    formControlName="coc_type">
                 <option value="" disabled selected>Select One</option>
                 <option *ngFor="let station of docType" [value]="station.name">{{station.description}}</option>
             </select>
@@ -86,8 +87,13 @@
             <input id="hs_code" class="waiver-form-input-master" formControlName="hs_code">
         </div>
         <div class="col-sm-6 col-md-4">
-            <label for="officer" class="waiver-form-label">Officer Username</label>
-            <input id="officer" class="waiver-form-input-master" formControlName="officer">
+            <label for="assigner" class="waiver-form-label">Assigned By</label>
+            <select id="assigner" name="doc_type" class="waiver-form-input-master"
+                    formControlName="assigner">
+                <option value="" disabled selected>Select One</option>
+                <option *ngFor="let station of data.users" [value]="station.id">{{station.firstName}}
+                    -{{station.lastName}}</option>
+            </select>
         </div>
     </div>
     <mat-error *ngIf="message">{{message}}</mat-error>

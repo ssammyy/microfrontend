@@ -443,7 +443,7 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['SL_MANUFACTURE_VIEW'],
         collapse: 'edits',
         children: [
-            {path: 'slRejectedEdits', title: 'Rejected Changes', ab: 'RC'}
+            {path: 'slRejectedEdits', title: 'Profile Changes', ab: 'PC'}
 
         ],
     },
@@ -681,6 +681,30 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'isJustificationApp', title: 'SPC Approval', ab: 'J'},
             // {path: 'isUploadStd', title: 'SAC Approval', ab: 'J'},
             // {path: 'isUploadNotice', title: 'Publishing', ab: 'PL'},
+
+
+        ],
+    },
+    {
+        path: '',
+        title: 'Standards Review',
+        type: 'sub',
+        icontype: 'quiz',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN','TC_SEC_SD_READ','SPC_SEC_SD_READ','SAC_SEC_SD_READ','HOP_SD_READ','HO_SIC_SD_READ','STAKEHOLDERS_SD_READ'],
+        collapse: 'SR',
+        children: [
+            {path: 'standardsForReview', title: 'View Standards', ab: 'VW'},
+            {path: 'systemicReviewComments', title: 'Comment on Proposal', ab: 'CP'},
+            {path: 'reviewStandardsTc', title: 'TC SEC Tasks', ab: 'TC'},
+            {path: 'reviewStandardsSPC', title: 'SPC SEC Tasks', ab: 'SPC'},
+            {path: 'reviewStandardsSAC', title: 'SAC SEC Tasks', ab: 'SAC'},
+            {path: 'reviewStandardsProofReader', title: 'Proof Read', ab: 'PR'},
+            {path: 'reviewStandardsHOP', title: 'HOP Tasks', ab: 'HOP'},
+            {path: 'reviewStandardsEditor', title: 'Editor Tasks', ab: 'ET'},
+            {path: 'reviewStandardsDraughtsMan', title: 'Draughting', ab: 'DT'},
+            {path: 'reviewStandardsGazette', title: 'Gazette Standard', ab: 'GS'},
+            {path: 'reviewStandardsGazetteDate', title: 'Update Gazetted Standard', ab: 'UGS'},
+
 
 
         ],

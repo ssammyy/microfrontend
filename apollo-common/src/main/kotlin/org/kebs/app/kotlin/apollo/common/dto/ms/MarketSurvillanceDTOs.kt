@@ -170,6 +170,7 @@ data class WorkPlanInspectionDto(
         var approvedStatus: Boolean? = null,
         var workPlanYearId: Long? = null,
         var clientAppealed: Boolean? = null,
+        var directorRecommendationRemarksStatus: Boolean? = null,
         var hodRecommendationStatus: Boolean? = null,
         var hodRecommendationStart: Boolean? = null,
         var hodRecommendation: String? = null,
@@ -264,6 +265,8 @@ data class WorkPlanInspectionDto(
         val resubmitStatus: Boolean? = null,
         var bsNumberCountAdded: Int? = null,
         var analysisLabCountDone: Int? = null,
+        var productListRecommendationAddedCount: Int? = null,
+        var productList: List<WorkPlanProductDto>? = null,
 )
 
 data class FuelEntityDto(
@@ -641,6 +644,30 @@ data class PreliminaryReportItemsDto(
         var compliancePhysicalInspection: Long? = null,
         var remarks: String? = null,
         var preliminaryReportID: Long? = null,
+)
+
+data class WorkPlanProductDto(
+        var id: Long? = 0,
+        var productName: String? = null,
+        var referenceNo: String? = null,
+        var recommendation: String? = null,
+        var destructionRecommended: Boolean? = null,
+        var hodRecommendationStatus: Boolean? = null,
+        var hodRecommendationRemarks: String? = null,
+        var directorRecommendationStatus: Boolean? = null,
+        var directorRecommendationRemarks: String? = null,
+        var clientAppealed: Boolean? = null,
+        var destructionStatus: Boolean? = null,
+        var appealStatus: Boolean? = null,
+        var destructionNotificationStatus: Boolean? = null,
+        var destructionNotificationDocId: Long? = null,
+        var workPlanId: Long? = null,
+        var ssfId: Long? = null,
+        var destructionClientEmail: String? = null,
+        var destructionClientFullName: String? = null,
+        var destructionNotificationDate: Date? = null,
+        var destructionDocId: Long? = null,
+        var destructedStatus: Boolean? = null,
 )
 
 data class BSNumberSaveDto(

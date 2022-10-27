@@ -487,6 +487,7 @@ export class WorkPlanInspectionDto {
     approvedStatus: boolean;
     workPlanYearId: number;
     clientAppealed: boolean;
+    directorRecommendationRemarksStatus: boolean;
     hodRecommendationStatus: boolean;
     hodRecommendationStart: boolean;
     hodRecommendation: string;
@@ -580,12 +581,39 @@ export class WorkPlanInspectionDto {
     resubmitStatus: Boolean;
     bsNumberCountAdded: number;
     analysisLabCountDone: number;
+    productListRecommendationAddedCount: number;
+    productList: WorkPlanProductDto[];
 }
 
 export class CountryListDto {
     name: string;
     code: string;
 }
+
+export class WorkPlanProductDto {
+        id: number;
+        productName: string;
+        referenceNo: string;
+        recommendation: string;
+        destructionRecommended: boolean;
+        hodRecommendationStatus: boolean;
+        hodRecommendationRemarks: string;
+        directorRecommendationStatus: boolean;
+        directorRecommendationRemarks: string;
+        clientAppealed: boolean;
+        destructionStatus: boolean;
+        appealStatus: boolean;
+        destructionNotificationStatus: boolean;
+        destructionNotificationDocId: number;
+        workPlanId: number;
+        ssfId: number;
+        destructionClientEmail: string;
+        destructionClientFullName: string;
+        destructionNotificationDate: Date;
+        destructionDocId: number;
+        destructedStatus: boolean;
+}
+
 
 export class SeizureDeclarationDto {
     id: number;
@@ -784,7 +812,7 @@ export class WorkPlanFinalRecommendationDto {
 }
 
 export class MsRecommendationDto {
-    id: bigint;
+    id: number;
     recommendationName: string;
     description: string;
     status: boolean;

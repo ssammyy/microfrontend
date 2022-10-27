@@ -57,8 +57,12 @@ class QueryBuilder {
         return this
     }
 
-    fun between(f: String, v: Any, v2: Any): QueryBuilder {
-        criteria.add(" $f between ? and ? ")
+    fun between(f: String, v: Any, v2: Any, date: Boolean = false): QueryBuilder {
+        if (date) {
+            criteria.add(" $f between to_date(?,'YYYY-MM-DD') and to_date(?,'YYYY-MM-DD')")
+        } else {
+            criteria.add(" $f between ? and ? ")
+        }
         params.add(v)
         params.add(v2)
         criteriaParams.add(v)

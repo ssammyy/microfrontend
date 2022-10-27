@@ -404,6 +404,16 @@ import { PermitsGrantedComponent } from './apollowebs/quality-assurance/reports/
 import { PermitsRenewedComponent } from './apollowebs/quality-assurance/reports/permits-renewed/permits-renewed.component';
 import { SamplesSubmittedComponent } from './apollowebs/quality-assurance/reports/samples-submitted/samples-submitted.component';
 import { PermitsDeferredComponent } from './apollowebs/quality-assurance/reports/permits-deferred/permits-deferred.component';
+import { StandardsForReviewComponent } from './apollowebs/standards-development/systemic-review/standards-for-review/standards-for-review.component';
+import { SystemicReviewTcSecComponent } from './apollowebs/standards-development/systemic-review/systemic-review-tc-sec/systemic-review-tc-sec.component';
+import { SystemicReviewDraughtsManComponent } from './apollowebs/standards-development/systemic-review/systemic-review-draughts-man/systemic-review-draughts-man.component';
+import { SystemicReviewEditorComponent } from './apollowebs/standards-development/systemic-review/systemic-review-editor/systemic-review-editor.component';
+import { SystemicReviewHopComponent } from './apollowebs/standards-development/systemic-review/systemic-review-hop/systemic-review-hop.component';
+import { SystemicReviewSpcSecComponent } from './apollowebs/standards-development/systemic-review/systemic-review-spc-sec/systemic-review-spc-sec.component';
+import { SystemicReviewSacSecComponent } from './apollowebs/standards-development/systemic-review/systemic-review-sac-sec/systemic-review-sac-sec.component';
+import { SystemicReviewProofReaderComponent } from './apollowebs/standards-development/systemic-review/systemic-review-proof-reader/systemic-review-proof-reader.component';
+import { SystemReviewGazetteStandardComponent } from './apollowebs/standards-development/systemic-review/system-review-gazette-standard/system-review-gazette-standard.component';
+import { SystemReviewUpdateGazetteComponent } from './apollowebs/standards-development/systemic-review/system-review-update-gazette/system-review-update-gazette.component';
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({
@@ -838,7 +848,18 @@ import { PermitsDeferredComponent } from './apollowebs/quality-assurance/reports
         GenerateManifestReportComponent,
         GenerateGeneralReportComponent,
         GenerateCorReportComponent,
-        GenerateCDReportComponent
+        GenerateCDReportComponent,
+        ComplaintPlanDetailsComponent,
+        StandardsForReviewComponent,
+        SystemicReviewTcSecComponent,
+        SystemicReviewDraughtsManComponent,
+        SystemicReviewEditorComponent,
+        SystemicReviewHopComponent,
+        SystemicReviewSpcSecComponent,
+        SystemicReviewSacSecComponent,
+        SystemicReviewProofReaderComponent,
+        SystemReviewGazetteStandardComponent,
+        SystemReviewUpdateGazetteComponent
 
     ],
     entryComponents: [],

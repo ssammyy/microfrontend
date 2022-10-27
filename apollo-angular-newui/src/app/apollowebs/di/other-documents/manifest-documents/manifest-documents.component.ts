@@ -90,8 +90,8 @@ export class ManifestDocumentsComponent implements OnInit {
     ngOnInit(): void {
         this.loadManifestDocuments(null, "all")
         this.form = this.fb.group({
-            startDate: [null, Validators.required],
-            status: [0, Validators.required]
+            keywords: [null, Validators.minLength(5)],
+            startDate: [null],
         })
         this.loadStations()
     }

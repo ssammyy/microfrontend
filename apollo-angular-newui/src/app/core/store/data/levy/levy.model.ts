@@ -688,5 +688,6 @@ export interface RejectedComDetails{
     companyTelephoneEdit: string;
     companyTelephone: string;
     assignedTo: number;
+    status: number;
 }
 

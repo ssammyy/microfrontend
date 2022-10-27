@@ -2,13 +2,21 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {
-  ReviewComments,
+  CommentsOnProposal, GazetteStandard, KNWCommittee, KNWDepartment,
+  ProposalComment,
+  ProposalComments,
+  ReviewComments, ReviewDecision, ReviewDraftEditing,
   ReviewedStandards,
-  ReviewForm,
-  StandardReviewComments, StandardReviewRecommendations, SystemicAnalyseComments
+  ReviewForm, ReviewProposalComments, ReviewRecommendation, RevProposalComments, StakeholderProposalComments,
+  StandardReviewComments,
+  StandardReviewRecommendations,
+  StandardReviewTasks,
+  StandardsForReview,
+  SystemicAnalyseComments, UsersEntity
 } from "./std.model";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
+import {EditCompanyDTO} from "../levy/levy.model";
 
 @Injectable({
   providedIn: 'root'
@@ -62,18 +70,7 @@ export class StdReviewService {
     return this.http.get<SystemicAnalyseComments[]>(url, {params}).pipe();
   }
 
-  public decisionOnRecommendation(standardReviewRecommendations: StandardReviewRecommendations): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_DECISION_ON_RECOMMENDATION);
-    const params = new HttpParams();
-    return this.http.post<StandardReviewRecommendations>(url, standardReviewRecommendations, {params}).pipe(
-        map(function (response: any) {
-          return response;
-        }),
-        catchError((fault: HttpErrorResponse) => {
-          return throwError(fault);
-        })
-    );
-  }
+
 
   public uploadFileDetails(nwaJustificationID: string, data: FormData): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_UPLOAD_DOCUMENT);
@@ -92,5 +89,261 @@ export class StdReviewService {
         })
     );
   }
+
+  public getStandardsForReview(): Observable<StandardsForReview[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_FOR_REVIEW_STD);
+    const params = new HttpParams();
+    return this.http.get<StandardsForReview[]>(url, {params}).pipe();
+  }
+
+  public standardReviewForm(standardsForReview: StandardsForReview): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_INITIATE_STD_REVIEW);
+    const params = new HttpParams();
+    return this.http.post<StandardsForReview>(url, standardsForReview, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public getStandardsProposalForComment(): Observable<RevProposalComments[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_PROPOSAL_FOR_COMMENTS);
+    const params = new HttpParams();
+    return this.http.get<RevProposalComments[]>(url, {params}).pipe();
+  }
+
+  public submitAPComments(commentsOnProposal: CommentsOnProposal): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SUBMIT_PROPOSAL_COMMENTS);
+    const params = new HttpParams();
+    return this.http.post<CommentsOnProposal>(url, commentsOnProposal, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public getTcSecTasks(): Observable<StandardReviewTasks[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_TC_SEC_TASKS);
+    const params = new HttpParams();
+    return this.http.get<StandardReviewTasks[]>(url, {params}).pipe();
+  }
+
+  public getDraughtsManTasks(): Observable<StandardReviewTasks[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_DR_MAN_TASKS);
+    const params = new HttpParams();
+    return this.http.get<StandardReviewTasks[]>(url, {params}).pipe();
+  }
+
+  public getProofReaderTasks(): Observable<StandardReviewTasks[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_PROOF_READER_TASKS);
+    const params = new HttpParams();
+    return this.http.get<StandardReviewTasks[]>(url, {params}).pipe();
+  }
+
+  public getEditorTasks(): Observable<StandardReviewTasks[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_EDITOR_TASKS);
+    const params = new HttpParams();
+    return this.http.get<StandardReviewTasks[]>(url, {params}).pipe();
+  }
+
+  public getSacSecTasks(): Observable<StandardReviewTasks[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_SAC_SEC_TASKS);
+    const params = new HttpParams();
+    return this.http.get<StandardReviewTasks[]>(url, {params}).pipe();
+  }
+
+  public getHopTasks(): Observable<StandardReviewTasks[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_HOP_TASKS);
+    const params = new HttpParams();
+    return this.http.get<StandardReviewTasks[]>(url, {params}).pipe();
+  }
+
+  public getSpcSecTasks(): Observable<StandardReviewTasks[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_SPC_SEC_TASKS);
+    const params = new HttpParams();
+    return this.http.get<StandardReviewTasks[]>(url, {params}).pipe();
+  }
+  public getHoSicTasks(): Observable<StandardReviewTasks[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_GAZETTE_TASKS);
+    const params = new HttpParams();
+    return this.http.get<StandardReviewTasks[]>(url, {params}).pipe();
+  }
+
+  public getStandardsProposalComments(proposalId: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_PROPOSAL_COMMENTS);
+    const params = new HttpParams().set('proposalId', proposalId);
+    return this.http.get<ReviewProposalComments>(url, {params}).pipe();
+  }
+
+  public makeRecommendationsOnAdoptionProposal(reviewRecommendation: ReviewRecommendation): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_PROPOSAL_RECOMMENDATIONS);
+    const params = new HttpParams();
+    return this.http.post<ReviewRecommendation>(url, reviewRecommendation, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public decisionOnRecommendation(standardReviewRecommendations: StandardReviewRecommendations): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_DECISION_ON_RECOMMENDATIONS);
+    const params = new HttpParams();
+    return this.http.post<StandardReviewRecommendations>(url, standardReviewRecommendations, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public levelUpDecisionOnRecommendations(standardReviewRecommendations: StandardReviewRecommendations): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_PROPOSAL_RECOMMENDATIONS_DECISION_LEVEL_UP);
+    const params = new HttpParams();
+    return this.http.post<StandardReviewRecommendations>(url, standardReviewRecommendations, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+  public updateGazette(gazetteStandard: GazetteStandard): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_UPDATE_GAZETTE);
+    const params = new HttpParams();
+    return this.http.post<GazetteStandard>(url, gazetteStandard, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public updateGazettementDate(gazetteStandard: GazetteStandard): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_UPDATE_GAZETTE_DATE);
+    const params = new HttpParams();
+    return this.http.post<GazetteStandard>(url, gazetteStandard, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public getKNWDepartments(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DEPARTMENTS);
+    const params = new HttpParams();
+    return this.http.get<KNWDepartment>(url, {params}).pipe();
+  }
+
+  public getKNWCommittee(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_KNW_COMMITTEE);
+    const params = new HttpParams();
+    return this.http.get<KNWCommittee>(url, {params}).pipe();
+  }
+
+  public getKnwSecretary(): Observable<UsersEntity[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_KNW_SECRETARY);
+    const params = new HttpParams();
+    return this.http.get<UsersEntity[]>(url, {params}).pipe();
+  }
+
+  public submitDraftForEditing(reviewDraftEditing: ReviewDraftEditing): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_SUBMIT_DRAFT_FOR_EDITING);
+    const params = new HttpParams();
+    return this.http.post<ReviewDraftEditing>(url, reviewDraftEditing, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public checkRequirements(reviewDecision: ReviewDecision): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_CHECK_REQUIREMENTS);
+    const params = new HttpParams();
+    return this.http.post<ReviewDecision>(url, reviewDecision, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public editStandardDraft(reviewDraftEditing: ReviewDraftEditing): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_EDIT_STD_DRAFT);
+    const params = new HttpParams();
+    return this.http.post<ReviewDraftEditing>(url, reviewDraftEditing, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public draftStandard(reviewDraftEditing: ReviewDraftEditing): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_DRAFT_STD);
+    const params = new HttpParams();
+    return this.http.post<ReviewDraftEditing>(url, reviewDraftEditing, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public proofReadStandard(reviewDraftEditing: ReviewDraftEditing): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_PROOF_READ_STD);
+    const params = new HttpParams();
+    return this.http.post<ReviewDraftEditing>(url, reviewDraftEditing, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public checkStandardDraft(reviewDecision: ReviewDecision): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_CHECK_STD_DRAFT);
+    const params = new HttpParams();
+    return this.http.post<ReviewDecision>(url, reviewDecision, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+
+
+
+
 
 }

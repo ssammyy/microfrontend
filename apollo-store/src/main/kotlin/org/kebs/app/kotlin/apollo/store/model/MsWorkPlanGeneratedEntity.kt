@@ -177,6 +177,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var hodRecommendationStatus: Int? = 0
 
+    @Column(name = "DIRECTOR_RECOMMENDATION_REMARKS_STATUS")
+    @Basic
+    var directorRecommendationRemarksStatus: Int? = 0
+
     @Column(name = "DESTRUCTION_RECOMMENDED")
     @Basic
     var destructionRecommended: Int? = 0

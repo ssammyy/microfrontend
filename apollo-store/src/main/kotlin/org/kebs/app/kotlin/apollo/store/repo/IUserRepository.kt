@@ -585,7 +585,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
     @Query(
         value = "SELECT COMPANY_EMAIL as companyEmail,name as companyName,PHYSICAL_ADDRESS as physicalAddress," +
-                "POSTAL_ADDRESS as postalAddress,OWNERSHIP as ownership,COMPANY_TELEPHONE as companyTelephone FROM DAT_KEBS_COMPANY_PROFILE",
+                "POSTAL_ADDRESS as postalAddress,OWNERSHIP as ownership,COMPANY_TELEPHONE as companyTelephone FROM DAT_KEBS_COMPANY_PROFILE WHERE ID=:companyId",
         nativeQuery = true
     )
 
@@ -650,8 +650,8 @@ interface RejectedCompanyDetailsRepository : JpaRepository<RejectedCompanyDetail
         value = "SELECT ID as id,COMPANY_ID as companyId,COMPANY_NAME as companyName,EDIT_ID as editId," +
                 "PHYSICAL_ADDRESS_EDIT as physicalAddressEdit,PHYSICAL_ADDRESS as physicalAddress,POSTAL_ADDRESS_EDIT as postalAddressEdit," +
                 "POSTAL_ADDRESS as postalAddress,OWNERSHIP_EDIT as ownershipEdit,OWNERSHIP as ownership,COMPANY_EMAIL_EDIT as companyEmailEdit," +
-                "COMPANY_EMAIL as companyEmail,COMPANY_TELEPHONE_EDIT as companyTelephoneEdit,COMPANY_TELEPHONE as companyTelephone,ASSIGNED_TO as assignedTo" +
-                " FROM DAT_KEBS_REJECTED_COMPANY_DETAILS ",
+                "COMPANY_EMAIL as companyEmail,COMPANY_TELEPHONE_EDIT as companyTelephoneEdit,COMPANY_TELEPHONE as companyTelephone,ASSIGNED_TO as assignedTo," +
+                "STATUS as status FROM DAT_KEBS_REJECTED_COMPANY_DETAILS ",
         nativeQuery = true
     )
     fun getRejectedCompanyDetails(): MutableList<RejectedComDetails>

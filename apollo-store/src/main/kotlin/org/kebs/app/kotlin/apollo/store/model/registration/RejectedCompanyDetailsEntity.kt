@@ -78,5 +78,9 @@ class RejectedCompanyDetailsEntity : Serializable {
     @Basic
     var assignedTo: Long? = null
 
+    @Column(name = "STATUS")
+    @Basic
+    var status: Long? = null
+
 
 }

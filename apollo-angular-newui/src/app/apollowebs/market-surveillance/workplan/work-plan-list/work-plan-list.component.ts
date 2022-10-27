@@ -238,90 +238,86 @@ export class WorkPlanListComponent implements OnInit {
           this.totalCount = this.loadedData.workPlanList.length;
           this.dataSet.load(this.loadedData.workPlanList);
 
-          switch (this.loadedData.createdWorkPlan.batchClosed) {
-            case false:
-              this.msService.msPredefinedResourcesRequiredListDetails().subscribe(
-                  (data1: PredefinedResourcesRequired[]) => {
-                    this.predefinedResourcesRequired = data1;
-                    console.log(data1);
-                  },
-                  error => {
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              this.msService.msDepartmentListDetails().subscribe(
-                  (dataDep: MsDepartment[]) => {
-                    this.msDepartments = dataDep;
-                    console.log(dataDep);
-                  },
-                  error => {
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              this.msService.msDivisionListDetails().subscribe(
-                  (dataDiv: MsDivisionDetails[]) => {
-                    this.msDivisions = dataDiv;
-                    console.log(dataDiv);
-                  },
-                  error => {
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              this.msService.msProductStandardCategoryListDetails().subscribe(
-                  (data1: MsStandardProductCategory[]) => {
-                    this.standardProductCategory = data1;
-                    console.log(data1);
-                  },
-                  error => {
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              this.msService.msProductBroadCategoryListDetails().subscribe(
-                  (data2: MsBroadProductCategory[]) => {
-                    this.broadProductCategory = data2;
-                    console.log(data2);
-                  },
-                  error => {
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              this.msService.msProductCategoryListDetails().subscribe(
-                  (data3: MsBroadProductCategory[]) => {
-                    this.productCategories = data3;
-                    console.log(data3);
-                  },
-                  error => {
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              this.msService.msProductListDetails().subscribe(
-                  (data4: MsProducts[]) => {
-                    this.products = data4;
-                    console.log(data4);
-                  },
-                  error => {
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              this.msService.msProductSubCategoryListDetails().subscribe(
-                  (data5: MsProductSubcategory[]) => {
-                    this.productSubcategory = data5;
-                    console.log(data5);
-                  },
-                  error => {
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              break;
-          }
+            this.msService.msPredefinedResourcesRequiredListDetails().subscribe(
+                (data1: PredefinedResourcesRequired[]) => {
+                  this.predefinedResourcesRequired = data1;
+                  console.log(data1);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msDepartmentListDetails().subscribe(
+                (dataDep: MsDepartment[]) => {
+                  this.msDepartments = dataDep;
+                  console.log(dataDep);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msDivisionListDetails().subscribe(
+                (dataDiv: MsDivisionDetails[]) => {
+                  this.msDivisions = dataDiv;
+                  console.log(dataDiv);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msProductStandardCategoryListDetails().subscribe(
+                (data1: MsStandardProductCategory[]) => {
+                  this.standardProductCategory = data1;
+                  console.log(data1);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msProductBroadCategoryListDetails().subscribe(
+                (data2: MsBroadProductCategory[]) => {
+                  this.broadProductCategory = data2;
+                  console.log(data2);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msProductCategoryListDetails().subscribe(
+                (data3: MsBroadProductCategory[]) => {
+                  this.productCategories = data3;
+                  console.log(data3);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msProductListDetails().subscribe(
+                (data4: MsProducts[]) => {
+                  this.products = data4;
+                  console.log(data4);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            this.msService.msProductSubCategoryListDetails().subscribe(
+                (data5: MsProductSubcategory[]) => {
+                  this.productSubcategory = data5;
+                  console.log(data5);
+                },
+                error => {
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
           this.SpinnerService.hide();
 
         },

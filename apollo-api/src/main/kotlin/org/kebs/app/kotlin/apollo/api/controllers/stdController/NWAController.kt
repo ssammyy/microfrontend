@@ -75,7 +75,8 @@ class NWAController(val nwaService: NWAService,
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun prepareJustification(@RequestBody nwaJustification: NWAJustification): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",nwaService.prepareJustification(nwaJustification))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",nwaService.
+        prepareJustification(nwaJustification))
         //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
     }
 //    @PostMapping("/prepareJustification")

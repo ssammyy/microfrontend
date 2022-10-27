@@ -576,6 +576,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/allPermitsAwarded", handler::loadAllAwardedPermitsForReports)
                     GET("/allPermitsRenewed", handler::loadAllRenewedPermitsForReports)
                     GET("/allSamplesSubmitted", handler::loadAllSamplesSubmittedForReports)
+                    GET("/allDejectedPermits", handler::loadAllDejectedPermitsForReports)
 
 
                 }
@@ -666,10 +667,12 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                                 handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD
                             )
                             PUT("/final-recommendation", handler::addWorkPlanScheduleFinalRecommendationByHOD)
+                            PUT("/end-adding-final-recommendation", handler::addWorkPlanScheduleEndFinalRecommendationAddingByHOD)
                             PUT("/feedBack-notification", handler::addWorkPlanScheduleFeedBackByHOD)
                         }
                         "/director".nest {
                             PUT("/recommendation", handler::addWorkPlanScheduleFeedBackByDirector)
+                            PUT("/end-recommendation", handler::addWorkPlanScheduleEndFinalRecommendationAddingByDirector)
                         }
                     }
                     "/add".nest {

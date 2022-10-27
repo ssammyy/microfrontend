@@ -321,10 +321,11 @@ class ChecklistService(
                     // Update checklist update
                     detail.checkListTypeId = engineering.inspectionChecklistType
                     daoServices.checkIfChecklistUndergoesSampling(
-                            checklistItem.sampled ?: "NO",
-                            checklistItem.compliant ?: "NON-COMPLIANT",
-                            detail,
-                            map
+                        checklistItem.sampled ?: "NO",
+                        checklistItem.compliant ?: "NON-COMPLIANT",
+                        detail,
+                        map,
+                        loggedInUser
                     )
 
                 }
@@ -384,10 +385,11 @@ class ChecklistService(
                     // Mark item as sampled
                     detail.checkListTypeId = agrochemChecklist.inspectionChecklistType
                     daoServices.checkIfChecklistUndergoesSampling(
-                            checklistItem.sampled ?: "NO",
-                            checklistItem.compliant ?: "NON-COMPLIANT",
-                            detail,
-                            map
+                        checklistItem.sampled ?: "NO",
+                        checklistItem.compliant ?: "NON-COMPLIANT",
+                        detail,
+                        map,
+                        loggedInUser
                     )
                 }
             }
@@ -591,10 +593,11 @@ class ChecklistService(
                     // Update sampling status
                     detail.checkListTypeId = otherChecklist.inspectionChecklistType
                     daoServices.checkIfChecklistUndergoesSampling(
-                            checklistItem.sampled ?: "NO",
-                            checklistItem.compliant ?: "NO",
-                            detail,
-                            map
+                        checklistItem.sampled ?: "NO",
+                        checklistItem.compliant ?: "NO",
+                        detail,
+                        map,
+                        loggedInUser
                     )
                 }
             }

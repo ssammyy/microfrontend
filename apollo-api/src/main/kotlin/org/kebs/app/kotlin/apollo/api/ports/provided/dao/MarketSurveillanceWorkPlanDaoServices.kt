@@ -1515,6 +1515,69 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addWorkPlanScheduleEndFinalRecommendationByHOD(
+        referenceNo: String,
+        batchReferenceNo: String
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val fetchedPreliminary = findPreliminaryReportByWorkPlanGeneratedID(workPlanScheduled.id) ?: throw ExpectedDataNotFound("Missing Preliminary Report For Work Plan with REF NR ${workPlanScheduled.referenceNumber}, do Not Exists")
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+        with(workPlanScheduled){
+            hodRecommendationStatus= map.activeStatus
+            directorRecommendationRemarksStatus= map.inactiveStatus
+//            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGenerateFinalPreliminaryReport
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameDirector
+        }
+
+        val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
+
+        when (fileSaved.first.status) {
+            map.successStatus -> {
+                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+            }
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_DIRECTOR_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addWorkPlanScheduleEndFinalRecommendationByDIRECTOR(
+        referenceNo: String,
+        batchReferenceNo: String
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val fetchedPreliminary = findPreliminaryReportByWorkPlanGeneratedID(workPlanScheduled.id) ?: throw ExpectedDataNotFound("Missing Preliminary Report For Work Plan with REF NR ${workPlanScheduled.referenceNumber}, do Not Exists")
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+        with(workPlanScheduled){
+            directorRecommendationRemarksStatus= map.activeStatus
+//            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGenerateFinalPreliminaryReport
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+        }
+
+        val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
+
+        when (fileSaved.first.status) {
+            map.successStatus -> {
+                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
+            }
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun addWorkPlanScheduleFeedBackByHOD(
         referenceNo: String,
         batchReferenceNo: String,
@@ -3768,6 +3831,10 @@ class MarketSurveillanceWorkPlanDaoServices(
             ?: throw ExpectedDataNotFound("WorkPlan Product with [referenceNumber = ${referenceNumber}], does not Exist")
     }
 
+    fun findWorkPlanProductByWorkPlanID(workPlanID: Long): List<WorkPlanProductsEntity>? {
+       return workPlanProductsRepo.findByWorkPlanId(workPlanID)
+    }
+
     fun findWorkPlanActivityByID(workPlanID: Long): MsWorkPlanGeneratedEntity {
         generateWorkPlanRepo.findByIdOrNull(workPlanID)
             ?.let { activityWorkPlan ->
@@ -3870,16 +3937,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                 }
             }
 
-//        val sampleSubmitted = findSampleSubmissionDetailByWorkPlanGeneratedID(workPlanScheduledDetails.id)
-//        val sampleSubmittedParamList = sampleSubmitted?.id?.let { msFuelDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it) }
-//        val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { msFuelDaoServices.mapSampleSubmissionParamListDto(it) }?.let { msFuelDaoServices.mapSampleSubmissionDto(sampleSubmitted, it) }
-
-//        val labResultsParameters = sampleSubmitted?.bsNumber?.let { msFuelDaoServices.findSampleLabTestResultsRepoBYBSNumber(it) }
-//        val ssfDetailsLab = findSampleSubmittedByWorkPlanGeneratedID(workPlanScheduledDetails.id)
-//        val savedPDFFilesLims = ssfDetailsLab?.id?.let { msFuelDaoServices.findSampleSubmittedListPdfBYSSFid(it)?.let { ssfDetails->msFuelDaoServices.mapLabPDFFilesListDto(ssfDetails) } }
-//        val ssfResultsListCompliance = ssfDetailsLab?.let { msFuelDaoServices.mapSSFComplianceStatusDetailsDto(it) }
-//        val limsPDFFiles = ssfDetailsLab?.bsNumber?.let { msFuelDaoServices.mapLIMSSavedFilesDto(it,savedPDFFilesLims)}
-//        val labResultsDto = msFuelDaoServices.mapLabResultsDetailsDto(ssfResultsListCompliance,savedPDFFilesLims,limsPDFFiles,labResultsParameters?.let { msFuelDaoServices.mapLabResultsParamListDto(it) })
 
         val compliantDetailsStatus = mapCompliantStatusDto(workPlanScheduledDetails, map)
         var compliantStatusDone = false
@@ -3904,6 +3961,10 @@ class MarketSurveillanceWorkPlanDaoServices(
         val preliminaryReportParamList = preliminaryReport?.id?.let { findPreliminaryReportParams(it) }
         val preliminaryReportDtoValues = preliminaryReportParamList?.let { mapPreliminaryParamListDto(it) }?.let { mapPreliminaryReportDto(preliminaryReport, it) }
 
+        val workPlanProducts = findWorkPlanProductByWorkPlanID(workPlanScheduledDetails.id)
+        val workPlanProductsDto = workPlanProducts?.let { mapWorkPlanProductsListDto(it) }
+
+
         return mapWorkPlanInspectionDto(
             workPlanScheduledDetails,
             officerList,
@@ -3924,8 +3985,9 @@ class MarketSurveillanceWorkPlanDaoServices(
             preliminaryReportDtoValues,
             updateWorkPlan,
             bsNumberCountAdded,
-            analysisLabCountDone
-
+            analysisLabCountDone,
+            workPlanProductsDto?.second,
+            workPlanProductsDto?.first,
         )
     }
 
@@ -3970,9 +4032,9 @@ class MarketSurveillanceWorkPlanDaoServices(
         preliminaryReport: PreliminaryReportDto?,
         updateWorkPlan: WorkPlanEntityDto?,
         bsNumberCountAdded: Int,
-        analysisLabCountDone: Int
-
-
+        analysisLabCountDone: Int,
+        productListRecommendationAddedCount: Int?,
+        productList :List<WorkPlanProductDto>?
         ): WorkPlanInspectionDto {
         return WorkPlanInspectionDto(
             wKP.id,
@@ -3996,6 +4058,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.approvedStatus == 1,
             wKP.workPlanYearId,
             wKP.clientAppealed == 1,
+            wKP.directorRecommendationRemarksStatus == 1,
             wKP.hodRecommendationStatus == 1,
             wKP.hodRecommendationStart == 1,
             wKP.hodRecommendation,
@@ -4090,6 +4153,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.resubmitStatus== 1,
             bsNumberCountAdded,
             analysisLabCountDone,
+            productListRecommendationAddedCount,
+            productList
         )
     }
 
@@ -4193,6 +4258,40 @@ class MarketSurveillanceWorkPlanDaoServices(
                 it.preliminaryReportID,
             )
         }
+    }
+
+    fun mapWorkPlanProductsListDto(productList: List<WorkPlanProductsEntity>): Pair<List<WorkPlanProductDto>, Int> {
+        var countRecommendationsAdded = 0
+        val productListDto = productList.map {
+            if (it.hodRecommendationStatus == 1){
+                countRecommendationsAdded=countRecommendationsAdded++
+            }
+            WorkPlanProductDto(
+                    it.id,
+                    it.productName,
+                    it.referenceNo,
+                    it.recommendation,
+                    it.destructionRecommended == 1,
+                    it.hodRecommendationStatus == 1,
+                    it.hodRecommendationRemarks,
+                    it.directorRecommendationStatus == 1,
+                    it.directorRecommendationRemarks,
+                    it.clientAppealed == 1,
+                    it.destructionStatus == 1,
+                    it.appealStatus == 1,
+                    it.destructionNotificationStatus == 1,
+                    it.destructionNotificationDocId,
+                    it.workPlanId,
+                    it.ssfId,
+                    it.destructionClientEmail,
+                    it.destructionClientFullName,
+                    it.destructionNotificationDate,
+                    it.destructionDocId,
+                    it.destructedStatus == 1,
+            )
+        }
+
+        return Pair(productListDto,countRecommendationsAdded)
     }
 
     fun findRemarksForWorkPlan(workPlanInspectionID: Long): List<MsRemarksEntity>? {

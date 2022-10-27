@@ -34,3 +34,5 @@ class ProcessInstanceResponseGazzette (val savedRowID: Long?,val processId: Stri
 class ProcessInstanceRecommendations (val savedRowID: Long?,val processId: String, val isEnded: Boolean) {
 
 }
+class ProcessInstanceDraft (val savedRowID: Long?,val processId: String, val isEnded: Boolean) {
+}

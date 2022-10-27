@@ -64,16 +64,16 @@ export class PermitsDeferredComponent implements OnInit {
       processing: true,
       dom: 'Bfrtip'
     };
-    this.getAllDMarkApplicationsGranted()
-    this.getAllFMarkApplicationsGranted()
-    this.getAllSMarkApplicationsGranted()
+    this.getAllDMarkApplicationsDejected()
+    this.getAllFMarkApplicationsDejected()
+    this.getAllSMarkApplicationsDejected()
 
   }
 
 
-  public getAllDMarkApplicationsGranted(): void {
+  public getAllDMarkApplicationsDejected(): void {
     this.SpinnerService.show();
-    this.qaService.loadPermitGrantedReports(String(this.dMarkID)).subscribe(
+    this.qaService.loadPermitDejectedReports(String(this.dMarkID)).subscribe(
         (response: ReportsPermitEntityDto[]) => {
           this.allDMarkPermitData = response;
           this.rerender()
@@ -97,8 +97,8 @@ export class PermitsDeferredComponent implements OnInit {
 
   }
 
-  public getAllSMarkApplicationsGranted(): void {
-    this.qaService.loadPermitGrantedReports(String(this.sMarkID)).subscribe(
+  public getAllSMarkApplicationsDejected(): void {
+    this.qaService.loadPermitDejectedReports(String(this.sMarkID)).subscribe(
         (response: ReportsPermitEntityDto[]) => {
           this.allSMarkPermitData = response;
           this.rerender()
@@ -123,8 +123,8 @@ export class PermitsDeferredComponent implements OnInit {
 
   }
 
-  public getAllFMarkApplicationsGranted(): void {
-    this.qaService.loadPermitGrantedReports(String(this.fMarkID)).subscribe(
+  public getAllFMarkApplicationsDejected(): void {
+    this.qaService.loadPermitDejectedReports(String(this.fMarkID)).subscribe(
         (response: ReportsPermitEntityDto[]) => {
           this.allFMarkPermitData = response;
           this.rerender()
@@ -175,5 +175,15 @@ export class PermitsDeferredComponent implements OnInit {
   formatFormDate(date: string) {
     return formatDate(date, this.dateFormat, this.language);
   }
+    calculateDiff(date1, date2) {
+
+        let todayDate = new Date(date1);
+        let sentOnDate = new Date(date2);
+        sentOnDate.setDate(sentOnDate.getDate());
+        let differenceInTime = todayDate.getTime() - sentOnDate.getTime();
+        // To calculate the no. of days between two dates
+        return Math.floor(differenceInTime / (1000 * 3600 * 24));
+    }
+
 
 }

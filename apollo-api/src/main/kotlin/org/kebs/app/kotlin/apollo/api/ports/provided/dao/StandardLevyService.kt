@@ -264,14 +264,7 @@ class StandardLevyService(
 
 
                 val companyDetails=companyProfileRepo.getCompanyData(companyProfileEntity.id)
-                for(companyDetail in companyDetails){
-                    rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
-                    rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
-                    rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
-                    rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
-                    rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
-                    rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
-                }
+
 
 
                 companyProfileEntity.accentTo?.let { variables["No"] = it }
@@ -304,6 +297,16 @@ class StandardLevyService(
                     }
 
                     companyProfileRepo.save(entity)
+                    for(companyDetail in companyDetails){
+                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                        rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
+                        rejectedCompanyDetailsEntity.status=1
+                    }
+                    rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
 
                     var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
                     userList.forEach { item->
@@ -318,6 +321,16 @@ class StandardLevyService(
                     taskService.complete(companyProfileEntity.taskId, variables)
                 }
                 if (variables["No"] == false) {
+                    for(companyDetail in companyDetails){
+                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                        rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
+                        rejectedCompanyDetailsEntity.status=0
+                    }
+
                     var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
                     userList.forEach { item->
                         val recipient= item.getUserEmail()
@@ -387,17 +400,20 @@ return getUserTasks();
 
 
                 val companyDetails=companyProfileRepo.getCompanyData(companyProfileEntity.id)
-                for(companyDetail in companyDetails){
-                    rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
-                    rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
-                    rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
-                    rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
-                    rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
-                    rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
-                }
+
 
 
                 if (variables["Yes"] == true) {
+                    for(companyDetail in companyDetails){
+                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                        rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
+                        rejectedCompanyDetailsEntity.status=1
+                    }
+                    rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
                     var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
                     userList.forEach { item->
                         val recipient= item.getUserEmail()
@@ -443,6 +459,15 @@ return getUserTasks();
                         ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
                 }
                 if (variables["No"] == false) {
+                    for(companyDetail in companyDetails){
+                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                        rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
+                        rejectedCompanyDetailsEntity.status=0
+                    }
                     var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
                     userList.forEach { item->
                         val recipient= item.getUserEmail()
@@ -509,14 +534,7 @@ return getUserTasks();
 
 
                 val companyDetails=companyProfileRepo.getCompanyData(companyProfileEntity.id)
-                for(companyDetail in companyDetails){
-                    rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
-                    rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
-                    rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
-                    rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
-                    rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
-                    rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
-                }
+
 
 
 
@@ -525,6 +543,15 @@ return getUserTasks();
 
 
                 if (variables["Yes"] == true) {
+                    for(companyDetail in companyDetails){
+                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                        rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
+                        rejectedCompanyDetailsEntity.status=1
+                    }
                     var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
                     userList.forEach { item->
                         val recipient= item.getUserEmail()
@@ -546,10 +573,19 @@ return getUserTasks();
                     }
 
                     companyProfileRepo.save(entity)
-
+                    rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
                     taskService.complete(companyProfileEntity.taskId, variables)
                 }
                 if (variables["No"] == false) {
+                    for(companyDetail in companyDetails){
+                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                        rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
+                        rejectedCompanyDetailsEntity.status=0
+                    }
                     var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
                     userList.forEach { item->
                         val recipient= item.getUserEmail()
