@@ -6,7 +6,7 @@ import {catchError, map} from "rxjs/operators";
 import {
     ApproveVisitTask,
     AssignCompanyTaskDTO, Branch, CloseCompanyDto, ClosedCompanyDTO,
-    CompanyModel, CompanyOperationsDto,
+    CompanyModel, CompanyOperationsDto, CompanyRemarks,
     ConfirmEditCompanyDTO, DefaulterDetails,
     DirectorsList,
     DocumentDTO,
@@ -332,7 +332,7 @@ export class LevyService {
     public getComEditRemarks(editID: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_COMPANY_REMARKS);
         const params = new HttpParams().set('editID', editID);
-        return this.http.get<SiteVisitRemarks>(url, {params}).pipe();
+        return this.http.get<CompanyRemarks>(url, {params}).pipe();
     }
 
     public editCompanyDetailsConfirm(editCompanyDTO: EditCompanyDTO): Observable<any> {

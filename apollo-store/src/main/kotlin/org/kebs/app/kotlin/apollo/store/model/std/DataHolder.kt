@@ -80,6 +80,17 @@ interface WindingUpReportListHolder {
     fun getId(): Long?
 }
 
+interface CompanyRemarks{
+    fun getId(): Long?
+    fun getSiteVisitId(): Long?
+    fun getRemarks(): String?
+    fun getRemarkBy(): String?
+    fun getStatus(): String?
+    fun getRole(): String?
+    fun getDescription(): String?
+    fun getDateOfRemark(): String?
+}
+
 interface LevyPayment{
     fun getId(): Long?
     fun getEntryNumber(): Long?
