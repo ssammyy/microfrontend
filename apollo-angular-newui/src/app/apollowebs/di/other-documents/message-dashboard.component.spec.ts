@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MessageDashboardComponent } from './message-dashboard.component';
+import {MessageDashboardComponent} from './message-dashboard.component';
 
 describe('MessageDashboardComponent', () => {
   let component: MessageDashboardComponent;

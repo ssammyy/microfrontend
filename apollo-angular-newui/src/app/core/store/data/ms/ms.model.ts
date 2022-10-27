@@ -47,6 +47,14 @@ export class MsDepartment {
     status?: boolean;
 }
 
+
+export class KebsStandardsDto {
+    id: number;
+    standardTitle: string;
+    standardNumber: string;
+    status: boolean;
+}
+
 export class MsDivisionDetails {
     id?: string;
     division?: string;
@@ -81,6 +89,24 @@ export class PredefinedResourcesRequired {
     id: number;
     resourceName: string;
     status: boolean;
+}
+
+export class WorkPlanTownsDto{
+        countyID: number;
+        countyName: string;
+        townID: number;
+        townName: string;
+        locationName: string;
+}
+
+export class RecommendationDto {
+    recommendationId: number;
+    recommendationName: string;
+}
+
+export class AllWorkPlanDetails {
+     mainDetails: WorkPlanEntityDto;
+     countyTownDetails: WorkPlanTownsDto[];
 }
 
 export class MsProducts {
@@ -461,6 +487,7 @@ export class WorkPlanInspectionDto {
     approvedStatus: boolean;
     workPlanYearId: number;
     clientAppealed: boolean;
+    directorRecommendationRemarksStatus: boolean;
     hodRecommendationStatus: boolean;
     hodRecommendationStart: boolean;
     hodRecommendation: string;
@@ -535,12 +562,12 @@ export class WorkPlanInspectionDto {
     remarksDetails: MSRemarksDto[];
     workPlanFiles: WorkPlanFilesFoundDto[];
     chargeSheet: ChargeSheetDto;
-    seizureDeclarationDto: SeizureDeclarationDto;
+    seizureDeclarationDto: SeizureDto[];
     inspectionInvestigationDto: InspectionInvestigationReportDto;
     dataReportDto: DataReportDto;
     sampleCollected: SampleCollectionDto;
-    sampleSubmitted: SampleSubmissionDto;
-    sampleLabResults: MSSSFLabResultsDto;
+    sampleSubmitted: SampleSubmissionDto[];
+    sampleLabResults: MSSSFLabResultsDto[];
     compliantStatusAdded: boolean;
     destructionRecommended: boolean;
     finalReportGenerated: boolean;
@@ -552,12 +579,41 @@ export class WorkPlanInspectionDto {
     updateWorkPlan: WorkPlanEntityDto;
     updatedStatus: Boolean;
     resubmitStatus: Boolean;
+    bsNumberCountAdded: number;
+    analysisLabCountDone: number;
+    productListRecommendationAddedCount: number;
+    productList: WorkPlanProductDto[];
 }
 
 export class CountryListDto {
     name: string;
     code: string;
 }
+
+export class WorkPlanProductDto {
+        id: number;
+        productName: string;
+        referenceNo: string;
+        recommendation: string;
+        destructionRecommended: boolean;
+        hodRecommendationStatus: boolean;
+        hodRecommendationRemarks: string;
+        directorRecommendationStatus: boolean;
+        directorRecommendationRemarks: string;
+        clientAppealed: boolean;
+        destructionStatus: boolean;
+        appealStatus: boolean;
+        destructionNotificationStatus: boolean;
+        destructionNotificationDocId: number;
+        workPlanId: number;
+        ssfId: number;
+        destructionClientEmail: string;
+        destructionClientFullName: string;
+        destructionNotificationDate: Date;
+        destructionDocId: number;
+        destructedStatus: boolean;
+}
+
 
 export class SeizureDeclarationDto {
     id: number;
@@ -596,6 +652,36 @@ export class SeizureDeclarationDto {
     remarks: string;
 }
 
+
+export class SeizureListDto {
+    seizureList: SeizureDto[];
+}
+
+export class LaboratoryEntityDto {
+        id: number;
+        labName: string;
+        description: string;
+        status: boolean;
+}
+
+export class SeizureDto {
+    id: number;
+    marketTownCenter: string;
+    nameOfOutlet: string;
+    descriptionProductsSeized: string;
+    brand: string;
+    sector: string;
+    reasonSeizure: string;
+    nameSeizingOfficer: string;
+    seizureSerial: string;
+    quantity: string;
+    unit: string;
+    estimatedCost: string;
+    currentLocation: string;
+    productsDestruction: string;
+    remarks: string;
+}
+
 export class DataReportDto {
     id: number;
     referenceNumber: string;
@@ -610,6 +696,7 @@ export class DataReportDto {
     personMet: string;
     summaryFindingsActionsTaken: string;
     finalActionSeizedGoods: string;
+    totalComplianceScore: string;
     remarks: string;
     productsList: DataReportParamsDto[];
 }
@@ -720,12 +807,12 @@ export class FuelTeamsDto {
 }
 
 export class WorkPlanFinalRecommendationDto {
-    recommendationId: bigint;
+    recommendationId: RecommendationDto[];
     hodRecommendationRemarks: string;
 }
 
 export class MsRecommendationDto {
-    id: bigint;
+    id: number;
     recommendationName: string;
     description: string;
     status: boolean;
@@ -992,6 +1079,7 @@ export class SampleSubmissionDto {
 }
 
 export class SampleSubmissionItemsDto {
+    id: number;
     parameters: string;
     laboratoryName: string;
 }

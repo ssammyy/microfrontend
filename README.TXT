@@ -13,6 +13,7 @@ sudo apt-get install libstdc++5:i386 libx11-6:i386 libpam0g:i386
 wget https://vpnportal.aktifbank.com.tr/SNX/INSTALL/snx_install.sh --no-check-certificate
 ls
 ```
+
 # Issues
 1. Cannot connect/login to: sftp://kebs\bsk@10.10.0.127:922. Will skip this poll.: Login to sftp server manually before starting the application: https://access.redhat.com/solutions/2071143
 ```

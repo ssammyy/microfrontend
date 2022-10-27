@@ -108,6 +108,10 @@ interface ICocsRepository : HazelcastRepository<CocsEntity, Long> {
     @Query(value = "select count(*) as cc from DAT_KEBS_COCS where to_char(COC_ISSUE_DATE,'YYYY')=:gYear and COC_TYPE=:cocType", nativeQuery = true)
     fun countAllByYearGenerate(gYear: Long, cocType: String): Long
     fun findByCocTypeAndDocumentsTypeAndReviewStatus(certType: String, docType: String, reviewStatus: Int, page: Pageable): Page<CocsEntity>
+
+    fun findByCocTypeAndDocumentsType(certType: String, docType: String, page: Pageable): Page<CocsEntity>
+    fun findByCocTypeAndReviewStatus(certType: String, reviewStatus: Int,page: Pageable): Page<CocsEntity>
+    fun findByCocType(certType: String,page: Pageable): Page<CocsEntity>
 }
 
 

@@ -1369,7 +1369,7 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
           this.teamsReferenceNo,
           this.countyReferenceNo,
           this.referenceNumber,
-          this.dataSaveEndFuel
+          this.dataSaveEndFuel,
       ).subscribe(
           (data: any) => {
             this.fuelInspection = data;
@@ -1526,9 +1526,6 @@ export class ViewFuelSheduledDetailsComponent implements OnInit {
     this.currDiv = 'pdfSaveCompliance';
 
     window.$('#myModal2').modal('show');
-    // $('#myModal1').modal('show');
-    // this.openModalAddDetails('assignOfficer')
-    // this.router.navigate([`/epra/fuelInspection/details/`,data.referenceNumber]);
   }
 
   saveSSFRecord(data: SampleCollectionItemsDto) {

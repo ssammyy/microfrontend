@@ -2142,8 +2142,7 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID =req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             var permit = qaDaoServices.findPermitBYUserIDAndId(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
@@ -3753,6 +3752,35 @@ class QualityAssuranceHandler(
 
             permitListAllApplications = qaDaoServices.listPermits(
                 qaDaoServices.findReportAllRenewedPermits(
+                    loggedInUser,
+                    permitTypeID,
+                    map.activeStatus,
+                    map.inactiveStatus
+                ), map
+            )
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllDejectedPermitsForReports(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+
+            var permitListAllApplications: List<PermitEntityDto>? = null
+
+            permitListAllApplications = qaDaoServices.listPermits(
+                qaDaoServices.findReportAllDejectedPermits(
                     loggedInUser,
                     permitTypeID,
                     map.activeStatus,

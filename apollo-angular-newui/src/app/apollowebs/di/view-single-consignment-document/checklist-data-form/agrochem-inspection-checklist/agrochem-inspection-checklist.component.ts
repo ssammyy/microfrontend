@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
     selector: 'app-agrochem-inspection-checklist',
@@ -24,8 +24,7 @@ export class AgrochemInspectionChecklistComponent implements OnInit {
             items: []
         })
         this.agrochemChecklist.valueChanges
-            .subscribe(
-                valid => {
+            .subscribe(()=> {
                     if (this.selectedItems && this.selectedItems.length>0) {
                         let data=this.agrochemChecklist.value
                         let v=this.validateItems(data)

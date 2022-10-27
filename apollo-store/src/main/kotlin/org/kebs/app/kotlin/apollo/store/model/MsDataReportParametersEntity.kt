@@ -12,7 +12,7 @@ class MsDataReportParametersEntity : Serializable{
     @SequenceGenerator(name = "DAT_KEBS_MS_DATA_REPORT_PARAMETERS_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_MS_DATA_REPORT_PARAMETERS_SEQ")
     @GeneratedValue(generator = "DAT_KEBS_MS_DATA_REPORT_PARAMETERS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
-    var id: Long? = 0
+    var id: Long = 0
 
 
     @Column(name = "TYPE_BRAND_NAME")

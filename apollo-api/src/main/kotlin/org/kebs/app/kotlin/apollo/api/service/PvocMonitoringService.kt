@@ -22,23 +22,31 @@ enum class MonitoringStatus(val status: Int) {
 
 @Service
 class PvocMonitoringService(
-        private val iPvocAgentMonitoringStatusEntityRepo: IPvocAgentMonitoringStatusEntityRepo,
-        private val rfcRepository: IRfcEntityRepo,
-        private val rfcCorRepository: IRfcCorRepository,
-        private val cocItemRepository: ICocItemRepository,
-        private val corBakRepository: ICorsBakRepository,
-        private val cocCoiRepository: ICocsRepository,
-        private val pvocQuerriesRepository: IPvocQuerriesRepository,
-        private val partnerService: PvocPartnerService,
+    private val iPvocAgentMonitoringStatusEntityRepo: IPvocAgentMonitoringStatusEntityRepo,
+    private val rfcRepository: IRfcEntityRepo,
+    private val rfcCorRepository: IRfcCorRepository,
+    private val cocItemRepository: ICocItemRepository,
+    private val corBakRepository: ICorsBakRepository,
+    private val cocCoiRepository: ICocsRepository,
+    private val pvocQuerriesRepository: IPvocQuerriesRepository,
+    private val partnerService: PvocPartnerService,
 ) {
     fun findMonitoringRecord(yearMonth: String, agent: PvocPartnersEntity): PvocAgentMonitoringStatusEntity {
-        val monitoringOptional = this.iPvocAgentMonitoringStatusEntityRepo.findFirstByPartnerIdAndYearMonthAndStatus(agent, yearMonth, MonitoringStatus.OPEN.status)
+        val monitoringOptional = this.iPvocAgentMonitoringStatusEntityRepo.findFirstByPartnerIdAndYearMonthAndStatus(
+            agent,
+            yearMonth,
+            MonitoringStatus.OPEN.status
+        )
         if (monitoringOptional.isPresent) {
             return monitoringOptional.get()
         } else {
             val monitoring = PvocAgentMonitoringStatusEntity()
             monitoring.partnerId = agent
-            monitoring.recordNumber = yearMonth + (this.iPvocAgentMonitoringStatusEntityRepo.countByPartnerIdAndYearMonth(agent, yearMonth) + 1)
+            monitoring.recordNumber =
+                yearMonth + (this.iPvocAgentMonitoringStatusEntityRepo.countByPartnerIdAndYearMonth(
+                    agent,
+                    yearMonth
+                ) + 1)
             monitoring.yearMonth = yearMonth
             monitoring.description = "Agent Monitoring record for $yearMonth"
             monitoring.monitoringStatus = MonitoringStatus.OPEN.status
@@ -138,10 +146,43 @@ class PvocMonitoringService(
         return response
     }
 
-    fun listForeignCocCoi(documentType: String, reviewStatus: Int, page: PageRequest): ApiResponseModel {
+    fun listForeignCocCoi(
+        documentType: String,
+        documentCategory: String?,
+        reviewStatus: Int?,
+        page: PageRequest
+    ): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            val data = this.cocCoiRepository.findByCocTypeAndDocumentsTypeAndReviewStatus(documentType, "F", reviewStatus, page)
+            val data = when (documentCategory) {
+                "F", "foreign" -> reviewStatus?.let { status ->
+                    this.cocCoiRepository.findByCocTypeAndDocumentsTypeAndReviewStatus(
+                        documentType,
+                        "F",
+                        status,
+                        page
+                    )
+                } ?: this.cocCoiRepository.findByCocTypeAndDocumentsType(documentType, "F", page)
+                "L", "local" -> {
+                    reviewStatus?.let { status ->
+                        this.cocCoiRepository.findByCocTypeAndDocumentsTypeAndReviewStatus(
+                            documentType,
+                            "L",
+                            status,
+                            page
+                        )
+                    } ?: this.cocCoiRepository.findByCocTypeAndDocumentsType(documentType, "L", page)
+                }
+                else -> {
+                    reviewStatus?.let { status ->
+                        this.cocCoiRepository.findByCocTypeAndReviewStatus(
+                            documentType,
+                            status,
+                            page
+                        )
+                    } ?: this.cocCoiRepository.findByCocType(documentType, page)
+                }
+            }
             response.data = data.toList()
             response.message = "Success"
             response.pageNo = data.number
@@ -170,11 +211,13 @@ class PvocMonitoringService(
                     this.partnerService.getPartner(partnerId)?.let { part -> PvocPartnerDto.fromEntity(part) }
                 }
                 dataMap["items"] = cocItemRepository.findByCocId(foreignId)
-                dataMap["queries"] = pvocQuerriesRepository.findAllByCertNumber(when (data.get().cocType) {
-                    "COC" -> data.get().cocNumber.orEmpty()
-                    "COI" -> data.get().coiNumber.orEmpty()
-                    else -> data.get().cocNumber.orEmpty()
-                })
+                dataMap["queries"] = pvocQuerriesRepository.findAllByCertNumber(
+                    when (data.get().cocType) {
+                        "COC" -> data.get().cocNumber.orEmpty()
+                        "COI" -> data.get().coiNumber.orEmpty()
+                        else -> data.get().cocNumber.orEmpty()
+                    }
+                )
                 response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -187,10 +230,23 @@ class PvocMonitoringService(
         return response
     }
 
-    fun listForeignCor(reviewStatus: Int, page: PageRequest): ApiResponseModel {
+    fun listForeignCor(category: String?, reviewStatus: Int?, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            val data = this.corBakRepository.findByDocumentsTypeAndReviewStatus("F", reviewStatus, page)
+            val data = when (category) {
+                "F", "foreign" -> {
+                    reviewStatus?.let { status ->
+                        this.corBakRepository.findByDocumentsTypeAndReviewStatus("F", status, page)
+                    } ?: this.corBakRepository.findByDocumentsType("F", page)
+                }
+                "L", "local" -> reviewStatus?.let { status ->
+                    this.corBakRepository.findByDocumentsTypeAndReviewStatus("L", status, page)
+                } ?: this.corBakRepository.findByDocumentsType("L", page)
+                else -> reviewStatus?.let { status ->
+                    this.corBakRepository.findByReviewStatus(status, page)
+                } ?: this.corBakRepository.findAll(page)
+
+            }
             response.data = CorEntityDao.fromList(data.toList())
             response.message = "Success"
             response.pageNo = data.number

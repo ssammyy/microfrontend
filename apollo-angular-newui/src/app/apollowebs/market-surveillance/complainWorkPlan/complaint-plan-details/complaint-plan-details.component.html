@@ -71,7 +71,7 @@
                                                 <label style="color: #0082f3">Resources Required</label>
                                             </div>
                                             <div class="table-striped table-condensed table-responsive">
-                                                <ng2-smart-table [settings]="settingsResourceRequierd" [source]="workPlanInspection?.resourcesRequired"></ng2-smart-table>
+                                                <ng2-smart-table [settings]="settingsResourceRequired" [source]="workPlanInspection?.resourcesRequired"></ng2-smart-table>
                                             </div>
                                         </div>
                                     </mat-tab>
@@ -470,376 +470,86 @@
                                             </div>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.sampleSubmitted" label="11">
+                                    <mat-tab *ngIf="workPlanInspection?.sampleSubmitted?.length!=0" label="11">
                                         <ng-template mat-tab-label>
-                                            SAMPLE SUBMITTED
+                                            Sample Submission Details
                                         </ng-template>
-                                        <b class="text-primary">Sample Submitted Details</b>
-                                        <div class="panel" style="max-height: 388px;">
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Name Product</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.nameProduct}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Packaging</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.packaging}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Labelling Identification</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.labellingIdentification}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">File Ref Number</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.fileRefNumber}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">References Standards
-                                                    </div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.referencesStandards}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Size Test Sample</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.sizeTestSample}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Size Ref Sample</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.sizeRefSample}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Condition</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.condition}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Sample References</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.sampleReferences}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Senders Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.sendersName}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Designation</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.designation}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Address</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.address}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Senders Date</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.sendersDate| date}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Receivers Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.receiversName}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Test Charges Ksh</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.testChargesKsh}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Receipt Number</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.receiptLpoNumber}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Invoice Number</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.invoiceNumber}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Disposal</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.disposal}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Remarks</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.remarks}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Sample Collection Number</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.sampleCollectionNumber}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Bs Number</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleSubmitted?.bsNumber}}</div>
-                                                </li>
-                                            </ul>
-                                            <!--                                            <button class="btn-sm btn-primary" >Download</button>-->
-                                            <div class="form-row">
-                                                <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Items</label>
-                                                </div>
-                                                <div class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsSampleSubmittedItems" [source]="workPlanInspection?.sampleSubmitted?.parametersList"></ng2-smart-table>
-                                                </div>
+                                        <div class="form-row">
+                                            <div *ngIf="workPlanInspection?.sampleSubmittedStatus  && workPlanInspection?.bsNumberStatus
+                                                && workPlanInspection?.onsiteEndStatus" class="table-striped table-condensed table-responsive">
+                                                <ng2-smart-table [settings]="settingsSampleSubmitted"
+                                                                 [source]="workPlanInspection?.sampleSubmitted"
+                                                                 (custom)="onCustomSSFAction($event)"
+                                                ></ng2-smart-table>
                                             </div>
-                                            <br>
+                                            <div *ngIf="workPlanInspection?.sampleSubmittedStatus  && workPlanInspection?.bsNumberStatus == false
+                                                && workPlanInspection?.onsiteEndStatus" class="table-striped table-condensed table-responsive">
+                                                <ng2-smart-table [settings]="settingsSampleSubmittedAddBsNumber"
+                                                                 [source]="workPlanInspection?.sampleSubmitted"
+                                                                 (custom)="onCustomSSFAction($event)"
+                                                ></ng2-smart-table>
+                                            </div>
+                                            <div *ngIf="workPlanInspection?.onsiteEndStatus ==false" class="table-striped table-condensed table-responsive">
+                                                <ng2-smart-table [settings]="settingsSampleSubmittedUpdate"
+                                                                 [source]="workPlanInspection?.sampleSubmitted"
+                                                                 (custom)="onCustomSSFAction($event)"
+                                                ></ng2-smart-table>
+                                            </div>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested" label="12">
-                                        <!--                                    <mat-tab  label="6">-->
+                                    <mat-tab *ngIf="workPlanInspection?.productList?.length!=0" label="11">
                                         <ng-template mat-tab-label>
-                                            LAB RESULTS
+                                            WorkPlan Products Details
                                         </ng-template>
-                                        <!--                                        <b class="text-primary">Lab Results Details</b>-->
-                                        <label style="color: #0082f3">Lab Results Details</label>
-                                        <div class="panel" style="max-height: 388px;">
+                                        <div class="form-row">
                                             <div *ngFor="let role of roles">
-                                                <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus && workPlanInspection?.compliantStatusAdded==false && workPlanInspection?.officerDetails?.id == userLoggedInID
-                                                && workPlanInspection?.sampleLabResults?.savedPDFFiles?.length != 0" (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
-                                                         data-target="#myModal1"
-                                                         class="btn btn-sm btn-primary mr-3"><span
-                                                        class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
-
-                                                    <div class="mat-button-focus-overlay"></div>
-                                                </button>
+                                                <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY' && workPlanInspection?.hodRecommendationStatus == false"
+                                                     class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsWorkPlanProducts"
+                                                                     [source]="workPlanInspection?.productList"
+                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
+                                                    ></ng2-smart-table>
+                                                </div>
+                                                <div *ngIf="role == 'MS_DIRECTOR_MODIFY'  && workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false"
+                                                     class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsWorkPlanProductsDirector"
+                                                                     [source]="workPlanInspection?.productList"
+                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
+                                                    ></ng2-smart-table>
+                                                </div>
                                             </div>
-                                            <br>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">BS Number</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Compliance Status</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
-                                                </li>
-                                                <br/>
-                                                <b class="text-secondary">Lab Results Compliance Remarks</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>
-                                                <br/>
-                                            </ul>
 
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.seizureDeclarationDto?.length!=0" label="13">
+                                        <ng-template mat-tab-label>
+                                            SEIZED PRODUCTS
+                                        </ng-template>
+                                        <b class="text-primary">SEIZED PRODUCTS DETAILS</b>
+                                        <div class="panel" style="max-height: 388px;">
                                             <div class="form-row">
                                                 <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Lab Results Param</label>
+                                                    <label style="color: #0082f3">Product List</label>
                                                 </div>
-                                                <div class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsLabResultsParam" [source]="workPlanInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>
+                                                <div *ngIf="workPlanInspection?.seizureDeclarationStatus && workPlanInspection?.onsiteEndStatus" class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table  [settings]="settingsSeizedProducts" [source]="workPlanInspection?.seizureDeclarationDto"></ng2-smart-table>
                                                 </div>
-                                            </div>
-                                            <div *ngIf="workPlanInspection?.sampleLabResults?.parametersListTested.length!=0">
-                                                <div *ngFor="let role of roles">
-                                                    <div  *ngIf="role == 'MS_IO_MODIFY'" class="form-row">
-                                                        <div class="col-md-12 mb-3">
-                                                            <label style="color: #0082f3">Lab Results PDF Found</label>
-                                                        </div>
-                                                        <div class="table-striped table-condensed table-responsive">
-                                                            <ng2-smart-table [settings]="settingsLIMSPDFFiles"
-                                                                             [source]="workPlanInspection?.sampleLabResults?.limsPDFFiles"
-                                                                             (custom)="onCustomLIMSPDFAction($event,workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber)"
-                                                            ></ng2-smart-table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-row">
-                                                    <div class="col-md-12 mb-3">
-                                                        <label style="color: #0082f3">Lab Results PDF SAVED</label>
-                                                    </div>
-                                                    <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsSavedPDFFiles"
-                                                                         [source]="workPlanInspection?.sampleLabResults?.savedPDFFiles"
-                                                                         (custom)="onCustomLIMSPDFViewAction($event)"
-                                                        ></ng2-smart-table>
-                                                    </div>
+                                                <div *ngIf="workPlanInspection?.onsiteEndStatus ==false" class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table  [settings]="settingsSeizedProductsUpdate"
+                                                                      [source]="workPlanInspection?.seizureDeclarationDto"
+                                                                      (custom)="onCustomSEIZEDAction($event)"
+                                                    ></ng2-smart-table>
                                                 </div>
                                             </div>
-                                            <br>
-                                        </div>
-                                    </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.seizureDeclarationDto" label="13">
-                                        <ng-template mat-tab-label>
-                                            SEIZURE NOTIFICATION
-                                        </ng-template>
-                                        <b class="text-primary">SEIZURE NOTIFICATION DETAILS</b>
-                                        <div class="panel" style="max-height: 388px;">
-                                            <ul class="w-list-unstyled">
-                                                <p class="list-paragraph-accordion">To..<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.seizureTo}}</span>
-                                                    ..Whereas I have reason to believe that the stock of goods detailed below
-                                                    which is/are at the premises of..<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.seizurePremises}}</span>..
-                                                    Do not meet the requirements of Standard(s)..<span style="color:#0066B1;font-weight:bold">
-                                                {{workPlanInspection?.seizureDeclarationDto?.seizureRequirementsStandards}}</span>....published/approved by the Kenya Bureau of Standards.</p>
-                                            </ul>
-                                            <br/>
-                                            <b class="text-primary">DETAILS OF GOODS</b>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Name of manufacturer/Trader</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsManufactureTrader}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Address</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsAddress}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical location</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsPhysical}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Goods are marked/branded as follows</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsMarkedBranded}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical seal</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsPhysicalSeal}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Description of goods</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.descriptionGoods}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Quantity</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.goodsQuantity}}</div>
-                                                </li>
-                                                <br/>
-                                                <div class="list-paragraph-accordion">
-                                                    <p>Now therefore I....<span style="color:blue;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.goodsThereforei}}</span>...
-                                                        as an inspector under the Standards Act Cap 496, Laws of Kenya , hereby seize and detain the said goods under
-                                                        the provisions of the standards Act Cap 496 Laws of Kenya, miscellaneous amendment 2002, No 2</p></div>
-                                            </ul>
-                                            <br/>
-
-                                            <b class="text-primary" style="text-align: center">INSPECTOR DETAILS</b>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.nameInspector}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Designation</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.designationInspector}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Date</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.dateInspector}}</div>
-                                                </li>
-                                            </ul>
-                                            <br/>
-                                            <b class="text-primary">MANUFACTURER/TRADER DETAILS</b>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.nameManufactureTrader}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Designation</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.designationManufactureTrader}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Date</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.dateManufactureTrader}}</div>
-                                                </li>
-                                            </ul>
-                                            <br/>
-                                            <b class="text-primary">WITNESS DETAILS</b>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Name</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.nameWitness}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Designation</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.designationWitness}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Date</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.seizureDeclarationDto?.dateWitness}}</div>
-                                                </li>
-                                            </ul>
-                                            <!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
-                                        </div>
-                                    </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.seizureDeclarationDto" label="14">
-                                        <ng-template mat-tab-label>
-                                            DECLARATION
-                                        </ng-template>
-                                        <b class="text-primary">DECLARATION DETAILS</b>
-                                        <div class="panel" style="max-height: 388px;">
-                                            <ul class="w-list-unstyled">
-                                                <p class="list-paragraph-accordion">DECLARATION taken by....<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationTakenBy}}</span></p>
-                                                <p class="list-paragraph-accordion">
-                                                    An Inspector, in accordance with section 14 (1) (f) of the Standards Act, Cap 496.
-                                                    On the....<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationOnThe}}</span>
-                                                    day of.....<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationDayOf}}</span>
-                                                </p>
-                                                <br/>
-                                                <p class="list-paragraph-accordion">MY NAME .......<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationMyName}}</span>
-                                                    ......I reside at......<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationIresideAt}}</span>
-                                                    And I am employed as .....<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationIemployeedAs}}</span>
-                                                    ..of......<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationIemployeedOf}}</span>..
-                                                </p>
-                                                <br/>
-                                                <p class="list-paragraph-accordion">Situated at: ....<span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationSituatedAt}}</span>
-                                                </p>
-                                                <br/>
-                                                <p class="list-paragraph-accordion">I State that: .......
-                                                    <span style="color:#0066B1;font-weight:bold">{{workPlanInspection?.seizureDeclarationDto?.declarationStateThat}}</span>.........
-                                                </p>
-                                                <p class="list-paragraph-accordion">
-                                                    I declare the above statement to be true.
-                                                </p>
-                                                <b class="text-primary">N/B</b>
-                                                <p class="list-paragraph-accordion">
-                                                    The inspector has power to examine any person whom he has reasonable grounds to believe has information
-                                                    relevant to his inquiry and to require every such person to be so examined and to sign a declaration of
-                                                    the truth of the matters respecting which he is so examined, but no person is required to answer any question
-                                                    tending to incriminate himself.</p>
-                                                <br/>
-                                                <p class="list-paragraph-accordion">
-                                                    The penalty for wilfully making or signing a false Declaration is imprisonment for a term not exceeding
-                                                    twelve months or a fine not exceeding one million shillings or to both such imprisonment and fine.
-                                                </p>
-                                                <br/>
-                                            </ul>
-                                            <!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
                                         </div>
                                     </mat-tab>
                                     <mat-tab *ngIf="workPlanInspection?.inspectionInvestigationDto" label="15">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
-                                            INSPECTION / INVESTIGATION REPORT
+                                            MS FIELD REPORT
                                         </ng-template>
                                         <!--                                        <b class="text-primary">Lab Results Details</b>-->
-                                        <label style="color: #0082f3">Inspection / Investigation Report Details</label>
+                                        <label style="color: #0082f3">MS FIELD REPORT DETAILS</label>
                                         <div class="panel" style="max-height: 388px;">
                                             <br>
                                             <ul class="w-list-unstyled">
@@ -920,6 +630,10 @@
                                                 <p class="list-paragraph-accordion"><span>
                                                     {{workPlanInspection?.inspectionInvestigationDto?.methodologyEmployed}}</span></p>
                                                 <br/>
+                                                <b class="text-secondary">Findings</b>
+                                                <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.inspectionInvestigationDto?.findings}}</span></p>
+                                                <br/>
                                                 <b class="text-secondary">Conclusion</b>
                                                 <p class="list-paragraph-accordion"><span>
                                                     {{workPlanInspection?.inspectionInvestigationDto?.conclusion}}</span></p>
@@ -934,17 +648,6 @@
                                                 </li>
 
                                             </ul>
-
-                                            <!--                                            <div class="form-row">-->
-                                            <!--                                                <div class="col-md-12 mb-3">-->
-                                            <!--                                                    <label style="color: #0082f3">Outlets visited Details</label>-->
-                                            <!--                                                </div>-->
-                                            <!--                                                <div class="table-striped table-condensed table-responsive">-->
-                                            <!--                                                    <ng2-smart-table [settings]="settingsPreliminaryReportOutlets"-->
-                                            <!--                                                                     [source]="workPlanInspection?.preliminaryReport?.parametersList"-->
-                                            <!--                                                    ></ng2-smart-table>-->
-                                            <!--                                                </div>-->
-                                            <!--                                            </div>-->
                                             <br>
                                         </div>
                                     </mat-tab>
@@ -1014,6 +717,10 @@
                                                 <b class="text-secondary">Final action on seized goods</b>
                                                 <p class="list-paragraph-accordion"><span>
                                                     {{workPlanInspection?.dataReportDto?.finalActionSeizedGoods}}</span></p>
+                                                <br/>
+                                                <b class="text-secondary">Total Compliance Score</b>
+                                                <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.dataReportDto?.totalComplianceScore | number : '1.2-2'}} %</span></p>
                                                 <br/>
                                                 <div class="form-row">
                                                     <div class="col-md-12 mb-3">
@@ -1221,23 +928,23 @@
                                             <div>
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Lab Results Details</label>
-                                                    <ul class="w-list-unstyled">
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">BS Number</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">Compliance Status</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
-                                                        </li>
-                                                        <br/>
-                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>
-                                                        <br/>
-                                                    </ul>
+<!--                                                    <ul class="w-list-unstyled">-->
+<!--                                                        <li class="list-item-accordion">-->
+<!--                                                            <div class="list-title-accordion">BS Number</div>-->
+<!--                                                            <div class="list-text-accordion">-->
+<!--                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>-->
+<!--                                                        </li>-->
+<!--                                                        <li class="list-item-accordion">-->
+<!--                                                            <div class="list-title-accordion">Compliance Status</div>-->
+<!--                                                            <div class="list-text-accordion">-->
+<!--                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>-->
+<!--                                                        </li>-->
+<!--                                                        <br/>-->
+<!--                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>-->
+<!--                                                        <p class="list-paragraph-accordion"><span>-->
+<!--                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>-->
+<!--                                                        <br/>-->
+<!--                                                    </ul>-->
                                                     <br>
                                                     <label style="color: #0082f3">Lab Results Param</label>
                                                     <div class="table-striped table-condensed table-responsive">
@@ -1356,23 +1063,23 @@
                                             <div>
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Lab Results Details</label>
-                                                    <ul class="w-list-unstyled">
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">BS Number</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">Compliance Status</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
-                                                        </li>
-                                                        <br/>
-                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>
-                                                        <br/>
-                                                    </ul>
+<!--                                                    <ul class="w-list-unstyled">-->
+<!--                                                        <li class="list-item-accordion">-->
+<!--                                                            <div class="list-title-accordion">BS Number</div>-->
+<!--                                                            <div class="list-text-accordion">-->
+<!--                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>-->
+<!--                                                        </li>-->
+<!--                                                        <li class="list-item-accordion">-->
+<!--                                                            <div class="list-title-accordion">Compliance Status</div>-->
+<!--                                                            <div class="list-text-accordion">-->
+<!--                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>-->
+<!--                                                        </li>-->
+<!--                                                        <br/>-->
+<!--                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>-->
+<!--                                                        <p class="list-paragraph-accordion"><span>-->
+<!--                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>-->
+<!--                                                        <br/>-->
+<!--                                                    </ul>-->
                                                     <br>
                                                     <label style="color: #0082f3">Lab Results Param</label>
                                                     <div class="table-striped table-condensed table-responsive">
@@ -1476,6 +1183,15 @@
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="workPlanInspection?.msProcessEndedStatus == false">
+                                        <div *ngIf="role == 'MS_DIRECTOR_MODIFY'">
+                                            <button  *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false
+                                                && workPlanInspection?.productList?.length == workPlanInspection?.productListRecommendationAddedCount"
+                                                     (click)="onClickSaveEndFinalRemarksDirector()" mat-raised-button=""
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">END ADDING FINAL REMARKS</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                        </div>
                                         <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1557,18 +1273,11 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
-                                                && workPlanInspection?.hodRecommendationStatus == false
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal
-                                                && workPlanInspection?.preliminaryReport?.approvedStatus
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
-                                                     (click)="openModalAddDetails('addFinalRecommendationHOD')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
+                                            <button  *ngIf="workPlanInspection?.hodRecommendationStatus == false
+                                                && workPlanInspection?.productList?.length == workPlanInspection?.productListRecommendationAddedCount"
+                                                     (click)="onClickSaveEndFinalRecommendationHOD()" mat-raised-button=""
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD FINAL RECOMMENDATION</span>
+                                                    class="mat-button-wrapper">END ADDING FINAL RECOMMENDATION</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1614,6 +1323,7 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
+
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
                                             <div *ngIf="workPlanInspection?.batchDetails?.batchClosed
@@ -1659,30 +1369,24 @@
                                                         class="mat-button-wrapper">UPLOAD ATTACHMENTS</span>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button *ngIf="workPlanInspection?.dataReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
+                                                <button *ngIf="workPlanInspection?.dataReportStatus == false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#dataReportModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">ADD DATA REPORT</span>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-<!--                                                <button *ngIf="workPlanInspection?.dataReportStatus" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#dataReportModal"-->
-<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                        class="mat-button-wrapper">UPDATE DATA REPORT</span>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
+                                                <button *ngIf="workPlanInspection?.dataReportStatus" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
+                                                        data-target="#dataReportModal"
+                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">UPDATE DATA REPORT</span>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
                                                 <button  *ngIf="workPlanInspection?.dataReportDocId ==null && workPlanInspection?.dataReportStatus" (click)="openModalAddDetails('uploadDataReportFiles')" mat-raised-button="" data-toggle="modal"
                                                          data-target="#myModal1"
                                                          class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD DATA REPORT</span>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <!--                                                <button *ngIf="workPlanInspection?.chargeSheetStatus ==false"  mat-raised-button="" data-toggle="modal"-->
-                                                <!--                                                        data-target="#chargeSheetModal"-->
-                                                <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-                                                <!--                                                        class="mat-button-wrapper">ADD CHARGE SHEET</span>-->
-                                                <!--                                                    <div class="mat-button-focus-overlay"></div>-->
-                                                <!--                                                </button>-->
                                                 <div *ngIf="workPlanInspection?.dataReportStatus">
                                                     <button  *ngIf="workPlanInspection?.scfDocId ==null"  (click)="openModalAddDetails('uploadSCFFiles')" mat-raised-button="" data-toggle="modal"
                                                              data-target="#myModal1"
@@ -1690,19 +1394,31 @@
                                                             class="mat-button-wrapper">UPLOAD SAMPLE COLLECTION FORM</span>
                                                         <div class="mat-button-focus-overlay"></div>
                                                     </button>
-                                                    <button   *ngIf="workPlanInspection?.seizureDocId ==null" (click)="openModalAddDetails('uploadSeizureFiles')" mat-raised-button="" data-toggle="modal"
-                                                              data-target="#myModal1"
-                                                              class="btn btn-sm btn-primary mr-2"><span
-                                                            class="mat-button-wrapper">UPLOAD SEIZURE</span>
+                                                    <button *ngIf="workPlanInspection?.seizureDeclarationStatus == false" (click)="openModalAddDetails('seizureDeclarationDetails')" mat-raised-button="" data-toggle="modal"
+                                                            data-target="#seizureDeclarationModal"
+                                                            class="btn btn-sm btn-primary mr-2"><span
+                                                            class="mat-button-wrapper">ADD SEIZED GOODS</span>
                                                         <div class="mat-button-focus-overlay"></div>
                                                     </button>
-                                                    <button   *ngIf="workPlanInspection?.declarationDocId ==null && workPlanInspection?.seizureDeclarationStatus" (click)="openModalAddDetails('uploadDeclarationFiles')" mat-raised-button="" data-toggle="modal"
-                                                              data-target="#myModal1"
-                                                              class="btn btn-sm btn-primary mr-2"><span
-                                                            class="mat-button-wrapper">UPLOAD DECLARATION</span>
+                                                    <button *ngIf="workPlanInspection?.seizureDeclarationStatus== false && workPlanInspection?.seizureDeclarationDto?.length!=0" mat-raised-button="" data-toggle="modal"
+                                                            (click)="onClickEndSeizureDeclaration()"
+                                                            class="btn btn-sm btn-primary mr-2"><span
+                                                            class="mat-button-wrapper">END SEIZED GOODS ADDING</span>
                                                         <div class="mat-button-focus-overlay"></div>
                                                     </button>
-                                                    <div *ngIf="workPlanInspection?.seizureDeclarationStatus && workPlanInspection?.declarationDocId !=null && workPlanInspection?.seizureDocId !=null">
+                                                    <button   *ngIf="workPlanInspection?.seizureDocId ==null && workPlanInspection?.seizureDeclarationStatus " (click)="openModalAddDetails('uploadSeizureFiles')" mat-raised-button="" data-toggle="modal"
+                                                              data-target="#myModal1"
+                                                              class="btn btn-sm btn-primary mr-2"><span
+                                                            class="mat-button-wrapper">UPLOAD SEIZURE & DECLARATION</span>
+                                                        <div class="mat-button-focus-overlay"></div>
+                                                    </button>
+<!--                                                    <button   *ngIf="workPlanInspection?.declarationDocId ==null && workPlanInspection?.seizureDeclarationStatus" (click)="openModalAddDetails('uploadDeclarationFiles')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                              data-target="#myModal1"-->
+<!--                                                              class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                            class="mat-button-wrapper">UPLOAD DECLARATION</span>-->
+<!--                                                        <div class="mat-button-focus-overlay"></div>-->
+<!--                                                    </button>-->
+                                                    <div *ngIf="workPlanInspection?.scfDocId!=null">
                                                         <button *ngIf="workPlanInspection?.chargeSheetDocId ==null"   (click)="openModalAddDetails('uploadChargeSheetFiles')" mat-raised-button="" data-toggle="modal"
                                                                 data-target="#myModal1"
                                                                 class="btn btn-sm btn-primary mr-2"><span
@@ -1715,13 +1431,20 @@
                                                                 class="mat-button-wrapper">ADD SAMPLE SUBMISSION</span>
                                                             <div class="mat-button-focus-overlay"></div>
                                                         </button>
-                                                        <button  *ngIf="workPlanInspection?.ssfDocId ==null && workPlanInspection?.sampleSubmittedStatus" (click)="openModalAddDetails('uploadSSFFiles')" mat-raised-button="" data-toggle="modal"
-                                                                 data-target="#myModal1"
-                                                                 class="btn btn-sm btn-primary mr-2"><span
-                                                                class="mat-button-wrapper">UPLOAD SAMPLE SUBMISSION</span>
+                                                        <button *ngIf="workPlanInspection?.sampleSubmittedStatus== false && workPlanInspection?.sampleSubmitted?.length!=0" mat-raised-button="" data-toggle="modal"
+                                                                (click)="onClickEndSampleSubmitted()"
+                                                                class="btn btn-sm btn-primary mr-2"><span
+                                                                class="mat-button-wrapper">END SAMPLE SUBMISSION ADDING</span>
                                                             <div class="mat-button-focus-overlay"></div>
                                                         </button>
-                                                        <div *ngIf="workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.ssfDocId !=null ">
+
+                                                        <div *ngIf="workPlanInspection?.sampleSubmittedStatus">
+                                                            <button  *ngIf="workPlanInspection?.ssfDocId ==null" (click)="openModalAddDetails('uploadSSFFiles')" mat-raised-button="" data-toggle="modal"
+                                                                     data-target="#myModal1"
+                                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                                    class="mat-button-wrapper">UPLOAD SAMPLE SUBMISSION</span>
+                                                                <div class="mat-button-focus-overlay"></div>
+                                                            </button>
                                                             <button *ngIf="workPlanInspection?.investInspectReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
                                                                     data-target="#investInspectReportModal"
                                                                     class="btn btn-sm btn-primary"><span
@@ -1756,15 +1479,34 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus &&
-                                                    workPlanInspection?.bsNumberStatus== false" (click)="openModalAddDetails('addBsNumber')"
-                                                     mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
+                                            <button  *ngIf="workPlanInspection?.sampleSubmittedStatus
+                                                    && workPlanInspection?.bsNumberCountAdded ==
+                                                    workPlanInspection?.sampleSubmitted.length &&
+                                                    workPlanInspection?.bsNumberStatus== false"
+                                                     (click)="onClickSaveEndSSFAddingBsNumber()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD BS NUMBER</span>
-
+                                                    class="mat-button-wrapper">END BS NUMBER ADDING</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+                                            <button *ngIf="workPlanInspection?.sampleSubmittedStatus && this.workPlanInspection?.compliantStatusAdded == false
+                                                    && this.workPlanInspection?.analysisLabCountDone == this.workPlanInspection?.sampleSubmitted.length"
+                                                    (click)="openModalAddDetails('finalLabComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#myModal1"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD FINAL LAB RESULTS STATUS</span>
+                                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+<!--                                            <button  *ngIf="workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus &&-->
+<!--                                                    workPlanInspection?.bsNumberStatus== false" (click)="openModalAddDetails('addBsNumber')"-->
+<!--                                                     mat-raised-button="" data-toggle="modal"-->
+<!--                                                     data-target="#myModal1"-->
+<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                    class="mat-button-wrapper">ADD BS NUMBER</span>-->
+
+<!--                                                <div class="mat-button-focus-overlay"></div>-->
+<!--                                            </button>-->
                                             <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
                                                     workPlanInspection?.msPreliminaryReportStatus == false"
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
@@ -2333,6 +2075,26 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'addFinalRemarksDirector')">
+                        <form [formGroup]="finalRemarkHODForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="hodFeedBackRemarks"><b>Please write, in detail, your feedback for MS Recommendations:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="hodFeedBackRemarks7"
+                                                      [class.is-invalid]="formFinalRemarkHODForm.hodFeedBackRemarks.invalid &&
+                                                        formFinalRemarkHODForm.hodFeedBackRemarks.touched"
+                                                      matInput type="text"
+                                                      formControlName="hodFeedBackRemarks"
+                                                      name="hodFeedBackRemarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'addPreliminaryRecommendation')">
                         <form [formGroup]="preliminaryRecommendationForm" class="form">
                             <div class="form-body">
@@ -2576,13 +2338,13 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'ssfAddComplianceStatus')">
+                    <div *ngIf="(currDiv == 'finalLabComplianceStatus')">
                         <form [formGroup]="ssfSaveComplianceStatusForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
                                         <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
-                                        <mat-form-field id="complianceStatusSSF">
+                                        <mat-form-field id="complianceStatusSSF7">
                                             <mat-select placeholder="Please Select an option"
                                                         formControlName="complianceStatus"
                                                         [class.is-invalid]="formSSFSaveComplianceStatusForm.complianceStatus.invalid && formSSFSaveComplianceStatusForm.complianceStatus.touched"
@@ -2608,6 +2370,7 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
+                                        <input id="ssfID" type="hidden" formControlName="ssfID" name="ssfID" ngModel="{{ssfSelectedID}}">
                                         <label for="bsNumber"><b>BS Number</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="bsNumber" matInput type="text" placeholder="Please Enter Bs Number" formControlName="bsNumber" name="bsNumber"
@@ -2775,18 +2538,24 @@
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
+                    <button *ngIf="(currDiv == 'addFinalRemarksDirector')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFinalRemarksDirector();"
+                            [disabled]="!finalRemarkHODForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
                     <button *ngIf="(currDiv == 'approvePreliminaryHOD')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveApprovePreliminaryHOD(approvePreliminaryForm.valid);"
                             [disabled]="!approvePreliminaryForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'addFinalRecommendationHOD')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveFinalRecommendationHOD(finalRecommendationForm.valid);"
-                            [disabled]="!finalRecommendationForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
+<!--                    <button *ngIf="(currDiv == 'addFinalRecommendationHOD')" mat-raised-button type="button" class="btn btn-success"-->
+<!--                            (click)="onClickSaveFinalRecommendationHOD(finalRecommendationForm.valid);"-->
+<!--                            [disabled]="!finalRecommendationForm.valid"-->
+<!--                            data-dismiss="modal"-->
+<!--                    >SUBMIT-->
+<!--                    </button>-->
                     <button *ngIf="(currDiv == 'addPreliminaryRecommendation')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveFinalReport(preliminaryRecommendationForm.valid);"
                             [disabled]="!preliminaryRecommendationForm.valid"
@@ -2851,7 +2620,7 @@
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'ssfAddComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
+                    <button *ngIf="(currDiv == 'finalLabComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
                             [disabled]="!ssfSaveComplianceStatusForm.valid"
                             data-dismiss="modal"
@@ -3492,6 +3261,30 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Total Compliance Score % </b> </label>
+                                        <textarea class="form-control two-column-input"
+                                                  formControlName="totalComplianceScore" ngModel="{{totalCompliantValue | number : '1.2-2'}}" disabled
+                                                  name="totalComplianceScore" required type="number"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+<!--                                        <label><b>Final action on seized goods</b> </label>-->
+<!--                                        <textarea [class.is-invalid]="formDataReportForm.finalActionSeizedGoods.invalid && formDataReportForm.finalActionSeizedGoods.errors"-->
+<!--                                                  class="form-control two-column-input"-->
+<!--                                                  formControlName="finalActionSeizedGoods"-->
+<!--                                                  name="finalActionSeizedGoods" required type="text"></textarea>-->
+<!--                                        <div *ngIf="submitted && formDataReportForm.finalActionSeizedGoods.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formDataReportForm.finalActionSeizedGoods.errors.required">Final action on seized goods is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     </form>
@@ -3537,10 +3330,14 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Compliance To Inspection Parameter (%Score)</b> </label>
-                                        <input [class.is-invalid]="formDataReportParamForm.complianceInspectionParameter.invalid && formDataReportParamForm.complianceInspectionParameter.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="complianceInspectionParameter"
-                                               name="complianceInspectionParameter" required type="number">
+                                        <select [class.is-invalid]="formDataReportParamForm.complianceInspectionParameter.invalid && formDataReportParamForm.complianceInspectionParameter.errors"
+                                                class="form-control two-column-input"
+                                                formControlName="complianceInspectionParameter"
+                                                name="complianceInspectionParameter" required type="number">
+                                            <!--                                            <option [value]="" selected>Please select</option>-->
+                                            <option [value]="100" >Compliant</option>
+                                            <option [value]="0" >Not-Compliant</option>
+                                        </select>
                                         <div *ngIf="submitted && formDataReportParamForm.complianceInspectionParameter.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportParamForm.complianceInspectionParameter.errors.required">Compliance To Inspection Parameter (%Score) is
                                                 required
@@ -3660,411 +3457,223 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="seizureDeclarationForm">
-                        <div class="form-group bmd-form-group is-filled">
-                            <h4 class="mb-3" style="color: #0066B1">Seizure Notification Details</h4>
-                            <h5 class="mb-3" style="color: black">Fill in the Bio Details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <p>To..<span style="color:blue;font-weight:bold"><input
-                                                [class.is-invalid]="formSeizureDeclarationForm.seizureTo.invalid && formSeizureDeclarationForm.seizureTo.errors"
-                                                class="form-control two-column-input" placeholder="e.g john doe"
-                                                formControlName="seizureTo" name="seizureTo" required type="text"></span>
-                                            ..Whereas I have reason to believe that the stock of goods detailed below which is/are at the premises of..
-                                            <span style="color:blue;font-weight:bold"><input
-                                                    [class.is-invalid]="formSeizureDeclarationForm.seizurePremises.invalid && formSeizureDeclarationForm.seizurePremises.errors"
-                                                    class="form-control two-column-input" placeholder="e.g Premises of details"
-                                                    formControlName="seizurePremises" name="seizurePremises" required type="text"></span>..
-                                            Do not meet the requirements of Standard(s)..<span style="color:blue;font-weight:bold">
-                                            <input [class.is-invalid]="formSeizureDeclarationForm.seizureRequirementsStandards.invalid &&
-                                            formSeizureDeclarationForm.seizureRequirementsStandards.errors" class="form-control two-column-input"
-                                                   placeholder="e.g Do not meet the requirements of Standard(s)" formControlName="seizureRequirementsStandards" name="seizureRequirementsStandards" required type="text">
-                                            </span>....published/approved by the Kenya Bureau of Standards.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <h4 class="mb-3" style="color: #0066B1">DETAILS OF GOODS</h4>
-                            <h5 class="mb-3" style="color: black">Fill in bellow goods details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Name of manufacturer/Trader</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.goodsManufactureTrader.invalid && formSeizureDeclarationForm.goodsManufactureTrader.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="goodsManufactureTrader"
-                                               name="goodsManufactureTrader" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.goodsManufactureTrader.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.goodsManufactureTrader.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Address</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.goodsAddress.invalid && formSeizureDeclarationForm.goodsAddress.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="goodsAddress"
-                                               name="goodsAddress" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.goodsAddress.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.goodsAddress.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Physical location</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.goodsPhysical.invalid && formSeizureDeclarationForm.goodsPhysical.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="goodsPhysical"
-                                               name="goodsPhysical" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.goodsPhysical.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.goodsPhysical.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Goods are marked/branded as follows</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.goodsMarkedBranded.invalid && formSeizureDeclarationForm.goodsMarkedBranded.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="goodsMarkedBranded"
-                                               name="goodsMarkedBranded" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.goodsMarkedBranded.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.goodsMarkedBranded.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Physical seal</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.goodsPhysicalSeal.invalid && formSeizureDeclarationForm.goodsPhysicalSeal.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="goodsPhysicalSeal"
-                                               name="goodsPhysicalSeal" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.goodsPhysicalSeal.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.goodsPhysicalSeal.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Description of goods</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.descriptionGoods.invalid && formSeizureDeclarationForm.descriptionGoods.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="descriptionGoods"
-                                               name="descriptionGoods" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.descriptionGoods.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.descriptionGoods.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Quantity</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.goodsQuantity.invalid && formSeizureDeclarationForm.goodsQuantity.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="goodsQuantity"
-                                               name="goodsQuantity" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.goodsQuantity.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.goodsQuantity.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <!--test-->
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <p>Now therefore I.......................................................................................
-                                            <span style="color:blue;font-weight:bold"><input
-                                                    [class.is-invalid]="formSeizureDeclarationForm.goodsThereforei.invalid &&
-                                                formSeizureDeclarationForm.goodsThereforei.errors"
-                                                    class="form-control two-column-input" placeholder="e.g john doe"
-                                                    formControlName="goodsThereforei" name="goodsThereforei" required type="text"></span>...
-                                            as an inspector under the Standards Act Cap 496, Laws of Kenya , hereby seize and detain the said goods under
-                                            the provisions of the standards Act Cap 496 Laws of Kenya, miscellaneous amendment 2002, No 2</p>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <h4 class="mb-3" style="color: #0066B1">Inspector Details</h4>
-                            <h5 class="mb-3" style="color: black">Fill in the below the details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Name</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.nameInspector.invalid && formSeizureDeclarationForm.nameInspector.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="nameInspector"
-                                               name="nameInspector" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.nameInspector.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.nameInspector.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Designation</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.designationInspector.invalid && formSeizureDeclarationForm.designationInspector.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="designationInspector"
-                                               name="designationInspector" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.designationInspector.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.designationInspector.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Date</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.dateInspector.invalid && formSeizureDeclarationForm.dateInspector.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="dateInspector"
-                                               name="dateInspector" required type="date">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.dateInspector.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.dateInspector.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <!--test-->
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <h4 class="mb-3" style="color: #0066B1">Manufacturer/Trader Details</h4>
-                            <h5 class="mb-3" style="color: black">Fill in the below the details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Name</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.nameManufactureTrader.invalid && formSeizureDeclarationForm.nameManufactureTrader.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="nameManufactureTrader"
-                                               name="nameManufactureTrader" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.nameManufactureTrader.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.nameManufactureTrader.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Designation</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.designationManufactureTrader.invalid && formSeizureDeclarationForm.designationManufactureTrader.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="designationManufactureTrader"
-                                               name="designationManufactureTrader" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.designationManufactureTrader.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.designationManufactureTrader.errors.required">This field is
-                                                required
-                                            </div>
+                        <h5 class="mb-3" style="color: #0066B1">Seizure Product Details</h5>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Market Town Center</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.marketTownCenter.invalid && formSeizureDeclarationForm.marketTownCenter.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="marketTownCenter"
+                                           name="marketTownCenter" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.marketTownCenter.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.marketTownCenter.errors.required">This field is
+                                            required
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Date</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.dateManufactureTrader.invalid && formSeizureDeclarationForm.dateManufactureTrader.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="dateManufactureTrader"
-                                               name="dateManufactureTrader" required type="date">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.dateManufactureTrader.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.dateManufactureTrader.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <!--test-->
-                                    </div>
-                                </div>
-                            </div>
 
-                            <h4 class="mb-3" style="color: #0066B1">Witness Details</h4>
-                            <h5 class="mb-3" style="color: black">Fill in the below the details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Name</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.nameWitness.invalid && formSeizureDeclarationForm.nameWitness.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="nameWitness"
-                                               name="nameWitness" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.nameWitness.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.nameWitness.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Designation</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.designationWitness.invalid && formSeizureDeclarationForm.designationWitness.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="designationWitness"
-                                               name="designationWitness" required type="text">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.designationWitness.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.designationWitness.errors.required">This field is
-                                                required
-                                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Name Of Outlet</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.nameOfOutlet.invalid && formSeizureDeclarationForm.nameOfOutlet.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="nameOfOutlet"
+                                           name="nameOfOutlet" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.nameOfOutlet.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.nameOfOutlet.errors.required">This field is
+                                            required
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Date</b> </label>
-                                        <input [class.is-invalid]="formSeizureDeclarationForm.dateWitness.invalid && formSeizureDeclarationForm.dateWitness.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="dateWitness"
-                                               name="dateWitness" required type="date">
-                                        <div *ngIf="submitted && formSeizureDeclarationForm.dateWitness.errors" class="invalid-feedback">
-                                            <div *ngIf="formSeizureDeclarationForm.dateWitness.errors.required">This field is
-                                                required
-                                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Description Of Products Seized</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.descriptionProductsSeized.invalid && formSeizureDeclarationForm.descriptionProductsSeized.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="descriptionProductsSeized"
+                                           name="descriptionProductsSeized" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.descriptionProductsSeized.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.descriptionProductsSeized.errors.required">This field is
+                                            required
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <!--test-->
-                                </div>
-
                             </div>
 
-                            <h4 class="mb-3" style="color: #0066B1">Declaration Details</h4>
-                            <h5 class="mb-3" style="color: black">Fill in the below the details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <p>DECLARATION taken by..................................................................................................................................................<span style="color:blue;font-weight:bold"><input
-                                                [class.is-invalid]="formSeizureDeclarationForm.declarationTakenBy.invalid && formSeizureDeclarationForm.declarationTakenBy.errors"
-                                                class="form-control two-column-input" placeholder="e.g john doe"
-                                                formControlName="declarationTakenBy" name="declarationTakenBy" required type="text"></span></p>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Brand</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.brand.invalid && formSeizureDeclarationForm.brand.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="brand"
+                                           name="brand" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.brand.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.brand.errors.required">This field is
+                                            required
+                                        </div>
                                     </div>
                                 </div>
-
-
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <p>An Inspector, in accordance with section 14 (1) (f) of the Standards Act, Cap 496. On the....<span style="color:blue;font-weight:bold"><input
-                                                [class.is-invalid]="formSeizureDeclarationForm.declarationOnThe.invalid && formSeizureDeclarationForm.declarationOnThe.errors"
-                                                class="form-control two-column-input" placeholder="e.g john doe"
-                                                formControlName="declarationOnThe" name="declarationOnThe" required type="text"></span>
-                                            day of..................................................................................................................................................<span style="color:blue;font-weight:bold"><input
-                                                    [class.is-invalid]="formSeizureDeclarationForm.declarationDayOf.invalid && formSeizureDeclarationForm.declarationDayOf.errors"
-                                                    class="form-control two-column-input" placeholder="e.g john doe"
-                                                    formControlName="declarationDayOf" name="declarationDayOf" required type="date"></span>
-                                        </p>
+
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>sector</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.sector.invalid && formSeizureDeclarationForm.sector.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="sector"
+                                           name="sector" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.sector.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.sector.errors.required">This field is
+                                            required
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <p>MY NAME ..................................................................................................................................................<span style="color:blue;font-weight:bold"><input
-                                                [class.is-invalid]="formSeizureDeclarationForm.declarationMyName.invalid && formSeizureDeclarationForm.declarationMyName.errors"
-                                                class="form-control two-column-input" placeholder="e.g john doe"
-                                                formControlName="declarationMyName" name="declarationMyName" required type="text"></span>
-                                            ......I reside at..................................................................................................................................................<span style="color:blue;font-weight:bold"><input
-                                                    [class.is-invalid]="formSeizureDeclarationForm.declarationIresideAt.invalid && formSeizureDeclarationForm.declarationIresideAt.errors"
-                                                    class="form-control two-column-input" placeholder="e.g Nairobi"
-                                                    formControlName="declarationIresideAt" name="declarationIresideAt" required type="text"></span>
-                                            And I am employed as ..................................................................................................................................................<span style="color:blue;font-weight:bold"><input
-                                                    [class.is-invalid]="formSeizureDeclarationForm.declarationIemployeedAs.invalid && formSeizureDeclarationForm.declarationIemployeedAs.errors"
-                                                    class="form-control two-column-input" placeholder="e.g worker"
-                                                    formControlName="declarationIemployeedAs" name="declarationIemployeedAs" required type="text"></span>
-                                            ..of..................................................................................................................................................<span style="color:blue;font-weight:bold"><input
-                                                    [class.is-invalid]="formSeizureDeclarationForm.declarationIemployeedOf.invalid && formSeizureDeclarationForm.declarationIemployeedOf.errors"
-                                                    class="form-control two-column-input" placeholder="e.g john doe"
-                                                    formControlName="declarationIemployeedOf" name="declarationIemployeedOf" required type="text"></span>..
-                                        </p>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Reason Seizure</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.reasonSeizure.invalid && formSeizureDeclarationForm.reasonSeizure.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="reasonSeizure"
+                                           name="reasonSeizure" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.reasonSeizure.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.reasonSeizure.errors.required">This field is
+                                            required
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <p>Situated at: ..................................................................................................................................................<span style="color:blue;font-weight:bold"><input
-                                                [class.is-invalid]="formSeizureDeclarationForm.declarationSituatedAt.invalid && formSeizureDeclarationForm.declarationSituatedAt.errors"
-                                                class="form-control two-column-input" placeholder="e.g situated at"
-                                                formControlName="declarationSituatedAt" name="declarationSituatedAt" required type="text"></span>
-                                        </p>
+
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Name Seizing Officer</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.nameSeizingOfficer.invalid && formSeizureDeclarationForm.nameSeizingOfficer.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="nameSeizingOfficer"
+                                           name="nameSeizingOfficer" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.nameSeizingOfficer.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.nameSeizingOfficer.errors.required">This field is
+                                            required
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <p>I State that: ..................................................................................................................................................
-                                            <span style="color:blue;font-weight:bold"><textarea
-                                                    [class.is-invalid]="formSeizureDeclarationForm.declarationStateThat.invalid && formSeizureDeclarationForm.declarationStateThat.errors"
-                                                    class="form-control two-column-input" placeholder="e.g situated at"
-                                                    formControlName="declarationStateThat" name="declarationStateThat" required type="text"></textarea></span>
-                                            I declare the above statement to be true.
-                                        </p>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Seizure Serial</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.seizureSerial.invalid && formSeizureDeclarationForm.seizureSerial.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="seizureSerial"
+                                           name="seizureSerial" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.seizureSerial.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.seizureSerial.errors.required">This field is
+                                            required
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
 
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Quantity</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.quantity.invalid && formSeizureDeclarationForm.quantity.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="quantity"
+                                           name="quantity" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.quantity.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.quantity.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Unit</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.unit.invalid && formSeizureDeclarationForm.unit.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="unit"
+                                           name="unit" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.unit.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.unit.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Estimated Cost</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.estimatedCost.invalid && formSeizureDeclarationForm.estimatedCost.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="estimatedCost"
+                                           name="estimatedCost" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.estimatedCost.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.estimatedCost.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Current Location</b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.currentLocation.invalid && formSeizureDeclarationForm.currentLocation.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="currentLocation"
+                                           name="currentLocation" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.currentLocation.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.currentLocation.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Products Destruction </b> </label>
+                                    <input [class.is-invalid]="formSeizureDeclarationForm.productsDestruction.invalid && formSeizureDeclarationForm.productsDestruction.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="productsDestruction"
+                                           name="productsDestruction" required type="text">
+                                    <div *ngIf="submitted && formSeizureDeclarationForm.productsDestruction.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureDeclarationForm.productsDestruction.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+
+                                </div>
+                            </div>
 
                         </div>
                     </form>
-
                     <div class="modal-footer">
                         <button  mat-raised-button type="button" class="btn btn-danger"
                                  data-dismiss="modal">
@@ -4076,7 +3685,6 @@
                         <button *ngIf="seizureDeclarationForm.invalid" mat-raised-button (click)="onClickSaveSeizureDeclaration()" class="btn btn-success" type="button" >SUBMIT
                         </button>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -4706,15 +4314,9 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <label><b>Institution</b> </label>
-                                                <input [class.is-invalid]="formInvestInspectReportInspectorsForm.institution.invalid && formInvestInspectReportInspectorsForm.institution.errors"
-                                                       class="form-control two-column-input"
+                                                <input class="form-control two-column-input"
                                                        formControlName="institution"
-                                                       name="institution" required type="text">
-                                                <div *ngIf="submitted && formInvestInspectReportInspectorsForm.institution.errors" class="invalid-feedback">
-                                                    <div *ngIf="formInvestInspectReportInspectorsForm.institution.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
+                                                       name="institution" type="text">
                                             </div>
                                         </div>
 
@@ -5267,7 +4869,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Fill Sample Submitted Details</h4>
+                    <h4 class="modal-title">Fill Sample Submission Details</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
@@ -5341,10 +4943,12 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="referencesStandards" name="referencesStandards"
-                                               required
-                                               [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.errors">
+                                        <select [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="referencesStandards" name="referencesStandards" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [ngValue]="app.standardTitle">{{app.standardTitle}}</option>
+                                        </select>
                                         <div *ngIf="submitted && formSampleSubmitForm.referencesStandards.errors" class="invalid-feedback">
                                             <div *ngIf="formSampleSubmitForm.referencesStandards.errors.required">This field is
                                                 required
@@ -5372,14 +4976,9 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SIZE REF SAMPLE</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="sizeRefSample" name="sizeRefSample" required
-                                               [class.is-invalid]="formSampleSubmitForm.sizeRefSample.invalid && formSampleSubmitForm.sizeRefSample.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.sizeRefSample.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.sizeRefSample.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                        <input type="number" class="form-control two-column-input"
+                                               formControlName="sizeRefSample" name="sizeRefSample" >
+
                                     </div>
                                 </div>
 
@@ -5403,13 +5002,8 @@
                                     <div class="form-group">
                                         <label><b>SAMPLE REFERENCES</b></label>
                                         <input type="text" class="form-control two-column-input"
-                                               formControlName="sampleReferences" name="sampleReferences" required
-                                               [class.is-invalid]="formSampleSubmitForm.sampleReferences.invalid && formSampleSubmitForm.sampleReferences.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.sampleReferences.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.sampleReferences.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="sampleReferences" name="sampleReferences">
+
                                     </div>
                                 </div>
 
@@ -5417,8 +5011,7 @@
                                     <div class="form-group">
                                         <label><b>SENDERS NAME</b> </label>
                                         <input type="text" class="form-control two-column-input" ngModel="{{userProfile.fullName}}" disabled
-                                               formControlName="sendersName" name="sendersName" required
-                                               [class.is-invalid]="formSampleSubmitForm.sendersName.invalid && formSampleSubmitForm.sendersName.errors">
+                                               formControlName="sendersName" name="sendersName">
                                         <div *ngIf="submitted && formSampleSubmitForm.sendersName.errors" class="invalid-feedback">
                                             <div *ngIf="formSampleSubmitForm.sendersName.errors.required">This field is
                                                 required
@@ -5477,13 +5070,8 @@
                                     <div class="form-group">
                                         <label><b>RECEIVERS NAME</b> </label>
                                         <input type="text" class="form-control two-column-input"
-                                               formControlName="receiversName" name="receiversName" required
-                                               [class.is-invalid]="formSampleSubmitForm.receiversName.invalid && formSampleSubmitForm.receiversName.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.receiversName.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.receiversName.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="receiversName" name="receiversName">
+
                                     </div>
                                 </div>
 
@@ -5493,13 +5081,8 @@
                                     <div class="form-group">
                                         <label><b>TEST CHARGES KSH</b></label>
                                         <input type="number" class="form-control two-column-input"
-                                               formControlName="testChargesKsh" name="testChargesKsh" required
-                                               [class.is-invalid]="formSampleSubmitForm.testChargesKsh.invalid && formSampleSubmitForm.testChargesKsh.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.testChargesKsh.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.testChargesKsh.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="testChargesKsh" name="testChargesKsh" >
+
                                     </div>
                                 </div>
 
@@ -5507,13 +5090,8 @@
                                     <div class="form-group">
                                         <label><b>RECEIPT LPO NUMBER</b> </label>
                                         <input type="text" class="form-control two-column-input"
-                                               formControlName="receiptLpoNumber" name="receiptLpoNumber" required
-                                               [class.is-invalid]="formSampleSubmitForm.receiptLpoNumber.invalid && formSampleSubmitForm.receiptLpoNumber.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.receiptLpoNumber.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.receiptLpoNumber.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="receiptLpoNumber" name="receiptLpoNumber" >
+
                                     </div>
                                 </div>
 
@@ -5523,22 +5101,20 @@
                                     <div class="form-group">
                                         <label><b>INVOICE NUMBER</b></label>
                                         <input type="text" class="form-control two-column-input"
-                                               formControlName="invoiceNumber" name="invoiceNumber" required
-                                               [class.is-invalid]="formSampleSubmitForm.invoiceNumber.invalid && formSampleSubmitForm.invoiceNumber.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.invoiceNumber.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.invoiceNumber.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="invoiceNumber" name="invoiceNumber">
+
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>DISPOSAL</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="disposal" name="disposal" required
-                                               [class.is-invalid]="formSampleSubmitForm.disposal.invalid && formSampleSubmitForm.disposal.errors">
+                                        <select [class.is-invalid]="formSampleSubmitForm.disposal.invalid && formSampleSubmitForm.disposal.errors"
+                                                type="text" class="form-control two-column-input" formControlName="disposal" name="disposal" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option  [value]="'Return Sample'" selected>Return Sample</option>
+                                            <option  [value]="'Destroy Sample'" selected>Destroy Sample</option>
+                                        </select>
                                         <div *ngIf="submitted && formSampleSubmitForm.disposal.errors" class="invalid-feedback">
                                             <div *ngIf="formSampleSubmitForm.disposal.errors.required">This field is
                                                 required
@@ -5565,87 +5141,93 @@
 
                                 <div class="col">
                                     <div class="form-group">
-                                        <div *ngIf="workPlanInspection?.sampleCollectionStatus" >
-                                            <label><b>SAMPLE COLLECTION NUMBER</b> </label>
-                                            <input type="number" class="form-control two-column-input"
-                                                   formControlName="sampleCollectionNumber" name="sampleCollectionNumber" >
-                                        </div>
+<!--                                        <label><b>SAMPLE COLLECTION NUMBER</b> </label>-->
+<!--                                        <input type="number" class="form-control two-column-input"-->
+<!--                                               formControlName="sampleCollectionNumber" name="sampleCollectionNumber" required ngModel="{{word?.sampleCollected?.id}}" disabled>-->
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.sampleCollectionNumber.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.sampleCollectionNumber.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
                             </div>
                         </div>
                     </form>
-                    <form [formGroup]="sampleSubmitParamsForm">
-                        <div class="form-group bmd-form-group is-filled">
-                            <h5 class="mb-3" style="color: #0066B1">Parameter Details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>PARAMETERS</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="parameters" name="parameters" required
-                                               [class.is-invalid]="formSampleSubmitParamsForm.parameters.invalid && formSampleSubmitParamsForm.parameters.errors">
-                                        <div *ngIf="submitted && formSampleSubmitParamsForm.parameters.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitParamsForm.parameters.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>LABORATORY NAME</b> </label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="laboratoryName" name="laboratoryName" required
-                                               [class.is-invalid]="formSampleSubmitParamsForm.laboratoryName.invalid && formSampleSubmitParamsForm.laboratoryName.errors">
-                                        <div *ngIf="submitted && formSampleSubmitParamsForm.laboratoryName.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitParamsForm.laboratoryName.errors.required">This field is
-                                                required
-                                            </div>
+                    <div *ngIf="addLabParamStatus">
+                        <form [formGroup]="sampleSubmitParamsForm">
+                            <div class="form-group bmd-form-group is-filled">
+                                <h5 class="mb-3" style="color: #0066B1">Parameter Details</h5>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>SELECT LABORATORY NAME</b> </label>
+                                            <select [class.is-invalid]="formSampleSubmitParamsForm.laboratoryName.invalid && formSampleSubmitParamsForm.laboratoryName.errors"
+                                                    aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                    class="form-control" formControlName="laboratoryName" name="laboratoryName" required>
+                                                <option [value]="" selected>Please select</option>
+                                                <option *ngFor="let app of laboratories| filterPipe: {status: true}" [ngValue]="app.labName">{{app.description}}</option>
+                                            </select>
                                         </div>
                                     </div>
-                                </div>
 
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>PARAMETERS</b></label>
+                                            <input type="text" class="form-control two-column-input"
+                                                   formControlName="parameters" name="parameters" required
+                                                   [class.is-invalid]="formSampleSubmitParamsForm.parameters.invalid && formSampleSubmitParamsForm.parameters.errors">
+                                            <div *ngIf="submitted && formSampleSubmitParamsForm.parameters.errors" class="invalid-feedback">
+                                                <div *ngIf="formSampleSubmitParamsForm.parameters.errors.required">This field is
+                                                    required
+                                                </div>
+                                            </div>
 
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col">
-                                    <div class="form-group">
-                                        <button *ngIf="sampleSubmitParamsForm.valid" mat-raised-button
-                                                class="btn btn-success" (click)="onClickAddDataSampleSubmitParams()" type="button" >SAVE PARAMATERS
-                                        </button>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+
+                                        </div>
                                     </div>
-                                </div>
 
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <button *ngIf="sampleSubmitParamsForm.valid" mat-raised-button
+                                                    class="btn btn-success" (click)="onClickAddDataSampleSubmitParams()" type="button" >SAVE PARAMETERS
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+
                     <div>
                         <div class="material-datatables">
                             <div class="table-responsive">
-                                <table id="datatablesSampleSubmitParam"
+                                <table id="datatablesSampleSubmit7Param"
                                        class="table table-striped table-bordered table-hover"
                                 >
                                     <thead>
                                     <tr>
-                                        <th>Paramaters</th>
+<!--                                        <th>Id</th>-->
+                                        <th>Parameters</th>
                                         <th>Laboratory Name</th>
-                                        <th>Action</th>
+                                        <th *ngIf="addLabParamStatus">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr *ngFor="let r of dataSaveSampleSubmitParamList; let i=index">
+<!--                                        <td>{{r.id}}</td>-->
                                         <td>{{r.parameters}}</td>
                                         <td>{{r.laboratoryName}}</td>
-                                        <td>
+                                        <td *ngIf="addLabParamStatus">
                                             <button (click)="removeDataSampleSubmitParam(i)"
                                                     type="button"
                                                     class="btn btn-warning btn-sm">
@@ -5660,16 +5242,18 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button  mat-raised-button type="button" class="btn btn-danger"
+                        <button  (click)="onClickCloseSSF()" mat-raised-button type="button" class="btn btn-danger"
                                  data-dismiss="modal">
                             Close
                         </button>
-                        <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"
-                                 (click)="onClickSaveSampleSubmitted()">SUBMIT
-                        </button>
-                        <button *ngIf="sampleSubmitForm.valid"  mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"
-                                (click)="onClickSaveSampleSubmitted()" >SUBMIT
-                        </button>
+                        <div *ngIf="addLabParamStatus">
+                            <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"
+                                     (click)="onClickSaveSampleSubmitted()">SUBMIT
+                            </button>
+                            <button *ngIf="sampleSubmitForm.valid"  mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"
+                                    (click)="onClickSaveSampleSubmitted()" >SUBMIT
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -5677,6 +5261,116 @@
         </div>
     </div>
     <!-- End Sample Collect Modal -->
+
+    <!-- Final Recommendation Modal -->
+    <div class="modal fade" id="finalRecommendationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fill Final Recommendation(s) Details</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <form [formGroup]="finalRecommendationDetailsForm">
+                            <div class="form-group bmd-form-group is-filled">
+                                <h5 class="mb-3" style="color: #0066B1">Recommendation Details</h5>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>SELECT RECOMMENDATION NAME</b> </label>
+                                            <select (change)="updateSelectedRecommendation()"
+                                                    [class.is-invalid]="formFinalRecommendationDetailsForm.recommendationId.invalid && formSampleSubmitParamsForm.recommendationId.errors"
+                                                    aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                    class="form-control" formControlName="recommendationId" name="recommendationId" required>
+                                                <option [value]="" selected>Please select</option>
+                                                <option  *ngFor="let app of recommendationList| filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>
+                                            </select>
+                                            <input class="form-control two-column-input" type="hidden" ngModel="{{selectedRecommendationName}}"
+                                                    formControlName="recommendationName" name="recommendationName">
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <button *ngIf="finalRecommendationDetailsForm.valid" mat-raised-button
+                                                    class="btn btn-success" (click)="onClickAddDataRecommendationDetails()" type="button" >SAVE PARAMETERS
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <table id="datatablesSampleSubmit4Param"
+                                       class="table table-striped table-bordered table-hover"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <!--                                        <th>Id</th>-->
+                                        <th>Recommendation</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let r of dataSaveFinalRecommendationList; let i=index">
+                                        <!--                                        <td>{{r.id}}</td>-->
+                                        <td>{{r.recommendationName}}</td>
+                                        <td>
+                                            <button (click)="removeDataRecommendation(i)"
+                                                    type="button"
+                                                    class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <form [formGroup]="finalRecommendationForm">
+                        <div class="form-group bmd-form-group is-filled">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Please write, in detail, your feedback for The Recommendation(s) above:</b></label>
+                                        <textarea [class.is-invalid]="formFinalRecommendationForm.hodRecommendationRemarks.invalid && formFinalRecommendationForm.hodRecommendationRemarks.errors"
+                                               class="form-control two-column-input"
+                                                  formControlName="hodRecommendationRemarks" name="hodRecommendationRemarks" required type="text"></textarea>
+                                        <div *ngIf="submitted && formFinalRecommendationForm.hodRecommendationRemarks.errors" class="invalid-feedback">
+                                            <div *ngIf="formFinalRecommendationForm.hodRecommendationRemarks.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                            <button  *ngIf="finalRecommendationForm.invalid" mat-raised-button type="button"  class="btn btn-success"
+                                     (click)="onClickSaveFinalRecommendationHOD()">SUBMIT
+                            </button>
+                            <button *ngIf="finalRecommendationForm.valid"  mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"
+                                    (click)="onClickSaveFinalRecommendationHOD()" >SUBMIT
+                            </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Final Recommendation Modal -->
 
     <!-- Work Plan UPDATE Modal -->
     <div class="modal fade" id="workPlanModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -5941,4 +5635,216 @@
         </div>
     </div>
     <!-- End Work Plan Modal -->
+
+    <!-- Sample Submit Lab Results Modal -->
+    <div class="modal fade" id="sampleLabResultsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Lab Results Details</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label style="color: #0082f3">Lab Results Details</label>
+                    <div class="panel">
+                        <div *ngFor="let role of roles">
+                            <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
+                                    && selectedLabResults?.ssfResultsList?.analysisDone == false
+                                    && workPlanInspection?.officerDetails?.id == userLoggedInID
+                                    && selectedLabResults?.savedPDFFiles?.length != 0"
+                                     (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                     data-target="#myModal2"
+                                     class="btn btn-sm btn-primary mr-3"><span
+                                    class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
+                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                <div class="mat-button-focus-overlay"></div>
+                            </button>
+                        </div>
+                        <br>
+                        <ul class="w-list-unstyled">
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">BS Number</div>
+                                <div class="list-text-accordion">
+                                    {{selectedLabResults?.ssfResultsList?.bsNumber}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Compliance Remarks</div>
+                                <div class="list-text-accordion">
+                                    {{selectedLabResults?.ssfResultsList?.complianceRemarks}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Compliance Status</div>
+
+                                <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus && selectedLabResults?.ssfResultsList?.analysisDone"
+                                     class="list-text-accordion">COMPLIANT</div>
+                                <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false && selectedLabResults?.ssfResultsList?.analysisDone"
+                                     class="list-text-accordion">NON-COMPLIANT</div>
+                                <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false && selectedLabResults?.ssfResultsList?.analysisDone==false"
+                                     class="list-text-accordion"> </div>
+                            </li>
+                        </ul>
+
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3">
+                                <label style="color: #0082f3">Lab Results Param</label>
+                            </div>
+                            <div class="table-striped table-condensed table-responsive">
+                                <ng2-smart-table [settings]="settingsLabResultsParam" [source]="selectedLabResults?.parametersListTested"></ng2-smart-table>
+                            </div>
+                        </div>
+                        <div *ngIf="selectedLabResults?.parametersListTested.length!=0">
+                            <div *ngFor="let role of roles">
+                                <div  *ngIf="role == 'MS_IO_MODIFY' && selectedLabResults?.ssfResultsList?.analysisDone == false" class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label style="color: #0082f3">Lab Results PDF Found</label>
+                                    </div>
+                                    <div class="table-striped table-condensed table-responsive">
+                                        <ng2-smart-table [settings]="settingsLIMSPDFFiles"
+                                                         [source]="selectedLabResults?.limsPDFFiles"
+                                                         (custom)="onCustomLIMSPDFAction($event,selectedLabResults?.ssfResultsList.bsNumber)"
+                                        ></ng2-smart-table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-12 mb-3">
+                                    <label style="color: #0082f3">Lab Results PDF SAVED</label>
+                                </div>
+                                <div class="table-striped table-condensed table-responsive">
+                                    <ng2-smart-table [settings]="settingsSavedPDFFiles"
+                                                     [source]="selectedLabResults?.savedPDFFiles"
+                                                     (custom)="onCustomLIMSPDFViewAction($event)"
+                                    ></ng2-smart-table>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button mat-button type="button"  class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div *ngIf="(currDiv == 'pdfSaveCompliance')">
+                        <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusPdf5"><b>Select Compliance Status</b></label>
+                                        <mat-form-field id="complianceStatusPdf5">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="complianceStatus"
+                                                        [class.is-invalid]="formPdfSaveComplianceStatusForm.complianceStatus.invalid && formPdfSaveComplianceStatusForm.complianceStatus.touched"
+                                                        name="complianceStatus">
+                                                <mat-option [value]="true">Compliant</mat-option>
+                                                <mat-option [value]="false">Non-Compliant</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksPDF6"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksPDF6" matInput type="text"
+                                                      formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'viewPdfSaveCompliance')">
+                        <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusPdf"><b>Select Compliance Status</b></label>
+                                        <mat-form-field id="complianceStatusPdft7">
+                                            <mat-select disabled placeholder="Please Select an option"
+                                                        formControlName="complianceStatus"
+                                                        name="complianceStatus">
+                                                <mat-option [value]="true">Compliant</mat-option>
+                                                <mat-option [value]="false">Non-Compliant</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksPDF"><b>Please write, in detail, your feedback for Selecting the PDF:</b></label>
+                                        <mat-form-field disabled class="example-full-width">
+                                            <textarea id="complianceRemarksPDFt9" matInput type="text"
+                                                      formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'ssfAddComplianceStatus')">
+                        <form [formGroup]="ssfSaveComplianceStatusForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
+                                        <mat-form-field id="complianceStatusSSF">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="complianceStatus"
+                                                        [class.is-invalid]="formSSFSaveComplianceStatusForm.complianceStatus.invalid && formSSFSaveComplianceStatusForm.complianceStatus.touched"
+                                                        name="complianceStatus">
+                                                <mat-option [value]="true">Compliant</mat-option>
+                                                <mat-option [value]="false">Non-Compliant</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for the whole Lab results:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksSSF" matInput type="text"
+                                                      formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button mat-raised-button type="button"
+                            class="btn btn-danger" data-dismiss="modal" >Close
+                    </button>
+                    <button *ngIf="(currDiv == 'pdfSaveCompliance')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSavePDFSelected(pdfSaveComplianceStatusForm.valid);"
+                            [disabled]="!pdfSaveComplianceStatusForm.valid"
+                            data-dismiss="modal" data-toggle="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'ssfAddComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
+                            [disabled]="!ssfSaveComplianceStatusForm.valid"
+                            data-dismiss="modal" data-toggle="modal"
+                    >SUBMIT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Sample Submit Lab Results Modal -->
 </div>

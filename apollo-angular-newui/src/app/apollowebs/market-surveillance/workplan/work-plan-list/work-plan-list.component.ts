@@ -1,6 +1,7 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
+  AllWorkPlanDetails,
   BatchFileFuelSaveDto,
   ComplaintsListDto,
   ComplaintsTaskAndAssignedDto,
@@ -8,9 +9,9 @@ import {
   MsDepartment,
   MsDivisionDetails,
   MsProducts, MsProductSubcategory,
-  MsStandardProductCategory, WorkPlanEntityDto,
+  MsStandardProductCategory, PredefinedResourcesRequired, WorkPlanEntityDto,
   WorkPlanListDto,
-  WorkPlanScheduleListDetailsDto,
+  WorkPlanScheduleListDetailsDto, WorkPlanTownsDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {Observable, Subject, throwError} from 'rxjs';
 import {County, CountyService, loadCountyId, selectCountyIdData, selectUserInfo, Town, TownService} from '../../../../core/store';
@@ -26,6 +27,7 @@ import {
   ProductSubcategory,
   StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
+import {data} from 'jquery';
 
 @Component({
   selector: 'app-work-plan-list',
@@ -42,6 +44,8 @@ export class WorkPlanListComponent implements OnInit {
   submitted = false;
   selectedCounty = 0;
   selectedTown = 0;
+  selectedTownName: string;
+  selectedCountyName: string;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
   loading = false;
@@ -146,6 +150,15 @@ export class WorkPlanListComponent implements OnInit {
   loadedListData: ComplaintsTaskAndAssignedDto;
   loadedData!: WorkPlanScheduleListDetailsDto;
   dataSaveWorkPlan: WorkPlanEntityDto;
+  dataSaveAllWorkPlan: AllWorkPlanDetails;
+
+  addResourceRequiredForm!: FormGroup;
+  addCountyTownForm!: FormGroup;
+  predefinedResourcesRequired!: PredefinedResourcesRequired[];
+  dataCountyTown: WorkPlanTownsDto;
+  dataCountyTownList: WorkPlanTownsDto[] = [];
+  dataSaveResourcesRequired: PredefinedResourcesRequired;
+  dataSaveResourcesRequiredList: PredefinedResourcesRequired[] = [];
 
 
   constructor(private store$: Store<any>,
@@ -176,23 +189,43 @@ export class WorkPlanListComponent implements OnInit {
         },
     );
 
+    this.addResourceRequiredForm = this.formBuilder.group({
+      resourceName: ['', Validators.required],
+    });
+
+    this.addCountyTownForm = this.formBuilder.group({
+      countyID: ['', Validators.required],
+      townID: ['', Validators.required],
+      locationName: ['', Validators.required],
+      countyName: ['', Validators.required],
+      townName: ['', Validators.required],
+    });
+
     this.addNewScheduleForm = this.formBuilder.group({
       complaintDepartment: ['', Validators.required],
       divisionId: ['', Validators.required],
       nameActivity: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
-      county: ['', Validators.required],
-      townMarketCenter: ['', Validators.required],
-      locationActivityOther: ['', Validators.required],
+      county: null,
+      townMarketCenter: null,
+      locationActivityOther: null,
       standardCategory: ['', Validators.required],
       broadProductCategory: ['', Validators.required],
       productCategory: ['', Validators.required],
       product: ['', Validators.required],
       productSubCategory: ['', Validators.required],
-      resourcesRequired: ['', Validators.required],
+      resourcesRequired: null,
       budget: ['', Validators.required],
       // remarks: ['', Validators.required],
     });
+  }
+
+  get formAddResourceRequiredForm(): any {
+    return this.addResourceRequiredForm.controls;
+  }
+
+  get formAddCountyTownForm(): any {
+    return this.addCountyTownForm.controls;
   }
 
   private loadData(page: number, records: number, referenceNumber: string, routeTake: string): any {
@@ -207,6 +240,16 @@ export class WorkPlanListComponent implements OnInit {
 
           switch (this.loadedData.createdWorkPlan.batchClosed) {
             case false:
+              this.msService.msPredefinedResourcesRequiredListDetails().subscribe(
+                  (data1: PredefinedResourcesRequired[]) => {
+                    this.predefinedResourcesRequired = data1;
+                    console.log(data1);
+                  },
+                  error => {
+                    console.log(error);
+                    this.msService.showError('AN ERROR OCCURRED');
+                  },
+              );
               this.msService.msDepartmentListDetails().subscribe(
                   (dataDep: MsDepartment[]) => {
                     this.msDepartments = dataDep;
@@ -329,9 +372,47 @@ export class WorkPlanListComponent implements OnInit {
     return this.addNewScheduleForm.controls;
   }
 
+  onClickAddResource() {
+    this.dataSaveResourcesRequired = this.addResourceRequiredForm.value;
+    console.log(this.dataSaveResourcesRequired);
+    this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+    this.addResourceRequiredForm?.get('resourceName')?.reset();
+  }
+
+  onClickAddCountyTown() {
+    this.dataCountyTown = this.addCountyTownForm.value;
+    this.dataCountyTownList.push(this.dataCountyTown);
+    this.addCountyTownForm.reset();
+  }
+
+  // Remove Form repeater values
+  removeDataResource(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveResourcesRequiredList.splice(index, 1);
+    } else {
+      this.dataSaveResourcesRequiredList.splice(index, index);
+    }
+  }
+
+  // Remove Form repeater values
+  removeDataCountyTown(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataCountyTownList.splice(index, 1);
+    } else {
+      this.dataCountyTownList.splice(index, index);
+    }
+  }
+
 
   updateSelectedCounty() {
     this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
+    // tslint:disable-next-line:no-shadowed-variable
+    this.countyService.getAll().subscribe((data: County[]) => {
+          this.selectedCountyName = data?.find(x => x.id === this.selectedCounty).county;
+        },
+    );
     console.log(`county set to ${this.selectedCounty}`);
     this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
     this.store$.select(selectCountyIdData).subscribe(
@@ -349,6 +430,11 @@ export class WorkPlanListComponent implements OnInit {
 
   updateSelectedTown() {
     this.selectedTown = this.addNewScheduleForm?.get('town')?.value;
+    // tslint:disable-next-line:no-shadowed-variable
+    this.townService.getAll().subscribe((data: Town[]) => {
+          this.selectedTownName = data?.find(x => x.id === this.selectedTown).town;
+        },
+    );
     console.log(`town set to ${this.selectedTown}`);
   }
 
@@ -411,7 +497,7 @@ export class WorkPlanListComponent implements OnInit {
   }
 
   onClickCloseBatch() {
-    this.msService.showSuccessWith2Message('Are you sure your want to close this Work-Plan?', 'You won\'t be able to add new schedule after submission!',
+    this.msService.showSuccessWith2Message('Are you sure your want to Submit this Work-Plan(s), That are pending approval?', 'You won\'t be able to add new schedule after submission!',
         // tslint:disable-next-line:max-line-length
         'You can click the \'ADD NEW WORK-PLAN FILE\' button to add another Work Plan', 'YEARLY WORK-PLAN SENT FOR APPROVAL SUCCESSFUL', () => {
           this.closeBatch();
@@ -481,18 +567,30 @@ export class WorkPlanListComponent implements OnInit {
 
   onClickSaveWorkPlanScheduled() {
     this.submitted = true;
-    if (this.addNewScheduleForm.invalid) {
-      return;
+    if (this.addNewScheduleForm.valid && this.dataCountyTownList.length > 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'ADD NEW WORK-PLAN FILE\' button to update details Before Saving', 'COMPLAINT SCHEDULE DETAILS SAVED SUCCESSFUL', () => {
+            this.saveWorkPlanScheduled();
+          });
     }
+  }
+
+  saveWorkPlanScheduled() {
+    this.submitted = true;
     if (this.addNewScheduleForm.valid) {
       this.SpinnerService.show();
+
       this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
+      this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;
+      this.dataSaveAllWorkPlan.mainDetails =  this.dataSaveWorkPlan;
+      this.dataSaveAllWorkPlan.countyTownDetails =  this.dataCountyTownList;
       // tslint:disable-next-line:max-line-length
-      this.msService.msAddWorkPlanScheduleDetails(this.loadedData.createdWorkPlan.referenceNumber, this.dataSaveWorkPlan).subscribe(
+      this.msService.msAddWorkPlanScheduleDetails(this.loadedData.createdWorkPlan.referenceNumber, this.dataSaveAllWorkPlan).subscribe(
           (data: any) => {
             console.log(data);
             this.SpinnerService.hide();
-            this.addNewScheduleForm.reset();
+            // this.addNewScheduleForm.reset();
             this.msService.showSuccess('WORK PLAN SCHEDULED DETAILS, SAVED SUCCESSFULLY');
             this.loadData(this.defaultPage, this.defaultPageSize, this.selectedBatchRefNo , this.activeStatus);
           },

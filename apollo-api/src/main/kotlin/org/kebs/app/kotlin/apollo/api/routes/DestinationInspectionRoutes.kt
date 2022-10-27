@@ -1,7 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.*
+import org.kebs.app.kotlin.apollo.api.handlers.di.CertificateHandler
 import org.kebs.app.kotlin.apollo.api.handlers.di.LabManagerHandler
+import org.kebs.app.kotlin.apollo.api.handlers.di.OtherDocumentHandler
 import org.kebs.app.kotlin.apollo.api.handlers.invoice.InvoiceHandlers
 import org.kebs.app.kotlin.apollo.api.handlers.ism.ISMHandler
 import org.springframework.context.annotation.Bean
@@ -32,12 +34,33 @@ class DestinationInspectionRoutes {
 
     @Bean
     @CrossOrigin
+    fun otherDocuments(handler: OtherDocumentHandler) = router {
+        "/api/v1/di/documents".nest {
+            GET("/idf", handler::listIdfDocuments)
+            GET("/manifest", handler::listManifestDocuments)
+        }
+    }
+
+    @Bean
+    @CrossOrigin
     fun laboratoryManager(handler: LabManagerHandler) = router {
         "/api/v1/laboratory".nest {
             POST("/add", handler::addLaboratory)
             GET("/list", handler::listLaboratories)
             PUT("/{labId}", handler::updateLaboratory)
             DELETE("/{labId}", handler::deleteLaboratory)
+        }
+    }
+
+
+    @Bean
+    @CrossOrigin
+    fun certificateManager(handler: CertificateHandler) = router {
+        "/api/v1/certificates".nest {
+            GET("/cor", handler::listCorCertificates)
+            GET("/coc", handler::listCocCertificates)
+            GET("/coi", handler::listCoiCertificates)
+            GET("/ncr", handler::listNcrCertificates)
         }
     }
 

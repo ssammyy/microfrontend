@@ -175,5 +175,14 @@ export class PermitsRenewedComponent implements OnInit {
   formatFormDate(date: string) {
     return formatDate(date, this.dateFormat, this.language);
   }
+    calculateDiff(date1, date2) {
+
+        let todayDate = new Date(date1);
+        let sentOnDate = new Date(date2);
+        sentOnDate.setDate(sentOnDate.getDate());
+        let differenceInTime = todayDate.getTime() - sentOnDate.getTime();
+        // To calculate the no. of days between two dates
+        return Math.floor(differenceInTime / (1000 * 3600 * 24));
+    }
 
 }

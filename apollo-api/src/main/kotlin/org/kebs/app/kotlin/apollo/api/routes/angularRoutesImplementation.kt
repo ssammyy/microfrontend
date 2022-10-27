@@ -576,6 +576,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/allPermitsAwarded", handler::loadAllAwardedPermitsForReports)
                     GET("/allPermitsRenewed", handler::loadAllRenewedPermitsForReports)
                     GET("/allSamplesSubmitted", handler::loadAllSamplesSubmittedForReports)
+                    GET("/allDejectedPermits", handler::loadAllDejectedPermitsForReports)
 
 
                 }
@@ -591,6 +592,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             "/common".nest {
                 GET("/departments", handler::msDepartments)
                 GET("/divisions", handler::msDivisions)
+                GET("/laboratories", handler::msLaboratories)
+                GET("/standards", handler::standardsList)
                 GET("/standardProductCategory", handler::msStandardsCategory)
                 GET("/predefinedResourcesRequired", handler::msPredefinedResources)
                 GET("/productCategories", handler::msProductCategories)
@@ -664,19 +667,28 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                                 handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD
                             )
                             PUT("/final-recommendation", handler::addWorkPlanScheduleFinalRecommendationByHOD)
+                            PUT("/end-adding-final-recommendation", handler::addWorkPlanScheduleEndFinalRecommendationAddingByHOD)
                             PUT("/feedBack-notification", handler::addWorkPlanScheduleFeedBackByHOD)
+                        }
+                        "/director".nest {
+                            PUT("/recommendation", handler::addWorkPlanScheduleFeedBackByDirector)
+                            PUT("/end-recommendation", handler::addWorkPlanScheduleEndFinalRecommendationAddingByDirector)
                         }
                     }
                     "/add".nest {
                         POST("/charge-sheet", handler::addWorkPlanScheduleChargeSheet)
                         POST("/data-report", handler::addWorkPlanDataReportSheet)
                         POST("/seizure-declaration", handler::addWorkPlanSeizureDeclaration)
+                        POST("/end-seizure-declaration", handler::addWorkPlanEndSeizureDeclaration)
                         POST("/inspection-investigation", handler::addWorkPlanInspectionInvestigationReport)
                         POST("/sample-collect", handler::addWorkPlanScheduleSampleCollection)
                         POST("/sample-submission", handler::addWorkPlanScheduleSampleSubmission)
+                        POST("/end-sample-submission", handler::addWorkPlanScheduleEndSampleSubmission)
                         PUT("/sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionBsNumber)
+                        PUT("/end-sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionEndBsNumber)
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
+                        PUT("/final-ssf-compliance-status-save", handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd)
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
 //                        PUT("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
                         PUT("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)

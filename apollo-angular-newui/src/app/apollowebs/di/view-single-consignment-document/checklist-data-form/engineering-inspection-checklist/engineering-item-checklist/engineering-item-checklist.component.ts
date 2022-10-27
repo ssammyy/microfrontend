@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {ValidationService} from "../../../../../../core/services/errors/validation.service";
 
 @Component({
     selector: 'app-engineering-item-checklist',
@@ -15,8 +16,29 @@ export class EngineeringItemChecklistComponent implements OnInit {
     form: FormGroup
     itemId: any
     message: any
+    fieldNames = {
+        brand: "Brand",
+        section: "Section",
+        ksEasApplicable: "KS Applicable",
+        quantityVerified: "Verified Quantity",
+        quantityVerifiedUnit: "Verified units",
+        mfgNameAddress: "Manufacturer Name and address",
+        batchNoModelTypeRef: "Batch No Ref",
+        fiberComposition: "Fibre composition",
+        instructionsUseManual: "Instruction Manual",
+        warrantyPeriodDocumentation: "Warranty documentation",
+        safetyCautionaryRemarks: "Safety caution remarks",
+        sizeClassCapacity: "Size capacity",
+        certMarksPvocDoc: "Cert Mark PVOC",
+        disposalInstruction: "Disposal Instruction",
+        compliant: "Compliant",
+        category: "Category",
+        sampled: "Sampled",
+        remarks: "Remarks"
+    }
+    errors: any
 
-    constructor(private fb: FormBuilder, public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any) {
+    constructor(private fb: FormBuilder, private validate: ValidationService, public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
     ngOnInit(): void {
@@ -45,6 +67,10 @@ export class EngineeringItemChecklistComponent implements OnInit {
             category: [formData ? formData.category : '',],
             sampled: [formData ? formData.sampled : '', Validators.required],
             remarks: [formData ? formData.remarks : '', Validators.required]
+        })
+
+        this.form.valueChanges.subscribe(() => {
+            this.errors = this.validate.validateForm(this.form, this.fieldNames)
         })
     }
 

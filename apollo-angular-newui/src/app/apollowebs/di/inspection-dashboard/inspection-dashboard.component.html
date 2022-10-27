@@ -35,7 +35,8 @@
                     <p class="card-category">Samples Collection</p>
                     <h3 class="card-title">Collected: {{personalStats.samples.SAMPLE_COLLECTED}}</h3>
                     <h3 class="card-title">Not Collected: {{personalStats.samples.SAMPLE_NOT_COLLECTED}}</h3>
-                    <h3 class="card-title">Total: {{personalStats.samples.SAMPLE_NOT_COLLECTED+personalStats.samples.SAMPLE_COLLECTED}}</h3>
+                    <h3 class="card-title">
+                        Total: {{personalStats.samples.SAMPLE_NOT_COLLECTED + personalStats.samples.SAMPLE_COLLECTED}}</h3>
                 </div>
             </div>
         </div>
@@ -48,7 +49,8 @@
                     <p class="card-category">Sample submission</p>
                     <h3 class="card-title">Submitted: {{personalStats.samples.SAMPLE_SUBMITTED}}</h3>
                     <h3 class="card-title">Not Submitted: {{personalStats.samples.SAMPLE_NOT_SUBMITTED}}</h3>
-                    <h3 class="card-title">Total: {{personalStats.samples.SAMPLE_NOT_SUBMITTED+personalStats.samples.SAMPLE_SUBMITTED}}</h3>
+                    <h3 class="card-title">
+                        Total: {{personalStats.samples.SAMPLE_NOT_SUBMITTED + personalStats.samples.SAMPLE_SUBMITTED}}</h3>
                 </div>
             </div>
         </div>
@@ -61,7 +63,8 @@
                     <p class="card-category">BS Number Update</p>
                     <h3 class="card-title">Updated: {{personalStats.samples.BS_NO_UPDATED}}</h3>
                     <h3 class="card-title">Not Updated: {{personalStats.samples.BS_NO_NOT_UPDATED}}</h3>
-                    <h3 class="card-title">Total: {{personalStats.samples.BS_NO_NOT_UPDATED+personalStats.samples.BS_NO_UPDATED}}</h3>
+                    <h3 class="card-title">
+                        Total: {{personalStats.samples.BS_NO_NOT_UPDATED + personalStats.samples.BS_NO_UPDATED}}</h3>
                 </div>
             </div>
         </div>
@@ -75,7 +78,7 @@
                         <i class="material-icons">assignment</i>
                     </div>
                     <p>{{printObject(d)}}</p>
-                    <p class="card-category">{{d.value.KEY_NAME.replaceAll('_', ' ')}}</p>
+                    <p class="card-category">{{d.value.KEY_NAME ? d.value.KEY_NAME.replaceAll('_', ' ') : ''}}</p>
                     <h3 *ngIf="d.key.includes('COR')" class="card-title">COR Generated: {{d.value.COR_ISSUED}}</h3>
                     <h3 *ngIf="d.key.includes('COR')" class="card-title">COR Pending: {{d.value.COR_PENDING}}</h3>
                     <h3 *ngIf="d.key.includes('COC')" class="card-title">COC Generated: {{d.value.COC_ISSUED}}</h3>
@@ -110,14 +113,14 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 m0 p0" *ngFor="let d of allStats | keyvalue"
-                 [hidden]="d.key=='samples' || d.key.inclides('ALL_')">
+                 [hidden]="d.key && (d.key=='samples' || d.key.includes('ALL_'))">
                 <div class="card card-stats" *ngIf="d.key!='samples' || d.key.includes('ALL_')">
                     <div class="card-header card-header-success card-header-icon">
                         <div class="card-icon">
                             <i class="material-icons">article</i>
                         </div>
                         <p>{{printObject(d)}}</p>
-                        <p class="card-category">{{d.value.KEY_NAME.replaceAll('_', ' ')}}</p>
+                        <p class="card-category">{{d.value.KEY_NAME?d.value.KEY_NAME.replaceAll('_', ' '):'N/A'}}</p>
                         <h3 *ngIf="d.key.includes('COR')" class="card-title">COR Generated: {{d.value.COR_ISSUED}}</h3>
                         <h3 *ngIf="d.key.includes('COR')" class="card-title">COR Pending: {{d.value.COR_PENDING}}</h3>
                         <h3 *ngIf="d.key.includes('COC')" class="card-title">COC Generated: {{d.value.COC_ISSUED}}</h3>

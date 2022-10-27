@@ -16,6 +16,26 @@ export class DestinationInspectionService {
     constructor(private client: HttpClient) {
     }
 
+    formatDownloadReport(report: any, reportName: string): any {
+        let filters = {}
+        Object.keys(report).forEach(k => {
+            if (report[k]) {
+                if (k == 'startDate') {
+                    filters['date__start'] = report[k]
+                } else if (k === 'endDate') {
+                    filters['date__end'] = report[k]
+                } else {
+                    filters[k] = report[k]
+                }
+            }
+        })
+        let data = {
+            filters: filters,
+            reportName: reportName
+        }
+        return data
+    }
+
     // Check if role is in required privileges
     hasRole(privileges: string[], roles: any[]): boolean {
         for (let role of roles) {
@@ -32,8 +52,8 @@ export class DestinationInspectionService {
         let params = {
             direction: 'desc',
             flowDirection: flowDirection,
-            page: page,
-            size: size
+            page: page.toString(),
+            size: size.toString()
         }
         if (exchangeFile) {
             params['exchangeFile'] = exchangeFile
@@ -73,8 +93,28 @@ export class DestinationInspectionService {
         })
     }
 
-    loadIncompleteIdfDocuments(params): Observable<any> {
-        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/files/incomplete/idf"), {
+    loadIdfDocuments(status: string, page: number, size: number, startDate?: string): Observable<any> {
+        let params = {
+            status: status,
+            page: String(page),
+            size: String(size)
+        }
+        if (startDate) {
+            params["date"] = startDate ? startDate : ""
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/documents/idf"), {
+            params: params
+        })
+    }
+
+    loadManifestDocuments(status: string, startDate?: string): Observable<any> {
+        let params = {
+            status: status,
+        }
+        if (startDate) {
+            params["date"] = startDate ? startDate : null
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/documents/manifest"), {
             params: params
         })
     }
@@ -323,27 +363,36 @@ export class DestinationInspectionService {
         return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/consignment/document/attachments/" + attachmentId))
     }
 
-    downloadDocument(url, params: any = {}) {
-        this.client.get(ApiEndpointService.getEndpoint(url), {
-            observe: 'response',
-            responseType: 'blob',
-            params: params
-        })
-            .pipe(map((res: HttpResponse<any>) => {
-                    if (res.ok) {
-                        let fileName = this.getFileName(res)
-                        if (!fileName) {
-                            fileName = "sample.pdf"
-                        }
-                        // @ts-ignore
-                        let blob: any = new Blob([res.body], {type: res.headers.get("content-type")});
-                        fileSaver.saveAs(blob, fileName);
-                        return fileName
-                    } else {
-                        this.showError(res.body, null)
+    downloadDocument(url, params: any = {}, data?: any) {
+        let observable: Observable<any>
+        if (data) {
+            observable = this.client.post(ApiEndpointService.getEndpoint(url), data, {
+                observe: 'response',
+                responseType: 'blob',
+                params: params
+            });
+        } else {
+            observable = this.client.get(ApiEndpointService.getEndpoint(url), {
+                observe: 'response',
+                responseType: 'blob',
+                params: params
+            });
+        }
+        observable.pipe(map((res: HttpResponse<any>) => {
+                if (res.ok) {
+                    let fileName = this.getFileName(res)
+                    if (!fileName) {
+                        fileName = "sample.pdf"
                     }
+                    // @ts-ignore
+                    let blob: any = new Blob([res.body], {type: res.headers.get("content-type")});
+                    fileSaver.saveAs(blob, fileName);
+                    return fileName
+                } else {
+                    this.showError(res.body, null)
                 }
-            ))
+            }
+        ))
             .subscribe(
                 res => {
                     console.log(res)
@@ -354,6 +403,7 @@ export class DestinationInspectionService {
                 }
             )
     }
+
 
     listAssignedCd(documentType: String, page: Number = 0, size: Number = 20, otherParams: any = {}): Observable<any> {
         let params = {}
@@ -703,6 +753,20 @@ export class DestinationInspectionService {
 
     deleteCustomOffice(labId: any): Observable<any> {
         return this.client.delete(ApiEndpointService.getEndpoint("/api/v1/di/config/custom/office/" + labId))
+    }
+
+    // Certificates
+    loadCertificateDocument(keywords: string, category: string, documentType: string, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        params['category'] = category
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/certificates/" + documentType.toLowerCase()), {
+            params: params
+        });
     }
 
 }

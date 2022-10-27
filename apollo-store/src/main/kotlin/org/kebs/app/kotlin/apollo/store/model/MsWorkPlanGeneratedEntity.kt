@@ -89,6 +89,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var compliantStatus: Int? = null
 
+    @Column(name = "WORK_PLAN_COMPLIANT_STATUS")
+    @Basic
+    var workPlanCompliantStatus: Int? = null
+
     @Column(name = "SUBMITTED_FOR_APPROVAL_STATUS")
     @Basic
     var submittedForApprovalStatus: Int? = null
@@ -172,6 +176,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "HOD_RECOMMENDATION_STATUS")
     @Basic
     var hodRecommendationStatus: Int? = 0
+
+    @Column(name = "DIRECTOR_RECOMMENDATION_REMARKS_STATUS")
+    @Basic
+    var directorRecommendationRemarksStatus: Int? = 0
 
     @Column(name = "DESTRUCTION_RECOMMENDED")
     @Basic

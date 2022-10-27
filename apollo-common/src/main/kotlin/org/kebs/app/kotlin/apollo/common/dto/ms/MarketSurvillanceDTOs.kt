@@ -28,7 +28,7 @@ data class TeamsCountyFuelSaveDto(
 )
 
 data class WorkPlanBatchDetailsDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var workPlanRegion: Long? = null,
         var createdDate: Date? = null,
         var createdStatus: Boolean? = null,
@@ -42,7 +42,7 @@ data class WorkPlanBatchDetailsDto(
 )
 
 data class FuelBatchDetailsDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var region: String? = null,
         var county: String? = null,
         var town: String? = null,
@@ -53,7 +53,7 @@ data class FuelBatchDetailsDto(
         var batchClosed: Boolean? = null,
 )
 data class TeamsFuelDetailsDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var referenceNumber: String? = null,
         var teamName: String? = null,
         var startDate: Date? = null,
@@ -86,7 +86,7 @@ data class FuelScheduleCountyListDetailsDto(
 )
 
 data class FuelTeamsDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var referenceNumber: String? = null,
         var teamName: String? = null,
         var startDate: Date? = null,
@@ -95,7 +95,7 @@ data class FuelTeamsDto(
 )
 
 data class FuelCountyDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var referenceNumber: String? = null,
         var countyName: String? = null,
 )
@@ -103,7 +103,7 @@ data class FuelCountyDto(
 
 
 data class FuelInspectionDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var timelineStartDate: Date? = null,
         var timelineEndDate: Date? = null,
         var timelineOverDue: Boolean? = null,
@@ -149,7 +149,7 @@ data class FuelInspectionDto(
 )
 
 data class WorkPlanInspectionDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var productCategory: String? = null,
         var broadProductCategory: String? = null,
         var product: String? = null,
@@ -170,6 +170,7 @@ data class WorkPlanInspectionDto(
         var approvedStatus: Boolean? = null,
         var workPlanYearId: Long? = null,
         var clientAppealed: Boolean? = null,
+        var directorRecommendationRemarksStatus: Boolean? = null,
         var hodRecommendationStatus: Boolean? = null,
         var hodRecommendationStart: Boolean? = null,
         var hodRecommendation: String? = null,
@@ -180,6 +181,7 @@ data class WorkPlanInspectionDto(
         var dataReportGoodsStatus: Boolean? = null,
         var scfLabparamsStatus: Boolean? = null,
         var bsNumberStatus: Boolean? = null,
+        var workPlanCompliantStatus: Boolean? = null,
         var ssfLabparamsStatus: Boolean? = null,
         var msPreliminaryReportStatus: Boolean? = null,
         var preliminaryApprovedStatus: Boolean? = null,
@@ -244,12 +246,12 @@ data class WorkPlanInspectionDto(
         var remarksDetails: List<MSRemarksDto>? = null,
         var workPlanFiles: List<WorkPlanFilesFoundDto>? = null,
         var chargeSheet: ChargeSheetDto? = null,
-        var seizureDeclarationDto: SeizureDeclarationDto? = null,
+        var seizureDeclarationDto: List<SeizureDto>? = null,
         var inspectionInvestigationDto: InspectionInvestigationReportDto? = null,
         var dataReportDto: DataReportDto? = null,
         var sampleCollected: SampleCollectionDto? = null,
-        var sampleSubmitted: SampleSubmissionDto? = null,
-        var sampleLabResults: MSSSFLabResultsDto? = null,
+        var sampleSubmitted: List<SampleSubmissionDto>? = null,
+        var sampleLabResults: List<MSSSFLabResultsDto>? = null,
         var compliantStatusAdded: Boolean? = null,
         var destructionRecommended: Boolean? = null,
         var finalReportGenerated: Boolean? = null,
@@ -261,6 +263,10 @@ data class WorkPlanInspectionDto(
         val updateWorkPlan: WorkPlanEntityDto? = null,
         val updatedStatus: Boolean? = null,
         val resubmitStatus: Boolean? = null,
+        var bsNumberCountAdded: Int? = null,
+        var analysisLabCountDone: Int? = null,
+        var productListRecommendationAddedCount: Int? = null,
+        var productList: List<WorkPlanProductDto>? = null,
 )
 
 data class FuelEntityDto(
@@ -299,8 +305,19 @@ data class FuelEntityDto(
         var remarks: String? = null,
 )
 
+data class WorkPlanTownsDto(
+        var countyID: Long? = null,
+        var townID: Long? = null,
+        var locationName: String? = null
+)
+
+data class AllWorkPlanDetails(
+        var mainDetails: WorkPlanEntityDto? = null,
+        var countyTownDetails: List<WorkPlanTownsDto>? = null
+)
+
 data class WorkPlanEntityDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var complaintDepartment: Long? = null,
         var divisionId: Long? = null,
         var nameActivity: String? = null,
@@ -332,9 +349,14 @@ data class ApprovalDto(
 
 data class WorkPlanFinalRecommendationDto(
         @NotNull(message = "Required field")
-        var recommendationId: Long,
+        var recommendationId: List<RecommendationDto>,
         @NotNull(message = "Required field")
         var hodRecommendationRemarks: String,
+)
+
+data class RecommendationDto (
+        var recommendationId: Long? = null,
+        var recommendationName: String? = null,
 )
 
 data class WorkPlanFeedBackDto(
@@ -372,7 +394,7 @@ data class SSFCompliantStatusDto(
 )
 
 data class SampleCollectionDto(
-        var id: Long?= null,
+        var id: Long?= 0,
         var nameManufacturerTrader: String?= null,
         var addressManufacturerTrader: String?= null,
         var samplingMethod: String?= null,
@@ -388,7 +410,7 @@ data class SampleCollectionDto(
 )
 
 data class RapidTestProductsDto(
-        var id: Long?= null,
+        var id: Long?= 0,
         var productName: String?= null,
         var sampleSize: String?= null,
         var batchSize: String?= null,
@@ -401,7 +423,7 @@ data class RapidTestProductsDto(
 )
 
 data class RapidTestProductsDetailsDto(
-        var id: Long?= null,
+        var id: Long?= 0,
         var productName: String?= null,
         var sampleSize: String?= null,
         var batchSize: String?= null,
@@ -416,7 +438,7 @@ data class RapidTestProductsDetailsDto(
 )
 
 data class SampleCollectionItemsDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var productBrandName: String? = null,
         var batchNo: String? = null,
         var batchSize: String? = null,
@@ -432,7 +454,7 @@ data class RemarksToAddDto(
 )
 
 data class ChargeSheetDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var christianName: String? = null,
         var surname: String? = null,
         var sex: String? = null,
@@ -462,7 +484,7 @@ data class ChargeSheetDto(
 )
 
 data class DataReportDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var referenceNumber: String? = null,
         var inspectionDate: Date? = null,
         var inspectorName: String? = null,
@@ -475,12 +497,13 @@ data class DataReportDto(
         var personMet: String? = null,
         var summaryFindingsActionsTaken: String? = null,
         var finalActionSeizedGoods: String? = null,
+        var totalComplianceScore: String? = null,
         var remarks: String? = null,
         var productsList: List<DataReportParamsDto>? = null,
 )
 
 data class DataReportParamsDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var typeBrandName: String? = null,
         var localImport: String? = null,
         var complianceInspectionParameter: Int? = null,
@@ -489,7 +512,7 @@ data class DataReportParamsDto(
 )
 
 data class InspectionInvestigationReportDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var reportReference: String? = null,
         var reportTo: String? = null,
         var reportThrough: String? = null,
@@ -519,8 +542,30 @@ data class KebsOfficersName (
         var designation: String? = null,
 )
 
+data class SeizureListDto(
+        var seizureList: List<SeizureDto>?= null,
+)
+
+data class SeizureDto(
+        var id: Long?= 0,
+        var marketTownCenter: String?=null,
+        var nameOfOutlet: String?=null,
+        var descriptionProductsSeized: String?=null,
+        var brand: String?=null,
+        var sector: String?=null,
+        var reasonSeizure: String?=null,
+        var nameSeizingOfficer: String?=null,
+        var seizureSerial: String?=null,
+        var quantity: String?=null,
+        var unit: String?=null,
+        var estimatedCost: String?=null,
+        var currentLocation: String?=null,
+        var productsDestruction: String?=null,
+
+)
+
 data class SeizureDeclarationDto(
-        var id: Long?= null,
+        var id: Long?= 0,
         var seizureTo: String? = null,
         var seizurePremises: String? = null,
         var seizureRequirementsStandards: String? = null,
@@ -557,7 +602,7 @@ data class SeizureDeclarationDto(
 )
 
 data class SampleSubmissionDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var nameProduct : String? = null,
         var packaging : String? = null,
         var labellingIdentification : String? = null,
@@ -584,6 +629,7 @@ data class SampleSubmissionDto(
 )
 
 data class SampleSubmissionItemsDto(
+        var id: Long? = 0,
         var parameters : String? = null,
         var laboratoryName : String? = null,
 )
@@ -598,6 +644,30 @@ data class PreliminaryReportItemsDto(
         var compliancePhysicalInspection: Long? = null,
         var remarks: String? = null,
         var preliminaryReportID: Long? = null,
+)
+
+data class WorkPlanProductDto(
+        var id: Long? = 0,
+        var productName: String? = null,
+        var referenceNo: String? = null,
+        var recommendation: String? = null,
+        var destructionRecommended: Boolean? = null,
+        var hodRecommendationStatus: Boolean? = null,
+        var hodRecommendationRemarks: String? = null,
+        var directorRecommendationStatus: Boolean? = null,
+        var directorRecommendationRemarks: String? = null,
+        var clientAppealed: Boolean? = null,
+        var destructionStatus: Boolean? = null,
+        var appealStatus: Boolean? = null,
+        var destructionNotificationStatus: Boolean? = null,
+        var destructionNotificationDocId: Long? = null,
+        var workPlanId: Long? = null,
+        var ssfId: Long? = null,
+        var destructionClientEmail: String? = null,
+        var destructionClientFullName: String? = null,
+        var destructionNotificationDate: Date? = null,
+        var destructionDocId: Long? = null,
+        var destructedStatus: Boolean? = null,
 )
 
 data class BSNumberSaveDto(
@@ -663,21 +733,21 @@ data class LIMSFilesFoundDto(
 )
 
 data class ComplaintsFilesFoundDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var fileName: String? = null,
         var documentType: String? = null,
         var fileContentType: String? = null,
 )
 
 data class WorkPlanFilesFoundDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var fileName: String? = null,
         var documentType: String? = null,
         var fileContentType: String? = null,
 )
 
 data class FuelFilesFoundDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var fileName: String? = null,
         var documentType: String? = null,
         var fileContentType: String? = null,
@@ -846,7 +916,7 @@ data class ComplaintClassificationDto(
 )
 
 data class MSRemarksDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var remarksDescription: String? = null,
         var remarksStatus: String? = null,
         var processBy: String? = null,
@@ -872,7 +942,7 @@ data class AllComplaintsDetailsDto(
 )
 
 data class ComplaintsDetailsDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var refNumber: String? = null,
         var complainantName: String? = null,
         var complainantEmail: String? = null,
@@ -929,7 +999,7 @@ data class ComplaintsListDto(
 )
 
 data class MsDepartmentDto(
-        val id: Long? = null,
+        var id: Long?= 0,
         val department: String? = null,
         val descriptions: String? = null,
         val directorateId: Long? = null,
@@ -937,14 +1007,14 @@ data class MsDepartmentDto(
 )
 
 data class MsRecommendationDto(
-        val id: Long? = null,
+        var id: Long?= 0,
         var recommendationName: String? = null,
         var description: String? = null,
         var status: Boolean? = null,
 )
 
 data class MsUsersDto(
-        var id: Long? = null,
+        var id: Long?= 0,
         var firstName: String? = null,
         var lastName: String? = null,
         var userName: String? = null,
@@ -954,7 +1024,7 @@ data class MsUsersDto(
 )
 
 data class LaboratoryDto(
-        var id: Long?= null,
+        var id: Long?= 0,
         var labName: String?= null,
         var description: String?= null,
         var status: Boolean?= null,
@@ -962,7 +1032,7 @@ data class LaboratoryDto(
 
 
 data class MsDivisionDto(
-        val id: Long? = null,
+        var id: Long?= 0,
         val division: String? = null,
         val descriptions: String? = null,
         val status: Int? = null,

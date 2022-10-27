@@ -88,6 +88,12 @@ interface IChargeSheetRepository : HazelcastRepository<MsChargeSheetEntity, Long
 }
 
 @Repository
+interface IWorkPlanProductsEntityRepository : HazelcastRepository<WorkPlanProductsEntity, Long>{
+    fun findByWorkPlanId(workPlanId: Long): List<WorkPlanProductsEntity>?
+    fun findByReferenceNo(referenceNo: String): WorkPlanProductsEntity?
+}
+
+@Repository
 interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
     fun findAllByOrderByIdDesc( pageable: Pageable): Page<MsWorkPlanGeneratedEntity>
@@ -244,6 +250,15 @@ interface IMSSeizureDeclarationRepository : HazelcastRepository<MsSeizureDeclara
     override fun findAll( pageable: Pageable): Page<MsSeizureDeclarationEntity>
 
     fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): MsSeizureDeclarationEntity?
+//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
+//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
+}
+
+@Repository
+interface IMsSeizureRepository : HazelcastRepository<MsSeizureEntity, Long> {
+    override fun findAll( pageable: Pageable): Page<MsSeizureEntity>
+
+    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long): List<MsSeizureEntity>?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }

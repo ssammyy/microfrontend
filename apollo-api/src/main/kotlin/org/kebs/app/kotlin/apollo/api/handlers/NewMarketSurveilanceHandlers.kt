@@ -38,7 +38,6 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 
-import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
@@ -50,7 +49,6 @@ import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
-import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.body
@@ -131,6 +129,33 @@ class NewMarketSurveillanceHandler(
             KotlinLogging.logger { }.debug(e.message, e)
             return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
         }
+    }
+
+    fun msLaboratories(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllLaboratories()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Laboratory found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+
+    fun standardsList(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllStandardsDetails()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Standards List found")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
     }
 
     fun msPredefinedResources(req: ServerRequest): ServerResponse {
@@ -1284,8 +1309,8 @@ class NewMarketSurveillanceHandler(
     fun saveNewWorkPlanSchedule(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            val body = req.body<WorkPlanEntityDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, WorkPlanEntityDto::class.java.name)
+            val body = req.body<AllWorkPlanDetails>()
+            val errors: Errors = BeanPropertyBindingResult(body, AllWorkPlanDetails::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
@@ -1502,12 +1527,13 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val productReferenceNo = req.paramOrNull("productReferenceNo") ?: throw ExpectedDataNotFound("Required  productReferenceNo, check parameters")
             val body = req.body<ApprovalDto>()
             val errors: Errors = BeanPropertyBindingResult(body, ApprovalDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsClientAppealed(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsClientAppealed(productReferenceNo,referenceNo,batchReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -1527,12 +1553,13 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val productReferenceNo = req.paramOrNull("productReferenceNo") ?: throw ExpectedDataNotFound("Required  productReferenceNo, check parameters")
             val body = req.body<ApprovalDto>()
             val errors: Errors = BeanPropertyBindingResult(body, ApprovalDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsClientAppealSuccessfully(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsClientAppealSuccessfully(productReferenceNo,referenceNo,batchReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -1602,12 +1629,13 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val productReferenceNo = req.paramOrNull("productReferenceNo") ?: throw ExpectedDataNotFound("Required  productReferenceNo, check parameters")
             val body = req.body<WorkPlanFinalRecommendationDto>()
             val errors: Errors = BeanPropertyBindingResult(body, WorkPlanFinalRecommendationDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.addWorkPlanScheduleFinalRecommendationByHOD(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceWorkPlanDaoServices.addWorkPlanScheduleFinalRecommendationByHOD(referenceNo,batchReferenceNo,body,productReferenceNo)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -1616,6 +1644,36 @@ class NewMarketSurveillanceHandler(
                     onValidationErrors(errors)
                 }
             }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun addWorkPlanScheduleEndFinalRecommendationAddingByHOD(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            marketSurveillanceWorkPlanDaoServices.addWorkPlanScheduleEndFinalRecommendationByHOD(referenceNo,batchReferenceNo)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun addWorkPlanScheduleEndFinalRecommendationAddingByDirector(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            marketSurveillanceWorkPlanDaoServices.addWorkPlanScheduleEndFinalRecommendationByDIRECTOR(referenceNo,batchReferenceNo)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
@@ -1632,6 +1690,32 @@ class NewMarketSurveillanceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     marketSurveillanceWorkPlanDaoServices.addWorkPlanScheduleFeedBackByHOD(referenceNo,batchReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun addWorkPlanScheduleFeedBackByDirector(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val productReferenceNo = req.paramOrNull("productReferenceNo") ?: throw ExpectedDataNotFound("Required  productReferenceNo, check parameters")
+            val body = req.body<WorkPlanFeedBackDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, WorkPlanFeedBackDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.addWorkPlanScheduleFeedBackByDirector(productReferenceNo,referenceNo,batchReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -1701,8 +1785,8 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
-            val body = req.body<SeizureDeclarationDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, SeizureDeclarationDto::class.java.name)
+            val body = req.body<SeizureDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, SeizureDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
@@ -1715,6 +1799,20 @@ class NewMarketSurveillanceHandler(
                     onValidationErrors(errors)
                 }
             }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+    fun addWorkPlanEndSeizureDeclaration(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            marketSurveillanceWorkPlanDaoServices.addWorkPlanInspectionDetailsEndSeizureDeclaration(referenceNo,batchReferenceNo)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
@@ -1797,6 +1895,20 @@ class NewMarketSurveillanceHandler(
             ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+    fun addWorkPlanScheduleEndSampleSubmission(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            marketSurveillanceWorkPlanDaoServices.addWorkPlanInspectionDetailsEndSampleSubmission(referenceNo,batchReferenceNo)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
 
     fun addWorkPlanScheduleSampleSubmissionBsNumber(req: ServerRequest): ServerResponse {
         return try {
@@ -1816,6 +1928,21 @@ class NewMarketSurveillanceHandler(
                     onValidationErrors(errors)
                 }
             }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun addWorkPlanScheduleSampleSubmissionEndBsNumber(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            marketSurveillanceWorkPlanDaoServices.addWorkPlanInspectionDetailsSSFEndBSNumberAdding(referenceNo,batchReferenceNo)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
@@ -1858,6 +1985,31 @@ class NewMarketSurveillanceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     marketSurveillanceWorkPlanDaoServices.addWorkPlanInspectionDetailsSSFSaveComplianceStatus(referenceNo,batchReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun saveWorkPlanScheduleFinalSSFComplianceStatusAdd(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val body = req.body<SSFSaveComplianceStatusDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, SSFSaveComplianceStatusDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.addWorkPlanInspectionDetailsSSFFinalSaveComplianceStatus(referenceNo,batchReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }

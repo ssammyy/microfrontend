@@ -13,7 +13,7 @@ class MsDataReportEntity  : Serializable {
     @SequenceGenerator(name = "DAT_KEBS_MS_DATA_REPORT_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_MS_DATA_REPORT_SEQ")
     @GeneratedValue(generator = "DAT_KEBS_MS_DATA_REPORT_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
-    var id: Long? = 0
+    var id: Long = 0
 
     @Column(name = "REFERENCE_NUMBER")
     @Basic
@@ -62,6 +62,10 @@ class MsDataReportEntity  : Serializable {
     @Column(name = "FINAL_ACTION_SEIZED_GOODS")
     @Basic
     var finalActionSeizedGoods: String? = null
+
+    @Column(name = "TOTAL_COMPLIANCE_SCORE")
+    @Basic
+    var totalComplianceScore: String? = null
 
     @Column(name = "STATUS")
     @Basic
