@@ -221,8 +221,8 @@ class StandardLevyService(
 
 
     }
-    fun getComEditRemarks(editID: Long): List<StandardLevySiteVisitRemarks> {
-        standardLevySiteVisitRemarksRepository.findAllBySiteVisitIdOrderByIdDesc(editID)?.let {
+    fun getComEditRemarks(editID: Long): List<CompanyRemarks> {
+        standardLevySiteVisitRemarksRepository.findCompanyRemarks(editID)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No Data Found")
