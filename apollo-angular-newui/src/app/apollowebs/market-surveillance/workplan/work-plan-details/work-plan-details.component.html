@@ -1161,8 +1161,7 @@
                                     <div *ngIf="workPlanInspection?.msProcessEndedStatus == false">
                                         <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus ==false"
+                                            <button  *ngIf="workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus ==false"
                                                      (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
@@ -1184,8 +1183,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus== false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod== false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHod== false"
@@ -1207,8 +1205,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
@@ -1223,8 +1220,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
                                                 && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
@@ -1240,8 +1236,7 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
                                                 && workPlanInspection?.hodRecommendationStatus == false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
@@ -1255,8 +1250,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.hodRecommendationStatus
                                                 && workPlanInspection?.destructionDocId != null
                                                 && workPlanInspection?.msEndProcessRemarks == null
@@ -1269,8 +1263,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.hodRecommendationStatus
                                                 && workPlanInspection?.appealStatus
                                                 && workPlanInspection?.destructionDocId == null
@@ -1283,8 +1276,7 @@
                                                     class="mat-button-wrapper">ADD FINAL REMARKS</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.hodRecommendationStatus
                                                 && workPlanInspection?.destructionDocId == null
                                                 && workPlanInspection?.msEndProcessRemarks == null
@@ -1299,8 +1291,7 @@
                                         </div>
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
-                                            <div *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                            && workPlanInspection?.submittedForApprovalStatus ==  false">
+                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus ==  false">
                                                 <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#workPlanModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
@@ -1310,8 +1301,7 @@
                                                 </button>
                                             </div>
 
-                                            <div *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                            && workPlanInspection?.submittedForApprovalStatus
+                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus
                                             && workPlanInspection?.updatedStatus ==false
                                             && workPlanInspection?.resubmitStatus ==false
                                             && workPlanInspection?.rejectedStatus">
@@ -1324,7 +1314,7 @@
                                                 </button>
                                             </div>
 
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus ==false
+                                            <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus ==false
                                                 && workPlanInspection?.rejectedStatus && workPlanInspection?.submittedForApprovalStatus
                                                  && workPlanInspection?.onsiteStartStatus ==false"
                                                      (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"
@@ -1333,16 +1323,14 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.complaintId!= null
-                                                && workPlanInspection?.approvedStatus ==false && workPlanInspection?.submittedForApprovalStatus ==false && workPlanInspection?.onsiteStartStatus ==false"
+                                            <button  *ngIf="workPlanInspection?.approvedStatus ==false && workPlanInspection?.submittedForApprovalStatus ==false && workPlanInspection?.onsiteStartStatus ==false"
                                                      (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">SUBMIT FOR APPROVAL</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
+                                            <button  *ngIf="workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
                                                      (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">START ONSITE ACTIVITIES</span>
@@ -1456,8 +1444,7 @@
                                                 <!--                                                    <div class="mat-button-focus-overlay"></div>-->
                                                 <!--                                                </button>-->
                                             </div>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.approvedStatus && workPlanInspection?.onsiteStartStatus
+                                            <button  *ngIf="workPlanInspection?.approvedStatus && workPlanInspection?.onsiteStartStatus
                                                 && workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus ==false"
                                                      (click)="onClickEndOnsiteActivities()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
@@ -1526,8 +1513,7 @@
                                             </button>
 
 
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                            && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
                                             && workPlanInspection?.preliminaryReport?.rejectedStatus== false
                                             && workPlanInspection?.preliminaryReport?.approvedStatusHod
                                             && workPlanInspection?.preliminaryReport?.surveillanceRecommendation == null
@@ -1539,8 +1525,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                            && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
                                             && workPlanInspection?.preliminaryReport?.rejectedStatus== false
                                             && workPlanInspection?.preliminaryReport?.approvedStatusHod && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
                                             && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal == false
@@ -1553,8 +1538,7 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                            && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
                                             && workPlanInspection?.preliminaryReport?.rejectedStatus== false
                                             && workPlanInspection?.preliminaryReport?.approvedStatusHod && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
                                             && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal
@@ -1566,8 +1550,7 @@
                                                     class="mat-button-wrapper">UPDATE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                            && workPlanInspection?.msPreliminaryReportStatus
+                                            <button   *ngIf="workPlanInspection?.msPreliminaryReportStatus
                                             && workPlanInspection?.hodRecommendationStatus
                                             && workPlanInspection?.destructionNotificationStatus == false
                                             && workPlanInspection?.destructionRecommended"
@@ -1579,8 +1562,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                            && workPlanInspection?.msPreliminaryReportStatus
+                                            <button   *ngIf="workPlanInspection?.msPreliminaryReportStatus
                                             && workPlanInspection?.hodRecommendationStatus
                                             && workPlanInspection?.destructionNotificationStatus
                                             && workPlanInspection?.clientAppealed == false
@@ -1592,8 +1574,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                            && workPlanInspection?.msPreliminaryReportStatus
+                                            <button   *ngIf="workPlanInspection?.msPreliminaryReportStatus
                                             && workPlanInspection?.hodRecommendationStatus
                                             && workPlanInspection?.destructionNotificationStatus
                                             && workPlanInspection?.clientAppealed
@@ -1608,8 +1589,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button   *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                            && workPlanInspection?.msPreliminaryReportStatus
+                                            <button   *ngIf="workPlanInspection?.msPreliminaryReportStatus
                                             && workPlanInspection?.hodRecommendationStatus
                                             && workPlanInspection?.destructionNotificationStatus
                                             && workPlanInspection?.clientAppealed
@@ -1633,8 +1613,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus == false
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus== false"
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
@@ -1665,8 +1644,7 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
@@ -1679,8 +1657,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
                                                 && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.finalReportGenerated
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal
@@ -1692,8 +1669,7 @@
                                                     class="mat-button-wrapper">RE-APPROVE/REJECT FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed
-                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus  == false && workPlanInspection?.resubmitStatus  == false
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus  == false && workPlanInspection?.resubmitStatus  == false
                                                 && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.finalReportGenerated
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal  && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal
@@ -5283,9 +5259,12 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Name of Activity</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="nameActivity" name="nameActivity" required
-                                               [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.errors">
+                                        <select [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.errors"
+                                                class="form-control two-column-input"
+                                                formControlName="nameActivity" name="nameActivity" required type="text">
+                                            <!--                                            <option [value]="" selected>Please select</option>-->
+                                            <option  [value]="'Surveillance'" selected>Surveillance</option>
+                                        </select>
                                         <div *ngIf="submitted && formNewScheduleForm.nameActivity.errors && formNewScheduleForm.nameActivity.invalid" class="invalid-feedback">
                                             <div *ngIf="formNewScheduleForm.nameActivity.errors.required">Name of Activity is
                                                 required
@@ -5310,42 +5289,42 @@
                                 </div>
 
                             </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group" *ngIf="county$ | async as apps">
-                                    <label><b>County</b></label>
-                                    <select (change)="updateSelectedCounty()"
-                                            [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"
-                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small"
-                                            class="form-control" formControlName="county" name="county" required>
-                                        <option [value]="" selected>Please select</option>
-                                        <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
-                                        >{{app.county}}</option>
-                                    </select>
-                                    <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">
-                                        <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group" >
+                                        <label><b>County</b></label>
+                                        <select (change)="updateSelectedCounty()"
+                                                [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="county" name="county" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of msCountiesList| filterPipe: {status: true}" [ngValue]="app.id"
+                                            >{{app.county}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.county.errors.required">County is required</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col">
-                                <div class="form-group" *ngIf="town$ | async as apps">
-                                    <label><b>Town/Market center</b></label>
-                                    <select (change)="updateSelectedTown()"
-                                            [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"
-                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small"
-                                            class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>
-                                        <option [value]="" selected>Please select</option>
-                                        <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
-                                                [ngValue]="app.id">{{app.town}}</option>
-                                    </select>
-                                    <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">
-                                        <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>
+                                <div class="col">
+                                    <div class="form-group" >
+                                        <label><b>Town/Market center</b></label>
+                                        <select (change)="updateSelectedTown()"
+                                                [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of msTowns| filterPipe: {status: true, countyId: selectedCounty}"
+                                                    [ngValue]="app.id">{{app.town}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && formNewScheduleForm.townMarketCenter.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.townMarketCenter.errors.required">Town/Market center is required</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                        </div>
+                            </div>
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -5359,119 +5338,166 @@
                                     </div>
                                 </div>
 
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select Product Category</b> </label>
+                                            <select (change)="onChangeSelectedProductClassification()"
+                                                    [class.is-invalid]="formNewScheduleForm.standardCategory.invalid && formNewScheduleForm.standardCategory.errors"
+                                                    aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                    class="form-control" formControlName="standardCategory" name="standardCategory" required>
+                                                <option [value]="" selected>Please select</option>
+                                                <option *ngFor="let app of standardProductCategory | filterPipe: {status: true}" [value]="app.id">{{app.standardCategory}}</option>
+                                            </select>
+                                            <div *ngIf="submitted && formNewScheduleForm.standardCategory.errors" class="invalid-feedback">
+                                                <div *ngIf="formNewScheduleForm.standardCategory.errors.required">Product Category is required</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select Broad Product Category</b> </label>
+                                            <select (change)="onChangeSelectedBroadProductCategory()"
+                                                    [class.is-invalid]="formNewScheduleForm.broadProductCategory.invalid && formNewScheduleForm.broadProductCategory.errors"
+                                                    aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                    class="form-control" formControlName="broadProductCategory" name="broadProductCategory" required>
+                                                <option [value]="" selected>Please select</option>
+                                                <option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</option>
+                                            </select>
+                                            <div *ngIf="submitted && formNewScheduleForm.broadProductCategory.errors" class="invalid-feedback">
+                                                <div *ngIf="formNewScheduleForm.broadProductCategory.errors.required">Broad Product Category is required</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select Product Category</b> </label>
+                                            <select (change)="onChangeSelectedProductCategory()"
+                                                    [class.is-invalid]="formNewScheduleForm.productCategory.invalid && formNewScheduleForm.productCategory.errors"
+                                                    aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
+                                                    formControlName="productCategory" id="productCategory" name="productCategory" >
+                                                <option [value]="" selected>Please select</option>
+                                                <option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</option>
+                                            </select>
+                                            <div *ngIf="submitted && formNewScheduleForm.productCategory.errors" class="invalid-feedback">
+                                                <div *ngIf="formNewScheduleForm.productCategory.errors.required">Product Category is required</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select Product</b> </label>
+                                            <select (change)="onChangeSelectedMyProduct()"
+                                                    [class.is-invalid]="formNewScheduleForm.product.invalid && formNewScheduleForm.product.errors"
+                                                    aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
+                                                    formControlName="product" id="product" name="product" >
+                                                <option [value]="" selected>Please select</option>
+                                                <option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</option>
+                                            </select><div *ngIf="submitted && formNewScheduleForm.product.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.product.errors.required">Product is required</div>
+                                        </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Select Product Sub-Category</b> </label>
+                                            <select (change)="onChangeSelectedProductSubcategory()"
+                                                    [class.is-invalid]="formNewScheduleForm.productSubCategory.invalid && formNewScheduleForm.productSubCategory.errors"
+                                                    aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
+                                                    formControlName="productSubCategory" id="productSubCategory" name="productSubCategory" >
+                                                <option [value]="" selected>Please select</option>
+                                                <option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</option>
+                                            </select>
+                                            <div *ngIf="submitted && formNewScheduleForm.productSubCategory.errors" class="invalid-feedback">
+                                                <div *ngIf="formNewScheduleForm.productSubCategory.errors.required">Product Sub-Category is required</div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label><b>Budget</b> </label>
+                                            <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"
+                                                   class="form-control two-column-input" formControlName="budget" name="budget" required type="text">
+                                        </div>
+                                        <div *ngIf="submitted && formNewScheduleForm.budget.errors" class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                    </form>
+                    <br>
+                    <form [formGroup]="addResourceRequiredForm">
+                        <div class="form-group bmd-form-group is-filled">
+                            <h5 class="mb-3" style="color: #0066B1">Resources required Details</h5>
+                            <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Select Product Category</b> </label>
-                                        <select (change)="onChangeSelectedProductClassification()"
-                                                [class.is-invalid]="formNewScheduleForm.standardCategory.invalid && formNewScheduleForm.standardCategory.errors"
+                                        <label><b>Select Resource</b> </label>
+                                        <select [class.is-invalid]="formAddResourceRequiredForm.resourceName.invalid && formAddResourceRequiredForm.resourceName.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
-                                                class="form-control" formControlName="standardCategory" name="standardCategory" required>
+                                                class="form-control" formControlName="resourceName" name="resourceName" required>
                                             <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of standardProductCategory | filterPipe: {status: true}" [value]="app.id">{{app.standardCategory}}</option>
+                                            <option *ngFor="let app of predefinedResourcesRequired| filterPipe: {status: true}" [ngValue]="app.resourceName">{{app.resourceName}}</option>
                                         </select>
-                                        <div *ngIf="submitted && formNewScheduleForm.standardCategory.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.standardCategory.errors.required">Product Category is required</div>
-                                        </div>
                                     </div>
                                 </div>
-
-                            </div>
-                            <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Select Broad Product Category</b> </label>
-                                        <select (change)="onChangeSelectedBroadProductCategory()"
-                                                [class.is-invalid]="formNewScheduleForm.broadProductCategory.invalid && formNewScheduleForm.broadProductCategory.errors"
-                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
-                                                class="form-control" formControlName="broadProductCategory" name="broadProductCategory" required>
-                                            <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}" [value]="app.id">{{app.category}}</option>
-                                        </select>
-                                        <div *ngIf="submitted && formNewScheduleForm.broadProductCategory.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.broadProductCategory.errors.required">Broad Product Category is required</div>
-                                        </div>
+                                        <button *ngIf="addResourceRequiredForm.valid" mat-raised-button
+                                                class="btn btn-success" (click)="onClickAddResource()" type="button" >ADD RESOURCE
+                                        </button>
                                     </div>
                                 </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Select Product Category</b> </label>
-                                        <select (change)="onChangeSelectedProductCategory()"
-                                                [class.is-invalid]="formNewScheduleForm.productCategory.invalid && formNewScheduleForm.productCategory.errors"
-                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
-                                                formControlName="productCategory" id="productCategory" name="productCategory" >
-                                            <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}" [value]="app.id">{{app.name}}</option>
-                                        </select>
-                                        <div *ngIf="submitted && formNewScheduleForm.productCategory.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.productCategory.errors.required">Product Category is required</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Select Product</b> </label>
-                                        <select (change)="onChangeSelectedMyProduct()"
-                                                [class.is-invalid]="formNewScheduleForm.product.invalid && formNewScheduleForm.product.errors"
-                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
-                                                formControlName="product" id="product" name="product" >
-                                            <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}" [value]="app.id">{{app.name}}</option>
-                                        </select><div *ngIf="submitted && formNewScheduleForm.product.errors" class="invalid-feedback">
-                                        <div *ngIf="formNewScheduleForm.product.errors.required">Product is required</div>
-                                    </div>
-
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Select Product Sub-Category</b> </label>
-                                        <select (change)="onChangeSelectedProductSubcategory()"
-                                                [class.is-invalid]="formNewScheduleForm.productSubCategory.invalid && formNewScheduleForm.productSubCategory.errors"
-                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" class="form-control"
-                                                formControlName="productSubCategory" id="productSubCategory" name="productSubCategory" >
-                                            <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}" [value]="app.id">{{app.name}}</option>
-                                        </select>
-                                        <div *ngIf="submitted && formNewScheduleForm.productSubCategory.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.productSubCategory.errors.required">Product Sub-Category is required</div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Resources Required</b> </label>
-                                        <input [class.is-invalid]="formNewScheduleForm.resourcesRequired.invalid && formNewScheduleForm.resourcesRequired.errors"
-                                               class="form-control two-column-input" formControlName="resourcesRequired" name="resourcesRequired" required type="text">
-                                        <div *ngIf="submitted && formNewScheduleForm.resourcesRequired.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.resourcesRequired.errors.required">Resources Required is required</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Budget</b> </label>
-                                        <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"
-                                               class="form-control two-column-input" formControlName="budget" name="budget" required type="text">
-                                    </div>
-                                    <div *ngIf="submitted && formNewScheduleForm.budget.errors" class="invalid-feedback">
-                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required</div>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
                     </form>
-
+                    <div>
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <table id="datatables7" class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Resource Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let r of dataSaveResourcesRequiredList; let i=index">
+                                        <td>{{r.resourceName}}</td>
+                                        <td>
+                                            <button (click)="removeDataResource(i)"
+                                                    type="button"
+                                                    class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal-footer">
                         <button  mat-raised-button type="button" class="btn btn-danger"
                                  data-dismiss="modal">
