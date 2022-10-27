@@ -773,9 +773,9 @@
                 <div class="container-fluid">
                     <div class="row">
                         <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
-                        <p class="welcome">Kindly Complete this form to register you complaint</p>
+                        <h3 class="welcome">Kindly Complete this form to register you complaint</h3>
                         <hr>
-                        <h3 class="welcome">Step 1/4: Particulars Of Complainant</h3>
+                        <h4 class="welcome">Step 1/4: Particulars Of Complainant</h4>
                     </div>
                     <div class="row input-row">
 
@@ -908,9 +908,9 @@
                 <div class="container">
                     <div class="row">
                         <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
-                        <p class="welcome">Kindly Complete this form to register you complaint</p>
+                        <h3 class="welcome">Kindly Complete this form to register you complaint</h3>
                         <hr>
-                        <h3 class="welcome">Step 2/4: Complaint Details</h3>
+                        <h4 class="welcome">Step 2/4: Complaint Details</h4>
                     </div>
 
                     <div class="row input-row">
@@ -1032,9 +1032,9 @@
             <div class="container">
                 <div class="row">
                     <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
-                    <p class="welcome">Kindly Complete this form to register you complaint</p>
+                    <h3 class="welcome">Kindly Complete this form to register you complaint</h3>
                     <hr>
-                    <h3 class="welcome">Step 3/4: Particulars of Outlets/Bussiness Complained about</h3>
+                    <h4 class="welcome">Step 3/4: Particulars of Outlets/Business Complained about</h4>
                 </div>
                 <div class="row input-row">
                     <div class="col">
@@ -1218,14 +1218,14 @@
     </div>
 
     <div *ngSwitchCase="4">
-        <form (ngSubmit)="onSubmitComplaint()" action="" class="form"
+        <form action="" class="form"
               enctype="multipart/form-data" method="post">
             <div class="container">
                 <div class="row">
                     <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
-                    <p class="welcome">Kindly Complete this form to register you complaint</p>
+                    <h3 class="welcome">Kindly Complete this form to register you complaint</h3>
                     <hr>
-                    <h3 class="welcome">Step 4/4: Upload Supporting Documents Here</h3>
+                    <h4 class="welcome">Step 4/4: Upload Supporting Documents Here</h4>
                 </div>
 
 <!--                <div class="row input-row">-->
@@ -1269,60 +1269,60 @@
                     <ul class="w-list-unstyled">
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Name</div>
-                            <div class="list-text-accordion">{{newComplaintDto?.customerDetails?.firstName}} {{newComplaintDto?.customerDetails?.lastName}}
+                            <div class="list-text-accordion">{{customerDetails?.firstName}} {{customerDetails?.lastName}}
                             </div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Email Address</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.customerDetails?.emailAddress}}
+                                {{customerDetails?.emailAddress}}
                             </div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Phone Number</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.customerDetails?.phoneNumber}}
+                                {{customerDetails?.phoneNumber}}
                             </div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Postal Address</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.customerDetails?.postalAddress}}</div>
+                                {{customerDetails?.postalAddress}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Physical Address</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.customerDetails?.physicalAddress}}</div>
+                                {{customerDetails?.physicalAddress}}</div>
                         </li>
                     </ul>
                     <b class="text-primary">Complaint Information Details</b>
                     <ul class="w-list-unstyled">
                         <li class="list-item-accordion ">
                             <div class="list-title-accordion">Complaint Title</div>
-                            <div class="list-text-accordion">{{newComplaintDto?.complaintDetails?.complaintTitle}}
+                            <div class="list-text-accordion">{{complaintDetails?.complaintTitle}}
                             </div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Targeted Product</div>
-                            <div class="list-text-accordion">{{newComplaintDto?.complaintDetails?.productBrand}}
+                            <div class="list-text-accordion">{{complaintDetails?.productBrand}}
                             </div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Complaint Description</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.complaintDetails?.complaintDescription}}
+                                {{complaintDetails?.complaintDescription}}
                             </div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Complaint Sample Details</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.complaintDetails?.complaintSampleDetails}}
+                                {{complaintDetails?.complaintSampleDetails}}
                             </div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Remedy Sought</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.complaintDetails?.remedySought}}
+                                {{complaintDetails?.remedySought}}
                             </div>
                         </li>
                     </ul>
@@ -1342,37 +1342,37 @@
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Market Center</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.locationDetails?.marketCenter}}</div>
+                                {{locationDetails?.marketCenter}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Building Name</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.locationDetails?.buildingName}}</div>
+                                {{locationDetails?.buildingName}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Business Address</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.locationDetails?.businessAddress}}</div>
+                                {{locationDetails?.businessAddress}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Email</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.locationDetails?.email}}</div>
+                                {{locationDetails?.email}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Name Contact Person</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.locationDetails?.nameContactPerson}}</div>
+                                {{locationDetails?.nameContactPerson}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Phone Number</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.locationDetails?.phoneNumber}}</div>
+                                {{locationDetails?.phoneNumber}}</div>
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Telephone Number</div>
                             <div class="list-text-accordion">
-                                {{newComplaintDto?.locationDetails?.telephoneNumber}}</div>
+                                {{locationDetails?.telephoneNumber}}</div>
                         </li>
                     </ul>
                     <div class="modal-footer">
