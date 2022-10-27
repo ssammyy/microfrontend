@@ -296,9 +296,16 @@ export class ComplaintNewComponent implements OnInit {
   }
 
   reviewComplaint() {
-    this.newComplaintDto.customerDetails = this.stepOneForm.value;
-    this.newComplaintDto.complaintDetails = this.stepTwoForm.value;
-    this.newComplaintDto.locationDetails = this.stepThreeForm.value;
+    let customerDetails: ComplaintCustomersDto;
+    customerDetails = this.stepOneForm.value;
+    let complaintDetails: ComplaintDto;
+    complaintDetails = this.stepTwoForm.value;
+    let locationDetails: ComplaintLocationDto;
+    locationDetails = this.stepThreeForm.value;
+
+    this.newComplaintDto.customerDetails = customerDetails;
+    this.newComplaintDto.complaintDetails = complaintDetails;
+    this.newComplaintDto.locationDetails = locationDetails;
     window.$('#complaintModal').modal('show');
   }
 
