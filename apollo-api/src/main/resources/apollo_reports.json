@@ -138,10 +138,9 @@
         "chassis": "cid.CHASIS_NUMBER",
         "verified": "cid.APPROVE_STATUS",
         "assigned_to": "cdd.ASSIGNED_INSPECTION_OFFICER",
-        "partner_id": "",
         "assigned_by": "cdd.ASSIGNER",
         "line_number": "cid.SHIPMENT_LINE_NUMBER",
-        "date__range": "cb.COR_ISSUE_DATE"
+        "date__range": "cdd.CREATED_ON"
       },
       "fields": {
         "kdd.DECLARATION_REF_NO": "Declaration",
