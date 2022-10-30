@@ -46,6 +46,13 @@ interface ISlVisitUploadsRepository : HazelcastRepository<SlVisitUploadsEntity, 
 }
 interface StandardLevySiteVisitRemarksRepository : HazelcastRepository<StandardLevySiteVisitRemarks, Long> {
   fun findAllBySiteVisitIdOrderByIdDesc(id: Long): List<StandardLevySiteVisitRemarks>?
+
+    @Query(
+        value = "SELECT ID as id,SITE_VISIT_ID as siteVisitId,REMARKS as remarks,REMARK_BY as remarkBy,STATUS as status," +
+                "ROLE as role,DESCRIPTION as description,cast(DATE_OF_REMARK as varchar(200)) AS dateOfRemark FROM DAT_KEBS_SITE_VISIT_REMARKS  WHERE SITE_VISIT_ID= :id ",
+        nativeQuery = true
+    )
+    fun findCompanyRemarks(@Param("id") id: Long?): List<CompanyRemarks>
 }
 
 interface StandardLevyOperationsClosureRepository : HazelcastRepository<StandardLevyOperationsClosure, Long> {

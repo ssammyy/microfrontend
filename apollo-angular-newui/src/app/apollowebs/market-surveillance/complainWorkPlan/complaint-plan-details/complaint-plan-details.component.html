@@ -5282,7 +5282,7 @@
                                         <div class="form-group">
                                             <label><b>SELECT RECOMMENDATION NAME</b> </label>
                                             <select (change)="updateSelectedRecommendation()"
-                                                    [class.is-invalid]="formFinalRecommendationDetailsForm.recommendationId.invalid && formSampleSubmitParamsForm.recommendationId.errors"
+                                                    [class.is-invalid]="formFinalRecommendationDetailsForm.recommendationId.invalid && formFinalRecommendationDetailsForm.recommendationId.errors"
                                                     aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                     class="form-control" formControlName="recommendationId" name="recommendationId" required>
                                                 <option [value]="" selected>Please select</option>

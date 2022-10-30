@@ -2445,7 +2445,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun createNewWorkPlanSchedule(body: AllWorkPlanDetails, referenceNumber: String, page: PageRequest): WorkPlanScheduleListDetailsDto {
+    fun createNewWorkPlanSchedule(body: WorkPlanEntityDto, referenceNumber: String, page: PageRequest): WorkPlanScheduleListDetailsDto {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val msType = findMsTypeDetailsWithUuid(applicationMapProperties.mapMsWorkPlanTypeUuid)
@@ -2455,18 +2455,19 @@ class MarketSurveillanceWorkPlanDaoServices(
                 throw ExpectedDataNotFound("The WorkPlan Batch Detail was closed, you can't add a new Work-Plan")
             }
             else -> {
-                var fileSaved : Pair<ServiceRequestsEntity, MsWorkPlanGeneratedEntity>? = null
-                body.countyTownDetails?.forEach { data->
-                    val saveData = body.mainDetails
-                    with(saveData){
-                        this?.county =data.countyID
-                        this?.townMarketCenter =data.townID
-                        this?.locationActivityOther =data.locationName
-                    }
-                    if (saveData != null) {
-                        fileSaved=  saveNewWorkPlanActivity(saveData,msType, batchDetail, map, loggedInUser)
-                    }
-                }
+//                var fileSaved : Pair<ServiceRequestsEntity, MsWorkPlanGeneratedEntity>? = null
+                var fileSaved=  saveNewWorkPlanActivity(body,msType, batchDetail, map, loggedInUser)
+//                body.countyTownDetails?.forEach { data->
+//                    val saveData = body.mainDetails
+//                    with(saveData){
+//                        this?.county =data.countyID
+//                        this?.townMarketCenter =data.townID
+//                        this?.locationActivityOther =data.locationName
+//                    }
+//                    if (saveData != null) {
+//
+//                    }
+//                }
 
                 when (fileSaved?.first?.status) {
                     map.successStatus -> {

@@ -22,7 +22,7 @@ export class StandardLevyRejectedChangesComponent implements OnInit {
   dtElements: QueryList<DataTableDirective>;
   dtTrigger1: Subject<any> = new Subject<any>();
   loadingText: string;
-  isShowRemarksTab= true;
+  public isShowRemarksTab= true;
   constructor(
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
@@ -65,6 +65,7 @@ export class StandardLevyRejectedChangesComponent implements OnInit {
           console.log(error.message);
         }
     );
+    this.isShowRemarksTab=!this.isShowRemarksTab;
 
   }
 

@@ -143,6 +143,34 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun countiesListingAdmin(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllCounties()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Town List found")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    fun townsListingAdmin(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllTowns()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Town List found")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
 
     fun standardsList(req: ServerRequest): ServerResponse {
         try {
@@ -1309,8 +1337,8 @@ class NewMarketSurveillanceHandler(
     fun saveNewWorkPlanSchedule(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            val body = req.body<AllWorkPlanDetails>()
-            val errors: Errors = BeanPropertyBindingResult(body, AllWorkPlanDetails::class.java.name)
+            val body = req.body<WorkPlanEntityDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, WorkPlanEntityDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {

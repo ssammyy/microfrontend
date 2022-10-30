@@ -1206,7 +1206,7 @@ class StdLevyController(
     fun getComEditRemarks(
         response: HttpServletResponse,
         @RequestParam("editID") editID: Long
-    ): List<StandardLevySiteVisitRemarks> {
+    ): List<CompanyRemarks> {
         return standardLevyService.getComEditRemarks(editID)
     }
 

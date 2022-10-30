@@ -26,6 +26,10 @@ export class StandardLevyPenaltyReportComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      processing: true,
+      dom: 'Bfrtip'
+    };
     this.getPenaltyReport();
   }
   ngOnDestroy(): void {

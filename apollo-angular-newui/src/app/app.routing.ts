@@ -254,6 +254,16 @@ import {
 import {
     StandardLevyRejectedChangesComponent
 } from "./apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component";
+import {StandardsForReviewComponent} from "./apollowebs/standards-development/systemic-review/standards-for-review/standards-for-review.component";
+import {SystemicReviewTcSecComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-tc-sec/systemic-review-tc-sec.component";
+import {SystemicReviewSpcSecComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-spc-sec/systemic-review-spc-sec.component";
+import {SystemicReviewSacSecComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-sac-sec/systemic-review-sac-sec.component";
+import {SystemicReviewProofReaderComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-proof-reader/systemic-review-proof-reader.component";
+import {SystemicReviewHopComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-hop/systemic-review-hop.component";
+import {SystemicReviewEditorComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-editor/systemic-review-editor.component";
+import {SystemicReviewDraughtsManComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-draughts-man/systemic-review-draughts-man.component";
+import {SystemReviewGazetteStandardComponent} from "./apollowebs/standards-development/systemic-review/system-review-gazette-standard/system-review-gazette-standard.component";
+import {SystemReviewUpdateGazetteComponent} from "./apollowebs/standards-development/systemic-review/system-review-update-gazette/system-review-update-gazette.component";
 
 export const routes: Routes = [
     {
@@ -1027,6 +1037,58 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: SystemicAnalyseCommentsComponent}],
     },
+    {
+        path: 'standardsForReview', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardsForReviewComponent}],
+    },
+    {
+        path: 'reviewStandardsTc', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicReviewTcSecComponent}],
+    },
+    {
+        path: 'reviewStandardsSPC', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicReviewSpcSecComponent}],
+    },
+    {
+        path: 'reviewStandardsSAC', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicReviewSacSecComponent}],
+    },
+    {
+        path: 'reviewStandardsProofReader', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicReviewProofReaderComponent}],
+    },
+    {
+        path: 'reviewStandardsHOP', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicReviewHopComponent}],
+    },
+    {
+        path: 'reviewStandardsEditor', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicReviewEditorComponent}],
+    },
+    {
+        path: 'reviewStandardsDraughtsMan', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicReviewDraughtsManComponent}],
+    },
+    {
+        path: 'reviewStandardsGazette', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemReviewGazetteStandardComponent}],
+    },
+    {
+        path: 'reviewStandardsGazetteDate', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemReviewUpdateGazetteComponent}],
+    },
+
+
 
     // SD COMPANY STANDARDS
     // {

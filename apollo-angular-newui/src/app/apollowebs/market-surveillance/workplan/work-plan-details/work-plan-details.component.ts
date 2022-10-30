@@ -80,6 +80,8 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   totalCompliantValue = 0;
 
+  addResourceRequiredForm!: FormGroup;
+
   addNewScheduleForm!: FormGroup;
   approveScheduleForm!: FormGroup;
   approvePreliminaryForm!: FormGroup;
@@ -130,6 +132,10 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
   dataSaveDestructionNotification: DestructionNotificationDto;
   laboratories: LaboratoryDto[] = [];
+
+  predefinedResourcesRequired!: PredefinedResourcesRequired[];
+  dataSaveResourcesRequired: PredefinedResourcesRequired;
+  dataSaveResourcesRequiredList: PredefinedResourcesRequired[] = [];
 
 
   dataSaveAssignOfficer: ComplaintAssignDto;
@@ -1164,6 +1170,10 @@ export class WorkPlanDetailsComponent implements OnInit {
   public workPlanInspection: WorkPlanInspectionDto;
   public msCounties: {name: string, code: string}[];
 
+  msCountiesList: County[] = null;
+  msTowns: Town[] = null;
+
+
 
   constructor(
       private msService: MsService,
@@ -1426,6 +1436,10 @@ export class WorkPlanDetailsComponent implements OnInit {
       // compliancePhysicalInspection: ['', Validators.required],
     });
 
+    this.addResourceRequiredForm = this.formBuilder.group({
+      resourceName: ['', Validators.required],
+    });
+
     this.notCompliantInvoiceForm = this.formBuilder.group({
       remarks: ['', Validators.required],
       volumeFuelRemediated: ['', Validators.required],
@@ -1619,6 +1633,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.assignOfficerForm.controls;
   }
 
+  get formAddResourceRequiredForm(): any {
+    return this.addResourceRequiredForm.controls;
+  }
+
   get formClientEmailNotificationForm(): any {
     return this.clientEmailNotificationForm.controls;
   }
@@ -1733,6 +1751,34 @@ export class WorkPlanDetailsComponent implements OnInit {
           this.msService.showError('AN ERROR OCCURRED');
         },
     );
+    this.msService.msCountiesListDetails().subscribe(
+        (dataCounties: County[]) => {
+          this.msCountiesList = dataCounties;
+        },
+        error => {
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    this.msService.msTownsListDetails().subscribe(
+        (dataTowns: Town[]) => {
+          this.msTowns = dataTowns;
+        },
+        error => {
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    this.msService.msPredefinedResourcesRequiredListDetails().subscribe(
+        (data1: PredefinedResourcesRequired[]) => {
+          this.predefinedResourcesRequired = data1;
+          console.log(data1);
+        },
+        error => {
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
 
   }
 
@@ -1759,6 +1805,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
 
     this.updateDataReport();
+    this.updateWorkPlan();
     this.currDiv = divVal;
   }
 
@@ -1770,6 +1817,15 @@ export class WorkPlanDetailsComponent implements OnInit {
         this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
       }
     }
+  }
+
+  updateWorkPlan() {
+      this.addNewScheduleForm.patchValue(this.workPlanInspection?.updateWorkPlan);
+      this.dataSaveResourcesRequiredList = [];
+      for (let prod = 0; prod < this.workPlanInspection?.updateWorkPlan?.resourcesRequired.length; prod++) {
+        this.dataSaveResourcesRequiredList.push(this.workPlanInspection?.updateWorkPlan.resourcesRequired[prod]);
+      }
+
   }
 
 
@@ -2173,6 +2229,14 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSubmitForApproval() {
+    this.msService.showSuccessWith2Message('Are you sure your want to Submit for approval?', 'You won\'t be able to revert Update BS Number(s) after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and  update the work-Plan Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          this.submitForApproval();
+        });
+  }
+
+  submitForApproval() {
     // if (valid) {
     this.SpinnerService.show();
     this.msService.msWorkPlanScheduleDetailsSubmitForApproval(
@@ -2253,6 +2317,23 @@ export class WorkPlanDetailsComponent implements OnInit {
         },
     );
     // }
+  }
+
+  onClickAddResource() {
+    this.dataSaveResourcesRequired = this.addResourceRequiredForm.value;
+    console.log(this.dataSaveResourcesRequired);
+    this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+    this.addResourceRequiredForm?.get('resourceName')?.reset();
+  }
+
+  // Remove Form repeater values
+  removeDataResource(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveResourcesRequiredList.splice(index, 1);
+    } else {
+      this.dataSaveResourcesRequiredList.splice(index, index);
+    }
   }
 
 
@@ -3164,12 +3245,25 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveWorkPlanScheduled() {
     this.submitted = true;
-    if (this.addNewScheduleForm.invalid) {
-      return;
+    if (this.addNewScheduleForm.valid && this.dataSaveResourcesRequiredList.length > 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Update the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'UPDATE WORK-PLAN\' button to update details Before Saving', 'COMPLAINT SCHEDULE DETAILS SAVED SUCCESSFUL', () => {
+            this.saveWorkPlanScheduled();
+          });
     }
+  }
+
+  saveWorkPlanScheduled() {
+    this.submitted = true;
     if (this.addNewScheduleForm.valid) {
       this.SpinnerService.show();
+
       this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
+      this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;
+      // this.dataSaveAllWorkPlan.mainDetails =  this.dataSaveWorkPlan;
+      // this.dataSaveAllWorkPlan.countyTownDetails =  this.dataCountyTownList;
+      // tslint:disable-next-line:max-line-length
       // tslint:disable-next-line:max-line-length
       this.msService.msUpdateWorkPlanScheduleDetails(
           this.workPlanInspection.batchDetails.referenceNumber,
