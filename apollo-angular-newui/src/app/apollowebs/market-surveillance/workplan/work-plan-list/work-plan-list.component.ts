@@ -51,8 +51,8 @@ export class WorkPlanListComponent implements OnInit {
   loading = false;
 
   roles: string[];
-  msCounties: County[] = null;
-  msTowns: Town[] = null;
+  msCounties: County[] = [];
+  msTowns: Town[] = [];
   msDepartments: MsDepartment[] = [];
   msDivisions: MsDivisionDetails[] = [];
   standardProductCategory!: StandardProductCategory[];
@@ -393,7 +393,16 @@ export class WorkPlanListComponent implements OnInit {
   onClickAddResource() {
     this.dataSaveResourcesRequired = this.addResourceRequiredForm.value;
     console.log(this.dataSaveResourcesRequired);
-    this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+    // tslint:disable-next-line:max-line-length
+    const  resourceName = this.dataSaveResourcesRequiredList.filter(x => String(this.dataSaveResourcesRequired.resourceName) === String(x.resourceName)).length;
+    if (resourceName > 0) {
+      console.log('ResourceFound =' + this.dataSaveResourcesRequired.resourceName);
+      this.msService.showWarning('You have already added ' + this.dataSaveResourcesRequired.resourceName);
+    } else {
+      this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+      console.log('ResourceFound Not Found =' + this.dataSaveResourcesRequired.resourceName);
+    }
+
     this.addResourceRequiredForm?.get('resourceName')?.reset();
   }
 
@@ -599,7 +608,7 @@ export class WorkPlanListComponent implements OnInit {
           },
           error => {
             this.SpinnerService.hide();
-            this.addNewScheduleForm.reset();
+            // this.addNewScheduleForm.reset();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
           },

@@ -236,7 +236,7 @@ class ApiAuthenticationHandler(
 //                payload = "Invalid Username And Password"
 //                status = 500
 //            }
-            val response ="Invalid Username And Password"
+            val response ="Invalid Username Or Password"
             KotlinLogging.logger { }.trace(e.message, e)
 
             ServerResponse.status(500).body(response)

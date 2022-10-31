@@ -1,5 +1,5 @@
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {ReportsPermitEntityDto} from "../../../../core/store/data/qa/qa.model";
+import {RegionDto, ReportsPermitEntityDto, SectionDto, StatusesDto} from "../../../../core/store/data/qa/qa.model";
 import {ApiEndpointService} from "../../../../core/services/endpoints/api-endpoint.service";
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
@@ -9,6 +9,8 @@ import {LoadingService} from "../../../../core/services/loader/loadingservice.se
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {formatDate} from "@angular/common";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {UserEntityDto} from "../../../../core/store";
 
 @Component({
     selector: 'app-applications-received',
@@ -49,11 +51,21 @@ export class ApplicationsReceivedComponent implements OnInit {
     fMarkPermitsRejected: number = 0;
 
 
+    sections: SectionDto[];
+    regions: RegionDto[];
+    users: UserEntityDto[];
+    statuses: StatusesDto[];
+
+
+    filterFormGroup: FormGroup;
+
 
     constructor(private qaService: QaService,
+                private formBuilder: FormBuilder,
                 private router: Router,
                 private _loading: LoadingService,
                 private SpinnerService: NgxSpinnerService) {
+
     }
 
     ngOnInit(): void {
@@ -65,6 +77,25 @@ export class ApplicationsReceivedComponent implements OnInit {
         this.getAllDMarkApplicationsReceived()
         this.getAllFMarkApplicationsReceived()
         this.getAllSMarkApplicationsReceived()
+        this.loadAllSections()
+        this.loadAllRegions()
+        this.loadAllStatuses()
+        this.loadAllOfficers()
+
+
+        this.filterFormGroup = this.formBuilder.group({
+
+            regionId: '',
+            sectionId: '',
+            statusId: '',
+            officerId: '',
+            category: '',
+            productDescription: '',
+            start: '',
+            end: '',
+
+        });
+
 
     }
 
@@ -81,8 +112,8 @@ export class ApplicationsReceivedComponent implements OnInit {
                 this.dMarksRetrievedData = true;
                 this.sumDMarkAmountPermit = response.filter(item => item.invoiceAmount)
                     .reduce((sum, current) => sum + current.invoiceAmount, 0);
-                this.dMarkPermitsAwarded = response.filter(item=>item.permitAwardStatus==true).length
-                this.dMarkPermitsRejected= response.filter(item=>item.permitAwardStatus==false).length
+                this.dMarkPermitsAwarded = response.filter(item => item.permitAwardStatus == true).length
+                this.dMarkPermitsRejected = response.filter(item => item.permitAwardStatus == false).length
 
             },
             (error: HttpErrorResponse) => {
@@ -105,8 +136,8 @@ export class ApplicationsReceivedComponent implements OnInit {
                 this.sMarksRetrievedData = true;
                 this.sumSMarkAmountPermit = response.filter(item => item.invoiceAmount)
                     .reduce((sum, current) => sum + current.invoiceAmount, 0);
-                this.sMarkPermitsAwarded = response.filter(item=>item.permitAwardStatus==true).length
-                this.sMarkPermitsRejected= response.filter(item=>item.permitAwardStatus==false).length
+                this.sMarkPermitsAwarded = response.filter(item => item.permitAwardStatus == true).length
+                this.sMarkPermitsRejected = response.filter(item => item.permitAwardStatus == false).length
                 this.SpinnerService.hide();
 
 
@@ -132,8 +163,8 @@ export class ApplicationsReceivedComponent implements OnInit {
                 this.displayUsers = true;
                 this.sumFMarkAmountPermit = response.filter(item => item.invoiceAmount)
                     .reduce((sum, current) => sum + current.invoiceAmount, 0);
-                this.fMarkPermitsAwarded = response.filter(item=>item.permitAwardStatus==true).length
-                this.fMarkPermitsRejected= response.filter(item=>item.permitAwardStatus==false).length
+                this.fMarkPermitsAwarded = response.filter(item => item.permitAwardStatus == true).length
+                this.fMarkPermitsRejected = response.filter(item => item.permitAwardStatus == false).length
 
             },
             (error: HttpErrorResponse) => {
@@ -160,7 +191,6 @@ export class ApplicationsReceivedComponent implements OnInit {
         });
     }
 
-
     ngOnDestroy(): void {
         // Do not forget to unsubscribe the event
         this.dtTrigger1.unsubscribe();
@@ -173,5 +203,44 @@ export class ApplicationsReceivedComponent implements OnInit {
     formatFormDate(date: string) {
         return formatDate(date, this.dateFormat, this.language);
     }
+
+    public loadAllSections(): void {
+        this.qaService.loadSectionList().subscribe(
+            (data: any) => {
+                this.sections = data;
+            }
+        );
+    }
+
+    public loadAllRegions(): void {
+        this.qaService.loadRegionList().subscribe(
+            (data: any) => {
+                this.regions = data;
+            }
+        );
+    }
+
+    public loadAllStatuses(): void {
+        this.qaService.loadStatuses().subscribe(
+            (data: any) => {
+                this.statuses = data;
+            }
+        );
+    }
+
+    public loadAllOfficers(): void {
+        this.qaService.loadOfficers().subscribe(
+            (data: any) => {
+                this.users = data;
+            }
+        );
+    }
+
+
+    applyFilter(formDirective): void {
+        console.log(this.filterFormGroup.value)
+
+    }
+
 
 }

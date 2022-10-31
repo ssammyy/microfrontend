@@ -485,6 +485,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 POST("/delete", handler::deleteAPermit)
 
                 GET("/awarded-list-fmark-generate", handler::permitListAwardedGenerateFmarkMigration)
+                GET("/awarded-list-fmark-generated", handler::permitListAwardedGenerateFmarkMigrationAllPaidSmark)
+
                 GET("/firm-list", handler::firmPermitListMigration)
                 GET("/firm-branch-list", handler::firmBranchPermitListMigration)
                 "/apply".nest {
@@ -577,6 +579,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/allPermitsRenewed", handler::loadAllRenewedPermitsForReports)
                     GET("/allSamplesSubmitted", handler::loadAllSamplesSubmittedForReports)
                     GET("/allDejectedPermits", handler::loadAllDejectedPermitsForReports)
+                    GET("/allOfficers", handler::loadAllOfficersForReports)
+                    GET("/allStatuses", handler::loadAllStatusesForReports)
 
 
                 }

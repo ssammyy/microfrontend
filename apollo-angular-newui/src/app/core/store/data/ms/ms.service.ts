@@ -761,14 +761,15 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public msUpdateWorkPlanScheduleDetails(batchReferenceNo: string, referenceNo: string,  data: WorkPlanEntityDto): Observable<WorkPlanScheduleListDetailsDto> {
+    public msUpdateWorkPlanScheduleDetails(batchReferenceNo: string, referenceNo: string,  data: WorkPlanEntityDto, updateDetails: string): Observable<WorkPlanScheduleListDetailsDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPDATE_NEW_WORK_PLAN_SCHEDULE);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNo)
+            .set('updateDetails', updateDetails);
         return this.http.put<WorkPlanScheduleListDetailsDto>(url, data, {params}).pipe(
             map(function (response: WorkPlanScheduleListDetailsDto) {
                 return response;

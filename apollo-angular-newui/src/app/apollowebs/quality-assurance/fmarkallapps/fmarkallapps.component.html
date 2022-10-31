@@ -13,54 +13,72 @@
                         <div class="toolbar">
                             <!--        Here you can write extra buttons/actions for the toolbar              -->
                         </div>
-                        <div class="material-datatables" >
+                        <div class="material-datatables">
                             <div class="table-responsive">
                                 <table id="datatables"
-                                       class="table table-striped table-bordered table-hover"
-                                >
+                                       class="table table-striped table-bordered table-hover">
                                     <thead>
                                     <tr>
-                                        <th><strong>{{ dataTable.headerRow[0] }}</strong></th>
-                                        <th><strong>{{ dataTable.headerRow[1] }}</strong></th>
-                                        <th><strong>{{ dataTable.headerRow[2] }}</strong></th>
-                                        <th><strong>{{ dataTable.headerRow[3] }}</strong></th>
-                                        <th><strong>{{ dataTable.headerRow[4] }}</strong></th>
-                                        <th><strong>{{ dataTable.headerRow[5] }}</strong></th>
-                                        <th><strong>{{ dataTable.headerRow[6] }}</strong></th>
-                                        <th><strong>{{ dataTable.headerRow[7] }}</strong></th>
+                                        <th><strong>Permit Ref No</strong></th>
+                                        <th><strong>Application Date</strong></th>
+                                        <th><strong>Product</strong></th>
+                                        <th><strong>Brand Name</strong></th>
+                                        <th><strong>Permit Number</strong></th>
+                                        <th><strong>Issue Date</strong></th>
+                                        <th><strong>Expiry Date</strong></th>
+                                        <th><strong>Status</strong></th>
                                         <th class="disabled-sorting text-right">
-                                            <strong>{{ dataTable.headerRow[8] }}</strong></th>
+                                            <strong>Actions</strong></th>
                                     </tr>
                                     </thead>
                                     <tfoot>
                                     <tr>
-                                        <th>{{ dataTable.footerRow[0] }}</th>
-                                        <th>{{ dataTable.footerRow[1] }}</th>
-                                        <th>{{ dataTable.footerRow[2] }}</th>
-                                        <th>{{ dataTable.footerRow[3] }}</th>
-                                        <th>{{ dataTable.footerRow[4] }}</th>
-                                        <th>{{ dataTable.footerRow[5] }}</th>
-                                        <th>{{ dataTable.footerRow[6] }}</th>
-                                        <th>{{ dataTable.footerRow[7] }}</th>
-                                        <th class="text-right">{{ dataTable.footerRow[8] }}</th>
+                                        <th><strong>Permit Ref No</strong></th>
+                                        <th><strong>Application Date</strong></th>
+                                        <th><strong>Product</strong></th>
+                                        <th><strong>Brand Name</strong></th>
+                                        <th><strong>Permit Number</strong></th>
+                                        <th><strong>Issue Date</strong></th>
+                                        <th><strong>Expiry Date</strong></th>
+                                        <th><strong>Status</strong></th>
+                                        <th class="disabled-sorting text-right">
+                                            <strong>Actions</strong></th>
                                     </tr>
                                     </tfoot>
                                     <tbody>
-                                    <tr *ngFor="let row of dataTable.dataRows">
-                                        <td>{{row[0]}}</td>
-                                        <td>{{row[1] | date}}</td>
-                                        <td>{{row[2]}}</td>
-                                        <td>{{row[3]}}</td>
-                                        <td>{{row[4]}}</td>
-                                        <td>{{row[5]}}</td>
-                                        <td>{{row[6]}}</td>
-                                        <td>{{row[7]}}</td>
-                                        <td class="text-right">
-                                            <a href="/smarkpermitdetails#{{row[8]}}"><i class="material-icons">remove_red_eye</i></a>
-                                            <!--                                            <a (click)="onSelect(row[8])"-->
-                                            <!--                                               class="btn btn-link btn-info btn-just-icon view"><i-->
-                                            <!--                                                    class="material-icons">remove_red_eye</i></a>-->
+                                    <tr *ngFor="let allPermitDat of allPermitData let i= index; ">
+                                        <td>{{allPermitDat.permitRefNumber}}</td>
+                                        <td>{{allPermitDat.createdOn}}</td>
+                                        <td>{{allPermitDat.productName}}</td>
+                                        <td>{{allPermitDat.tradeMark}}</td>
+                                        <td>{{allPermitDat.awardedPermitNumber}}</td>
+                                        <td>{{allPermitDat.dateOfIssue}}</td>
+                                        <td>{{allPermitDat.dateOfExpiry}}</td>
+                                        <td>{{allPermitDat.permitStatus}}</td>
+                                        <td *ngIf="1!=allPermitDat.processStatusID" class="text-right">
+                                            <a href="/permitdetails##{{allPermitDat.id}}"><i
+                                                    class="material-icons">remove_red_eye</i></a>
+                                            <br>
+                                            <a *ngIf="(allPermitDat.permitStatus=='PENDING PAYMENT'||allPermitDat.permitStatus=='DRAFT'||allPermitDat.permitStatus=='PENDING SUBMISSION') && allPermitDat.versionNumber=='1'"
+                                               class="text-right"
+                                               (click)="deleteDraft(allPermitDat.id)"><i style="color: red"
+                                                                                         class="material-icons">delete</i></a>
+
+
                                         </td>
+                                        <td *ngIf="1==allPermitDat.processStatusID" class="text-right">
+                                            <a href="/dmark/newDmarkPermit#{{allPermitDat.id}}"><i
+                                                    class="material-icons">remove_red_eye</i></a>
+                                            <br>
+                                            <a *ngIf="(allPermitDat.permitStatus=='PENDING PAYMENT'||allPermitDat.permitStatus=='DRAFT'||allPermitDat.permitStatus=='PENDING SUBMISSION') && allPermitDat.versionNumber=='1'"
+                                               class="text-right"
+                                               (click)="deleteDraft(allPermitDat.id)"><i style="color: red"
+                                                                                         class="material-icons">delete</i></a>
+
+
+                                        </td>
+
+
                                     </tr>
                                     </tbody>
                                 </table>
