@@ -156,6 +156,10 @@ export class GeneralCertificatesComponent implements OnInit {
             )
     }
 
+    searchPhraseChanged(event: any) {
+        this.loadData()
+    }
+
     toggleStatus(status) {
         if (status === this.activeStatus) {
             return

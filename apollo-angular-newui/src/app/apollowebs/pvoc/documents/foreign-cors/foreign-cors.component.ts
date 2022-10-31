@@ -105,6 +105,10 @@ export class ForeignCorsComponent implements OnInit {
         this.loadPartners()
     }
 
+    searchPhraseChanged() {
+        this.loadData()
+    }
+
     toggleStatus(status) {
         if (status === this.activeStatus) {
             return
