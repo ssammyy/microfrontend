@@ -1363,13 +1363,14 @@ class NewMarketSurveillanceHandler(
         return try {
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
+            val updateDetails = req.paramOrNull("updateDetails") ?: throw ExpectedDataNotFound("Required  updateDetails, check parameters")
             val body = req.body<WorkPlanEntityDto>()
             val errors: Errors = BeanPropertyBindingResult(body, WorkPlanEntityDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
                     val page = commonDaoServices.extractPageRequest(req)
-                    marketSurveillanceWorkPlanDaoServices.updateNewWorkPlanSchedule(body, batchReferenceNo,referenceNo, page)
+                    marketSurveillanceWorkPlanDaoServices.updateNewWorkPlanSchedule(body, updateDetails.toInt()==1, batchReferenceNo,referenceNo, page)
                         .let {
                             ServerResponse.ok().body(it)
                         }

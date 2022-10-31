@@ -472,7 +472,7 @@
                                     </mat-tab>
                                     <mat-tab *ngIf="workPlanInspection?.sampleSubmitted?.length!=0" label="11">
                                         <ng-template mat-tab-label>
-                                            Sample Submission Details
+                                            SAMPLE SUBMISSION DETAILS
                                         </ng-template>
                                         <div class="form-row">
                                             <div *ngIf="workPlanInspection?.sampleSubmittedStatus  && workPlanInspection?.bsNumberStatus
@@ -717,6 +717,30 @@
                                                 <br/>
                                             </ul>
                                             <br>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab *ngIf="workPlanInspection?.productList?.length!=0" label="11">
+                                        <ng-template mat-tab-label>
+                                            WorkPlan Products Details
+                                        </ng-template>
+                                        <div class="form-row">
+                                            <div *ngFor="let role of roles">
+                                                <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY' && workPlanInspection?.hodRecommendationStatus == false"
+                                                     class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsWorkPlanProducts"
+                                                                     [source]="workPlanInspection?.productList"
+                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
+                                                    ></ng2-smart-table>
+                                                </div>
+                                                <div *ngIf="role == 'MS_DIRECTOR_MODIFY'  && workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false"
+                                                     class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsWorkPlanProductsDirector"
+                                                                     [source]="workPlanInspection?.productList"
+                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
+                                                    ></ng2-smart-table>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </mat-tab>
                                     <mat-tab *ngIf="workPlanInspection?.preliminaryReport" label="17">
@@ -1161,14 +1185,14 @@
                                     <div *ngIf="workPlanInspection?.msProcessEndedStatus == false">
                                         <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
-                                            <button  *ngIf="workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus ==false"
+                                            <button  *ngIf="workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus ==false"
                                                      (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">APPROVE/REJECT SCHEDULE</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                            <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
                                                 && workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus "
                                                      (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
@@ -1423,6 +1447,12 @@
                                                                     data-target="#investInspectReportModal"
                                                                     class="btn btn-sm btn-primary"><span
                                                                     class="mat-button-wrapper">ADD FIELD REPORT</span>
+                                                                <div class="mat-button-focus-overlay"></div>
+                                                            </button>
+                                                            <button *ngIf="workPlanInspection?.investInspectReportStatus" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
+                                                                    data-target="#investInspectReportModal"
+                                                                    class="btn btn-sm btn-primary"><span
+                                                                    class="mat-button-wrapper">UPDATE FIELD REPORT</span>
                                                                 <div class="mat-button-focus-overlay"></div>
                                                             </button>
                                                         </div>
@@ -1693,17 +1723,17 @@
                                     <div *ngIf="workPlanInspection.scfDocId != null">
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.scfDocId}"
                                            (click)="viewWorkPlanFileSaved(data)"
-                                           class="btn btn-sm btn-primary">Sample Collection View</i>
+                                           class="btn btn-sm btn-primary mr-2">Sample Collection View</i>
                                     </div>
                                     <div *ngIf="workPlanInspection.ssfDocId != null">
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.ssfDocId}"
                                            (click)="viewWorkPlanFileSaved(data)"
-                                           class="btn btn-sm btn-primary">Sample Submission View</i>
+                                           class="btn btn-sm btn-primary mr-2">Sample Submission View</i>
                                     </div>
                                     <div *ngIf="workPlanInspection.seizureDocId != null">
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.seizureDocId}"
                                            (click)="viewWorkPlanFileSaved(data)"
-                                           class="btn btn-sm btn-primary">Seizure View</i>
+                                           class="btn btn-sm btn-primary mr-2">Seizure View</i>
                                     </div>
                                     <div *ngIf="workPlanInspection.declarationDocId != null">
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.declarationDocId}"
@@ -2025,6 +2055,26 @@
                                         <label for="hodFeedBackRemarks"><b>Please write, in detail, your feedback for MS Conducted:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="hodFeedBackRemarks"
+                                                      [class.is-invalid]="formFinalRemarkHODForm.hodFeedBackRemarks.invalid &&
+                                                        formFinalRemarkHODForm.hodFeedBackRemarks.touched"
+                                                      matInput type="text"
+                                                      formControlName="hodFeedBackRemarks"
+                                                      name="hodFeedBackRemarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'addFinalRemarksDirector')">
+                        <form [formGroup]="finalRemarkHODForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="hodFeedBackRemarks"><b>Please write, in detail, your feedback for MS Recommendations:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="hodFeedBackRemarks7"
                                                       [class.is-invalid]="formFinalRemarkHODForm.hodFeedBackRemarks.invalid &&
                                                         formFinalRemarkHODForm.hodFeedBackRemarks.touched"
                                                       matInput type="text"
@@ -2450,6 +2500,12 @@
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
+                    <button *ngIf="(currDiv == 'addFinalRemarksDirector')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFinalRemarksDirector();"
+                            [disabled]="!finalRemarkHODForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
                     <button *ngIf="(currDiv == 'clientAppealed')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveClientAppealed(approvePreliminaryForm.valid);"
                             [disabled]="!approvePreliminaryForm.valid"
@@ -2557,7 +2613,7 @@
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'finalLabComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
+                            (click)="onClickSaveFinalLabComplianceStatus(ssfSaveComplianceStatusForm.valid);"
                             [disabled]="!ssfSaveComplianceStatusForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
@@ -2581,7 +2637,7 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="chargeSheetForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div >
                             <h4 class="mb-3" style="color: #0066B1">Charge Sheet Details</h4>
                             <h5 class="mb-3" style="color: black">Fill in the Bio Details</h5>
                             <div class="row">
@@ -2990,7 +3046,7 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="dataReportForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div>
                             <h4 class="mb-3" style="color: #0066B1">Data Report Details</h4>
                             <h5 class="mb-3" style="color: black">Fill in the Bio Details</h5>
                             <div class="row">
@@ -3011,15 +3067,9 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Name of Inspector</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.inspectorName.invalid && formDataReportForm.inspectorName.errors"
-                                               class="form-control two-column-input"
+                                        <input class="form-control two-column-input"
                                                formControlName="inspectorName" ngModel="{{userProfile?.fullName}}" disabled
                                                name="inspectorName" required type="text">
-                                        <div *ngIf="submitted && formDataReportForm.inspectorName.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.inspectorName.errors.required">Name of Inspector is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -3042,15 +3092,9 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Function</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.function.invalid && formDataReportForm.function.errors"
-                                               class="form-control two-column-input"
+                                        <input class="form-control two-column-input"
                                                formControlName="function" ngModel="{{workPlanInspection?.divisionId}}" disabled
                                                name="function" required type="text">
-                                        <div *ngIf="submitted && formDataReportForm.function.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.function.errors.required">Function is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -3059,30 +3103,18 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Department</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.department.invalid && formDataReportForm.department.errors"
-                                               class="form-control two-column-input"
+                                        <input class="form-control two-column-input"
                                                formControlName="department" ngModel="{{workPlanInspection?.complaintDepartment}}" disabled
                                                name="department" required type="text">
-                                        <div *ngIf="submitted && formDataReportForm.department.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.department.errors.required">Department is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Region</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.regionName.invalid && formDataReportForm.regionName.errors"
-                                               class="form-control two-column-input"
+                                        <input class="form-control two-column-input"
                                                formControlName="regionName" ngModel="{{workPlanInspection?.region}}" disabled
                                                name="regionName" required type="text">
-                                        <div *ngIf="submitted && formDataReportForm.regionName.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.regionName.errors.required">Region is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -3091,30 +3123,18 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Town</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.town.invalid && formDataReportForm.town.errors"
-                                               class="form-control two-column-input"
+                                        <input class="form-control two-column-input"
                                                formControlName="town" ngModel="{{workPlanInspection?.townMarketCenter}}" disabled
                                                name="town" required type="text">
-                                        <div *ngIf="submitted && formDataReportForm.town.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.town.errors.required">Town is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Market Centre</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.marketCenter.invalid && formDataReportForm.marketCenter.errors"
-                                               class="form-control two-column-input"
+                                        <input class="form-control two-column-input"
                                                formControlName="marketCenter" ngModel="{{workPlanInspection?.locationActivityOther}}" disabled
                                                name="marketCenter" required type="text">
-                                        <div *ngIf="submitted && formDataReportForm.marketCenter.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.marketCenter.errors.required">Market Centre is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -3201,15 +3221,9 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Total Compliance Score % </b> </label>
-                                        <textarea [class.is-invalid]="formDataReportForm.totalComplianceScore.invalid && formDataReportForm.totalComplianceScore.errors"
-                                                  class="form-control two-column-input"
+                                        <textarea class="form-control two-column-input"
                                                   formControlName="totalComplianceScore" ngModel="{{totalCompliantValue | number : '1.2-2'}}" disabled
                                                   name="totalComplianceScore" required type="number"></textarea>
-                                        <div *ngIf="submitted && formDataReportForm.totalComplianceScore.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.totalComplianceScore.errors.required">Total Compliance Score is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col">
@@ -3231,7 +3245,7 @@
                         </div>
                     </form>
                     <form [formGroup]="dataReportParamForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div >
                             <h5 class="mb-3" style="color: #0066B1">Item Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -3646,7 +3660,7 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="investInspectReportForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div >
 
                             <h4 class="mb-3" style="color: #0066B1">MS FIELD REPORT DETAILS</h4>
                             <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
@@ -3699,15 +3713,9 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>From</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportFrom.invalid && formInvestInspectReportForm.reportFrom.errors"
-                                               class="form-control two-column-input"
+                                        <input class="form-control two-column-input"
                                                formControlName="reportFrom" ngModel="{{userProfile.fullName}}" disabled
                                                name="reportFrom" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportFrom.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportFrom.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -3761,15 +3769,9 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Region</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportRegion.invalid && formInvestInspectReportForm.reportRegion.errors"
-                                               class="form-control two-column-input"
+                                        <input class="form-control two-column-input"
                                                formControlName="reportRegion" ngModel="{{workPlanInspection?.region}}" disabled
                                                name="reportRegion" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportRegion.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportRegion.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -3778,29 +3780,18 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Department</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportDepartment.invalid && formInvestInspectReportForm.reportDepartment.errors"
-                                               class="form-control two-column-input"
+                                        <input class="form-control two-column-input"
                                                formControlName="reportDepartment" ngModel="{{workPlanInspection?.complaintDepartment}}" disabled
                                                name="reportDepartment" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportDepartment.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportDepartment.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Function</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportFunction.invalid && formInvestInspectReportForm.reportFunction.errors"
+                                        <input
                                                class="form-control two-column-input"
                                                formControlName="reportFunction" ngModel="{{workPlanInspection?.divisionId}}" disabled
                                                name="reportFunction" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportFunction.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportFunction.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -3862,7 +3853,7 @@
 
                             </div>
                             <form [formGroup]="investInspectReportInspectorsForm">
-                                <div class="form-group bmd-form-group is-filled">
+                                <div >
                                     <h5 class="mb-3" style="color: #0066B1">KEBS Inspectors Details</h5>
                                     <div class="row">
                                         <div class="col">
@@ -4065,6 +4056,117 @@
     </div>
     <!-- End INSPECTION AND INVESTIGATION REPORT Modal -->
 
+    <!-- Final Recommendation Modal -->
+    <div class="modal fade" id="finalRecommendationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fill Final Recommendation(s) Details</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="finalRecommendationDetailsForm">
+                        <div class="form-group bmd-form-group is-filled">
+                            <h5 class="mb-3" style="color: #0066B1">Recommendation Details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>SELECT RECOMMENDATION NAME</b> </label>
+                                        <select (change)="updateSelectedRecommendation()"
+                                                [class.is-invalid]="formFinalRecommendationDetailsForm.recommendationId.invalid && formFinalRecommendationDetailsForm.recommendationId.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="recommendationId" name="recommendationId" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option  *ngFor="let app of recommendationList| filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>
+                                        </select>
+                                        <input class="form-control two-column-input" type="hidden" ngModel="{{selectedRecommendationName}}"
+                                               formControlName="recommendationName" name="recommendationName">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <button *ngIf="finalRecommendationDetailsForm.valid" mat-raised-button
+                                                class="btn btn-success" (click)="onClickAddDataRecommendationDetails()" type="button" >SAVE PARAMETERS
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <div class="material-datatables">
+                        <div class="table-responsive">
+                            <table id="datatablesSampleSubmit4Param"
+                                   class="table table-striped table-bordered table-hover"
+                            >
+                                <thead>
+                                <tr>
+                                    <!--                                        <th>Id</th>-->
+                                    <th>Recommendation</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let r of dataSaveFinalRecommendationList; let i=index">
+                                    <!--                                        <td>{{r.id}}</td>-->
+                                    <td>{{r.recommendationName}}</td>
+                                    <td>
+                                        <button (click)="removeDataRecommendation(i)"
+                                                type="button"
+                                                class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <form [formGroup]="finalRecommendationForm">
+                        <div class="form-group bmd-form-group is-filled">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Please write, in detail, your feedback for The Recommendation(s) above:</b></label>
+                                        <textarea [class.is-invalid]="formFinalRecommendationForm.hodRecommendationRemarks.invalid && formFinalRecommendationForm.hodRecommendationRemarks.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="hodRecommendationRemarks" name="hodRecommendationRemarks" required type="text"></textarea>
+                                        <div *ngIf="submitted && formFinalRecommendationForm.hodRecommendationRemarks.errors" class="invalid-feedback">
+                                            <div *ngIf="formFinalRecommendationForm.hodRecommendationRemarks.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                        <button  *ngIf="finalRecommendationForm.invalid" mat-raised-button type="button"  class="btn btn-success"
+                                 (click)="onClickSaveFinalRecommendationHOD()">SUBMIT
+                        </button>
+                        <button *ngIf="finalRecommendationForm.valid"  mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"
+                                (click)="onClickSaveFinalRecommendationHOD()" >SUBMIT
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Final Recommendation Modal -->
+
+
     <!-- PRELIMINARY REPORT Modal -->
     <div class="modal fade" id="preliminaryReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
@@ -4078,7 +4180,7 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="preliminaryReportForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div >
 
                             <h4 class="mb-3" style="color: #0066B1">PRELIMINARY REPORT DETAILS</h4>
                             <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
@@ -4235,7 +4337,7 @@
 
                             </div>
                             <form [formGroup]="investInspectReportInspectorsForm">
-                                <div class="form-group bmd-form-group is-filled">
+                                <div >
                                     <h5 class="mb-3" style="color: #0066B1">KEBS Inspectors Details</h5>
                                     <div class="row">
                                         <div class="col">
@@ -4328,7 +4430,7 @@
                             <h4 class="mb-3" style="color: #0066B1">PRELIMINARY OUTLETS DETAILS</h4>
                             <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
                             <form [formGroup]="preliminaryReportParamForm">
-                                <div class="form-group bmd-form-group is-filled">
+                                <div >
                                     <h5 class="mb-3" style="color: #0066B1">Outlet Details</h5>
                                     <div class="row">
                                         <div class="col">
@@ -4487,7 +4589,7 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="sampleCollectForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div >
                             <h5 class="mb-3" style="color: #0066B1">Sample Collect Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -4587,13 +4689,7 @@
                                     <div class="form-group">
                                         <label><b>NAME OF OFFICER COLLECTING SAMPLE</b></label>
                                         <input type="text" class="form-control two-column-input"
-                                               formControlName="nameOfficerCollectingSample" name="nameOfficerCollectingSample" required ngModel="{{userProfile.fullName}}" disabled
-                                               [class.is-invalid]="formSampleCollectForm.nameOfficerCollectingSample.invalid && formSampleCollectForm.nameOfficerCollectingSample.errors">
-                                        <div *ngIf="submitted && formSampleCollectForm.nameOfficerCollectingSample.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleCollectForm.nameOfficerCollectingSample.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="nameOfficerCollectingSample" name="nameOfficerCollectingSample" required ngModel="{{userProfile.fullName}}" disabled>
                                     </div>
                                 </div>
 
@@ -4670,7 +4766,7 @@
                         </div>
                     </form>
                     <form [formGroup]="sampleCollectItemsForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div >
                             <h5 class="mb-3" style="color: #0066B1">Item Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -4818,7 +4914,7 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="sampleSubmitForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div >
                             <h5 class="mb-3" style="color: #0066B1">Sample Submission Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -4885,10 +4981,12 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="referencesStandards" name="referencesStandards"
-                                               required
-                                               [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.errors">
+                                        <select [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.errors"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="referencesStandards" name="referencesStandards" required>
+                                            <option [value]="" selected>Please select</option>
+                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [ngValue]="app.standardTitle">{{app.standardTitle}}</option>
+                                        </select>
                                         <div *ngIf="submitted && formSampleSubmitForm.referencesStandards.errors" class="invalid-feedback">
                                             <div *ngIf="formSampleSubmitForm.referencesStandards.errors.required">This field is
                                                 required
@@ -4900,7 +4998,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SIZE TEST SAMPLE</b> </label>
-                                        <input type="number" class="form-control two-column-input"
+                                        <input type="text" class="form-control two-column-input"
                                                formControlName="sizeTestSample" name="sizeTestSample" required
                                                [class.is-invalid]="formSampleSubmitForm.sizeTestSample.invalid && formSampleSubmitForm.sizeTestSample.errors">
                                         <div *ngIf="submitted && formSampleSubmitForm.sizeTestSample.errors" class="invalid-feedback">
@@ -4916,7 +5014,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SIZE REF SAMPLE</b></label>
-                                        <input type="number" class="form-control two-column-input"
+                                        <input type="text" class="form-control two-column-input"
                                                formControlName="sizeRefSample" name="sizeRefSample" >
 
                                     </div>
@@ -5097,7 +5195,7 @@
                     </form>
                     <div *ngIf="addLabParamStatus">
                         <form [formGroup]="sampleSubmitParamsForm">
-                            <div class="form-group bmd-form-group is-filled">
+                            <div >
                                 <h5 class="mb-3" style="color: #0066B1">Parameter Details</h5>
                                 <div class="row">
                                     <div class="col">
@@ -5215,7 +5313,7 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="addNewScheduleForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div >
                             <h5 class="mb-3" style="color: #0066B1">Work-Plan Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -5447,7 +5545,7 @@
                     </form>
                     <br>
                     <form [formGroup]="addResourceRequiredForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div >
                             <h5 class="mb-3" style="color: #0066B1">Resources required Details</h5>
                             <div class="row">
                                 <div class="col">

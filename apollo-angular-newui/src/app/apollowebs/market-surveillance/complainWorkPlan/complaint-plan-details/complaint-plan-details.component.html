@@ -1451,6 +1451,12 @@
                                                                     class="mat-button-wrapper">ADD FIELD REPORT</span>
                                                                 <div class="mat-button-focus-overlay"></div>
                                                             </button>
+                                                            <button *ngIf="workPlanInspection?.investInspectReportStatus" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
+                                                                    data-target="#investInspectReportModal"
+                                                                    class="btn btn-sm btn-primary"><span
+                                                                    class="mat-button-wrapper">UPDATE FIELD REPORT</span>
+                                                                <div class="mat-button-focus-overlay"></div>
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2621,7 +2627,7 @@
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'finalLabComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
+                            (click)="onClickSaveFinalLabComplianceStatus(ssfSaveComplianceStatusForm.valid);"
                             [disabled]="!ssfSaveComplianceStatusForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
@@ -4976,7 +4982,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>SIZE REF SAMPLE</b></label>
-                                        <input type="number" class="form-control two-column-input"
+                                        <input type="text" class="form-control two-column-input"
                                                formControlName="sizeRefSample" name="sizeRefSample" >
 
                                     </div>
@@ -5242,7 +5248,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button  (click)="onClickCloseSSF()" mat-raised-button type="button" class="btn btn-danger"
+                        <button (click)="onClickCloseSSF()" mat-raised-button type="button" class="btn btn-danger"
                                  data-dismiss="modal">
                             Close
                         </button>

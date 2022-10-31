@@ -1917,15 +1917,27 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
 
     this.updateDataReport();
+    this.updateFieldReport();
     this.currDiv = divVal;
   }
 
   updateDataReport() {
-    if (this.workPlanInspection?.dataReportStatus) {
+    if (this.workPlanInspection?.dataReportStatus && this.workPlanInspection?.onsiteEndStatus == false) {
       this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
+      this.totalCompliantValue = this.workPlanInspection?.dataReportDto?.totalComplianceScore;
       this.dataSaveDataReportParamList = [];
       for (let prod = 0; prod < this.workPlanInspection?.dataReportDto?.productsList.length; prod++) {
         this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
+      }
+    }
+  }
+
+  updateFieldReport() {
+    if (this.workPlanInspection?.investInspectReportStatus &&  this.workPlanInspection?.onsiteEndStatus == false) {
+      this.investInspectReportForm.patchValue(this.workPlanInspection?.inspectionInvestigationDto);
+      this.dataSaveDataInspectorInvestList = [];
+      for (let prod = 0; prod < this.workPlanInspection?.inspectionInvestigationDto?.kebsInspectors.length; prod++) {
+        this.dataSaveDataInspectorInvestList.push(this.workPlanInspection?.inspectionInvestigationDto?.kebsInspectors[prod]);
       }
     }
   }
@@ -2900,7 +2912,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
-          `You can click \'ADD FINAL LAB RESULTS STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+          `You can click \'ADD LAB RESULTS STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSSFLabResultsComplianceStatus(valid);
           });
     }
@@ -2910,8 +2922,46 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
+      this.dataSSFSaveComplianceStatus.ssfID = this.selectedLabResults?.ssfResultsList?.sffId;
+      this.dataSSFSaveComplianceStatus.bsNumber = this.selectedLabResults?.ssfResultsList?.bsNumber;
+      // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+      this.msService.msWorkPlanInspectionScheduledSaveSSFComplianceStatus(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSSFSaveComplianceStatus,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveFinalLabComplianceStatus(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'ADD FINAL LAB RESULTS STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+            this.saveFinalLabResultsComplianceStatus(valid);
+          });
+    }
+  }
+
+  saveFinalLabResultsComplianceStatus(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
       this.dataSSFSaveComplianceStatus.ssfID = 0;
-      this.dataSSFSaveComplianceStatus.bsNumber = 'EMPTY VALUES';
+      this.dataSSFSaveComplianceStatus.bsNumber = 'TEST BS NUMBER';
       // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
       this.msService.msWorkPlanInspectionScheduledSaveFinalSSFComplianceStatus(
           this.workPlanInspection.batchDetails.referenceNumber,
@@ -2922,7 +2972,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('SCHEDULE COMPLIANCE STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -2932,6 +2982,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       );
     }
   }
+
 
 
   goBack() {
@@ -3498,7 +3549,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       // tslint:disable-next-line:max-line-length
       this.msService.msUpdateWorkPlanScheduleDetails(
           this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber, this.dataSaveWorkPlan).subscribe(
+          this.workPlanInspection.referenceNumber, this.dataSaveWorkPlan, String(0)).subscribe(
           (data: any) => {
             console.log(data);
             this.workPlanInspection = data;

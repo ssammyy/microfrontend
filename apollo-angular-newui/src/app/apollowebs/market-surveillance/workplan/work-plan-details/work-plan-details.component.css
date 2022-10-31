@@ -108,7 +108,8 @@ ul, ol {
 }
 .btn-primary {
     background-color: #2196f3;
-    width: 150px;
+    width: 200px;
+    font-size: 12px
 }
 .btn-warning {
     width: 150px;

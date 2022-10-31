@@ -91,7 +91,7 @@ export class PredefinedResourcesRequired {
     status: boolean;
 }
 
-export class WorkPlanTownsDto{
+export class WorkPlanTownsDto {
         countyID: number;
         countyName: string;
         townID: number;
@@ -696,7 +696,7 @@ export class DataReportDto {
     personMet: string;
     summaryFindingsActionsTaken: string;
     finalActionSeizedGoods: string;
-    totalComplianceScore: string;
+    totalComplianceScore: number;
     remarks: string;
     productsList: DataReportParamsDto[];
 }
