@@ -29,7 +29,13 @@ interface IPvocApplicationRepo : HazelcastRepository<PvocApplicationEntity, Long
 
     fun findAllByConpanyNameAndFinished(conpanyName: String, finished: Int): List<PvocApplicationEntity>?
     fun findFirstByCreatedByAndId(username: String?, id: Long): PvocApplicationEntity?
-    fun findAllByCompanyIdAndStatusIn(companyId: Long?, listOf: List<Int>, pageRequest: Pageable): Page<PvocApplicationEntity>
+    fun findAllByCompanyIdAndStatusIn(
+        companyId: Long?,
+        listOf: List<Int>,
+        pageRequest: Pageable
+    ): Page<PvocApplicationEntity>
+
+    fun findAllByCompanyId(companyId: Long?, pageRequest: Pageable): Page<PvocApplicationEntity>
 }
 
 interface IPvocExceptionApplicationStatusEntityRepo : HazelcastRepository<PvocExceptionApplicationStatusEntity, Long> {

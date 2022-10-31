@@ -44,7 +44,8 @@
                                             </ul>
                                         </div>
                                         <div class="row no-margin file-input">
-                                            <input type="file" accept="image/*" (change)="loadFile($event,'lab')"
+                                            <input type="file" accept="image/*,application/pdf"
+                                                   (change)="loadFile($event,'lab')"
                                                    class="display-nothing" #labFiles>
                                             <button (click)="labFiles.click()"
                                                     class="next-btn btn-attach">ADD LAB REPORTS
@@ -64,7 +65,8 @@
                                             </ul>
                                         </div>
                                         <div class="row no-margin file-input">
-                                            <input type="file" accept="image/*" (change)="loadFile($event,'qms')"
+                                            <input type="file" accept="image/*,application/pdf"
+                                                   (change)="loadFile($event,'qms')"
                                                    class="display-nothing" #qmsFile>
                                             <button (click)="qmsFile.click()"
                                                     class="next-btn btn-attach">ADD QMS REPORTS
@@ -85,7 +87,8 @@
                                             </ul>
                                         </div>
                                         <div class="row no-margin file-input">
-                                            <input type="file" accept="image/*" (change)="loadFile($event,'product')"
+                                            <input type="file" accept="image/*,application/pdf"
+                                                   (change)="loadFile($event,'product')"
                                                    class="display-nothing" #productFile>
                                             <button (click)="productFile.click()"
                                                     class="next-btn btn-attach">ADD PRODUCTS

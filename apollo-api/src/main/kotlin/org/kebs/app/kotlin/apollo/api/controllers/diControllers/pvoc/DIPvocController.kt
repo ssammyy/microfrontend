@@ -30,12 +30,6 @@ import java.time.format.DateTimeFormatter
 
 
 class Manufacturer {
-    var companyName: String? = null
-    var email: String? = null
-    var companyPinNo: String? = null
-    var telephoneNo: String? = null
-    var postalAddress: String? = null
-    var physicalLocation: String? = null
     var contactPersonName: String? = null
     var contactPersonEmail: String? = null
     var contactPersonPhone: String? = null
