@@ -56,6 +56,7 @@ export class ComplaintNewComponent implements OnInit {
   townName: string;
 
   public clicked = false;
+  clickedInstructions = true;
   stepOneForm!: FormGroup;
   stepTwoForm!: FormGroup;
   stepThreeForm!: FormGroup;
@@ -69,7 +70,9 @@ export class ComplaintNewComponent implements OnInit {
 
   uploadedFiles: FileList;
   savedDetails: MSComplaintSubmittedSuccessful;
-  newComplaintDto: Partial<NewComplaintDto> | undefined;
+  customerDetails: ComplaintCustomersDto;
+  complaintDetails: ComplaintDto;
+  locationDetails: ComplaintLocationDto;
 
   brsLookupRequest: BrsLookUpRequest;
   businessLines$: Observable<BusinessLines[]>;
@@ -296,9 +299,11 @@ export class ComplaintNewComponent implements OnInit {
   }
 
   reviewComplaint() {
-    this.newComplaintDto.customerDetails = this.stepOneForm.value;
-    this.newComplaintDto.complaintDetails = this.stepTwoForm.value;
-    this.newComplaintDto.locationDetails = this.stepThreeForm.value;
+
+    this.customerDetails = this.stepOneForm.value;
+    this.complaintDetails = this.stepTwoForm.value;
+    this.locationDetails = this.stepThreeForm.value;
+
     window.$('#complaintModal').modal('show');
   }
 
@@ -317,11 +322,12 @@ export class ComplaintNewComponent implements OnInit {
     if (this?.uploadedFiles?.length > 0) {
       this.SpinnerService.show();
       const file = this.uploadedFiles;
-      this.newComplaintDto.customerDetails = this.stepOneForm.value;
-      this.newComplaintDto.complaintDetails = this.stepTwoForm.value;
-      this.newComplaintDto.locationDetails = this.stepThreeForm.value;
+      const newComplaintDto = new NewComplaintDto();
+      newComplaintDto.customerDetails = this.stepOneForm.value;
+      newComplaintDto.complaintDetails = this.stepTwoForm.value;
+      newComplaintDto.locationDetails = this.stepThreeForm.value;
       const formData = new FormData();
-      formData.append('data', JSON.stringify(this.newComplaintDto));
+      formData.append('data', JSON.stringify(newComplaintDto));
       for (let i = 0; i < file.length; i++) {
         console.log(file[i]);
         formData.append('docFile', file[i], file[i].name);
@@ -483,9 +489,12 @@ export class ComplaintNewComponent implements OnInit {
           this.complaintCustomerSoFar = {...this.complaintCustomerSoFar, ...this.stepOneForm?.value};
           break;
         case 2:
-          this.complaintSoFar = {...this.complaintSoFar, ...this.stepTwoForm?.value};
+          this.complaintCustomerSoFar = {...this.complaintCustomerSoFar, ...this.stepOneForm?.value};
           break;
         case 3:
+          this.complaintSoFar = {...this.complaintSoFar, ...this.stepTwoForm?.value};
+          break;
+        case 4:
           this.complaintLocationSoFar = {...this.complaintLocationSoFar, ...this.stepThreeForm?.value};
           break;
         // case 4:
@@ -495,8 +504,6 @@ export class ComplaintNewComponent implements OnInit {
         //   this.userSoFar = this.stepFiveForm?.value;
         //   break;
       }
-
-
       this.step += 1;
     }
 

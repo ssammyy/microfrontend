@@ -11,7 +11,7 @@ import {
   DataReportParamsDto,
   DestructionNotificationDto,
   FuelEntityRapidTestDto,
-  InspectionInvestigationReportDto,
+  InspectionInvestigationReportDto, KebsStandardsDto,
   LaboratoryDto, LaboratoryEntityDto, LIMSFilesFoundDto, MsBroadProductCategory,
   MsDepartment,
   MsDivisionDetails, MsProducts, MsProductSubcategory,
@@ -20,7 +20,7 @@ import {
   PDFSaveComplianceStatusDto, PredefinedResourcesRequired,
   PreliminaryReportDto,
   PreliminaryReportFinal,
-  PreliminaryReportItemsDto,
+  PreliminaryReportItemsDto, RecommendationDto,
   RemediationDto,
   SampleCollectionDto,
   SampleCollectionItemsDto,
@@ -31,7 +31,7 @@ import {
   WorkPlanEntityDto,
   WorkPlanFeedBackDto,
   WorkPlanFinalRecommendationDto,
-  WorkPlanInspectionDto,
+  WorkPlanInspectionDto, WorkPlanProductDto,
   WorkPlanScheduleApprovalDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {
@@ -69,6 +69,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
   currDiv!: string;
+  workPlanProductRefNo: string;
   currDivLabel!: string;
   submitted = false;
   addLabParamStatus = true;
@@ -80,10 +81,13 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   totalCompliantValue = 0;
 
+  addResourceRequiredForm!: FormGroup;
+
   addNewScheduleForm!: FormGroup;
   approveScheduleForm!: FormGroup;
   approvePreliminaryForm!: FormGroup;
   finalRemarkHODForm!: FormGroup;
+  finalRecommendationDetailsForm!: FormGroup;
   finalRecommendationForm!: FormGroup;
   preliminaryRecommendationForm!: FormGroup;
   chargeSheetForm!: FormGroup;
@@ -130,6 +134,13 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
   dataSaveDestructionNotification: DestructionNotificationDto;
   laboratories: LaboratoryDto[] = [];
+  standards: KebsStandardsDto[] = [];
+
+  predefinedResourcesRequired!: PredefinedResourcesRequired[];
+  dataSaveResourcesRequired: PredefinedResourcesRequired;
+  dataSaveResourcesRequiredList: PredefinedResourcesRequired[] = [];
+  dataSaveFinalRecommendationDetails: RecommendationDto;
+  dataSaveFinalRecommendationList: RecommendationDto[] = [];
 
 
   dataSaveAssignOfficer: ComplaintAssignDto;
@@ -155,6 +166,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   broadProductCategory!: BroadProductCategory[];
   products!: Products[];
   productSubcategory!: ProductSubcategory[];
+  selectedRecommendationID: number;
+  selectedRecommendationName: string;
   standardProductCategorySelected: 0;
   productCategoriesSelected: 0;
   broadProductCategorySelected: 0;
@@ -1149,11 +1162,137 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      bsNumber: {
-        title: 'BS NUMBER',
+      // bsNumber: {
+      //   title: 'BS NUMBER',
+      //   type: 'string',
+      //   filter: false,
+      // },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsWorkPlanProductsDirector = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View RECOMMENDATION(s)</i>'},
+        {name: 'addRemarkDirector', title: '<i class="btn btn-sm btn-primary">ADD REMARKS</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      productName: {
+        title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
+      destructionRecommended: {
+        title: 'DESTRUCTION RECOMMENDED',
+        type: 'string',
+        filter: false,
+      },
+      clientAppealed: {
+        title: 'CLIENT APPEALED',
+        type: 'string',
+        filter: false,
+      },
+      destructionStatus: {
+        title: 'DESTRUCTION STATUS',
+        type: 'string',
+        filter: false,
+      },
+      appealStatus: {
+        title: 'APPEAL STATUS',
+        type: 'date',
+        filter: false,
+      },
+      // sampleUpdated: {
+      //   title: 'Sample Updated',
+      //   type: 'custom',
+      //   renderComponent: ConsignmentStatusComponent
+      // }
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsWorkPlanProducts = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'addRecommendation', title: '<i class="btn btn-sm btn-primary">ADD RECOMMENDATION</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View RECOMMENDATION(s)</i>'},
+        // {name: 'addRemarkHod', title: '<i class="btn btn-sm btn-primary">ADD REMARKS</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      productName: {
+        title: 'PRODUCT NAME',
+        type: 'string',
+        filter: false,
+      },
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
+      destructionRecommended: {
+        title: 'DESTRUCTION RECOMMENDED',
+        type: 'string',
+        filter: false,
+      },
+      clientAppealed: {
+        title: 'CLIENT APPEALED',
+        type: 'string',
+        filter: false,
+      },
+      destructionStatus: {
+        title: 'DESTRUCTION STATUS',
+        type: 'string',
+        filter: false,
+      },
+      appealStatus: {
+        title: 'APPEAL STATUS',
+        type: 'date',
+        filter: false,
+      },
+      // sampleUpdated: {
+      //   title: 'Sample Updated',
+      //   type: 'custom',
+      //   renderComponent: ConsignmentStatusComponent
+      // }
     },
     pager: {
       display: true,
@@ -1163,6 +1302,10 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   public workPlanInspection: WorkPlanInspectionDto;
   public msCounties: {name: string, code: string}[];
+
+  msCountiesList: County[] = null;
+  msTowns: Town[] = null;
+
 
 
   constructor(
@@ -1271,6 +1414,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     });
 
     this.investInspectReportForm = this.formBuilder.group({
+      id: null,
       reportReference: ['', Validators.required],
       reportTo: ['', Validators.required],
       reportThrough: ['', Validators.required],
@@ -1395,6 +1539,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       complianceRemarks: ['', Validators.required],
     });
 
+    this.finalRecommendationDetailsForm = this.formBuilder.group({
+      recommendationId: ['', Validators.required],
+      recommendationName: ['', Validators.required],
+    });
+
     this.preliminaryReportForm = this.formBuilder.group({
       id : null,
       reportTo : ['', Validators.required],
@@ -1424,6 +1573,10 @@ export class WorkPlanDetailsComponent implements OnInit {
       dateVisit: ['', Validators.required],
       // numberProductsPhysicalInspected: ['', Validators.required],
       // compliancePhysicalInspection: ['', Validators.required],
+    });
+
+    this.addResourceRequiredForm = this.formBuilder.group({
+      resourceName: ['', Validators.required],
     });
 
     this.notCompliantInvoiceForm = this.formBuilder.group({
@@ -1468,7 +1621,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       productSubCategory: ['', Validators.required],
       resourcesRequired: ['', Validators.required],
       budget: ['', Validators.required],
-      // remarks: ['', Validators.required],
+      // remarks: null,
     });
 
     this.activatedRoute.paramMap.subscribe(
@@ -1594,6 +1747,16 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
+      this.msService.msStandardsListDetails().subscribe(
+          (data1: KebsStandardsDto[]) => {
+            this.standards = data1;
+            console.log(data1);
+          },
+          error => {
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
     }
 
     switch (this.workPlanInspection?.preliminaryReport?.approvedStatusHodFinal) {
@@ -1619,6 +1782,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.assignOfficerForm.controls;
   }
 
+  get formAddResourceRequiredForm(): any {
+    return this.addResourceRequiredForm.controls;
+  }
+
   get formClientEmailNotificationForm(): any {
     return this.clientEmailNotificationForm.controls;
   }
@@ -1626,6 +1793,11 @@ export class WorkPlanDetailsComponent implements OnInit {
   get formFinalRemarkHODForm(): any {
     return this.finalRemarkHODForm.controls;
   }
+
+  get formFinalRecommendationDetailsForm(): any {
+    return this.finalRecommendationDetailsForm.controls;
+  }
+
 
   get formPreliminaryReportForm(): any {
     return this.preliminaryReportForm.controls;
@@ -1718,6 +1890,19 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.remediationForm.controls;
   }
 
+  updateSelectedRecommendation() {
+    this.selectedRecommendationID = this.sampleSubmitParamsForm?.get('recommendationId')?.value;
+    this.selectedRecommendationName = this.recommendationList.find(x => x.id === this.selectedRecommendationID).recommendationName;
+    console.log(`town set to ${this.selectedTown}`);
+  }
+
+
+  onClickAddDataRecommendationDetails() {
+    this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
+    this.dataSaveFinalRecommendationList.push(this.dataSaveFinalRecommendationDetails);
+    this.finalRecommendationDetailsForm?.reset();
+  }
+
   private loadData(referenceNumber: string, batchReferenceNumber: string ): any {
     this.SpinnerService.show();
     this.msService.msWorkPlanScheduleDetails(batchReferenceNumber, referenceNumber).subscribe(
@@ -1729,6 +1914,34 @@ export class WorkPlanDetailsComponent implements OnInit {
         },
         error => {
           this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    this.msService.msCountiesListDetails().subscribe(
+        (dataCounties: County[]) => {
+          this.msCountiesList = dataCounties;
+        },
+        error => {
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    this.msService.msTownsListDetails().subscribe(
+        (dataTowns: Town[]) => {
+          this.msTowns = dataTowns;
+        },
+        error => {
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    this.msService.msPredefinedResourcesRequiredListDetails().subscribe(
+        (data1: PredefinedResourcesRequired[]) => {
+          this.predefinedResourcesRequired = data1;
+          console.log(data1);
+        },
+        error => {
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
         },
@@ -1759,17 +1972,77 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
 
     this.updateDataReport();
+    this.updateFieldReport();
+    this.updateWorkPlan();
     this.currDiv = divVal;
   }
 
   updateDataReport() {
-    if (this.workPlanInspection?.dataReportStatus) {
+    if (this.workPlanInspection?.dataReportStatus && this.workPlanInspection?.onsiteEndStatus == false) {
       this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
+      this.totalCompliantValue = this.workPlanInspection?.dataReportDto?.totalComplianceScore;
       this.dataSaveDataReportParamList = [];
       for (let prod = 0; prod < this.workPlanInspection?.dataReportDto?.productsList.length; prod++) {
         this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
       }
     }
+  }
+
+  updateFieldReport() {
+    if (this.workPlanInspection?.investInspectReportStatus &&  this.workPlanInspection?.onsiteEndStatus == false) {
+      this.investInspectReportForm.patchValue(this.workPlanInspection?.inspectionInvestigationDto);
+      this.dataSaveDataInspectorInvestList = [];
+      for (let prod = 0; prod < this.workPlanInspection?.inspectionInvestigationDto?.kebsInspectors.length; prod++) {
+        this.dataSaveDataInspectorInvestList.push(this.workPlanInspection?.inspectionInvestigationDto?.kebsInspectors[prod]);
+      }
+    }
+  }
+
+  updateWorkPlan() {
+    if (!this.workPlanInspection?.approvedStatus) {
+      this.addNewScheduleForm.patchValue(this.workPlanInspection?.updateWorkPlan);
+      this.dataSaveResourcesRequiredList = [];
+      for (let prod = 0; prod < this.workPlanInspection?.updateWorkPlan?.resourcesRequired.length; prod++) {
+        this.dataSaveResourcesRequiredList.push(this.workPlanInspection?.updateWorkPlan.resourcesRequired[prod]);
+      }
+    }
+  }
+
+
+  public onCustomWorkPlanProductsAction(event: any): void {
+    switch (event.action) {
+      case 'viewRecord':
+        this.viewSSFRecord(event.data);
+        break;
+      case 'addRecommendation':
+        this.addRecommendation(event.data);
+        break;
+      case 'addRemarkDirector':
+        this.addRemarksDirector(event.data);
+        break;
+    }
+  }
+
+  addRecommendation(data: WorkPlanProductDto) {
+    if (!data.hodRecommendationStatus) {
+      this.msService.showWarning('Recommendation(s) Have/Has already been added');
+    } else {
+      this.workPlanProductRefNo = data.referenceNo;
+      window.$('#finalRecommendationModal').modal('show');
+    }
+
+  }
+
+  addRemarksDirector(data: WorkPlanProductDto) {
+    if (!data.directorRecommendationStatus) {
+      this.msService.showWarning('Remark(s) Have/Has already been added');
+    } else {
+      this.workPlanProductRefNo = data.referenceNo;
+      this.currDiv = 'addFinalRemarksDirector';
+      this.currDivLabel = 'ADD REMARKS FOR THE RECOMMENDATION ADDED';
+      window.$('#myModal1').modal('show');
+    }
+
   }
 
 
@@ -1956,6 +2229,40 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickSaveFinalRemarksDirector() {
+    this.msService.showSuccessWith2Message('Are you sure your want to add the Remarks?', 'You won\'t be able to Update the remarks Details after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and  update the remarks you have added Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          this.saveFinalRemarksRecommendationDirector();
+        });
+  }
+
+  saveFinalRemarksRecommendationDirector() {
+    // if (valid) {
+    this.SpinnerService.show();
+    this.dataSaveFinalRemarks = {...this.dataSaveFinalRemarks, ...this.finalRemarkHODForm.value};
+    this.msService.msWorkPlanScheduleDetailsFinalRemarksDirector(
+        this.workPlanProductRefNo,
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+        this.dataSaveFinalRemarks,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('FINAL REMARKS AND STATUS SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    // }
+  }
+
+
   onClickSaveClientAppealed(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
@@ -2053,6 +2360,16 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  // Remove Form repeater values
+  removeDataRecommendation(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveFinalRecommendationList.splice(index, 1);
+    } else {
+      this.dataSaveFinalRecommendationList.splice(index, index);
+    }
+  }
+
   onClickSaveFinalRemarksHOD(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
@@ -2101,28 +2418,36 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveFinalRecommendationHOD(valid: boolean) {
-    // if (valid) {
-    //   this.SpinnerService.show();
-    //   this.dataSaveFinalRecommendation = {...this.dataSaveFinalRecommendation, ...this.finalRecommendationForm.value};
-    //   this.msService.msWorkPlanScheduleDetailsFinalRecommendationHOD(
-    //       this.workPlanInspection.batchDetails.referenceNumber,
-    //       this.workPlanInspection.referenceNumber,
-    //       this.dataSaveFinalRecommendation,
-    //   ).subscribe(
-    //       (data: any) => {
-    //         this.workPlanInspection = data;
-    //         console.log(data);
-    //         this.SpinnerService.hide();
-    //         this.msService.showSuccess('FINAL RECOMMENDATION SAVED SUCCESSFULLY');
-    //       },
-    //       error => {
-    //         this.SpinnerService.hide();
-    //         console.log(error);
-    //         this.msService.showError('AN ERROR OCCURRED');
-    //       },
-    //   );
-    // }
+  onClickSaveFinalRecommendationHOD() {
+    this.msService.showSuccessWith2Message('Are you sure your want to Submit the details?', 'You won\'t be able to revert back/Update after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and  update/remove some recommendation Before Saving', 'ONSITE ACTIVITIES ENDED SUCCESSFUL', () => {
+          this.saveFinalRecommendationHOD();
+        });
+  }
+
+  saveFinalRecommendationHOD() {
+    this.SpinnerService.show();
+    this.dataSaveFinalRecommendation = {...this.dataSaveFinalRecommendation, ...this.finalRecommendationForm.value};
+    this.dataSaveFinalRecommendation.recommendationId = this.dataSaveFinalRecommendationList;
+    this.msService.msWorkPlanScheduleDetailsFinalRecommendationHOD(
+        this.workPlanProductRefNo,
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+        this.dataSaveFinalRecommendation,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('FINAL RECOMMENDATION SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 
   onClickSaveFinalReport(valid: boolean) {
@@ -2150,6 +2475,14 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickStartOnsiteActivities() {
+    this.msService.showSuccessWith2Message('Are you sure your want to Start ON-SITE ACTIVITIES?', 'By clicking \'YES\' you will be staring the Timeliness for Onsite Activities!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and  update the work-Plan Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          this.startOnsiteActivities();
+        });
+  }
+
+  startOnsiteActivities() {
     // if (valid) {
     this.SpinnerService.show();
     this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
@@ -2166,13 +2499,21 @@ export class WorkPlanDetailsComponent implements OnInit {
         error => {
           this.SpinnerService.hide();
           console.log(error);
-          this.msService.showError('AN ERROR OCCURRED');
+          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
     // }
   }
 
   onClickSubmitForApproval() {
+    this.msService.showSuccessWith2Message('Are you sure your want to Submit for approval?', 'You won\'t be able to revert Update Work-Plan after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and  update the work-Plan Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          this.submitForApproval();
+        });
+  }
+
+  submitForApproval() {
     // if (valid) {
     this.SpinnerService.show();
     this.msService.msWorkPlanScheduleDetailsSubmitForApproval(
@@ -2188,7 +2529,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         error => {
           this.SpinnerService.hide();
           console.log(error);
-          this.msService.showError('AN ERROR OCCURRED');
+          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
   }
@@ -2253,6 +2594,32 @@ export class WorkPlanDetailsComponent implements OnInit {
         },
     );
     // }
+  }
+
+  onClickAddResource() {
+    this.dataSaveResourcesRequired = this.addResourceRequiredForm.value;
+    console.log(this.dataSaveResourcesRequired);
+    // tslint:disable-next-line:max-line-length
+    const  resourceName = this.dataSaveResourcesRequiredList.filter(x => String(this.dataSaveResourcesRequired.resourceName) === String(x.resourceName)).length;
+    if (resourceName > 0) {
+      console.log('ResourceFound =' + this.dataSaveResourcesRequired.resourceName);
+      this.msService.showWarning('You have already added ' + this.dataSaveResourcesRequired.resourceName);
+    } else {
+      this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+      console.log('ResourceFound Not Found =' + this.dataSaveResourcesRequired.resourceName);
+    }
+
+    this.addResourceRequiredForm?.get('resourceName')?.reset();
+  }
+
+  // Remove Form repeater values
+  removeDataResource(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveResourcesRequiredList.splice(index, 1);
+    } else {
+      this.dataSaveResourcesRequiredList.splice(index, index);
+    }
   }
 
 
@@ -2603,7 +2970,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
-          `You can click \'ADD FINAL LAB RESULTS STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+          `You can click \'ADD LAB RESULTS STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSSFLabResultsComplianceStatus(valid);
           });
     }
@@ -2613,8 +2980,46 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
+      this.dataSSFSaveComplianceStatus.ssfID = this.selectedLabResults?.ssfResultsList?.sffId;
+      this.dataSSFSaveComplianceStatus.bsNumber = this.selectedLabResults?.ssfResultsList?.bsNumber;
+      // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+      this.msService.msWorkPlanInspectionScheduledSaveSSFComplianceStatus(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSSFSaveComplianceStatus,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveFinalLabComplianceStatus(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'ADD FINAL LAB RESULTS STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+            this.saveFinalLabResultsComplianceStatus(valid);
+          });
+    }
+  }
+
+  saveFinalLabResultsComplianceStatus(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
       this.dataSSFSaveComplianceStatus.ssfID = 0;
-      this.dataSSFSaveComplianceStatus.bsNumber = 'EMPTY VALUES';
+      this.dataSSFSaveComplianceStatus.bsNumber = 'TEST BS NUMBER';
       // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
       this.msService.msWorkPlanInspectionScheduledSaveFinalSSFComplianceStatus(
           this.workPlanInspection.batchDetails.referenceNumber,
@@ -2625,7 +3030,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('SCHEDULE COMPLIANCE STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -2815,13 +3220,19 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.dataReportParamForm?.get('complianceInspectionParameter')?.reset();
     this.dataReportParamForm?.get('measurementsResults')?.reset();
     this.dataReportParamForm?.get('remarks')?.reset();
-    const compliantCount: number = this.dataSaveDataReportParamList.filter(s => s.complianceInspectionParameter === 100).length;
     const totalCount: number = this.dataSaveDataReportParamList.length;
+    let compliantCount = 0;
+
+    for (let i = 0; i < totalCount; i++) {
+      if (Number(this.dataSaveDataReportParamList[i].complianceInspectionParameter) === 100) {
+        compliantCount = compliantCount + 1;
+      }
+    }
 
     this.totalCompliantValue = (compliantCount / totalCount) * 100;
-    console.log(compliantCount);
-    console.log(totalCount);
-    console.log(this.totalCompliantValue);
+    console.log('compliant count' + compliantCount);
+    console.log('total count' + totalCount);
+    console.log('complinace Value count' + this.totalCompliantValue);
   }
 
   onClickAddDataInspectorOfficer() {
@@ -2866,7 +3277,6 @@ export class WorkPlanDetailsComponent implements OnInit {
     // this.sampleSubmitParamsForm?.get('laboratoryName')?.reset();
   }
 
-  // Remove Form repeater values
   removeDataReportParam(index) {
     console.log(index);
     if (index === 0) {
@@ -2875,13 +3285,19 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.dataSaveDataReportParamList.splice(index, index);
     }
 
-    const compliantCount: number = this.dataSaveDataReportParamList.filter(s => s.complianceInspectionParameter === 100).length;
     const totalCount: number = this.dataSaveDataReportParamList.length;
+    let compliantCount = 0;
+
+    for (let i = 0; i < totalCount; i++) {
+      if (Number(this.dataSaveDataReportParamList[i].complianceInspectionParameter) === 100) {
+        compliantCount = compliantCount + 1;
+      }
+    }
 
     this.totalCompliantValue = (compliantCount / totalCount) * 100;
-    console.log(compliantCount);
-    console.log(totalCount);
-    console.log(this.totalCompliantValue);
+    console.log('compliant count' + compliantCount);
+    console.log('total count' + totalCount);
+    console.log('complinace Value count' + this.totalCompliantValue);
   }
 
   removePreliminaryReportParam(index) {
@@ -3164,29 +3580,56 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveWorkPlanScheduled() {
     this.submitted = true;
-    if (this.addNewScheduleForm.invalid) {
-      return;
+    if (this.addNewScheduleForm.valid && this.dataSaveResourcesRequiredList.length > 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Update the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'UPDATE WORK-PLAN\' button to update details Before Saving', 'COMPLAINT SCHEDULE DETAILS SAVED SUCCESSFUL', () => {
+            this.saveWorkPlanScheduled();
+          });
     }
+  }
+
+  saveWorkPlanScheduled() {
+    this.submitted = true;
     if (this.addNewScheduleForm.valid) {
       this.SpinnerService.show();
-      this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
-      // tslint:disable-next-line:max-line-length
-      this.msService.msUpdateWorkPlanScheduleDetails(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber, this.dataSaveWorkPlan).subscribe(
-          (data: any) => {
-            console.log(data);
-            this.workPlanInspection = data;
-            this.SpinnerService.hide();
-            this.msService.showSuccess('WORK-PLAN PLAN SCHEDULED UPDATED SUCCESSFULLY');
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
-
+      if (this.workPlanInspection.submittedForApprovalStatus) {
+        this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
+        this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;
+        this.msService.msUpdateWorkPlanScheduleDetails(
+            this.workPlanInspection.batchDetails.referenceNumber,
+            this.workPlanInspection.referenceNumber, this.dataSaveWorkPlan, String(1)).subscribe(
+            (data: any) => {
+              console.log(data);
+              this.workPlanInspection = data;
+              this.SpinnerService.hide();
+              this.msService.showSuccess('WORK-PLAN PLAN SCHEDULED UPDATED SUCCESSFULLY AND SUBMITED FOR APPROVAL');
+            },
+            error => {
+              this.SpinnerService.hide();
+              console.log(error);
+              // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+      } else {
+        this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
+        this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;
+        this.msService.msUpdateWorkPlanScheduleDetails(
+            this.workPlanInspection.batchDetails.referenceNumber,
+            this.workPlanInspection.referenceNumber, this.dataSaveWorkPlan, String(0)).subscribe(
+            (data: any) => {
+              console.log(data);
+              this.workPlanInspection = data;
+              this.SpinnerService.hide();
+              this.msService.showSuccess('WORK-PLAN PLAN SCHEDULED UPDATED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              console.log(error);
+              // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+      }
     }
   }
 

@@ -183,6 +183,17 @@ export interface EditCompanyDTO {
     remarks: string;
 
 }
+
+export interface CompanyRemarks{
+    id: number;
+    siteVisitId: number;
+    remarks: string;
+    remarkBy: string;
+    status: string;
+    role: string;
+    description: string;
+    dateOfRemark: string;
+}
 export interface SiteVisitRemarks{
     siteVisitId: number;
     editID: number;

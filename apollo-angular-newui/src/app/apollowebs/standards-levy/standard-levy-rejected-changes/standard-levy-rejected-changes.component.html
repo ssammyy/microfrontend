@@ -38,18 +38,19 @@
                                             <th class="knw">Phone Number</th>
                                             <th class="knw">Email Address</th>
                                             <th class="knw"></th>
+                                            <th class="knw"></th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr  *ngFor="let rejectedChange of rejectedChanges let i=index">
-                                            <td >{{i+1}} </td>
+                                            <td >{{i+1}}</td>
                                             <td>{{rejectedChange.companyId}}</td>
                                             <td>{{rejectedChange.companyName }}</td>
                                             <td>{{rejectedChange.postalAddress}}</td>
                                             <td>{{rejectedChange.companyTelephone}}</td>
                                             <td>{{rejectedChange.companyEmail}}</td>
-                                            <td *ngIf="rejectedChange.status=='1'"><button type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> Approved</button></td>
-                                            <td *ngIf="rejectedChange.status=='0'"><button type="submit" class="btn btn-danger btn-sm"  style="border-radius: 40px;"> Rejected</button></td>
+                                            <td *ngIf="rejectedChange.status==1"><button type="submit" class="btn btn-success btn-sm"  style="border-radius: 40px;"> Approved</button></td>
+                                            <td *ngIf="rejectedChange.status==0"><button type="submit" class="btn btn-danger btn-sm"  style="border-radius: 40px;"> Rejected</button></td>
                                             <td>
                                                 <button (click)="onOpenModalList(rejectedChange,'viewList')"
                                                         type="submit" class="btn btn-success btn-sm" style="border-radius: 40px;">More
@@ -84,7 +85,7 @@
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tabs-complete" role="tablist">
                             <a class="nav-item nav-link active" id="nav-complete-tab" data-toggle="tab" href="#nav-comData-complete" role="tab" aria-controls="nav-com" aria-selected="true">Current Company Details</a>
-                            <a class="nav-item nav-link" id="nav-report-tab-complete" data-toggle="tab" href="#nav-comReport-complete" role="tab" aria-controls="nav-report" aria-selected="false">Rejected Company Details Update</a>
+                            <a class="nav-item nav-link" id="nav-report-tab-complete" data-toggle="tab" href="#nav-comReport-complete" role="tab" aria-controls="nav-report" aria-selected="false">Rejected/Approved Company Details Update</a>
                             <a class="nav-item nav-link" id="nav-remarks-tab-complete" data-toggle="tab" href="#nav-comRemarks-complete" (click)=toggleDisplayCompanyRemarks(actionRequest?.editId) role="tab" aria-controls="nav-remarks" aria-selected="false">Remarks</a>
                         </div>
                     </nav>
@@ -236,7 +237,7 @@
                                 <div class="col-12">
                                     <div class="card" *ngFor="let siteVisitRemark of siteVisitRemarks">
                                         <div class="card-header">
-                                            <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                            <span class="badge badge-info">{{siteVisitRemark.status}}</span> By {{siteVisitRemark.remarkBy}} On {{siteVisitRemark.dateOfRemark}}
                                         </div>
                                         <div class="card-body">
                                             <blockquote class="blockquote mb-0">

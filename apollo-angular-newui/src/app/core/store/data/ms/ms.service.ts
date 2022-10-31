@@ -78,6 +78,8 @@ import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 import Swal from 'sweetalert2';
 import {AllPermitDetailsDto} from '../qa/qa.model';
+import {County} from '../county';
+import {Town} from '../town';
 
 @Injectable({
     providedIn: 'root',
@@ -740,7 +742,7 @@ export class MsService {
         );
     }
 
-    public msAddWorkPlanScheduleDetails(referenceNo: string, data: AllWorkPlanDetails): Observable<WorkPlanScheduleListDetailsDto> {
+    public msAddWorkPlanScheduleDetails(referenceNo: string, data: WorkPlanEntityDto): Observable<WorkPlanScheduleListDetailsDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
          // tslint:disable-next-line:max-line-length
@@ -759,14 +761,15 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public msUpdateWorkPlanScheduleDetails(batchReferenceNo: string, referenceNo: string,  data: WorkPlanEntityDto): Observable<WorkPlanScheduleListDetailsDto> {
+    public msUpdateWorkPlanScheduleDetails(batchReferenceNo: string, referenceNo: string,  data: WorkPlanEntityDto, updateDetails: string): Observable<WorkPlanScheduleListDetailsDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPDATE_NEW_WORK_PLAN_SCHEDULE);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNo)
+            .set('updateDetails', updateDetails);
         return this.http.put<WorkPlanScheduleListDetailsDto>(url, data, {params}).pipe(
             map(function (response: WorkPlanScheduleListDetailsDto) {
                 return response;
@@ -1561,6 +1564,36 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_COUNTRIES);
         return this.http.get<CountriesEntityDto[]>(url).pipe(
             map(function (response: CountriesEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msCountiesListDetails(): Observable<County[]> {
+        // console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_COUNTIES);
+        return this.http.get<County[]>(url).pipe(
+            map(function (response: County[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msTownsListDetails(): Observable<Town[]> {
+        // console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_TOWNS);
+        return this.http.get<Town[]>(url).pipe(
+            map(function (response: Town[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

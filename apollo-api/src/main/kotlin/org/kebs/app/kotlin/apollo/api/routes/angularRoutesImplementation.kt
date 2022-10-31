@@ -594,6 +594,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     fun migrationMarketSurveillanceRoutes(handler: NewMarketSurveillanceHandler) = router {
         "/api/v1/migration/ms".nest {
             "/common".nest {
+                GET("/towns", handler::townsListingAdmin)
+                GET("/counties", handler::countiesListingAdmin)
                 GET("/departments", handler::msDepartments)
                 GET("/divisions", handler::msDivisions)
                 GET("/laboratories", handler::msLaboratories)
