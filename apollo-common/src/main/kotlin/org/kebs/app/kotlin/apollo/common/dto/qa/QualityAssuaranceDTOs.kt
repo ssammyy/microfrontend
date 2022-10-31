@@ -634,4 +634,19 @@ data class InspectionReportDto
 
     )
 
+data class FilterDto(
+    var regionID: Long? = null,
+    var sectionId: Long? = null,
+    var statusId: Long? = null,
+    var officerId: Long? = null,
+    var category: String? = null,
+    var start: String? = null,
+    var end: String? = null,
+    var permitType: Long? = null,
+
+
+    )
+
+
+
 

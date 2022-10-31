@@ -1,8 +1,15 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {PermitEntityDto} from "../../../core/store/data/qa/qa.model";
 import {QaService} from "../../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
 import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
+import {DataTableDirective} from "angular-datatables";
+import {Subject} from "rxjs";
+import {LoadingService} from "../../../core/services/loader/loadingservice.service";
+import {NgxSpinnerService} from "ngx-spinner";
+import {HttpErrorResponse} from "@angular/common/http";
+import Swal from "sweetalert2";
+import swal from "sweetalert2";
 
 declare interface DataTable {
     headerRow: string[];
@@ -17,67 +24,118 @@ declare const $: any;
     templateUrl: './fmarkallapps.component.html',
     styleUrls: ['./fmarkallapps.component.css']
 })
-export class FmarkallappsComponent implements OnInit, AfterViewInit {
+export class FmarkallappsComponent implements OnInit {
     public dataTable: DataTable;
     public allPermitData: PermitEntityDto[];
     draftID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID);
     fmarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID);
-
+    dtOptions: DataTables.Settings = {};
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtTrigger1: Subject<any> = new Subject<any>();
+    displayUsers: boolean = false;
 
     constructor(
         private qaService: QaService,
         private router: Router,
+        private _loading: LoadingService,
+        private SpinnerService: NgxSpinnerService
     ) {
 
     }
 
     ngOnInit() {
-        let formattedArray = [];
-        this.qaService.loadPermitList(String(this.fmarkID)).subscribe(
-            (data: any) => {
-
-                this.allPermitData = data;
-                // tslint:disable-next-line:max-line-length
-                formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id]);
-
-                this.dataTable = {
-                    // tslint:disable-next-line:max-line-length
-                    headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-                    footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-                    dataRows: formattedArray
-
-
-                    // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
-
-                };
-            });
-        // console.log(this.dataTable);
-        // this.allPermitData = this.Object.json().results;
-        // console.log(formattedArray);
-
-
-        //
+        this.getAllPermitData()
     }
 
-    ngAfterViewInit() {
-        $('#datatables').DataTable({
-            'pagingType': 'full_numbers',
-            'lengthMenu': [
-                [10, 25, 50, -1],
-                [10, 25, 50, 'All']
-            ],
-            responsive: true,
-            language: {
-                search: '_INPUT_',
-                searchPlaceholder: 'Search records',
+    public getAllPermitData(): void {
+        this.SpinnerService.show();
+
+        this.qaService.loadPermitList(String(this.fmarkID)).subscribe(
+            (response: PermitEntityDto[]) => {
+                console.log(response);
+                this.allPermitData = response;
+                this.rerender()
+                this.SpinnerService.hide();
+                this.displayUsers = true;
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+                this.displayUsers = true;
+                this.SpinnerService.hide();
+
+
+            }
+        );
+
+    }
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger1.next();
+
+
+        });
+
+    }
+
+
+    ngOnDestroy(): void {
+        // Do not forget to unsubscribe the event
+        this.dtTrigger1.unsubscribe();
+
+
+    }
+    public deleteDraft(id: bigint) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-success'
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure your want to Delete This Permit?',
+            text: 'You won\'t be able to reverse this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.SpinnerService.show();
+                this.qaService.deletePermit(String(id), this.allPermitData).subscribe(
+                    (response = 'Successful Deletion') => {
+                        this.SpinnerService.hide();
+                        swalWithBootstrapButtons.fire(
+                            'Success!',
+                            'Successfully Deleted!',
+                            'success'
+                        );
+                        this.SpinnerService.hide();
+                        this.getAllPermitData();
+                    },
+                );
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'You have cancelled this operation',
+                    'error'
+                );
             }
         });
-        let table: any;
-        table = $(`#datatables`).DataTable();
 
-    }
-
-    onSelect(rowElement: string) {
-        this.router.navigate(['/smarkpermitdetails'], {fragment: rowElement});
     }
 }

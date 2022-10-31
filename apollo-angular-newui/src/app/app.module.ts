@@ -414,6 +414,7 @@ import { SystemicReviewSacSecComponent } from './apollowebs/standards-developmen
 import { SystemicReviewProofReaderComponent } from './apollowebs/standards-development/systemic-review/systemic-review-proof-reader/systemic-review-proof-reader.component';
 import { SystemReviewGazetteStandardComponent } from './apollowebs/standards-development/systemic-review/system-review-gazette-standard/system-review-gazette-standard.component';
 import { SystemReviewUpdateGazetteComponent } from './apollowebs/standards-development/systemic-review/system-review-update-gazette/system-review-update-gazette.component';
+import {MatDatepickerModule} from "@angular/material/datepicker";
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({
@@ -482,6 +483,7 @@ import { SystemReviewUpdateGazetteComponent } from './apollowebs/standards-devel
         MatListModule,
         MatBadgeModule,
         NgbRatingModule,
+        MatDatepickerModule,
         // NgxDocViewerModule
     ],
     declarations: [

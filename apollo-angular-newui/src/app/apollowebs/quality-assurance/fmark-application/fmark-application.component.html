@@ -11,16 +11,21 @@
                     <form (ngSubmit)="onClickSubmit(fmarkForm.valid)" [formGroup]="fmarkForm" class="form"
                           enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="smarkPermitID"><b>Select Standardization Mark</b></label>
-                            <select id="smarkPermitID" class="form-control" formControlName="smarkPermitID"
-                                    name="smarkPermitID"
-                                    [class.is-invalid]="formFmarkForm.smarkPermitID.invalid && formFmarkForm.smarkPermitID.touched">
-                                <option selected>Select smark</option>
-                                <option *ngFor="let permit of allPermitData"
-                                        [ngValue]="permit.id"
-                                        class="dropdown-item">{{permit.tradeMark}}</option>
-                            </select>
+                            <label><b>Select Standardization Mark</b></label>
+                            <mat-form-field>
+                                <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                            class="form-control" required
+                                            formControlName="smarkPermitID"
+                                            name="smarkPermitID"
+                                            placeholder="Select Standardization Mark Linked To The Fmark"
+                                            [class.is-invalid]="formFmarkForm.smarkPermitID.invalid && formFmarkForm.smarkPermitID.touched">
+                                    <mat-option *ngFor="let permit of allPermitData"
+                                                value="{{permit.id}}">{{permit.tradeMark}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                         </div>
+
+
                         <button type="submit" *ngIf="fmarkForm.valid" class="btn btn-primary mb-2">Confirm</button>
                 </form>
                     <br><br>

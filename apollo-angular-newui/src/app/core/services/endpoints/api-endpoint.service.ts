@@ -258,6 +258,8 @@ export class ApiEndpointService {
         DELETE_PERMIT: `${ApiEndpointService.QA_CONTEXT}/permit/delete`,
 
         PERMIT_LIST_TO_GENERATE_FMRK: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-fmark-generate`,
+        PERMIT_LIST_TO_GENERATE_FMARK_ALL_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-fmark-generated`,
+
         PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
         PERMIT_SUBMIT_DETAILS_FOR_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-review`,
         PERMIT_SUBMIT_DETAILS_FOR_HOD_QAM_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-qam-hod-review`,
@@ -276,6 +278,8 @@ export class ApiEndpointService {
         PERMIT_REPORTS_ALL_RENEWED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsRenewed`,
         PERMIT_REPORTS_ALL_SAMPLES_SUBMITTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allSamplesSubmitted`,
         PERMIT_REPORTS_ALL_DEJECTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allDejectedPermits`,
+        PERMIT_REPORTS_ALL_STATUSES: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allStatuses`,
+        PERMIT_REPORTS_ALL_OFFICES: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allOfficers`,
 
 
         VIEW_ALL_PAYMENTS: `${ApiEndpointService.QA_CONTEXT}/payments`,

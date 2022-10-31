@@ -279,6 +279,13 @@ export class SectionDto {
     status: boolean;
 }
 
+export class RegionDto {
+    id: bigint;
+    region: string;
+    descriptions: string;
+    status: boolean;
+}
+
 
 export class FilesListDto {
     id: bigint;
@@ -513,4 +520,8 @@ export interface SamplesSubmittedDto {
     section: string;
     product: string
 }
+export class StatusesDto {
+    id: bigint;
+    processStatusName: string;
 
+}
