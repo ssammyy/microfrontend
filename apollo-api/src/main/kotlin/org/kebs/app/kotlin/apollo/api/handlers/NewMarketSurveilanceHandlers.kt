@@ -1608,12 +1608,13 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val finalReportStatus = req.paramOrNull("finalReportStatus") ?: throw ExpectedDataNotFound("Required  finalReportStatus, check parameters")
             val body = req.body<ApprovalDto>()
             val errors: Errors = BeanPropertyBindingResult(body, ApprovalDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsApprovalPreliminaryReportHOF(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsApprovalPreliminaryReportHOF(referenceNo,batchReferenceNo,body, finalReportStatus.toInt()==1)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -1633,12 +1634,13 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val finalReportStatus = req.paramOrNull("finalReportStatus") ?: throw ExpectedDataNotFound("Required  finalReportStatus, check parameters")
             val body = req.body<ApprovalDto>()
             val errors: Errors = BeanPropertyBindingResult(body, ApprovalDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsApprovalPreliminaryReportHOD(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsApprovalPreliminaryReportHOD(referenceNo,batchReferenceNo,body, finalReportStatus.toInt()==1)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -2058,12 +2060,13 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val finalReportStatus = req.paramOrNull("finalReportStatus") ?: throw ExpectedDataNotFound("Required  finalReportStatus, check parameters")
             val body = req.body<PreliminaryReportDto>()
             val errors: Errors = BeanPropertyBindingResult(body, PreliminaryReportDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.addWorkPlanInspectionDetailsPreliminaryReport(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceWorkPlanDaoServices.addWorkPlanInspectionDetailsPreliminaryReport(referenceNo,batchReferenceNo,body,finalReportStatus.toInt()==1)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -2083,12 +2086,13 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
-            val body = req.body<PreliminaryReportFinalDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, PreliminaryReportFinalDto::class.java.name)
+            val finalReportStatus = req.paramOrNull("finalReportStatus") ?: throw ExpectedDataNotFound("Required  finalReportStatus, check parameters")
+            val body = req.body<PreliminaryReportDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, PreliminaryReportDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(referenceNo,batchReferenceNo,body,finalReportStatus.toInt()==1)
                         .let {
                             ServerResponse.ok().body(it)
                         }

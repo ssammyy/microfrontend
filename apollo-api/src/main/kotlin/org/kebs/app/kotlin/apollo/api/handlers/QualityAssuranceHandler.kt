@@ -3919,31 +3919,31 @@ class QualityAssuranceHandler(
 
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun filterAllApplicationsReports(req: ServerRequest): ServerResponse {
-        return try {
-            val map = commonDaoServices.serviceMapDetails(appId)
-
-            val body = req.body<FilterDto>()
-            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
-                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
-
-            var permitListAllApplications: List<ReportPermitEntityDto>? = null
-
-            permitListAllApplications = qaDaoServices.listPermitsReports(
-                qaDaoServices.filterAllApplicationsReports(
-                  body
-                ), map
-            )
-
-            return ok().body(permitListAllApplications)
-
-
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message, e)
-            KotlinLogging.logger { }.debug(e.message, e)
-            badRequest().body(e.message ?: "UNKNOWN_ERROR")
-        }
-
-    }
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun filterAllApplicationsReports(req: ServerRequest): ServerResponse {
+//        return try {
+//            val map = commonDaoServices.serviceMapDetails(appId)
+//
+//            val body = req.body<FilterDto>()
+//            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+//                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+//
+//            var permitListAllApplications: List<ReportPermitEntityDto>? = null
+//
+////            permitListAllApplications = qaDaoServices.listPermitsReports(
+////                qaDaoServices.filterAllApplicationsReports(
+////                  body
+////                ), map
+////            )
+//
+//            return ok().body(permitListAllApplications)
+//
+//
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+//        }
+//
+//    }
 }

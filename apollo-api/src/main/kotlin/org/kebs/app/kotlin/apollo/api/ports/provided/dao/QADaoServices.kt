@@ -6889,10 +6889,6 @@ class QADaoServices(
         }
 
             ?: throw ExpectedDataNotFound("No Permit Found")
-
-
-
-
     }
 
     //build query
