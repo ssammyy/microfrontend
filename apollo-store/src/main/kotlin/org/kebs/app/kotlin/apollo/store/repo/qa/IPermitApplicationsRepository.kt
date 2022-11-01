@@ -503,18 +503,19 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun deletePermit(@Param("permitID") permitID: Long)
 
     @Query(
-        value = "SELECT a.* from APOLLO.DAT_KEBS_PERMIT_TRANSACTION a  inner join DAT_KEBS_COMPANY_PROFILE b on a.COMPANY_ID = b.ID where (:startDate is null or a.CREATED_ON BETWEEN :startDate and :endDate) and (:regionId is null or b.REGION =:regionId) and (:permitStatus is null or a.PERMIT_STATUS =:permitStatus) and(:officerId is null or a.HOF_ID=:officerId) and(:firmCategory is null or b.FIRM_CATEGORY =:firmCategory) and PERMIT_TYPE=:permitType",
+        value = "SELECT a.* from APOLLO.DAT_KEBS_PERMIT_TRANSACTION a  inner join DAT_KEBS_COMPANY_PROFILE b on a.COMPANY_ID = b.ID where (:startDate is null or a.CREATED_ON BETWEEN :startDate and :endDate) and (:regionId is null or b.REGION =:regionId) and (:sectionId is null or a.SECTION_ID =:sectionId) and (:permitStatus is null or a.PERMIT_STATUS =:permitStatus) and(:officerId is null or a.HOF_ID=:officerId) and(:firmCategory is null or b.FIRM_CATEGORY =:firmCategory) and PERMIT_TYPE=:permitType",
         nativeQuery = true
     )
     fun findFilteredPermits(
         @Param("startDate") startDate: Timestamp,
         @Param("endDate") endDate: Timestamp,
         @Param("regionId") regionId: Long,
+        @Param("sectionId") sectionId: Long,
         @Param("permitStatus") permitStatus: Long,
         @Param("officerId") officerId: Long,
         @Param("firmCategory") firmCategory: Long,
         @Param("permitType") permitType: Long
-    )
+    ): List<PermitApplicationsEntity>?
 
 }
 

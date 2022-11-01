@@ -150,37 +150,69 @@ class PvocMonitoringService(
         documentType: String,
         documentCategory: String?,
         reviewStatus: Int?,
-        page: PageRequest
+        page: PageRequest,
+        keywords: String? = null
     ): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val data = when (documentCategory) {
-                "F", "foreign" -> reviewStatus?.let { status ->
-                    this.cocCoiRepository.findByCocTypeAndDocumentsTypeAndReviewStatus(
+                "F", "foreign" -> when {
+                    !keywords.isNullOrEmpty() -> this.cocCoiRepository.findByCocTypeAndDocumentsTypeAndCocNumberContainsOrCocTypeAndDocumentsTypeAndUcrNumberContains(
                         documentType,
                         "F",
-                        status,
+                        keywords,
+                        documentType,
+                        "F",
+                        keywords,
                         page
                     )
-                } ?: this.cocCoiRepository.findByCocTypeAndDocumentsType(documentType, "F", page)
-                "L", "local" -> {
-                    reviewStatus?.let { status ->
+                    else -> reviewStatus?.let { status ->
                         this.cocCoiRepository.findByCocTypeAndDocumentsTypeAndReviewStatus(
                             documentType,
-                            "L",
+                            "F",
                             status,
                             page
                         )
-                    } ?: this.cocCoiRepository.findByCocTypeAndDocumentsType(documentType, "L", page)
+                    } ?: this.cocCoiRepository.findByCocTypeAndDocumentsType(documentType, "F", page)
+                }
+                "L", "local" -> {
+                    when {
+                        !keywords.isNullOrEmpty() -> this.cocCoiRepository.findByCocTypeAndDocumentsTypeAndCocNumberContainsOrCocTypeAndDocumentsTypeAndUcrNumberContains(
+                            documentType,
+                            "L",
+                            keywords,
+                            documentType,
+                            "L",
+                            keywords,
+                            page
+                        )
+                        else -> reviewStatus?.let { status ->
+                            this.cocCoiRepository.findByCocTypeAndDocumentsTypeAndReviewStatus(
+                                documentType,
+                                "L",
+                                status,
+                                page
+                            )
+                        } ?: this.cocCoiRepository.findByCocTypeAndDocumentsType(documentType, "L", page)
+                    }
                 }
                 else -> {
-                    reviewStatus?.let { status ->
-                        this.cocCoiRepository.findByCocTypeAndReviewStatus(
+                    when {
+                        !keywords.isNullOrEmpty() -> this.cocCoiRepository.findByCocTypeAndCocNumberContainsOrCocTypeAndUcrNumberContains(
                             documentType,
-                            status,
+                            keywords,
+                            documentType,
+                            keywords,
                             page
                         )
-                    } ?: this.cocCoiRepository.findByCocType(documentType, page)
+                        else -> reviewStatus?.let { status ->
+                            this.cocCoiRepository.findByCocTypeAndReviewStatus(
+                                documentType,
+                                status,
+                                page
+                            )
+                        } ?: this.cocCoiRepository.findByCocType(documentType, page)
+                    }
                 }
             }
             response.data = data.toList()
@@ -230,21 +262,55 @@ class PvocMonitoringService(
         return response
     }
 
-    fun listForeignCor(category: String?, reviewStatus: Int?, page: PageRequest): ApiResponseModel {
+    fun listForeignCor(
+        category: String?,
+        reviewStatus: Int?,
+        page: PageRequest,
+        keywords: String? = null
+    ): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val data = when (category) {
                 "F", "foreign" -> {
-                    reviewStatus?.let { status ->
-                        this.corBakRepository.findByDocumentsTypeAndReviewStatus("F", status, page)
-                    } ?: this.corBakRepository.findByDocumentsType("F", page)
+                    when {
+                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByDocumentsTypeAndCorNumberContainsOrDocumentsTypeAndChasisNumberContains(
+                            "F",
+                            keywords,
+                            "F",
+                            keywords,
+                            page
+                        )
+                        else -> reviewStatus?.let { status ->
+                            this.corBakRepository.findByDocumentsTypeAndReviewStatus("F", status, page)
+                        } ?: this.corBakRepository.findByDocumentsType("F", page)
+                    }
                 }
-                "L", "local" -> reviewStatus?.let { status ->
-                    this.corBakRepository.findByDocumentsTypeAndReviewStatus("L", status, page)
-                } ?: this.corBakRepository.findByDocumentsType("L", page)
-                else -> reviewStatus?.let { status ->
-                    this.corBakRepository.findByReviewStatus(status, page)
-                } ?: this.corBakRepository.findAll(page)
+                "L", "local" -> {
+                    when {
+                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByDocumentsTypeAndCorNumberContainsOrDocumentsTypeAndChasisNumberContains(
+                            "L",
+                            keywords,
+                            "L",
+                            keywords,
+                            page
+                        )
+                        else -> reviewStatus?.let { status ->
+                            this.corBakRepository.findByDocumentsTypeAndReviewStatus("L", status, page)
+                        } ?: this.corBakRepository.findByDocumentsType("L", page)
+                    }
+                }
+                else -> {
+                    when {
+                        !keywords.isNullOrEmpty() -> this.corBakRepository.findByCorNumberContainsOrChasisNumberContains(
+                            keywords,
+                            keywords,
+                            page
+                        )
+                        else -> reviewStatus?.let { status ->
+                            this.corBakRepository.findByReviewStatus(status, page)
+                        } ?: this.corBakRepository.findAll(page)
+                    }
+                }
 
             }
             response.data = CorEntityDao.fromList(data.toList())

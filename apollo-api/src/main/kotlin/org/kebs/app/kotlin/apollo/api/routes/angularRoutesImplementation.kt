@@ -581,6 +581,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/allDejectedPermits", handler::loadAllDejectedPermitsForReports)
                     GET("/allOfficers", handler::loadAllOfficersForReports)
                     GET("/allStatuses", handler::loadAllStatusesForReports)
+                    POST("/filter", handler::filterAllApplicationsReports)
 
 
                 }
@@ -673,12 +674,18 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                                 handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD
                             )
                             PUT("/final-recommendation", handler::addWorkPlanScheduleFinalRecommendationByHOD)
-                            PUT("/end-adding-final-recommendation", handler::addWorkPlanScheduleEndFinalRecommendationAddingByHOD)
+                            PUT(
+                                "/end-adding-final-recommendation",
+                                handler::addWorkPlanScheduleEndFinalRecommendationAddingByHOD
+                            )
                             PUT("/feedBack-notification", handler::addWorkPlanScheduleFeedBackByHOD)
                         }
                         "/director".nest {
                             PUT("/recommendation", handler::addWorkPlanScheduleFeedBackByDirector)
-                            PUT("/end-recommendation", handler::addWorkPlanScheduleEndFinalRecommendationAddingByDirector)
+                            PUT(
+                                "/end-recommendation",
+                                handler::addWorkPlanScheduleEndFinalRecommendationAddingByDirector
+                            )
                         }
                     }
                     "/add".nest {
@@ -694,7 +701,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/end-sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionEndBsNumber)
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
-                        PUT("/final-ssf-compliance-status-save", handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd)
+                        PUT(
+                            "/final-ssf-compliance-status-save",
+                            handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd
+                        )
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
 //                        PUT("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
                         POST("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)

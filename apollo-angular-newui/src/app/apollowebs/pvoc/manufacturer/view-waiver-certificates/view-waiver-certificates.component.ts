@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {LocalDataSource} from "ng2-smart-table";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PVOCService} from "../../../../core/store/data/pvoc/pvoc.service";
+import {DatePipe} from "@angular/common";
 
 @Component({
     selector: 'app-view-waiver-certificates',
@@ -53,9 +54,15 @@ export class ViewWaiverCertificatesComponent implements OnInit {
                 title: 'APPLICANT NAME',
                 type: 'string'
             },
-            createdOn: {
+            submittedOn: {
                 title: 'APPLICATION DATE',
-                type: 'string'
+                type: 'date',
+                valuePrepareFunction: (date) => {
+                    if (date) {
+                        return new DatePipe('en-US').transform(date, 'dd/MM/yyyy hh:mm');
+                    }
+                    return ""
+                },
             },
             reviewStatus: {
                 title: 'REVIEW STATUS',

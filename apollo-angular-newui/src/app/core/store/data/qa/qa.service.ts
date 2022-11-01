@@ -6,7 +6,7 @@ import {catchError, map} from 'rxjs/operators';
 import {
     AllBatchInvoiceDetailsDto,
     AllPermitDetailsDto,
-    AllSTA10DetailsDto,
+    AllSTA10DetailsDto, FilterDto,
     FmarkEntityDto,
     GenerateInvoiceDto,
     MPesaPushDto,
@@ -263,6 +263,19 @@ export class QaService {
             .set('permitID', permitID);
         return this.http.post<PermitEntityDto>(url, data, {params}).pipe(
             map(function (response: PermitEntityDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public applyFilter(data: FilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.FILTER_REPORTS);
+
+        return this.http.post<FilterDto>(url, data, {}).pipe(
+            map(function (response: FilterDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

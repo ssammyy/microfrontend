@@ -74,7 +74,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-12 col-md-12">
+                                    <div class="col-sm-12 col-md-6">
                                         <label for="phoneNo" class="waiver-form-label"><b>Phone number</b></label>
                                         <input aria-describedby="inputGroup-sizing-sm"
                                                aria-label="Small"
@@ -258,7 +258,7 @@
                                 <div class="container">
                                     <form #demoForm="ngForm">
                                         <file-upload [(ngModel)]="uploadedFiles" name="files"
-                                                     fileslimit="5" accept=".pdf, .png, .jpg"></file-upload>
+                                                     fileslimit="5" accept="image/*,application/pdf"></file-upload>
                                     </form>
 
                                     <div class="row">

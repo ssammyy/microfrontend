@@ -280,6 +280,7 @@ export class ApiEndpointService {
         PERMIT_REPORTS_ALL_DEJECTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allDejectedPermits`,
         PERMIT_REPORTS_ALL_STATUSES: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allStatuses`,
         PERMIT_REPORTS_ALL_OFFICES: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allOfficers`,
+        FILTER_REPORTS: `${ApiEndpointService.QA_CONTEXT}/permit/reports/filter`,
 
 
         VIEW_ALL_PAYMENTS: `${ApiEndpointService.QA_CONTEXT}/payments`,

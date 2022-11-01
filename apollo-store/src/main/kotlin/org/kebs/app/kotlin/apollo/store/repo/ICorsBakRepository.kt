@@ -13,12 +13,29 @@ interface ICorsBakRepository : HazelcastRepository<CorsBakEntity, Long> {
     fun findByChasisNumber(chasisNumber: String): CorsBakEntity?
     fun findByCorNumber(corNumber: String): CorsBakEntity?
     fun findByDocumentsTypeAndReviewStatus(documentsType: String, status: Int, page: Pageable): Page<CorsBakEntity>
+    fun findByDocumentsTypeAndCorNumberContainsOrDocumentsTypeAndChasisNumberContains(
+        documentsType: String,
+        corNumber: String,
+        docType: String,
+        chassisNumber: String,
+        page: Pageable
+    ): Page<CorsBakEntity>
+
+    fun findByCorNumberContainsOrChasisNumberContains(
+        corNumber: String,
+        chassisNumber: String,
+        page: Pageable
+    ): Page<CorsBakEntity>
+
     fun findByReviewStatus(status: Int, page: Pageable): Page<CorsBakEntity>
     fun findByDocumentsType(documentsType: String, page: Pageable): Page<CorsBakEntity>
     fun findByChasisNumberAndVersion(chasisNumber: String, version: Long?): CorsBakEntity?
     fun findFirstByChasisNumberIsNotNullAndConsignmentDocIdIsNotNull(): CorsBakEntity?
     fun findByConsignmentDocId(entity: ConsignmentDocumentDetailsEntity?): CorsBakEntity?
 
-    @Query(value = "select count(*) as cc from DAT_KEBS_CORS_BAK where to_char(COR_ISSUE_DATE,'YYYY')=:gYear", nativeQuery = true)
+    @Query(
+        value = "select count(*) as cc from DAT_KEBS_CORS_BAK where to_char(COR_ISSUE_DATE,'YYYY')=:gYear",
+        nativeQuery = true
+    )
     fun countAllByYearGenerate(gYear: Long): Long
 }

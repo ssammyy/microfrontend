@@ -11,6 +11,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {formatDate} from "@angular/common";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {UserEntityDto} from "../../../../core/store";
+import * as moment from "moment/moment";
 
 @Component({
     selector: 'app-applications-received',
@@ -91,8 +92,9 @@ export class ApplicationsReceivedComponent implements OnInit {
             officerId: '',
             category: '',
             productDescription: '',
-            start: '',
-            end: '',
+            start:'',
+            end:  '',
+            permitType: ''
 
         });
 
@@ -239,6 +241,30 @@ export class ApplicationsReceivedComponent implements OnInit {
 
     applyFilter(formDirective): void {
         console.log(this.filterFormGroup.value)
+        this.qaService.applyFilter(this.filterFormGroup.value).subscribe(
+            (response: ReportsPermitEntityDto[]) => {
+                this.SpinnerService.hide();
+
+                console.log(response)
+                // this.allFMarkPermitData = response;
+                // this.rerender()
+                // // this.SpinnerService.hide();
+                // this.fMarksRetrieved = this.allFMarkPermitData.length
+                // this.fMarksRetrievedData = true;
+                // this.displayUsers = true;
+                // this.sumFMarkAmountPermit = response.filter(item => item.invoiceAmount)
+                //     .reduce((sum, current) => sum + current.invoiceAmount, 0);
+                // this.fMarkPermitsAwarded = response.filter(item => item.permitAwardStatus == true).length
+                // this.fMarkPermitsRejected = response.filter(item => item.permitAwardStatus == false).length
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+                // this.displayUsers = true;
+                // this.fMarksRetrievedData = true;
+                this.SpinnerService.hide();
+            }
+        );
 
     }
 

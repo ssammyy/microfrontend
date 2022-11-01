@@ -16,6 +16,18 @@
                     </div>
                     <div class="card-body">
                         <div class="toolbar">
+                            <div class="search-bar">
+                                <div class="input-group form-inline">
+                                    <input id="searchDocument" class="search-form-input"
+                                           [(ngModel)]="keywords" placeholder="Search Document">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-primary btn-background"
+                                                (click)="searchPhraseChanged()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
                                 <button type="button" (click)="toggleStatus('under-review')"
                                         [className]="activeStatus == 'under-review' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">

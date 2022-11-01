@@ -1261,8 +1261,8 @@ class DestinationInspectionService(
                         return
                     }
                     val documentType = when {
-                        coc.clean.equals("Y", true) -> "NCR"
-                        else -> "COC"
+                        coc.clean.equals("Y", true) -> "COC"
+                        else -> "NCR"
                     }
                     cocsRepository.findByUcrNumberAndCocType(coc.ucrNumber ?: "NA", documentType)
                         ?.let {

@@ -139,6 +139,10 @@ export class CorCertificatesComponent implements OnInit {
         this.loadData()
     }
 
+    searchPhraseChanged() {
+        this.loadData()
+    }
+
     pageChange(pageIndex) {
         if (pageIndex) {
             this.currentPageInternal = pageIndex - 1

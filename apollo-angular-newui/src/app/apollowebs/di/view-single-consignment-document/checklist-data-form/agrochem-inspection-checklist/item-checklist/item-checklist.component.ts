@@ -52,7 +52,7 @@ export class ItemChecklistComponent implements OnInit {
             quantityVerified: [formData ? formData.quantityVerified : '', Validators.maxLength(256)],
             dateMfgPackaging: [formData ? formData.dateMfgPackaging : null, Validators.maxLength(256)],
             quantityVerifiedUnit: [formData ? formData.quantityVerifiedUnit : '', Validators.maxLength(25)],
-            dateExpiry: [formData ? formData.dateExpiry : '', Validators.maxLength(256)],
+            dateExpiry: [formData ? formData.dateExpiry : null],
             mfgName: [formData ? formData.mfgName : null, Validators.maxLength(256)],
             mfgAddress: [formData ? formData.mfgAddress : '', Validators.maxLength(256)],
             compositionIngredients: [formData ? formData.compositionIngredients : '', Validators.maxLength(256)],

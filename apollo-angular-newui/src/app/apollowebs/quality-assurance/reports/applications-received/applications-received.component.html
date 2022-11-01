@@ -221,14 +221,14 @@
                                                                                                 name="category"
                                                                                                 formControlName="category"
                                                                                                 placeholder="By category">
-                                                                                        <mat-option value="lme">Large
+                                                                                        <mat-option value="Large">Large
                                                                                             Medium
                                                                                             Enterprise
                                                                                         </mat-option>
-                                                                                        <mat-option value="lme">Medium
+                                                                                        <mat-option value="Medium">Medium
                                                                                             Enterprise
                                                                                         </mat-option>
-                                                                                        <mat-option value="lme">Small
+                                                                                        <mat-option value="Small">Small
                                                                                             Medium
                                                                                             Enterprise
                                                                                         </mat-option>
@@ -274,6 +274,12 @@
                                                                                            placeholder="Enter Product Description">
                                                                                 </div>
                                                                             </div>
+                                                                            <input type="hidden"
+
+                                                                                   id="permitType"
+                                                                                   formControlName="permitType"
+                                                                                   ngModel ="{{dMarkID}}"
+                                                                                   >
                                                                         </div>
                                                                         <button mat-raised-button
                                                                                 class="btn btn-secondary btn-lg"
