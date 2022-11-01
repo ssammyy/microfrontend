@@ -525,3 +525,13 @@ export class StatusesDto {
     processStatusName: string;
 
 }
+export class FilterDto {
+     regionID: number;
+     sectionId: number;
+     statusId: number;
+     officerId: number;
+     category: string;
+     start: Date;
+     end: Date;
+     permitType: number;
+}

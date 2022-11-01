@@ -6855,44 +6855,32 @@ class QADaoServices(
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun filterAllApplicationsReports(body: FilterDto) {
-        val map = commonDaoServices.serviceMapDetails(appId)
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+    fun filterAllApplicationsReports(
+        startDate: Timestamp,
+        endDate: Timestamp,
+        regionID: Long,
+        sectionId: Long,
+        statusId: Long,
+        officerId: Long,
+        firmCategoryId: Long,
+        permitType: Long
+    ) : List<PermitApplicationsEntity>  {
 
+        println(
+            "Start Date: " + startDate + " End Date: " + endDate + "." + " Category: "
+                    + firmCategoryId   + regionID
+            +sectionId
+            +statusId
+            +officerId
+        );
 
-        val startDate = Timestamp.valueOf(body.start)
-        val endDate = Timestamp.valueOf(body.end)
-        var firmCategoryId: Long? = null
-        if (body.category.equals("Large")) {
-             firmCategoryId = 3
-        } else if (body.category.equals("Small")) {
-            firmCategoryId = 2
-
-        } else if (body.category.equals("Medium")) {
-            firmCategoryId = 1
-        }
-        body.regionID?.let {
-            body.statusId?.let { it1 ->
-                body.officerId?.let { it2 ->
-                    if (firmCategoryId != null) {
-                        body.permitType?.let { it3 ->
-                            permitRepo.findFilteredPermits(
-                                startDate,endDate, it, it1, it2,firmCategoryId, it3
-                            )
-                                .let { permitList ->
-                                    return permitList
-                                }
-                        }
-                    }
-                }
+        permitRepo.findFilteredPermits(
+            startDate,endDate,regionID,sectionId,statusId,officerId,firmCategoryId,permitType)
+            ?.let { permitList ->
+                return permitList
             }
-        }
 
             ?: throw ExpectedDataNotFound("No Permit Found")
-
-
-
-
     }
 
     //build query

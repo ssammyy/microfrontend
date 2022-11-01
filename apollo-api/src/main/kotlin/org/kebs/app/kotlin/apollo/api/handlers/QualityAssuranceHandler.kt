@@ -25,7 +25,6 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
-import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
@@ -34,8 +33,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaMessageDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaPushDto
-import org.kebs.app.kotlin.apollo.common.dto.UserTypesEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.ms.WorkPlanEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -45,8 +42,6 @@ import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
-import org.kebs.app.kotlin.apollo.store.repo.qa.IQaBatchInvoiceRepository
-import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceMasterDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaProcessStatusRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
@@ -60,6 +55,7 @@ import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
+import java.sql.Timestamp
 
 
 @Component
@@ -78,13 +74,11 @@ class QualityAssuranceHandler(
     private val productSubCategoryRepo: IProductSubcategoryRepository,
     private val sampleStandardsRepository: ISampleStandardsRepository,
     private val limsServices: LimsServices,
-    private val invoiceBatchRepo: IQaBatchInvoiceRepository,
-    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val qaDaoServices: QADaoServices,
     private val jasyptStringEncryptor: StringEncryptor,
     private val iQaProcessStatusRepository: IQaProcessStatusRepository
 
-    ) {
+) {
 
 
     var employeeUserTypeId = 5L
@@ -3165,8 +3159,8 @@ class QualityAssuranceHandler(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitViewSTA10ProductsBeingManufacturedMigration(req: ServerRequest): ServerResponse {
         try {
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
-            val map = commonDaoServices.serviceMapDetails(appId)
+            commonDaoServices.loggedInUserDetails()
+            commonDaoServices.serviceMapDetails(appId)
             val qaSta10ID = req.paramOrNull("qaSta10ID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required QA Sta10 ID, check config")
             val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
@@ -3226,7 +3220,7 @@ class QualityAssuranceHandler(
             val map = commonDaoServices.serviceMapDetails(appId)
             val qaSta10ID = req.paramOrNull("qaSta10ID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required QA Sta10 ID, check config")
-            val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
+            qaDaoServices.findSta10BYID(qaSta10ID)
             val dto = req.body<List<STA10PersonnelDto>>()
             var sta10Personnel = qaDaoServices.mapDtoSTA10SectionBAndPersonnelEntity(dto)
 
@@ -3905,7 +3899,7 @@ class QualityAssuranceHandler(
     fun loadAllStatusesForReports(req: ServerRequest): ServerResponse {
         return try {
             var allOfficers: List<QaProcessStatusEntity>? = null
-            allOfficers =iQaProcessStatusRepository.findAll().sortedBy { it.id }
+            allOfficers = iQaProcessStatusRepository.findAll().sortedBy { it.id }
 
 
 
@@ -3921,28 +3915,76 @@ class QualityAssuranceHandler(
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun filterAllApplicationsReports(req: ServerRequest): ServerResponse {
-        return try {
+        try {
             val map = commonDaoServices.serviceMapDetails(appId)
-
             val body = req.body<FilterDto>()
-            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
-                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
 
-            var permitListAllApplications: List<ReportPermitEntityDto>? = null
+            val permitListAllApplications: List<ReportPermitEntityDto>?
 
-            permitListAllApplications = qaDaoServices.listPermitsReports(
-                qaDaoServices.filterAllApplicationsReports(
-                  body
-                ), map
-            )
+            var startDate: Timestamp? = null
+            var endDate: Timestamp? = null
 
-            return ok().body(permitListAllApplications)
+            if (!body.start.isNullOrBlank()) {
+                startDate = Timestamp.valueOf(body.start)
+                endDate = Timestamp.valueOf(body.end)
+            } else {
+                startDate = null
+                endDate = null
+            }
+
+            if (body.category.isNullOrBlank()) {
+                body.category = null
+            }
+
+            var firmCategoryId: Long? = null
+            if (body.category.equals("Large")) {
+                firmCategoryId = 3
+            } else if (body.category.equals("Small")) {
+                firmCategoryId = 1
+
+            } else if (body.category.equals("Medium")) {
+                firmCategoryId = 2
+            }
+
+            println(body)
+
+
+
+            permitListAllApplications = body.regionID?.let {
+                startDate?.let { it1 ->
+                    endDate?.let { it2 ->
+                        body.statusId?.let { it3 ->
+                            body.officerId?.let { it4 ->
+                                firmCategoryId?.let { it5 ->
+                                    body.permitType?.let { it6 ->
+                                        qaDaoServices.filterAllApplicationsReports(
+                                            it1, it2, regionID = it, sectionId = body.regionID!!, statusId = it3,
+                                            officerId = it4, it5, permitType = it6
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }?.let {
+                qaDaoServices.listPermitsReports(
+                    it, map
+                )
+            }
+
+
+
+            return permitListAllApplications.let { it?.let { it1 -> ok().body(it1) }!! }
 
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
-            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.info(e.message, e)
+            KotlinLogging.logger { }.trace(e.message, e)
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+
         }
 
     }
