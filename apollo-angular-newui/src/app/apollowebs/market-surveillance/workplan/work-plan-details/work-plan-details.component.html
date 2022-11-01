@@ -5937,6 +5937,7 @@
     </div>
     <!-- End Work Plan Modal -->
 
+    <!-- FINAL RECOMMENDATION Modal -->
     <div class="modal fade" id="finalRecommendationView" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -5961,16 +5962,18 @@
                                 <div class="list-text-accordion">
                                     {{selectedProductRecommendation?.referenceNo}}</div>
                             </li>
-                            <li class="list-item-accordion">
-                                <div class="list-title-accordion">Client Full Name</div>
-                                <div class="list-text-accordion">
-                                    {{selectedProductRecommendation?.destructionClientFullName}}</div>
-                            </li>
-                            <li class="list-item-accordion">
-                                <div class="list-title-accordion">Client Email</div>
-                                <div class="list-text-accordion">
-                                    {{selectedProductRecommendation?.destructionClientEmail}}</div>
-                            </li>
+                            <div *ngIf="selectedProductRecommendation?.destructionClientFullName != null">
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Client Full Name</div>
+                                    <div class="list-text-accordion">
+                                        {{selectedProductRecommendation?.destructionClientFullName}}</div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Client Email</div>
+                                    <div class="list-text-accordion">
+                                        {{selectedProductRecommendation?.destructionClientEmail}}</div>
+                                </li>
+                            </div>
                             <li *ngIf="selectedProductRecommendation?.hodRecommendationStatus" class="list-item-accordion">
                                 <div class="list-title-accordion">HOD Remarks</div>
                                 <div class="list-text-accordion">
@@ -6035,6 +6038,7 @@
             </div>
         </div>
     </div>
+    <!-- FINAL RECOMMENDATION Modal -->
 
     <!-- Sample Submit Lab Results Modal -->
     <div class="modal fade" id="sampleLabResultsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

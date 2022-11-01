@@ -67,12 +67,12 @@ export class WorkPlanBatchListComponent implements OnInit {
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       yearName: {
         title: 'YEAR NAME',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       userCreated: {
         title: 'CREATED BY',
@@ -82,17 +82,17 @@ export class WorkPlanBatchListComponent implements OnInit {
       createdDate: {
         title: 'CREATED DATE',
         type: 'date',
-        filter: false,
+        filter: true,
       },
       endedDate: {
         title: 'ENDED DATE',
         type: 'date',
-        filter: false,
+        filter: true,
       },
       workPlanStatus: {
         title: 'APPROVAL STATUS',
         type: 'boolean',
-        filter: false,
+        filter: true,
       },
     },
     pager: {
