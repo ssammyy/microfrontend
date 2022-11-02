@@ -59,6 +59,10 @@ export class ManifestDocumentsComponent implements OnInit {
                 title: 'Consignor',
                 type: 'string'
             },
+            voyageNumber: {
+                title: 'Voyage No.',
+                type: 'string'
+            },
             messageDate: {
                 title: 'Message Date',
                 type: 'date',
@@ -134,12 +138,12 @@ export class ManifestDocumentsComponent implements OnInit {
         }
     }
 
-    filterByCurrency(event: any) {
+    findManifestDocument(event: any) {
         if (this.form.value.startDate) {
             const startDate = new DatePipe('en-US').transform(this.form.value.startDate, 'dd-MM-yyyy');
-            this.loadManifestDocuments(startDate, this.form.status)
+            this.loadManifestDocuments(startDate, this.form.status, this.form.value.keywords)
         } else {
-            this.loadManifestDocuments(null, this.form.status)
+            this.loadManifestDocuments(null, this.form.status, this.form.value.keywords)
         }
 
     }
@@ -164,8 +168,8 @@ export class ManifestDocumentsComponent implements OnInit {
             )
     }
 
-    loadManifestDocuments(startDate: string, status: string) {
-        this.diService.loadManifestDocuments(status, startDate)
+    loadManifestDocuments(startDate: string, status: string, keywords?: string) {
+        this.diService.loadManifestDocuments(status, startDate, keywords)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {

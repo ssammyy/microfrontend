@@ -17,8 +17,10 @@
                         <div class="toolbar">
                             <div class="search-bar">
                                 <div class="input-group form-inline">
+                                    <label for="searchDocument" [hidden]="true"></label>
                                     <input id="searchDocument" class="search-form-input"
-                                           [(ngModel)]="keywords" placeholder="Search Document">
+                                           [(ngModel)]="keywords"
+                                           placeholder="Search by UCR Number or {{documentTypeLabel}}">
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-primary btn-background"
                                                 (click)="searchPhraseChanged($event)">

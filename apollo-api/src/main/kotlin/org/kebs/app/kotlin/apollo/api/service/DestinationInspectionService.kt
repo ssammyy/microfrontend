@@ -99,7 +99,12 @@ class DestinationInspectionService(
 
     ) {
     val dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-    fun listManifestDocuments(category: String?, date: String?, page: PageRequest): ApiResponseModel {
+    fun listManifestDocuments(
+        category: String?,
+        date: String?,
+        page: PageRequest,
+        keywords: String?
+    ): ApiResponseModel {
         var referenceDate = LocalDate.now()
         if (!date.isNullOrEmpty()) {
             referenceDate = LocalDate.from(dateFormat.parse(date))
@@ -116,7 +121,7 @@ class DestinationInspectionService(
                         Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
                         page
                     )
-                } ?: manifestRepository.findAllByStatus(1,page)
+                } ?: manifestRepository.findAllByStatus(1, page)
                 "incomplete" -> date?.let {
                     manifestRepository.findByStatusAndCreatedOnBetween(
                         0,
@@ -124,15 +129,31 @@ class DestinationInspectionService(
                         Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
                         page
                     )
-                } ?: manifestRepository.findAllByStatus(0,page)
+                } ?: manifestRepository.findAllByStatus(0, page)
                 else -> {
                     date?.let {
-                        manifestRepository.findByCreatedOnBetween(
-                            Timestamp.valueOf(referenceDate.atStartOfDay()),
-                            Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
-                            page
-                        )
-                    } ?: manifestRepository.findAll(page)
+                        when {
+                            !keywords.isNullOrEmpty() -> manifestRepository.findByCreatedOnBetweenAndManifestNumberContains(
+                                Timestamp.valueOf(referenceDate.atStartOfDay()),
+                                Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
+                                keywords,
+                                page
+                            )
+                            else -> manifestRepository.findByCreatedOnBetween(
+                                Timestamp.valueOf(referenceDate.atStartOfDay()),
+                                Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
+                                page
+                            )
+                        }
+                    } ?: run {
+                        when {
+                            !keywords.isNullOrEmpty() -> manifestRepository.findByManifestNumberContains(
+                                keywords,
+                                page
+                            )
+                            else -> manifestRepository.findAll(page)
+                        }
+                    }
                 }
             }
             response.data = data.toList()
@@ -150,7 +171,12 @@ class DestinationInspectionService(
         return response
     }
 
-    fun listIncompleteIdfDocuments(category: String?, date: String?, page: PageRequest): ApiResponseModel {
+    fun listIncompleteIdfDocuments(
+        category: String?,
+        date: String?,
+        page: PageRequest,
+        keywords: String?
+    ): ApiResponseModel {
         var referenceDate = LocalDate.now()
         if (!date.isNullOrEmpty()) {
             referenceDate = LocalDate.from(dateFormat.parse(date))
@@ -180,12 +206,28 @@ class DestinationInspectionService(
                 else -> {
                     date?.let {
                         KotlinLogging.logger { }.info("Other status: ${category} Date: $referenceDate")
-                        iIDFDetailsEntityRepository.findByCreatedOnBetween(
-                            Timestamp.valueOf(referenceDate.atStartOfDay()),
-                            Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
-                            page
-                        )
-                    } ?: iIDFDetailsEntityRepository.findAll(page)
+                        when {
+                            !keywords.isNullOrEmpty() -> iIDFDetailsEntityRepository.findByCreatedOnBetweenAndDeclarationRefNoContains(
+                                Timestamp.valueOf(referenceDate.atStartOfDay()),
+                                Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
+                                keywords,
+                                page
+                            )
+                            else -> iIDFDetailsEntityRepository.findByCreatedOnBetween(
+                                Timestamp.valueOf(referenceDate.atStartOfDay()),
+                                Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
+                                page
+                            )
+                        }
+                    } ?: run {
+                        when {
+                            !keywords.isNullOrEmpty() -> iIDFDetailsEntityRepository.findByDeclarationRefNoContains(
+                                keywords,
+                                page
+                            )
+                            else -> iIDFDetailsEntityRepository.findAll(page)
+                        }
+                    }
                 }
             }
             response.data = data.toList()

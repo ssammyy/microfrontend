@@ -149,8 +149,7 @@ export class ImportationWaiverComponent implements OnInit {
             contactPersonPhone: new FormControl(null, Validators.required),
             contactPersonEmail: new FormControl(null, [Validators.required, Validators.email]),
             category: new FormControl(null, Validators.required),
-            justification: new FormControl('', Validators.required),
-            productDescription: new FormControl(null, Validators.required)
+            justification: new FormControl('', Validators.required)
         })
     }
 

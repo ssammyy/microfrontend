@@ -1,4 +1,5 @@
 <div class="main-content">
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-3 col-md-6 col-sm-6">
@@ -225,7 +226,8 @@
                                                                                             Medium
                                                                                             Enterprise
                                                                                         </mat-option>
-                                                                                        <mat-option value="Medium">Medium
+                                                                                        <mat-option value="Medium">
+                                                                                            Medium
                                                                                             Enterprise
                                                                                         </mat-option>
                                                                                         <mat-option value="Small">Small
@@ -244,6 +246,7 @@
                                                                                         <mat-label>Enter a date range
                                                                                         </mat-label>
                                                                                         <mat-date-range-input
+                                                                                                [max]="today"
                                                                                                 [rangePicker]="picker">
                                                                                             <input matStartDate
                                                                                                    placeholder="Start date"
@@ -267,19 +270,23 @@
                                                                                 <div class="form-group">
                                                                                     <label><strong> By Product
                                                                                         Description:</strong></label>
-                                                                                    <input type="text"
-                                                                                           matInput
-                                                                                           id="productDescription"
-                                                                                           formControlName="productDescription"
-                                                                                           placeholder="Enter Product Description">
+                                                                                    <mat-form-field
+                                                                                            class="example-full-width">
+
+                                                                                        <input type="text"
+                                                                                               matInput
+                                                                                               id="productDescription"
+                                                                                               formControlName="productDescription"
+                                                                                               placeholder="Enter Product Description">
+                                                                                    </mat-form-field>
                                                                                 </div>
                                                                             </div>
                                                                             <input type="hidden"
 
                                                                                    id="permitType"
                                                                                    formControlName="permitType"
-                                                                                   ngModel ="{{dMarkID}}"
-                                                                                   >
+                                                                                   ngModel="{{dMarkID}}"
+                                                                            >
                                                                         </div>
                                                                         <button mat-raised-button
                                                                                 class="btn btn-secondary btn-lg"

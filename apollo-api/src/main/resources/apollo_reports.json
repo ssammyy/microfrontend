@@ -91,7 +91,8 @@
         "assigned_to": "cdd.ASSIGNED_INSPECTION_OFFICER",
         "assigned_by": "cdd.ASSIGNER",
         "line_number": "citm.SHIPMENT_LINE_NUMBER",
-        "date__range": "c.COR_ISSUE_DATE"
+        "date__range": "c.COC_ISSUE_DATE",
+        "coi_date__range": "c.COI_ISSUE_DATE"
       },
       "fields": {
         "c.IDF_NUMBER": "IDF NUMBER",

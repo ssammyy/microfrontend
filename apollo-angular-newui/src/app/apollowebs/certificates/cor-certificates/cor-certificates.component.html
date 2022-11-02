@@ -17,8 +17,9 @@
                         <div class="toolbar">
                             <div class="search-bar">
                                 <div class="input-group form-inline">
+                                    <label for="searchDocument" [hidden]="true">Search</label>
                                     <input id="searchDocument" class="search-form-input"
-                                           [(ngModel)]="keywords" placeholder="Search Document">
+                                           [(ngModel)]="keywords" placeholder="Search By COR or Chassis No.">
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-primary btn-background"
                                                 (click)="searchPhraseChanged()">
