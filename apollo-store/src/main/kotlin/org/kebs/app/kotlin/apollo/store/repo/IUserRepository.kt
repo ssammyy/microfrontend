@@ -609,23 +609,29 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 
     @Query(
         value = "SELECT p.ID as PenaltyOrderNo, c.ENTRY_NUMBER as entryNo,c.KRA_PIN as kraPin,c.NAME as manufacName,p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,p.PENALTY_DATE as penaltyGenDate,p.LEVY_PENALTY_PAYABLE as penaltyPayable FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
-                "ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE  p.PENALTY_APPLIED='1' ",
+                "ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE  p.PENALTY_APPLIED='1' AND p.PENALTY_SENT='0' ",
         nativeQuery = true
     )
     fun getPenaltyDetails(): MutableList<PenaltyDetails>
 
     @Query(
         value = "SELECT p.ID as PenaltyOrderNo FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p\n" +
-                "ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE  p.PENALTY_APPLIED='1'",
+                "ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE  p.PENALTY_APPLIED='1' AND p.PENALTY_SENT='0'",
         nativeQuery = true
     )
     fun updatedPenalty(): MutableList<PenaltyDetails>
 
     @Query(
-        value = "UPDATE LOG_KEBS_STANDARD_LEVY_PAYMENTS SET STATUS='3' WHERE ID=:id ",
+        value = "UPDATE LOG_KEBS_STANDARD_LEVY_PAYMENTS SET PENALTY_SENT='1' WHERE ID=:id ",
         nativeQuery = true
     )
     fun updatePenaltyStatus(id: Long): Long
+
+    @Query(
+        value = "UPDATE LOG_KEBS_STANDARD_LEVY_PAYMENTS SET PENALTY_SENT='2' WHERE ID=:id ",
+        nativeQuery = true
+    )
+    fun updatePenaltyStatusNotSent(id: Long): Long
 
 //   @Transactional
 //   @Modifying

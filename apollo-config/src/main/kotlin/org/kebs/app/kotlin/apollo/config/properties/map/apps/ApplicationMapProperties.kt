@@ -1329,6 +1329,24 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.suspended}")
     val suspended: Long? = null
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.active.collection.path}")
+    val mapSLActiveFirmsPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.closed.collection.path}")
+    val mapSLClosedFirmsPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.dormant.collection.path}")
+    val mapSLDormantFirmsPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.levyPayment.collection.path}")
+    val mapSLevyPaymentPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.levyPenalty.collection.path}")
+    val mapSLevyPenaltyPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.registered.collection.path}")
+    val mapSLRegisteredFirmsPath: String = ""
+
     /**
      * TODO: Why do we need this
      */

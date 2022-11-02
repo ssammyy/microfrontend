@@ -20,6 +20,7 @@ export class StandardLevyRegisteredFirmsComponent implements OnInit {
   dtElements: QueryList<DataTableDirective>;
   dtTrigger1: Subject<any> = new Subject<any>();
   loadingText: string;
+  blob: Blob;
   constructor(
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
@@ -63,6 +64,27 @@ export class StandardLevyRegisteredFirmsComponent implements OnInit {
       this.dtTrigger1.next();
     });
 
+  }
+
+  levyRegisteredFirmsReport(id: number, fileName: string, applicationType: string): void {
+    this.loadingText = "Generating Report ...."
+    this.SpinnerService.show();
+    this.levyService.levyRegisteredFirmsReport(id).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.levyService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 
 }

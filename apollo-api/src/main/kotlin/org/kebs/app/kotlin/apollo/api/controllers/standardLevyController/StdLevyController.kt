@@ -1789,6 +1789,180 @@ class StdLevyController(
         return standardLevyService.getClosedFirms()
     }
 
+    @RequestMapping(value = ["/levyRegisteredFirmsReport"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun levyRegisteredFirmsReport(
+        response: HttpServletResponse
+       // @RequestParam(value = "id") id: Long
+    ) {
+
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val registeredFirmsDetails = companyProfileRepo.getRegisteredFirms()
+        val registeredFirmsDTO = standardLevyService.mapRegisteredFirms(registeredFirmsDetails)
+        val pdfReportStream = reportsDaoService.extractExcelReport(
+            map,
+            applicationMapProperties.mapSLRegisteredFirmsPath,
+            registeredFirmsDTO
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/excel"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Registered-Firms-${registeredFirmsDetails[0].getId()}.xlsx;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
+    @RequestMapping(value = ["/levyActiveFirmsReport"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun levyActiveFirmsReport(
+        response: HttpServletResponse
+        // @RequestParam(value = "id") id: Long
+    ) {
+
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val activeFirmsDetails = companyProfileRepo.getActiveFirms()
+        val activeFirmsDTO = standardLevyService.mapActiveFirms(activeFirmsDetails)
+        val pdfReportStream = reportsDaoService.extractExcelReport(
+            map,
+            applicationMapProperties.mapSLActiveFirmsPath,
+            activeFirmsDTO
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/excel"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Active-Firms-${activeFirmsDetails[0].getId()}.xlsx;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
+    @RequestMapping(value = ["/levyDormantFirmsReport"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun levyDormantFirmsReport(
+        response: HttpServletResponse
+        // @RequestParam(value = "id") id: Long
+    ) {
+
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val dormantFirmsDetails = companyProfileRepo.getDormantFirms()
+        val dormantFirmsDTO = standardLevyService.mapDormantFirms(dormantFirmsDetails)
+        val pdfReportStream = reportsDaoService.extractExcelReport(
+            map,
+            applicationMapProperties.mapSLDormantFirmsPath,
+            dormantFirmsDTO
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/excel"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Dormant-Firms-${dormantFirmsDTO[0].id}.xlsx;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
+    @RequestMapping(value = ["/levyClosedFirmsReport"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun levyClosedFirmsReport(
+        response: HttpServletResponse
+        // @RequestParam(value = "id") id: Long
+    ) {
+
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val closedFirmsDetails = companyProfileRepo.getClosedFirms()
+        val closedFirmsDTO = standardLevyService.mapClosedFirms(closedFirmsDetails)
+        val pdfReportStream = reportsDaoService.extractExcelReport(
+            map,
+            applicationMapProperties.mapSLClosedFirmsPath,
+            closedFirmsDTO
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/excel"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Closed-Firms-${closedFirmsDTO[0].id}.xlsx;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
+    @RequestMapping(value = ["/levyPenaltyReport"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun levyPenaltyReport(
+        response: HttpServletResponse
+        // @RequestParam(value = "id") id: Long
+    ) {
+
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val penaltyReportDetails = companyProfileRepo.getPenaltyReport()
+        val penaltyReportDTO = standardLevyService.mapLevyPenaltyReport(penaltyReportDetails)
+        val pdfReportStream = reportsDaoService.extractExcelReport(
+            map,
+            applicationMapProperties.mapSLevyPenaltyPath,
+            penaltyReportDTO
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/excel"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Penalty-report-${penaltyReportDTO[0].id}.xlsx;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
+    @RequestMapping(value = ["/levyPaymentReport"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun levyPaymentReport(
+        response: HttpServletResponse
+        // @RequestParam(value = "id") id: Long
+    ) {
+
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val paymentReportDetails = companyProfileRepo.getAllLevyPayments()
+        val paymentReportDTO = standardLevyService.mapLevyPaymentReport(paymentReportDetails)
+        val pdfReportStream = reportsDaoService.extractExcelReport(
+            map,
+            applicationMapProperties.mapSLPaymentPath,
+            paymentReportDTO
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/excel"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Penalty-report-${paymentReportDTO[0].id}.xlsx;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
 
 
 

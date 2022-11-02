@@ -1165,6 +1165,88 @@ data class LevyPaymentDTO(
         var penaltyPaid: String?=null
 )
 
+data class ActiveFirmsDTO(
+        var id: Long?=null,
+        var entryNumber:String?=null,
+        var kraPin:String?=null,
+        var name:String?=null,
+        var postalAddress:String?=null,
+        var adminLocation:String?=null,
+        var streetName:String?=null,
+        var businessLineName:String?=null,
+        var regionName:String?=null,
+        var townName:String?=null
+
+)
+
+data class RegisteredFirmsDTO(
+        var id: Long?=null,
+        var entryNumber:String?=null,
+        var kraPin:String?=null,
+        var name:String?=null,
+        var postalAddress:String?=null,
+        var companyTelephone:String?=null,
+        var companyEmail:String?=null,
+        var streetName:String?=null,
+        var businessLineName:String?=null,
+        var regionName:String?=null,
+        var townName:String?=null,
+        var CreatedOn:String?=null
+
+)
+
+data class DormantFirmsDTO(
+        var id: Long?=null,
+        var entryNumber:String?=null,
+        var kraPin:String?=null,
+        var name:String?=null,
+        var postalAddress:String?=null,
+        var streetName:String?=null,
+        var businessLineName:String?=null,
+        var regionName:String?=null
+
+)
+
+data class ClosedFirmsDTO(
+        var id: Long?=null,
+        var entryNumber:String?=null,
+        var kraPin:String?=null,
+        var name:String?=null,
+        var postalAddress:String?=null,
+        var streetName:String?=null,
+        var businessLineName:String?=null,
+        var regionName:String?=null,
+        var dateOfClosure:String?=null
+
+)
+
+data class LevyPaymentReportDTO(
+        var id: Long?=null,
+        var entryNumber:String?=null,
+        var kraPin:String?=null,
+        var name:String?=null,
+        var businessLineName:String?=null,
+        var regionName:String?=null,
+        var periodTo: String?=null,
+        var paymentDate: String?=null,
+        var levyPaid: String?=null,
+
+)
+
+data class LevyPenaltyReportDTO(
+        var id: Long?=null,
+        var entryNumber:String?=null,
+        var kraPin:String?=null,
+        var name:String?=null,
+        var periodFrom: String?=null,
+        var penaltyPaid: String?=null,
+        var paymentDate: String?=null,
+        var monthsLate: String?=null,
+        var totalPenaltyAmt: String?=null,
+        var amountDue: String?=null
+
+        )
+
 data class LevyPaymentsDTO(
         var Id: Long? = null,
         var entryNumber: String?=null,

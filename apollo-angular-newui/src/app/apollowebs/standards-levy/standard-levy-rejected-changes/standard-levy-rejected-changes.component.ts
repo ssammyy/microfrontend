@@ -26,7 +26,7 @@ export class StandardLevyRejectedChangesComponent implements OnInit {
   constructor(
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
-      private levyService: LevyService,
+      private levyService: LevyService
   ) { }
 
   ngOnInit(): void {
@@ -100,6 +100,9 @@ export class StandardLevyRejectedChangesComponent implements OnInit {
     container.appendChild(button);
     button.click();
 
+  }
+  exportExcel(): void {
+    this.levyService.exportExcel('ExampleTable');
   }
 
 }

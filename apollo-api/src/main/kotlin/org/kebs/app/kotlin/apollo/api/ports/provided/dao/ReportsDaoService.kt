@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.JasperFillManager
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource
 import net.sf.jasperreports.engine.export.JRPdfExporter
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter
 import net.sf.jasperreports.engine.xml.JRXmlLoader
 import net.sf.jasperreports.export.SimpleExporterInput
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
@@ -110,6 +111,63 @@ class ReportsDaoService(
         pdfExporter.exportReport()
         return pdfReportStream
     }
+
+    fun extractExcelReport(
+        map: HashMap<String, Any>,
+        filePath: String,
+        listCollect: List<Any>
+    ): ByteArrayOutputStream {
+//        map["imagePath"] = logoImageFile
+        val dataSource = JRBeanCollectionDataSource(listCollect)
+        // Handle classpath resource
+        val file: InputStream?
+        if (filePath.startsWith("classpath:")) {
+            file = resourceLoader.getResource(filePath).inputStream
+        } else {
+            file = ResourceUtils.getFile(filePath).inputStream()
+        }
+        val design = JRXmlLoader.load(file)
+        val jasperReport = JasperCompileManager.compileReport(design)
+        val jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource)
+        val xlsxExporter = JRXlsxExporter()
+        val pdfReportStream = ByteArrayOutputStream()
+        xlsxExporter.setExporterInput(SimpleExporterInput(jasperPrint))
+        xlsxExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
+        xlsxExporter.exportReport()
+        return pdfReportStream
+    }
+
+    fun extractExcelReport(
+        map: HashMap<String, Any>,
+        response: HttpServletResponse,
+        filePath: String,
+        listCollect: List<Any>
+    ) {
+        map["imagePath"] = logoImageFile
+        val dataSource = JRBeanCollectionDataSource(listCollect)
+        val file = ResourceUtils.getFile(filePath)
+        val design = JRXmlLoader.load(file)
+        val jasperReport = JasperCompileManager.compileReport(design)
+        val jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource)
+        val xlsxExporter = JRXlsxExporter()
+        //val pdfExporter = JRPdfExporter()
+        val pdfReportStream = ByteArrayOutputStream()
+        xlsxExporter.setExporterInput(SimpleExporterInput(jasperPrint))
+        xlsxExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
+        xlsxExporter.exportReport()
+        response.contentType = "application/excel"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; filename=jasper.html;")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(pdfReportStream.toByteArray())
+                responseOutputStream.close()
+                pdfReportStream.close()
+            }
+
+
+    }
+
 
     fun extractReport(
         map: HashMap<String, Any>,

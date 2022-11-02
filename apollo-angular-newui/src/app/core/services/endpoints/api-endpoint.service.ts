@@ -593,6 +593,12 @@ export class ApiEndpointService {
         STD_LEVY_DORMANT_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getDormantFirms`,
         STD_LEVY_CLOSED_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getClosedFirms`,
         STD_LEVY_REJECTED_FIRM_EDITS: `${ApiEndpointService.STL_CONTEXT}/getRejectedCompanyDetails`,
+        STD_LEVY_VIEW_REG_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyRegisteredFirmsReport`,
+        STD_LEVY_VIEW_ACTIVE_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyActiveFirmsReport`,
+        STD_LEVY_VIEW_DORMANT_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyDormantFirmsReport`,
+        STD_LEVY_VIEW_CLOSED_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyClosedFirmsReport`,
+        STD_LEVY_VIEW_PENALTY_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyPenaltyReport`,
+        STD_LEVY_VIEW_PAYMENT_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyPaymentReport`,
 
 
     };

@@ -8,7 +8,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.common.dto.CompanySlFormDto
-import org.kebs.app.kotlin.apollo.common.dto.ms.LevyPaymentDTO
+import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetailsBody
 import org.kebs.app.kotlin.apollo.common.dto.stdLevy.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -2470,6 +2470,121 @@ return getUserTasks();
         }
     }
 
+    fun mapActiveFirms(data: List<RegisteredFirms>):List<ActiveFirmsDTO>{
+        return data.map {
+            ActiveFirmsDTO(
+              it.getId(),
+                it.getEntryNumber(),
+                it.getKraPin(),
+                it.getName(),
+                it.getPostalAddress(),
+                it.getAdminLocation(),
+                it.getBusinessLineName(),
+                it.getRegionName()
+
+            )
+
+        }
+
+    }
+
+    fun mapRegisteredFirms(data: List<RegisteredFirms>):List<RegisteredFirmsDTO>{
+        return data.map {
+            RegisteredFirmsDTO(
+                it.getId(),
+                it.getEntryNumber(),
+                it.getKraPin(),
+                it.getName(),
+                it.getPostalAddress(),
+                it.getCompanyTelephone(),
+                it.getCompanyEmail(),
+                it.getStreetName(),
+                it.getBusinessLineName(),
+                it.getRegionName(),
+                it.getTownName(),
+                it.getCreatedOn()
+
+            )
+
+        }
+
+    }
+
+    fun mapDormantFirms(data: List<RegisteredFirms>):List<DormantFirmsDTO>{
+        return data.map {
+            DormantFirmsDTO(
+                it.getId(),
+                it.getEntryNumber(),
+                it.getKraPin(),
+                it.getName(),
+                it.getPostalAddress(),
+                it.getStreetName(),
+                it.getBusinessLineName(),
+                it.getRegionName()
+
+            )
+
+        }
+
+    }
+
+    fun mapClosedFirms(data: List<RegisteredFirms>):List<ClosedFirmsDTO>{
+        return data.map {
+            ClosedFirmsDTO(
+                it.getId(),
+                it.getEntryNumber(),
+                it.getKraPin(),
+                it.getName(),
+                it.getPostalAddress(),
+                it.getStreetName(),
+                it.getBusinessLineName(),
+                it.getRegionName(),
+                it.getDateOfClosure()
+
+            )
+
+        }
+
+    }
+    fun mapLevyPenaltyReport(data: List<AllLevyPayments>):List<LevyPenaltyReportDTO>{
+        return data.map {
+            LevyPenaltyReportDTO(
+                it.getId(),
+                it.getEntryNumber(),
+                it.getKraPin(),
+                it.getCompanyName(),
+                it.getPeriodFrom(),
+                it.getPenaltyPaid(),
+                it.getPaymentDate(),
+                it.getMonthsLate(),
+                it.getTotalPenaltyAmt(),
+                it.getAmountDue()
+
+            )
+
+        }
+
+    }
+
+    fun mapLevyPaymentReport(data: List<AllLevyPayments>):List<LevyPaymentReportDTO>{
+        return data.map {
+            LevyPaymentReportDTO(
+                it.getId(),
+                it.getEntryNumber(),
+                it.getKraPin(),
+                it.getCompanyName(),
+                it.getBusinessLineName(),
+                it.getRegionName(),
+                it.getPeriodTo(),
+                it.getPaymentDate(),
+                it.getLevyPaid()
+
+            )
+
+        }
+
+    }
+
 
     fun updatePenaltyDetails(): String {
         var updatedPenalties= companyProfileRepo.updatedPenalty()
@@ -2477,6 +2592,17 @@ return getUserTasks();
             val penaltyId=item.getPenaltyOrderNo()
             if (penaltyId != null) {
                 companyProfileRepo.updatePenaltyStatus(penaltyId)
+            }
+        }
+
+        return "Updated"
+    }
+    fun updatePenaltyDetailsNotSent(): String {
+        var updatedPenalties= companyProfileRepo.updatedPenalty()
+        updatedPenalties.forEach { item->
+            val penaltyId=item.getPenaltyOrderNo()
+            if (penaltyId != null) {
+                companyProfileRepo.updatePenaltyStatusNotSent(penaltyId)
             }
         }
 

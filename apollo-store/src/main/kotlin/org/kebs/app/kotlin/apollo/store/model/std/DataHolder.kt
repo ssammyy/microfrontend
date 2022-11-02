@@ -131,6 +131,7 @@ interface AllLevyPayments{
     fun getRegion(): Long?
     fun getRegionName(): String?
     fun getPeriodTo(): String?
+    fun getPeriodFrom(): String?
     fun getPaymentSlipDate(): String?
     fun getPaymentDate(): String?
     fun getLevyPaid(): String?

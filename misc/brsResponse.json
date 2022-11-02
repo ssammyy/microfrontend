@@ -64,31 +64,20 @@ curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendPenaltyDet
 "HEADER": {
 "loginId": "KEBSUSER",
 "password": "password@1",
-"hash": "79f5c0e9c9bbee1639678fb97a8c1d6df1cbd752c0505c30ad0bce033980e19c",
-"noOfRecords": "2",
-"transmissionDate": "21-04-2022T00:36:56"
-}
-,
+"hash": "afbaea14b4f765f3d47407508a017de8e92a028beb626edac1c3e3d7d5040a1b",
+"noOfRecords": "1",
+"transmissionDate": "28-10-2022T10:44:10"
+},
 "PENALTYINFO": [
 {
-"PenaltyOrderNo": "202205",
-"entryNo": "20220511876226",
-"kraPin": "P051654254J",
-"manufacName": "INGWE PURE WATERS",
-"periodFrom": "31-01-2021",
-"periodTo": "27-02-2021",
-"penaltyGenDate": "23-06-2022T19:05:25",
-"penaltyPayable": "10000"
-},
-{
-"PenaltyOrderNo": "3",
-"entryNo": "9",
-"kraPin": "A008087125R",
-"manufacName": "rAPHCHEM sUPPLIES",
-"periodFrom": "01-01-2020",
-"periodTo": "31-12-2020",
-"penaltyGenDate": "01-02-2022T19:05:25",
-"penaltyPayable": "20000"
+"entryNo": "20221028236438",
+"periodTo": "2022-09-30",
+"periodFrom": "2022-09-01",
+"PenaltyOrderNo": 33801,
+"penaltyPayable": 100,
+"kraPin": "A001112210H",
+"penaltyGenDate": "28-10-2022T11:45:25",
+"manufacName": "URBAN SPRINGS WATER POINT"
 }
 ]
 }
@@ -102,121 +91,20 @@ curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendPenaltyDet
 "HEADER": {
 "loginId": "KEBSUSER",
 "password": "password@1",
-"hash": "b6b675e60594b7133be230c91d407d21a47e41a192d11d643cd15f9af9e9d1b4",
-"noOfRecords": "11",
-"transmissionDate": "23-06-2022T19:05:25"
-}
-,
+"hash": "a6c5466f8e304d4ef97997748889ebb468d81132de68e8012f8c7c7689dcf9fd",
+"noOfRecords": "1",
+"transmissionDate": "28-10-2022T12:41:18"
+},
 "PENALTYINFO": [
 {
-"entryNo": "20220616351728",
-"periodTo": "2022-03-31 00:00:00.0",
-"periodFrom": "2022-03-01 00:00:00.0",
-"penaltyOrderNo": 63,
-"penaltyPayable": 1,
-"kraPin": "P051654254J",
-"penaltyGenDate": null,
-"manufacName": "DUNCY VENTURES"
-},
-{
-"entryNo": "20220511016773",
-"periodTo": "2022-01-31 00:00:00.0",
-"periodFrom": "2022-01-01 00:00:00.0",
-"penaltyOrderNo": 125,
-"penaltyPayable": 0,
-"kraPin": "A006834506Vasas",
-"penaltyGenDate": null,
-"manufacName": "CRYSTAL ECOBLUE LIMITED"
-},
-{
-"entryNo": "20220511016773",
-"periodTo": "2022-02-28 00:00:00.0",
-"periodFrom": "2022-02-01 00:00:00.0",
-"penaltyOrderNo": 126,
-"penaltyPayable": 0,
-"kraPin": "A006834506Vasas",
-"penaltyGenDate": null,
-"manufacName": "CRYSTAL ECOBLUE LIMITED"
-},
-{
-"entryNo": "20220428347847",
-"periodTo": "2021-02-27 00:00:00.0",
-"periodFrom": "2021-02-01 00:00:00.0",
-"penaltyOrderNo": 41,
-"penaltyPayable": 0,
-"kraPin": "P051673658R",
-"penaltyGenDate": null,
-"manufacName": "JACRINE COMPANY LIMITED"
-},
-{
-"entryNo": "20220504873106",
-"periodTo": "2022-05-31 00:00:00.0",
-"periodFrom": "2022-05-01 00:00:00.0",
-"penaltyOrderNo": 82,
-"penaltyPayable": 0,
-"kraPin": "P05194974765Q",
-"penaltyGenDate": null,
-"manufacName": "MATHAI SUPERMARKETS LIMITED"
-},
-{
-"entryNo": "20220504873106",
-"periodTo": "2021-02-27 00:00:00.0",
-"periodFrom": "2021-02-01 00:00:00.0",
-"penaltyOrderNo": 62,
-"penaltyPayable": 0,
-"kraPin": "P05194974765Q",
-"penaltyGenDate": null,
-"manufacName": "MATHAI SUPERMARKETS LIMITED"
-},
-{
-"entryNo": "20220504638644",
-"periodTo": "2021-02-27 00:00:00.0",
-"periodFrom": "2021-02-01 00:00:00.0",
-"penaltyOrderNo": 61,
-"penaltyPayable": 0,
-"kraPin": "P052006836Z",
-"penaltyGenDate": null,
-"manufacName": "NEWCENT INDUSTRIES LIMITED"
-},
-{
-"entryNo": "20220516903947",
-"periodTo": "2022-04-30 00:00:00.0",
-"periodFrom": "2022-04-01 00:00:00.0",
-"penaltyOrderNo": 101,
-"penaltyPayable": 0,
-"kraPin": "A010564781A",
-"penaltyGenDate": null,
-"manufacName": "MZAMBARAUNI  WATER & INVESTMENT CO LIMITED"
-},
-{
-"entryNo": "20220608296284",
-"periodTo": "2022-01-31 00:00:00.0",
-"periodFrom": "2022-01-01 00:00:00.0",
-"penaltyOrderNo": 161,
-"penaltyPayable": 0,
-"kraPin": "P051904091N",
-"penaltyGenDate": null,
-"manufacName": "EROT MERCHANTS  LIMITED"
-},
-{
-"entryNo": "20220608296284",
-"periodTo": "2022-05-31 00:00:00.0",
-"periodFrom": "2022-05-01 00:00:00.0",
-"penaltyOrderNo": 182,
-"penaltyPayable": 0,
-"kraPin": "P051904091N",
-"penaltyGenDate": null,
-"manufacName": "EROT MERCHANTS  LIMITED"
-},
-{
-"entryNo": "20220608296284",
-"periodTo": "2022-04-30 00:00:00.0",
-"periodFrom": "2022-04-01 00:00:00.0",
-"penaltyOrderNo": 181,
-"penaltyPayable": 0,
-"kraPin": "P051904091N",
-"penaltyGenDate": null,
-"manufacName": "EROT MERCHANTS  LIMITED"
+"entryNo": "20221028236438",
+"periodTo": "30-09-2022",
+"periodFrom": "01-09-2022",
+"PenaltyOrderNo": 33801,
+"penaltyPayable": 100,
+"kraPin": "A001112210H",
+"penaltyGenDate": "28-10-2022T11:48:04",
+"manufacName": "URBAN SPRINGS WATER POINT"
 }
 ]
 }
@@ -237,14 +125,24 @@ curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendPenaltyDet
 },
 "PENALTYINFO": [
 {
-"entryNo": "20220616351728",
-"periodTo": "31-03-2022",
-"periodFrom": "01-03-2022",
-"PenaltyOrderNo": 63,
-"penaltyPayable": 1,
-"kraPin": "P051654254J",
-"penaltyGenDate": "21-04-2022T00:36:56",
+"entryNo": "20221028236438",
+"periodTo": "2022-09-30",
+"periodFrom": "2022-09-01",
+"PenaltyOrderNo": 33801,
+"penaltyPayable": 100,
+"kraPin": "A001112210H",
+"penaltyGenDate": "28-10-2022T11:45:25",
 "manufacName": "DUNCY VENTURES"
+},
+{
+"PenaltyOrderNo": "33801",
+"entryNo": "20221028236438",
+"kraPin": "A001112210H",
+"manufacName": "URBAN SPRINGS WATER POINT",
+"periodFrom": "2022-09-01",
+"periodTo": "2022-09-30",
+"penaltyGenDate": "28-10-2022T11:45:25",
+"penaltyPayable": "100"
 },
 {
 "entryNo": "20220428347847",

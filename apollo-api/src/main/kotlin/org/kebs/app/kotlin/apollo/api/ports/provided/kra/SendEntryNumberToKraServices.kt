@@ -20,6 +20,7 @@ import org.kebs.app.kotlin.apollo.store.model.KraEntryNumberRequestLogEntity
 import org.kebs.app.kotlin.apollo.store.model.KraPenaltyDetailsRequestLogEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.PenaltyDetails
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.stereotype.Service
@@ -313,7 +314,8 @@ class SendEntryNumberToKraServices(
                         updatedOn = commonDaoServices.getTimestamp()
                     }
                     resultSaved=   iKraPenaltyDetailsRequestLogEntityRepository.save(transactionsRequest)
-                    standardLevyService.updatePenaltyDetails()
+                    penaltyDetail.getPenaltyOrderNo()?.let { companyRepo.updatePenaltyStatus(it) }
+                    //standardLevyService.updatePenaltyDetails()
 
 
                 } else {
@@ -324,6 +326,7 @@ class SendEntryNumberToKraServices(
                         updatedOn = commonDaoServices.getTimestamp()
                     }
                     resultSaved =   iKraPenaltyDetailsRequestLogEntityRepository.save(transactionsRequest)
+                    penaltyDetail.getPenaltyOrderNo()?.let { companyRepo.updatePenaltyStatusNotSent(it) }
                 }
             }
         }

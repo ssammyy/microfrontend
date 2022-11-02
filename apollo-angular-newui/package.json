@@ -106,6 +106,7 @@
     "uglify-js": "3.11.1",
     "validate": "5.1.0",
     "web-animations-js": "2.3.2",
+    "xlsx": "^0.18.5",
     "zone.js": "0.10.3"
   },
   "devDependencies": {
