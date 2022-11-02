@@ -82,7 +82,7 @@ export class ComplaintListComponent implements OnInit {
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       complaintTitle: {
         title: 'Complaint Title',
@@ -92,7 +92,7 @@ export class ComplaintListComponent implements OnInit {
       targetedProducts: {
         title: 'Product Brand',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       // complaintCategory: {
       //   title: 'Complaint Category',
@@ -102,12 +102,12 @@ export class ComplaintListComponent implements OnInit {
       transactionDate: {
         title: 'Date Received',
         type: 'date',
-        filter: false,
+        filter: true,
       },
       progressStep: {
         title: 'Status',
         type: 'string',
-        filter: false,
+        filter: true,
       },
     },
     pager: {

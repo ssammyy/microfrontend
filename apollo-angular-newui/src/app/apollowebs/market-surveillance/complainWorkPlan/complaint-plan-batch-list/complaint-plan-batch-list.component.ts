@@ -67,17 +67,17 @@ export class ComplaintPlanBatchListComponent implements OnInit {
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       yearName: {
         title: 'YEAR NAME',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       userCreated: {
         title: 'CREATED BY',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       createdDate: {
         title: 'CREATED DATE',
@@ -92,7 +92,7 @@ export class ComplaintPlanBatchListComponent implements OnInit {
       workPlanStatus: {
         title: 'APPROVAL STATUS',
         type: 'boolean',
-        filter: false,
+        filter: true,
       },
     },
     pager: {

@@ -96,6 +96,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   seizureDeclarationForm!: FormGroup;
   investInspectReportForm!: FormGroup;
   preliminaryReportForm!: FormGroup;
+  preliminaryReportFinalForm!: FormGroup;
   preliminaryReportParamForm!: FormGroup;
   investInspectReportInspectorsForm!: FormGroup;
   clientEmailNotificationForm!: FormGroup;
@@ -200,12 +201,15 @@ export class WorkPlanDetailsComponent implements OnInit {
   inspectionOfficer = false;
 
   selectedLabResults: MSSSFLabResultsDto;
+  selectedProductRecommendation: WorkPlanProductDto;
   public scfParamSelected: number;
   public ssfSelectedID: number;
   public scfParamSelectedName: string;
   public selectedSSFDetails: SampleSubmissionDto;
   public ssfCountBSNumber: number;
   public scfCountSSF: number;
+  public productsCountRecommendationHOD = 0;
+  public productsCountRecommendationDirector = 0;
 
   public settingsResourceRequierd = {
     selectMode: 'single',  // single|multi
@@ -1183,8 +1187,8 @@ export class WorkPlanDetailsComponent implements OnInit {
       edit: false,
       delete: false,
       custom: [
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View RECOMMENDATION(s)</i>'},
-        {name: 'addRemarkDirector', title: '<i class="btn btn-sm btn-primary">ADD REMARKS</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Recommendation</i>'},
+        {name: 'addRemarkDirector', title: '<i class="btn btn-sm btn-primary">Add Remarks</i>'},
       ],
       position: 'right', // left|right
     },
@@ -1246,9 +1250,133 @@ export class WorkPlanDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-        {name: 'addRecommendation', title: '<i class="btn btn-sm btn-primary">ADD RECOMMENDATION</i>'},
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View RECOMMENDATION(s)</i>'},
+        {name: 'addRecommendation', title: '<i class="btn btn-sm btn-primary">Add Recommendation</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Recommendation</i>'},
         // {name: 'addRemarkHod', title: '<i class="btn btn-sm btn-primary">ADD REMARKS</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      productName: {
+        title: 'PRODUCT NAME',
+        type: 'string',
+        filter: false,
+      },
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
+      destructionRecommended: {
+        title: 'DESTRUCTION RECOMMENDED',
+        type: 'string',
+        filter: false,
+      },
+      clientAppealed: {
+        title: 'CLIENT APPEALED',
+        type: 'string',
+        filter: false,
+      },
+      destructionStatus: {
+        title: 'DESTRUCTION STATUS',
+        type: 'string',
+        filter: false,
+      },
+      appealStatus: {
+        title: 'APPEAL STATUS',
+        type: 'date',
+        filter: false,
+      },
+      // sampleUpdated: {
+      //   title: 'Sample Updated',
+      //   type: 'custom',
+      //   renderComponent: ConsignmentStatusComponent
+      // }
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsWorkPlanProductsIO = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Recommendation</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      productName: {
+        title: 'PRODUCT NAME',
+        type: 'string',
+        filter: false,
+      },
+      referenceNo: {
+        title: 'REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
+      destructionRecommended: {
+        title: 'DESTRUCTION RECOMMENDED',
+        type: 'string',
+        filter: false,
+      },
+      clientAppealed: {
+        title: 'CLIENT APPEALED',
+        type: 'string',
+        filter: false,
+      },
+      destructionStatus: {
+        title: 'DESTRUCTION STATUS',
+        type: 'string',
+        filter: false,
+      },
+      appealStatus: {
+        title: 'APPEAL STATUS',
+        type: 'date',
+        filter: false,
+      },
+      // sampleUpdated: {
+      //   title: 'Sample Updated',
+      //   type: 'custom',
+      //   renderComponent: ConsignmentStatusComponent
+      // }
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsRecommendationList = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View Recommendation</i>'},
       ],
       position: 'right', // left|right
     },
@@ -1351,7 +1479,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     });
 
     this.finalRecommendationForm = this.formBuilder.group({
-      recommendationId: ['', Validators.required],
+      recommendationId: null,
       hodRecommendationRemarks: ['', Validators.required],
     });
 
@@ -1561,6 +1689,23 @@ export class WorkPlanDetailsComponent implements OnInit {
       // remarks : ['', Validators.required],
     });
 
+    this.preliminaryReportFinalForm = this.formBuilder.group({
+      id : null,
+      reportTo : ['', Validators.required],
+      reportFrom : ['', Validators.required],
+      reportSubject : ['', Validators.required],
+      reportTitle : ['', Validators.required],
+      reportDate : ['', Validators.required],
+      surveillanceDateFrom : ['', Validators.required],
+      surveillanceDateTo : ['', Validators.required],
+      reportBackground : ['', Validators.required],
+      kebsOfficersName : null,
+      surveillanceObjective : ['', Validators.required],
+      surveillanceConclusions : ['', Validators.required],
+      surveillanceRecommendation : ['', Validators.required],
+      // remarks : ['', Validators.required],
+    });
+
     this.scheduleRemediationForm = this.formBuilder.group({
       dateOfRemediation: ['', Validators.required],
       remarks: ['', Validators.required],
@@ -1621,7 +1766,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       productSubCategory: ['', Validators.required],
       resourcesRequired: ['', Validators.required],
       budget: ['', Validators.required],
-      // remarks: null,
+      remarks: null,
     });
 
     this.activatedRoute.paramMap.subscribe(
@@ -1661,7 +1806,23 @@ export class WorkPlanDetailsComponent implements OnInit {
       });
     }
 
-    if (this.workPlanInspection?.approvedStatus === false ) {
+    if (this.workPlanInspection?.productList?.length > 0 && this.workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal) {
+      let countRecommendationHOD = 0;
+      let countRecommendationDirector = 0;
+      for (let i = 0; i < this.workPlanInspection?.productList.length; i++) {
+        if (this.workPlanInspection?.productList[i].hodRecommendationStatus) {
+          countRecommendationHOD++;
+        }
+        if (this.workPlanInspection?.productList[i].directorRecommendationStatus) {
+          countRecommendationDirector++;
+        }
+      }
+      this.productsCountRecommendationHOD = countRecommendationHOD;
+      this.productsCountRecommendationDirector = countRecommendationDirector;
+      console.log(this.productsCountRecommendationHOD);
+    }
+
+    if (this.workPlanInspection?.onsiteStartStatus === false ) {
       this.addNewScheduleForm.patchValue(this.workPlanInspection?.updateWorkPlan);
       this.msService.msDepartmentListDetails().subscribe(
           (dataDep: MsDepartment[]) => {
@@ -1759,7 +1920,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       );
     }
 
-    switch (this.workPlanInspection?.preliminaryReport?.approvedStatusHodFinal) {
+    switch (this.workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal) {
       case true:
         this.msService.MsRecommendationListDetails().subscribe(
             (data) => {
@@ -1801,6 +1962,10 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   get formPreliminaryReportForm(): any {
     return this.preliminaryReportForm.controls;
+  }
+
+  get formPreliminaryFinalReportForm(): any {
+    return this.preliminaryReportFinalForm.controls;
   }
 
   get formFinalRecommendationForm(): any {
@@ -1891,15 +2056,25 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   updateSelectedRecommendation() {
-    this.selectedRecommendationID = this.sampleSubmitParamsForm?.get('recommendationId')?.value;
-    this.selectedRecommendationName = this.recommendationList.find(x => x.id === this.selectedRecommendationID).recommendationName;
-    console.log(`town set to ${this.selectedTown}`);
+    this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
+    // this.selectedRecommendationName = ;
+    const valueFound = this.recommendationList?.filter(x => Number(this.selectedRecommendationID) === Number(x.id));
+    for (let h = 0; h < valueFound.length; h++) {
+      this.selectedRecommendationName = valueFound[h].recommendationName;
+      console.log(`selectedRecommendationName set to ${valueFound[h].recommendationName}`);
+    }
+    console.log(`selectedRecommendationName set to ${this.selectedRecommendationName}`);
   }
 
 
   onClickAddDataRecommendationDetails() {
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
-    this.dataSaveFinalRecommendationList.push(this.dataSaveFinalRecommendationDetails);
+    const  resourceName = this.dataSaveFinalRecommendationList.filter(x => String(this.dataSaveFinalRecommendationDetails.recommendationName) === String(x.recommendationName)).length;
+    if (resourceName > 0) {
+      this.msService.showWarning('You have already added ' + this.dataSaveFinalRecommendationDetails.recommendationName);
+    } else {
+      this.dataSaveFinalRecommendationList.push(this.dataSaveFinalRecommendationDetails);
+    }
     this.finalRecommendationDetailsForm?.reset();
   }
 
@@ -1974,11 +2149,35 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.updateDataReport();
     this.updateFieldReport();
     this.updateWorkPlan();
+    this.updatePreliminaryReport();
+    this.addFinalPreliminaryReport();
     this.currDiv = divVal;
   }
 
+  addFinalPreliminaryReport() {
+    if (!this.workPlanInspection?.finalReportGenerated && this.workPlanInspection?.msPreliminaryReportStatus) {
+      this.preliminaryReportFinalForm.patchValue(this.workPlanInspection?.preliminaryReport);
+      this.dataSaveDataInspectorInvestList = [];
+      for (let prod = 0; prod < this.workPlanInspection?.preliminaryReport?.kebsOfficersName.length; prod++) {
+        this.dataSaveDataInspectorInvestList.push(this.workPlanInspection?.preliminaryReport?.kebsOfficersName[prod]);
+      }
+      this.dataSavePreliminaryReportParamList = [];
+      for (let prod = 0; prod < this.workPlanInspection?.preliminaryReport?.parametersList.length; prod++) {
+        this.dataSavePreliminaryReportParamList.push(this.workPlanInspection?.preliminaryReport?.parametersList[prod]);
+      }
+    }
+  }
+
+  updatePreliminaryReport() {
+    if (!this.workPlanInspection?.msPreliminaryReportStatus ) {
+      this.dataSaveDataInspectorInvestList = [];
+      for (let prod = 0; prod < this.workPlanInspection?.inspectionInvestigationDto?.kebsInspectors.length; prod++) {
+        this.dataSaveDataInspectorInvestList.push(this.workPlanInspection?.inspectionInvestigationDto?.kebsInspectors[prod]);
+      }
+    }
+  }
   updateDataReport() {
-    if (this.workPlanInspection?.dataReportStatus && this.workPlanInspection?.onsiteEndStatus == false) {
+    if (this.workPlanInspection?.dataReportStatus && this.workPlanInspection?.onsiteEndStatus === false) {
       this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
       this.totalCompliantValue = this.workPlanInspection?.dataReportDto?.totalComplianceScore;
       this.dataSaveDataReportParamList = [];
@@ -1989,7 +2188,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   updateFieldReport() {
-    if (this.workPlanInspection?.investInspectReportStatus &&  this.workPlanInspection?.onsiteEndStatus == false) {
+    if (this.workPlanInspection?.investInspectReportStatus &&  this.workPlanInspection?.onsiteEndStatus === false) {
       this.investInspectReportForm.patchValue(this.workPlanInspection?.inspectionInvestigationDto);
       this.dataSaveDataInspectorInvestList = [];
       for (let prod = 0; prod < this.workPlanInspection?.inspectionInvestigationDto?.kebsInspectors.length; prod++) {
@@ -1999,7 +2198,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   updateWorkPlan() {
-    if (!this.workPlanInspection?.approvedStatus) {
+    if (!this.workPlanInspection?.onsiteStartStatus) {
       this.addNewScheduleForm.patchValue(this.workPlanInspection?.updateWorkPlan);
       this.dataSaveResourcesRequiredList = [];
       for (let prod = 0; prod < this.workPlanInspection?.updateWorkPlan?.resourcesRequired.length; prod++) {
@@ -2012,7 +2211,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   public onCustomWorkPlanProductsAction(event: any): void {
     switch (event.action) {
       case 'viewRecord':
-        this.viewSSFRecord(event.data);
+        this.viewRecommendationRecord(event.data);
         break;
       case 'addRecommendation':
         this.addRecommendation(event.data);
@@ -2024,24 +2223,25 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   addRecommendation(data: WorkPlanProductDto) {
-    if (!data.hodRecommendationStatus) {
-      this.msService.showWarning('Recommendation(s) Have/Has already been added');
-    } else {
+    this.dataSaveFinalRecommendationList = [];
+    if (data?.hodRecommendationStatus) {
+      this.dataSaveFinalRecommendationList = data.recommendation;
+    }
       this.workPlanProductRefNo = data.referenceNo;
       window.$('#finalRecommendationModal').modal('show');
-    }
+    // }
 
   }
 
   addRemarksDirector(data: WorkPlanProductDto) {
-    if (!data.directorRecommendationStatus) {
-      this.msService.showWarning('Remark(s) Have/Has already been added');
-    } else {
+    // if (!data.directorRecommendationStatus) {
+    //   this.msService.showWarning('Remark(s) Have/Has already been added');
+    // } else {
       this.workPlanProductRefNo = data.referenceNo;
       this.currDiv = 'addFinalRemarksDirector';
       this.currDivLabel = 'ADD REMARKS FOR THE RECOMMENDATION ADDED';
       window.$('#myModal1').modal('show');
-    }
+    // }
 
   }
 
@@ -2096,6 +2296,12 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.sampleSubmitForm.disable();
     this.addLabParamStatus = false;
     window.$('#sampleSubmitModal').modal('show');
+  }
+
+  viewRecommendationRecord(data: WorkPlanProductDto) {
+    this.selectedProductRecommendation = data;
+
+    window.$('#finalRecommendationView').modal('show');
   }
 
   updateSSFRecord(data: SampleSubmissionDto) {
@@ -2249,6 +2455,21 @@ export class WorkPlanDetailsComponent implements OnInit {
     ).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
+
+            let countRecommendationHOD = 0;
+            let countRecommendationDirector = 0;
+            for (let i = 0; i < this.workPlanInspection?.productList.length; i++) {
+              if (this.workPlanInspection?.productList[i].hodRecommendationStatus) {
+                countRecommendationHOD++;
+              }
+              if (this.workPlanInspection?.productList[i].directorRecommendationStatus) {
+                countRecommendationDirector++;
+              }
+            }
+            this.productsCountRecommendationHOD = countRecommendationHOD;
+            this.productsCountRecommendationDirector = countRecommendationDirector;
+
+
           console.log(data);
           this.SpinnerService.hide();
           this.msService.showSuccess('FINAL REMARKS AND STATUS SAVED SUCCESSFULLY');
@@ -2439,6 +2660,19 @@ export class WorkPlanDetailsComponent implements OnInit {
         (data: any) => {
           this.workPlanInspection = data;
           console.log(data);
+          let countRecommendationHOD = 0;
+          let countRecommendationDirector = 0;
+          for (let i = 0; i < this.workPlanInspection?.productList.length; i++) {
+            if (this.workPlanInspection?.productList[i].hodRecommendationStatus) {
+              countRecommendationHOD++;
+            }
+            if (this.workPlanInspection?.productList[i].directorRecommendationStatus) {
+              countRecommendationDirector++;
+            }
+          }
+          this.productsCountRecommendationHOD = countRecommendationHOD;
+          this.productsCountRecommendationDirector = countRecommendationDirector;
+
           this.SpinnerService.hide();
           this.msService.showSuccess('FINAL RECOMMENDATION SAVED SUCCESSFULLY');
         },
@@ -2550,6 +2784,23 @@ export class WorkPlanDetailsComponent implements OnInit {
         });
   }
 
+  onClickEndAddingRecommendationHOD() {
+
+    this.msService.showSuccessWith2Message('Are you sure your want to End Adding Of Recommendation?', 'You won\'t be able to revert back/Update Recommendation  Details after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and  update Details Before Saving', 'ONSITE ACTIVITIES ENDED SUCCESSFUL', () => {
+          this.endEndAddingRecommendationHOD();
+        });
+  }
+
+  onClickEndAddingRecommendationDirector() {
+    this.msService.showSuccessWith2Message('Are you sure your want to End Adding Of Recommendation/Remarks?', 'You won\'t be able to revert back/Update Recommendation/Remarks  Details after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and  update Details Before Saving', 'ONSITE ACTIVITIES ENDED SUCCESSFUL', () => {
+          this.endEndAddingRecommendationDirector();
+        });
+  }
+
   endOnsiteActivities() {
     // if (valid) {
     this.SpinnerService.show();
@@ -2563,6 +2814,52 @@ export class WorkPlanDetailsComponent implements OnInit {
           console.log(data);
           this.SpinnerService.hide();
           this.msService.showSuccess('SCHEDULE ON-SITE DETAILS SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    // }
+  }
+
+  endEndAddingRecommendationHOD() {
+    // if (valid) {
+    this.SpinnerService.show();
+    this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+    this.msService.msWorkPlanScheduleDetailsEndAddingRecommendationHOD(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('RECOMMENDATION DETAILS SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    // }
+  }
+
+  endEndAddingRecommendationDirector() {
+    // if (valid) {
+    this.SpinnerService.show();
+    this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+    this.msService.msWorkPlanScheduleDetailsEndAddingRecommendationDirector(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('RECOMMENDATION DETAILS SAVED SUCCESSFULLY');
         },
         error => {
           this.SpinnerService.hide();
@@ -3465,7 +3762,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('INSPECTION AND INVESTIGATION REPORT DETAILS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FIELD REPORT DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -3480,6 +3777,17 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSavePreliminaryReport() {
+    this.submitted = true;
+    if (this.preliminaryReportForm.valid && this.dataSavePreliminaryReportParamList.length !== 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'ADD PRELIMINARY REPORT\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
+            this.savePreliminaryReport();
+          });
+    }
+  }
+
+  savePreliminaryReport() {
     this.submitted = true;
 
     if (this.preliminaryReportForm.valid && this.dataSavePreliminaryReportParamList.length !== 0) {
@@ -3502,6 +3810,52 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.SpinnerService.hide();
             console.log(error);
             this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+
+    } else if (this.preliminaryReportForm.invalid) {
+      this.msService.showError('KINDLY FILL IN THE FIELDS AND OUTLET DETAILS REQUIRED');
+    }
+  }
+
+  onClickSaveFinalPreliminaryReport() {
+    this.submitted = true;
+    if (this.preliminaryReportFinalForm.valid && this.dataSavePreliminaryReportParamList.length !== 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'ADD FINAL REPORT\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
+            this.saveFinalPreliminaryReport();
+          });
+    }
+  }
+
+  saveFinalPreliminaryReport() {
+    this.submitted = true;
+
+    if (this.preliminaryReportFinalForm.valid && this.dataSavePreliminaryReportParamList.length !== 0) {
+      this.SpinnerService.show();
+      this.dataSavePreliminaryReport = {...this.dataSavePreliminaryReport, ...this.preliminaryReportFinalForm.value};
+      this.dataSavePreliminaryReport.kebsOfficersName = this.dataSaveDataInspectorInvestList;
+      this.dataSavePreliminaryReport.parametersList = this.dataSavePreliminaryReportParamList;
+      if (!this.workPlanInspection?.finalReportGenerated) {
+        // @ts-ignore
+        this.dataSavePreliminaryReport?.id = -1;
+      }
+      this.msService.msWorkPlanScheduleSaveFinalPreliminaryReport(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSavePreliminaryReport
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL REPORT DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            // this.msService.showError('AN ERROR OCCURRED');
           },
       );
 
@@ -3596,21 +3950,28 @@ export class WorkPlanDetailsComponent implements OnInit {
       if (this.workPlanInspection.submittedForApprovalStatus) {
         this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
         this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;
-        this.msService.msUpdateWorkPlanScheduleDetails(
-            this.workPlanInspection.batchDetails.referenceNumber,
-            this.workPlanInspection.referenceNumber, this.dataSaveWorkPlan, String(1)).subscribe(
-            (data: any) => {
-              console.log(data);
-              this.workPlanInspection = data;
-              this.SpinnerService.hide();
-              this.msService.showSuccess('WORK-PLAN PLAN SCHEDULED UPDATED SUCCESSFULLY AND SUBMITED FOR APPROVAL');
-            },
-            error => {
-              this.SpinnerService.hide();
-              console.log(error);
-              // this.msService.showError('AN ERROR OCCURRED');
-            },
-        );
+        if (this.dataSaveWorkPlan?.remarks !== null) {
+          this.msService.msUpdateWorkPlanScheduleDetails(
+              this.workPlanInspection.batchDetails.referenceNumber,
+              this.workPlanInspection.referenceNumber, this.dataSaveWorkPlan, String(1)).subscribe(
+              (data: any) => {
+                console.log(data);
+                this.workPlanInspection = data;
+                this.SpinnerService.hide();
+                this.msService.showSuccess('WORK-PLAN PLAN SCHEDULED UPDATED SUCCESSFULLY AND SUBMITTED FOR APPROVAL');
+              },
+              error => {
+                this.SpinnerService.hide();
+                console.log(error);
+                // this.msService.showError('AN ERROR OCCURRED');
+              },
+          );
+        } else {
+          this.SpinnerService.hide();
+          this.msService.showSuccess('You have Updated the workPlan Schedule Details, But you have not added Reason for updating on' +
+              ' the field called \'Reason For Updating WorkPlan\'');
+        }
+
       } else {
         this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
         this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;

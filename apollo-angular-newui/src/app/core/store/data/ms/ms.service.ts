@@ -927,7 +927,28 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
+            .set('referenceNo', referenceNo)
+            .set('finalReportStatus', '0');
+        return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleSaveFinalPreliminaryReport(batchReferenceNo: string, referenceNo: string, data: PreliminaryReportDto): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_FINAL_REPORT);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo)
+            .set('finalReportStatus', '1');
         return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
                 return response;
@@ -965,6 +986,7 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOF_PRELIMINARY_REPORT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
+            .set('finalReportStatus', '0')
             .set('referenceNo', referenceNo);
         return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
@@ -1025,6 +1047,7 @@ export class MsService {
         );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
+            .set('finalReportStatus', '1')
             .set('referenceNo', referenceNo);
         return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
@@ -1044,6 +1067,7 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOD_FINAL_PRELIMINARY_REPORT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
+            .set('finalReportStatus', '1')
             .set('referenceNo', referenceNo);
         return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
@@ -1105,6 +1129,7 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_HOD_PRELIMINARY_REPORT);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
+            .set('finalReportStatus', '0')
             .set('referenceNo', referenceNo);
         return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
@@ -1251,6 +1276,46 @@ export class MsService {
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
         return this.http.get<WorkPlanInspectionDto>(url, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+ // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleDetailsEndAddingRecommendationHOD(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_HOD_END_ADD_FINAL_RECOMMENDATION,
+        );
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, null,{params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleDetailsEndAddingRecommendationDirector(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_DIRECTOR_END_ADD_FINAL_REMARKS_RECOMMENDATION,
+        );
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, null,{params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
                 return response;
             }),

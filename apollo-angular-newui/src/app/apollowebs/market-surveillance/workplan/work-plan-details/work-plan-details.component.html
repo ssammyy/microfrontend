@@ -65,6 +65,14 @@
                                                 <div class="list-text-accordion">
                                                     {{workPlanInspection?.batchDetails?.yearName}}</div>
                                             </li>
+                                            <br/>
+                                            <div *ngIf="workPlanInspection?.updateWorkPlan?.remarks!=null">
+                                                <b class="text-secondary">Reason For Updating WorkPlan Details</b>
+                                                <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.updateWorkPlan?.remarks}}</span></p>
+                                                <br/>
+                                            </div>
+
                                         </ul>
                                         <div class="form-row">
                                             <div class="col-md-12 mb-3">
@@ -719,30 +727,6 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.productList?.length!=0" label="11">
-                                        <ng-template mat-tab-label>
-                                            WorkPlan Products Details
-                                        </ng-template>
-                                        <div class="form-row">
-                                            <div *ngFor="let role of roles">
-                                                <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY' && workPlanInspection?.hodRecommendationStatus == false"
-                                                     class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsWorkPlanProducts"
-                                                                     [source]="workPlanInspection?.productList"
-                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
-                                                    ></ng2-smart-table>
-                                                </div>
-                                                <div *ngIf="role == 'MS_DIRECTOR_MODIFY'  && workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false"
-                                                     class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsWorkPlanProductsDirector"
-                                                                     [source]="workPlanInspection?.productList"
-                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
-                                                    ></ng2-smart-table>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </mat-tab>
                                     <mat-tab *ngIf="workPlanInspection?.preliminaryReport" label="17">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
@@ -829,7 +813,7 @@
                                             <br>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport && workPlanInspection?.finalReportGenerated" label="18">
+                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReportFinal && workPlanInspection?.finalReportGenerated" label="18">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
                                             FINAL REPORT
@@ -838,22 +822,6 @@
                                         <label style="color: #0082f3">Final Report Details</label>
                                         <div class="panel" style="max-height: 388px;">
                                             <br>
-                                            <div >
-                                                <div class="col-md-12 mb-3">
-                                                    <b class="text-secondary">CONCLUSIONS DETAILS</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                        {{workPlanInspection?.preliminaryReport?.surveillanceConclusions}}</span></p>
-                                                    <br/>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="col-md-12 mb-3">
-                                                    <b class="text-secondary">RECOMMENDATIONS DETAILS</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                        {{workPlanInspection?.preliminaryReport?.surveillanceRecommendation}}</span></p>
-                                                    <br/>
-                                                </div>
-                                            </div>
                                             <div *ngIf="workPlanInspection?.hodRecommendationStatus">
                                                 <div class="col-md-12 mb-3">
                                                     <b class="text-secondary">FINAL RECOMMENDATIONS DETAILS BY HOD/RM</b>
@@ -864,237 +832,140 @@
                                             </div>
                                             <div>
                                                 <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Preliminary Report Details</label>
+                                                    <label style="color: #0082f3">Final Report Details</label>
                                                     <ul class="w-list-unstyled">
                                                         <li class="list-item-accordion">
                                                             <div class="list-title-accordion">TO</div>
                                                             <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.reportTo}}</div>
+                                                                {{workPlanInspection?.preliminaryReportFinal?.reportTo}}</div>
                                                         </li>
                                                         <li class="list-item-accordion">
                                                             <div class="list-title-accordion">FROM</div>
                                                             <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.reportFrom}}</div>
+                                                                {{workPlanInspection?.preliminaryReportFinal?.reportFrom}}</div>
                                                         </li>
                                                         <li class="list-item-accordion">
                                                             <div class="list-title-accordion">SUBJECT</div>
                                                             <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.reportSubject}}</div>
+                                                                {{workPlanInspection?.preliminaryReportFinal?.reportSubject}}</div>
                                                         </li>
                                                         <li class="list-item-accordion">
                                                             <div class="list-title-accordion">TITLE</div>
                                                             <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.reportTitle}}</div>
+                                                                {{workPlanInspection?.preliminaryReportFinal?.reportTitle}}</div>
                                                         </li>
                                                         <li class="list-item-accordion">
                                                             <div class="list-title-accordion">DATE</div>
                                                             <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.reportDate}}</div>
+                                                                {{workPlanInspection?.preliminaryReportFinal?.reportDate}}</div>
                                                         </li>
                                                         <li class="list-item-accordion">
                                                             <div class="list-title-accordion">SURVEILLANCE DATE FROM</div>
                                                             <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.surveillanceDateFrom}}</div>
+                                                                {{workPlanInspection?.preliminaryReportFinal?.surveillanceDateFrom}}</div>
                                                         </li>
                                                         <li class="list-item-accordion">
                                                             <div class="list-title-accordion">SURVEILLANCE DATE TO</div>
                                                             <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.surveillanceDateTo}}</div>
+                                                                {{workPlanInspection?.preliminaryReportFinal?.surveillanceDateTo}}</div>
                                                         </li>
                                                         <br/>
                                                         <b class="text-secondary">BACKGROUND DETAILS</b>
+                                                        <br/>
                                                         <p class="list-paragraph-accordion"><span>
-                                                    {{workPlanInspection?.preliminaryReport?.reportBackground}}</span></p>
+                                                            {{workPlanInspection?.preliminaryReportFinal?.reportBackground}}</span></p>
                                                         <br/>
                                                         <b class="text-secondary">OBJECTIVES DETAILS</b>
+                                                        <br/>
                                                         <p class="list-paragraph-accordion"><span>
-                                                    {{workPlanInspection?.preliminaryReport?.surveillanceObjective}}</span></p>
+                                                            {{workPlanInspection?.preliminaryReportFinal?.surveillanceObjective}}</span></p>
+                                                        <br/>
+                                                        <br/>
+                                                        <b class="text-secondary">CONCLUSIONS DETAILS</b>
+                                                        <br/>
+                                                        <p class="list-paragraph-accordion"><span>
+                                                            {{workPlanInspection?.preliminaryReportFinal?.surveillanceConclusions}}</span></p>
+                                                        <br/>
+                                                        <b class="text-secondary">RECOMMENDATIONS DETAILS</b>
+                                                        <br/>
+                                                        <p class="list-paragraph-accordion"><span>
+                                                            {{workPlanInspection?.preliminaryReportFinal?.surveillanceRecommendation}}</span></p>
                                                         <br/>
                                                     </ul>
                                                     <br>
                                                     <label style="color: #0082f3">Officers Details</label>
                                                     <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsPreliminaryReportOfficers" [source]="workPlanInspection?.preliminaryReport?.kebsOfficersName"></ng2-smart-table>
+                                                        <ng2-smart-table [settings]="settingsPreliminaryReportOfficers" [source]="workPlanInspection?.preliminaryReportFinal?.kebsOfficersName"></ng2-smart-table>
                                                     </div>
                                                     <br>
                                                     <label style="color: #0082f3">Outlets visited Details</label>
                                                     <div class="table-striped table-condensed table-responsive">
                                                         <ng2-smart-table [settings]="settingsPreliminaryReportOutlets"
-                                                                         [source]="workPlanInspection?.preliminaryReport?.parametersList"
+                                                                         [source]="workPlanInspection?.preliminaryReportFinal?.parametersList"
                                                         ></ng2-smart-table>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Lab Results Details</label>
-                                                    <ul class="w-list-unstyled">
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">BS Number</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">Compliance Status</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
-                                                        </li>
-                                                        <br/>
-                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>
-                                                        <br/>
-                                                    </ul>
+                                                <div class="form-row">
                                                     <br>
-                                                    <label style="color: #0082f3">Lab Results Param</label>
+                                                    <label style="color: #0082f3">Sampled Product Details</label>
                                                     <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsLabResultsParam" [source]="workPlanInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>
-                                                    </div>
-                                                    <br>
-                                                    <label style="color: #0082f3">Lab Results PDF</label>
-                                                    <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsSavedPDFFiles"
-                                                                         [source]="workPlanInspection?.sampleLabResults?.savedPDFFiles"
-                                                                         (custom)="onCustomLIMSPDFViewAction($event)"
+                                                        <ng2-smart-table [settings]="settingsSampleSubmitted"
+                                                                         [source]="workPlanInspection?.sampleSubmitted"
+                                                                         (custom)="onCustomSSFAction($event)"
                                                         ></ng2-smart-table>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport && workPlanInspection?.finalReportGenerated == false
-                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
-                                                && workPlanInspection?.officerDetails?.id == userLoggedInID" label="19">
-                                        <!--                                    <mat-tab  label="6">-->
+                                    <mat-tab *ngIf="workPlanInspection?.productList?.length!=0 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal" label="19">
                                         <ng-template mat-tab-label>
-                                            FINAL REPORT
+                                            FINAL RECOMMENDATION DETAILS
                                         </ng-template>
-                                        <!--                                        <b class="text-primary">Lab Results Details</b>-->
-                                        <label style="color: #0082f3">Final Report Details</label>
-                                        <div class="panel" style="max-height: 388px;">
-                                            <br>
-                                            <div >
-                                                <div class="col-md-12 mb-3">
-                                                    <b class="text-secondary">CONCLUSIONS DETAILS</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                        {{workPlanInspection?.preliminaryReport?.surveillanceConclusions}}</span></p>
-                                                    <br/>
-                                                </div>
+                                        <div class="form-row">
+                                            <div *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus"
+                                                 class="table-striped table-condensed table-responsive">
+                                                <ng2-smart-table [settings]="settingsWorkPlanProductsIO"
+                                                                 [source]="workPlanInspection?.productList"
+                                                                 (custom)="onCustomWorkPlanProductsAction($event)"
+                                                ></ng2-smart-table>
                                             </div>
-                                            <div>
-                                                <div class="col-md-12 mb-3">
-                                                    <b class="text-secondary">RECOMMENDATIONS DETAILS</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                        {{workPlanInspection?.preliminaryReport?.surveillanceRecommendation}}</span></p>
-                                                    <br/>
-                                                </div>
-                                            </div>
-                                            <div *ngIf="workPlanInspection?.hodRecommendationStatus">
-                                                <div class="col-md-12 mb-3">
-                                                    <b class="text-secondary">FINAL RECOMMENDATIONS DETAILS BY HOD/RM</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                        {{workPlanInspection?.hodRecommendationRemarks}}</span></p>
-                                                    <br/>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Preliminary Report Details</label>
-                                                    <ul class="w-list-unstyled">
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">TO</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.reportTo}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">FROM</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.reportFrom}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">SUBJECT</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.reportSubject}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">TITLE</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.reportTitle}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">DATE</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.reportDate}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">SURVEILLANCE DATE FROM</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.surveillanceDateFrom}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">SURVEILLANCE DATE TO</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReport?.surveillanceDateTo}}</div>
-                                                        </li>
-                                                        <br/>
-                                                        <b class="text-secondary">BACKGROUND DETAILS</b>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                    {{workPlanInspection?.preliminaryReport?.reportBackground}}</span></p>
-                                                        <br/>
-                                                        <b class="text-secondary">OBJECTIVES DETAILS</b>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                    {{workPlanInspection?.preliminaryReport?.surveillanceObjective}}</span></p>
-                                                        <br/>
-                                                    </ul>
-                                                    <br>
-                                                    <label style="color: #0082f3">Officers Details</label>
-                                                    <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsPreliminaryReportOfficers" [source]="workPlanInspection?.preliminaryReport?.kebsOfficersName"></ng2-smart-table>
+                                            <div *ngFor="let role of roles">
+                                                <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
+                                                    <div *ngIf="workPlanInspection?.hodRecommendationStatus == false"
+                                                         class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsWorkPlanProducts"
+                                                                         [source]="workPlanInspection?.productList"
+                                                                         (custom)="onCustomWorkPlanProductsAction($event)"
+                                                        ></ng2-smart-table>
                                                     </div>
-                                                    <br>
-                                                    <label style="color: #0082f3">Outlets visited Details</label>
-                                                    <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsPreliminaryReportOutlets"
-                                                                         [source]="workPlanInspection?.preliminaryReport?.parametersList"
+                                                    <div *ngIf="workPlanInspection?.hodRecommendationStatus  && workPlanInspection?.directorRecommendationRemarksStatus == false"
+                                                         class="table-striped table-condensed table-responsive">
+                                                        <ng2-smart-table [settings]="settingsWorkPlanProducts"
+                                                                         [source]="workPlanInspection?.productList"
+                                                                         (custom)="onCustomWorkPlanProductsAction($event)"
                                                         ></ng2-smart-table>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Lab Results Details</label>
-                                                    <ul class="w-list-unstyled">
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">BS Number</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.bsNumber}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">Compliance Status</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceStatus}}</div>
-                                                        </li>
-                                                        <br/>
-                                                        <b class="text-secondary">Lab Results Compliance Remarks</b>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.sampleLabResults?.ssfResultsList?.complianceRemarks}}</span></p>
-                                                        <br/>
-                                                    </ul>
-                                                    <br>
-                                                    <label style="color: #0082f3">Lab Results Param</label>
-                                                    <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsLabResultsParam" [source]="workPlanInspection?.sampleLabResults?.parametersListTested"></ng2-smart-table>
-                                                    </div>
-                                                    <br>
-                                                    <label style="color: #0082f3">Lab Results PDF</label>
-                                                    <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsSavedPDFFiles"
-                                                                         [source]="workPlanInspection?.sampleLabResults?.savedPDFFiles"
-                                                                         (custom)="onCustomLIMSPDFViewAction($event)"
-                                                        ></ng2-smart-table>
-                                                    </div>
+                                                <div *ngIf="role == 'MS_DIRECTOR_MODIFY'  && workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false"
+                                                     class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsWorkPlanProductsDirector"
+                                                                     [source]="workPlanInspection?.productList"
+                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
+                                                    ></ng2-smart-table>
+                                                </div>
+                                                <div *ngIf="role == 'MS_IO_MODIFY'"
+                                                     class="table-striped table-condensed table-responsive">
+                                                    <ng2-smart-table [settings]="settingsWorkPlanProductsDirector"
+                                                                     [source]="workPlanInspection?.productList"
+                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
+                                                    ></ng2-smart-table>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </mat-tab>
                                     <mat-tab *ngIf="workPlanInspection?.clientAppealed" label="20">
@@ -1183,8 +1054,16 @@
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="workPlanInspection?.msProcessEndedStatus == false">
+                                        <div *ngIf="role == 'MS_DIRECTOR_MODIFY'">
+                                            <button  *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false
+                                                && productsCountRecommendationDirector == workPlanInspection?.productList?.length"
+                                                     (click)="onClickEndAddingRecommendationDirector()" mat-raised-button=""
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">END ADDING FINAL REMARKS</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                        </div>
                                         <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
-                                            <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
                                             <button  *ngIf="workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus ==false"
                                                      (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
@@ -1218,7 +1097,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                            <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
                                                 && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod== false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHod"
@@ -1229,12 +1108,11 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal == false
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal == false
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal == false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod"
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
@@ -1244,12 +1122,11 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
-                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal == false
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod"
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
@@ -1260,58 +1137,53 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
-                                                && workPlanInspection?.hodRecommendationStatus == false
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal
-                                                && workPlanInspection?.preliminaryReport?.approvedStatus
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
-                                                     (click)="openModalAddDetails('addFinalRecommendationHOD')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated
+                                                    && workPlanInspection?.hodRecommendationStatus == false
+                                                    && productsCountRecommendationHOD == workPlanInspection?.productList?.length"
+                                                     (click)="onClickEndAddingRecommendationHOD()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD FINAL RECOMMENDATION</span>
+                                                    class="mat-button-wrapper">END ADDING RECOMMENDATION</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
 
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.hodRecommendationStatus
-                                                && workPlanInspection?.destructionDocId != null
-                                                && workPlanInspection?.msEndProcessRemarks == null
-                                                && workPlanInspection?.msProcessEndedStatus == false
-                                                && workPlanInspection?.destructionRecommended"
-                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
-                                                     class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>
+<!--                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus-->
+<!--                                                && workPlanInspection?.hodRecommendationStatus-->
+<!--                                                && workPlanInspection?.destructionDocId != null-->
+<!--                                                && workPlanInspection?.msEndProcessRemarks == null-->
+<!--                                                && workPlanInspection?.msProcessEndedStatus == false-->
+<!--                                                && workPlanInspection?.destructionRecommended"-->
+<!--                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                     data-target="#myModal1"-->
+<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                    class="mat-button-wrapper">END FINAL REMARKS</span>-->
 
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.hodRecommendationStatus
-                                                && workPlanInspection?.appealStatus
-                                                && workPlanInspection?.destructionDocId == null
-                                                && workPlanInspection?.msEndProcessRemarks == null
-                                                && workPlanInspection?.msProcessEndedStatus == false
-                                                && workPlanInspection?.destructionRecommended"
-                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
-                                                     class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.hodRecommendationStatus
-                                                && workPlanInspection?.destructionDocId == null
-                                                && workPlanInspection?.msEndProcessRemarks == null
-                                                && workPlanInspection?.msProcessEndedStatus == false
-                                                && workPlanInspection?.destructionRecommended == false"
-                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
-                                                     class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
+<!--                                                <div class="mat-button-focus-overlay"></div>-->
+<!--                                            </button>-->
+<!--                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus-->
+<!--                                                && workPlanInspection?.hodRecommendationStatus-->
+<!--                                                && workPlanInspection?.appealStatus-->
+<!--                                                && workPlanInspection?.destructionDocId == null-->
+<!--                                                && workPlanInspection?.msEndProcessRemarks == null-->
+<!--                                                && workPlanInspection?.msProcessEndedStatus == false-->
+<!--                                                && workPlanInspection?.destructionRecommended"-->
+<!--                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                     data-target="#myModal1"-->
+<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>-->
+<!--                                                <div class="mat-button-focus-overlay"></div>-->
+<!--                                            </button>-->
+<!--                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus-->
+<!--                                                && workPlanInspection?.hodRecommendationStatus-->
+<!--                                                && workPlanInspection?.destructionDocId == null-->
+<!--                                                && workPlanInspection?.msEndProcessRemarks == null-->
+<!--                                                && workPlanInspection?.msProcessEndedStatus == false-->
+<!--                                                && workPlanInspection?.destructionRecommended == false"-->
+<!--                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                     data-target="#myModal1"-->
+<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>-->
+<!--                                                <div class="mat-button-focus-overlay"></div>-->
+<!--                                            </button>-->
                                         </div>
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
@@ -1333,6 +1205,19 @@
                                                         data-target="#workPlanModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPDATE WORK-PLAN</span>
+                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                                    <div class="mat-button-focus-overlay"></div>
+                                                </button>
+                                            </div>
+
+                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.onsiteStartStatus ==false
+                                            && workPlanInspection?.updatedStatus ==false
+                                            && workPlanInspection?.resubmitStatus ==false
+                                            && workPlanInspection?.approvedStatus">
+                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
+                                                        data-target="#workPlanModal"
+                                                        class="btn btn-sm btn-primary mr-2"><span
+                                                        class="mat-button-wrapper">UPDATE WORK-PLAN TEST</span>
                                                     <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
@@ -1519,6 +1404,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+
                                             <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus && workPlanInspection?.msPreliminaryReportStatus
@@ -1546,20 +1432,20 @@
                                             <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
                                             && workPlanInspection?.preliminaryReport?.rejectedStatus== false
                                             && workPlanInspection?.preliminaryReport?.approvedStatusHod
-                                            && workPlanInspection?.preliminaryReport?.surveillanceRecommendation == null
+                                            && workPlanInspection?.finalReportGenerated == false
                                             && workPlanInspection?.preliminaryReport?.rejectedStatusHod== false"
                                                      (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
+                                                     data-target="#preliminaryReportFinalModal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">ADD FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated && workPlanInspection?.preliminaryReport?.approvedStatus
                                             && workPlanInspection?.preliminaryReport?.rejectedStatus== false
-                                            && workPlanInspection?.preliminaryReport?.approvedStatusHod && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
-                                            && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal == false
-                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal
+                                            && workPlanInspection?.preliminaryReport?.approvedStatusHod && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal == false
+                                            && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal == false
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal
                                             && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
                                                      (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
@@ -1568,11 +1454,11 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated && workPlanInspection?.preliminaryReport?.approvedStatus
                                             && workPlanInspection?.preliminaryReport?.rejectedStatus== false
-                                            && workPlanInspection?.preliminaryReport?.approvedStatusHod && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
-                                            && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal
-                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal
+                                            && workPlanInspection?.preliminaryReport?.approvedStatusHod && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal == false
+                                            && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal
+                                            && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal
                                             && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
                                                      (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
@@ -1652,7 +1538,7 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                            <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
                                                 && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus"
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
@@ -1674,10 +1560,9 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus
-                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod"
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
@@ -1687,10 +1572,10 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
-                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.finalReportGenerated
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal == false
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                                && workPlanInspection?.finalReportGenerated
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod"
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
@@ -1699,10 +1584,9 @@
                                                     class="mat-button-wrapper">RE-APPROVE/REJECT FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus  == false && workPlanInspection?.resubmitStatus  == false
-                                                && workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null && workPlanInspection?.finalReportGenerated
-                                                && workPlanInspection?.preliminaryReport?.approvedStatusHofFinal  && workPlanInspection?.preliminaryReport?.approvedStatusHodFinal == false
-                                                && workPlanInspection?.preliminaryReport?.rejectedStatusHofFinal == false && workPlanInspection?.preliminaryReport?.rejectedStatusHodFinal
+                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus  == false && workPlanInspection?.resubmitStatus  == false && workPlanInspection?.finalReportGenerated
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal  && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod"
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
@@ -4069,7 +3953,7 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="finalRecommendationDetailsForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div>
                             <h5 class="mb-3" style="color: #0066B1">Recommendation Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -4128,7 +4012,7 @@
                         </div>
                     </div>
                     <form [formGroup]="finalRecommendationForm">
-                        <div class="form-group bmd-form-group is-filled">
+                        <div >
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -4357,17 +4241,6 @@
 
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Institution</b> </label>
-                                                <input class="form-control two-column-input"
-                                                       formControlName="institution"
-                                                       name="institution" type="text">
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
                                                 <label><b>Designation</b> </label>
                                                 <input [class.is-invalid]="formInvestInspectReportInspectorsForm.designation.invalid && formInvestInspectReportInspectorsForm.designation.errors"
                                                        class="form-control two-column-input"
@@ -4381,12 +4254,19 @@
                                             </div>
                                         </div>
 
+                                    </div>
+                                    <div class="row">
+
                                         <div class="col">
                                             <div class="form-group">
                                                 <button *ngIf="investInspectReportInspectorsForm.valid" mat-raised-button
                                                         class="btn btn-success" (click)="onClickAddDataInspectorOfficer()" type="button" >SAVE OFFICERS
                                                 </button>
                                             </div>
+                                        </div>
+
+                                        <div class="col">
+
                                         </div>
 
                                     </div>
@@ -4402,7 +4282,7 @@
                                             <thead>
                                             <tr>
                                                 <th>Inspector Name</th>
-                                                <th>Institution</th>
+<!--                                                <th>Institution</th>-->
                                                 <th>Designation</th>
                                                 <th>Action</th>
                                             </tr>
@@ -4410,7 +4290,7 @@
                                             <tbody>
                                             <tr *ngFor="let r of dataSaveDataInspectorInvestList; let i=index">
                                                 <td>{{r.inspectorName}}</td>
-                                                <td>{{r.institution}}</td>
+<!--                                                <td>{{r.institution}}</td>-->
                                                 <td>{{r.designation}}</td>
                                                 <td>
                                                     <button (click)="removeDataInvestInspectReportInspectors(i)"
@@ -4554,7 +4434,6 @@
 
 
 
-
                         </div>
                     </form>
 
@@ -4575,6 +4454,447 @@
         </div>
     </div>
     <!-- End PRELIMINARY REPORT Modal -->
+
+    <!-- FINAL REPORT Modal -->
+    <div class="modal fade" id="preliminaryReportFinalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fill in the Details to Generate a Final Report</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="preliminaryReportFinalForm">
+                        <div >
+
+                            <h4 class="mb-3" style="color: #0066B1">FINAL REPORT DETAILS</h4>
+                            <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>To</b> </label>
+                                        <input [class.is-invalid]="formPreliminaryFinalReportForm.reportTo.invalid && formPreliminaryFinalReportForm.reportTo.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportTo"
+                                               name="reportTo" required type="text">
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.reportTo.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.reportTo.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>From</b> </label>
+                                        <input [class.is-invalid]="formPreliminaryFinalReportForm.reportFrom.invalid && formPreliminaryFinalReportForm.reportFrom.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportFrom"
+                                               name="reportFrom" required type="text">
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.reportFrom.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.reportFrom.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Subject</b> </label>
+                                        <input [class.is-invalid]="formPreliminaryFinalReportForm.reportSubject.invalid && formPreliminaryFinalReportForm.reportSubject.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportSubject"
+                                               name="reportSubject" required type="text">
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.reportSubject.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.reportSubject.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Title</b> </label>
+                                        <input [class.is-invalid]="formPreliminaryFinalReportForm.reportTitle.invalid && formPreliminaryFinalReportForm.reportTitle.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportTitle"
+                                               name="reportTitle" required type="text">
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.reportTitle.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.reportTitle.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Date</b> </label>
+                                        <input [class.is-invalid]="formPreliminaryFinalReportForm.reportDate.invalid && formPreliminaryFinalReportForm.reportDate.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportDate"
+                                               name="reportDate" required type="date">
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.reportDate.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.reportDate.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <!--test-->
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <h4 class="mb-3" style="color: #0066B1">OTHER DETAILS</h4>
+                            <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Background Information</b> </label>
+                                        <textarea [class.is-invalid]="formPreliminaryFinalReportForm.reportBackground.invalid && formPreliminaryFinalReportForm.reportBackground.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="reportBackground"
+                                                  name="reportBackground" required type="text"></textarea>
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.reportBackground.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.reportBackground.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Objective</b> </label>
+                                        <textarea [class.is-invalid]="formPreliminaryFinalReportForm.surveillanceObjective.invalid && formPreliminaryFinalReportForm.surveillanceObjective.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="surveillanceObjective"
+                                                  name="surveillanceObjective" required type="text"></textarea>
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.surveillanceObjective.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.surveillanceObjective.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Date of From</b> </label>
+                                        <input [class.is-invalid]="formPreliminaryFinalReportForm.surveillanceDateFrom.invalid && formPreliminaryFinalReportForm.surveillanceDateFrom.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="surveillanceDateFrom"
+                                               name="surveillanceDateFrom" required type="date">
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.surveillanceDateFrom.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.surveillanceDateFrom.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Date of To</b> </label>
+                                        <input [class.is-invalid]="formPreliminaryFinalReportForm.surveillanceDateTo.invalid && formPreliminaryFinalReportForm.surveillanceDateTo.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="surveillanceDateTo"
+                                               name="surveillanceDateTo" required type="date">
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.surveillanceDateTo.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.surveillanceDateTo.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <form [formGroup]="investInspectReportInspectorsForm">
+                                <div >
+                                    <h5 class="mb-3" style="color: #0066B1">KEBS Inspectors Details</h5>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Officer Name</b> </label>
+                                                <input [class.is-invalid]="formInvestInspectReportInspectorsForm.inspectorName.invalid && formInvestInspectReportInspectorsForm.inspectorName.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="inspectorName"
+                                                       name="inspectorName" required type="text">
+                                                <div *ngIf="submitted && formInvestInspectReportInspectorsForm.inspectorName.errors" class="invalid-feedback">
+                                                    <div *ngIf="formInvestInspectReportInspectorsForm.inspectorName.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Designation</b> </label>
+                                                <input [class.is-invalid]="formInvestInspectReportInspectorsForm.designation.invalid && formInvestInspectReportInspectorsForm.designation.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="designation"
+                                                       name="designation" required type="text">
+                                                <div *ngIf="submitted && formInvestInspectReportInspectorsForm.designation.errors" class="invalid-feedback">
+                                                    <div *ngIf="formInvestInspectReportInspectorsForm.designation.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <button *ngIf="investInspectReportInspectorsForm.valid" mat-raised-button
+                                                        class="btn btn-success" (click)="onClickAddDataInspectorOfficer()" type="button" >SAVE OFFICERS
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </form>
+                            <div>
+                                <div class="material-datatables">
+                                    <div class="table-responsive">
+                                        <table id="datatablesInspectorsTestPreliminary"
+                                               class="table table-striped table-bordered table-hover"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th>Inspector Name</th>
+                                                <!--                                                <th>Institution</th>-->
+                                                <th>Designation</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let r of dataSaveDataInspectorInvestList; let i=index">
+                                                <td>{{r.inspectorName}}</td>
+                                                <!--                                                <td>{{r.institution}}</td>-->
+                                                <td>{{r.designation}}</td>
+                                                <td>
+                                                    <button (click)="removeDataInvestInspectReportInspectors(i)"
+                                                            type="button"
+                                                            class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4 class="mb-3" style="color: #0066B1">PRELIMINARY OUTLETS DETAILS</h4>
+                            <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
+                            <form [formGroup]="preliminaryReportParamForm">
+                                <div >
+                                    <h5 class="mb-3" style="color: #0066B1">Outlet Details</h5>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>DATE OF VISIT</b> </label>
+                                                <input [class.is-invalid]="formPreliminaryReportParamForm.dateVisit.invalid && formPreliminaryReportParamForm.dateVisit.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="dateVisit"
+                                                       name="dateVisit" required type="date">
+                                                <div *ngIf="submitted && formPreliminaryReportParamForm.dateVisit.errors" class="invalid-feedback">
+                                                    <div *ngIf="formPreliminaryReportParamForm.dateVisit.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>MARKET CENTRE</b> </label>
+                                                <input [class.is-invalid]="formPreliminaryReportParamForm.marketCenter.invalid && formPreliminaryReportParamForm.marketCenter.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="marketCenter"
+                                                       name="marketCenter" required type="text">
+                                                <div *ngIf="submitted && formPreliminaryReportParamForm.marketCenter.errors" class="invalid-feedback">
+                                                    <div *ngIf="formPreliminaryReportParamForm.marketCenter.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>NAME OF OUTLET</b> </label>
+                                                <input [class.is-invalid]="formPreliminaryReportParamForm.nameOutlet.invalid && formPreliminaryReportParamForm.nameOutlet.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="nameOutlet"
+                                                       name="nameOutlet" required type="text">
+                                                <div *ngIf="submitted && formPreliminaryReportParamForm.nameOutlet.errors" class="invalid-feedback">
+                                                    <div *ngIf="formPreliminaryReportParamForm.nameOutlet.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>SECTOR</b> </label>
+                                                <input [class.is-invalid]="formPreliminaryReportParamForm.sector.invalid && formPreliminaryReportParamForm.sector.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="sector"
+                                                       name="sector" required type="text">
+                                                <div *ngIf="submitted && formPreliminaryReportParamForm.sector.errors" class="invalid-feedback">
+                                                    <div *ngIf="formPreliminaryReportParamForm.sector.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <!--TEST-->
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <button *ngIf="preliminaryReportParamForm.valid" mat-raised-button
+                                                        class="btn btn-success" (click)="onClickAddPreliminaryReportParam()" type="button" >SAVE OUTLET DETAILS
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </form>
+                            <div>
+                                <div class="material-datatables">
+                                    <div class="table-responsive">
+                                        <table id="datatablesPreliminaryParamsTest"
+                                               class="table table-striped table-bordered table-hover"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th>MARKET CENTER</th>
+                                                <th>NAME OUTLET</th>
+                                                <th>SECTOR</th>
+                                                <th>DATE VISIT</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let r of dataSavePreliminaryReportParamList; let i=index">
+                                                <td>{{r.marketCenter}}</td>
+                                                <td>{{r.nameOutlet}}</td>
+                                                <td>{{r.sector}}</td>
+                                                <td>{{r.dateVisit}}</td>
+                                                <td>
+                                                    <button (click)="removePreliminaryReportParam(i)"
+                                                            type="button"
+                                                            class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4 class="mb-3" style="color: #0066B1">CONCLUSION & RECOMMENDATION DETAILS</h4>
+                            <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Conclusion</b> </label>
+                                        <textarea [class.is-invalid]="formPreliminaryFinalReportForm.surveillanceConclusions.invalid
+                                            && formPreliminaryFinalReportForm.surveillanceConclusions.touched"
+                                                  id="surveillanceConclusions6" class="form-control two-column-input"
+                                                  formControlName="surveillanceConclusions"
+                                                  name="surveillanceConclusions" required>
+                                            </textarea>
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.surveillanceConclusions.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.surveillanceConclusions.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Recommendation</b> </label>
+                                        <textarea [class.is-invalid]="formPreliminaryFinalReportForm.surveillanceRecommendation.invalid
+                                            && formPreliminaryFinalReportForm.surveillanceRecommendation.touched"
+                                                  id="surveillanceRecommendation4" class="form-control two-column-input"
+                                                  formControlName="surveillanceRecommendation"
+                                                  name="surveillanceRecommendation" required>
+                                            </textarea>
+                                        <div *ngIf="submitted && formPreliminaryFinalReportForm.surveillanceRecommendation.errors" class="invalid-feedback">
+                                            <div *ngIf="formPreliminaryFinalReportForm.surveillanceRecommendation.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                        <button *ngIf="preliminaryReportFinalForm.valid" mat-raised-button   data-dismiss="modal"
+                                class="btn btn-success" (click)="onClickSaveFinalPreliminaryReport()" type="button" >SUBMIT
+                        </button>
+                        <button *ngIf="preliminaryReportFinalForm.invalid" mat-raised-button (click)="onClickSaveFinalPreliminaryReport()" class="btn btn-success" type="button" >SUBMIT
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End FINAL REPORT Modal -->
 
     <!-- Sample collect Modal -->
     <div class="modal fade" id="sampleCollectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -5536,7 +5856,10 @@
                                     </div>
 
                                     <div class="col">
-
+                                        <div *ngIf="workPlanInspection?.submittedForApprovalStatus" class="form-group">
+                                            <label><b style="color: red">Reason For Updating WorkPlan</b> </label>
+                                            <textarea class="form-control two-column-input" formControlName="remarks" name="remarks" required type="text"></textarea>
+                                        </div>
                                     </div>
 
 
@@ -5613,6 +5936,109 @@
         </div>
     </div>
     <!-- End Work Plan Modal -->
+
+    <!-- FINAL RECOMMENDATION Modal -->
+    <div class="modal fade" id="finalRecommendationView" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Product Recommendation Details</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label style="color: #0082f3">Product Recommendation Details</label>
+                    <div class="panel">
+                        <br>
+                        <ul class="w-list-unstyled">
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Product Name</div>
+                                <div class="list-text-accordion">
+                                    {{selectedProductRecommendation?.productName}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Reference No</div>
+                                <div class="list-text-accordion">
+                                    {{selectedProductRecommendation?.referenceNo}}</div>
+                            </li>
+                            <div *ngIf="selectedProductRecommendation?.destructionClientFullName != null">
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Client Full Name</div>
+                                    <div class="list-text-accordion">
+                                        {{selectedProductRecommendation?.destructionClientFullName}}</div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Client Email</div>
+                                    <div class="list-text-accordion">
+                                        {{selectedProductRecommendation?.destructionClientEmail}}</div>
+                                </li>
+                            </div>
+                            <li *ngIf="selectedProductRecommendation?.hodRecommendationStatus" class="list-item-accordion">
+                                <div class="list-title-accordion">HOD Remarks</div>
+                                <div class="list-text-accordion">
+                                    {{selectedProductRecommendation?.hodRecommendationRemarks}}</div>
+                            </li>
+                            <li *ngIf="selectedProductRecommendation?.directorRecommendationStatus" class="list-item-accordion">
+                                <div class="list-title-accordion">DIRECTOR Remarks</div>
+                                <div class="list-text-accordion">
+                                    {{selectedProductRecommendation?.directorRecommendationRemarks}}</div>
+                            </li>
+                            <li *ngIf="selectedProductRecommendation?.clientAppealed" class="list-item-accordion">
+                                <div class="list-title-accordion">Appeal Status</div>
+
+                                <div *ngIf="selectedProductRecommendation?.appealStatus"
+                                     class="list-text-accordion">APPEAL SUCCESSFUL</div>
+                                <div *ngIf="selectedProductRecommendation?.destructionStatus==false"
+                                     class="list-text-accordion">APPEAL NOT SUCCESSFUL</div>
+                            </li>
+                            <li *ngIf="selectedProductRecommendation?.destructionRecommended" class="list-item-accordion">
+                                <div class="list-title-accordion">Destruction Status</div>
+
+                                <div *ngIf="selectedProductRecommendation?.destructionStatus"
+                                     class="list-text-accordion">DESTROYED</div>
+                                <div *ngIf="selectedProductRecommendation?.destructionStatus==false"
+                                     class="list-text-accordion">NOT-YET DESTROYED</div>
+                            </li>
+
+                        </ul>
+
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3">
+                                <label style="color: #0082f3">RECOMMENDATION LIST</label>
+                            </div>
+                            <div>
+                                <div class="material-datatables">
+                                    <div class="table-responsive">
+                                        <table id="datatables78" class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>RECOMMENDATION NAME</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let r of selectedProductRecommendation?.recommendation; let i=index">
+                                                <td>{{r.recommendationName}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FINAL RECOMMENDATION Modal -->
 
     <!-- Sample Submit Lab Results Modal -->
     <div class="modal fade" id="sampleLabResultsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -5825,4 +6251,5 @@
         </div>
     </div>
     <!-- End Sample Submit Lab Results Modal -->
+
 </div>

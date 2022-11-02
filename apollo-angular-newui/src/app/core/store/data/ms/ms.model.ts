@@ -574,6 +574,7 @@ export class WorkPlanInspectionDto {
     appealStatus: boolean;
     msProcessEndedStatus: boolean;
     preliminaryReport: PreliminaryReportDto;
+    preliminaryReportFinal: PreliminaryReportDto;
     officersList: MsUsersDto[];
     hofList: MsUsersDto[];
     updateWorkPlan: WorkPlanEntityDto;
@@ -594,7 +595,7 @@ export class WorkPlanProductDto {
         id: number;
         productName: string;
         referenceNo: string;
-        recommendation: string;
+        recommendation: RecommendationDto[];
         destructionRecommended: boolean;
         hodRecommendationStatus: boolean;
         hodRecommendationRemarks: string;

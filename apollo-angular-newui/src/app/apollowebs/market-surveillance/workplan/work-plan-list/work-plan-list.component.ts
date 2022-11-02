@@ -106,17 +106,17 @@ export class WorkPlanListComponent implements OnInit {
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       nameActivity: {
         title: 'ACTIVITY NAME',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       timeActivityDate: {
         title: 'ACTIVITY DATE',
         type: 'date',
-        filter: false,
+        filter: true,
       },
       // complaintCategory: {
       //   title: 'Complaint Category',
@@ -126,12 +126,12 @@ export class WorkPlanListComponent implements OnInit {
       budget: {
         title: 'BUDGET',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       progressStep: {
         title: 'Status',
         type: 'string',
-        filter: false,
+        filter: true,
       },
     },
     pager: {

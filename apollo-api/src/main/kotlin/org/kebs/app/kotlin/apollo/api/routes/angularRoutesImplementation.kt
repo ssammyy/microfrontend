@@ -707,7 +707,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         )
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
 //                        PUT("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
-                        PUT("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
+                        POST("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
                 }
 
