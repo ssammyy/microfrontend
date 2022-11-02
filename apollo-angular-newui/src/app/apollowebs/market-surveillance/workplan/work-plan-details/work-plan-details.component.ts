@@ -2856,7 +2856,7 @@ export class WorkPlanDetailsComponent implements OnInit {
           this.workPlanInspection = data;
           console.log(data);
           this.SpinnerService.hide();
-          this.msService.showSuccess('ALL RECOEMMENDATION HAVE BEEN MARKED AS DONE AND DETAILS SAVED SUCCESSFULLY');
+          this.msService.showSuccess('ALL RECOMMENDATION HAVE BEEN MARKED AS DONE AND DETAILS SAVED SUCCESSFULLY');
         },
         error => {
           this.SpinnerService.hide();
@@ -3939,7 +3939,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.msWorkPlanScheduleSaveFinalPreliminaryReport(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
-          this.dataSavePreliminaryReport
+          this.dataSavePreliminaryReport,
       ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;

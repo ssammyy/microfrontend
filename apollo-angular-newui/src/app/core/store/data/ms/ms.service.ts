@@ -1293,12 +1293,12 @@ export class MsService {
     public msWorkPlanScheduleDetailsEndRecommendationDone(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(
-            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_END_ONSITE_ACTIVITIES,
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_END_RECOMMENDATION_DONE,
         );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
-        return this.http.get<WorkPlanInspectionDto>(url, {params}).pipe(
+        return this.http.put<WorkPlanInspectionDto>(url, null,{params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
                 return response;
             }),
