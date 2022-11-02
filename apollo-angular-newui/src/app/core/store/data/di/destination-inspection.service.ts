@@ -93,7 +93,7 @@ export class DestinationInspectionService {
         })
     }
 
-    loadIdfDocuments(status: string, page: number, size: number, startDate?: string): Observable<any> {
+    loadIdfDocuments(status: string, page: number, size: number, startDate?: string, keywords?: string): Observable<any> {
         let params = {
             status: status,
             page: String(page),
@@ -102,17 +102,23 @@ export class DestinationInspectionService {
         if (startDate) {
             params["date"] = startDate ? startDate : ""
         }
+        if (keywords) {
+            params['keywords'] = keywords
+        }
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/documents/idf"), {
             params: params
         })
     }
 
-    loadManifestDocuments(status: string, startDate?: string): Observable<any> {
+    loadManifestDocuments(status: string, startDate?: string, keywords?: string): Observable<any> {
         let params = {
             status: status,
         }
         if (startDate) {
             params["date"] = startDate ? startDate : null
+        }
+        if (keywords) {
+            params['keywords'] = keywords
         }
         return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/documents/manifest"), {
             params: params
