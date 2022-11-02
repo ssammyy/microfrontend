@@ -1187,7 +1187,7 @@
                                                 <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#workPlanModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
-                                                        class="mat-button-wrapper">UPDATE WORK-PLAN TEST</span>
+                                                        class="mat-button-wrapper">UPDATE WORK-PLAN</span>
                                                     <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
@@ -1446,7 +1446,6 @@
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END RECOMMENDATION DONE</span>
-
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="productsDestructionRecommendation == 0 && workPlanInspection?.recommendationDoneStatus == false
@@ -1572,11 +1571,6 @@
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.dataReportDocId}"
                                            (click)="viewWorkPlanFileSaved(data)"
                                            class="btn btn-sm btn-primary">Data Report View</i>
-                                    </div>
-                                    <div *ngIf="workPlanInspection.destructionDocId != null">
-                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.destructionDocId}"
-                                           (click)="viewWorkPlanFileSaved(data)"
-                                           class="btn btn-sm btn-primary">Destruction Report View</i>
                                     </div>
                                 </div>
 
