@@ -3918,24 +3918,8 @@ class QualityAssuranceHandler(
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val body = req.body<FilterDto>()
-
+            println(body)
             val permitListAllApplications: List<ReportPermitEntityDto>?
-
-            var startDate: Timestamp? = null
-            var endDate: Timestamp? = null
-
-            if (!body.start.isNullOrBlank()) {
-                startDate = Timestamp.valueOf(body.start)
-                endDate = Timestamp.valueOf(body.end)
-            } else {
-                startDate = null
-                endDate = null
-            }
-
-            if (body.category.isNullOrBlank()) {
-                body.category = null
-            }
-
             var firmCategoryId: Long? = null
             if (body.category.equals("Large")) {
                 firmCategoryId = 3
@@ -3946,36 +3930,28 @@ class QualityAssuranceHandler(
                 firmCategoryId = 2
             }
 
-            println(body)
+            permitListAllApplications = qaDaoServices.listPermitsReports(
+                qaDaoServices.filterAllApplicationsReports(
+                    body.start,
+                    body.end,
+                    body.regionId,
+                    body.sectionId,
+                    body.statusId,
+                    body.officerId,
+                    firmCategoryId,
+                    body.permitType,
+                    body.productDescription
+
+                ), map
+            )
 
 
 
-            permitListAllApplications = body.regionID?.let {
-                startDate?.let { it1 ->
-                    endDate?.let { it2 ->
-                        body.statusId?.let { it3 ->
-                            body.officerId?.let { it4 ->
-                                firmCategoryId?.let { it5 ->
-                                    body.permitType?.let { it6 ->
-                                        qaDaoServices.filterAllApplicationsReports(
-                                            it1, it2, regionID = it, sectionId = body.regionID!!, statusId = it3,
-                                            officerId = it4, it5, permitType = it6
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }?.let {
-                qaDaoServices.listPermitsReports(
-                    it, map
-                )
-            }
 
 
 
-            return permitListAllApplications.let { it?.let { it1 -> ok().body(it1) }!! }
+
+            return permitListAllApplications.let { it.let { it1 -> ok().body(it1) } }
 
 
         } catch (e: Exception) {

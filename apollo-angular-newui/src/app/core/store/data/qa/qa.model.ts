@@ -520,18 +520,22 @@ export interface SamplesSubmittedDto {
     section: string;
     product: string
 }
+
 export class StatusesDto {
     id: bigint;
     processStatusName: string;
 
 }
+
 export class FilterDto {
-     regionID: number;
-     sectionId: number;
-     statusId: number;
-     officerId: number;
-     category: string;
-     start: Date;
-     end: Date;
-     permitType: number;
+    regionID: number;
+    sectionId: number;
+    statusId: number;
+    officerId: number;
+    category: string;
+    start: Date;
+    end: Date;
+    permitType: number;
+    productDescription: string;
 }
+

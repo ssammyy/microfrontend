@@ -6856,26 +6856,21 @@ class QADaoServices(
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun filterAllApplicationsReports(
-        startDate: Timestamp,
-        endDate: Timestamp,
-        regionID: Long,
-        sectionId: Long,
-        statusId: Long,
-        officerId: Long,
-        firmCategoryId: Long,
-        permitType: Long
-    ) : List<PermitApplicationsEntity>  {
+        startDate: Date?,
+        endDate: Date?,
+        regionID: Long?,
+        sectionId: Long?,
+        statusId: Long?,
+        officerId: Long?,
+        firmCategoryId: Long?,
+        permitType: Long?,
+        productDescription: String?
 
-        println(
-            "Start Date: " + startDate + " End Date: " + endDate + "." + " Category: "
-                    + firmCategoryId   + regionID
-            +sectionId
-            +statusId
-            +officerId
-        );
+    ): List<PermitApplicationsEntity> {
 
         permitRepo.findFilteredPermits(
-            startDate,endDate,regionID,sectionId,statusId,officerId,firmCategoryId,permitType)
+            startDate, endDate, regionID, sectionId, statusId, officerId, firmCategoryId, permitType,productDescription
+        )
             ?.let { permitList ->
                 return permitList
             }
