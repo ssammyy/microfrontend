@@ -208,6 +208,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   public selectedSSFDetails: SampleSubmissionDto;
   public ssfCountBSNumber: number;
   public scfCountSSF: number;
+  public productsDestructionRecommendationDone = 0;
+  public productsDestructionRecommendation = 0;
   public productsCountRecommendationHOD = 0;
   public productsCountRecommendationDirector = 0;
 
@@ -1470,7 +1472,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.clientEmailNotificationForm = this.formBuilder.group({
       clientFullName: ['', Validators.required],
       clientEmail: ['', Validators.required],
-      remarks: ['', Validators.required],
+      remarks: null,
     });
 
     this.approveScheduleForm = this.formBuilder.group({
@@ -1809,6 +1811,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.workPlanInspection?.productList?.length > 0 && this.workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal) {
       let countRecommendationHOD = 0;
       let countRecommendationDirector = 0;
+      let destructionRecommendedAllDone = 0;
+      let destructionRecommended = 0;
       for (let i = 0; i < this.workPlanInspection?.productList.length; i++) {
         if (this.workPlanInspection?.productList[i].hodRecommendationStatus) {
           countRecommendationHOD++;
@@ -1816,7 +1820,15 @@ export class WorkPlanDetailsComponent implements OnInit {
         if (this.workPlanInspection?.productList[i].directorRecommendationStatus) {
           countRecommendationDirector++;
         }
+        if (this.workPlanInspection?.productList[i].destructedStatus) {
+          destructionRecommendedAllDone++;
+        }
+        if (this.workPlanInspection?.productList[i].destructionRecommended) {
+          destructionRecommended++;
+        }
       }
+      this.productsDestructionRecommendationDone = destructionRecommendedAllDone;
+      this.productsDestructionRecommendation = destructionRecommended;
       this.productsCountRecommendationHOD = countRecommendationHOD;
       this.productsCountRecommendationDirector = countRecommendationDirector;
       console.log(this.productsCountRecommendationHOD);
@@ -2483,14 +2495,25 @@ export class WorkPlanDetailsComponent implements OnInit {
     // }
   }
 
-
   onClickSaveClientAppealed(valid: boolean) {
+    if (valid) {
+    this.msService.showSuccessWith2Message('Are you sure your want to add the detals?', 'You won\'t be able to Update the Details after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and  update the remarks you have added Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          this.saveClientAppealed(valid);
+        });
+    }
+  }
+
+
+  saveClientAppealed(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveApprovePreliminary = {...this.dataSaveApprovePreliminary, ...this.approvePreliminaryForm.value};
       this.msService.msWorkPlanScheduleDetailsClientAppealed(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
+          this.selectedProductRecommendation.referenceNo,
           this.dataSaveApprovePreliminary,
       ).subscribe(
           (data: any) => {
@@ -2510,11 +2533,22 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveClientAppealedSuccessfully(valid: boolean) {
     if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to save the details?', 'You won\'t be able to Update the Details after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and  update the remarks you have added Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+            this.saveClientAppealedSuccessfully(valid);
+          });
+    }
+  }
+
+  saveClientAppealedSuccessfully(valid: boolean) {
+    if (valid) {
       this.SpinnerService.show();
       this.dataSaveApprovePreliminary = {...this.dataSaveApprovePreliminary, ...this.approvePreliminaryForm.value};
       this.msService.msWorkPlanScheduleDetailsClientAppealedSuccessfully(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
+          this.selectedProductRecommendation.referenceNo,
           this.dataSaveApprovePreliminary,
       ).subscribe(
           (data: any) => {
@@ -2801,6 +2835,38 @@ export class WorkPlanDetailsComponent implements OnInit {
         });
   }
 
+  onClickSaveEndRecommendationDone() {
+    this.msService.showSuccessWith2Message('Are you sure your have done all Recommendation for Each Product?', 'You won\'t be able to revert after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and Finnish all Recommendation Needed Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          this.endRecommendationDone();
+        });
+  }
+
+
+  endRecommendationDone() {
+    // if (valid) {
+    this.SpinnerService.show();
+    this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+    this.msService.msWorkPlanScheduleDetailsEndRecommendationDone(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('ALL RECOEMMENDATION HAVE BEEN MARKED AS DONE AND DETAILS SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    // }
+  }
+
   endOnsiteActivities() {
     // if (valid) {
     this.SpinnerService.show();
@@ -3009,11 +3075,26 @@ export class WorkPlanDetailsComponent implements OnInit {
 
 
 
+
+
   onClickSaveUploadedDestructionReport(docTypeName: string) {
+    if (this.uploadedFiles.length > 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
+            this.saveUploadedDestructionReport(docTypeName);
+          });
+    } else {
+      this.msService.showError('NO FILE SELECTED FOR UPLOADED');
+    }
+  }
+
+  saveUploadedDestructionReport(docTypeName: string) {
     if (this.uploadedFiles.length > 0) {
       this.SpinnerService.show();
       const file = this.uploadedFiles;
       const formData = new FormData();
+      formData.append('productReferenceNo', this.selectedProductRecommendation?.referenceNo );
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
       formData.append('docTypeName', docTypeName);
@@ -3040,13 +3121,27 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+
   onClickSaveFilesDestructionNotification(valid: boolean, docTypeName: string) {
+    if (this.uploadedFiles.length > 0) {
+    this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
+          this.saveFilesDestructionNotification(valid, docTypeName);
+        });
+    } else {
+      this.msService.showError('NO FILE IS UPLOADED FOR SAVING');
+    }
+  }
+
+  saveFilesDestructionNotification(valid: boolean, docTypeName: string) {
     if (this.uploadedFiles.length > 0) {
       this.SpinnerService.show();
       const file = this.uploadedFiles;
       this.dataSaveDestructionNotification = {...this.dataSaveDestructionNotification, ...this.clientEmailNotificationForm.value};
       const formData = new FormData();
-      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('referenceNo', this.workPlanInspection?.referenceNumber);
+      formData.append('productReferenceNo', this.selectedProductRecommendation?.referenceNo );
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
       formData.append('data', JSON.stringify(this.dataSaveDestructionNotification));
       for (let i = 0; i < file.length; i++) {
@@ -3371,7 +3466,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         error => {
           this.SpinnerService.hide();
           console.log(error);
-          this.msService.showError('AN ERROR OCCURRED');
+          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
   }

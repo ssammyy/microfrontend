@@ -984,6 +984,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             else -> {
                 with(workPlanProduct){
                     clientAppealed = map.inactiveStatus
+                    destructionStatus = map.activeStatus
+                    appealStatus = map.inactiveStatus
 //                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionPendingDestractionGoodReport
 //                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                     remarkStatusValue = "APPEAL NOT SUCCESSFULLY"
@@ -1533,10 +1535,20 @@ class MarketSurveillanceWorkPlanDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        var destructionFound = false
+        workPlanProductsRepo.findByWorkPlanId(workPlanScheduled.id)
+            ?.forEach{prod->
+            if (prod.destructionRecommended==map.activeStatus){
+                destructionFound = true
+            }
+        }
 
         with(workPlanScheduled){
             hodRecommendationStatus= map.activeStatus
             directorRecommendationRemarksStatus= map.inactiveStatus
+            if(destructionFound){
+                destructionRecommended = map.activeStatus
+            }
 //            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGenerateFinalPreliminaryReport
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameDirector
         }
@@ -2452,6 +2464,23 @@ class MarketSurveillanceWorkPlanDaoServices(
             sendSffDate = commonDaoServices.getCurrentDate()
             timelineStartDate = commonDaoServices.getCurrentDate()
             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionEndMsOnSite.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionEndMsOnSite
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+        }
+        workPlanScheduled = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
+        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun endWorkPlanScheduleInspectionAllRecommendationDoneDetailsBasedOnRefNo(referenceNo: String, batchReferenceNo: String): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+        with(workPlanScheduled){
+            recommendationDoneStatus = map.activeStatus
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionEndMsOnSite
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
         }
@@ -4198,6 +4227,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             updateWorkPlan,
             wKP.updatedStatus== 1,
             wKP.resubmitStatus== 1,
+            wKP.recommendationDoneStatus== 1,
             bsNumberCountAdded,
             analysisLabCountDone,
             productListRecommendationAddedCount,

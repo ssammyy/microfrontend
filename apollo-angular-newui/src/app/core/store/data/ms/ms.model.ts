@@ -580,6 +580,7 @@ export class WorkPlanInspectionDto {
     updateWorkPlan: WorkPlanEntityDto;
     updatedStatus: Boolean;
     resubmitStatus: Boolean;
+    recommendationDoneStatus: Boolean;
     bsNumberCountAdded: number;
     analysisLabCountDone: number;
     productListRecommendationAddedCount: number;

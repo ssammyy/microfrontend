@@ -957,13 +957,13 @@
                                                                      (custom)="onCustomWorkPlanProductsAction($event)"
                                                     ></ng2-smart-table>
                                                 </div>
-                                                <div *ngIf="role == 'MS_IO_MODIFY'"
-                                                     class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsWorkPlanProductsDirector"
-                                                                     [source]="workPlanInspection?.productList"
-                                                                     (custom)="onCustomWorkPlanProductsAction($event)"
-                                                    ></ng2-smart-table>
-                                                </div>
+<!--                                                <div *ngIf="role == 'MS_IO_MODIFY'"-->
+<!--                                                     class="table-striped table-condensed table-responsive">-->
+<!--                                                    <ng2-smart-table [settings]="settingsWorkPlanProductsDirector"-->
+<!--                                                                     [source]="workPlanInspection?.productList"-->
+<!--                                                                     (custom)="onCustomWorkPlanProductsAction($event)"-->
+<!--                                                    ></ng2-smart-table>-->
+<!--                                                </div>-->
                                             </div>
 
                                         </div>
@@ -1145,45 +1145,15 @@
                                                     class="mat-button-wrapper">END ADDING RECOMMENDATION</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-
-<!--                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus-->
-<!--                                                && workPlanInspection?.hodRecommendationStatus-->
-<!--                                                && workPlanInspection?.destructionDocId != null-->
-<!--                                                && workPlanInspection?.msEndProcessRemarks == null-->
-<!--                                                && workPlanInspection?.msProcessEndedStatus == false-->
-<!--                                                && workPlanInspection?.destructionRecommended"-->
-<!--                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                     data-target="#myModal1"-->
-<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">END FINAL REMARKS</span>-->
-
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
-<!--                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus-->
-<!--                                                && workPlanInspection?.hodRecommendationStatus-->
-<!--                                                && workPlanInspection?.appealStatus-->
-<!--                                                && workPlanInspection?.destructionDocId == null-->
-<!--                                                && workPlanInspection?.msEndProcessRemarks == null-->
-<!--                                                && workPlanInspection?.msProcessEndedStatus == false-->
-<!--                                                && workPlanInspection?.destructionRecommended"-->
-<!--                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                     data-target="#myModal1"-->
-<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
-<!--                                            <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus-->
-<!--                                                && workPlanInspection?.hodRecommendationStatus-->
-<!--                                                && workPlanInspection?.destructionDocId == null-->
-<!--                                                && workPlanInspection?.msEndProcessRemarks == null-->
-<!--                                                && workPlanInspection?.msProcessEndedStatus == false-->
-<!--                                                && workPlanInspection?.destructionRecommended == false"-->
-<!--                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                     data-target="#myModal1"-->
-<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
+                                            <button  *ngIf="workPlanInspection.recommendationDoneStatus
+                                                && workPlanInspection?.msEndProcessRemarks == null
+                                                && workPlanInspection?.msProcessEndedStatus == false"
+                                                     (click)="openModalAddDetails('addFinalRemarksHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD FINAL REMARKS</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
                                         </div>
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
@@ -1466,56 +1436,25 @@
                                                     class="mat-button-wrapper">UPDATE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button   *ngIf="workPlanInspection?.msPreliminaryReportStatus
-                                            && workPlanInspection?.hodRecommendationStatus
-                                            && workPlanInspection?.destructionNotificationStatus == false
-                                            && workPlanInspection?.destructionRecommended"
 
-                                                      (click)="openModalAddDetails('uploadDestructionNotificationFile')" mat-raised-button="" data-toggle="modal"
+
+
+                                            <button   *ngIf="productsDestructionRecommendationDone == productsDestructionRecommendation
+                                            && workPlanInspection?.recommendationDoneStatus == false
+                                            && workPlanInspection?.destructionRecommended"
+                                                      (click)="onClickSaveEndRecommendationDone()" mat-raised-button="" data-toggle="modal"
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">UPLOAD DESTRUCTION NOTIFICATION</span>
-
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button   *ngIf="workPlanInspection?.msPreliminaryReportStatus
-                                            && workPlanInspection?.hodRecommendationStatus
-                                            && workPlanInspection?.destructionNotificationStatus
-                                            && workPlanInspection?.clientAppealed == false
-                                            && workPlanInspection?.destructionRecommended"
-                                                      (click)="openModalAddDetails('clientAppealed')" mat-raised-button="" data-toggle="modal"
-                                                      data-target="#myModal1"
-                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">DID CLIENT APPEAL ?</span>
+                                                    class="mat-button-wrapper">END RECOMMENDATION DONE</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button   *ngIf="workPlanInspection?.msPreliminaryReportStatus
-                                            && workPlanInspection?.hodRecommendationStatus
-                                            && workPlanInspection?.destructionNotificationStatus
-                                            && workPlanInspection?.clientAppealed
-                                            && workPlanInspection?.appealStatus==false
-                                            && workPlanInspection?.destractionStatus == false
-                                            && workPlanInspection?.msEndProcessRemarks == null
-                                            && workPlanInspection?.destructionRecommended"
-                                                      (click)="openModalAddDetails('clientAppealedSuccessfully')" mat-raised-button="" data-toggle="modal"
+                                            <button   *ngIf="productsDestructionRecommendation == 0 && workPlanInspection?.recommendationDoneStatus == false
+                                            && workPlanInspection?.destructionRecommended == false"
+                                                      (click)="onClickSaveEndRecommendationDone()" mat-raised-button="" data-toggle="modal"
                                                       data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">WAS APPEAL SUCCESS ?</span>
-
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
-                                            <button   *ngIf="workPlanInspection?.msPreliminaryReportStatus
-                                            && workPlanInspection?.hodRecommendationStatus
-                                            && workPlanInspection?.destructionNotificationStatus
-                                            && workPlanInspection?.clientAppealed
-                                            && workPlanInspection?.destractionStatus
-                                            && workPlanInspection?.destructionDocId == null
-                                            && workPlanInspection?.destructionRecommended"
-                                                      (click)="openModalAddDetails('uploadDestructionReport')" mat-raised-button="" data-toggle="modal"
-                                                      data-target="#myModal1"
-                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">UPLOAD DESTRUCTION REPORT</span>
+                                                    class="mat-button-wrapper">END RECOMMENDATION DONE</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -2111,55 +2050,55 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'uploadDestructionNotificationFile')">
-                        <form  [formGroup]="clientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="clientFullName"><b>Client Full Name</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="clientFullName" matInput type="text" placeholder="Please Enter Client Full Name" formControlName="clientFullName" name="clientFullName"
-                                                   [class.is-invalid]="formClientEmailNotificationForm.clientFullName.invalid
-                                                    && formClientEmailNotificationForm.clientFullName.touched">
-                                        </mat-form-field>
-                                        <label for="clientEmail"><b>Client Email</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="clientEmail" matInput type="text" placeholder="Please Enter Client Email" formControlName="clientEmail" name="clientEmail"
-                                                   [class.is-invalid]="formClientEmailNotificationForm.clientEmail.invalid
-                                                    && formClientEmailNotificationForm.clientEmail.touched">
-                                        </mat-form-field>
-                                        <label for="files"><b>Upload Document Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files8"
-                                                         [fileslimit]="1" accept=".pdf"></file-upload>
-                                        </form>
-                                        <label><b>Please write, in detail, your feedback for the Destruction Notification:</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea matInput type="text"
-                                                      formControlName="remarks"
-                                                      name="remarks" required>
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'uploadDestructionReport')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Document Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files4"
-                                                         fileslimit="1" accept=".pdf"></file-upload>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<!--                    <div *ngIf="(currDiv == 'uploadDestructionNotificationFile')">-->
+<!--                        <form  [formGroup]="clientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">-->
+<!--                            <div class="form-body">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div>-->
+<!--                                        <label for="clientFullName"><b>Client Full Name</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="clientFullName" matInput type="text" placeholder="Please Enter Client Full Name" formControlName="clientFullName" name="clientFullName"-->
+<!--                                                   [class.is-invalid]="formClientEmailNotificationForm.clientFullName.invalid-->
+<!--                                                    && formClientEmailNotificationForm.clientFullName.touched">-->
+<!--                                        </mat-form-field>-->
+<!--                                        <label for="clientEmail"><b>Client Email</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <input id="clientEmail" matInput type="text" placeholder="Please Enter Client Email" formControlName="clientEmail" name="clientEmail"-->
+<!--                                                   [class.is-invalid]="formClientEmailNotificationForm.clientEmail.invalid-->
+<!--                                                    && formClientEmailNotificationForm.clientEmail.touched">-->
+<!--                                        </mat-form-field>-->
+<!--                                        <label for="files"><b>Upload Document Here</b></label>-->
+<!--                                        <form #demoForm="ngForm">-->
+<!--                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files8"-->
+<!--                                                         [fileslimit]="1" accept=".pdf"></file-upload>-->
+<!--                                        </form>-->
+<!--                                        <label><b>Please write, in detail, your feedback for the Destruction Notification:</b></label>-->
+<!--                                        <mat-form-field class="example-full-width">-->
+<!--                                            <textarea matInput type="text"-->
+<!--                                                      formControlName="remarks"-->
+<!--                                                      name="remarks" required>-->
+<!--                                            </textarea>-->
+<!--                                        </mat-form-field>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                    <div *ngIf="(currDiv == 'uploadDestructionReport')">-->
+<!--                        <form  action="" class="form" enctype="multipart/form-data" method="post">-->
+<!--                            <div class="form-body">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div>-->
+<!--                                        <label for="files"><b>Upload Document Here</b></label>-->
+<!--                                        <form #demoForm="ngForm">-->
+<!--                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files4"-->
+<!--                                                         fileslimit="1" accept=".pdf"></file-upload>-->
+<!--                                        </form>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
                     <div *ngIf="(currDiv == 'pdfSaveCompliance')">
                         <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
                             <div class="form-body">
@@ -2473,17 +2412,17 @@
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button *ngIf="(currDiv == 'uploadDestructionReport')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveUploadedDestructionReport('DESTRUCTION_REPORT_FILE');"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
-                    <button *ngIf="(currDiv == 'uploadDestructionNotificationFile')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveFilesDestructionNotification(clientEmailNotificationForm.valid,'DESTRUCTION_FILE');"
-                            [disabled]="!clientEmailNotificationForm.valid"
-                            data-dismiss="modal"
-                    >SUBMIT
-                    </button>
+<!--                    <button *ngIf="(currDiv == 'uploadDestructionReport')" mat-raised-button type="button" class="btn btn-success"-->
+<!--                            (click)="onClickSaveUploadedDestructionReport('DESTRUCTION_REPORT_FILE');"-->
+<!--                            data-dismiss="modal"-->
+<!--                    >SUBMIT-->
+<!--                    </button>-->
+<!--                    <button *ngIf="(currDiv == 'uploadDestructionNotificationFile')" mat-raised-button type="button" class="btn btn-success"-->
+<!--                            (click)="onClickSaveFilesDestructionNotification(clientEmailNotificationForm.valid,'DESTRUCTION_FILE');"-->
+<!--                            [disabled]="!clientEmailNotificationForm.valid"-->
+<!--                            data-dismiss="modal"-->
+<!--                    >SUBMIT-->
+<!--                    </button>-->
                     <button *ngIf="(currDiv == 'addBsNumber')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveBSNumber(sampleSubmitBSNumberForm.valid);"
                             [disabled]="!sampleSubmitBSNumberForm.valid"
@@ -5950,82 +5889,169 @@
                 <div class="modal-body">
                     <label style="color: #0082f3">Product Recommendation Details</label>
                     <div class="panel">
+
                         <br>
-                        <ul class="w-list-unstyled">
-                            <li class="list-item-accordion">
-                                <div class="list-title-accordion">Product Name</div>
-                                <div class="list-text-accordion">
-                                    {{selectedProductRecommendation?.productName}}</div>
-                            </li>
-                            <li class="list-item-accordion">
-                                <div class="list-title-accordion">Reference No</div>
-                                <div class="list-text-accordion">
-                                    {{selectedProductRecommendation?.referenceNo}}</div>
-                            </li>
-                            <div *ngIf="selectedProductRecommendation?.destructionClientFullName != null">
-                                <li class="list-item-accordion">
-                                    <div class="list-title-accordion">Client Full Name</div>
-                                    <div class="list-text-accordion">
-                                        {{selectedProductRecommendation?.destructionClientFullName}}</div>
-                                </li>
-                                <li class="list-item-accordion">
-                                    <div class="list-title-accordion">Client Email</div>
-                                    <div class="list-text-accordion">
-                                        {{selectedProductRecommendation?.destructionClientEmail}}</div>
-                                </li>
-                            </div>
-                            <li *ngIf="selectedProductRecommendation?.hodRecommendationStatus" class="list-item-accordion">
-                                <div class="list-title-accordion">HOD Remarks</div>
-                                <div class="list-text-accordion">
-                                    {{selectedProductRecommendation?.hodRecommendationRemarks}}</div>
-                            </li>
-                            <li *ngIf="selectedProductRecommendation?.directorRecommendationStatus" class="list-item-accordion">
-                                <div class="list-title-accordion">DIRECTOR Remarks</div>
-                                <div class="list-text-accordion">
-                                    {{selectedProductRecommendation?.directorRecommendationRemarks}}</div>
-                            </li>
-                            <li *ngIf="selectedProductRecommendation?.clientAppealed" class="list-item-accordion">
-                                <div class="list-title-accordion">Appeal Status</div>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Product Name</div>
+                                        <div class="list-text-accordion">
+                                            {{selectedProductRecommendation?.productName}}</div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Reference No</div>
+                                        <div class="list-text-accordion">
+                                            {{selectedProductRecommendation?.referenceNo}}</div>
+                                    </li>
+                                    <div *ngIf="selectedProductRecommendation?.destructionClientFullName != null">
+                                        <li class="list-item-accordion">
+                                            <div class="list-title-accordion">Client Full Name</div>
+                                            <div class="list-text-accordion">
+                                                {{selectedProductRecommendation?.destructionClientFullName}}</div>
+                                        </li>
+                                        <li class="list-item-accordion">
+                                            <div class="list-title-accordion">Client Email</div>
+                                            <div class="list-text-accordion">
+                                                {{selectedProductRecommendation?.destructionClientEmail}}</div>
+                                        </li>
+                                    </div>
+                                    <li *ngIf="selectedProductRecommendation?.hodRecommendationStatus" class="list-item-accordion">
+                                        <div class="list-title-accordion">HOD Remarks</div>
+                                        <div class="list-text-accordion">
+                                            {{selectedProductRecommendation?.hodRecommendationRemarks}}</div>
+                                    </li>
+                                    <li *ngIf="selectedProductRecommendation?.directorRecommendationStatus" class="list-item-accordion">
+                                        <div class="list-title-accordion">DIRECTOR Remarks</div>
+                                        <div class="list-text-accordion">
+                                            {{selectedProductRecommendation?.directorRecommendationRemarks}}</div>
+                                    </li>
+                                    <li *ngIf="selectedProductRecommendation?.clientAppealed" class="list-item-accordion">
+                                        <div class="list-title-accordion">Appeal Status</div>
 
-                                <div *ngIf="selectedProductRecommendation?.appealStatus"
-                                     class="list-text-accordion">APPEAL SUCCESSFUL</div>
-                                <div *ngIf="selectedProductRecommendation?.destructionStatus==false"
-                                     class="list-text-accordion">APPEAL NOT SUCCESSFUL</div>
-                            </li>
-                            <li *ngIf="selectedProductRecommendation?.destructionRecommended" class="list-item-accordion">
-                                <div class="list-title-accordion">Destruction Status</div>
+                                        <div *ngIf="selectedProductRecommendation?.appealStatus"
+                                             class="list-text-accordion">APPEAL SUCCESSFUL</div>
+                                        <div *ngIf="selectedProductRecommendation?.destructionStatus==false"
+                                             class="list-text-accordion">APPEAL NOT SUCCESSFUL</div>
+                                    </li>
+                                    <li *ngIf="selectedProductRecommendation?.destructionRecommended" class="list-item-accordion">
+                                        <div class="list-title-accordion">Destruction Status</div>
 
-                                <div *ngIf="selectedProductRecommendation?.destructionStatus"
-                                     class="list-text-accordion">DESTROYED</div>
-                                <div *ngIf="selectedProductRecommendation?.destructionStatus==false"
-                                     class="list-text-accordion">NOT-YET DESTROYED</div>
-                            </li>
+                                        <div *ngIf="selectedProductRecommendation?.destructionStatus && selectedProductRecommendation?.destructedStatus"
+                                             class="list-text-accordion">DESTROYED</div>
+                                        <div *ngIf="selectedProductRecommendation?.destructionStatus && selectedProductRecommendation?.destructedStatus ==false"
+                                             class="list-text-accordion">PENDING DESTRUCTION</div>
+                                        <div *ngIf="selectedProductRecommendation?.destructionStatus==false && selectedProductRecommendation?.destructedStatus==false"
+                                             class="list-text-accordion">NOT-YET DESTROYED</div>
+                                    </li>
 
-                        </ul>
+                                </ul>
 
-                        <div class="form-row">
-                            <div class="col-md-12 mb-3">
-                                <label style="color: #0082f3">RECOMMENDATION LIST</label>
-                            </div>
-                            <div>
-                                <div class="material-datatables">
-                                    <div class="table-responsive">
-                                        <table id="datatables78" class="table table-striped table-bordered table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th>RECOMMENDATION NAME</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let r of selectedProductRecommendation?.recommendation; let i=index">
-                                                <td>{{r.recommendationName}}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label style="color: #0082f3">RECOMMENDATION LIST</label>
+                                    </div>
+                                    <div>
+                                        <div class="material-datatables">
+                                            <div class="table-responsive">
+                                                <table id="datatables78" class="table table-striped table-bordered table-hover">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>RECOMMENDATION NAME</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let r of selectedProductRecommendation?.recommendation; let i=index">
+                                                        <td>{{r.recommendationName}}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-3 p-0">
+                                <b>Action:</b>
+                                <div *ngFor="let role of roles">
+                                    <div *ngIf="role == 'MS_IO_MODIFY'">
+                                        <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus
+                                            && selectedProductRecommendation?.destructionNotificationStatus == false
+                                            && selectedProductRecommendation?.destructionRecommended"
+                                                  (click)="openModalAddDetails('uploadDestructionNotificationFile')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal2"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">UPLOAD DESTRUCTION NOTIFICATION</span>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus
+                                            && selectedProductRecommendation?.destructionNotificationStatus
+                                            && selectedProductRecommendation?.clientAppealed == false
+                                            && selectedProductRecommendation?.destructionStatus == false
+                                            && selectedProductRecommendation?.appealStatus == false
+                                            && selectedProductRecommendation?.destructionRecommended"
+                                                  (click)="openModalAddDetails('clientAppealed')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal2"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">DID CLIENT APPEAL ?</span>
+
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus
+                                            && selectedProductRecommendation?.destructionNotificationStatus
+                                            && selectedProductRecommendation?.clientAppealed
+                                            && selectedProductRecommendation?.destructionStatus == false
+                                            && selectedProductRecommendation?.appealStatus==false
+                                            && workPlanInspection?.destructionRecommended"
+                                                  (click)="openModalAddDetails('clientAppealedSuccessfully')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal2"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">WAS APPEAL SUCCESS ?</span>
+
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus
+                                            && selectedProductRecommendation?.destructionNotificationStatus
+                                            && selectedProductRecommendation?.clientAppealed
+                                            && selectedProductRecommendation?.destructionStatus
+                                            && selectedProductRecommendation?.destructionDocId == null
+                                            && selectedProductRecommendation?.destructionRecommended"
+                                                  (click)="openModalAddDetails('uploadDestructionReport')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal2"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">UPLOAD DESTRUCTION REPORT</span>
+
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                        <button   *ngIf="selectedProductRecommendation?.hodRecommendationStatus
+                                            && selectedProductRecommendation?.destructionNotificationStatus
+                                            && selectedProductRecommendation?.clientAppealed == false
+                                            && selectedProductRecommendation?.destructionStatus
+                                            && selectedProductRecommendation?.destructionDocId == null
+                                            && selectedProductRecommendation?.destructionRecommended"
+                                                  (click)="openModalAddDetails('uploadDestructionReport')" mat-raised-button="" data-toggle="modal"
+                                                  data-target="#myModal2"
+                                                  class="btn btn-sm btn-primary mr-2"><span
+                                                class="mat-button-wrapper">UPLOAD DESTRUCTION REPORT</span>
+
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                    </div>
+                                </div>
+                                <b>Documents:</b>
+                                <div *ngIf="selectedProductRecommendation?.destructionNotificationDocId != null">
+                                    <i *ngFor="let data of workPlanInspection?.workPlanFiles| filterPipe: {id: selectedProductRecommendation?.destructionNotificationDocId}"
+                                       (click)="viewWorkPlanFileSaved(data)"
+                                       class="btn btn-sm btn-primary">Destruction Notice</i>
+                                </div>
+                                <div *ngIf="selectedProductRecommendation?.destructionDocId != null">
+                                    <i *ngFor="let data of workPlanInspection?.workPlanFiles| filterPipe: {id: selectedProductRecommendation?.destructionDocId}"
+                                       (click)="viewWorkPlanFileSaved(data)"
+                                       class="btn btn-sm btn-primary">Destruction Report View</i>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                     <div class="modal-footer">
                         <button  mat-raised-button type="button" class="btn btn-danger"
@@ -6228,6 +6254,109 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'uploadDestructionNotificationFile')">
+                        <form  [formGroup]="clientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="clientFullName"><b>Client Full Name</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="clientFullName" matInput type="text" placeholder="Please Enter Client Full Name" formControlName="clientFullName" name="clientFullName"
+                                                   [class.is-invalid]="formClientEmailNotificationForm.clientFullName.invalid
+                                                    && formClientEmailNotificationForm.clientFullName.touched">
+                                        </mat-form-field>
+                                        <label for="clientEmail"><b>Client Email</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="clientEmail" matInput type="text" placeholder="Please Enter Client Email" formControlName="clientEmail" name="clientEmail"
+                                                   [class.is-invalid]="formClientEmailNotificationForm.clientEmail.invalid
+                                                    && formClientEmailNotificationForm.clientEmail.touched">
+                                        </mat-form-field>
+                                        <label for="files"><b>Upload Document Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files8"
+                                                         [fileslimit]="1" accept=".pdf"></file-upload>
+                                        </form>
+                                        <label><b>Please write, in detail, your feedback for the Destruction Notification:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'clientAppealed')">
+                        <form [formGroup]="approvePreliminaryForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label ><b>Select Status</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
+                                                        formControlName="approvalStatus"  name="approvalStatus" >
+                                                <mat-option [value]="true">YES</mat-option>
+                                                <mat-option [value]="false">NO</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label ><b>Please write, in detail, your feedback:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'clientAppealedSuccessfully')">
+                        <form [formGroup]="approvePreliminaryForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label><b>Select Status</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
+                                                        formControlName="approvalStatus"  name="approvalStatus" >
+                                                <mat-option [value]="true">YES</mat-option>
+                                                <mat-option [value]="false">NO</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label ><b>Please write, in detail, your feedback:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'uploadDestructionReport')">
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Document Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files4"
+                                                         fileslimit="1" accept=".pdf"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
 
@@ -6244,6 +6373,29 @@
                             (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
                             [disabled]="!ssfSaveComplianceStatusForm.valid"
                             data-dismiss="modal" data-toggle="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadDestructionNotificationFile')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesDestructionNotification(clientEmailNotificationForm.valid,'DESTRUCTION_FILE');"
+                            [disabled]="!clientEmailNotificationForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'clientAppealed')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveClientAppealed(approvePreliminaryForm.valid);"
+                            [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'clientAppealedSuccessfully')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveClientAppealedSuccessfully(approvePreliminaryForm.valid);"
+                            [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadDestructionReport')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveUploadedDestructionReport('DESTRUCTION_REPORT_FILE');"
+                            data-dismiss="modal"
                     >SUBMIT
                     </button>
                 </div>

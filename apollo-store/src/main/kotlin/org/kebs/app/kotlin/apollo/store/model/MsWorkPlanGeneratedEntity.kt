@@ -316,6 +316,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var sendSffStatus: Int? = 0
 
+    @Column(name = "RECOMMENDATION_DONE_STATUS")
+    @Basic
+    var recommendationDoneStatus: Int? = 0
+
     @Column(name = "ONSITE_END_STATUS")
     @Basic
     var onsiteEndStatus: Int? = 0

@@ -264,6 +264,7 @@ data class WorkPlanInspectionDto(
         val updateWorkPlan: WorkPlanEntityDto? = null,
         val updatedStatus: Boolean? = null,
         val resubmitStatus: Boolean? = null,
+        val recommendationDoneStatus: Boolean? = null,
         var bsNumberCountAdded: Int? = null,
         var analysisLabCountDone: Int? = null,
         var productListRecommendationAddedCount: Int? = null,
