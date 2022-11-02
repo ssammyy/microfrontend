@@ -56,6 +56,7 @@ export class ComplaintNewComponent implements OnInit {
   townName: string;
 
   public clicked = false;
+  clickedInstructions = true;
   stepOneForm!: FormGroup;
   stepTwoForm!: FormGroup;
   stepThreeForm!: FormGroup;
@@ -488,9 +489,12 @@ export class ComplaintNewComponent implements OnInit {
           this.complaintCustomerSoFar = {...this.complaintCustomerSoFar, ...this.stepOneForm?.value};
           break;
         case 2:
-          this.complaintSoFar = {...this.complaintSoFar, ...this.stepTwoForm?.value};
+          this.complaintCustomerSoFar = {...this.complaintCustomerSoFar, ...this.stepOneForm?.value};
           break;
         case 3:
+          this.complaintSoFar = {...this.complaintSoFar, ...this.stepTwoForm?.value};
+          break;
+        case 4:
           this.complaintLocationSoFar = {...this.complaintLocationSoFar, ...this.stepThreeForm?.value};
           break;
         // case 4:
@@ -500,8 +504,6 @@ export class ComplaintNewComponent implements OnInit {
         //   this.userSoFar = this.stepFiveForm?.value;
         //   break;
       }
-
-
       this.step += 1;
     }
 

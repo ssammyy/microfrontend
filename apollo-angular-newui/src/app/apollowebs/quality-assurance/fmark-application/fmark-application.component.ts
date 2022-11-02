@@ -42,65 +42,66 @@ export class FmarkApplicationComponent implements OnInit {
 
     }
 
-  ngOnInit() {
+    ngOnInit() {
 
-      this.store$.select(selectCompanyInfoDtoStateData).subscribe(
-          (d) => {
-              if (d) {
-                  //  console.log(`${d.status}`);
-                  // return this.status = d.status;
-                  if (d.status == 0) {
-                      swal.fire({
-                          title: 'Cancelled',
-                          text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
-                          icon: 'error',
-                          customClass: {confirmButton: "btn btn-info",},
-                          buttonsStyling: false
-                      }).then((result) => {
-                          if (result.value) {
-                              window.location.href = "/dashboard";
-                          }
-                      })
-                  } else if (d.status == 2) {
-                      swal.fire({
-                          title: 'Cancelled',
-                          text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
-                          icon: 'error',
-                          customClass: {confirmButton: "btn btn-info",},
-                          buttonsStyling: false
-                      }).then((result) => {
-                          if (result.value) {
-                              window.location.href = "/dashboard";
-                          }
-                      })
-                  } else {
-    let formattedArray = [];
-    this.dataTable;
+        this.store$.select(selectCompanyInfoDtoStateData).subscribe(
+            (d) => {
+                if (d) {
+                    //  console.log(`${d.status}`);
+                    // return this.status = d.status;
+                    if (d.status == 0) {
+                        swal.fire({
+                            title: 'Cancelled',
+                            text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
+                            icon: 'error',
+                            customClass: {confirmButton: "btn btn-info",},
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.href = "/dashboard";
+                            }
+                        })
+                    } else if (d.status == 2) {
+                        swal.fire({
+                            title: 'Cancelled',
+                            text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
+                            icon: 'error',
+                            customClass: {confirmButton: "btn btn-info",},
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.href = "/dashboard";
+                            }
+                        })
+                    } else {
+                        let formattedArray = [];
+                        this.dataTable;
 
-      this.qaService.loadPermitAwardedListToGenerateFMark(String(this.SMarkTypeID)).subscribe(
-          (data: any) => {
+                        this.qaService.loadPermitAwardedListToGenerateFMarkAllAwarded(String(this.SMarkTypeID)).subscribe(
+                            (data: any) => {
 
-              this.allPermitData = data;
-              // tslint:disable-next-line:max-line-length
-              formattedArray = data.map(i => [i.productName, i.tradeMark, i.awardedPermitNumber]);
+                                this.allPermitData = data;
+                                // tslint:disable-next-line:max-line-length
+                                formattedArray = data.map(i => [i.productName, i.tradeMark, i.awardedPermitNumber]);
 
-              this.dataTable = {
-                  headerRow: ['Product', 'Brand Name', 'Permit Number'],
-                  footerRow: ['Product', 'Brand Name', 'Permit Number'],
-                  dataRows: formattedArray
+                                this.dataTable = {
+                                    headerRow: ['Product', 'Brand Name', 'Permit Number'],
+                                    footerRow: ['Product', 'Brand Name', 'Permit Number'],
+                                    dataRows: formattedArray
 
-              };
+                                };
 
-          });
+                            });
 
-      this.fmarkForm = this.formBuilder.group({
-          smarkPermitID: ['', Validators.required]
+                        this.fmarkForm = this.formBuilder.group({
+                            smarkPermitID: ['', Validators.required]
 
-      });
-      //
-                  }}
-              })
-  }
+                        });
+                        //
+                    }
+                }
+            })
+    }
 
     get formFmarkForm(): any {
         return this.fmarkForm.controls;
@@ -115,9 +116,9 @@ export class FmarkApplicationComponent implements OnInit {
             ],
             responsive: true,
             language: {
-        search: '_INPUT_',
-        searchPlaceholder: 'Search records',
-      }
+                search: '_INPUT_',
+                searchPlaceholder: 'Search records',
+            }
         });
         let table: any;
         table = $(`#datatables`).DataTable();

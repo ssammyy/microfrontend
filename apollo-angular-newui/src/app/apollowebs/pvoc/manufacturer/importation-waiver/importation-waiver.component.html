@@ -13,69 +13,39 @@
                     </div>
                     <div class="card-body">
                         <mat-horizontal-stepper>
-                            <mat-step label="Applicant details" [stepControl]="ApplicantDetailsForm">
-                                <div class="importation-waiver-main">
-                                    <p class="main-title-font importation-waiver-title">Apply for an importation
-                                        waiver</p>
-                                </div>
-                                <div class="row no_margin" [formGroup]="ApplicantDetailsForm">
+                            <mat-step label="Application Details">
+                                <div class="row no_margin" [formGroup]="ApplicationDetailsForm">
                                     <div class="col-sm-12 col-md-6">
-                                        <label for="applicantName" class="waiver-form-label">Applicant Name</label>
-                                        <input id="applicantName" name="name" class="waiver-form-input"
-                                               formControlName="applicantName"
+                                        <label for="contactPersonName" class="waiver-form-label">Contact Name
+                                            Name</label>
+                                        <input id="contactPersonName" name="name" class="waiver-form-input"
+                                               formControlName="contactPersonName"
                                                placeholder="Enter Name"
                                                type="text">
-                                        <div *ngIf="applicantFormErrors.applicantName" class="err-msg">
-                                            Applicant name is required
+                                        <div *ngIf="applicantFormErrors.contactPersonName" class="err-msg">
+                                            Contact name is required
                                         </div>
                                     </div>
                                     <div class="col-sm-12 col-md-6">
-
-                                        <label for="phoneNumber" class="waiver-form-label">Phone Number</label>
-                                        <input id="phoneNumber" name="name" class="waiver-form-input"
-                                               formControlName="telephoneNumber"
-                                               placeholder="Enter Phone Number" type="number" required>
-                                        <div *ngIf="applicantFormErrors.phoneNumber" class="err-msg">
+                                        <label for="contactPersonPhone" class="waiver-form-label">Contact Phone
+                                            Number</label>
+                                        <input id="contactPersonPhone" name="name" class="waiver-form-input"
+                                               formControlName="contactPersonPhone"
+                                               placeholder="Enter Phone Number" type="text" required>
+                                        <div *ngIf="applicantFormErrors.contactPersonPhone" class="err-msg">
                                             Phone number is required
                                         </div>
                                     </div>
                                     <div class="col-sm-12 col-md-6">
-                                        <label for="postalAddress" class="waiver-form-label">Postal Address</label>
-                                        <input id="postalAddress" name="name" class="waiver-form-input"
-                                               formControlName="postalAddress"
-                                               placeholder="Enter Postal Address" type="text" required>
-                                        <div *ngIf="applicantFormErrors.postalAddress" class="err-msg">
-                                            Postal Address is required
+                                        <label for="contactPersonEmail" class="waiver-form-label">Contact Email
+                                            Address</label>
+                                        <input id="contactPersonEmail" name="name" class="waiver-form-input"
+                                               formControlName="contactPersonEmail"
+                                               placeholder="Enter Email Address" type="text" required>
+                                        <div *ngIf="applicantFormErrors.contactPersonEmail" class="err-msg">
+                                            Email Address is required
                                         </div>
                                     </div>
-                                    <div class="col-sm-12 col-md-6">
-                                        <label for="email" class="waiver-form-label">Email Address</label>
-                                        <input id="email" name="name" class="waiver-form-input" formControlName="email"
-                                               placeholder="Enter Email Address"
-                                               type="email" required>
-                                        <div *ngIf="applicantFormErrors.email" class="err-msg">
-                                            Enter a valid email.
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6">
-                                        <label for="kraPin" class="waiver-form-label">KRA PIN</label>
-                                        <input id="kraPin" name="name" class="waiver-form-input"
-                                               formControlName="kraPin"
-                                               placeholder="Enter KRA PIN"
-                                               type="text" required>
-                                        <div *ngIf="applicantFormErrors.kraPin" class="err-msg">
-                                            KRA PIN is required.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="pull-right pr-4">
-                                    <button [disabled]="ApplicantDetailsForm.invalid" class="btn btn-primary" mat-button
-                                            matStepperNext>NEXT
-                                    </button>
-                                </div>
-                            </mat-step>
-                            <mat-step label="Application Details">
-                                <div class="row no_margin" [formGroup]="ApplicationDetailsForm">
                                     <div class="col-sm-12 col-md-6">
                                         <label for="category" class="waiver-form-label">Category</label>
                                         <select id="category" name="category" class="waiver-form-input"
@@ -136,7 +106,8 @@
                                         </ul>
                                     </div>
                                     <div class="row no-margin">
-                                        <input type="file" accept="image/*" (change)="importFile($event)"
+                                        <input type="file" accept="image/*,application/pdf"
+                                               (change)="importFile($event)"
                                                class="display-nothing" #file>
                                         <button class="next-btn btn-attach" (click)="file.click()">ATTACH FILES</button>
                                     </div>
@@ -165,7 +136,7 @@
                                     </div>
                                 </div>
                                 <div class="pull-right pr-1">
-                                    <button [disabled]="ApplicantDetailsForm.invalid || ApplicationDetailsForm.invalid"
+                                    <button [disabled]="ApplicationDetailsForm.invalid"
                                             (click)="submitDataFunction()" class="btn btn-primary" mat-button
                                             matStepperNext>Submit
                                     </button>

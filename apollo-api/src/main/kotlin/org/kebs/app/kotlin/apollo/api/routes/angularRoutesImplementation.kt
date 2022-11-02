@@ -485,6 +485,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 POST("/delete", handler::deleteAPermit)
 
                 GET("/awarded-list-fmark-generate", handler::permitListAwardedGenerateFmarkMigration)
+                GET("/awarded-list-fmark-generated", handler::permitListAwardedGenerateFmarkMigrationAllPaidSmark)
+
                 GET("/firm-list", handler::firmPermitListMigration)
                 GET("/firm-branch-list", handler::firmBranchPermitListMigration)
                 "/apply".nest {
@@ -577,6 +579,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/allPermitsRenewed", handler::loadAllRenewedPermitsForReports)
                     GET("/allSamplesSubmitted", handler::loadAllSamplesSubmittedForReports)
                     GET("/allDejectedPermits", handler::loadAllDejectedPermitsForReports)
+                    GET("/allOfficers", handler::loadAllOfficersForReports)
+                    GET("/allStatuses", handler::loadAllStatusesForReports)
+                    POST("/filter", handler::filterAllApplicationsReports)
 
 
                 }
@@ -590,6 +595,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     fun migrationMarketSurveillanceRoutes(handler: NewMarketSurveillanceHandler) = router {
         "/api/v1/migration/ms".nest {
             "/common".nest {
+                GET("/towns", handler::townsListingAdmin)
+                GET("/counties", handler::countiesListingAdmin)
                 GET("/departments", handler::msDepartments)
                 GET("/divisions", handler::msDivisions)
                 GET("/laboratories", handler::msLaboratories)
@@ -667,12 +674,18 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                                 handler::updateWorkPlanScheduleApprovalPreliminaryReportHOD
                             )
                             PUT("/final-recommendation", handler::addWorkPlanScheduleFinalRecommendationByHOD)
-                            PUT("/end-adding-final-recommendation", handler::addWorkPlanScheduleEndFinalRecommendationAddingByHOD)
+                            PUT(
+                                "/end-adding-final-recommendation",
+                                handler::addWorkPlanScheduleEndFinalRecommendationAddingByHOD
+                            )
                             PUT("/feedBack-notification", handler::addWorkPlanScheduleFeedBackByHOD)
                         }
                         "/director".nest {
                             PUT("/recommendation", handler::addWorkPlanScheduleFeedBackByDirector)
-                            PUT("/end-recommendation", handler::addWorkPlanScheduleEndFinalRecommendationAddingByDirector)
+                            PUT(
+                                "/end-recommendation",
+                                handler::addWorkPlanScheduleEndFinalRecommendationAddingByDirector
+                            )
                         }
                     }
                     "/add".nest {
@@ -688,10 +701,13 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/end-sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionEndBsNumber)
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
-                        PUT("/final-ssf-compliance-status-save", handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd)
+                        PUT(
+                            "/final-ssf-compliance-status-save",
+                            handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd
+                        )
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
 //                        PUT("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
-                        PUT("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
+                        POST("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
                 }
 

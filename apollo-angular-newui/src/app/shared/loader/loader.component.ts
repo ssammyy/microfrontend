@@ -1,11 +1,13 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-    selector: 'app-loader',
+    selector: 'app-spinner-overlay',
+
     templateUrl: './loader.component.html',
-    styleUrls: ['./loader.component.css']
+    styleUrls: ['./loader.component.scss']
 })
 export class LoaderComponent implements OnInit {
+    @Input() public message: string;
 
     constructor() {
     }

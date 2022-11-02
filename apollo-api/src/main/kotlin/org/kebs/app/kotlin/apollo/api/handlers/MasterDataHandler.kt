@@ -824,11 +824,9 @@ class MasterDataHandler(
                             return ok().body(it)
                         }
                         ?: throw NullValueNotAllowedException("No records found")
-
                 }
                 else -> {
                     daoService.getTownsByStatus(status)
-
                         ?.let {
                             return ok().body(it)
                         }

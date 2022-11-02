@@ -45,12 +45,10 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
-import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.util.*
-import javax.transaction.Transactional
 
 
 @Repository
@@ -117,6 +115,17 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
         @Param("regionId") regionId: Long,
         @Param("status") status: Int
     ): List<UsersEntity>?
+
+
+    @Query(
+        "SELECT distinct u.* from  APOLLO.DAT_KEBS_USER_PROFILES pf,APOLLO.CFG_USER_ROLES_ASSIGNMENTS r,APOLLO.DAT_KEBS_USERS u where pf.USER_ID = r.USER_ID and u.ID = pf.USER_ID and r.ROLE_ID = :roleId and pf.STATUS = :status",
+        nativeQuery = true
+    )
+    fun findOfficer(
+        @Param("roleId") roleId: Long,
+        @Param("status") status: Int
+    ): List<UsersEntity>?
+
 
     @Query(
         "SELECT DISTINCT u.* FROM CFG_USER_SECTION_ASSIGNMENTS s, CFG_USER_ROLES_ASSIGNMENTS r, DAT_KEBS_USER_PROFILES pf,  DAT_KEBS_USERS u" +
@@ -642,7 +651,6 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
 //    fun updateCompanyStatus(id: Long, assignedTo: Int, assignStatus: Int): Long
 
 
-
     @Query(
         value = "SELECT COUNT(c.ENTRY_NUMBER)  FROM DAT_KEBS_COMPANY_PROFILE c JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON c.ENTRY_NUMBER=p.ENTRY_NUMBER WHERE p.PENALTY_APPLIED='1' ",
         nativeQuery = true
@@ -650,6 +658,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findPenaltyCount(): String
 
 }
+
 @Repository
 interface RejectedCompanyDetailsRepository : JpaRepository<RejectedCompanyDetailsEntity, Long> {
     @Query(
@@ -663,7 +672,6 @@ interface RejectedCompanyDetailsRepository : JpaRepository<RejectedCompanyDetail
     fun getRejectedCompanyDetails(): MutableList<RejectedComDetails>
 
 }
-
 
 
 @Repository

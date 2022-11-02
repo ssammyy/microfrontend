@@ -91,7 +91,7 @@ export class PredefinedResourcesRequired {
     status: boolean;
 }
 
-export class WorkPlanTownsDto{
+export class WorkPlanTownsDto {
         countyID: number;
         countyName: string;
         townID: number;
@@ -574,6 +574,7 @@ export class WorkPlanInspectionDto {
     appealStatus: boolean;
     msProcessEndedStatus: boolean;
     preliminaryReport: PreliminaryReportDto;
+    preliminaryReportFinal: PreliminaryReportDto;
     officersList: MsUsersDto[];
     hofList: MsUsersDto[];
     updateWorkPlan: WorkPlanEntityDto;
@@ -594,7 +595,7 @@ export class WorkPlanProductDto {
         id: number;
         productName: string;
         referenceNo: string;
-        recommendation: string;
+        recommendation: RecommendationDto[];
         destructionRecommended: boolean;
         hodRecommendationStatus: boolean;
         hodRecommendationRemarks: string;
@@ -696,7 +697,7 @@ export class DataReportDto {
     personMet: string;
     summaryFindingsActionsTaken: string;
     finalActionSeizedGoods: string;
-    totalComplianceScore: string;
+    totalComplianceScore: number;
     remarks: string;
     productsList: DataReportParamsDto[];
 }

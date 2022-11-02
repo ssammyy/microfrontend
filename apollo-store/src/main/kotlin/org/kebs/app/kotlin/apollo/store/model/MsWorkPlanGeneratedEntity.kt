@@ -137,6 +137,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var division: String? = null
 
+    @Column(name = "UPDATED_REMARKS")
+    @Basic
+    var updatedRemarks: String? = null
+
     @Column(name = "OFFICER_NAME")
     @Basic
     var officerName: String? = null

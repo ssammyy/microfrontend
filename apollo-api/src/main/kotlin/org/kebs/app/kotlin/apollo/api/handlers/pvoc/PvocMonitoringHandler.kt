@@ -36,19 +36,25 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
     fun listForeignCoi(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
-        return ServerResponse.ok().body(pvocMonitoringService.listForeignCocCoi("COI", "F",status?.toInt() ?: 0, page))
+        val keywords = req.paramOrNull("keywords")
+        return ServerResponse.ok()
+            .body(pvocMonitoringService.listForeignCocCoi("COI", "F", status?.toInt() ?: 0, page, keywords))
     }
 
     fun listForeignNcr(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
-        return ServerResponse.ok().body(pvocMonitoringService.listForeignCocCoi("NCR", "F",status?.toInt() ?: 0, page))
+        val keywords = req.paramOrNull("keywords")
+        return ServerResponse.ok()
+            .body(pvocMonitoringService.listForeignCocCoi("NCR", "F", status?.toInt() ?: 0, page, keywords))
     }
 
     fun listForeignCoc(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
-        return ServerResponse.ok().body(pvocMonitoringService.listForeignCocCoi("COC", "F",status?.toInt() ?: 0, page))
+        val keywords = req.paramOrNull("keywords")
+        return ServerResponse.ok()
+            .body(pvocMonitoringService.listForeignCocCoi("COC", "F", status?.toInt() ?: 0, page, keywords))
     }
 
     fun getForeignCoiOrCoc(req: ServerRequest): ServerResponse {
@@ -59,7 +65,8 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
     fun listForeignCor(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
-        return ServerResponse.ok().body(pvocMonitoringService.listForeignCor("F",status?.toInt() ?: 0, page))
+        val keywords = req.paramOrNull("keywords")
+        return ServerResponse.ok().body(pvocMonitoringService.listForeignCor("F", status?.toInt() ?: 0, page, keywords))
     }
 
     fun getForeignCor(req: ServerRequest): ServerResponse {

@@ -13,7 +13,6 @@ import {LocalDataSource} from "ng2-smart-table";
     styleUrls: ['./importation-waiver.component.css']
 })
 export class ImportationWaiverComponent implements OnInit {
-    public ApplicantDetailsForm: FormGroup;
     public ApplicationDetailsForm: FormGroup;
     masterProductList = [];
     productList: LocalDataSource
@@ -77,6 +76,9 @@ export class ImportationWaiverComponent implements OnInit {
     private selectedFiles: File[] = []
     private loading = false
     public applicantFormErrors = {
+        contactPersonPhone: '',
+        contactPersonEmail: '',
+        contactPersonName: '',
         applicantName: '',
         phoneNumber: '',
         postalAddress: '',
@@ -141,16 +143,11 @@ export class ImportationWaiverComponent implements OnInit {
     }
 
     createForm() {
-        // Step 1:
-        this.ApplicantDetailsForm = this.formBuilder.group({
-            applicantName: new FormControl('', Validators.required),
-            telephoneNumber: new FormControl('', Validators.required),
-            postalAddress: new FormControl('', Validators.required),
-            email: new FormControl('', [Validators.required, Validators.email]),
-            kraPin: new FormControl('', Validators.required),
-        });
         // Step 2:
         this.ApplicationDetailsForm = this.formBuilder.group({
+            contactPersonName: new FormControl(null, Validators.required),
+            contactPersonPhone: new FormControl(null, Validators.required),
+            contactPersonEmail: new FormControl(null, [Validators.required, Validators.email]),
             category: new FormControl(null, Validators.required),
             justification: new FormControl('', Validators.required),
             productDescription: new FormControl(null, Validators.required)
@@ -174,9 +171,7 @@ export class ImportationWaiverComponent implements OnInit {
     }
 
     submitDataFunction() {
-        let data = this.ApplicantDetailsForm.value;
-        data["category"] = this.ApplicationDetailsForm.value.category;
-        data["justification"] = this.ApplicationDetailsForm.value.justification;
+        let data = this.ApplicationDetailsForm.value;
         data["products"] = this.masterProductList
         console.log(data)
         this.loading = true;
@@ -201,7 +196,7 @@ export class ImportationWaiverComponent implements OnInit {
     goBackHome() {
         this.router.navigate(["/company/applications"])
             .then(() => {
-                
+
             })
     }
 

@@ -2,8 +2,6 @@ package org.kebs.app.kotlin.apollo.api.handlers.forms
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties
 import javax.validation.constraints.Email
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Pattern
 
 class WaiverProductDetails {
     var productDescription: String = ""
@@ -25,17 +23,6 @@ class UploadedDocuments {
 @JsonIgnoreProperties(ignoreUnknown = true)
 class WaiverApplication {
     var applicantName: String? = null
-
-    @NotNull(message = "Telephone number is required")
-    @Pattern(regexp = "^\\d{7,15}$", message = "Phone number should contain only numbers")
-    var telephoneNumber: String? = null
-    var postalAddress: String? = null
-
-    @Email(message = "Email address is invalid")
-    var emailAddress: String? = null
-
-    @Pattern(regexp = "^[\\d\\w]{5,25}$", message = "KRA PIN is required to have numbers and letters only")
-    var kraPin: String? = null
     var category: String? = null
     var justification: String? = null
     var contactPersonName: String? = null

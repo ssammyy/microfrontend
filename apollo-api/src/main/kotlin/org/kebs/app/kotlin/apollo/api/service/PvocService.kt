@@ -39,40 +39,48 @@ enum class DocumentTypes {
 }
 
 enum class PvocExemptionStatus(val status: String, val code: Int) {
-    NEW_APPLICATIONS("NEW", 0), PVOC_APPROVED("PVOC_APPROVE", 1), PVOC_REJECTED("PVOC_REJECTED", 2), DEFERRED("DEFERRED", 3), CERT_APPROVED("CERT_APPROVE", 1), CERT_REJECTED("CERT_REJECTED", 1)
+    NEW_APPLICATIONS("NEW", 0), PVOC_APPROVED("PVOC_APPROVE", 1), PVOC_REJECTED(
+        "PVOC_REJECTED",
+        2
+    ),
+    DEFERRED("DEFERRED", 3), CERT_APPROVED("CERT_APPROVE", 1), CERT_REJECTED("CERT_REJECTED", 1)
 }
 
 enum class PvocReviewStatus(val status: String, val code: Int) {
-    NEW_APPLICATION("NEW", 0), APPROVED("APPROVED", 1), REJECTED("REJECTED", 2), DEFERRED("DEFERRED", 3), RECOMMEND("RECOMMEND", 4), COMMENTS("COMMENTS", 5)
+    NEW_APPLICATION("NEW", 0), APPROVED("APPROVED", 1), REJECTED("REJECTED", 2), DEFERRED(
+        "DEFERRED",
+        3
+    ),
+    RECOMMEND("RECOMMEND", 4), COMMENTS("COMMENTS", 5)
 }
 
 
 @Service("pvocService")
 class PvocService(
-        private val iPvocApplicationProductsRepo: IPvocApplicationProductsRepo,
-        private val iPvocApplicationRepo: IPvocApplicationRepo,
-        private val iPvocExceptionApplicationStatusEntityRepo: IPvocExceptionApplicationStatusEntityRepo,
-        private val iPvocExceptionRawMaterialCategoryEntityRepo: IPvocExceptionRawMaterialCategoryEntityRepo,
-        private val iPvocExceptionMainMachineryCategoryEntityRepo: IPvocExceptionMainMachineryCategoryEntityRepo,
-        private val iPvocExceptionIndustrialSparesCategoryEntityRepo: IPvocExceptionIndustrialSparesCategoryEntityRepo,
-        private val iPvocApplicationDocumentRepo: IPvocApplicationDocumentRepo,
-        private val pvocBpmn: PvocBpmn,
-        private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo,
-        private val notificationService: NotificationService,
-        private val partnerService: PvocPartnerService,
-        private val waiversRemarksRepo: IPvocWaiversRemarksRepo,
-        private val complaintRecommendationRepo: PvocComplainRecommendationEntityRepo,
-        private val ipvocExemptionCertificateRepository: IPvocExceptionCertificateRepository,
-        private val iPvocWaiversCategoriesRepo: IPvocWaiversCategoriesRepo,
-        private val iPvocMasterListRepo: IPvocMasterListRepo,
-        private val iwaiversApplicationRepo: IwaiversApplicationRepo,
-        private val commonDaoServices: CommonDaoServices,
-        private val daoServices: DestinationInspectionDaoServices,
-        private val standardLevyRepo: IStandardLevyPaymentsRepository,
-        private val complaintEntityRepo: IPvocComplaintRepo,
-        private val complaintCategoryRepo: IPvocComplaintCategoryRepo,
-        private val pvocRemarksRepository: IPvocExceptionRemarksRepository,
-        private val complaintSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo
+    private val iPvocApplicationProductsRepo: IPvocApplicationProductsRepo,
+    private val iPvocApplicationRepo: IPvocApplicationRepo,
+    private val iPvocExceptionApplicationStatusEntityRepo: IPvocExceptionApplicationStatusEntityRepo,
+    private val iPvocExceptionRawMaterialCategoryEntityRepo: IPvocExceptionRawMaterialCategoryEntityRepo,
+    private val iPvocExceptionMainMachineryCategoryEntityRepo: IPvocExceptionMainMachineryCategoryEntityRepo,
+    private val iPvocExceptionIndustrialSparesCategoryEntityRepo: IPvocExceptionIndustrialSparesCategoryEntityRepo,
+    private val iPvocApplicationDocumentRepo: IPvocApplicationDocumentRepo,
+    private val pvocBpmn: PvocBpmn,
+    private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo,
+    private val notificationService: NotificationService,
+    private val partnerService: PvocPartnerService,
+    private val waiversRemarksRepo: IPvocWaiversRemarksRepo,
+    private val complaintRecommendationRepo: PvocComplainRecommendationEntityRepo,
+    private val ipvocExemptionCertificateRepository: IPvocExceptionCertificateRepository,
+    private val iPvocWaiversCategoriesRepo: IPvocWaiversCategoriesRepo,
+    private val iPvocMasterListRepo: IPvocMasterListRepo,
+    private val iwaiversApplicationRepo: IwaiversApplicationRepo,
+    private val commonDaoServices: CommonDaoServices,
+    private val daoServices: DestinationInspectionDaoServices,
+    private val standardLevyRepo: IStandardLevyPaymentsRepository,
+    private val complaintEntityRepo: IPvocComplaintRepo,
+    private val complaintCategoryRepo: IPvocComplaintCategoryRepo,
+    private val pvocRemarksRepository: IPvocExceptionRemarksRepository,
+    private val complaintSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo
 ) {
 
     fun sendWaiverEmailEvent(waiverId: Long, reviewStep: String, letter: String = "") {
@@ -118,7 +126,13 @@ class PvocService(
         }
     }
 
-    fun pvocOfficerReviewStatus(complaintId: Long, recommendedAction: Long, remarks: String, action: String, pvocOfficer: String) {
+    fun pvocOfficerReviewStatus(
+        complaintId: Long,
+        recommendedAction: Long,
+        remarks: String,
+        action: String,
+        pvocOfficer: String
+    ) {
         val optional = this.complaintEntityRepo.findById(complaintId)
         if (optional.isPresent) {
             val complaint = optional.get()
@@ -230,7 +244,12 @@ class PvocService(
         return response
     }
 
-    fun sendComplaintEmail(complaintEntity: PvocComplaintEntity, emailType: String, recipient: String, remarks: String? = null) {
+    fun sendComplaintEmail(
+        complaintEntity: PvocComplaintEntity,
+        emailType: String,
+        recipient: String,
+        remarks: String? = null
+    ) {
         val data = mutableMapOf<String, Any>()
         data["complaint"] = PvocComplaintDao.fromEntity(complaintEntity, false)
         data["referenceNumber"] = complaintEntity.refNo ?: "UNKNOWN"
@@ -239,7 +258,13 @@ class PvocService(
     }
 
 
-    fun approveCurrentComplaint(complaintId: Long, recommendedAction: Long, action: String, taskId: String, remarks: String): ApiResponseModel {
+    fun approveCurrentComplaint(
+        complaintId: Long,
+        recommendedAction: Long,
+        action: String,
+        taskId: String,
+        remarks: String
+    ): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val data = mutableMapOf<String, Any>()
@@ -307,7 +332,10 @@ class PvocService(
                             this.complaintEntityRepo.save(complaint)
                         }
                         data.put("is_owner", complaint.pvocUser?.id == activeUser?.id)
-                        data.put("tasks", this.pvocBpmn.getComplaintTasks(listOf("PVOC_OFFICER", "PVOC_QUERY"), complaint.id!!))
+                        data.put(
+                            "tasks",
+                            this.pvocBpmn.getComplaintTasks(listOf("PVOC_OFFICER", "PVOC_QUERY"), complaint.id!!)
+                        )
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "MPVOC_OFFICER" } -> {
                         data.put("is_mpvoc_officer", true)
@@ -316,7 +344,10 @@ class PvocService(
                             this.complaintEntityRepo.save(complaint)
                         }
                         data.put("is_owner", complaint.mpvoc?.id == activeUser?.id)
-                        data.put("tasks", this.pvocBpmn.getComplaintTasks(listOf("MPVOC_OFFICER", "MPVOC"), complaint.id!!))
+                        data.put(
+                            "tasks",
+                            this.pvocBpmn.getComplaintTasks(listOf("MPVOC_OFFICER", "MPVOC"), complaint.id!!)
+                        )
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "HOD_OFFICER" } -> {
                         data.put("is_hod_officer", true)
@@ -333,10 +364,26 @@ class PvocService(
             }
             // Add details
             // TODO: remove this in production
-            data.put("tasks", this.pvocBpmn.getComplaintTasks(listOf("HOD_OFFICER", "MPVOC_OFFICER", "PVOC_OFFICER", "PVOC_QUERY", "HOD"), complaint.id!!))
+            data.put(
+                "tasks",
+                this.pvocBpmn.getComplaintTasks(
+                    listOf(
+                        "HOD_OFFICER",
+                        "MPVOC_OFFICER",
+                        "PVOC_OFFICER",
+                        "PVOC_QUERY",
+                        "HOD"
+                    ), complaint.id!!
+                )
+            )
             data["assigned_officer"] = "${complaint.pvocUser?.firstName} ${complaint.pvocUser?.lastName}"
             data["complaint"] = PvocComplaintDao.fromEntity(complaint, false)
-            data["attachments"] = PvocWaiverAttachmentDao.fromList(this.iPvocApplicationDocumentRepo.findFirstByRefIdAndRefType(complaint.refNo.orEmpty(), DocumentTypes.COMPLAINT.name))
+            data["attachments"] = PvocWaiverAttachmentDao.fromList(
+                this.iPvocApplicationDocumentRepo.findFirstByRefIdAndRefType(
+                    complaint.refNo.orEmpty(),
+                    DocumentTypes.COMPLAINT.name
+                )
+            )
             data["remarks"] = pvocComplaintRemarksEntityRepo.findAllByComplaintId(complaint.id!!)
             response.data = data
             response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -436,7 +483,12 @@ class PvocService(
                 }
                 if (errors.isEmpty()) {
                     val saved = this.complaintEntityRepo.save(complaint)
-                    this.addUploads(commonDaoServices.loggedInUserAuthentication(), saved.refNo.orEmpty(), DocumentTypes.COMPLAINT, uploads)
+                    this.addUploads(
+                        commonDaoServices.loggedInUserAuthentication(),
+                        saved.refNo.orEmpty(),
+                        DocumentTypes.COMPLAINT,
+                        uploads
+                    )
                     response.data = saved.id
                     response.message = "Request received"
                     response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -539,12 +591,30 @@ class PvocService(
 //                "ASSIGNED" -> this.iwaiversApplicationRepo.
                 "NEW" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("NEW", page)
                 "DEFFERED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("DEFFERED", page)
-                "REVIEW_REJECTED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("REVIEW_REJECTED", page)
-                "REVIEW_APPROVED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc("REVIEW_APPROVED", page)
-                "NSC_APPROVED" -> this.iwaiversApplicationRepo.findAllByNscApprovalStatusOrderByCreatedOnDesc("APPROVED", page)
-                "NSC_REJECTED" -> this.iwaiversApplicationRepo.findAllByNscApprovalStatusOrderByCreatedOnDesc("REJECTED", page)
-                "CS_APPROVED" -> this.iwaiversApplicationRepo.findAllByCsApprovalStatusOrderByCreatedOnDesc("APPROVED", page)
-                "CS_REJECTED" -> this.iwaiversApplicationRepo.findAllByCsApprovalStatusOrderByCreatedOnDesc("REJECTED", page)
+                "REVIEW_REJECTED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc(
+                    "REVIEW_REJECTED",
+                    page
+                )
+                "REVIEW_APPROVED" -> this.iwaiversApplicationRepo.findAllByReviewStatusOrderByCreatedOnDesc(
+                    "REVIEW_APPROVED",
+                    page
+                )
+                "NSC_APPROVED" -> this.iwaiversApplicationRepo.findAllByNscApprovalStatusOrderByCreatedOnDesc(
+                    "APPROVED",
+                    page
+                )
+                "NSC_REJECTED" -> this.iwaiversApplicationRepo.findAllByNscApprovalStatusOrderByCreatedOnDesc(
+                    "REJECTED",
+                    page
+                )
+                "CS_APPROVED" -> this.iwaiversApplicationRepo.findAllByCsApprovalStatusOrderByCreatedOnDesc(
+                    "APPROVED",
+                    page
+                )
+                "CS_REJECTED" -> this.iwaiversApplicationRepo.findAllByCsApprovalStatusOrderByCreatedOnDesc(
+                    "REJECTED",
+                    page
+                )
                 else -> null
             }
         }
@@ -561,7 +631,13 @@ class PvocService(
         return response
     }
 
-    fun updateWaiverReviewStatus(waiverId: Long, remarks: String, applicationAnalysis: String, reviewOfficer: String, reviewStatus: String) {
+    fun updateWaiverReviewStatus(
+        waiverId: Long,
+        remarks: String,
+        applicationAnalysis: String,
+        reviewOfficer: String,
+        reviewStatus: String
+    ) {
         val optional = this.iwaiversApplicationRepo.findById(waiverId)
         if (optional.isPresent) {
             val request = optional.get()
@@ -573,7 +649,13 @@ class PvocService(
         }
     }
 
-    fun updateWaiverNscStatus(requestId: Long, remarks: String, reviewAnalysis: String, reviewOfficer: String, reviewStatus: String) {
+    fun updateWaiverNscStatus(
+        requestId: Long,
+        remarks: String,
+        reviewAnalysis: String,
+        reviewOfficer: String,
+        reviewStatus: String
+    ) {
         val optional = this.iwaiversApplicationRepo.findById(requestId)
         if (optional.isPresent) {
             val request = optional.get()
@@ -630,7 +712,13 @@ class PvocService(
         }
     }
 
-    fun sendWaiverApprovalLetter(requestId: Long, documentId: Long, statusLetter: String, remarks: String, reviewStage: String) {
+    fun sendWaiverApprovalLetter(
+        requestId: Long,
+        documentId: Long,
+        statusLetter: String,
+        remarks: String,
+        reviewStage: String
+    ) {
         val optional = this.iwaiversApplicationRepo.findById(requestId)
         if (optional.isPresent) {
             val request = optional.get()
@@ -644,13 +732,16 @@ class PvocService(
     fun exemptionApplicationHistory(page: Int, size: Int): ApiResponseModel {
         val response = ApiResponseModel()
         val userDetails = commonDaoServices.getLoggedInUser()
-        userDetails?.email?.let { email ->
-            val requests = this.iPvocApplicationRepo.findAllByCreatedByOrderByCreatedOnDesc(email, PageRequest.of(page, size))
+        try {
+            val requests = this.iPvocApplicationRepo.findAllByCreatedByOrderByCreatedOnDesc(
+                userDetails?.userName ?: "",
+                PageRequest.of(page, size)
+            )
             response.data = requests?.toList()
             response.message = "Success"
             response.totalPages = requests?.totalPages
             response.responseCode = ResponseCodes.SUCCESS_CODE
-        } ?: run {
+        } catch (ex: Exception) {
             response.message = "Could not get username"
             response.responseCode = ResponseCodes.FAILED_CODE
         }
@@ -659,13 +750,30 @@ class PvocService(
 
     fun manufacturerExemptionApplicationHistory(status: String, page: Int, size: Int): ApiResponseModel {
         val response = ApiResponseModel()
-        val userDetails = commonDaoServices.getLoggedInUser()
-        userDetails?.companyId?.let { companyId ->
+        try {
+            val userDetails = commonDaoServices.getLoggedInUser()
+            val company = commonDaoServices.findCompanyProfile(userDetails?.id!!)
             val requests = when (status.toLowerCase()) {
-                "new" -> this.iPvocApplicationRepo.findAllByCompanyIdAndStatusIn(companyId, listOf(PvocExemptionStatus.NEW_APPLICATIONS.code), PageRequest.of(page, size))
-                "approved" -> this.iPvocApplicationRepo.findAllByCompanyIdAndStatusIn(companyId, listOf(PvocExemptionStatus.PVOC_APPROVED.code, PvocExemptionStatus.CERT_APPROVED.code), PageRequest.of(page, size))
-                "rejected" -> this.iPvocApplicationRepo.findAllByCompanyIdAndStatusIn(companyId, listOf(PvocExemptionStatus.PVOC_REJECTED.code, PvocExemptionStatus.CERT_REJECTED.code), PageRequest.of(page, size))
-                "others" -> this.iPvocApplicationRepo.findAllByCompanyIdAndStatusIn(companyId, listOf(PvocExemptionStatus.DEFERRED.code), PageRequest.of(page, size))
+                "new" -> this.iPvocApplicationRepo.findAllByCompanyIdAndStatusIn(
+                    company.id,
+                    listOf(PvocExemptionStatus.NEW_APPLICATIONS.code),
+                    PageRequest.of(page, size)
+                )
+                "approved" -> this.iPvocApplicationRepo.findAllByCompanyIdAndStatusIn(
+                    company.id,
+                    listOf(PvocExemptionStatus.PVOC_APPROVED.code, PvocExemptionStatus.CERT_APPROVED.code),
+                    PageRequest.of(page, size)
+                )
+                "rejected" -> this.iPvocApplicationRepo.findAllByCompanyIdAndStatusIn(
+                    company.id,
+                    listOf(PvocExemptionStatus.PVOC_REJECTED.code, PvocExemptionStatus.CERT_REJECTED.code),
+                    PageRequest.of(page, size)
+                )
+                "others" -> this.iPvocApplicationRepo.findAllByCompanyIdAndStatusIn(
+                    company.id,
+                    listOf(PvocExemptionStatus.DEFERRED.code),
+                    PageRequest.of(page, size)
+                )
                 else -> throw ExpectedDataNotFound("Invalid application status: $status")
             }
             response.data = requests.toList()
@@ -673,11 +781,9 @@ class PvocService(
             response.totalPages = requests.totalPages
             response.totalCount = requests.totalElements
             response.responseCode = ResponseCodes.SUCCESS_CODE
-            response
-        } ?: run {
+        } catch (ex: Exception) {
             response.message = "Could not get username"
             response.responseCode = ResponseCodes.FAILED_CODE
-            response
         }
         return response
     }
@@ -698,22 +804,23 @@ class PvocService(
     @Transactional
     fun applyOrRenewWaiver(waiver: WaiverApplication, documents: List<MultipartFile>?): ApiResponseModel {
         val response = ApiResponseModel()
-        val userDetails = commonDaoServices.loggedInUserDetails()
-        val auth = commonDaoServices.loggedInUserAuthentication()
-        userDetails.companyId?.let {
+        try {
+            val userDetails = commonDaoServices.loggedInUserDetails()
+            val auth = commonDaoServices.loggedInUserAuthentication()
             val randomNumber = waiverSerialNumber()
+            val company = commonDaoServices.findCompanyProfile(userDetails.id!!)
             val waiverApp = PvocWaiversApplicationEntity()
             waiverApp.category = waiver.category
-            waiverApp.address = waiver.postalAddress
-            waiverApp.applicantName = waiver.applicantName
+            waiverApp.address = company.physicalAddress
+            waiverApp.applicantName = company.name
             waiverApp.productDescription = waiver.productDescription
             waiverApp.approvalStatus = 0
-            waiverApp.companyId = userDetails.companyId
-            waiverApp.emailAddress = waiver.emailAddress
-            waiverApp.phoneNumber = waiver.telephoneNumber
+            waiverApp.companyId = company.id
+            waiverApp.emailAddress = company.companyEmail
+            waiverApp.phoneNumber = company.companyTelephone
             waiverApp.justification = waiver.justification
             waiverApp.reviewStatus = PvocExemptionStatus.NEW_APPLICATIONS.status
-            waiverApp.kraPin = waiver.kraPin
+            waiverApp.kraPin = company.kraPin
             waiverApp.varField1 = waiver.contactPersonName
             waiverApp.varField2 = waiver.contactPersonPhone
             waiverApp.varField3 = waiver.contactPersonEmail
@@ -722,33 +829,34 @@ class PvocService(
             waiverApp.status = PvocExemptionStatus.NEW_APPLICATIONS.code
             waiverApp.serialNo = randomNumber
             iwaiversApplicationRepo.save(waiverApp)
-                    .let { w ->
-                        waiver.products?.forEach({ product ->
-                            val waiverProduct = PvocMasterListEntity()
-                            waiverProduct.hsCode = product.hsCode
-                            waiverProduct.waiversApplicationId = waiverApp.id
-                            waiverProduct.unit = product.productUnit.toString()
-                            waiverProduct.quantity = product.quantity.toString()
-                            waiverProduct.totalAmount = (product.productUnit * product.quantity).toString()
-                            waiverProduct.origin = product.countryOfOrigin
-                            waiverProduct.productDescription = product.productDescription
-                            waiverProduct.serialNo = waiverProduct.serialNo
-                            waiverProduct.currency = product.currency
-                            waiverProduct.createdBy = userDetails.userName
-                            waiverProduct.createdOn = waiverApp.createdOn
-                            waiverProduct.status = 1
-                            this.iPvocMasterListRepo.save(waiverProduct)
-                        })
-                        response.data = waiverApp
-                        response.responseCode = ResponseCodes.SUCCESS_CODE
-                        response.message = "Waiver application have been received"
-                        // Start BPM process
+                .let { w ->
+                    waiver.products?.forEach({ product ->
+                        val waiverProduct = PvocMasterListEntity()
+                        waiverProduct.hsCode = product.hsCode
+                        waiverProduct.waiversApplicationId = waiverApp.id
+                        waiverProduct.unit = product.productUnit.toString()
+                        waiverProduct.quantity = product.quantity.toString()
+                        waiverProduct.totalAmount = (product.productUnit * product.quantity).toString()
+                        waiverProduct.origin = product.countryOfOrigin
+                        waiverProduct.productDescription = product.productDescription
+                        waiverProduct.serialNo = waiverProduct.serialNo
+                        waiverProduct.currency = product.currency
+                        waiverProduct.createdBy = userDetails.userName
+                        waiverProduct.createdOn = waiverApp.createdOn
+                        waiverProduct.status = 1
+                        this.iPvocMasterListRepo.save(waiverProduct)
+                    })
+                    response.data = waiverApp
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                    response.message = "Waiver application have been received"
+                    // Start BPM process
 
-                        this.pvocBpmn.startPvocWaiversApplicationsProcess(w, auth.name)
-                        this.addUploads(auth, w.serialNo.orEmpty(), DocumentTypes.WAIVER, documents)
-                        iwaiversApplicationRepo.save(w)
-                    }
-        } ?: run {
+                    this.pvocBpmn.startPvocWaiversApplicationsProcess(w, auth.name)
+                    this.addUploads(auth, w.serialNo.orEmpty(), DocumentTypes.WAIVER, documents)
+                    iwaiversApplicationRepo.save(w)
+                }
+        } catch (ex: Exception) {
+            KotlinLogging.logger {}.error("Failed to create waiver request", ex)
             response.message = "Invalid account setup, user is not a company"
             response.responseCode = ResponseCodes.FAILED_CODE
         }
@@ -762,7 +870,13 @@ class PvocService(
     /**
      * Exemption review by section officer
      */
-    fun updateExemptionReviewRequest(requestId: Long, validity: String, remarks: String, reviewOfficer: String, reviewStatus: String) {
+    fun updateExemptionReviewRequest(
+        requestId: Long,
+        validity: String,
+        remarks: String,
+        reviewOfficer: String,
+        reviewStatus: String
+    ) {
         val optional = this.iPvocApplicationRepo.findById(requestId)
         if (optional.isPresent) {
             val request = optional.get()
@@ -808,7 +922,12 @@ class PvocService(
         }
     }
 
-    fun updateExemptionCommitteeStatus(requestId: Long, remarks: String, reviewOfficer: String, approvalStatus: String) {
+    fun updateExemptionCommitteeStatus(
+        requestId: Long,
+        remarks: String,
+        reviewOfficer: String,
+        approvalStatus: String
+    ) {
         KotlinLogging.logger { }.info("Update Exemption Committee approval status [$requestId]: [$approvalStatus]")
         val optional = this.iPvocApplicationRepo.findById(requestId)
         if (optional.isPresent) {
@@ -851,7 +970,13 @@ class PvocService(
 
     }
 
-    fun approveDeferRejectExemption(requestId: Long, certValidity: String?, taskStatus: String, taskId: String, remarks: String): ApiResponseModel {
+    fun approveDeferRejectExemption(
+        requestId: Long,
+        certValidity: String?,
+        taskStatus: String,
+        taskId: String,
+        remarks: String
+    ): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val data = mutableMapOf<String, Any>()
@@ -900,7 +1025,8 @@ class PvocService(
             exemption.certificateRevoked = false
             exemption.certificateRenewed = false
             exemption.certificateVersion = 1
-            exemption.certificateNumber = generateCertificateNumber(exemption.certificateVersion, exemption.departmentCode, exemption.certPrefix)
+            exemption.certificateNumber =
+                generateCertificateNumber(exemption.certificateVersion, exemption.departmentCode, exemption.certPrefix)
             exemption.issuedOn = Date.from(issueDate.toInstant(ZoneOffset.UTC))
             exemption.createdOn = Timestamp.valueOf(issueDate)
             exemption.expiresOn = Timestamp.valueOf(issueDate.plusYears(1))
@@ -911,7 +1037,13 @@ class PvocService(
         }
     }
 
-    fun addExemptionRemarks(exemptionId: Long, remarks: String, reviewOfficer: String, approvalStatus: String, stage: String) {
+    fun addExemptionRemarks(
+        exemptionId: Long,
+        remarks: String,
+        reviewOfficer: String,
+        approvalStatus: String,
+        stage: String
+    ) {
         val eRemarks = PvocExemptionRemarksEntity()
         eRemarks.exemptionId = exemptionId
         eRemarks.remarks = remarks
@@ -923,11 +1055,23 @@ class PvocService(
         pvocRemarksRepository.save(eRemarks)
     }
 
-    fun exemptionCertificateRenewalStatus(exemptionId: Long, certificateId: Long, validity: String, remarks: String, reviewOfficer: String, reviewStatus: String) {
+    fun exemptionCertificateRenewalStatus(
+        exemptionId: Long,
+        certificateId: Long,
+        validity: String,
+        remarks: String,
+        reviewOfficer: String,
+        reviewStatus: String
+    ) {
         addExemptionRemarks(exemptionId, remarks, reviewOfficer, reviewStatus, "SECTION_OFFICER_RENEWAL")
     }
 
-    fun renewExemptionCommitteeStatus(exemptionId: Long, remarks: String, reviewOfficer: String, approvalStatus: String) {
+    fun renewExemptionCommitteeStatus(
+        exemptionId: Long,
+        remarks: String,
+        reviewOfficer: String,
+        approvalStatus: String
+    ) {
         addExemptionRemarks(exemptionId, remarks, reviewOfficer, approvalStatus, "COMMITTEE_RENEWAL_STATUS")
     }
 
@@ -961,7 +1105,11 @@ class PvocService(
                 exemption.certificateNumber = "%s-%0x04".format(certParts[0], exemption.certificateVersion)
                 exemptionId
             } ?: run {
-                exemption.certificateNumber = generateCertificateNumber(exemption.certificateVersion, exemption.departmentCode, exemption.certPrefix)
+                exemption.certificateNumber = generateCertificateNumber(
+                    exemption.certificateVersion,
+                    exemption.departmentCode,
+                    exemption.certPrefix
+                )
                 exemptionId
             }
             exemption.issuedOn = Date.from(issueDate.toInstant(ZoneOffset.UTC))
@@ -1005,10 +1153,28 @@ class PvocService(
             val userDetails = commonDaoServices.getLoggedInUser()
             userDetails?.companyId?.let { company ->
                 val requests = when (status.toLowerCase()) {
-                    "new" -> this.iwaiversApplicationRepo.findByStatusInAndCompanyId(listOf(PvocExemptionStatus.NEW_APPLICATIONS.code), company, PageRequest.of(page, size))
-                    "approved" -> this.iwaiversApplicationRepo.findByStatusInAndCompanyId(listOf(PvocExemptionStatus.CERT_APPROVED.code, PvocExemptionStatus.PVOC_APPROVED.code), company, PageRequest.of(page, size))
-                    "rejected" -> this.iwaiversApplicationRepo.findByStatusInAndCompanyId(listOf(PvocExemptionStatus.CERT_REJECTED.code, PvocExemptionStatus.PVOC_REJECTED.code), company, PageRequest.of(page, size))
-                    "others" -> this.iwaiversApplicationRepo.findByStatusInAndCompanyId(listOf(PvocExemptionStatus.DEFERRED.code), company, PageRequest.of(page, size))
+                    "new" -> this.iwaiversApplicationRepo.findByStatusInAndCompanyId(
+                        listOf(PvocExemptionStatus.NEW_APPLICATIONS.code),
+                        company,
+                        PageRequest.of(page, size)
+                    )
+                    "approved" -> this.iwaiversApplicationRepo.findByStatusInAndCompanyId(
+                        listOf(
+                            PvocExemptionStatus.CERT_APPROVED.code,
+                            PvocExemptionStatus.PVOC_APPROVED.code
+                        ), company, PageRequest.of(page, size)
+                    )
+                    "rejected" -> this.iwaiversApplicationRepo.findByStatusInAndCompanyId(
+                        listOf(
+                            PvocExemptionStatus.CERT_REJECTED.code,
+                            PvocExemptionStatus.PVOC_REJECTED.code
+                        ), company, PageRequest.of(page, size)
+                    )
+                    "others" -> this.iwaiversApplicationRepo.findByStatusInAndCompanyId(
+                        listOf(PvocExemptionStatus.DEFERRED.code),
+                        company,
+                        PageRequest.of(page, size)
+                    )
                     else -> throw ExpectedDataNotFound("Invalid application status: $status")
                 }
                 response.data = PvocWaiverDao.fromList(requests.toList(), true)
@@ -1035,12 +1201,27 @@ class PvocService(
         val response = ApiResponseModel()
         try {
             val pg = when (status) {
-                "NEW" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.NEW_APPLICATIONS.status, page)
-                "APPROVED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.PVOC_APPROVED.status, page)
-                "REJECTED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.PVOC_REJECTED.status, page)
+                "NEW" -> this.iPvocApplicationRepo.findAllByReviewStatus(
+                    PvocExemptionStatus.NEW_APPLICATIONS.status,
+                    page
+                )
+                "APPROVED" -> this.iPvocApplicationRepo.findAllByReviewStatus(
+                    PvocExemptionStatus.PVOC_APPROVED.status,
+                    page
+                )
+                "REJECTED" -> this.iPvocApplicationRepo.findAllByReviewStatus(
+                    PvocExemptionStatus.PVOC_REJECTED.status,
+                    page
+                )
                 "DEFERRED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.DEFERRED.status, page)
-                "CERT_REJECTED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.CERT_REJECTED.status, page)
-                "CERT_APPROVED" -> this.iPvocApplicationRepo.findAllByReviewStatus(PvocExemptionStatus.CERT_APPROVED.status, page)
+                "CERT_REJECTED" -> this.iPvocApplicationRepo.findAllByReviewStatus(
+                    PvocExemptionStatus.CERT_REJECTED.status,
+                    page
+                )
+                "CERT_APPROVED" -> this.iPvocApplicationRepo.findAllByReviewStatus(
+                    PvocExemptionStatus.CERT_APPROVED.status,
+                    page
+                )
                 else -> {
                     response.responseCode = ResponseCodes.FAILED_CODE
                     response.message = "Invalid request status: $status"
@@ -1078,7 +1259,10 @@ class PvocService(
      * Save application exemption.
      */
     @Transactional
-    fun saveApplicationExemption(exemptionPayload: ExceptionPayload, documents: List<MultipartFile>?): ApiResponseModel {
+    fun saveApplicationExemption(
+        exemptionPayload: ExceptionPayload,
+        documents: List<MultipartFile>?
+    ): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val manufacturer = exemptionPayload.manufacturer
@@ -1087,107 +1271,107 @@ class PvocService(
             val spares = exemptionPayload.spares
             val mainMachinaries = exemptionPayload.mainMachinary
             val userDetails = commonDaoServices.getLoggedInUser()
-            userDetails?.companyId?.let { company ->
-
-                var pvocExceptionApp = PvocApplicationEntity()
-                pvocExceptionApp.companyPinNo = manufacturer?.companyPinNo
-                pvocExceptionApp.email = manufacturer?.email
-                pvocExceptionApp.companyId = company
-                pvocExceptionApp.sn = this.exemptionSerialNumber()
-                pvocExceptionApp.status = PvocExemptionStatus.NEW_APPLICATIONS.code
-                pvocExceptionApp.reviewStatus = PvocExemptionStatus.NEW_APPLICATIONS.status
-                pvocExceptionApp.telephoneNo = manufacturer?.telephoneNo
-                pvocExceptionApp.conpanyName = manufacturer?.companyName
-                pvocExceptionApp.postalAadress = manufacturer?.postalAddress
-                pvocExceptionApp.physicalLocation = manufacturer?.physicalLocation
-                pvocExceptionApp.contactPersorn = manufacturer?.contactPersonName
-                pvocExceptionApp.contactEmail = manufacturer?.contactPersonEmail
-                pvocExceptionApp.contactName = manufacturer?.contactPersonPhone
-                with(pvocExceptionApp) {
-                    modifiedBy = userDetails.userName
-                    createdBy = userDetails.email
-                    termsConditions = 1
-                    pvocWaStatus = 0
-                    pvocEaStatus = 0
-                    createdOn = Timestamp.from(Instant.now())
-                    modifiedOn = Timestamp.from(Instant.now())
-                    finalApproval = PvocExemptionStatus.NEW_APPLICATIONS.code
-                    applicationDate = Date.from(Instant.now())
-                    finished = 0
-                }
-                pvocExceptionApp = iPvocApplicationRepo.save(pvocExceptionApp)
-                response.data = exemptionPayload
-                response.message = "Success"
-                response.responseCode = ResponseCodes.SUCCESS_CODE
-
-                products?.forEach { product ->
-                    val pvocApplicationProductsEntity = PvocApplicationProductsEntity()
-                    with(pvocApplicationProductsEntity) {
-                        productName = product.productName
-                        brand = product.brandName
-                        pvocApplicationId = pvocExceptionApp
-                        expirelyDate = product.expriryDate.toString()
-                        kebsStandardizationMarkPermit = product.permitNumber
-                        createdBy = pvocExceptionApp.createdBy
-                        createdOn = pvocExceptionApp.createdOn
-                        iPvocApplicationProductsRepo.save(pvocApplicationProductsEntity)
-                        KotlinLogging.logger { }.info { "Main App save OK" }
-                    }
-                }
-
-                rawMaterials?.forEach { rawMat ->
-                    val pvocRawMaterialCategory = PvocExceptionRawMaterialCategoryEntity()
-                    with(pvocRawMaterialCategory) {
-                        hsCode = rawMat.hsCode
-                        rawMaterialDescription = rawMat.rawMaterialDescription
-                        endProduct = rawMat.endProduct
-                        countryOfOrgin = rawMat.countryOfOrigin
-                        exceptionId = pvocExceptionApp.id
-                        createdBy = pvocExceptionApp.createdBy
-                        createdOn = pvocExceptionApp.createdOn
-                        iPvocExceptionRawMaterialCategoryEntityRepo.save(pvocRawMaterialCategory)
-                        KotlinLogging.logger { }.info { "Raw save OK" }
-                    }
-                }
-
-                mainMachinaries?.forEach { machinary ->
-                    val machine = PvocExceptionMainMachineryCategoryEntity()
-                    with(machine) {
-                        hsCode = machinary.hsCode
-                        machineDescription = machinary.machineDescription
-                        countryOfOrigin = machinary.countryOfOrigin
-                        makeModel = machinary.makeModel
-                        exceptionId = pvocExceptionApp.id
-                        createdBy = pvocExceptionApp.createdBy
-                        createdOn = pvocExceptionApp.createdOn
-                        iPvocExceptionMainMachineryCategoryEntityRepo.save(machine)
-                        KotlinLogging.logger { }.info { "Machine save OK" }
-                    }
-                }
-
-                spares?.forEach { spare ->
-                    val spareEntity = PvocExceptionIndustrialSparesCategoryEntity()
-                    with(spareEntity) {
-                        hsCode = spare.hsCode
-                        machineToFit = spare.machineToFit
-                        countryOfOrigin = spare.countryOfOrigin
-                        industrialSpares = spare.industrialSpares
-                        exceptionId = pvocExceptionApp.id
-                        createdBy = pvocExceptionApp.createdBy
-                        createdOn = pvocExceptionApp.createdOn
-                        iPvocExceptionIndustrialSparesCategoryEntityRepo.save(spareEntity)
-                        KotlinLogging.logger { }.info { "Spare save OK" }
-                    }
-                }
-                this.addUploads(commonDaoServices.loggedInUserAuthentication(), pvocExceptionApp.sn.orEmpty(), DocumentTypes.EXEMPTION, documents)
-                // Exemption application BPM process
-                pvocBpmn.startPvocApplicationExemptionsProcess(pvocExceptionApp)
-                // Save the update
-                this.iPvocApplicationRepo.save(pvocExceptionApp)
-            } ?: run {
-                response.message = "User is not a company"
-                response.responseCode = ResponseCodes.FAILED_CODE
+            val company = commonDaoServices.findCompanyProfile(userDetails?.id!!)
+            var pvocExceptionApp = PvocApplicationEntity()
+            pvocExceptionApp.companyPinNo = company.kraPin
+            pvocExceptionApp.email = company.companyEmail
+            pvocExceptionApp.companyId = company.id
+            pvocExceptionApp.sn = this.exemptionSerialNumber()
+            pvocExceptionApp.status = PvocExemptionStatus.NEW_APPLICATIONS.code
+            pvocExceptionApp.reviewStatus = PvocExemptionStatus.NEW_APPLICATIONS.status
+            pvocExceptionApp.telephoneNo = company.companyTelephone
+            pvocExceptionApp.conpanyName = company.name
+            pvocExceptionApp.postalAadress = company.postalAddress
+            pvocExceptionApp.physicalLocation = company.physicalAddress
+            pvocExceptionApp.contactPersorn = manufacturer?.contactPersonName
+            pvocExceptionApp.contactEmail = manufacturer?.contactPersonEmail
+            pvocExceptionApp.contactName = manufacturer?.contactPersonPhone
+            with(pvocExceptionApp) {
+                modifiedBy = userDetails.userName
+                modifiedOn = Timestamp.from(Instant.now())
+                createdBy = userDetails.email
+                createdOn = Timestamp.from(Instant.now())
+                termsConditions = 1
+                pvocWaStatus = 0
+                pvocEaStatus = 0
+                finalApproval = PvocExemptionStatus.NEW_APPLICATIONS.code
+                applicationDate = Date.from(Instant.now())
+                finished = 0
             }
+            pvocExceptionApp = iPvocApplicationRepo.save(pvocExceptionApp)
+            response.data = exemptionPayload
+            response.message = "Success"
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+
+            products?.forEach { product ->
+                val pvocApplicationProductsEntity = PvocApplicationProductsEntity()
+                with(pvocApplicationProductsEntity) {
+                    productName = product.productName
+                    brand = product.brandName
+                    pvocApplicationId = pvocExceptionApp
+                    expirelyDate = product.expriryDate.toString()
+                    kebsStandardizationMarkPermit = product.permitNumber
+                    createdBy = pvocExceptionApp.createdBy
+                    createdOn = pvocExceptionApp.createdOn
+                    iPvocApplicationProductsRepo.save(pvocApplicationProductsEntity)
+                    KotlinLogging.logger { }.info { "Main App save OK" }
+                }
+            }
+
+            rawMaterials?.forEach { rawMat ->
+                val pvocRawMaterialCategory = PvocExceptionRawMaterialCategoryEntity()
+                with(pvocRawMaterialCategory) {
+                    hsCode = rawMat.hsCode
+                    rawMaterialDescription = rawMat.rawMaterialDescription
+                    endProduct = rawMat.endProduct
+                    countryOfOrgin = rawMat.countryOfOrigin
+                    exceptionId = pvocExceptionApp.id
+                    createdBy = pvocExceptionApp.createdBy
+                    createdOn = pvocExceptionApp.createdOn
+                    iPvocExceptionRawMaterialCategoryEntityRepo.save(pvocRawMaterialCategory)
+                    KotlinLogging.logger { }.info { "Raw save OK" }
+                }
+            }
+
+            mainMachinaries?.forEach { machinary ->
+                val machine = PvocExceptionMainMachineryCategoryEntity()
+                with(machine) {
+                    hsCode = machinary.hsCode
+                    machineDescription = machinary.machineDescription
+                    countryOfOrigin = machinary.countryOfOrigin
+                    makeModel = machinary.makeModel
+                    exceptionId = pvocExceptionApp.id
+                    createdBy = pvocExceptionApp.createdBy
+                    createdOn = pvocExceptionApp.createdOn
+                    iPvocExceptionMainMachineryCategoryEntityRepo.save(machine)
+                    KotlinLogging.logger { }.info { "Machine save OK" }
+                }
+            }
+
+            spares?.forEach { spare ->
+                val spareEntity = PvocExceptionIndustrialSparesCategoryEntity()
+                with(spareEntity) {
+                    hsCode = spare.hsCode
+                    machineToFit = spare.machineToFit
+                    countryOfOrigin = spare.countryOfOrigin
+                    industrialSpares = spare.industrialSpares
+                    exceptionId = pvocExceptionApp.id
+                    createdBy = pvocExceptionApp.createdBy
+                    createdOn = pvocExceptionApp.createdOn
+                    iPvocExceptionIndustrialSparesCategoryEntityRepo.save(spareEntity)
+                    KotlinLogging.logger { }.info { "Spare save OK" }
+                }
+            }
+            this.addUploads(
+                commonDaoServices.loggedInUserAuthentication(),
+                pvocExceptionApp.sn.orEmpty(),
+                DocumentTypes.EXEMPTION,
+                documents
+            )
+            // Exemption application BPM process
+            pvocBpmn.startPvocApplicationExemptionsProcess(pvocExceptionApp)
+            // Save the update
+            this.iPvocApplicationRepo.save(pvocExceptionApp)
         } catch (ex: ExpectedDataNotFound) {
             response.message = ex.localizedMessage
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -1204,7 +1388,8 @@ class PvocService(
         val response = ApiResponseModel()
         when (itemType) {
             "SPARE" -> {
-                val optional = iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByIdAndExceptionId(itemId, requestId)
+                val optional =
+                    iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByIdAndExceptionId(itemId, requestId)
                 if (optional.isPresent) {
                     val spare = optional.get()
                     iPvocExceptionIndustrialSparesCategoryEntityRepo.delete(spare)
@@ -1217,7 +1402,8 @@ class PvocService(
                 }
             }
             "MACHINERY" -> {
-                val optional = iPvocExceptionMainMachineryCategoryEntityRepo.findAllByIdAndExceptionId(itemId, requestId)
+                val optional =
+                    iPvocExceptionMainMachineryCategoryEntityRepo.findAllByIdAndExceptionId(itemId, requestId)
                 if (optional.isPresent) {
                     val machine = optional.get()
                     iPvocExceptionMainMachineryCategoryEntityRepo.delete(machine)
@@ -1307,7 +1493,16 @@ class PvocService(
                             iwaiversApplicationRepo.save(waiver)
                         }
                         data.put("is_owner", loggedInUser?.id == waiver.wetcSecretary)
-                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("WETC_SECRETARY", "WETC_MEMBER", "WETC_MEETING_APPROVE"), waiver.id))
+                        data.put(
+                            "tasks",
+                            this.pvocBpmn.getWaiverTasks(
+                                listOf(
+                                    "WETC_SECRETARY",
+                                    "WETC_MEMBER",
+                                    "WETC_MEETING_APPROVE"
+                                ), waiver.id
+                            )
+                        )
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "NAC_SECRETARY" } -> {
                         data.put("is_nac_officer", true)
@@ -1317,7 +1512,16 @@ class PvocService(
                             iwaiversApplicationRepo.save(waiver)
                         }
                         data.put("is_owner", loggedInUser?.id == waiver.ncsSecretary)
-                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("NAC_SECRETARY", "NAC_SECRETARY_REVIEW", "NAC_CS_APPROVE"), waiver.id))
+                        data.put(
+                            "tasks",
+                            this.pvocBpmn.getWaiverTasks(
+                                listOf(
+                                    "NAC_SECRETARY",
+                                    "NAC_SECRETARY_REVIEW",
+                                    "NAC_CS_APPROVE"
+                                ), waiver.id
+                            )
+                        )
                     }
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "CS_OFFICER" } -> {
                         data.put("is_cs_officer", true)
@@ -1327,15 +1531,24 @@ class PvocService(
                             iwaiversApplicationRepo.save(waiver)
                         }
                         data.put("is_owner", loggedInUser?.id == waiver.cs)
-                        data.put("tasks", this.pvocBpmn.getWaiverTasks(listOf("CS_OFFICER", "NAC_SECRETARY_REVIEW"), waiver.id))
+                        data.put(
+                            "tasks",
+                            this.pvocBpmn.getWaiverTasks(listOf("CS_OFFICER", "NAC_SECRETARY_REVIEW"), waiver.id)
+                        )
                     }
                 }
             } catch (ex: Exception) {
                 KotlinLogging.logger { }.error("Failed to add data", ex)
             }
 
-            data["products"] = PvocWaiverProductDao.fromList(this.iPvocMasterListRepo.findAllByWaiversApplicationId(waiver.id))
-            data["attachments"] = PvocWaiverAttachmentDao.fromList(iPvocApplicationDocumentRepo.findFirstByRefIdAndRefType(waiver.serialNo.orEmpty(), DocumentTypes.WAIVER.name))
+            data["products"] =
+                PvocWaiverProductDao.fromList(this.iPvocMasterListRepo.findAllByWaiversApplicationId(waiver.id))
+            data["attachments"] = PvocWaiverAttachmentDao.fromList(
+                iPvocApplicationDocumentRepo.findFirstByRefIdAndRefType(
+                    waiver.serialNo.orEmpty(),
+                    DocumentTypes.WAIVER.name
+                )
+            )
             data["waiver_details"] = PvocWaiverDao.fromEntity(waiver, false)
             data["waiver_history"] = PvocWaiverRemarksDao.fromList(this.waiversRemarksRepo.findAllByWaiverId(waiver.id))
 
@@ -1364,9 +1577,20 @@ class PvocService(
             iPvocApplicationRepo.findFirstByCreatedByAndId(username, id)?.let { exemption ->
                 data.put("exemption", PvocApplicationDto.fromEntity(exemption))
                 data.put("products", this.iPvocApplicationProductsRepo.findAllByPvocApplicationId_Id(exemption.id))
-                data.put("rawMaterials", PvocExceptionRawMaterialDao.fromList(this.iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionId(exemption.id)))
-                data.put("machinery", this.iPvocExceptionMainMachineryCategoryEntityRepo.findAllByExceptionId(exemption.id))
-                data.put("spares", this.iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByExceptionId(exemption.id))
+                data.put(
+                    "rawMaterials",
+                    PvocExceptionRawMaterialDao.fromList(
+                        this.iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionId(exemption.id)
+                    )
+                )
+                data.put(
+                    "machinery",
+                    this.iPvocExceptionMainMachineryCategoryEntityRepo.findAllByExceptionId(exemption.id)
+                )
+                data.put(
+                    "spares",
+                    this.iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByExceptionId(exemption.id)
+                )
                 response.data = data
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -1386,19 +1610,41 @@ class PvocService(
             val exemption = exemptionOptional.get()
             data.put("exemption", PvocApplicationDto.fromEntity(exemption))
             // Exemption details
-            data.put("products", PvocApplicationProductDao.fromList(this.iPvocApplicationProductsRepo.findAllByPvocApplicationId_Id(exemption.id)))
-            data.put("rawMaterials", PvocExceptionRawMaterialDao.fromList(this.iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionId(exemption.id)))
-            data.put("machinery", PvocExceptionMainMachineryDao.fromList(this.iPvocExceptionMainMachineryCategoryEntityRepo.findAllByExceptionId(exemption.id)))
-            data.put("spares", PvocExceptionIndustrialSparesDao.fromList(this.iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByExceptionId(exemption.id)))
+            data.put(
+                "products",
+                PvocApplicationProductDao.fromList(
+                    this.iPvocApplicationProductsRepo.findAllByPvocApplicationId_Id(exemption.id)
+                )
+            )
+            data.put(
+                "rawMaterials",
+                PvocExceptionRawMaterialDao.fromList(
+                    this.iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionId(exemption.id)
+                )
+            )
+            data.put(
+                "machinery",
+                PvocExceptionMainMachineryDao.fromList(
+                    this.iPvocExceptionMainMachineryCategoryEntityRepo.findAllByExceptionId(exemption.id)
+                )
+            )
+            data.put(
+                "spares",
+                PvocExceptionIndustrialSparesDao.fromList(
+                    this.iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByExceptionId(exemption.id)
+                )
+            )
             // Add Tasks based on roles
             try {
                 val auth = commonDaoServices.loggedInUserAuthentication()
                 when {
-                    auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_SECTION_OFFICER" } -> {
+                    auth.authorities.stream()
+                        .anyMatch { authority -> authority.authority == "PVOC_SECTION_OFFICER" } -> {
                         data.put("is_section_officer", true)
                         data.put("tasks", this.pvocBpmn.getExemptionTasks("SECTION_OFFICER", exemption.id!!))
                     }
-                    auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_EXEMPTION_CHAIRMAN" } -> {
+                    auth.authorities.stream()
+                        .anyMatch { authority -> authority.authority == "PVOC_EXEMPTION_CHAIRMAN" } -> {
                         data.put("is_section_officer", false)
                         data.put("tasks", this.pvocBpmn.getExemptionTasks("EXEMPTION_CHAIRMAN", exemption.id!!))
                     }
@@ -1426,7 +1672,12 @@ class PvocService(
         val auth = commonDaoServices.loggedInUserAuthentication()
         val application = iPvocApplicationRepo.findByIdAndCreatedBy(exemptionId, auth.name)
         if (application.isPresent) {
-            val certificateOptional = ipvocExemptionCertificateRepository.findFirstByApplicationIdAndCertificateRenewedAndCertificateRevoked(exemptionId, false, false)
+            val certificateOptional =
+                ipvocExemptionCertificateRepository.findFirstByApplicationIdAndCertificateRenewedAndCertificateRevoked(
+                    exemptionId,
+                    false,
+                    false
+                )
             if (certificateOptional.isPresent) {
                 val exemption = application.get()
                 this.pvocBpmn.startExemptionCertificateRenewal(auth.name, exemption, certificateOptional.get())
@@ -1435,7 +1686,13 @@ class PvocService(
                 response.message = "Renewal request received"
                 // Add justification comments if any
                 renewal.justification?.let { justification ->
-                    this.addExemptionRemarks(exemptionId, justification, auth.name, "NONE", "WAIVER_RENEWAL_JUSTIFICATION")
+                    this.addExemptionRemarks(
+                        exemptionId,
+                        justification,
+                        auth.name,
+                        "NONE",
+                        "WAIVER_RENEWAL_JUSTIFICATION"
+                    )
                 }
             } else {
                 response.responseCode = ResponseCodes.NOT_FOUND

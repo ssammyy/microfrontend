@@ -64,6 +64,7 @@ class QADaoServices(
     private val qaInspectionReportRecommendationRepo: IQaInspectionReportRecommendationRepository,
     private val qaInspectionHaccpImplementationRepo: IQaInspectionHaccpImplementationRepository,
     private val permitRepo: IPermitApplicationsRepository,
+    private val iPermitRepo: PermitRepository,
     private val permitUpdateDetailsRequestsRepo: IPermitUpdateDetailsRequestsRepository,
     private val userRequestsRepo: IUserRequestTypesRepository,
     private val SampleCollectionRepo: IQaSampleCollectionRepository,
@@ -170,7 +171,7 @@ class QADaoServices(
     }
 
     fun findALlInvoicesCreatedByUser(userID: Long): List<QaInvoiceMasterDetailsEntity> {
-        invoiceMasterDetailsRepo.findAllByUserId(userID)
+        invoiceMasterDetailsRepo.findAllByUserIdAndVarField1IsNull(userID)
             ?.let { it ->
                 return it
             }
@@ -837,6 +838,25 @@ class QADaoServices(
             permitType,
             status,
             fmarkGeneratedStatus
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllSmarkPermitWithNoFmarkGeneratedAndAllPaid(
+        user: UsersEntity,
+        permitType: Long,
+        status: Int,
+        fmarkGeneratedStatus: Int
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPaidStatus(
+            userId,
+            permitType,
+            10,
         )
             ?.let { permitList ->
                 return permitList
@@ -2536,6 +2556,19 @@ class QADaoServices(
             roleID,
             permit.sectionId ?: throw ExpectedDataNotFound("MISSING SECTION ID ON PERMIT"),
             plantAttached.region ?: throw ExpectedDataNotFound("MISSING REGION ID ON BRANCH ATTACHED ON PERMIT"),
+            1
+        )
+            ?.let {
+                return it
+            } ?: throw ExpectedDataNotFound("NO USER LIST FOUND")
+    }
+
+    fun findOfficers(
+        roleID: Long
+    ): List<UsersEntity> {
+        usersRepo.findOfficer(
+            roleID,
+
             1
         )
             ?.let {
@@ -6641,6 +6674,17 @@ class QADaoServices(
         }
     }
 
+    fun deleteInvoice(invoiceId: Long) {
+        try {
+            invoiceMasterDetailsRepo.deleteInvoice(invoiceId)
+            KotlinLogging.logger { }.info("The response is ok")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            e.printStackTrace();
+
+        }
+    }
+
     fun findReportAllPermitWithNoFmarkGenerated(
         user: UsersEntity,
         permitType: Long,
@@ -6809,6 +6853,32 @@ class QADaoServices(
         }
 
     }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun filterAllApplicationsReports(
+        startDate: Date?,
+        endDate: Date?,
+        regionID: Long?,
+        sectionId: Long?,
+        statusId: Long?,
+        officerId: Long?,
+        firmCategoryId: Long?,
+        permitType: Long?,
+        productDescription: String?
+
+    ): List<PermitApplicationsEntity> {
+
+        permitRepo.findFilteredPermits(
+            startDate, endDate, regionID, sectionId, statusId, officerId, firmCategoryId, permitType,productDescription
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found")
+    }
+
+    //build query
 
 
 }

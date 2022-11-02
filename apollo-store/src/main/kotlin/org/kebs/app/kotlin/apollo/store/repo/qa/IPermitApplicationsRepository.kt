@@ -1,13 +1,19 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
+import org.jetbrains.annotations.Nullable
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.domain.Specification
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.sql.Timestamp
+import java.util.*
 
 @Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
@@ -276,6 +282,12 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         fmarkGenerated: Int
     ): List<PermitApplicationsEntity>?
 
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPaidStatus(
+        userId: Long,
+        permitType: Long,
+        paidStatus: Int,
+    ): List<PermitApplicationsEntity>?
+
     fun findByPermitTypeAndPaidStatusIsNotNull(
         permitType: Long
     ): List<PermitApplicationsEntity>?
@@ -490,6 +502,22 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     )
     fun deletePermit(@Param("permitID") permitID: Long)
 
+    @Query(
+        value = "SELECT a.* from APOLLO.DAT_KEBS_PERMIT_TRANSACTION a  inner join DAT_KEBS_COMPANY_PROFILE b on a.COMPANY_ID = b.ID where (:startDate is null or a.CREATED_ON >=TO_DATE(:startDate)) and (:endDate is null or a.CREATED_ON <=TO_DATE(:endDate)) and (:regionId is null or b.REGION =TO_NUMBER(:regionId)) and (:sectionId is null or a.SECTION_ID =TO_NUMBER(:sectionId)) and (:permitStatus is null or a.PERMIT_STATUS =TO_NUMBER(:permitStatus)) and(:officerId is null or a.HOF_ID=TO_NUMBER(:officerId)) and(:firmCategory is null or b.FIRM_CATEGORY =TO_NUMBER(:firmCategory)) and(:permitType is null or PERMIT_TYPE =TO_NUMBER(:permitType)) and(:productDescription is null or PRODUCT_NAME like '%'||:productDescription||'%')",
+        nativeQuery = true
+    )
+    fun findFilteredPermits(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("regionId") regionId: Long?,
+        @Param("sectionId") sectionId: Long?,
+        @Param("permitStatus") permitStatus: Long?,
+        @Param("officerId") officerId: Long?,
+        @Param("firmCategory") firmCategory: Long?,
+        @Param("permitType") permitType: Long?,
+        @Param("productDescription") productDescription:String?
+    ): List<PermitApplicationsEntity>?
+
 }
 
 
@@ -554,14 +582,25 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
 
     fun findAllByUserIdAndReceiptNoIsNotNull(userId: Long): List<QaInvoiceMasterDetailsEntity>?
 
-    fun findAllByUserId(userId: Long): List<QaInvoiceMasterDetailsEntity>?
+    fun findAllByUserIdAndVarField1IsNull(userId: Long): List<QaInvoiceMasterDetailsEntity>?
     fun findByPermitRefNumberAndUserIdAndPermitId(
         permitRefNumber: String,
         userId: Long,
         permitId: Long
     ): QaInvoiceMasterDetailsEntity?
 //    fun findByStatus(status: Int): List<QaInvoiceMasterDetailsEntity>?
+
+    @Transactional
+    @Modifying
+    @Query(
+        value = "UPDATE  APOLLO.DAT_KEBS_QA_INVOICE_MASTER_DETAILS t1 SET t1.VAR_FIELD_9='1' WHERE t1.ID =:invoiceId ",
+        nativeQuery = true
+    )
+    fun deleteInvoice(@Param("invoiceId") invoiceId: Long)
+
+
 }
+
 
 @Repository
 interface IQaSchemeForSupervisionRepository : HazelcastRepository<QaSchemeForSupervisionEntity, Long> {
@@ -953,4 +992,12 @@ interface IQaBatchInvoiceRepository : HazelcastRepository<QaBatchInvoiceEntity, 
     ): QaBatchInvoiceEntity?
 
     fun findByUserId(userId: Long): List<QaBatchInvoiceEntity>?
+}
+
+@Repository
+interface PermitRepository : JpaRepository<PermitApplicationsEntity, Int>,
+    JpaSpecificationExecutor<PermitApplicationsEntity> {
+
+    override fun findAll(@Nullable spec: Specification<PermitApplicationsEntity?>?): MutableList<PermitApplicationsEntity>
+
 }

@@ -236,6 +236,10 @@ class MsPreliminaryReportEntity: Serializable {
     @Basic
     var rejectedStatus: Int? = 0
 
+    @Column(name = "FINAL_REPORT_STATUS")
+    @Basic
+    var finalReportStatus: Int? = 0
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

@@ -25,7 +25,6 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
-import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
@@ -43,7 +42,7 @@ import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
-import org.kebs.app.kotlin.apollo.store.repo.qa.IQaBatchInvoiceRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaProcessStatusRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -56,6 +55,7 @@ import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
+import java.sql.Timestamp
 
 
 @Component
@@ -74,12 +74,11 @@ class QualityAssuranceHandler(
     private val productSubCategoryRepo: IProductSubcategoryRepository,
     private val sampleStandardsRepository: ISampleStandardsRepository,
     private val limsServices: LimsServices,
-    private val invoiceBatchRepo: IQaBatchInvoiceRepository,
-    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val qaDaoServices: QADaoServices,
     private val jasyptStringEncryptor: StringEncryptor,
+    private val iQaProcessStatusRepository: IQaProcessStatusRepository
 
-    ) {
+) {
 
 
     var employeeUserTypeId = 5L
@@ -1696,6 +1695,10 @@ class QualityAssuranceHandler(
 
             val permit = qaDaoServices.findPermitBYID(permitID)
 
+            val invoice = qaDaoServices.findPermitInvoiceByPermitID(permitID)
+
+            invoice.id.let { qaDaoServices.deleteInvoice(it) }
+
             permit.id?.let { qaDaoServices.deletePermit(it) }
 
             return ok().body(permit)
@@ -1801,6 +1804,53 @@ class QualityAssuranceHandler(
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
                     permitListAllApplications = qaDaoServices.listPermits(
                         qaDaoServices.findAllSmarkPermitWithNoFmarkGenerated(
+                            loggedInUser,
+                            permitTypeID,
+                            map.activeStatus,
+                            map.inactiveStatus
+                        ), map
+                    )
+//                    permitListAllApplications = qaDaoServices.listPermits(
+//                        qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatus(
+//                            loggedInUser,
+//                            permitTypeID,
+//                            map.activeStatus
+//                        ), map
+//                    )
+                }
+
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitListAwardedGenerateFmarkMigrationAllPaidSmark(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val permitType = qaDaoServices.findPermitType(permitTypeID)
+
+            var permitListAllApplications: List<PermitEntityDto>? = null
+            when {
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllSmarkPermitWithNoFmarkGeneratedAndAllPaid(
                             loggedInUser,
                             permitTypeID,
                             map.activeStatus,
@@ -2142,7 +2192,8 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID =req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             var permit = qaDaoServices.findPermitBYUserIDAndId(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
@@ -3108,8 +3159,8 @@ class QualityAssuranceHandler(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitViewSTA10ProductsBeingManufacturedMigration(req: ServerRequest): ServerResponse {
         try {
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
-            val map = commonDaoServices.serviceMapDetails(appId)
+            commonDaoServices.loggedInUserDetails()
+            commonDaoServices.serviceMapDetails(appId)
             val qaSta10ID = req.paramOrNull("qaSta10ID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required QA Sta10 ID, check config")
             val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
@@ -3169,7 +3220,7 @@ class QualityAssuranceHandler(
             val map = commonDaoServices.serviceMapDetails(appId)
             val qaSta10ID = req.paramOrNull("qaSta10ID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required QA Sta10 ID, check config")
-            val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
+            qaDaoServices.findSta10BYID(qaSta10ID)
             val dto = req.body<List<STA10PersonnelDto>>()
             var sta10Personnel = qaDaoServices.mapDtoSTA10SectionBAndPersonnelEntity(dto)
 
@@ -3461,13 +3512,15 @@ class QualityAssuranceHandler(
             val permit = dto.permitRefNumber?.let { qaDaoServices.findPermitWithPermitRefNumberLatest(it) }
 
             //Pass invoice Dto to Sage
-            val permitType = qaDaoServices.findPermitType(permit?.permitType ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
+            val permitType =
+                qaDaoServices.findPermitType(permit?.permitType ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
 
 
             //Add created invoice consolidated id to my batch id to be submitted
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             with(newBatchInvoiceDto) {
-                batchID =batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID =
+                    batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
             //submit to staging invoices
@@ -3768,6 +3821,7 @@ class QualityAssuranceHandler(
         }
 
     }
+
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun loadAllDejectedPermitsForReports(req: ServerRequest): ServerResponse {
         try {
@@ -3822,6 +3876,91 @@ class QualityAssuranceHandler(
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
             return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllOfficersForReports(req: ServerRequest): ServerResponse {
+        return try {
+            var allOfficers: List<UsersEntity>? = null
+            allOfficers = qaDaoServices.findOfficers(applicationMapProperties.mapQAUserOfficerRoleId)
+            ok().body(allOfficers)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllStatusesForReports(req: ServerRequest): ServerResponse {
+        return try {
+            var allOfficers: List<QaProcessStatusEntity>? = null
+            allOfficers = iQaProcessStatusRepository.findAll().sortedBy { it.id }
+
+
+
+            ok().body(allOfficers)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun filterAllApplicationsReports(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val body = req.body<FilterDto>()
+            println(body)
+            val permitListAllApplications: List<ReportPermitEntityDto>?
+            var firmCategoryId: Long? = null
+            if (body.category.equals("Large")) {
+                firmCategoryId = 3
+            } else if (body.category.equals("Small")) {
+                firmCategoryId = 1
+
+            } else if (body.category.equals("Medium")) {
+                firmCategoryId = 2
+            }
+
+            permitListAllApplications = qaDaoServices.listPermitsReports(
+                qaDaoServices.filterAllApplicationsReports(
+                    body.start,
+                    body.end,
+                    body.regionId,
+                    body.sectionId,
+                    body.statusId,
+                    body.officerId,
+                    firmCategoryId,
+                    body.permitType,
+                    body.productDescription
+
+                ), map
+            )
+
+
+
+
+
+
+
+            return permitListAllApplications.let { it.let { it1 -> ok().body(it1) } }
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.info(e.message, e)
+            KotlinLogging.logger { }.trace(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+
         }
 
     }

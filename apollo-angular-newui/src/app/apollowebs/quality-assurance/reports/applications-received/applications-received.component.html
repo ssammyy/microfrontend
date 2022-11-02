@@ -1,4 +1,5 @@
 <div class="main-content">
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-3 col-md-6 col-sm-6">
@@ -126,6 +127,187 @@
                                             <h4 class="card-title">Diamond Mark: All Applications Received</h4>
                                         </div>
                                         <div class="card-body">
+                                            <div id="accordion" role="tablist">
+                                                <div class="card-collapse">
+                                                    <div class="card-header" role="tab" id="headingThree">
+                                                        <h5 class="mb-0">
+                                                            <a class="collapsed" data-toggle="collapse"
+                                                               href="#collapseThree" aria-expanded="false"
+                                                               aria-controls="collapseThree">
+                                                                Apply Filter
+                                                                <i class="material-icons">keyboard_arrow_down</i>
+                                                            </a>
+                                                        </h5>
+                                                    </div>
+                                                    <div id="collapseThree" class="collapse" role="tabpanel"
+                                                         aria-labelledby="headingThree" data-parent="#accordion">
+                                                        <div class="card-body">
+                                                            <div class="row">
+                                                                <div class="container text-center">
+                                                                    <form #formDirective="ngForm"
+                                                                          (ngSubmit)="applyFilter(formDirective)"
+                                                                          [formGroup]="filterFormGroup" class="form">
+
+                                                                        <div class="row">
+                                                                            <!--Custom Filters -->
+                                                                            <div class="col-sm-3">
+                                                                                <div class="form-group">
+                                                                                    <label><b>By Region:</b></label>
+                                                                                    <mat-select aria-label="Small"
+                                                                                                aria-describedby="inputGroup-sizing-lg"
+                                                                                                class="form-control"
+                                                                                                name="regionId"
+                                                                                                formControlName="regionId"
+                                                                                                placeholder="By Region">
+                                                                                        <mat-option
+                                                                                                *ngFor="let region of regions"
+                                                                                                value="{{region.id}}">{{region.region}}</mat-option>
+                                                                                    </mat-select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-3">
+                                                                                <div class="form-group">
+                                                                                    <label><b>By Section</b></label>
+                                                                                    <mat-select aria-label="Small"
+                                                                                                aria-describedby="inputGroup-sizing-lg"
+                                                                                                class="form-control"
+                                                                                                name="sectionId"
+                                                                                                formControlName="sectionId"
+                                                                                                placeholder="By Section">
+                                                                                        <mat-option
+                                                                                                *ngFor="let section of sections"
+                                                                                                value="{{section.id}}">{{section.section}}</mat-option>
+                                                                                    </mat-select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-3">
+                                                                                <div class="form-group">
+                                                                                    <label><b>By Statuses</b></label>
+                                                                                    <mat-select aria-label="Small"
+                                                                                                aria-describedby="inputGroup-sizing-lg"
+                                                                                                class="form-control"
+                                                                                                name="statusId"
+                                                                                                formControlName="statusId"
+                                                                                                placeholder="By Statuses">
+                                                                                        <mat-option
+                                                                                                *ngFor="let status of statuses"
+                                                                                                value="{{status.id}}">{{status.processStatusName}}</mat-option>
+                                                                                    </mat-select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-3">
+                                                                                <div class="form-group">
+                                                                                    <label><b>By Allocated
+                                                                                        Officer</b></label>
+                                                                                    <mat-select aria-label="Small"
+                                                                                                aria-describedby="inputGroup-sizing-lg"
+                                                                                                class="form-control"
+                                                                                                name="officerId"
+                                                                                                formControlName="officerId"
+                                                                                                placeholder="By Allocated Officer">
+                                                                                        <mat-option
+                                                                                                *ngFor="let officer of users"
+                                                                                                value="{{officer.id}}">{{officer.firstName}} {{officer.lastName}}</mat-option>
+                                                                                    </mat-select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-3">
+                                                                                <div class="form-group">
+                                                                                    <label class="form-label"><b>By
+                                                                                        Category:</b></label>
+
+                                                                                    <mat-select aria-label="Small"
+                                                                                                aria-describedby="inputGroup-sizing-lg"
+                                                                                                class="form-control"
+                                                                                                name="category"
+                                                                                                formControlName="category"
+                                                                                                placeholder="By category">
+                                                                                        <mat-option value="Large">Large
+                                                                                            Medium
+                                                                                            Enterprise
+                                                                                        </mat-option>
+                                                                                        <mat-option value="Medium">
+                                                                                            Medium
+                                                                                            Enterprise
+                                                                                        </mat-option>
+                                                                                        <mat-option value="Small">Small
+                                                                                            Medium
+                                                                                            Enterprise
+                                                                                        </mat-option>
+
+                                                                                    </mat-select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-3">
+                                                                                <div class="form-group">
+                                                                                    <label><b>By Application Range
+                                                                                        Date:</b></label>
+                                                                                    <mat-form-field appearance="fill">
+                                                                                        <mat-label>Enter a date range
+                                                                                        </mat-label>
+                                                                                        <mat-date-range-input
+                                                                                                [max]="today"
+                                                                                                [rangePicker]="picker">
+                                                                                            <input matStartDate
+                                                                                                   placeholder="Start date"
+                                                                                                   formControlName="start"
+                                                                                            >
+                                                                                            <input matEndDate
+                                                                                                   formControlName="end"
+                                                                                                   placeholder="End date">
+                                                                                        </mat-date-range-input>
+                                                                                        <mat-hint>MM/DD/YYYY –
+                                                                                            MM/DD/YYYY
+                                                                                        </mat-hint>
+                                                                                        <mat-datepicker-toggle matSuffix
+                                                                                                               [for]="picker"></mat-datepicker-toggle>
+                                                                                        <mat-date-range-picker
+                                                                                            #picker></mat-date-range-picker>
+                                                                                    </mat-form-field>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-6">
+                                                                                <div class="form-group">
+                                                                                    <label><strong> By Product
+                                                                                        Description:</strong></label>
+                                                                                    <mat-form-field
+                                                                                            class="example-full-width">
+
+                                                                                        <input type="text"
+                                                                                               matInput
+                                                                                               id="productDescription"
+                                                                                               formControlName="productDescription"
+                                                                                               placeholder="Enter Product Description">
+                                                                                    </mat-form-field>
+                                                                                </div>
+                                                                            </div>
+                                                                            <input type="hidden"
+
+                                                                                   id="permitType"
+                                                                                   formControlName="permitType"
+                                                                                   ngModel="{{dMarkID}}"
+                                                                            >
+                                                                        </div>
+                                                                        <button mat-raised-button
+                                                                                class="btn btn-secondary btn-lg"
+                                                                                style="width: inherit" type="submit">
+                                                                            Filter
+                                                                            results
+                                                                        </button>
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="card-body">
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6 col-sm-6">
                                                     <div class="card card-stats">
@@ -133,7 +315,8 @@
                                                             <div class="card-icon">
                                                                 <i class="material-icons">create</i>
                                                             </div>
-                                                            <p class="card-category">Total Diamond Mark Applications</p>
+                                                            <p class="card-category">Total Diamond Mark
+                                                                Applications</p>
                                                             <ng-template #dMarkTotals>
                                                                 <h3 class="card-title"></h3>
                                                             </ng-template>
@@ -145,7 +328,8 @@
                                                         </div>
                                                         <div class="card-footer">
                                                             <div class="stats">
-                                                                <i class="material-icons">create</i> All Diamond Mark
+                                                                <i class="material-icons">create</i> All Diamond
+                                                                Mark
                                                                 Applications Received
                                                             </div>
                                                         </div>
@@ -169,7 +353,8 @@
                                                         </div>
                                                         <div class="card-footer">
                                                             <div class="stats">
-                                                                <i class="material-icons">payments</i> All Diamond Mark
+                                                                <i class="material-icons">payments</i> All Diamond
+                                                                Mark
                                                                 Payments Made
                                                             </div>
                                                         </div>
@@ -244,7 +429,8 @@
                                             <div class="card-icon">
                                                 <i class="material-icons">done_outline</i>
                                             </div>
-                                            <h4 class="card-title">Standardization Mark: All Applications Received</h4>
+                                            <h4 class="card-title">Standardization Mark: All Applications
+                                                Received</h4>
                                         </div>
                                         <div class="card-body">
 
@@ -266,7 +452,8 @@
                                                         </div>
                                                         <div class="card-footer">
                                                             <div class="stats">
-                                                                <i class="material-icons">create</i> All Standardization
+                                                                <i class="material-icons">create</i> All
+                                                                Standardization
                                                                 Mark Applications Received
                                                             </div>
                                                         </div>
@@ -366,7 +553,8 @@
                                             <div class="card-icon">
                                                 <i class="material-icons">rowing</i>
                                             </div>
-                                            <h4 class="card-title">Fortification Mark: All Applications Received</h4>
+                                            <h4 class="card-title">Fortification Mark: All Applications
+                                                Received</h4>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
@@ -388,7 +576,8 @@
                                                         </div>
                                                         <div class="card-footer">
                                                             <div class="stats">
-                                                                <i class="material-icons">create</i> All Fortification
+                                                                <i class="material-icons">create</i> All
+                                                                Fortification
                                                                 Mark Applications Received
                                                             </div>
                                                         </div>
@@ -400,7 +589,8 @@
                                                             <div class="card-icon">
                                                                 <i class="material-icons">payments</i>
                                                             </div>
-                                                            <p class="card-category">Total Amount Paid For Fortification
+                                                            <p class="card-category">Total Amount Paid For
+                                                                Fortification
                                                                 Marks</p>
                                                             <ng-template #fMarkAmountTotals>
                                                                 <h3 class="card-title"></h3>
@@ -412,7 +602,8 @@
                                                         </div>
                                                         <div class="card-footer">
                                                             <div class="stats">
-                                                                <i class="material-icons">payments</i> All Fortification
+                                                                <i class="material-icons">payments</i> All
+                                                                Fortification
                                                                 Mark Payments Made
                                                             </div>
                                                         </div>
