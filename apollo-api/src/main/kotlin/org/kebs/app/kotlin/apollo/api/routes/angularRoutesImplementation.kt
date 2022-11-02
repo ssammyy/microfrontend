@@ -259,11 +259,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("", handler::handleProvideCompanyDetailsForUser)
                 }
                 "/user".nest {
+                    GET("/notifications", handler::notificationList)
                     "/details".nest {
                         GET("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
-                        POST("") {
-                            ServerResponse.badRequest().body("Invalid Request: Feature currently not supported")
-                        }
+                        POST("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
                         "/{userId}".nest {
                             PUT("", handler::handleUpdateLoggedInUserUserEntityDtoDetails)
                             GET("", handler::handleLoggedInUserUserEntityDtoDetails)
