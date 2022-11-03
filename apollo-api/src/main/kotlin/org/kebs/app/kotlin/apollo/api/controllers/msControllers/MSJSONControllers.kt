@@ -184,23 +184,23 @@ class MSJSONControllers(
             userId= loggedInUser.id
         }
         val remarksSaved = msWorkPlanDaoService.workPlanAddRemarksDetails(workPlanScheduled.id,remarksDto, map, loggedInUser)
-//        runBlocking {
-//            val scheduleEmailDetails =  WorkPlanScheduledDTO()
-//            with(scheduleEmailDetails){
-//                baseUrl= applicationMapProperties.baseUrlValue
-//                fullName = workPlanScheduled.destructionClientFullName
-//                refNumber = referenceNo
-//                batchRefNumber = batchReferenceNo
-//                yearCodeName = batchDetails.yearNameId?.yearName
-//                dateSubmitted = commonDaoServices.getCurrentDate()
-//
-//            }
-//            workPlanScheduled.destructionClientEmail?.let {
-//                commonDaoServices.sendEmailWithUserEmail(it,
-//                    applicationMapProperties.mapMsOfficerSendDestructionNotificationEmail,
-//                scheduleEmailDetails, map, remarksSaved.first,commonDaoServices.convertMultipartFileToFile(docFile).absolutePath)
-//            }
-//        }
+        runBlocking {
+            val scheduleEmailDetails =  WorkPlanScheduledDTO()
+            with(scheduleEmailDetails){
+                baseUrl= applicationMapProperties.baseUrlValue
+                fullName = workPlanProduct.destructionClientFullName
+                refNumber = referenceNo
+                batchRefNumber = batchReferenceNo
+                yearCodeName = batchDetails.yearNameId?.yearName
+                dateSubmitted = commonDaoServices.getCurrentDate()
+
+            }
+            workPlanProduct.destructionClientEmail?.let {
+                commonDaoServices.sendEmailWithUserEmail(it,
+                    applicationMapProperties.mapMsOfficerSendDestructionNotificationEmail,
+                scheduleEmailDetails, map, remarksSaved.first,commonDaoServices.convertMultipartFileToFile(docFile).absolutePath)
+            }
+        }
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
     }
 
@@ -224,26 +224,27 @@ class MSJSONControllers(
 
         with(workPlanProduct){
             destructionDocId = fileDoc.second.id
+            destructedStatus = map.activeStatus
 //            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionDestructionSuccessfullPendingFinalRemarks
 //            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
         }
 
         workPlanProduct = msWorkPlanDaoService.updateWorkPlanProductDetails(workPlanProduct, map, loggedInUser).second
-//        runBlocking {
-//            val hodRmDetails = workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
-//            val scheduleEmailDetails =  WorkPlanScheduledDTO()
-//            with(scheduleEmailDetails){
-//                baseUrl= applicationMapProperties.baseUrlValue
-//                fullName = hodRmDetails?.let { commonDaoServices.concatenateName(it) }
-//                refNumber = referenceNo
-//                batchRefNumber = batchReferenceNo
-//                yearCodeName = batchDetails.yearNameId?.yearName
-//                dateSubmitted = commonDaoServices.getCurrentDate()
-//
-//            }
-//
-//            hodRmDetails?.email?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsOfficerSendDestructionNotificationHODEmail, scheduleEmailDetails, map, fileDoc.first) }
-//        }
+        runBlocking {
+            val hodRmDetails = workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+            val scheduleEmailDetails =  WorkPlanScheduledDTO()
+            with(scheduleEmailDetails){
+                baseUrl= applicationMapProperties.baseUrlValue
+                fullName = hodRmDetails?.let { commonDaoServices.concatenateName(it) }
+                refNumber = referenceNo
+                batchRefNumber = batchReferenceNo
+                yearCodeName = batchDetails.yearNameId?.yearName
+                dateSubmitted = commonDaoServices.getCurrentDate()
+
+            }
+
+            hodRmDetails?.email?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsOfficerSendDestructionNotificationHODEmail, scheduleEmailDetails, map, fileDoc.first) }
+        }
 
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
     }

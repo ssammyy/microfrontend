@@ -1623,6 +1623,17 @@ export const routes: Routes = [
         ],
     },
     {
+        path: 'notifications',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: '',
+                component: ComplaintListComponent,
+            },
+        ],
+    },
+    {
         path: 'complain',
         component: RegistrationComponent,
         children: [

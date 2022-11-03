@@ -1510,6 +1510,21 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun endWorkPlanInspectionAllRecommendationDone(req: ServerRequest): ServerResponse {
+        return try {
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
+            marketSurveillanceWorkPlanDaoServices.endWorkPlanScheduleInspectionAllRecommendationDoneDetailsBasedOnRefNo(referenceNo, batchReferenceNo)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun submitWorkPlanScheduleEntry(req: ServerRequest): ServerResponse {
         return try {
 

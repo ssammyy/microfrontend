@@ -17,7 +17,7 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
     pageSize: number = 20;
     currentPageInternal: number = 0;
     totalCount: number;
-    stations=[]
+    stations = []
     activeTab = 1
     public settings = {
         selectMode: 'single',  // single|multi
@@ -40,8 +40,8 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
         },
         noDataMessage: 'No data found',
         columns: {
-            sealsNum: {
-                title: "Serial Number",
+            refNum: {
+                title: "UCR Number",
                 type: "string",
                 filter: false
             },
@@ -50,8 +50,8 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
                 type: 'string',
                 filter: false
             },
-            bondNum: {
-                title: 'Bond Number',
+            declarantPin: {
+                title: 'Decl. PIN',
                 type: 'string',
                 filter: false
             },
@@ -99,9 +99,17 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
         this.loadIdDocuments(null, "all")
         this.form = this.fb.group({
             startDate: [null, Validators.required],
-            status: [0, Validators.required]
+            keywords: [null, Validators.required]
         })
         this.loadStations()
+    }
+
+    searchPhraseChanged() {
+        let startDate = null
+        if (this.form.value.startDate) {
+            startDate = new DatePipe('en-US').transform(this.form.value.startDate, 'dd-MM-yyyy');
+        }
+        this.loadIdDocuments(startDate, "all", this.form.value.keywords)
     }
 
     loadStations() {
@@ -163,14 +171,8 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
             )
     }
 
-    filterByCurrency(event: any) {
-        const startDate = new DatePipe('en-US').transform(this.form.value.startDate, 'dd-MM-yyyy');
-        this.loadIdDocuments(startDate, this.form.status)
-
-    }
-
-    loadIdDocuments(startDate: string, status: string) {
-        this.diService.loadIdfDocuments(status, this.page, this.pageSize, startDate)
+    loadIdDocuments(startDate: string, status: string, keywords?: string) {
+        this.diService.loadIdfDocuments(status, this.page, this.pageSize, startDate, keywords)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {

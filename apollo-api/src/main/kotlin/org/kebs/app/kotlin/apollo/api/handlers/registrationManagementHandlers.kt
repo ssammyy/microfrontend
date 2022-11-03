@@ -2,6 +2,8 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import com.nhaarman.mockitokotlin2.any
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
+import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationManagementDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
@@ -103,6 +105,22 @@ class RegistrationManagementHandler(
             onErrors(e.message)
 
         }
+    }
+
+    fun notificationList(req: ServerRequest): ServerResponse {
+        val response = ApiResponseModel()
+        commonDaoServices.loggedInUserDetails()
+            .let { userDetails ->
+                userDetails.email?.let {
+                    response.data = commonDaoServices.findAllUserNotification(it)
+                    response.message = "Success"
+                    response.responseCode = ResponseCodes.SUCCESS_CODE
+                } ?: run {
+                    response.message = "Email not configured"
+                    response.responseCode = ResponseCodes.NOT_FOUND
+                }
+            }
+        return ServerResponse.ok().body(response)
     }
 
     /**

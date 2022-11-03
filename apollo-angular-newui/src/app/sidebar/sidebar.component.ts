@@ -36,6 +36,14 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'dashboard',
         privilege: ['USER', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
     },
+    // {
+    //     path: '/notifications',
+    //     title: 'Notifications',
+    //     type: 'link',
+    //     collapse: 'notifications',
+    //     privilege: ['USER'],
+    //     icontype: 'business',
+    // },
 
     {
         path: '/admin',
@@ -457,30 +465,30 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/complaint',
-        title: 'COMPLAINTS',
+        title: 'Complaints',
         type: 'link',
         collapse: 'complaint',
+        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
+        icontype: 'verified',
+    },
+    {
+        path: '/workPlan',
+        title: 'Work-Plan Schedule(s)',
+        type: 'link',
+        collapse: 'workPlan',
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
         icontype: 'diamond',
     },
     {
-        path: '/workPlan',
-        title: 'WORK-PLAN SCHEDULE(S)',
-        type: 'link',
-        collapse: 'workPlan',
-        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
-        icontype: 'receipt',
-    },
-    {
         path: '/complaintPlan',
-        title: 'COMPLAINT SCHEDULE(S)',
+        title: 'Complaint Schedule(s)',
         type: 'link',
         collapse: 'complaintPlan',
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
         icontype: 'receipt',
     },
 
-    //Standards Development
+    // Standards Development
     {
         path: '',
         title: 'Request Module',

@@ -281,6 +281,9 @@ export class ApiEndpointService {
         PERMIT_REPORTS_ALL_STATUSES: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allStatuses`,
         PERMIT_REPORTS_ALL_OFFICES: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allOfficers`,
         FILTER_REPORTS: `${ApiEndpointService.QA_CONTEXT}/permit/reports/filter`,
+        FILTER_REPORTS_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/filterAwarded`,
+        FILTER_REPORTS_RENEWED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/filterRenewed`,
+        FILTER_REPORTS_DEJECTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/filterDejected`,
 
 
         VIEW_ALL_PAYMENTS: `${ApiEndpointService.QA_CONTEXT}/payments`,
@@ -721,6 +724,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_START_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/start-onsite-activities`,
         INSPECTION_SCHEDULED_SUBMIT_FOR_APPROVAL: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/submit-for-approval`,
         INSPECTION_SCHEDULED_END_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/end-onsite-activities`,
+        INSPECTION_SCHEDULED_END_RECOMMENDATION_DONE: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/end-all-recommendation-done`,
         INSPECTION_SCHEDULED_ADD_DESTRUCTION_NOTIFICATION_UPLOAD: `${ApiEndpointService.MS_CONTEXT}/update/destruction-notice-upload`,
         INSPECTION_SCHEDULED_ADD_DESTRUCTION_REPORT_UPLOAD: `${ApiEndpointService.MS_CONTEXT}/update/destruction-report-upload`,
         UPLOAD_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/file/save`,

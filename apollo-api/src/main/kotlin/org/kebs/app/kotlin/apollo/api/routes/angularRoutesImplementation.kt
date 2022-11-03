@@ -259,11 +259,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("", handler::handleProvideCompanyDetailsForUser)
                 }
                 "/user".nest {
+                    GET("/notifications", handler::notificationList)
                     "/details".nest {
                         GET("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
-                        POST("") {
-                            ServerResponse.badRequest().body("Invalid Request: Feature currently not supported")
-                        }
+                        POST("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
                         "/{userId}".nest {
                             PUT("", handler::handleUpdateLoggedInUserUserEntityDtoDetails)
                             GET("", handler::handleLoggedInUserUserEntityDtoDetails)
@@ -582,6 +581,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/allOfficers", handler::loadAllOfficersForReports)
                     GET("/allStatuses", handler::loadAllStatusesForReports)
                     POST("/filter", handler::filterAllApplicationsReports)
+                    POST("/filterAwarded", handler::filterAllAAwardedPermitsReports)
+                    POST("/filterRenewed", handler::filterAllRenewedApplicationsReports)
+                    POST("/filterDejected", handler::filterAllDejectedApplicationsReports)
 
 
                 }
@@ -650,6 +652,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/approval-schedule", handler::updateWorkPlanScheduleApproval)
                         GET("/start-onsite-activities", handler::startWorkPlanInspectionOnsiteDetails)
                         GET("/end-onsite-activities", handler::endWorkPlanInspectionOnsiteDetails)
+                        PUT("/end-all-recommendation-done", handler::endWorkPlanInspectionAllRecommendationDone)
                         PUT("/client-appealed-status", handler::updateWorkPlanClientAppealed)
                         PUT("/client-appealed-successfully", handler::updateWorkPlanClientAppealSuccesful)
                         "/hof".nest {

@@ -55,7 +55,6 @@ import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
-import java.sql.Timestamp
 
 
 @Component
@@ -3928,11 +3927,10 @@ class QualityAssuranceHandler(
             } else if (body.category.equals("Medium")) {
                 firmCategoryId = 2
             }
-
             permitListAllApplications = qaDaoServices.listPermitsReports(
                 qaDaoServices.filterAllApplicationsReports(
-                    body.start,
-                    body.end,
+                    body.commenceDate,
+                    body.lastDate,
                     body.regionId,
                     body.sectionId,
                     body.statusId,
@@ -3943,16 +3941,129 @@ class QualityAssuranceHandler(
 
                 ), map
             )
-
-
-
-
-
-
-
             return permitListAllApplications.let { it.let { it1 -> ok().body(it1) } }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.info(e.message, e)
+            KotlinLogging.logger { }.trace(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun filterAllAAwardedPermitsReports(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val body = req.body<FilterDto>()
+            println(body)
+            val permitListAllApplications: List<ReportPermitEntityDto>?
+            var firmCategoryId: Long? = null
+            if (body.category.equals("Large")) {
+                firmCategoryId = 3
+            } else if (body.category.equals("Small")) {
+                firmCategoryId = 1
 
+            } else if (body.category.equals("Medium")) {
+                firmCategoryId = 2
+            }
+            permitListAllApplications = qaDaoServices.listPermitsReports(
+                qaDaoServices.filterFindFilteredAwardedPermits(
+                    body.commenceDate,
+                    body.lastDate,
+                    body.regionId,
+                    body.sectionId,
+                    body.statusId,
+                    body.officerId,
+                    firmCategoryId,
+                    body.permitType,
+                    body.productDescription
+
+                ), map
+            )
+            return permitListAllApplications.let { it.let { it1 -> ok().body(it1) } }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.info(e.message, e)
+            KotlinLogging.logger { }.trace(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+
+        }
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun filterAllRenewedApplicationsReports(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val body = req.body<FilterDto>()
+            println(body)
+            val permitListAllApplications: List<ReportPermitEntityDto>?
+            var firmCategoryId: Long? = null
+            if (body.category.equals("Large")) {
+                firmCategoryId = 3
+            } else if (body.category.equals("Small")) {
+                firmCategoryId = 1
+
+            } else if (body.category.equals("Medium")) {
+                firmCategoryId = 2
+            }
+            permitListAllApplications = qaDaoServices.listPermitsReports(
+                qaDaoServices.filterFindFilteredRenewedPermits(
+                    body.commenceDate,
+                    body.lastDate,
+                    body.regionId,
+                    body.sectionId,
+                    body.statusId,
+                    body.officerId,
+                    firmCategoryId,
+                    body.permitType,
+                    body.productDescription
+
+                ), map
+            )
+            return permitListAllApplications.let { it.let { it1 -> ok().body(it1) } }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.info(e.message, e)
+            KotlinLogging.logger { }.trace(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+
+        }
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun filterAllDejectedApplicationsReports(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val body = req.body<FilterDto>()
+            println(body)
+            val permitListAllApplications: List<ReportPermitEntityDto>?
+            var firmCategoryId: Long? = null
+            if (body.category.equals("Large")) {
+                firmCategoryId = 3
+            } else if (body.category.equals("Small")) {
+                firmCategoryId = 1
+
+            } else if (body.category.equals("Medium")) {
+                firmCategoryId = 2
+            }
+            permitListAllApplications = qaDaoServices.listPermitsReports(
+                qaDaoServices.filterFindFilteredDejectedPermits(
+                    body.commenceDate,
+                    body.lastDate,
+                    body.regionId,
+                    body.sectionId,
+                    body.statusId,
+                    body.officerId,
+                    firmCategoryId,
+                    body.permitType,
+                    body.productDescription
+
+                ), map
+            )
+            return permitListAllApplications.let { it.let { it1 -> ok().body(it1) } }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.info(e.message, e)
