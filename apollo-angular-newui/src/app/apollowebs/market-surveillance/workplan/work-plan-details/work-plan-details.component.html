@@ -1439,7 +1439,8 @@
 
 
 
-                                            <button   *ngIf="productsDestructionRecommendationDone == productsDestructionRecommendation
+                                            <button   *ngIf="workPlanInspection?.directorRecommendationRemarksStatus && workPlanInspection?.hodRecommendationStatus
+                                             && productsDestructionRecommendationDone == productsDestructionRecommendation
                                             && workPlanInspection?.recommendationDoneStatus == false
                                             && workPlanInspection?.destructionRecommended"
                                                       (click)="onClickSaveEndRecommendationDone()" mat-raised-button="" data-toggle="modal"
@@ -1450,6 +1451,7 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="productsDestructionRecommendation == 0 && workPlanInspection?.recommendationDoneStatus == false
+                                            && workPlanInspection?.directorRecommendationRemarksStatus && workPlanInspection?.hodRecommendationStatus
                                             && workPlanInspection?.destructionRecommended == false"
                                                       (click)="onClickSaveEndRecommendationDone()" mat-raised-button="" data-toggle="modal"
                                                       data-target="#myModal1"
