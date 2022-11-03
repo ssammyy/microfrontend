@@ -6869,7 +6869,7 @@ class QADaoServices(
     ): List<PermitApplicationsEntity> {
 
         permitRepo.findFilteredPermits(
-            startDate, endDate, regionID, sectionId, statusId, officerId, firmCategoryId, permitType,productDescription
+            startDate, endDate, regionID, sectionId, statusId, officerId, firmCategoryId, permitType, productDescription
         )
             ?.let { permitList ->
                 return permitList
@@ -6878,7 +6878,77 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found")
     }
 
-    //build query
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun filterFindFilteredAwardedPermits(
+        startDate: Date?,
+        endDate: Date?,
+        regionID: Long?,
+        sectionId: Long?,
+        statusId: Long?,
+        officerId: Long?,
+        firmCategoryId: Long?,
+        permitType: Long?,
+        productDescription: String?
+
+    ): List<PermitApplicationsEntity> {
+
+        permitRepo.findFilteredAwardedPermits(
+            startDate, endDate, regionID, sectionId, statusId, officerId, firmCategoryId, permitType, productDescription
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found")
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun filterFindFilteredRenewedPermits(
+        startDate: Date?,
+        endDate: Date?,
+        regionID: Long?,
+        sectionId: Long?,
+        statusId: Long?,
+        officerId: Long?,
+        firmCategoryId: Long?,
+        permitType: Long?,
+        productDescription: String?
+
+    ): List<PermitApplicationsEntity> {
+
+        permitRepo.findFilteredRenewedPermits(
+            startDate, endDate, regionID, sectionId, statusId, officerId, firmCategoryId, permitType, productDescription
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found")
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun filterFindFilteredDejectedPermits(
+        startDate: Date?,
+        endDate: Date?,
+        regionID: Long?,
+        sectionId: Long?,
+        statusId: Long?,
+        officerId: Long?,
+        firmCategoryId: Long?,
+        permitType: Long?,
+        productDescription: String?
+
+    ): List<PermitApplicationsEntity> {
+
+        permitRepo.findFilteredDejectedPermits(
+            startDate, endDate, regionID, sectionId, statusId, officerId, firmCategoryId, permitType, productDescription
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found")
+    }
 
 
 }

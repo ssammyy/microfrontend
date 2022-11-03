@@ -582,6 +582,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/allOfficers", handler::loadAllOfficersForReports)
                     GET("/allStatuses", handler::loadAllStatusesForReports)
                     POST("/filter", handler::filterAllApplicationsReports)
+                    POST("/filterAwarded", handler::filterAllAAwardedPermitsReports)
+                    POST("/filterRenewed", handler::filterAllRenewedApplicationsReports)
+                    POST("/filterDejected", handler::filterAllDejectedApplicationsReports)
 
 
                 }

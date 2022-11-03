@@ -11,7 +11,7 @@ export class User {
 }
 
 export class UserEntityDto {
-    id: bigint;
+    id: number;
     firstName: string;
     lastName: string;
     userName: string;
