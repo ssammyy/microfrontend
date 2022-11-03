@@ -1826,6 +1826,9 @@ export class WorkPlanDetailsComponent implements OnInit {
         if (this.workPlanInspection?.productList[i].destructionRecommended) {
           destructionRecommended++;
         }
+        if (this.workPlanInspection?.productList[i].appealStatus) {
+          destructionRecommendedAllDone++;
+        }
       }
       this.productsDestructionRecommendationDone = destructionRecommendedAllDone;
       this.productsDestructionRecommendation = destructionRecommended;
