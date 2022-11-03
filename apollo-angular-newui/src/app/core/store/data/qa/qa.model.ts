@@ -272,7 +272,7 @@ export class STA3 {
 }
 
 export class SectionDto {
-    id: bigint;
+    id: number;
     section: string;
     divisionId: bigint;
     descriptions: string;
@@ -280,7 +280,7 @@ export class SectionDto {
 }
 
 export class RegionDto {
-    id: bigint;
+    id: number;
     region: string;
     descriptions: string;
     status: boolean;
@@ -522,7 +522,7 @@ export interface SamplesSubmittedDto {
 }
 
 export class StatusesDto {
-    id: bigint;
+    id: number;
     processStatusName: string;
 
 }
@@ -533,8 +533,8 @@ export class FilterDto {
     statusId: number;
     officerId: number;
     category: string;
-    start: Date;
-    end: Date;
+    commenceDate: Date;
+    lastDate: Date;
     permitType: number;
     productDescription: string;
 }

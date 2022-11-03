@@ -640,8 +640,8 @@ data class FilterDto(
     var statusId: Long? = null,
     var officerId: Long? = null,
     var category: String? = null,
-    var start: Date? = null,
-    var end: Date? = null,
+    var commenceDate: Date? = null,
+    var lastDate: Date? = null,
     var permitType: Long? = null,
     var productDescription: String? = null,
 

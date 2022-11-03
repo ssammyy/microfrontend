@@ -284,6 +284,45 @@ export class QaService {
             })
         );
     }
+    public applyFilterAwarded(data: FilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.FILTER_REPORTS_AWARDED);
+
+        return this.http.post<FilterDto>(url, data, {}).pipe(
+            map(function (response: FilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public applyFilterRenewed(data: FilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.FILTER_REPORTS_RENEWED);
+
+        return this.http.post<FilterDto>(url, data, {}).pipe(
+            map(function (response: FilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public applyFilterDejected(data: FilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.FILTER_REPORTS_DEJECTED);
+
+        return this.http.post<FilterDto>(url, data, {}).pipe(
+            map(function (response: FilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 
     public loadPermitAwardedList(permitTypeID: string): Observable<PermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_AWARDED);
