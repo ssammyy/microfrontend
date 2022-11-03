@@ -125,6 +125,13 @@ export interface CompanyModel {
     dateOfClosure: string;
 
 }
+export class LevyFilterDto {
+    startDate: Date;
+    endDate: Date;
+    businessLines: number;
+    region : number;
+
+}
 export interface StdLevyScheduleSiteVisitDTO {
     status: number;
     assistantManagerApproval: number;

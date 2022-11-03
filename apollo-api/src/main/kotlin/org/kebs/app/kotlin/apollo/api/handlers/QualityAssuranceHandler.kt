@@ -3918,7 +3918,6 @@ class QualityAssuranceHandler(
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val body = req.body<FilterDto>()
-            println(body)
             val permitListAllApplications: List<ReportPermitEntityDto>?
             var firmCategoryId: Long? = null
             if (body.category.equals("Large")) {

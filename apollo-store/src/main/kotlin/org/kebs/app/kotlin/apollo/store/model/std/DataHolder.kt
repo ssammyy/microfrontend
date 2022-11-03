@@ -72,6 +72,17 @@ interface UserDetailHolder {
     fun getFirstName(): String?
     fun getLastName(): String?
 }
+
+interface BusinessLineHolder{
+   fun getId(): Long?
+   fun getName(): String?
+}
+
+interface RegionHolder{
+    fun getId(): Long?
+    fun getRegion(): String?
+}
+
 interface SiteVisitListHolder {
     fun getId(): Long?
 }
@@ -476,5 +487,7 @@ interface RejectedComDetails{
     fun getAssignedTo(): String?
     fun getStatus(): Long?
 }
+
+
 
 

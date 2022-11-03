@@ -26,8 +26,85 @@
                             <div class="toolbar">
 
                             </div>
+                            <form #formDirective="ngForm"
+                                  (ngSubmit)="applyRegisteredFirmsFilter(formDirective)"
+                                  [formGroup]="filterFormGroup" class="form">
+                                <div class="row">
+                                    <!--Custom Filters -->
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><b>By Region:</b></label>
+                                            <mat-select aria-label="Small"
+                                                        aria-describedby="inputGroup-sizing-lg"
+                                                        class="form-control"
+                                                        name="region"
+                                                        formControlName="region"
+                                                        placeholder="By Region">
+                                                <mat-option
+                                                        *ngFor="let region of regions"
+                                                        value="{{region.id}}">{{region.region}}</mat-option>
+                                            </mat-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><b>By Department:</b></label>
+                                            <mat-select aria-label="Small"
+                                                        aria-describedby="inputGroup-sizing-lg"
+                                                        class="form-control"
+                                                        name="businessLines"
+                                                        formControlName="businessLines"
+                                                        placeholder="By Department">
+                                                <mat-option
+                                                        *ngFor="let businessLine of businessLines"
+                                                        value="{{businessLine.id}}">{{businessLine.name}}</mat-option>
+                                            </mat-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label><b>By Period:</b></label>
+                                            <mat-form-field appearance="fill">
+                                                <mat-label>Enter a date range
+                                                </mat-label>
+                                                <mat-date-range-input
+                                                        [max]="today"
+                                                        [rangePicker]="picker">
+                                                    <input matStartDate
+                                                           placeholder="Start date"
+                                                           formControlName="startDate"
+                                                           name="startDate"
+                                                    >
+                                                    <input matEndDate
+                                                           formControlName="endDate"
+                                                           name="endDate"
+                                                           placeholder="End date">
+                                                </mat-date-range-input>
+                                                <mat-hint>MM/DD/YYYY –
+                                                    MM/DD/YYYY
+                                                </mat-hint>
+                                                <mat-datepicker-toggle matSuffix
+                                                                       [for]="picker"></mat-datepicker-toggle>
+                                                <mat-date-range-picker
+                                                    #picker></mat-date-range-picker>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label style="color: transparent">Filter:</label>
+                                        <button mat-raised-button
+                                                class="btn btn-secondary btn-lg"
+                                                style="width: inherit" type="submit">
+                                            Filter
+                                            results
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                            </form>
                             <div class="row">
-                                <button (click)="levyRegisteredFirmsReport(1,'Registered-firms'+1,'application/excel')"  class="btn btn-success btn-sm" style="width: 115px" >Download</button>
+<!--                                <button (click)="levyRegisteredFirmsReport(1,'Registered-firms'+1,'application/excel')"  class="btn btn-success btn-sm" style="width: 115px" >Download</button>-->
                                 <div class="material-datatables table-responsive col-md-12">
                                     <table  class="table table-striped table-bordered table-hover " datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"  cellspacing="0" width="100%">
                                         <thead>

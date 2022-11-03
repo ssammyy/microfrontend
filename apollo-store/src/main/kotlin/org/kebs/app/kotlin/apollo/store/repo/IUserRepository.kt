@@ -375,30 +375,87 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
                 "c.COMPANY_EMAIL as companyEmail,c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
                 "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName, cast(c.CREATED_ON as varchar(200)) AS CreatedOn " +
                 "FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID " +
-                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID  ",
+                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID ",
         nativeQuery = true
     )
-    fun getRegisteredFirms(): MutableList<RegisteredFirms>
+    fun getRegisteredFirms(
+
+    ): MutableList<RegisteredFirms>
+
+    @Query(
+        value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.COMPANY_TELEPHONE as companyTelephone," +
+                "c.COMPANY_EMAIL as companyEmail,c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
+                "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName, cast(c.CREATED_ON as varchar(200)) AS CreatedOn " +
+                "FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID " +
+                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID " +
+                "WHERE (:startDate is null or c.CREATED_ON >=TO_DATE(:startDate)) and (:endDate is null or c.CREATED_ON <=TO_DATE(:endDate)) and (:businessLines is null or c.BUSINESS_LINES =TO_NUMBER(:businessLines)) and (:region is null or c.REGION =TO_NUMBER(:region)) ",
+        nativeQuery = true
+    )
+    fun getRegisteredFirmsFilter(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("businessLines") businessLines: Long?,
+        @Param("region") region: Long?
+    ): MutableList<RegisteredFirms>
 
     @Query(
         value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.BRANCH_NAME as adminLocation," +
                 "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
                 "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName, cast(c.CREATED_ON as varchar(200)) AS CreatedOn " +
                 " FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID " +
-                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID   WHERE c.STATUS='1'",
+                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID  " +
+                " WHERE c.STATUS='1' ",
         nativeQuery = true
     )
-    fun getActiveFirms(): MutableList<RegisteredFirms>
+    fun getActiveFirms(
+
+    ): MutableList<RegisteredFirms>
+
+    @Query(
+        value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.BRANCH_NAME as adminLocation," +
+                "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
+                "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName, cast(c.CREATED_ON as varchar(200)) AS CreatedOn " +
+                " FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID " +
+                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID  " +
+                " WHERE c.STATUS='1' and (:startDate is null or c.CREATED_ON >=TO_DATE(:startDate)) and (:endDate is null or c.CREATED_ON <=TO_DATE(:endDate)) and (:businessLines is null or c.BUSINESS_LINES =TO_NUMBER(:businessLines)) and (:region is null or c.REGION =TO_NUMBER(:region))",
+        nativeQuery = true
+    )
+    fun getActiveFirmsFilter(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("businessLines") businessLines: Long?,
+        @Param("region") region: Long?
+    ): MutableList<RegisteredFirms>
 
     @Query(
         value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.BRANCH_NAME as adminLocation," +
                 "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
                 "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName, cast(c.CREATED_ON as varchar(200)) AS CreatedOn " +
                 "FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID " +
-                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID  WHERE c.STATUS='4'",
+                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID  " +
+                "WHERE c.STATUS='4' ",
         nativeQuery = true
     )
-    fun getDormantFirms(): MutableList<RegisteredFirms>
+    fun getDormantFirms(
+
+    ): MutableList<RegisteredFirms>
+
+    @Query(
+        value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.BRANCH_NAME as adminLocation," +
+                "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
+                "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName, cast(c.CREATED_ON as varchar(200)) AS CreatedOn " +
+                "FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID " +
+                "LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID  " +
+                "WHERE c.STATUS='4' and (:startDate is null or c.CREATED_ON >=TO_DATE(:startDate)) and (:endDate is null or c.CREATED_ON <=TO_DATE(:endDate))" +
+                " and (:businessLines is null or c.BUSINESS_LINES =TO_NUMBER(:businessLines)) and (:region is null or c.REGION =TO_NUMBER(:region))",
+        nativeQuery = true
+    )
+    fun getDormantFirmsFilter(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("businessLines") businessLines: Long?,
+        @Param("region") region: Long?
+    ): MutableList<RegisteredFirms>
 
 
     @Query(
@@ -406,10 +463,33 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
                 "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
                 "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName,cast(c.CREATED_ON as varchar(200)) AS CreatedOn,cast(p.DATE_OF_CLOSURE as varchar(200)) AS dateOfClosure " +
                 " FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID" +
-                " JOIN DAT_KEBS_CLOSURE_OF_OPERATIONS p ON c.ID=p.COMPANY_ID  WHERE c.STATUS='0'",
+                " JOIN DAT_KEBS_CLOSURE_OF_OPERATIONS p ON c.ID=p.COMPANY_ID  WHERE c.STATUS='0' and (:startDate is null or p.DATE_OF_CLOSURE >=TO_DATE(:startDate)) and (:endDate is null or p.DATE_OF_CLOSURE <=TO_DATE(:endDate)) " +
+                "and (:businessLines is null or c.BUSINESS_LINES =TO_NUMBER(:businessLines)) and (:region is null or c.REGION =TO_NUMBER(:region))",
         nativeQuery = true
     )
-    fun getClosedFirms(): MutableList<RegisteredFirms>
+    fun getClosedFirmsFilter(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("businessLines") businessLines: Long?,
+        @Param("region") region: Long?
+    ): MutableList<RegisteredFirms>
+
+    @Query(
+        value = "SELECT c.ID as id,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.NAME as name,c.POSTAL_ADDRESS as postalAddress,c.BRANCH_NAME as adminLocation," +
+                "c.STREET_NAME as streetName,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
+                "bn.NAME as businessNatureName,c.REGION as region,r.REGION as regionName,c.TOWN as town,t.TOWN as townName,cast(c.CREATED_ON as varchar(200)) AS CreatedOn,cast(p.DATE_OF_CLOSURE as varchar(200)) AS dateOfClosure " +
+                " FROM DAT_KEBS_COMPANY_PROFILE c LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_TOWNS t ON c.TOWN=t.ID LEFT JOIN CFG_KEBS_BUSINESS_NATURE bn ON c.BUSINESS_NATURES=bn.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID" +
+                " JOIN DAT_KEBS_CLOSURE_OF_OPERATIONS p ON c.ID=p.COMPANY_ID  WHERE c.STATUS='0' ",
+        nativeQuery = true
+    )
+    fun getClosedFirms(
+    ): MutableList<RegisteredFirms>
+
+    @Query(value = "SELECT NAME AS name,ID AS id FROM CFG_KEBS_BUSINESS_LINES   ", nativeQuery = true)
+    fun getBusinessLineList(): List<BusinessLineHolder>
+
+    @Query(value = "SELECT REGION AS region,ID AS id FROM CFG_KEBS_REGIONS   ", nativeQuery = true)
+    fun getRegionList(): List<RegionHolder>
 
     @Query(
         value = "SELECT ID  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id AND ASSIGN_STATUS='0'",
@@ -532,10 +612,27 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
                 "c.BUSINESS_NATURE_NAME as businessNatureName,c.REGION as region,c.REGION_NAME as regionName,d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate," +
                 "h.TRANSACTION_DATE as paymentDate,d.LEVY_PAID as levyPaid" +
                 " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
-                "WHERE  d.TRANSACTION_TYPE='DECLARATION' ORDER BY d.ID DESC",
+                "WHERE  d.TRANSACTION_TYPE='DECLARATION'  ORDER BY d.ID DESC",
         nativeQuery = true
     )
-    fun getAllLevyPayments(): MutableList<AllLevyPayments>
+    fun getAllLevyPayments(
+
+    ): MutableList<AllLevyPayments>
+
+    @Query(
+        value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.BUSINESS_LINE_NAME as businessLineName," +
+                "c.BUSINESS_NATURE_NAME as businessNatureName,c.REGION as region,c.REGION_NAME as regionName,d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate," +
+                "h.TRANSACTION_DATE as paymentDate,d.LEVY_PAID as levyPaid" +
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
+                "WHERE  d.TRANSACTION_TYPE='DECLARATION' and (:periodFrom is null or d.PERIOD_FROM >=TO_DATE(:periodFrom)) and (:periodTo is null or d.PERIOD_TO <=TO_DATE(:periodTo)) and (:businessLines is null or c.BUSINESS_LINES =TO_NUMBER(:businessLines)) and (:region is null or c.REGION =TO_NUMBER(:region)) ORDER BY d.ID DESC",
+        nativeQuery = true
+    )
+    fun getAllLevyPaymentsFilter(
+        @Param("periodFrom") periodFrom: Date?,
+        @Param("periodTo") periodTo: Date?,
+        @Param("businessLines") businessLines: Long?,
+        @Param("region") region: Long?
+    ): MutableList<AllLevyPayments>
 
     @Query(
         value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId," +
@@ -543,10 +640,29 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
                 "h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,p.NET_PENALTY_AMT as amountDue,p.MONTHS_LATE as monthsLate" +
                 " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID " +
                 "LEFT JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
-                "WHERE  d.TRANSACTION_TYPE='PENALTY' ORDER BY d.ID DESC",
+                "WHERE  d.TRANSACTION_TYPE='PENALTY'  ORDER BY d.ID DESC",
         nativeQuery = true
     )
-    fun getPenaltyReport(): MutableList<AllLevyPayments>
+    fun getPenaltyReport(
+
+    ): MutableList<AllLevyPayments>
+
+    @Query(
+        value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId," +
+                "p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,h.TRANSACTION_DATE as paymentDate,d.PENALTY_PAID as penaltyPaid," +
+                "h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,p.NET_PENALTY_AMT as amountDue,p.MONTHS_LATE as monthsLate" +
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID " +
+                "LEFT JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
+                "WHERE  d.TRANSACTION_TYPE='PENALTY' and (:periodFrom is null or d.PERIOD_FROM >=TO_DATE(:periodFrom)) and (:periodTo is null or d.PERIOD_TO <=TO_DATE(:periodTo))" +
+                " and (:businessLines is null or c.BUSINESS_LINES =TO_NUMBER(:businessLines)) and (:region is null or c.REGION =TO_NUMBER(:region)) ORDER BY d.ID DESC",
+        nativeQuery = true
+    )
+    fun getPenaltyReportFilter(
+        @Param("periodFrom") periodFrom: Date?,
+        @Param("periodTo") periodTo: Date?,
+        @Param("businessLines") businessLines: Long?,
+        @Param("region") region: Long?
+    ): MutableList<AllLevyPayments>
 
 
     @Query(

@@ -597,6 +597,12 @@ export class ApiEndpointService {
         STD_LEVY_ACTIVE_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getActiveFirms`,
         STD_LEVY_DORMANT_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getDormantFirms`,
         STD_LEVY_CLOSED_FIRMS: `${ApiEndpointService.STL_CONTEXT}/getClosedFirms`,
+        STD_LEVY_REG_FIRMS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getRegisteredFirmsFilter`,
+        STD_LEVY_ALL_LEVY_PAYMENTS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getAllLevyPaymentsFilter`,
+        STD_LEVY_PEN_REPORT_FILTER: `${ApiEndpointService.STL_CONTEXT}/getPenaltyReportFilter`,
+        STD_LEVY_ACTIVE_FIRMS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getActiveFirmsFilter`,
+        STD_LEVY_DORMANT_FIRMS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getDormantFirmsFilter`,
+        STD_LEVY_CLOSED_FIRMS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getClosedFirmsFilter`,
         STD_LEVY_REJECTED_FIRM_EDITS: `${ApiEndpointService.STL_CONTEXT}/getRejectedCompanyDetails`,
         STD_LEVY_VIEW_REG_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyRegisteredFirmsReport`,
         STD_LEVY_VIEW_ACTIVE_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyActiveFirmsReport`,
@@ -604,6 +610,8 @@ export class ApiEndpointService {
         STD_LEVY_VIEW_CLOSED_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyClosedFirmsReport`,
         STD_LEVY_VIEW_PENALTY_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyPenaltyReport`,
         STD_LEVY_VIEW_PAYMENT_FIRMS_REPORT: `${ApiEndpointService.STL_CONTEXT}/levyPaymentReport`,
+        STD_LEVY_BUSINESS_LINE_LIST: `${ApiEndpointService.STL_CONTEXT}/getBusinessLineList`,
+        STD_LEVY_REGION_LIST: `${ApiEndpointService.STL_CONTEXT}/getRegionList`,
 
 
     };

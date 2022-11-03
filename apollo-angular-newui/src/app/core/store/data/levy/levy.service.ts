@@ -12,7 +12,7 @@ import {
     ConfirmEditCompanyDTO, DefaulterDetails,
     DirectorsList,
     DocumentDTO,
-    EditCompanyDTO, EmailVerificationStatus,
+    EditCompanyDTO, EmailVerificationStatus, LevyFilterDto,
     ManufactureCompletedTask,
     ManufactureDetailList,
     ManufacturePenalty,
@@ -30,8 +30,9 @@ import {
     UsersEntityList, VerifyEmailDto,
     VisitTask
 } from "./levy.model";
-import {UsersEntity} from "../std/std.model";
+import {BusinessLinesView, RegionView, UsersEntity} from "../std/std.model";
 import swal from "sweetalert2";
+import {FilterDto} from "../qa/qa.model";
 
 @Injectable({
   providedIn: 'root'
@@ -862,6 +863,44 @@ export class LevyService {
         );
     }
 
+    public applyRegisteredFirmsFilter(data: LevyFilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REG_FIRMS_FILTER);
+
+        return this.http.post<LevyFilterDto>(url, data, {}).pipe(
+            map(function (response: LevyFilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadRegionList(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.LOAD_REGIONS);
+        return this.http.get<any>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getBusinessLineList(): Observable<BusinessLinesView[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_BUSINESS_LINE_LIST);
+        const params = new HttpParams();
+        return this.http.get<BusinessLinesView[]>(url, {params}).pipe();
+    }
+
+    public getRegionList(): Observable<RegionView[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REGION_LIST);
+        const params = new HttpParams();
+        return this.http.get<RegionView[]>(url, {params}).pipe();
+    }
 
 
 

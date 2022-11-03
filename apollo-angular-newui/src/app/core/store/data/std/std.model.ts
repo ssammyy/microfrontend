@@ -40,6 +40,16 @@ export interface UsersEntity {
 
 }
 
+export interface BusinessLinesView{
+    id: number;
+    name: string;
+}
+
+export interface RegionView{
+    id: number;
+    region: string;
+}
+
 export interface TechnicalCommittee {
     id: number;
     technical_committee_no: string;
