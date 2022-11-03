@@ -57,7 +57,8 @@
                                 </div>
 
                             </mat-step>
-                            <mat-step label="Agrochem Checklist" *ngIf="consignment.ui.cocRequest">
+                            <mat-step label="Agrochem Checklist"
+                                      *ngIf="consignment.ui.cocRequest || consignment.ui.foreignCocAvailable">
                                 <app-agrochem-inspection-checklist
                                         (agrochemDetails)="setAgrochemChecklist($event)"
                                         [categories]="categories"
@@ -73,7 +74,8 @@
                                     </button>
                                 </div>
                             </mat-step>
-                            <mat-step label="Engineering checklist" *ngIf="consignment.ui.cocRequest">
+                            <mat-step label="Engineering checklist"
+                                      *ngIf="consignment.ui.cocRequest || consignment.ui.foreignCocAvailable">
                                 <app-engineering-inspection-checklist
                                         (engineeringDetails)="setEngineringChecklist($event)"
                                         [categories]="categories"
@@ -88,7 +90,8 @@
                                     </button>
                                 </div>
                             </mat-step>
-                            <mat-step label="Vehicle Checklist" *ngIf="consignment.ui.corRequest">
+                            <mat-step label="Vehicle Checklist"
+                                      *ngIf="consignment.ui.corRequest || consignment.ui.foreignCorAvailable">
                                 <app-vehicle-inspection-checklist (vehicleDetails)="setVehicleChecklist($event)"
                                                                   [stations]="stations"
                                                                   [categories]="categories"
@@ -103,7 +106,8 @@
                                     </button>
                                 </div>
                             </mat-step>
-                            <mat-step label="Other Checklists" *ngIf="consignment.ui.cocRequest">
+                            <mat-step label="Other Checklists"
+                                      *ngIf="consignment.ui.cocRequest || consignment.ui.foreignCocAvailable">
                                 <app-other-inspection-checklist
                                         (otherDetails)="setOtherChecklist($event)"
                                         [itemList]="itemList"
