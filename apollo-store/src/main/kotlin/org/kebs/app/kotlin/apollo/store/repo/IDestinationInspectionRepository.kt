@@ -142,6 +142,8 @@ interface ICocsRepository : HazelcastRepository<CocsEntity, Long> {
     fun findByCocTypeAndDocumentsType(certType: String, docType: String, page: Pageable): Page<CocsEntity>
     fun findByCocTypeAndReviewStatus(certType: String, reviewStatus: Int, page: Pageable): Page<CocsEntity>
     fun findByCocType(certType: String, page: Pageable): Page<CocsEntity>
+    fun findAllByUcrNumber(ucrNumber: String): List<CocsEntity>
+    fun findByConsignmentDocId_Id(cdId: Long): List<CocsEntity>
 }
 
 

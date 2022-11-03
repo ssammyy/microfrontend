@@ -2595,6 +2595,14 @@ class DestinationInspectionDaoServices(
         return cocRepo.findByIdOrNull(cocId)
     }
 
+    fun findCOCByCdId(cocId: Long): List<CocsEntity> {
+        return cocRepo.findByConsignmentDocId_Id(cocId)
+    }
+
+    fun findCOCByUcrNumber(ucr: String): List<CocsEntity> {
+        return cocRepo.findAllByUcrNumber(ucr)
+    }
+
     fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {
         return cocRepo.findByUcrNumberAndCocType(ucrNumber, "COC")
     }
