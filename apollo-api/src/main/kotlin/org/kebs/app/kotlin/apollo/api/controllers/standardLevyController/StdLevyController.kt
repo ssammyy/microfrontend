@@ -1800,27 +1800,29 @@ class StdLevyController(
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @PostMapping("/getRegisteredFirmsFilter")
     fun getRegisteredFirmsFilter(
-        startDate: Date?,
-        endDate: Date?,
-        businessLines: Long?,
-        region: Long?
+        @RequestBody levyFilterDTO: LevyFilterDTO
 
     ): MutableList<RegisteredFirms>
     {
-        return standardLevyService.getRegisteredFirmsFilter(startDate,endDate, businessLines,region)
+        val startDate= levyFilterDTO.startDate
+        val endDate = levyFilterDTO.endDate
+        val businessLines = levyFilterDTO.businessLines
+        val region = levyFilterDTO.region
+        return standardLevyService.getRegisteredFirmsFilter(startDate ,endDate ,businessLines ,region)
     }
 
     //Get List of Levy Payments
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @PostMapping("/getAllLevyPaymentsFilter")
     fun getAllLevyPaymentsFilter(
-        periodFrom: Date?,
-        periodTo: Date?,
-        businessLines: Long?,
-        region: Long?
+        @RequestBody levyFiltersDTO: LevyFiltersDTO
     ): MutableList<AllLevyPayments>
     {
-        return standardLevyService.getAllLevyPaymentsFilter(periodFrom,periodTo, businessLines,region)
+        val periodFrom= levyFiltersDTO.periodFrom
+        val periodTo = levyFiltersDTO.periodTo
+        val businessLines = levyFiltersDTO.businessLines
+        val region = levyFiltersDTO.region
+        return standardLevyService.getAllLevyPaymentsFilter(periodFrom ,periodTo ,businessLines ,region)
     }
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @GetMapping("/getRejectedCompanyDetails")
@@ -1836,51 +1838,55 @@ class StdLevyController(
     @PostMapping("/getPenaltyReportFilter")
 
     fun getPenaltyReportFilter(
-         periodFrom: Date?,
-         periodTo: Date?,
-         businessLines: Long?,
-         region: Long?
+        @RequestBody levyFiltersDTO: LevyFiltersDTO
     ): MutableList<AllLevyPayments>
     {
-        return standardLevyService.getPenaltyReportFilter(periodFrom,periodTo,businessLines,region)
+        val periodFrom= levyFiltersDTO.periodFrom
+        val periodTo = levyFiltersDTO.periodTo
+        val businessLines = levyFiltersDTO.businessLines
+        val region = levyFiltersDTO.region
+        return standardLevyService.getPenaltyReportFilter(periodFrom ,periodTo ,businessLines ,region)
     }
     //Get List of Manufactures
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @PostMapping("/getActiveFirmsFilter")
 
     fun getActiveFirmsFilter(
-         startDate: Date?,
-         endDate: Date?,
-         businessLines: Long?,
-         region: Long?
+        @RequestBody levyFilterDTO: LevyFilterDTO
     ): MutableList<RegisteredFirms>
     {
-        return standardLevyService.getActiveFirmsFilter(startDate,endDate, businessLines,region)
+        val startDate= levyFilterDTO.startDate
+        val endDate = levyFilterDTO.endDate
+        val businessLines = levyFilterDTO.businessLines
+        val region = levyFilterDTO.region
+        return standardLevyService.getActiveFirmsFilter(startDate ,endDate ,businessLines ,region)
     }
     //Get List of Manufactures
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @PostMapping("/getDormantFirmsFilter")
     fun getDormantFirmsFilter(
-         startDate: Date?,
-         endDate: Date?,
-         businessLines: Long?,
-         region: Long?
+        @RequestBody levyFilterDTO: LevyFilterDTO
     ): MutableList<RegisteredFirms>
     {
-        return standardLevyService.getDormantFirmsFilter(startDate,endDate, businessLines,region)
+        val startDate= levyFilterDTO.startDate
+        val endDate = levyFilterDTO.endDate
+        val businessLines = levyFilterDTO.businessLines
+        val region = levyFilterDTO.region
+        return standardLevyService.getDormantFirmsFilter(startDate ,endDate ,businessLines ,region)
     }
     //Get List of Manufactures
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @GetMapping("/getClosedFirmsFilter")
 
     fun getClosedFirmsFilter(
-         startDate: Date?,
-         endDate: Date?,
-         businessLines: Long?,
-         region: Long?
+        @RequestBody levyFilterDTO: LevyFilterDTO
     ): MutableList<RegisteredFirms>
     {
-        return standardLevyService.getClosedFirmsFilter(startDate,endDate, businessLines,region)
+        val startDate= levyFilterDTO.startDate
+        val endDate = levyFilterDTO.endDate
+        val businessLines = levyFilterDTO.businessLines
+        val region = levyFilterDTO.region
+        return standardLevyService.getClosedFirmsFilter(startDate ,endDate ,businessLines ,region)
     }
 
     @GetMapping("/getBusinessLineList")

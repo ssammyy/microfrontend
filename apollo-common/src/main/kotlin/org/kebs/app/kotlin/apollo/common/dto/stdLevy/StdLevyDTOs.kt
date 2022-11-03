@@ -281,5 +281,19 @@ class ResponseMessage (val responseMessage: String) {
 class ResponseNotification (val responseMessage: Int) {
 }
 
+data class LevyFilterDTO(
+    var startDate: Date? = null,
+    var endDate: Date? =null,
+    var businessLines: Long?= null,
+    var region : Long? = null,
+){}
+
+data class LevyFiltersDTO(
+    var periodFrom: Date? = null,
+    var periodTo: Date? =null,
+    var businessLines: Long?= null,
+    var region : Long? = null,
+){}
+
 
 
