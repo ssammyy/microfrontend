@@ -1876,7 +1876,7 @@ class StdLevyController(
     }
     //Get List of Manufactures
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
-    @GetMapping("/getClosedFirmsFilter")
+    @PostMapping("/getClosedFirmsFilter")
 
     fun getClosedFirmsFilter(
         @RequestBody levyFilterDTO: LevyFilterDTO

@@ -12,7 +12,7 @@ import {
     ConfirmEditCompanyDTO, DefaulterDetails,
     DirectorsList,
     DocumentDTO,
-    EditCompanyDTO, EmailVerificationStatus, LevyFilterDto,
+    EditCompanyDTO, EmailVerificationStatus, LevyFilterDto, LevyFiltersDto,
     ManufactureCompletedTask,
     ManufactureDetailList,
     ManufacturePenalty,
@@ -872,6 +872,74 @@ export class LevyService {
             }),
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getActiveFirmsFilter(data: LevyFilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ACTIVE_FIRMS_FILTER);
+
+        return this.http.post<LevyFilterDto>(url, data, {}).pipe(
+            map(function (response: LevyFilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getDormantFirmsFilter(data: LevyFilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_DORMANT_FIRMS_FILTER);
+
+        return this.http.post<LevyFilterDto>(url, data, {}).pipe(
+            map(function (response: LevyFilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getClosedFirmsFilter(data: LevyFilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_CLOSED_FIRMS_FILTER);
+
+        return this.http.post<LevyFilterDto>(url, data, {}).pipe(
+            map(function (response: LevyFilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getPenaltyReportFilter(data: LevyFiltersDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PEN_REPORT_FILTER);
+
+        return this.http.post<LevyFiltersDto>(url, data, {}).pipe(
+            map(function (response: LevyFiltersDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public getAllLevyPaymentsFilter(data: LevyFiltersDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_ALL_LEVY_PAYMENTS_FILTER);
+
+        return this.http.post<LevyFiltersDto>(url, data, {}).pipe(
+            map(function (response: LevyFiltersDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
                 return throwError(fault);
             })
         );

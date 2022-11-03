@@ -608,11 +608,12 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufacturesLevyPaymentsList(@Param("companyId") companyId: Long?): MutableList<LevyPayments>
 
     @Query(
-        value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.BUSINESS_LINE_NAME as businessLineName," +
-                "c.BUSINESS_NATURE_NAME as businessNatureName,c.REGION as region,c.REGION_NAME as regionName,d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate," +
+        value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
+                "c.BUSINESS_NATURE_NAME as businessNatureName,c.REGION as region,r.REGION as regionName,d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate," +
                 "h.TRANSACTION_DATE as paymentDate,d.LEVY_PAID as levyPaid" +
                 " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
-                "WHERE  d.TRANSACTION_TYPE='DECLARATION'  ORDER BY d.ID DESC",
+                "LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID" +
+                " WHERE d.TRANSACTION_TYPE='DECLARATION'  ORDER BY d.ID DESC",
         nativeQuery = true
     )
     fun getAllLevyPayments(
@@ -620,10 +621,10 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     ): MutableList<AllLevyPayments>
 
     @Query(
-        value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.BUSINESS_LINE_NAME as businessLineName," +
-                "c.BUSINESS_NATURE_NAME as businessNatureName,c.REGION as region,c.REGION_NAME as regionName,d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate," +
+        value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId,c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,l.NAME as businessLineName," +
+                "c.BUSINESS_NATURE_NAME as businessNatureName,c.REGION as region,r.REGION as regionName,d.PERIOD_FROM as periodFrom,d.PERIOD_TO as periodTo,h.REQUEST_HEADER_PAYMENT_SLIP_DATE as paymentSlipDate," +
                 "h.TRANSACTION_DATE as paymentDate,d.LEVY_PAID as levyPaid" +
-                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
+                " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID  " +
                 "WHERE  d.TRANSACTION_TYPE='DECLARATION' and (:periodFrom is null or d.PERIOD_FROM >=TO_DATE(:periodFrom)) and (:periodTo is null or d.PERIOD_TO <=TO_DATE(:periodTo)) and (:businessLines is null or c.BUSINESS_LINES =TO_NUMBER(:businessLines)) and (:region is null or c.REGION =TO_NUMBER(:region)) ORDER BY d.ID DESC",
         nativeQuery = true
     )
@@ -637,9 +638,10 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     @Query(
         value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId," +
                 "p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,h.TRANSACTION_DATE as paymentDate,d.PENALTY_PAID as penaltyPaid," +
-                "h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,p.NET_PENALTY_AMT as amountDue,p.MONTHS_LATE as monthsLate" +
+                "h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,p.NET_PENALTY_AMT as amountDue,p.MONTHS_LATE as monthsLate,l.NAME as businessLineName,r.REGION as regionName" +
                 " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID " +
-                "LEFT JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
+                "LEFT JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER" +
+                " LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID " +
                 "WHERE  d.TRANSACTION_TYPE='PENALTY'  ORDER BY d.ID DESC",
         nativeQuery = true
     )
@@ -650,10 +652,10 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     @Query(
         value = "SELECT d.ID as id,h.REQUEST_HEADER_ENTRY_NO as entryNumber,c.KRA_PIN as kraPin,c.NAME as companyName,c.ID as companyId," +
                 "p.PERIOD_FROM as periodFrom,p.PERIOD_TO as periodTo,h.TRANSACTION_DATE as paymentDate,d.PENALTY_PAID as penaltyPaid," +
-                "h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,p.NET_PENALTY_AMT as amountDue,p.MONTHS_LATE as monthsLate" +
+                "h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,p.NET_PENALTY_AMT as amountDue,p.MONTHS_LATE as monthsLate,l.NAME as businessLineName,r.REGION as regionName" +
                 " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID " +
-                "LEFT JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER  " +
-                "WHERE  d.TRANSACTION_TYPE='PENALTY' and (:periodFrom is null or d.PERIOD_FROM >=TO_DATE(:periodFrom)) and (:periodTo is null or d.PERIOD_TO <=TO_DATE(:periodTo))" +
+                "LEFT JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID " +
+                "WHERE d.TRANSACTION_TYPE='PENALTY' and (:periodFrom is null or d.PERIOD_FROM >=TO_DATE(:periodFrom)) and (:periodTo is null or d.PERIOD_TO <=TO_DATE(:periodTo))" +
                 " and (:businessLines is null or c.BUSINESS_LINES =TO_NUMBER(:businessLines)) and (:region is null or c.REGION =TO_NUMBER(:region)) ORDER BY d.ID DESC",
         nativeQuery = true
     )

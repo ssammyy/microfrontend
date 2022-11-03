@@ -132,6 +132,14 @@ export class LevyFilterDto {
     region : number;
 
 }
+
+export class LevyFiltersDto {
+    periodFrom: Date;
+    periodTo: Date;
+    businessLines: number;
+    region : number;
+
+}
 export interface StdLevyScheduleSiteVisitDTO {
     status: number;
     assistantManagerApproval: number;
