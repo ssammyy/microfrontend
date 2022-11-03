@@ -3553,8 +3553,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             workPlanYearId = userWorkPlan.id
             hodRmAssigned = comp.hodAssigned
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionApproveWorkPlan.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
-            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApproveWorkPlan
+            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionApprovedWorPlan.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApprovedWorPlan
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
             approved = "APPROVED"
             progressStep = approved
@@ -3706,7 +3706,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             ?.let {
                 return it
             }
-            ?: throw ExpectedDataNotFound("WorkPlan Process Details found with ID : $processID")
+            ?: throw ExpectedDataNotFound("Missing WorkPlan Process Details found with ID : $processID")
     }
 
     fun mapWorkPlanBatchDetailsDto(
