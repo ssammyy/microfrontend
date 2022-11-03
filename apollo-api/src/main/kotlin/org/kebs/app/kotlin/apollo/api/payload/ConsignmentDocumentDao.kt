@@ -40,6 +40,8 @@ class ConsignmentEnableUI {
     var idfAvailable: Boolean = false
     var cocAvailable: Boolean = false
     var corAvailable: Boolean = false
+    var foreignCocAvailable: Boolean = false
+    var foreignCorAvailable: Boolean = false
     var ncrAvailable: Boolean = false
     var coiAvailable: Boolean = false
     var foreignDocument: Boolean = false

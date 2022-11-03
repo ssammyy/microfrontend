@@ -1764,6 +1764,7 @@ class DestinationInspectionService(
             try {
                 daoServices.findCORByCdId(cdDetails)?.let {
                     uiDetails.corAvailable = true
+                    uiDetails.foreignCorAvailable = uiDetails.foreignDocument
                 }
             } catch (ignored: Exception) {
                 uiDetails.corAvailable = false
@@ -1778,6 +1779,11 @@ class DestinationInspectionService(
             } catch (ignored: Exception) {
                 uiDetails.cocAvailable = false
             }
+            // Check document is a COC/COI/NCR assigned to this document
+            daoServices.findCOCByUcrNumber(cdDetails.ucrNumber ?: "").let { certs ->
+                uiDetails.foreignCocAvailable = certs.isNotEmpty() && uiDetails.foreignDocument
+            }
+
             dataMap.put("ui", uiDetails)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to prepare UI", ex)

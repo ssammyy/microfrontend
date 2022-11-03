@@ -5930,10 +5930,9 @@
                                     </li>
                                     <li *ngIf="selectedProductRecommendation?.clientAppealed" class="list-item-accordion">
                                         <div class="list-title-accordion">Appeal Status</div>
-
-                                        <div *ngIf="selectedProductRecommendation?.appealStatus"
+                                        <div *ngIf="selectedProductRecommendation?.appealStatus && selectedProductRecommendation?.destructedStatus ==false"
                                              class="list-text-accordion">APPEAL SUCCESSFUL</div>
-                                        <div *ngIf="selectedProductRecommendation?.destructionStatus==false"
+                                        <div *ngIf="selectedProductRecommendation?.appealStatus == false && selectedProductRecommendation?.destructionStatus==false"
                                              class="list-text-accordion">APPEAL NOT SUCCESSFUL</div>
                                     </li>
                                     <li *ngIf="selectedProductRecommendation?.destructionRecommended" class="list-item-accordion">
