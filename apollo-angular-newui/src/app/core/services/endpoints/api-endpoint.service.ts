@@ -710,6 +710,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_START_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/start-onsite-activities`,
         INSPECTION_SCHEDULED_SUBMIT_FOR_APPROVAL: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/submit-for-approval`,
         INSPECTION_SCHEDULED_END_ONSITE_ACTIVITIES: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/end-onsite-activities`,
+        INSPECTION_SCHEDULED_END_RECOMMENDATION_DONE: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/end-all-recommendation-done`,
         INSPECTION_SCHEDULED_ADD_DESTRUCTION_NOTIFICATION_UPLOAD: `${ApiEndpointService.MS_CONTEXT}/update/destruction-notice-upload`,
         INSPECTION_SCHEDULED_ADD_DESTRUCTION_REPORT_UPLOAD: `${ApiEndpointService.MS_CONTEXT}/update/destruction-report-upload`,
         UPLOAD_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/file/save`,

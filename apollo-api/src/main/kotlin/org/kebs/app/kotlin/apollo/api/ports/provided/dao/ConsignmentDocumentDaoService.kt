@@ -24,39 +24,39 @@ import java.io.StringReader
 
 @Service
 class ConsignmentDocumentDaoService(
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val commonDaoServices: CommonDaoServices,
-        private val daoServices: DestinationInspectionDaoServices,
-        private val cdFileXMLRepo: ICdFileXmlRepository,
-        private val iCdTransportRepo: ICdTransportEntityRepository,
-        private val iCdConsignorRepo: ICdConsignorEntityRepository,
-        private val iCdServiceProviderRepo: ICdServiceProviderEntityRepository,
-        private val iCdStandardsTwoRepo: ICdStandardsTwoEntityRepository,
-        private val iConsignmentDocumentDetailsRepo: IConsignmentDocumentDetailsRepository,
-        private val iCdStandardsRepo: ICdStandardsEntityRepository,
-        private val iCdImporterRepo: ICdImporterEntityRepository,
-        private val iCdItemsRepo: IConsignmentItemsRepository,
-        private val iCdItemsCurrierRepo: ICdItemsCurrierRepository,
-        private val iCdItemNonStandardEntityRepository: ICdItemNonStandardEntityRepository,
-        private val iCdApplicantDefinedThirdPartyDetailsRepository: ICdApplicantDefinedThirdPartyDetailsRepository,
-        private val iCdApprovalHistoryRepository: ICdApprovalHistoryRepository,
-        private val iCdContainerRepository: ICdContainerRepository,
-        private val iCdDocumentFeeRepository: ICdDocumentFeeRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val commonDaoServices: CommonDaoServices,
+    private val daoServices: DestinationInspectionDaoServices,
+    private val cdFileXMLRepo: ICdFileXmlRepository,
+    private val iCdTransportRepo: ICdTransportEntityRepository,
+    private val iCdConsignorRepo: ICdConsignorEntityRepository,
+    private val iCdServiceProviderRepo: ICdServiceProviderEntityRepository,
+    private val iCdStandardsTwoRepo: ICdStandardsTwoEntityRepository,
+    private val iConsignmentDocumentDetailsRepo: IConsignmentDocumentDetailsRepository,
+    private val iCdStandardsRepo: ICdStandardsEntityRepository,
+    private val iCdImporterRepo: ICdImporterEntityRepository,
+    private val iCdItemsRepo: IConsignmentItemsRepository,
+    private val iCdItemsCurrierRepo: ICdItemsCurrierRepository,
+    private val iCdItemNonStandardEntityRepository: ICdItemNonStandardEntityRepository,
+    private val iCdApplicantDefinedThirdPartyDetailsRepository: ICdApplicantDefinedThirdPartyDetailsRepository,
+    private val iCdApprovalHistoryRepository: ICdApprovalHistoryRepository,
+    private val iCdContainerRepository: ICdContainerRepository,
+    private val iCdDocumentFeeRepository: ICdDocumentFeeRepository,
 //        private val iCdDocumentHeaderRepository: ICdDocumentHeaderRepository,
-        private val iCdHeaderTwoDetailsRepository: ICdHeaderTwoDetailsRepository,
-        private val iCdPgaHeaderFieldsRepository: ICdPgaHeaderFieldsRepository,
-        private val iCdItemCommodityDetailsRepository: ICdItemCommodityDetailsRepository,
-        private val iCdProcessingFeeRepository: ICdProcessingFeeRepository,
-        private val iCdProducts2EndUserDetailsRepository: ICdProducts2EndUserDetailsRepository,
-        private val iCdProducts2Repository: ICdProducts2Repository,
-        private val iCdRiskDetailsActionDetailsRepository: ICdRiskDetailsActionDetailsRepository,
-        private val iCdRiskDetailsAssessmentRepository: ICdRiskDetailsAssessmentRepository,
-        private val iCdThirdPartyDetailsRepository: ICdThirdPartyDetailsRepository,
+    private val iCdHeaderTwoDetailsRepository: ICdHeaderTwoDetailsRepository,
+    private val iCdPgaHeaderFieldsRepository: ICdPgaHeaderFieldsRepository,
+    private val iCdItemCommodityDetailsRepository: ICdItemCommodityDetailsRepository,
+    private val iCdProcessingFeeRepository: ICdProcessingFeeRepository,
+    private val iCdProducts2EndUserDetailsRepository: ICdProducts2EndUserDetailsRepository,
+    private val iCdProducts2Repository: ICdProducts2Repository,
+    private val iCdRiskDetailsActionDetailsRepository: ICdRiskDetailsActionDetailsRepository,
+    private val iCdRiskDetailsAssessmentRepository: ICdRiskDetailsAssessmentRepository,
+    private val iCdThirdPartyDetailsRepository: ICdThirdPartyDetailsRepository,
 
-        private val iCdValuesHeaderLevelRepo: ICdValuesHeaderLevelEntityRepository,
-        private val iCdConsigneeRepo: ICdConsigneeEntityRepository,
-        private val iCdExporterRepo: ICdExporterEntityRepository,
-        private val upAndDownLoad: UpAndDownLoad
+    private val iCdValuesHeaderLevelRepo: ICdValuesHeaderLevelEntityRepository,
+    private val iCdConsigneeRepo: ICdConsigneeEntityRepository,
+    private val iCdExporterRepo: ICdExporterEntityRepository,
+    private val upAndDownLoad: UpAndDownLoad
 ) {
     fun cdDownload() {
         val download = upAndDownLoad.download(applicationMapProperties.mapKeswsConfigIntegration)
@@ -65,7 +65,7 @@ class ConsignmentDocumentDaoService(
         KotlinLogging.logger { }.info { "Downloaded text = $downLoadedToString " }
         val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
         val consignmentDoc: ConsignmentDocument =
-                commonDaoServices.deserializeFromXML(downLoadedToString, stringToExclude)
+            commonDaoServices.deserializeFromXML(downLoadedToString, stringToExclude)
 
         this.insertConsignmentDetailsFromXml(consignmentDoc, download)
     }
@@ -81,15 +81,20 @@ class ConsignmentDocumentDaoService(
         try {
             consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.ucrNumber?.let { ucr ->
                 val docSummary =
-                        consignmentDoc.documentSummaryResponse
-                                ?: throw ExpectedDataNotFound("Document Summary, does not exist")
-                var version = consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.versionNo?.toLongOrNull()
+                    consignmentDoc.documentSummaryResponse
+                        ?: throw ExpectedDataNotFound("Document Summary, does not exist")
+                var version =
+                    consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.versionNo?.toLongOrNull()
                 if (version == null) {
                     version = daoServices.getVersionCount(ucr)
                 }
                 val exempted = listOf(ConsignmentApprovalStatus.CANCELLED.code)
                 // Reject document with similar version
-                val cdExists=daoServices.findCdWithUcrNumberAndCdRef(ucr,version,consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.applicationRefNo?:"")
+                val cdExists = daoServices.findCdWithUcrNumberAndCdRef(
+                    ucr,
+                    version,
+                    consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.applicationRefNo ?: ""
+                )
                 if (cdExists.isPresent) {
                     throw ExpectedDataNotFound("Duplicate: Found document with the same version, ucr number and Consignment Reference")
                 }
@@ -106,26 +111,27 @@ class ConsignmentDocumentDaoService(
                                     docSummary,
                                     byteArray,
                                     loggedInUser,
-                                        map,
-                                        commonDaoServices.findProcesses(appId),
-                                        1
+                                    map,
+                                    commonDaoServices.findProcesses(appId),
+                                    1
                                 )
                                 daoServices.updateCDStatus(cdDoc, ConsignmentDocumentStatus.NEW_CD)
                             }
                         }
                         else -> {
                             var cdDetails = CDDocumentDetails
-                            KotlinLogging.logger { }.info { "::::::::::::::::::CD With UCR = $ucr, Exists::::::::::::::::::::: " }
+                            KotlinLogging.logger { }
+                                .info { "::::::::::::::::::CD With UCR = $ucr, Exists::::::::::::::::::::: " }
 
                             consignmentDoc.documentDetails?.consignmentDocDetails?.let { consignmentDocDetails ->
                                 val cdCreated = mainCDFunction(
-                                        consignmentDocDetails,
-                                        docSummary,
-                                        byteArray,
-                                        loggedInUser,
-                                        map,
-                                        commonDaoServices.findProcesses(appId),
-                                        version
+                                    consignmentDocDetails,
+                                    docSummary,
+                                    byteArray,
+                                    loggedInUser,
+                                    map,
+                                    commonDaoServices.findProcesses(appId),
+                                    version
                                 )
                                 //Update Old CD with Status 1
                                 with(cdDetails) {
@@ -147,15 +153,19 @@ class ConsignmentDocumentDaoService(
                                     // Try reassign
                                     CDDocumentDetails.assignedInspectionOfficer?.let {
                                         val profile = commonDaoServices.findUserProfileByUserID(it, 1)
-                                        val cnt = daoServices.countCFSUserCodes(profile.id!!, cdCreated.freightStation?.id
-                                                ?: 0)
+                                        val cnt = daoServices.countCFSUserCodes(
+                                            profile.id!!, cdCreated.freightStation?.id
+                                                ?: 0
+                                        )
                                         if (cnt > 0) {
                                             cdCreated.assignedStatus = map.activeStatus
                                             cdCreated.assigner = CDDocumentDetails.assigner
                                             cdCreated.assignedRemarks = "Auto Re-assigned on amendment"
-                                            cdCreated.assignedInspectionOfficer = CDDocumentDetails.assignedInspectionOfficer
+                                            cdCreated.assignedInspectionOfficer =
+                                                CDDocumentDetails.assignedInspectionOfficer
                                         } else {
-                                            KotlinLogging.logger { }.info("Could not assign consignment to current officer, officer ${CDDocumentDetails.assignedInspectionOfficer?.userName} not in CFS ${CDDocumentDetails.freightStation?.cfsName}")
+                                            KotlinLogging.logger { }
+                                                .info("Could not assign consignment to current officer, officer ${CDDocumentDetails.assignedInspectionOfficer?.userName} not in CFS ${CDDocumentDetails.freightStation?.cfsName}")
                                         }
                                     }
                                 } catch (ex: Exception) {
@@ -179,7 +189,7 @@ class ConsignmentDocumentDaoService(
         consignmentDocument.replace(applicationMapProperties.mapSftpDownloadFileReplaceCharacters, "")
 
         val xmlDoc: Document = XMLDocument.documentBuilder.parse(
-                InputSource(StringReader(consignmentDocument))
+            InputSource(StringReader(consignmentDocument))
         )
         xmlDoc.documentElement.normalize()
         val doc = XMLDocument(xmlDoc.documentElement)
@@ -204,11 +214,11 @@ class ConsignmentDocumentDaoService(
 
 
     fun saveDownLoadedCDXmlFile(
-            docFileByteArray: ByteArray,
-            documentId: Long?,
-            map: ServiceMapsEntity,
-            user: UsersEntity,
-            throwable: Throwable?,
+        docFileByteArray: ByteArray,
+        documentId: Long?,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        throwable: Throwable?,
     ): CdFileXmlEntity {
         var cdFileXml = CdFileXmlEntity()
         if (docFileByteArray.isEmpty()) {
@@ -232,36 +242,37 @@ class ConsignmentDocumentDaoService(
 
     fun findSavedCDXmlFile(cdId: Long, status: Int): ByteArray {
         cdFileXMLRepo.findByCdIdAndStatus(cdId, status)
-                ?.let { cdXmlFile ->
-                    cdXmlFile.document?.let { return it }
-                }
-                ?: throw ExpectedDataNotFound("CD FILE XML WITH ID = $cdId and Status = $status, does not exist")
+            ?.let { cdXmlFile ->
+                cdXmlFile.document?.let { return it }
+            }
+            ?: throw ExpectedDataNotFound("CD FILE XML WITH ID = $cdId and Status = $status, does not exist")
 
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun mainCDFunction(
-            consignmentDocDetails: ConsignmentDocDetails,
-            documentSummary: DocumentSummaryResponse,
-            downloadByteArray: ByteArray,
-            user: UsersEntity,
-            map: ServiceMapsEntity,
-            processesStages: ProcessesStagesEntity,
-            versionNumber: Long
+        consignmentDocDetails: ConsignmentDocDetails,
+        documentSummary: DocumentSummaryResponse,
+        downloadByteArray: ByteArray,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        processesStages: ProcessesStagesEntity,
+        versionNumber: Long
     ): ConsignmentDocumentDetailsEntity {
         var createdCDDetails =
-                processesStages.process1?.let { createConsignmentDocumentDetails(user, map, it, versionNumber) }
+            processesStages.process1?.let { createConsignmentDocumentDetails(user, map, it, versionNumber) }
         if (createdCDDetails != null) {
-            createdCDDetails = consignmentDetails(createdCDDetails, consignmentDocDetails, documentSummary, user, map, processesStages)
+            createdCDDetails =
+                consignmentDetails(createdCDDetails, consignmentDocDetails, documentSummary, user, map, processesStages)
         }
         return createdCDDetails ?: throw ExpectedDataNotFound("No CD Details EXISTING")
     }
 
     fun createConsignmentDocumentDetails(
-            user: UsersEntity,
-            map: ServiceMapsEntity,
-            processStages: String,
-            versionNumber: Long
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        processStages: String,
+        versionNumber: Long
     ): ConsignmentDocumentDetailsEntity {
         var consignmentDocumentDetails = ConsignmentDocumentDetailsEntity()
         with(consignmentDocumentDetails) {
@@ -285,9 +296,9 @@ class ConsignmentDocumentDaoService(
     }
 
     fun updateConsignmentDocumentDetails(
-            consignmentDocumentDetails: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        consignmentDocumentDetails: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         with(consignmentDocumentDetails) {
             modifiedBy = user.userName
@@ -298,12 +309,12 @@ class ConsignmentDocumentDaoService(
 
 
     fun consignmentDetails(
-            cdDetails: ConsignmentDocumentDetailsEntity,
-            consignmentDocDetails: ConsignmentDocDetails,
-            documentSummary: DocumentSummaryResponse,
-            user: UsersEntity,
-            map: ServiceMapsEntity,
-            processesStages: ProcessesStagesEntity
+        cdDetails: ConsignmentDocumentDetailsEntity,
+        consignmentDocDetails: ConsignmentDocDetails,
+        documentSummary: DocumentSummaryResponse,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        processesStages: ProcessesStagesEntity
     ): ConsignmentDocumentDetailsEntity? {
 
         var consignmentDocumentDetails: ConsignmentDocumentDetailsEntity? = null
@@ -312,7 +323,7 @@ class ConsignmentDocumentDaoService(
         }
         // Update CFS station, reject if CFS is not known
         val cdCfsEntity = consignmentDocDetails.cdTransport?.freightStation?.let { daoServices.findCfsCd(it) }
-                ?: throw ExpectedDataNotFound("Invalid CFS code found on the consignment: ${consignmentDocDetails.cdTransport?.freightStation}")
+            ?: throw ExpectedDataNotFound("Invalid CFS code found on the consignment: ${consignmentDocDetails.cdTransport?.freightStation}")
         consignmentDocumentDetails.freightStation = cdCfsEntity
         consignmentDocumentDetails = daoServices.updateCdDetailsInDB(consignmentDocumentDetails, null)
         //Add CD STANDARDS DETAILS
@@ -433,144 +444,145 @@ class ConsignmentDocumentDaoService(
 
         //Add CD PRODUCT DETAILS
         consignmentDocDetails.cdProductDetails?.itemDetails
-                ?.forEach { itemDetails ->
-                    val itemCountDetails = itemDetails.itemCount
-                    //Add CD ITEMS DETAILS DETAILS
-                    val cdProduct1Details = itemDetails.cdProduct1
-                    val itemDetail = consignmentDocumentDetails?.let {
-                        cdProduct1Details?.let { it1 ->
-                            itemCDDetails(
-                                    it1,
-                                    user,
-                                    map,
-                                    it
-                            )
-                        }
+            ?.forEach { itemDetails ->
+                val itemCountDetails = itemDetails.itemCount
+                //Add CD ITEMS DETAILS DETAILS
+                val cdProduct1Details = itemDetails.cdProduct1
+                val itemDetail = consignmentDocumentDetails?.let {
+                    cdProduct1Details?.let { it1 ->
+                        itemCDDetails(
+                            it1,
+                            user,
+                            map,
+                            it
+                        )
                     }
+                }
 
-                    itemDetail?.let {
-                        commonDaoServices.convertClassToJson(it)?.let {
-                            consignmentDocumentDetails?.id?.let { it1 ->
-                                processesStages.process10?.let { it2 ->
-                                    daoServices.createCDTransactionLog(map, user, it1, it, it2)
-                                }
+                itemDetail?.let {
+                    commonDaoServices.convertClassToJson(it)?.let {
+                        consignmentDocumentDetails?.id?.let { it1 ->
+                            processesStages.process10?.let { it2 ->
+                                daoServices.createCDTransactionLog(map, user, it1, it, it2)
                             }
                         }
                     }
-
-                    //Add CD ITEM OTHER DETAILS DETAILS
-                    val cdProducts2 = itemDetails.cdProduct2
-                    val products2Details = cdProducts2?.let {
-                        consignmentDocumentDetails?.let { it1 ->
-                            cdProducts2Details(
-                                    it,
-                                    user,
-                                    map,
-                                    it1
-                            )
-                        }
-                    }
-
-                    //Add CD NON STANDARDS DETAILS
-                    val nonStandards = itemDetail?.let {
-                        itemDetails.cdItemNonStandard?.let { it1 ->
-                            nonStandardItemCDDetails(
-                                    it1,
-                                    user,
-                                    map,
-                                    it
-                            )
-                        }
-                    }
-
-                    //Add CD STANDARDS DETAILS
-                    val cdItemNonCommodity = itemDetails.cdItemCommodity
-                    val itemNonCommodity = cdItemNonCommodity?.let { cdItemNonCommodityDetails(it, user, map) }
-
-                    //Add CD CURRIER DETAILS FOR ALL VALUES ADDED ABOVE SECTION FOR ITEM  DETAILS
-                    val itemCurrierDetails = CdItemsCurrierDetailsEntity()
-                    with(itemCurrierDetails) {
-                        itemId = itemDetail?.id
-                        cdProductTwoId = products2Details?.id
-                        cdId = consignmentDocumentDetails?.id
-                        itemCount = itemCountDetails
-                        cdItemNonStandardsId = nonStandards?.id
-                        cdItemCommodityId = itemNonCommodity?.id
-
-                    }
-                    itemCurrier(itemCurrierDetails, map, user)
                 }
+
+                //Add CD ITEM OTHER DETAILS DETAILS
+                val cdProducts2 = itemDetails.cdProduct2
+                val products2Details = cdProducts2?.let {
+                    consignmentDocumentDetails?.let { it1 ->
+                        cdProducts2Details(
+                            it,
+                            user,
+                            map,
+                            it1
+                        )
+                    }
+                }
+
+                //Add CD NON STANDARDS DETAILS
+                val nonStandards = itemDetail?.let {
+                    itemDetails.cdItemNonStandard?.let { it1 ->
+                        nonStandardItemCDDetails(
+                            it1,
+                            user,
+                            map,
+                            it
+                        )
+                    }
+                }
+
+                //Add CD STANDARDS DETAILS
+                val cdItemNonCommodity = itemDetails.cdItemCommodity
+                val itemNonCommodity = cdItemNonCommodity?.let { cdItemNonCommodityDetails(it, user, map) }
+
+                //Add CD CURRIER DETAILS FOR ALL VALUES ADDED ABOVE SECTION FOR ITEM  DETAILS
+                val itemCurrierDetails = CdItemsCurrierDetailsEntity()
+                with(itemCurrierDetails) {
+                    itemId = itemDetail?.id
+                    cdProductTwoId = products2Details?.id
+                    cdId = consignmentDocumentDetails?.id
+                    itemCount = itemCountDetails
+                    cdItemNonStandardsId = nonStandards?.id
+                    cdItemCommodityId = itemNonCommodity?.id
+
+                }
+                itemCurrier(itemCurrierDetails, map, user)
+            }
 
         // Update Document Type Details and processing document
         consignmentDocumentDetails?.let {
             daoServices.updateCDDetailsWithCdType(consignmentDocDetails.cdStandardTwo?.localCocType ?: "L", it)
+        }
+
+        //Add CD APPROVAL HISTORY DETAILS DETAILS
+        consignmentDocDetails.approvalDetails?.approvalHistory
+            ?.forEach { approvalHistory ->
+                val approvalHistoryDetails =
+                    consignmentDocumentDetails?.let { cdApprovalHistoryDetails(approvalHistory, user, map, it) }
+                if (approvalHistoryDetails != null) {
+                    commonDaoServices.convertClassToJson(approvalHistoryDetails)?.let {
+                        consignmentDocumentDetails?.id?.let { it1 ->
+                            processesStages.process12?.let { it2 ->
+                                daoServices.createCDTransactionLog(map, user, it1, it, it2)
+
+                            }
+                        }
+                    }
+                }
+            }
+
+        //Add CD RISK  DETAILS
+        consignmentDocDetails.cdRiskDetailsResponse?.riskAssessmentResponse
+            ?.forEach { riskResponse ->
+                val riskAssessmentDetails =
+                    consignmentDocumentDetails?.let { cdRiskDetails(riskResponse, it, user, map) }
+                riskAssessmentDetails?.let {
+                    commonDaoServices.convertClassToJson(it)?.let {
+                        consignmentDocumentDetails?.id?.let { it1 ->
+                            processesStages.process20?.let { it2 ->
+                                daoServices.createCDTransactionLog(map, user, it1, it, it2)
+
+                            }
+                        }
+                    }
+                }
+            }
+
+        //Add CD UPDATE CD DETAILS WITH VALUES BELOW
+        cdDetails.id?.let { cdID ->
+            daoServices.findCD(cdID)
+                .let { fetchedCdDetails ->
+                    with(fetchedCdDetails) {
+                        ucrNumber = cdStandard?.ucrNumber
+                        cdRefNumber = cdStandard?.applicationRefNo
+                        idfNumber = cdStandard?.ucrNumber?.let { daoServices.findIdf(it)?.baseDocRefNo }
+                        issuedDateTime = documentSummary.issuedDateTime
+                        summaryPageURL = documentSummary.summaryPageURL
+                    }
+
+                    val updatedConsignmentDocumentDetails =
+                        updateConsignmentDocumentDetails(fetchedCdDetails, user, map)
+                    commonDaoServices.convertClassToJson(updatedConsignmentDocumentDetails)?.let {
+                        updatedConsignmentDocumentDetails.id?.let { it1 ->
+                            processesStages.process11?.let { it2 ->
+                                daoServices.createCDTransactionLog(map, user, it1, it, it2)
+                            }
+                        }
+                    }
+
+                    KotlinLogging.logger { }
+                        .info { "Updated Consignment Document saved ID = ${updatedConsignmentDocumentDetails.id}" }
+                    consignmentDocumentDetails = updatedConsignmentDocumentDetails
+                }
         }
         // Update consignment with foreign document reports or certificates
         if ("F".equals(consignmentDocumentDetails?.cdStandardsTwo?.cocType ?: "L", true)) {
             consignmentDocumentDetails?.let { cd ->
                 consignmentDocumentDetails = daoServices.updateCDDetailsWithForeignDocuments(cd)
             }
-        }
-
-        //Add CD APPROVAL HISTORY DETAILS DETAILS
-        consignmentDocDetails.approvalDetails?.approvalHistory
-                ?.forEach { approvalHistory ->
-                    val approvalHistoryDetails =
-                            consignmentDocumentDetails?.let { cdApprovalHistoryDetails(approvalHistory, user, map, it) }
-                    if (approvalHistoryDetails != null) {
-                        commonDaoServices.convertClassToJson(approvalHistoryDetails)?.let {
-                            consignmentDocumentDetails?.id?.let { it1 ->
-                                processesStages.process12?.let { it2 ->
-                                    daoServices.createCDTransactionLog(map, user, it1, it, it2)
-
-                                }
-                            }
-                        }
-                    }
-                }
-
-        //Add CD RISK  DETAILS
-        consignmentDocDetails.cdRiskDetailsResponse?.riskAssessmentResponse
-                ?.forEach { riskResponse ->
-                    val riskAssessmentDetails =
-                            consignmentDocumentDetails?.let { cdRiskDetails(riskResponse, it, user, map) }
-                    riskAssessmentDetails?.let {
-                        commonDaoServices.convertClassToJson(it)?.let {
-                            consignmentDocumentDetails?.id?.let { it1 ->
-                                processesStages.process20?.let { it2 ->
-                                    daoServices.createCDTransactionLog(map, user, it1, it, it2)
-
-                                }
-                            }
-                        }
-                    }
-                }
-
-        //Add CD UPDATE CD DETAILS WITH VALUES BELOW
-        cdDetails.id?.let { cdID ->
-            daoServices.findCD(cdID)
-                    .let { fetchedCdDetails ->
-                        with(fetchedCdDetails) {
-                            ucrNumber = cdStandard?.ucrNumber
-                            idfNumber = ucrNumber?.let { daoServices.findIdf(it)?.baseDocRefNo }
-                            issuedDateTime = documentSummary.issuedDateTime
-                            summaryPageURL = documentSummary.summaryPageURL
-                        }
-
-                        val updatedConsignmentDocumentDetails =
-                                updateConsignmentDocumentDetails(fetchedCdDetails, user, map)
-                        commonDaoServices.convertClassToJson(updatedConsignmentDocumentDetails)?.let {
-                            updatedConsignmentDocumentDetails.id?.let { it1 ->
-                                processesStages.process11?.let { it2 ->
-                                    daoServices.createCDTransactionLog(map, user, it1, it, it2)
-                                }
-                            }
-                        }
-
-                        KotlinLogging.logger { }
-                                .info { "Updated Consignment Document saved ID = ${updatedConsignmentDocumentDetails.id}" }
-                        consignmentDocumentDetails = updatedConsignmentDocumentDetails
-                    }
         }
         return consignmentDocumentDetails
     }
@@ -589,11 +601,11 @@ class ConsignmentDocumentDaoService(
     }
 
     fun cdStandardsDetails(
-            cdStandardResponse: CDStandardResponse,
-            processStage: String,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        cdStandardResponse: CDStandardResponse,
+        processStage: String,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         var standardsDetails = CdStandardsEntity()
         with(standardsDetails) {
@@ -650,10 +662,10 @@ class ConsignmentDocumentDaoService(
     }
 
     fun cdRiskDetails(
-            riskAssessmentResponse: RiskAssessmentResponse,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        riskAssessmentResponse: RiskAssessmentResponse,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): CdRiskDetailsAssessmentEntity {
         var riskDetails = CdRiskDetailsAssessmentEntity()
         with(riskDetails) {
@@ -670,18 +682,18 @@ class ConsignmentDocumentDaoService(
         KotlinLogging.logger { }.info { "Risk Details saved ID = ${riskDetails.id}" }
 
         riskAssessmentResponse.actionDetails?.actionValues
-                ?.forEach { riskActionValuesResponse ->
-                    cdRiskActionDetails(riskActionValuesResponse, riskDetails, user, map)
-                }
+            ?.forEach { riskActionValuesResponse ->
+                cdRiskActionDetails(riskActionValuesResponse, riskDetails, user, map)
+            }
 
         return riskDetails
     }
 
     fun cdRiskActionDetails(
-            riskActionValuesResponse: ActionValues,
-            riskDetails: CdRiskDetailsAssessmentEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        riskActionValuesResponse: ActionValues,
+        riskDetails: CdRiskDetailsAssessmentEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): CdRiskDetailsActionDetailsEntity {
         val riskActionDetails = CdRiskDetailsActionDetailsEntity()
         with(riskActionDetails) {
@@ -697,9 +709,9 @@ class ConsignmentDocumentDaoService(
 
 
     fun cdServicesProviderDetails(
-            cDServiceProviderResponse: CDServiceProviderResponse,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        cDServiceProviderResponse: CDServiceProviderResponse,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): CdServiceProviderEntity {
         var servicesProviderDetails = CdServiceProviderEntity()
         with(servicesProviderDetails) {
@@ -721,9 +733,9 @@ class ConsignmentDocumentDaoService(
     }
 
     fun cdItemNonCommodityDetails(
-            itemCommodityResponse: CDItemCommodityResponse,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        itemCommodityResponse: CDItemCommodityResponse,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): CdItemCommodityDetailsEntity {
         var itemNonCommodity = CdItemCommodityDetailsEntity()
         with(itemNonCommodity) {
@@ -748,11 +760,11 @@ class ConsignmentDocumentDaoService(
     }
 
     fun cdStandardsTwoDetails(
-            cdStandardsTwoResponse: CDStandardTwoResponse,
-            processStage: ProcessesStagesEntity,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        cdStandardsTwoResponse: CDStandardTwoResponse,
+        processStage: ProcessesStagesEntity,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         var standardsTwoDetails = CdStandardsTwoEntity()
         with(standardsTwoDetails) {
@@ -770,20 +782,20 @@ class ConsignmentDocumentDaoService(
             cdProcessingFeeId = cdStandardsTwoResponse.processingFeeResponse?.let {
                 processStage.process18?.let { it1 ->
                     standards2ProcessingFee(
-                            it,
-                            it1,
-                            user,
-                            map
+                        it,
+                        it1,
+                        user,
+                        map
                     ).id
                 }
             }
             cdDocumentFeeId = cdStandardsTwoResponse.documentFeeResponse?.let {
                 processStage.process19?.let { it1 ->
                     standards2DocumentFee(
-                            it,
-                            it1,
-                            user,
-                            map
+                        it,
+                        it1,
+                        user,
+                        map
                     ).id
                 }
             }
@@ -804,29 +816,29 @@ class ConsignmentDocumentDaoService(
         }
         // Update extra details
         cdStandardsTwoResponse.thirdPartyDetails?.thirdPartyResponses
-                ?.forEach { thirdParties ->
-                    val containerDetails = thirdPartyDetails(thirdParties, user, map, standardsTwoDetails)
-                    commonDaoServices.convertClassToJson(containerDetails)?.let {
-                        consignmentDocumentDetails.id?.let { it1 ->
-                            processStage.process16?.let { it2 ->
-                                daoServices.createCDTransactionLog(map, user, it1, it, it2)
-                            }
+            ?.forEach { thirdParties ->
+                val containerDetails = thirdPartyDetails(thirdParties, user, map, standardsTwoDetails)
+                commonDaoServices.convertClassToJson(containerDetails)?.let {
+                    consignmentDocumentDetails.id?.let { it1 ->
+                        processStage.process16?.let { it2 ->
+                            daoServices.createCDTransactionLog(map, user, it1, it, it2)
                         }
                     }
                 }
+            }
 
         cdStandardsTwoResponse.applicantDefinedThirdPartyDetails?.thirdPartiesApplicantDefinedResponse
-                ?.forEach { thirdPartiesApplicantDefined ->
-                    val containerDetails =
-                            applicantDefinedThirdParty(thirdPartiesApplicantDefined, user, map, standardsTwoDetails)
-                    commonDaoServices.convertClassToJson(containerDetails)?.let {
-                        consignmentDocumentDetails.id?.let { it1 ->
-                            processStage.process17?.let { it2 ->
-                                daoServices.createCDTransactionLog(map, user, it1, it, it2)
-                            }
+            ?.forEach { thirdPartiesApplicantDefined ->
+                val containerDetails =
+                    applicantDefinedThirdParty(thirdPartiesApplicantDefined, user, map, standardsTwoDetails)
+                commonDaoServices.convertClassToJson(containerDetails)?.let {
+                    consignmentDocumentDetails.id?.let { it1 ->
+                        processStage.process17?.let { it2 ->
+                            daoServices.createCDTransactionLog(map, user, it1, it, it2)
                         }
                     }
                 }
+            }
         cdStandardsTwoResponse.attachments?.forEach {
             val attachment = DiUploadsEntity()
             attachment.name = it.fileName
@@ -844,10 +856,10 @@ class ConsignmentDocumentDaoService(
     }
 
     fun standards2ProcessingFee(
-            processingFeeResponse: ProcessingFeeResponse,
-            processStage: String,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        processingFeeResponse: ProcessingFeeResponse,
+        processStage: String,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): CdProcessingFeeEntity {
         var processingFee = CdProcessingFeeEntity()
         with(processingFee) {
@@ -866,10 +878,10 @@ class ConsignmentDocumentDaoService(
     }
 
     fun standards2DocumentFee(
-            documentFeeResponse: DocumentFeeResponse,
-            processStage: String,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        documentFeeResponse: DocumentFeeResponse,
+        processStage: String,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): CdDocumentFeeEntity {
         var documentFee = CdDocumentFeeEntity()
         with(documentFee) {
@@ -889,11 +901,11 @@ class ConsignmentDocumentDaoService(
 
     //save importer details
     fun importerCDDetails(
-            cdImporterResponse: CdImporterResponse,
-            processStage: String,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        cdImporterResponse: CdImporterResponse,
+        processStage: String,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         var importerDetails = CdImporterDetailsEntity()
         with(importerDetails) {
@@ -935,11 +947,11 @@ class ConsignmentDocumentDaoService(
 
     // save Exporter Details
     fun exporterCDDetails(
-            cdExporterResponse: CdExporterResponse,
-            processStage: String,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        cdExporterResponse: CdExporterResponse,
+        processStage: String,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         var exporterDetails = CdExporterDetailsEntity()
         with(exporterDetails) {
@@ -980,11 +992,11 @@ class ConsignmentDocumentDaoService(
 
     // save Transport Details
     fun transportCDDetails(
-            cdTransportResponse: CdTransportResponse,
-            processStage: ProcessesStagesEntity,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        cdTransportResponse: CdTransportResponse,
+        processStage: ProcessesStagesEntity,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         var transportDetails = CdTransportDetailsEntity()
         with(transportDetails) {
@@ -1030,16 +1042,16 @@ class ConsignmentDocumentDaoService(
         }
 
         cdTransportResponse.containerDetails?.containers
-                ?.forEach { container ->
-                    val containerDetails = transportContainerDetailsDetails(container, user, map, transportDetails)
-                    commonDaoServices.convertClassToJson(containerDetails)?.let {
-                        consignmentDocumentDetails.id?.let { it1 ->
-                            processStage.process13?.let { it2 ->
-                                daoServices.createCDTransactionLog(map, user, it1, it, it2)
-                            }
+            ?.forEach { container ->
+                val containerDetails = transportContainerDetailsDetails(container, user, map, transportDetails)
+                commonDaoServices.convertClassToJson(containerDetails)?.let {
+                    consignmentDocumentDetails.id?.let { it1 ->
+                        processStage.process13?.let { it2 ->
+                            daoServices.createCDTransactionLog(map, user, it1, it, it2)
                         }
                     }
                 }
+            }
 
 
         return consignmentDocumentDetails
@@ -1047,11 +1059,11 @@ class ConsignmentDocumentDaoService(
 
     // save Consignee Details
     fun consigneeCDDetails(
-            cdConsigneeResponse: CdConsigneeResponse,
-            processStage: String,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        cdConsigneeResponse: CdConsigneeResponse,
+        processStage: String,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         var consigneeDetails = CdConsigneeDetailsEntity()
         with(consigneeDetails) {
@@ -1089,11 +1101,11 @@ class ConsignmentDocumentDaoService(
 
     // save PGA Header Fields Details
     fun pgaHeaderFieldsCDDetails(
-            pgaHeaderFieldsResponse: PGAHeaderFieldsResponse,
-            processStage: String,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        pgaHeaderFieldsResponse: PGAHeaderFieldsResponse,
+        processStage: String,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         var pgaHeaderFieldsDetails = CdPgaHeaderFieldsEntity()
         with(pgaHeaderFieldsDetails) {
@@ -1120,11 +1132,11 @@ class ConsignmentDocumentDaoService(
 
     // save Consignor Details
     fun consignorCDDetails(
-            cdConsignorResponse: CdConsignorResponse,
-            processStage: String,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        cdConsignorResponse: CdConsignorResponse,
+        processStage: String,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         var consignorDetails = CdConsignorDetailsEntity()
         with(consignorDetails) {
@@ -1163,11 +1175,11 @@ class ConsignmentDocumentDaoService(
 
     // save ValuesHeader Details
     fun valuesHeaderCDDetails(
-            cdHeaderOneResponse: CdHeaderOneResponse,
-            processStage: String,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        cdHeaderOneResponse: CdHeaderOneResponse,
+        processStage: String,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         var valuesHeaderDetails = CdValuesHeaderLevelEntity()
         with(valuesHeaderDetails) {
@@ -1210,11 +1222,11 @@ class ConsignmentDocumentDaoService(
 
     // save ValuesHeader Details
     fun headerTwoCDDetails(
-            cdHeaderTwoResponse: CDHeaderTwoResponse,
-            processStage: String,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        cdHeaderTwoResponse: CDHeaderTwoResponse,
+        processStage: String,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         var headerTwoDetails = CdHeaderTwoDetailsEntity()
         with(headerTwoDetails) {
@@ -1247,10 +1259,10 @@ class ConsignmentDocumentDaoService(
 
     // save Item Details Details
     fun itemCDDetails(
-            product1Response: CDProduct1Response,
-            user: UsersEntity,
-            map: ServiceMapsEntity,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity
+        product1Response: CDProduct1Response,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity
     ): CdItemDetailsEntity {
         var itemDetails = CdItemDetailsEntity()
         with(itemDetails) {
@@ -1302,10 +1314,10 @@ class ConsignmentDocumentDaoService(
 
     // save Item Details Details
     fun cdProducts2Details(
-            product2Response: CDProduct2Response,
-            user: UsersEntity,
-            map: ServiceMapsEntity,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity
+        product2Response: CDProduct2Response,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity
     ): CdProducts2Entity {
         var products2Details = CdProducts2Entity()
         with(products2Details) {
@@ -1322,7 +1334,7 @@ class ConsignmentDocumentDaoService(
             mdaItemApprovalFlag = product2Response.mdaItemApprovalFlag
 
             cdProducts2EndUserDetailsId =
-                    product2Response.endUserDetailsResponse?.let { endUserDetails(it, user, map).id }
+                product2Response.endUserDetailsResponse?.let { endUserDetails(it, user, map).id }
 
             status = map.activeStatus
             createdBy = user.userName
@@ -1337,10 +1349,10 @@ class ConsignmentDocumentDaoService(
 
     // save Approval History Details
     fun cdApprovalHistoryDetails(
-            approvalHistoryResponse: ApprovalHistoryResponse,
-            user: UsersEntity,
-            map: ServiceMapsEntity,
-            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity
+        approvalHistoryResponse: ApprovalHistoryResponse,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity
     ): CdApprovalHistoryEntity {
         var approvalDetails = CdApprovalHistoryEntity()
         with(approvalDetails) {
@@ -1368,9 +1380,9 @@ class ConsignmentDocumentDaoService(
     }
 
     fun endUserDetails(
-            endUserResponse: EndUserDetailsResponse,
-            user: UsersEntity,
-            map: ServiceMapsEntity
+        endUserResponse: EndUserDetailsResponse,
+        user: UsersEntity,
+        map: ServiceMapsEntity
     ): CdProducts2EndUserDetailsEntity {
         var endUserDetails = CdProducts2EndUserDetailsEntity()
         with(endUserDetails) {
@@ -1393,10 +1405,10 @@ class ConsignmentDocumentDaoService(
 
     // save Container Details
     fun transportContainerDetailsDetails(
-            containersResponse: ContainersResponse,
-            user: UsersEntity,
-            map: ServiceMapsEntity,
-            cdTransportDetails: CdTransportDetailsEntity
+        containersResponse: ContainersResponse,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        cdTransportDetails: CdTransportDetailsEntity
     ): CdContainerEntity {
         var containerDetails = CdContainerEntity()
         with(containerDetails) {
@@ -1420,10 +1432,10 @@ class ConsignmentDocumentDaoService(
 
     // save Third Party Details
     fun thirdPartyDetails(
-            thirdPartiesResponse: ThirdPartiesResponse,
-            user: UsersEntity,
-            map: ServiceMapsEntity,
-            cdStandardsTwoDetails: CdStandardsTwoEntity
+        thirdPartiesResponse: ThirdPartiesResponse,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        cdStandardsTwoDetails: CdStandardsTwoEntity
     ): CdThirdPartyDetailsEntity {
         var thirdPartiesDetails = CdThirdPartyDetailsEntity()
         with(thirdPartiesDetails) {
@@ -1447,10 +1459,10 @@ class ConsignmentDocumentDaoService(
 
     // save Applicant Defined Third Party Details
     fun applicantDefinedThirdParty(
-            thirdPartiesApplicantResponseResponse: ThirdPartiesApplicantDefinedResponse,
-            user: UsersEntity,
-            map: ServiceMapsEntity,
-            cdStandardsTwoDetails: CdStandardsTwoEntity
+        thirdPartiesApplicantResponseResponse: ThirdPartiesApplicantDefinedResponse,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        cdStandardsTwoDetails: CdStandardsTwoEntity
     ): CdApplicantDefinedThirdPartyDetailsEntity {
         var thirdPartiesDetails = CdApplicantDefinedThirdPartyDetailsEntity()
         with(thirdPartiesDetails) {
@@ -1474,10 +1486,10 @@ class ConsignmentDocumentDaoService(
 
     // save Non standard Item Details
     fun nonStandardItemCDDetails(
-            cdItemNonStandardResponse: CDItemNonStandardResponse,
-            user: UsersEntity,
-            map: ServiceMapsEntity,
-            cdItemDetails: CdItemDetailsEntity
+        cdItemNonStandardResponse: CDItemNonStandardResponse,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        cdItemDetails: CdItemDetailsEntity
     ): CdItemNonStandardEntity {
         var nonStandardEntity = CdItemNonStandardEntity()
         with(nonStandardEntity) {

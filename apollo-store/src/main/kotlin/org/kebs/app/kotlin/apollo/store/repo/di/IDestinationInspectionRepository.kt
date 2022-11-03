@@ -669,8 +669,22 @@ interface IDeclarationDetailsEntityRepository : HazelcastRepository<DeclarationD
     fun findFirstByRefNum(refNum: String): DeclarationDetailsEntity?
     fun findByDeclarationRefNo(declarationRefNo: String): DeclarationDetailsEntity?
     fun findByStatus(status: Long, page: Pageable): Page<DeclarationDetailsEntity>
-    fun findByStatusAndCreatedOnBetween(status: Long,startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<DeclarationDetailsEntity>
+    fun findByStatusAndCreatedOnBetween(
+        status: Long,
+        startDate: Timestamp,
+        endDate: Timestamp,
+        page: Pageable
+    ): Page<DeclarationDetailsEntity>
+
     fun findByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<DeclarationDetailsEntity>
+    fun findByCreatedOnBetweenAndDeclarationRefNoContains(
+        startDate: Timestamp,
+        endDate: Timestamp,
+        keywords: String,
+        page: Pageable
+    ): Page<DeclarationDetailsEntity>
+
+    fun findByDeclarationRefNoContains(keywords: String, page: Pageable): Page<DeclarationDetailsEntity>
 }
 
 @Repository
@@ -688,9 +702,23 @@ interface IDeclarationItemDetailsEntityRepository : HazelcastRepository<Declarat
 @Repository
 interface IManifestDetailsEntityRepository : HazelcastRepository<ManifestDetailsEntity, Long> {
     fun findByManifestNumber(manifestNumber: String): ManifestDetailsEntity?
-    fun findAllByStatus(status: Long,page: Pageable): Page<ManifestDetailsEntity>
-    fun findByStatusAndCreatedOnBetween(status: Long, startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<ManifestDetailsEntity>
+    fun findAllByStatus(status: Long, page: Pageable): Page<ManifestDetailsEntity>
+    fun findByStatusAndCreatedOnBetween(
+        status: Long,
+        startDate: Timestamp,
+        endDate: Timestamp,
+        page: Pageable
+    ): Page<ManifestDetailsEntity>
+
     fun findByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<ManifestDetailsEntity>
+    fun findByCreatedOnBetweenAndManifestNumberContains(
+        startDate: Timestamp,
+        endDate: Timestamp,
+        keywords: String,
+        page: Pageable
+    ): Page<ManifestDetailsEntity>
+
+    fun findByManifestNumberContains(keywords: String, page: Pageable): Page<ManifestDetailsEntity>
     fun findByUcrn(ucrNumber: String): ManifestDetailsEntity?
     fun findFirstByTdBillCode(tdBillCode: String): ManifestDetailsEntity?
 }
