@@ -2164,6 +2164,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.updateWorkPlan();
     this.updatePreliminaryReport();
     this.addFinalPreliminaryReport();
+    this.updateFinalPreliminaryReport();
     this.currDiv = divVal;
   }
 
@@ -2177,6 +2178,21 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.dataSavePreliminaryReportParamList = [];
       for (let prod = 0; prod < this.workPlanInspection?.preliminaryReport?.parametersList.length; prod++) {
         this.dataSavePreliminaryReportParamList.push(this.workPlanInspection?.preliminaryReport?.parametersList[prod]);
+      }
+    }
+  }
+
+
+  updateFinalPreliminaryReport() {
+    if (this.workPlanInspection?.finalReportGenerated && this.workPlanInspection?.msPreliminaryReportStatus) {
+      this.preliminaryReportFinalForm.patchValue(this.workPlanInspection?.preliminaryReportFinal);
+      this.dataSaveDataInspectorInvestList = [];
+      for (let prod = 0; prod < this.workPlanInspection?.preliminaryReportFinal?.kebsOfficersName.length; prod++) {
+        this.dataSaveDataInspectorInvestList.push(this.workPlanInspection?.preliminaryReportFinal?.kebsOfficersName[prod]);
+      }
+      this.dataSavePreliminaryReportParamList = [];
+      for (let prod = 0; prod < this.workPlanInspection?.preliminaryReportFinal?.parametersList.length; prod++) {
+        this.dataSavePreliminaryReportParamList.push(this.workPlanInspection?.preliminaryReportFinal?.parametersList[prod]);
       }
     }
   }

@@ -1233,19 +1233,36 @@ class MarketSurveillanceWorkPlanDaoServices(
                     map.successStatus -> {
 
                         runBlocking {
-                            val hodDetails = workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
-                            with(scheduleEmailDetails){
-                                baseUrl= applicationMapProperties.baseUrlValue
-                                fullName = hodDetails?.let { commonDaoServices.concatenateName(it) }
-                                refNumber = referenceNo
-                                batchRefNumber = batchReferenceNo
-                                yearCodeName = batchDetails.yearNameId?.yearName
-                                dateSubmitted = commonDaoServices.getCurrentDate()
+                            if(body.approvalStatus){
+                                val hodDetails = workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                with(scheduleEmailDetails){
+                                    baseUrl= applicationMapProperties.baseUrlValue
+                                    fullName = hodDetails?.let { commonDaoServices.concatenateName(it) }
+                                    refNumber = referenceNo
+                                    batchRefNumber = batchReferenceNo
+                                    yearCodeName = batchDetails.yearNameId?.yearName
+                                    dateSubmitted = commonDaoServices.getCurrentDate()
 
+                                }
+                                if (hodDetails != null) {
+                                    commonDaoServices.sendEmailWithUserEntity(hodDetails, emailDetails, scheduleEmailDetails, map, remarksSaved.first)
+                                }
+                            }else {
+                                val officerDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
+                                with(scheduleEmailDetails){
+                                    baseUrl= applicationMapProperties.baseUrlValue
+                                    fullName = officerDetails?.let { commonDaoServices.concatenateName(it) }
+                                    refNumber = referenceNo
+                                    batchRefNumber = batchReferenceNo
+                                    yearCodeName = batchDetails.yearNameId?.yearName
+                                    dateSubmitted = commonDaoServices.getCurrentDate()
+
+                                }
+                                if (officerDetails != null) {
+                                    commonDaoServices.sendEmailWithUserEntity(officerDetails, emailDetails, scheduleEmailDetails, map, remarksSaved.first)
+                                }
                             }
-                            if (hodDetails != null) {
-                                commonDaoServices.sendEmailWithUserEntity(hodDetails, emailDetails, scheduleEmailDetails, map, remarksSaved.first)
-                            }
+
                         }
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                     }
@@ -2280,7 +2297,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         when (savedPDFLabResultFile.first.status) {
             map.successStatus -> {
                 with(workPlanScheduled){
-                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionLabResultsPDFSave
+//                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionLabResultsPDFSave
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                 }
                 workPlanScheduled = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
