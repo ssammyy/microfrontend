@@ -24,7 +24,7 @@ class MsProcessNamesEntity : Serializable {
 
     @Basic
     @Column(name = "TIMELINES_DAY")
-    var timelinesDay: Long? = null
+    var timelinesDay: Int? = null
 
     @Basic
     @Column(name = "DESCRIPTION")

@@ -105,9 +105,7 @@ import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoUnit
@@ -1460,6 +1458,22 @@ class CommonDaoServices(
         }
         return log?.transactionStatus ?: 25
 
+    }
+
+    fun addDaysSkippingWeekends(date: LocalDate, days: Int): LocalDate? {
+        var result = date
+        var addedDays = 0
+        while (addedDays < days) {
+            result = result.plusDays(1)
+            if (!(result.dayOfWeek == DayOfWeek.SATURDAY || result.dayOfWeek == DayOfWeek.SUNDAY)) {
+                ++addedDays
+            }
+        }
+        return result
+    }
+
+    fun localDateToTimestamp(localDate: LocalDate): java.sql.Date? {
+        return Date.valueOf(localDate);
     }
 
     fun mapServiceRequestForSuccess(
