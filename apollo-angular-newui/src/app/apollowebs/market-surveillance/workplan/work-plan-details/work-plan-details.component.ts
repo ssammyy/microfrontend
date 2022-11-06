@@ -1809,32 +1809,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
 
     if (this.workPlanInspection?.productList?.length > 0 && this.workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal) {
-      let countRecommendationHOD = 0;
-      let countRecommendationDirector = 0;
-      let destructionRecommendedAllDone = 0;
-      let destructionRecommended = 0;
-      for (let i = 0; i < this.workPlanInspection?.productList.length; i++) {
-        if (this.workPlanInspection?.productList[i].hodRecommendationStatus) {
-          countRecommendationHOD++;
-        }
-        if (this.workPlanInspection?.productList[i].directorRecommendationStatus) {
-          countRecommendationDirector++;
-        }
-        if (this.workPlanInspection?.productList[i].destructedStatus) {
-          destructionRecommendedAllDone++;
-        }
-        if (this.workPlanInspection?.productList[i].destructionRecommended) {
-          destructionRecommended++;
-        }
-        if (this.workPlanInspection?.productList[i].appealStatus) {
-          destructionRecommendedAllDone++;
-        }
-      }
-      this.productsDestructionRecommendationDone = destructionRecommendedAllDone;
-      this.productsDestructionRecommendation = destructionRecommended;
-      this.productsCountRecommendationHOD = countRecommendationHOD;
-      this.productsCountRecommendationDirector = countRecommendationDirector;
-      console.log(this.productsCountRecommendationHOD);
+      this.recommendationDetailsLoad();
     }
 
     if (this.workPlanInspection?.onsiteStartStatus === false ) {
@@ -1923,16 +1898,8 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
-      this.msService.msStandardsListDetails().subscribe(
-          (data1: KebsStandardsDto[]) => {
-            this.standards = data1;
-            console.log(data1);
-          },
-          error => {
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
+      this.loadStandards()
+
     }
 
     switch (this.workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal) {
@@ -1952,6 +1919,48 @@ export class WorkPlanDetailsComponent implements OnInit {
         break;
     }
 
+  }
+
+  recommendationDetailsLoad() {
+    let countRecommendationHOD = 0;
+    let countRecommendationDirector = 0;
+    let destructionRecommendedAllDone = 0;
+    let destructionRecommended = 0;
+    for (let i = 0; i < this.workPlanInspection?.productList.length; i++) {
+      if (this.workPlanInspection?.productList[i].hodRecommendationStatus) {
+        countRecommendationHOD++;
+      }
+      if (this.workPlanInspection?.productList[i].directorRecommendationStatus) {
+        countRecommendationDirector++;
+      }
+      if (this.workPlanInspection?.productList[i].destructedStatus) {
+        destructionRecommendedAllDone++;
+      }
+      if (this.workPlanInspection?.productList[i].destructionRecommended) {
+        destructionRecommended++;
+      }
+      if (this.workPlanInspection?.productList[i].appealStatus) {
+        destructionRecommendedAllDone++;
+      }
+    }
+    this.productsDestructionRecommendationDone = destructionRecommendedAllDone;
+    this.productsDestructionRecommendation = destructionRecommended;
+    this.productsCountRecommendationHOD = countRecommendationHOD;
+    this.productsCountRecommendationDirector = countRecommendationDirector;
+    console.log(this.productsCountRecommendationHOD);
+  }
+
+  loadStandards() {
+    this.msService.msStandardsListDetails().subscribe(
+        (data1: KebsStandardsDto[]) => {
+          this.standards = data1;
+          console.log(data1);
+        },
+        error => {
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 
   get formAssignOfficerForm(): any {
@@ -2538,6 +2547,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
+            this.recommendationDetailsLoad();
             this.msService.showSuccess('Client appeal status,Saved successfully');
           },
           error => {
@@ -2573,6 +2583,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.approvePreliminaryForm.reset();
+            this.recommendationDetailsLoad();
             this.SpinnerService.hide();
             this.msService.showSuccess('Client appeal Successfully status,Saved successfully');
           },
@@ -3079,6 +3090,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             this.uploadedFiles = this.resetUploadedFiles;
             console.log(data);
+            this.loadStandards();
             this.SpinnerService.hide();
             this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');
           },
@@ -3125,6 +3137,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             this.uploadedFiles = null;
             console.log(data);
+            this.recommendationDetailsLoad();
             this.SpinnerService.hide();
             this.msService.showSuccess('DESTRUCTION REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
           },
@@ -3171,6 +3184,8 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             this.uploadedFiles = null;
             console.log(data);
+            this.clientEmailNotificationForm.reset();
+            this.recommendationDetailsLoad();
             this.SpinnerService.hide();
             this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');
           },
