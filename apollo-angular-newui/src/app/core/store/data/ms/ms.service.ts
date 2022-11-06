@@ -80,6 +80,7 @@ import Swal from 'sweetalert2';
 import {AllPermitDetailsDto} from '../qa/qa.model';
 import {County} from '../county';
 import {Town} from '../town';
+import {UserNotificationDetailsDto} from '../master/master.model';
 
 @Injectable({
     providedIn: 'root',
@@ -609,7 +610,7 @@ export class MsService {
         });
     }
 
-   public showError(message: string, fn?: Function) {
+    showError(message: string, fn?: Function) {
         swal.fire({
             title: message,
             buttonsStyling: false,
@@ -624,7 +625,7 @@ export class MsService {
         });
     }
 
-    public showWarning(message: string, fn?: Function) {
+    showWarning(message: string, fn?: Function) {
         swal.fire({
             title: message,
             buttonsStyling: false,
@@ -638,6 +639,25 @@ export class MsService {
             }
         });
     }
+
+    // tslint:disable-next-line:max-line-length
+    public loadNotificationList(page: string, records: string): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_NOTIFICATION);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     // tslint:disable-next-line:max-line-length
     /*******************************************************************START OF MARKET SURVEILLANCE*****************************************************************************/
 
@@ -1298,7 +1318,7 @@ export class MsService {
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
-        return this.http.put<WorkPlanInspectionDto>(url, null,{params}).pipe(
+        return this.http.put<WorkPlanInspectionDto>(url, null, {params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
                 return response;
             }),
@@ -1318,7 +1338,7 @@ export class MsService {
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
-        return this.http.put<WorkPlanInspectionDto>(url, null,{params}).pipe(
+        return this.http.put<WorkPlanInspectionDto>(url, null, {params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
                 return response;
             }),
@@ -1338,7 +1358,7 @@ export class MsService {
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
-        return this.http.put<WorkPlanInspectionDto>(url, null,{params}).pipe(
+        return this.http.put<WorkPlanInspectionDto>(url, null, {params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
                 return response;
             }),

@@ -877,6 +877,7 @@ import {
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {OverlayService} from "./shared/loader/overlay.service";
 import { SpinnerComponent } from './shared/loader/spinner/spinner/spinner.component';
+import { NotificationsComponent } from './apollowebs/system/notifications/notifications.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1327,6 +1328,7 @@ import { SpinnerComponent } from './shared/loader/spinner/spinner/spinner.compon
         SystemReviewGazetteStandardComponent,
         SystemReviewUpdateGazetteComponent,
         SpinnerComponent,
+        NotificationsComponent,
 
     ],
     entryComponents: [LoaderComponent],

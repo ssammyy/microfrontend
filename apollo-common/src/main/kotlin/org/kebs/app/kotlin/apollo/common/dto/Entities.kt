@@ -517,6 +517,21 @@ data class UserEntityDto(
 )
 
 
+data class UserNotificationDetailsDto(
+    var id: Long?,
+    var messageBody: String?,
+    var transactionReference: String?,
+    var attachment: String?,
+    var sender: String?,
+    var recipient: String?,
+    var subject: String?,
+    var createdOn: Timestamp?,
+    var createdBy: String?,
+    var readStatus: Boolean = false
+)
+
+
+
 data class UserDetailsDto(
 
     var id: Long?,

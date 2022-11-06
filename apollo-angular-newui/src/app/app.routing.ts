@@ -264,6 +264,7 @@ import {SystemicReviewEditorComponent} from "./apollowebs/standards-development/
 import {SystemicReviewDraughtsManComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-draughts-man/systemic-review-draughts-man.component";
 import {SystemReviewGazetteStandardComponent} from "./apollowebs/standards-development/systemic-review/system-review-gazette-standard/system-review-gazette-standard.component";
 import {SystemReviewUpdateGazetteComponent} from "./apollowebs/standards-development/systemic-review/system-review-update-gazette/system-review-update-gazette.component";
+import {NotificationsComponent} from './apollowebs/system/notifications/notifications.component';
 
 export const routes: Routes = [
     {
@@ -1629,7 +1630,7 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: ComplaintListComponent,
+                component: NotificationsComponent,
             },
         ],
     },
