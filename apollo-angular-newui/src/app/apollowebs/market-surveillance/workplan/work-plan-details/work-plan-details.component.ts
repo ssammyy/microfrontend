@@ -2405,9 +2405,9 @@ export class WorkPlanDetailsComponent implements OnInit {
     );
   }
 
-  viewSSFPdfFile(ssfID: string, fileName: string, applicationType: string): void {
+  viewSSFPdfFile(ssfID: number, fileName: string, applicationType: string): void {
     this.SpinnerService.show();
-    this.msService.loadSSFDetailsPDF(ssfID).subscribe(
+    this.msService.loadSSFDetailsPDF(String(ssfID)).subscribe(
         (dataPdf: any) => {
           this.SpinnerService.hide();
           this.blob = new Blob([dataPdf], {type: applicationType});
@@ -2423,7 +2423,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         error => {
           this.SpinnerService.hide();
           console.log(error);
-          this.msService.showError('AN ERROR OCCURRED');
+          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
   }
