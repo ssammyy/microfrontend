@@ -115,6 +115,7 @@ export class ApiEndpointService {
         REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
         COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
         USER_DETAILS: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/`,
+        USER_NOTIFICATION: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/notifications/`,
         USER_DETAILS_SIGNATURE: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/signature`,
         LOGOUT_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/logout`,
         COMPANY_DETAIL_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/companyDetails`,
@@ -618,6 +619,10 @@ export class ApiEndpointService {
 
 
     };
+
+    public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {
+        VIEW_PDF_SSF: `${ApiEndpointService.MS_CONTEXT}/report/sample-submission`,
+    }
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
         VIEW_PDF_LAB_RESULT: `${ApiEndpointService.MS_CONTEXT}/view/attached-lab-pdf`,

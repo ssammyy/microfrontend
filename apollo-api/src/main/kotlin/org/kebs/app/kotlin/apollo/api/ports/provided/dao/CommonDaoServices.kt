@@ -63,6 +63,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEnt
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
+import org.kebs.app.kotlin.apollo.common.dto.ms.SampleCollectionItemsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -72,6 +73,7 @@ import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationPropertie
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.MsCollectionParametersEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintsEmailVerificationEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
@@ -105,9 +107,7 @@ import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoUnit
@@ -1462,6 +1462,22 @@ class CommonDaoServices(
 
     }
 
+    fun addDaysSkippingWeekends(date: LocalDate, days: Int): LocalDate? {
+        var result = date
+        var addedDays = 0
+        while (addedDays < days) {
+            result = result.plusDays(1)
+            if (!(result.dayOfWeek == DayOfWeek.SATURDAY || result.dayOfWeek == DayOfWeek.SUNDAY)) {
+                ++addedDays
+            }
+        }
+        return result
+    }
+
+    fun localDateToTimestamp(localDate: LocalDate): java.sql.Date? {
+        return Date.valueOf(localDate);
+    }
+
     fun mapServiceRequestForSuccess(
         map: ServiceMapsEntity,
         payloadValues: String,
@@ -1942,11 +1958,28 @@ class CommonDaoServices(
 
 
     fun findAllUserNotification(userEmail: String): List<NotificationsBufferEntity> {
-        notificationsBufferRepo.findByRecipient(userEmail)
+        notificationsBufferRepo.findAllByRecipientOrderByIdDesc(userEmail)
             ?.let { notifications ->
                 return notifications
             }
             ?: throw ExpectedDataNotFound("Notifications for the user with email = $userEmail, do not Exist")
+    }
+
+    fun mapNotificationListDto(data: List<NotificationsBufferEntity>): List<UserNotificationDetailsDto> {
+        return data.map {
+            UserNotificationDetailsDto(
+                it.id,
+                it.messageBody,
+                it.transactionReference,
+                it.attachment,
+                it.sender,
+                it.recipient,
+                it.subject,
+                it.createdOn,
+                it.createdBy,
+                it.readStatus == 1,
+            )
+        }
     }
 
     fun updateNotification(notificationsBufferEntity: List<NotificationsBufferEntity>, user: UsersEntity): Boolean {

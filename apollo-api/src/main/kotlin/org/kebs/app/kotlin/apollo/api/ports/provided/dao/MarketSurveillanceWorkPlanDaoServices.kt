@@ -38,6 +38,7 @@ import java.lang.reflect.Type
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDate
 import java.util.*
 
 
@@ -306,7 +307,10 @@ class MarketSurveillanceWorkPlanDaoServices(
                 fileInspectionList.forEach { it ->
                     with(it) {
                         timelineStartDate = commonDaoServices.getCurrentDate()
-                        timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionSubmission.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                        timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionSubmission.let { timeLine->
+                            findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                            commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                        }
                         msProcessId = applicationMapProperties.mapMSWorkPlanInspectionSubmission
                         userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                     }
@@ -406,16 +410,9 @@ class MarketSurveillanceWorkPlanDaoServices(
                     }
                     submittedForApprovalStatus = map.activeStatus
                     timelineStartDate = commonDaoServices.getCurrentDate()
-                    timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionSubmittedForApproval.let {
-                        findProcessNameByID(
-                            it,
-                            1
-                        ).timelinesDay?.let { it2 ->
-                            commonDaoServices.addYDayToDate(
-                                commonDaoServices.getCurrentDate(),
-                                it2
-                            )
-                        }
+                    timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionSubmittedForApproval.let { timeLine->
+                        findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                        commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
                     }
                     approvedStatus = map.inactiveStatus
                     rejectedStatus = map.inactiveStatus
@@ -696,7 +693,10 @@ class MarketSurveillanceWorkPlanDaoServices(
                         with(workPlanScheduled){
                             hodRmAssigned = loggedInUser.id
                             timelineStartDate = commonDaoServices.getCurrentDate()
-                            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionApprovedWorPlan.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionApprovedWorPlan.let { timeLine->
+                                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                            }
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApprovedWorPlan
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                             approved = "APPROVED"
@@ -1200,7 +1200,10 @@ class MarketSurveillanceWorkPlanDaoServices(
                     when {
                         fetchedPreliminary.approvedStatus== map.activeStatus -> {
                             timelineStartDate = commonDaoServices.getCurrentDate()
-                            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportApprovedHOF.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportApprovedHOF.let { timeLine->
+                                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                            }
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportApprovedHOF
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                         }
@@ -1233,19 +1236,36 @@ class MarketSurveillanceWorkPlanDaoServices(
                     map.successStatus -> {
 
                         runBlocking {
-                            val hodDetails = workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
-                            with(scheduleEmailDetails){
-                                baseUrl= applicationMapProperties.baseUrlValue
-                                fullName = hodDetails?.let { commonDaoServices.concatenateName(it) }
-                                refNumber = referenceNo
-                                batchRefNumber = batchReferenceNo
-                                yearCodeName = batchDetails.yearNameId?.yearName
-                                dateSubmitted = commonDaoServices.getCurrentDate()
+                            if(body.approvalStatus){
+                                val hodDetails = workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                with(scheduleEmailDetails){
+                                    baseUrl= applicationMapProperties.baseUrlValue
+                                    fullName = hodDetails?.let { commonDaoServices.concatenateName(it) }
+                                    refNumber = referenceNo
+                                    batchRefNumber = batchReferenceNo
+                                    yearCodeName = batchDetails.yearNameId?.yearName
+                                    dateSubmitted = commonDaoServices.getCurrentDate()
 
+                                }
+                                if (hodDetails != null) {
+                                    commonDaoServices.sendEmailWithUserEntity(hodDetails, emailDetails, scheduleEmailDetails, map, remarksSaved.first)
+                                }
+                            }else {
+                                val officerDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
+                                with(scheduleEmailDetails){
+                                    baseUrl= applicationMapProperties.baseUrlValue
+                                    fullName = officerDetails?.let { commonDaoServices.concatenateName(it) }
+                                    refNumber = referenceNo
+                                    batchRefNumber = batchReferenceNo
+                                    yearCodeName = batchDetails.yearNameId?.yearName
+                                    dateSubmitted = commonDaoServices.getCurrentDate()
+
+                                }
+                                if (officerDetails != null) {
+                                    commonDaoServices.sendEmailWithUserEntity(officerDetails, emailDetails, scheduleEmailDetails, map, remarksSaved.first)
+                                }
                             }
-                            if (hodDetails != null) {
-                                commonDaoServices.sendEmailWithUserEntity(hodDetails, emailDetails, scheduleEmailDetails, map, remarksSaved.first)
-                            }
+
                         }
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                     }
@@ -1550,7 +1570,10 @@ class MarketSurveillanceWorkPlanDaoServices(
                 destructionRecommended = map.activeStatus
             }
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionRecommendationsADDED.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionRecommendationsADDED.let { timeLine->
+                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRecommendationsADDED
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameDirector
         }
@@ -1582,7 +1605,10 @@ class MarketSurveillanceWorkPlanDaoServices(
         with(workPlanScheduled){
             directorRecommendationRemarksStatus= map.activeStatus
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionDirectorRemarksADDED.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionDirectorRemarksADDED.let { timeLine->
+                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionDirectorRemarksADDED
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
         }
@@ -2105,7 +2131,10 @@ class MarketSurveillanceWorkPlanDaoServices(
                 map.activeStatus -> {
                     with(workPlanScheduled) {
                         timelineStartDate = commonDaoServices.getCurrentDate()
-                        timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportGenerated.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                        timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportGenerated.let { timeLine->
+                            findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                            commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                        }
                         userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
                         msProcessId = applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportGenerated
                         if (msPreliminaryReportStatus == map.activeStatus){
@@ -2254,7 +2283,10 @@ class MarketSurveillanceWorkPlanDaoServices(
         with(workPlanScheduled){
             bsNumberStatus = 1
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionBsNumberAdded.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionBsNumberAdded.let { timeLine->
+                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionBsNumberAdded
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
         }
@@ -2280,7 +2312,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         when (savedPDFLabResultFile.first.status) {
             map.successStatus -> {
                 with(workPlanScheduled){
-                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionLabResultsPDFSave
+//                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionLabResultsPDFSave
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                 }
                 workPlanScheduled = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
@@ -2391,7 +2423,10 @@ class MarketSurveillanceWorkPlanDaoServices(
             }
             with(workPlanScheduled){
                 timelineStartDate = commonDaoServices.getCurrentDate()
-                timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionLabResultsAnalysed.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionLabResultsAnalysed.let { timeLine->
+                    findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                    commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                }
                 msProcessId = applicationMapProperties.mapMSWorkPlanInspectionLabResultsAnalysed
                 userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
             }
@@ -2447,7 +2482,10 @@ class MarketSurveillanceWorkPlanDaoServices(
             onsiteEndStatus = map.inactiveStatus
             onsiteStartDate = commonDaoServices.getCurrentDate()
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionStartOnSiteActivities.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionStartOnSiteActivities.let { timeLine->
+                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionStartOnSiteActivities
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
         }
@@ -2469,7 +2507,10 @@ class MarketSurveillanceWorkPlanDaoServices(
             onsiteEndDate = commonDaoServices.getCurrentDate()
             sendSffDate = commonDaoServices.getCurrentDate()
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionEndOnSiteActivities.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionEndOnSiteActivities.let { timeLine->
+                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionEndOnSiteActivities
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
         }
@@ -2488,7 +2529,10 @@ class MarketSurveillanceWorkPlanDaoServices(
         with(workPlanScheduled){
             recommendationDoneStatus = map.activeStatus
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionRecommendationDoneMSIO.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionRecommendationDoneMSIO.let { timeLine->
+                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRecommendationDoneMSIO
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
         }
@@ -3553,7 +3597,10 @@ class MarketSurveillanceWorkPlanDaoServices(
             workPlanYearId = userWorkPlan.id
             hodRmAssigned = comp.hodAssigned
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionApprovedWorPlan.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionApprovedWorPlan.let { timeLine->
+                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionApprovedWorPlan
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
             approved = "APPROVED"

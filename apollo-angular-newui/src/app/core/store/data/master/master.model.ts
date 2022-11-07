@@ -1,3 +1,5 @@
+import {Timestamp} from 'rxjs';
+
 export class Master {
 }
 
@@ -53,6 +55,19 @@ export class Products {
     name?: string;
     status?: boolean;
     productCategoryId?: number;
+}
+
+export class UserNotificationDetailsDto {
+    id: number;
+    messageBody: string;
+    transactionReference: string;
+    attachment: string;
+    sender: string;
+    recipient: string;
+    subject: string;
+    createdOn: Date;
+    createdBy: string;
+    readStatus: boolean;
 }
 
 export class ProductSubcategory {

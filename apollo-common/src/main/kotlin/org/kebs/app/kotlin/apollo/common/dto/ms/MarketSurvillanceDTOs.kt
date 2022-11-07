@@ -603,6 +603,33 @@ data class SeizureDeclarationDto(
         var remarks: String? = null,
 )
 
+data class SampleSubmissionDtoPDF(
+        var id: String?= null,
+        var nameProduct : String? = null,
+        var packaging : String? = null,
+        var labellingIdentification : String? = null,
+        var fileRefNumber : String? = null,
+        var referencesStandards : String? = null,
+        var sizeTestSample : String? = null,
+        var sizeRefSample : String? = null,
+        var condition : String? = null,
+        var sampleReferences : String? = null,
+        var sendersName : String? = null,
+        var designation : String? = null,
+        var address : String? = null,
+        var sendersDate : String? = null,
+        var receiversName : String? = null,
+        var testChargesKsh : String? = null,
+        var receiptLpoNumber : String? = null,
+        var invoiceNumber : String? = null,
+        var disposal : String? = null,
+        var remarks : String? = null,
+        var sampleCollectionNumber : String? = null,
+        var sampleCollectionProduct : String? = null,
+        var bsNumber : String? = null,
+        var parametersList: List<SampleSubmissionItemsDto>? = null,
+)
+
 data class SampleSubmissionDto(
         var id: Long?= 0,
         var nameProduct : String? = null,

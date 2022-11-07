@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDate
 
 
 @Service
@@ -691,11 +692,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val hofDetailsFound =commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned HOF ID"))
         with(complaintFound) {
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.msComplaintProcessAssignHOF?.let {
-                    findMsProcessComplaintByID(1, it)?.timelinesDay?.let {
-                        commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it)
-                    }
-                }
+            timelineEndDate = applicationMapProperties.msComplaintProcessAssignHOF?.let {timeLine->
+                findMsProcessComplaintByID(1, timeLine )?.timelinesDay}?.let {daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let {daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.msComplaintProcessAssignHOF
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
             hofAssigned = hofDetailsFound.id
@@ -756,11 +756,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
         with(complaintFound) {
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.msComplaintProcessAssignOfficer?.let {
-                    findMsProcessComplaintByID(1, it)?.timelinesDay?.let {
-                        commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it)
-                    }
-                }
+            timelineEndDate = applicationMapProperties.msComplaintProcessAssignOfficer?.let {timeLine->
+                findMsProcessComplaintByID(1, timeLine )?.timelinesDay}?.let {daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let {daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.msComplaintProcessAssignOfficer
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
             assignedRemarks = body.assignedRemarks
@@ -1043,12 +1042,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 serviceMapsId = map.id
                 msProcessStatus = map.inactiveStatus
                 timelineStartDate = commonDaoServices.getCurrentDate()
-                timelineEndDate =
-                    applicationMapProperties.msComplaintProcessOnlineSubmitted?.let {
-                        findMsProcessComplaintByID(1, it)?.timelinesDay?.let {
-                            commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it)
-                        }
-                    }
+                timelineEndDate = applicationMapProperties.msComplaintProcessOnlineSubmitted?.let {timeLine->
+                    findMsProcessComplaintByID(1, timeLine )?.timelinesDay}?.let {daysCount->
+                    commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let {daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                }
                 msProcessId = applicationMapProperties.msComplaintProcessOnlineSubmitted
                 userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                 progressValue = progressSteps(complaintSteps).getInt("step-1")
