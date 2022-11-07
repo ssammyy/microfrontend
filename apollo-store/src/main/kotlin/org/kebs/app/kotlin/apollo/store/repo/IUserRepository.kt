@@ -48,6 +48,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.sql.Timestamp
 import java.util.*
 
 
@@ -392,8 +393,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getRegisteredFirmsFilter(
-        @Param("startDate") startDate: Date?,
-        @Param("endDate") endDate: Date?,
+        @Param("startDate") startDate: Timestamp?,
+        @Param("endDate") endDate: Timestamp?,
         @Param("businessLines") businessLines: Long?,
         @Param("region") region: Long?
     ): MutableList<RegisteredFirms>
@@ -629,8 +630,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getAllLevyPaymentsFilter(
-        @Param("periodFrom") periodFrom: Date?,
-        @Param("periodTo") periodTo: Date?,
+        @Param("periodFrom") periodFrom: Timestamp?,
+        @Param("periodTo") periodTo: Timestamp?,
         @Param("businessLines") businessLines: Long?,
         @Param("region") region: Long?
     ): MutableList<AllLevyPayments>
@@ -655,13 +656,13 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
                 "h.REQUEST_HEADER_TOTAL_PENALTY_AMT as totalPenaltyAmt,p.NET_PENALTY_AMT as amountDue,p.MONTHS_LATE as monthsLate,l.NAME as businessLineName,r.REGION as regionName" +
                 " FROM LOG_SL2_PAYMENTS_HEADER h LEFT JOIN LOG_SL2_PAYMENTS_DETAILS d ON h.ID=d.HEADER_ID " +
                 "LEFT JOIN LOG_KEBS_STANDARD_LEVY_PAYMENTS p ON h.ID=p.PAYMENT_ID  LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON h.REQUEST_HEADER_ENTRY_NO=c.ENTRY_NUMBER LEFT JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID " +
-                "WHERE d.TRANSACTION_TYPE='PENALTY' and (:periodFrom is null or d.PERIOD_FROM >=TO_DATE(:periodFrom)) and (:periodTo is null or d.PERIOD_TO <=TO_DATE(:periodTo))" +
+                "WHERE d.TRANSACTION_TYPE='PENALTY' and (:periodFrom is null or TO_DATE(d.PERIOD_FROM,'yyyy-MM-dd') >=TO_DATE(:periodFrom,'yyyy-MM-dd')) and (:periodTo is null or TO_DATE(d.PERIOD_TO,'yyyy-MM-dd') <=TO_DATE(:periodTo,'yyyy-MM-dd'))" +
                 " and (:businessLines is null or c.BUSINESS_LINES =TO_NUMBER(:businessLines)) and (:region is null or c.REGION =TO_NUMBER(:region)) ORDER BY d.ID DESC",
         nativeQuery = true
     )
     fun getPenaltyReportFilter(
-        @Param("periodFrom") periodFrom: Date?,
-        @Param("periodTo") periodTo: Date?,
+        @Param("periodFrom") periodFrom: String?,
+        @Param("periodTo") periodTo: String?,
         @Param("businessLines") businessLines: Long?,
         @Param("region") region: Long?
     ): MutableList<AllLevyPayments>

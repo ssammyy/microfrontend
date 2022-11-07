@@ -1804,10 +1804,19 @@ class StdLevyController(
 
     ): MutableList<RegisteredFirms>
     {
-        val startDate= levyFilterDTO.startDate
-        val endDate = levyFilterDTO.endDate
+        val firstStartDate= levyFilterDTO.startDate
+        val firstEndDate = levyFilterDTO.endDate
         val businessLines = levyFilterDTO.businessLines
         val region = levyFilterDTO.region
+
+        val dateFormat = SimpleDateFormat("mm/dd/yyyy")
+        val parsedStartDate: Date = dateFormat.parse(firstStartDate) as Date
+        val parsedEndDate: Date = dateFormat.parse(firstEndDate) as Date
+        val startDate = Timestamp(parsedStartDate.time)
+        val endDate = Timestamp(parsedEndDate.time)
+        //println(timestamp.javaClass)
+        val gson = Gson()
+         KotlinLogging.logger { }.info { "Registered Filters:" + gson.toJson(levyFilterDTO) }
         return standardLevyService.getRegisteredFirmsFilter(startDate ,endDate ,businessLines ,region)
     }
 
@@ -1818,10 +1827,17 @@ class StdLevyController(
         @RequestBody levyFiltersDTO: LevyFiltersDTO
     ): MutableList<AllLevyPayments>
     {
-        val periodFrom= levyFiltersDTO.periodFrom
-        val periodTo = levyFiltersDTO.periodTo
+        val firstPeriodFrom= levyFiltersDTO.periodFrom
+        val firstPeriodTo = levyFiltersDTO.periodTo
         val businessLines = levyFiltersDTO.businessLines
         val region = levyFiltersDTO.region
+
+        val dateFormat = SimpleDateFormat("mm/dd/yyyy")
+        val parsedStartDate: Date = dateFormat.parse(firstPeriodFrom) as Date
+        val parsedEndDate: Date = dateFormat.parse(firstPeriodTo) as Date
+        val periodFrom = Timestamp(parsedStartDate.time)
+        val periodTo = Timestamp(parsedEndDate.time)
+
         return standardLevyService.getAllLevyPaymentsFilter(periodFrom ,periodTo ,businessLines ,region)
     }
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
@@ -1839,12 +1855,25 @@ class StdLevyController(
 
     fun getPenaltyReportFilter(
         @RequestBody levyFiltersDTO: LevyFiltersDTO
-    ): MutableList<AllLevyPayments>
+    ):  MutableList<AllLevyPayments>
     {
-        val periodFrom= levyFiltersDTO.periodFrom
-        val periodTo = levyFiltersDTO.periodTo
+        val fPeriodFrom= levyFiltersDTO.periodFrom
+        val fPeriodTo = levyFiltersDTO.periodTo
         val businessLines = levyFiltersDTO.businessLines
         val region = levyFiltersDTO.region
+
+        val format1 = SimpleDateFormat("MM/dd/yyyy")
+        val format2 = SimpleDateFormat("yyyy-MM-dd")
+        val date: java.util.Date = format1.parse(fPeriodFrom) as java.util.Date
+        val periodFrom = format2.format(date);
+        val dateT: java.util.Date = format1.parse(fPeriodTo) as java.util.Date
+        val periodTo = format2.format(dateT);
+
+        val gson = Gson()
+        KotlinLogging.logger { }.info { " Filters:" + gson.toJson(date) }
+        //KotlinLogging.logger { }.info { " Formatted:" + gson.toJson(outDate) }
+        KotlinLogging.logger { }.info { " New Date:" + gson.toJson(periodFrom) }
+
         return standardLevyService.getPenaltyReportFilter(periodFrom ,periodTo ,businessLines ,region)
     }
     //Get List of Manufactures
@@ -1855,10 +1884,17 @@ class StdLevyController(
         @RequestBody levyFilterDTO: LevyFilterDTO
     ): MutableList<RegisteredFirms>
     {
-        val startDate= levyFilterDTO.startDate
-        val endDate = levyFilterDTO.endDate
+        val firstStartDate= levyFilterDTO.startDate
+        val firstEndDate = levyFilterDTO.endDate
         val businessLines = levyFilterDTO.businessLines
         val region = levyFilterDTO.region
+
+        val dateFormat = SimpleDateFormat("mm/dd/yyyy")
+        val parsedStartDate: Date = dateFormat.parse(firstStartDate) as Date
+        val parsedEndDate: Date = dateFormat.parse(firstEndDate) as Date
+        val startDate = Timestamp(parsedStartDate.time)
+        val endDate = Timestamp(parsedEndDate.time)
+
         return standardLevyService.getActiveFirmsFilter(startDate ,endDate ,businessLines ,region)
     }
     //Get List of Manufactures
@@ -1868,10 +1904,17 @@ class StdLevyController(
         @RequestBody levyFilterDTO: LevyFilterDTO
     ): MutableList<RegisteredFirms>
     {
-        val startDate= levyFilterDTO.startDate
-        val endDate = levyFilterDTO.endDate
+        val firstStartDate= levyFilterDTO.startDate
+        val firstEndDate = levyFilterDTO.endDate
         val businessLines = levyFilterDTO.businessLines
         val region = levyFilterDTO.region
+
+        val dateFormat = SimpleDateFormat("mm/dd/yyyy")
+        val parsedStartDate: Date = dateFormat.parse(firstStartDate) as Date
+        val parsedEndDate: Date = dateFormat.parse(firstEndDate) as Date
+        val startDate = Timestamp(parsedStartDate.time)
+        val endDate = Timestamp(parsedEndDate.time)
+
         return standardLevyService.getDormantFirmsFilter(startDate ,endDate ,businessLines ,region)
     }
     //Get List of Manufactures
@@ -1882,10 +1925,17 @@ class StdLevyController(
         @RequestBody levyFilterDTO: LevyFilterDTO
     ): MutableList<RegisteredFirms>
     {
-        val startDate= levyFilterDTO.startDate
-        val endDate = levyFilterDTO.endDate
+        val firstStartDate= levyFilterDTO.startDate
+        val firstEndDate = levyFilterDTO.endDate
         val businessLines = levyFilterDTO.businessLines
         val region = levyFilterDTO.region
+
+        val dateFormat = SimpleDateFormat("mm/dd/yyyy")
+        val parsedStartDate: Date = dateFormat.parse(firstStartDate) as Date
+        val parsedEndDate: Date = dateFormat.parse(firstEndDate) as Date
+        val startDate = Timestamp(parsedStartDate.time)
+        val endDate = Timestamp(parsedEndDate.time)
+
         return standardLevyService.getClosedFirmsFilter(startDate ,endDate ,businessLines ,region)
     }
 
