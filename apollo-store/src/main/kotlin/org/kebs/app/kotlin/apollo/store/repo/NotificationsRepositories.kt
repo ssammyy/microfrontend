@@ -46,7 +46,8 @@ interface INotificationsBufferRepository : HazelcastRepository<NotificationsBuff
 //    override fun findAll( pageable: Pageable): Page<NotificationsBufferEntity>?
     fun findByRecipient(recipient: String, pageable: Pageable): Page<NotificationsBufferEntity>?
     fun findByRecipient(recipient: String): List<NotificationsBufferEntity>?
-    fun findByRecipientAndOrderByIdDesc(recipient: String): List<NotificationsBufferEntity>?
+//    fun findByRecipientAndOrderByIdDesc(recipient: String): List<NotificationsBufferEntity>?
+    fun findAllByRecipientOrderByIdDesc(recipient: String): List<NotificationsBufferEntity>?
 
     fun findByIdAndRecipient(id: Long, recipient: String):List<NotificationsBufferEntity>?
 }

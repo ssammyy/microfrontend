@@ -1958,7 +1958,7 @@ class CommonDaoServices(
 
 
     fun findAllUserNotification(userEmail: String): List<NotificationsBufferEntity> {
-        notificationsBufferRepo.findByRecipientAndOrderByIdDesc(userEmail)
+        notificationsBufferRepo.findAllByRecipientOrderByIdDesc(userEmail)
             ?.let { notifications ->
                 return notifications
             }
