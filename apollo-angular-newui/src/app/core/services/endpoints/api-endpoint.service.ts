@@ -620,6 +620,10 @@ export class ApiEndpointService {
 
     };
 
+    public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {
+        VIEW_PDF_SSF: `${ApiEndpointService.MS_CONTEXT}/report/sample-submission`,
+    }
+
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
         VIEW_PDF_LAB_RESULT: `${ApiEndpointService.MS_CONTEXT}/view/attached-lab-pdf`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,

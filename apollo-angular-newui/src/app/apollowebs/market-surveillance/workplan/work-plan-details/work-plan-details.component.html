@@ -467,7 +467,7 @@
                                                         {{workPlanInspection?.sampleCollected?.dateWitness|date}}</div>
                                                 </li>
                                             </ul>
-                                            <!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
+<!--                                                                                        <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
                                             <div class="form-row">
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Items</label>
@@ -5528,6 +5528,10 @@
                                  data-dismiss="modal">
                             Close
                         </button>
+                        <div *ngIf="addLabParamStatus == false">
+                            <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"
+                                     (click)="viewSSFPdfFile(selectedSFFDetails?.id, selectedSFFDetails?.fileRefNumber,'application/pdf')">Download</button>
+                        </div>
                         <div *ngIf="addLabParamStatus">
                             <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"
                                      (click)="onClickSaveSampleSubmitted()">SUBMIT

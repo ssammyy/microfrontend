@@ -144,6 +144,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSaveFinalRecommendationDetails: RecommendationDto;
   dataSaveFinalRecommendationList: RecommendationDto[] = [];
 
+  selectedSFFDetails: SampleSubmissionDto;
+
 
   dataSaveAssignOfficer: ComplaintAssignDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
@@ -2102,6 +2104,30 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
     this.finalRecommendationDetailsForm?.reset();
   }
+
+  viewSSFPdfFile(ssfID: string, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadSSFDetailsPDF(ssfID).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
 
   private loadData(referenceNumber: string, batchReferenceNumber: string ): any {
     this.SpinnerService.show();

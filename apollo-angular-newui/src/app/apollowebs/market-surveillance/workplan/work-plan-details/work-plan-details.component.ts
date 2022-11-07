@@ -74,6 +74,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   submitted = false;
   addLabParamStatus = true;
   defaultPageSize = 20;
+  selectedSFFDetails: SampleSubmissionDto;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -2327,6 +2328,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   viewSSFRecord(data: SampleSubmissionDto) {
     this.sampleSubmitForm.patchValue(data);
+    this.selectedSFFDetails = data;
     const paramDetails = data.parametersList;
     this.dataSaveSampleSubmitParamList = [];
     for (let i = 0; i < paramDetails.length; i++) {
@@ -2383,6 +2385,29 @@ export class WorkPlanDetailsComponent implements OnInit {
   viewSampleCollectPdfFile(sampleCollectionID: string, fileName: string, applicationType: string): void {
     this.SpinnerService.show();
     this.msService.loadSampleCollectionDetailsPDF(sampleCollectionID).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  viewSSFPdfFile(ssfID: string, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadSSFDetailsPDF(ssfID).subscribe(
         (dataPdf: any) => {
           this.SpinnerService.hide();
           this.blob = new Blob([dataPdf], {type: applicationType});

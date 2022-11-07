@@ -2200,6 +2200,23 @@ export class MsService {
         );
     }
 
+    public loadSSFDetailsPDF(ssfID: string): Observable<any> {
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_PDF_ENDPOINT.VIEW_PDF_SSF);
+        const params = new HttpParams()
+            .set('ssfID', ssfID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
 
 
 
