@@ -144,6 +144,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSaveFinalRecommendationDetails: RecommendationDto;
   dataSaveFinalRecommendationList: RecommendationDto[] = [];
 
+  selectedSFFDetails: SampleSubmissionDto;
+
 
   dataSaveAssignOfficer: ComplaintAssignDto;
   dataSaveRapidTest: FuelEntityRapidTestDto;
@@ -1810,29 +1812,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
 
     if (this.workPlanInspection?.productList?.length > 0 && this.workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal) {
-      let countRecommendationHOD = 0;
-      let countRecommendationDirector = 0;
-      let destructionRecommendedAllDone = 0;
-      let destructionRecommended = 0;
-      for (let i = 0; i < this.workPlanInspection?.productList.length; i++) {
-        if (this.workPlanInspection?.productList[i].hodRecommendationStatus) {
-          countRecommendationHOD++;
-        }
-        if (this.workPlanInspection?.productList[i].directorRecommendationStatus) {
-          countRecommendationDirector++;
-        }
-        if (this.workPlanInspection?.productList[i].destructedStatus) {
-          destructionRecommendedAllDone++;
-        }
-        if (this.workPlanInspection?.productList[i].destructionRecommended) {
-          destructionRecommended++;
-        }
-      }
-      this.productsDestructionRecommendationDone = destructionRecommendedAllDone;
-      this.productsDestructionRecommendation = destructionRecommended;
-      this.productsCountRecommendationHOD = countRecommendationHOD;
-      this.productsCountRecommendationDirector = countRecommendationDirector;
-      console.log(this.productsCountRecommendationHOD);
+      this.recommendationDetailsLoad();
     }
 
     if (this.workPlanInspection?.onsiteStartStatus === false ) {
@@ -1921,16 +1901,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
-      this.msService.msStandardsListDetails().subscribe(
-          (data1: KebsStandardsDto[]) => {
-            this.standards = data1;
-            console.log(data1);
-          },
-          error => {
-            console.log(error);
-            this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
+      this.loadStandards()
+
     }
 
     switch (this.workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal) {
@@ -1950,6 +1922,48 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         break;
     }
 
+  }
+
+  recommendationDetailsLoad() {
+    let countRecommendationHOD = 0;
+    let countRecommendationDirector = 0;
+    let destructionRecommendedAllDone = 0;
+    let destructionRecommended = 0;
+    for (let i = 0; i < this.workPlanInspection?.productList.length; i++) {
+      if (this.workPlanInspection?.productList[i].hodRecommendationStatus) {
+        countRecommendationHOD++;
+      }
+      if (this.workPlanInspection?.productList[i].directorRecommendationStatus) {
+        countRecommendationDirector++;
+      }
+      if (this.workPlanInspection?.productList[i].destructedStatus) {
+        destructionRecommendedAllDone++;
+      }
+      if (this.workPlanInspection?.productList[i].destructionRecommended) {
+        destructionRecommended++;
+      }
+      if (this.workPlanInspection?.productList[i].appealStatus) {
+        destructionRecommendedAllDone++;
+      }
+    }
+    this.productsDestructionRecommendationDone = destructionRecommendedAllDone;
+    this.productsDestructionRecommendation = destructionRecommended;
+    this.productsCountRecommendationHOD = countRecommendationHOD;
+    this.productsCountRecommendationDirector = countRecommendationDirector;
+    console.log(this.productsCountRecommendationHOD);
+  }
+
+  loadStandards() {
+    this.msService.msStandardsListDetails().subscribe(
+        (data1: KebsStandardsDto[]) => {
+          this.standards = data1;
+          console.log(data1);
+        },
+        error => {
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 
   get formAssignOfficerForm(): any {
@@ -2091,6 +2105,30 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm?.reset();
   }
 
+  viewSSFPdfFile(ssfID: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadSSFDetailsPDF(String(ssfID)).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+
   private loadData(referenceNumber: string, batchReferenceNumber: string ): any {
     this.SpinnerService.show();
     this.msService.msWorkPlanScheduleDetails(batchReferenceNumber, referenceNumber).subscribe(
@@ -2146,12 +2184,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       'addNewScheduleDetails'];
 
     // tslint:disable-next-line:max-line-length
-    const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
+    const arrHeadSave = ['APPROVE/REJECT SCHEDULED COMPLAINT', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
       'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/REJECT FINAL REPORT', 'APPROVE/REJECT FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
       , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
-      'UPDATE WORK-PLAN SCHEDULE DETAILS FILE'];
+      'UPDATE COMPLAINT SCHEDULE DETAILS FILE'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -2181,7 +2219,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       }
     }
   }
-
 
   updateFinalPreliminaryReport() {
     if (this.workPlanInspection?.finalReportGenerated && this.workPlanInspection?.msPreliminaryReportStatus) {
@@ -2429,7 +2466,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('WORK-PLAN DETAILS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('COMPLAINT DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -2537,6 +2574,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
+            this.recommendationDetailsLoad();
             this.msService.showSuccess('Client appeal status,Saved successfully');
           },
           error => {
@@ -2572,6 +2610,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.approvePreliminaryForm.reset();
+            this.recommendationDetailsLoad();
             this.SpinnerService.hide();
             this.msService.showSuccess('Client appeal Successfully status,Saved successfully');
           },
@@ -2779,7 +2818,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.workPlanInspection = data;
           console.log(data);
           this.SpinnerService.hide();
-          this.msService.showSuccess('WORK-PLAN DETAILS SAVED SUCCESSFULLY');
+          this.msService.showSuccess('COMPLAINT DETAILS SAVED SUCCESSFULLY');
         },
         error => {
           this.SpinnerService.hide();
@@ -2809,7 +2848,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.workPlanInspection = data;
           // console.log(data);
           this.SpinnerService.hide();
-          this.msService.showSuccess('WORK-PLAN DETAILS SUBMITTED SUCCESSFULLY');
+          this.msService.showSuccess('COMPLAINT SCHEDULE DETAILS SUBMITTED SUCCESSFULLY');
         },
         error => {
           this.SpinnerService.hide();
@@ -2873,7 +2912,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.workPlanInspection = data;
           console.log(data);
           this.SpinnerService.hide();
-          this.msService.showSuccess('ALL RECOEMMENDATION HAVE BEEN MARKED AS DONE AND DETAILS SAVED SUCCESSFULLY');
+          this.msService.showSuccess('ALL RECOMMENDATION HAVE BEEN MARKED AS DONE AND DETAILS SAVED SUCCESSFULLY');
         },
         error => {
           this.SpinnerService.hide();
@@ -3078,6 +3117,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             this.uploadedFiles = this.resetUploadedFiles;
             console.log(data);
+            this.loadStandards();
             this.SpinnerService.hide();
             this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');
           },
@@ -3124,6 +3164,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             this.uploadedFiles = null;
             console.log(data);
+            this.recommendationDetailsLoad();
             this.SpinnerService.hide();
             this.msService.showSuccess('DESTRUCTION REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
           },
@@ -3170,6 +3211,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             this.uploadedFiles = null;
             console.log(data);
+            this.clientEmailNotificationForm.reset();
+            this.recommendationDetailsLoad();
             this.SpinnerService.hide();
             this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');
           },
@@ -3449,6 +3492,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       );
     }
   }
+
 
 
 
@@ -3957,7 +4001,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.msService.msWorkPlanScheduleSaveFinalPreliminaryReport(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
-          this.dataSavePreliminaryReport
+          this.dataSavePreliminaryReport,
       ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
@@ -4050,7 +4094,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (this.addNewScheduleForm.valid && this.dataSaveResourcesRequiredList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Update the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can click the \'UPDATE WORK-PLAN\' button to update details Before Saving', 'COMPLAINT SCHEDULE DETAILS SAVED SUCCESSFUL', () => {
+          'You can click the \'UPDATE COMPLAINT SCHEDULE\' button to update details Before Saving', 'COMPLAINT SCHEDULE DETAILS SAVED SUCCESSFUL', () => {
             this.saveWorkPlanScheduled();
           });
     }
@@ -4071,7 +4115,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
                 console.log(data);
                 this.workPlanInspection = data;
                 this.SpinnerService.hide();
-                this.msService.showSuccess('WORK-PLAN PLAN SCHEDULED UPDATED SUCCESSFULLY AND SUBMITTED FOR APPROVAL');
+                this.msService.showSuccess('COMPLAINT SCHEDULE UPDATED SUCCESSFULLY AND SUBMITTED FOR APPROVAL');
               },
               error => {
                 this.SpinnerService.hide();
@@ -4095,7 +4139,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
               console.log(data);
               this.workPlanInspection = data;
               this.SpinnerService.hide();
-              this.msService.showSuccess('WORK-PLAN PLAN SCHEDULED UPDATED SUCCESSFULLY');
+              this.msService.showSuccess('COMPLAINT SCHEDULE UPDATED SUCCESSFULLY');
             },
             error => {
               this.SpinnerService.hide();

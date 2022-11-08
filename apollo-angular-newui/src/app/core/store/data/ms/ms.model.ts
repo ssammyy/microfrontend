@@ -361,6 +361,80 @@ export class ComplaintDto {
     remedySought: string;
 }
 
+export class AcknowledgementDto {
+    referenceNumber: string;
+    complaintTitle: string;
+    targetedProducts: string;
+    transactionDate: Date;
+    approvedDate: Date;
+    rejectedDate: Date;
+    assignedIo: number;
+    acknowledgementType: string;
+    region: number;
+    county: number;
+    town: number;
+    complaintDepartment: number;
+    division: number;
+    timeTakenForAcknowledgement: string;
+}
+
+export class FeedbackDto {
+    referenceNumber: string;
+    complaintTitle: string;
+    targetedProducts: string;
+    transactionDate: Date;
+    approvedDate: Date;
+    rejectedDate: Date;
+    assignedIo: number;
+    acknowledgementType: string;
+    region: number;
+    county: number;
+    town: number;
+    complaintDepartment: number;
+    division: number;
+    timeTakenForAcknowledgement: string;
+    feedbackSent: string;
+    timeTakenForFeedbackSent: string;
+}
+
+export class ReportSubmittedDto {
+    referenceNumber: string;
+    complaintTitle: string;
+    targetedProducts: string;
+    transactionDate: Date;
+    approvedDate: Date;
+    rejectedDate: Date;
+    assignedIo: number;
+    acknowledgementType: string;
+    region: number;
+    county: number;
+    town: number;
+    complaintDepartment: number;
+    division: number;
+    timeTakenForAcknowledgement: string;
+    reportSubmited: string;
+    timeTakenForReportSubmission: string;
+}
+
+export class SampleSubmittedDto {
+    referenceNumber: string;
+    complaintTitle: string;
+    targetedProducts: string;
+    transactionDate: Date;
+    approvedDate: Date;
+    rejectedDate: Date;
+    assignedIo: number;
+    acknowledgementType: string;
+    region: number;
+    county: number;
+    town: number;
+    complaintDepartment: number;
+    division: number;
+    timeTakenForAcknowledgement: string;
+    sampleSubmittedWithBsNumber: string;
+    timeTakenForSampleSubmission: string;
+}
+
 export class ComplaintCustomersDto {
     firstName: string;
     lastName: string;

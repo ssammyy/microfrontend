@@ -112,7 +112,7 @@ class RegistrationManagementHandler(
         commonDaoServices.loggedInUserDetails()
             .let { userDetails ->
                 userDetails.email?.let {
-                    response.data = commonDaoServices.findAllUserNotification(it)
+                    response.data = commonDaoServices.mapNotificationListDto(commonDaoServices.findAllUserNotification(it))
                     response.message = "Success"
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                 } ?: run {

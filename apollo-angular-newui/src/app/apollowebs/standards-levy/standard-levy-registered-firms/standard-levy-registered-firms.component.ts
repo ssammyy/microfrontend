@@ -14,11 +14,36 @@ import {MatDateRangePicker} from "@angular/material/datepicker";
 import {Moment} from "moment";
 import {OverlayService} from "../../../shared/loader/overlay.service";
 import {formatDate} from "@angular/common";
+import {DateAdapter, MAT_DATE_FORMATS, NativeDateAdapter} from "@angular/material/core";
+
+export const PICK_FORMATS = {
+    parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
+    display: {
+        dateInput: 'input',
+        monthYearLabel: {year: 'numeric', month: 'short'},
+        dateA11yLabel: {year: 'numeric', month: 'long', day: 'numeric'},
+        monthYearA11yLabel: {year: 'numeric', month: 'long'}
+    }
+};
+
+class PickDateAdapter extends NativeDateAdapter {
+    format(date: Date, displayFormat: Object): string {
+        if (displayFormat === 'input') {
+            return formatDate(date, "yyyy-MM-dd'T'HH:mm:ss", this.locale);
+        } else {
+            return date.toDateString();
+        }
+    }
+}
 
 @Component({
   selector: 'app-standard-levy-registered-firms',
   templateUrl: './standard-levy-registered-firms.component.html',
-  styleUrls: ['./standard-levy-registered-firms.component.css']
+  styleUrls: ['./standard-levy-registered-firms.component.css'],
+    providers: [
+        {provide: DateAdapter, useClass: PickDateAdapter},
+        {provide: MAT_DATE_FORMATS, useValue: PICK_FORMATS}
+    ]
 })
 export class StandardLevyRegisteredFirmsComponent implements OnInit {
 
@@ -225,8 +250,8 @@ export class StandardLevyRegisteredFirmsComponent implements OnInit {
         });
     }
     dateRangeChange(dateRangeStart: HTMLInputElement, dateRangeEnd: HTMLInputElement) {
-        // console.log(dateRangeStart.value);
-        // console.log(dateRangeEnd.value);
+        console.log(dateRangeStart.value);
+        console.log(dateRangeEnd.value);
         this.startDate = dateRangeStart.value
         this.endDate = dateRangeEnd.value
 

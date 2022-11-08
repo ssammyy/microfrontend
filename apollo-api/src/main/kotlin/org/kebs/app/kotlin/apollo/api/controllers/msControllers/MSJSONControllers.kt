@@ -9,9 +9,12 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.MsSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelRemediationInvoiceRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.IMSSampleSubmissionRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.IMsSampleSubmissionViewRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.ISampleCollectionViewRepository
 import org.springframework.core.io.ResourceLoader
 import org.springframework.security.access.prepost.PreAuthorize
@@ -29,6 +32,8 @@ class MSJSONControllers(
     private val applicationMapProperties: ApplicationMapProperties,
     private val marketSurveillanceDaoServices: MarketSurveillanceFuelDaoServices,
     private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
+    private val iSampleSubmissionViewRepo: IMsSampleSubmissionViewRepository,
+    private val sampleSubmitRepo: IMSSampleSubmissionRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
     private val commonDaoServices: CommonDaoServices,
     private val msDaoService: MarketSurveillanceFuelDaoServices,
@@ -310,6 +315,36 @@ class MSJSONControllers(
         }
     }
 
+    @RequestMapping(value = ["/report/sample-submission"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msSampleSubmissionPDF(
+        response: HttpServletResponse,
+        @RequestParam(value = "ssfID") ssfID: Long
+    ) {
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+        map["signaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+
+
+        val ssfFile = iSampleSubmissionViewRepo.findAllById(ssfID.toString())
+        val pdfReportStream = reportsDaoService.extractReport(
+            map,
+            applicationMapProperties.mapMSSampleSubmissionPath,
+            ssfFile
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Sample-Submission-${ssfFile[0].sampleReferences}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
 
 
     @RequestMapping(value = ["/report/remediation-invoice"], method = [RequestMethod.GET])
@@ -339,6 +374,36 @@ class MSJSONControllers(
             pdfReportStream.close()
         }
     }
+
+    fun mapSampleSubmissionDto(data: MsSampleSubmissionEntity, data2:List<SampleSubmissionItemsDto>): SampleSubmissionDtoPDF {
+        return SampleSubmissionDtoPDF(
+            data.id.toString(),
+            data.nameProduct,
+            data.packaging,
+            data.labellingIdentification,
+            data.fileRefNumber,
+            data.referencesStandards,
+            data.sizeTestSample,
+            data.sizeRefSample,
+            data.condition,
+            data.sampleReferences,
+            data.sendersName,
+            data.designation,
+            data.address,
+            data.sendersDate.toString(),
+            data.receiversName,
+            data.testChargesKsh.toString(),
+            data.receiptLpoNumber,
+            data.invoiceNumber,
+            data.disposal,
+            data.remarks,
+            data.sampleCollectionNumber.toString(),
+            null,
+            data.bsNumber,
+            data2
+        )
+    }
+
 
 
 }
