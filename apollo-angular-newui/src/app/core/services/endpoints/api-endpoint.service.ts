@@ -91,6 +91,7 @@ export class ApiEndpointService {
     public static MS_WORK_PLAN_ADD_CONTEXT = `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/add`;
     public static MS_COMPLAINT_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/complaint`;
     public static MS_COMPLAINT_UPDATE_CONTEXT = `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/update`;
+    public static MS_COMPLAINT_REPORT_CONTEXT = `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/reports`;
     public static MS_COMMON_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/common`;
 
     /**
@@ -674,6 +675,14 @@ export class ApiEndpointService {
         MS_PREDEFINED_RESOURCES_REQUIRED: `${ApiEndpointService.MS_COMMON_CONTEXT}/predefinedResourcesRequired`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
+    };
+
+    public static MARKET_SURVEILLANCE_REPORTS = {
+        MS_TIMELINE_ACKNOWLEDGEMENT: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/acknowledgement`,
+        MS_TIMELINE_FEEDBACK: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/feedback`,
+        MS_TIMELINE_REPORT_SUBMITTED: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/reportSubmitted`,
+        MS_TIMELINE_SAMPLE_SUBMITTED: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/sampleSubmitted`,
+
     };
 
     public static MARKET_SURVEILLANCE_COMPLAINT = {

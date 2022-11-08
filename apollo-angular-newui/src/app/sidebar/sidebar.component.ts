@@ -487,6 +487,20 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
         icontype: 'receipt',
     },
+    {
+        path: '/msTimeLineReports',
+        title: 'TimeLine Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
+        collapse: 'reports',
+        children: [
+            {path: 'acknowledgement', title: 'Acknowledgement', ab: 'AP'},
+            {path: 'feedback', title: 'Feed back', ab: 'PG'},
+            {path: 'reportSubmitted', title: 'Report Submitted', ab: 'PR'},
+            {path: 'sampleSubmitted', title: 'Samples Submitted', ab: 'SS'},
+        ],
+    },
 
     // Standards Development
     {

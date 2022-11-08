@@ -875,7 +875,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllAcknowledgementReportTimeLineList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
             marketSurveillanceComplaintDaoServices.msAcknowledgementReportTimeLineLists(page)
                 .let {
                     ServerResponse.ok().body(it)
@@ -889,7 +889,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllComplaintFeedbackReportTimeLineList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
             marketSurveillanceComplaintDaoServices.msComplaintFeedbackReportTimeLineLists(page)
                 .let {
                     ServerResponse.ok().body(it)
@@ -903,7 +903,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllReportSubmittedReportTimeLineList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
             marketSurveillanceComplaintDaoServices.msReportSubmittedReportTimeLineLists(page)
                 .let {
                     ServerResponse.ok().body(it)
@@ -917,7 +917,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllSampleSubmittedReportTimeLineList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
             marketSurveillanceComplaintDaoServices.msSampleSubmittedReportTimeLineLists(page)
                 .let {
                     ServerResponse.ok().body(it)

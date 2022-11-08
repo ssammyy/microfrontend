@@ -72,7 +72,7 @@ import {
     RegionReAssignDto,
     PredefinedResourcesRequired,
     SeizureDto,
-    SeizureListDto, LaboratoryEntityDto, KebsStandardsDto, AllWorkPlanDetails,
+    SeizureListDto, LaboratoryEntityDto, KebsStandardsDto, AllWorkPlanDetails, AcknowledgementDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -644,6 +644,78 @@ export class MsService {
     public loadNotificationList(page: string, records: string): Observable<ApiResponseModel> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_NOTIFICATION);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    /*******************************************************************START OF MARKET SURVEILLANCE REPORTS*****************************************************************************/
+
+
+    public loadAcknowledgementList(page: string, records: string): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_ACKNOWLEDGEMENT);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadFeedbackList(page: string, records: string): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_FEEDBACK);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadReportSubmittedList(page: string, records: string): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_REPORT_SUBMITTED);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadSampleSubmittedList(page: string, records: string): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_SAMPLE_SUBMITTED);
         const params = new HttpParams()
             .set('page', page)
             .set('records', records);

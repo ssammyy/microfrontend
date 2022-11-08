@@ -68,29 +68,4 @@ class MsAcknowledgementTimelineViewEntity : Serializable {
     @Basic
     @Column(name = "TIME_TAKEN_FOR_ACKNOWLEDGEMENT")
     var timeTakenForAcknowledgement: String? = null
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as MsAcknowledgementTimelineViewEntity
-        return referenceNumber == that.referenceNumber && complaintTitle == that.complaintTitle && targetedProducts == that.targetedProducts && transactionDate == that.transactionDate && approvedDate == that.approvedDate && rejectedDate == that.rejectedDate && assignedIo == that.assignedIo && acknowledgementType == that.acknowledgementType && region == that.region && county == that.county && town == that.town && complaintDepartment == that.complaintDepartment && division == that.division && timeTakenForAcknowledgement == that.timeTakenForAcknowledgement
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(
-            referenceNumber,
-            complaintTitle,
-            targetedProducts,
-            transactionDate,
-            approvedDate,
-            rejectedDate,
-            assignedIo,
-            acknowledgementType,
-            region,
-            county,
-            town,
-            complaintDepartment,
-            division,
-            timeTakenForAcknowledgement
-        )
-    }
 }

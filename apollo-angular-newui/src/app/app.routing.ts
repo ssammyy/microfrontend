@@ -265,6 +265,8 @@ import {SystemicReviewDraughtsManComponent} from "./apollowebs/standards-develop
 import {SystemReviewGazetteStandardComponent} from "./apollowebs/standards-development/systemic-review/system-review-gazette-standard/system-review-gazette-standard.component";
 import {SystemReviewUpdateGazetteComponent} from "./apollowebs/standards-development/systemic-review/system-review-update-gazette/system-review-update-gazette.component";
 import {NotificationsComponent} from './apollowebs/system/notifications/notifications.component';
+import {AcknowledgementComponent} from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
+import {FeedbackTimelineComponent} from './apollowebs/market-surveillance/reports/feedback-timeline/feedback-timeline.component';
 
 export const routes: Routes = [
     {
@@ -1601,6 +1603,30 @@ export const routes: Routes = [
                 path: 'details/:referenceNumber/:batchReferenceNumber',
                 component: ComplaintPlanDetailsComponent,
             },
+        ],
+    },
+    {
+        path: 'msTimeLineReports',
+        component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [
+            {
+                path: 'acknowledgement',
+                component: AcknowledgementComponent,
+            },
+            {
+                path: 'feedback',
+                component: FeedbackTimelineComponent,
+            },
+            {
+                path: 'reportSubmitted',
+                component: AcknowledgementComponent,
+            },
+            {
+                path: 'sampleSubmitted',
+                component: AcknowledgementComponent,
+            },
+
         ],
     },
     {

@@ -878,6 +878,10 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {OverlayService} from "./shared/loader/overlay.service";
 import { SpinnerComponent } from './shared/loader/spinner/spinner/spinner.component';
 import { NotificationsComponent } from './apollowebs/system/notifications/notifications.component';
+import { AcknowledgementComponent } from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
+import { FeedbackTimelineComponent } from './apollowebs/market-surveillance/reports/feedback-timeline/feedback-timeline.component';
+import { ReportSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/report-submitted-timeline/report-submitted-timeline.component';
+import { SampleSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1329,6 +1333,10 @@ import { NotificationsComponent } from './apollowebs/system/notifications/notifi
         SystemReviewUpdateGazetteComponent,
         SpinnerComponent,
         NotificationsComponent,
+        AcknowledgementComponent,
+        FeedbackTimelineComponent,
+        ReportSubmittedTimelineComponent,
+        SampleSubmittedTimelineComponent,
 
     ],
     entryComponents: [LoaderComponent],
