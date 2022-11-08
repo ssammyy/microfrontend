@@ -7,25 +7,27 @@
                         <div class="card-icon">
                             <i class="material-icons">DN</i>
                         </div>
-                        <h4 class="card-title">Demand note transactions</h4>
+                        <h4 class="card-title">Demand note transactions
+                            <button type="button" class="btn btn-primary btn-background float-right pull-right"
+                                    [disabled]="!cfsStations"
+                                    (click)="downloadReport()">
+                                <i class="fa fa-file-download"></i>
+                            </button>
+                        </h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar" *ngIf="transactionStats">
 
                         </div>
                         <div class="toolbar">
-                            <p>Search transaction by date, status and demand note number</p>
+                            <p>Search transaction by date generate, and demand note number</p>
                             <div class="input-group form-inline">
                                 <input id="transaction-date" type="date" class="search-form-input"
                                        [(ngModel)]="transactionDate" placeholder="Transaction Date">
+                                <input id="transaction-end-date" type="date" class="search-form-input"
+                                       [(ngModel)]="transactionDateEnd" placeholder="Transaction Date">
                                 <input id="transaction-no" type="text" class="search-form-input"
                                        [(ngModel)]="transactionNo" placeholder="Transaction No">
-                                <select [(ngModel)]="transactionStatus" id="payment-status" class="search-form-input">
-                                    <option [defaultSelected]="true">Payment Status</option>
-                                    <option value="">All Status</option>
-                                    <option value="1">Paid</option>
-                                    <option value="0">Not Paid</option>
-                                </select>
                                 <button type="button" class="btn btn-primary btn-background"
                                         (click)="searchTransactions()">
                                     <i class="fa fa-search"></i>
