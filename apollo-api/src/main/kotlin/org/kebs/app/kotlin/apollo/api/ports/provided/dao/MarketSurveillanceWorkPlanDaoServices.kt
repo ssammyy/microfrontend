@@ -1643,9 +1643,21 @@ class MarketSurveillanceWorkPlanDaoServices(
             msEndProcessRemarks = body.hodFeedBackRemarks
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionMSProcessEnded
             userTaskId = null
-
         }
         val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
+
+        if(workPlanScheduled.complaintId!=null){
+            complaintsRepo.findByIdOrNull(workPlanScheduled.complaintId)
+                ?.let { cp->
+                with(cp){
+                    msProcessEndedOn = commonDaoServices.getCurrentDate()
+                    msComplaintEndedStatus = map.activeStatus
+                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionMSProcessEnded
+                    userTaskId = null
+                }
+                msComplaintDaoServices.updateComplaintDetailsInDB(cp,map,loggedInUser)
+            }
+        }
 
         when (fileSaved.first.status) {
             map.successStatus -> {
@@ -1907,6 +1919,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 with(workPlanScheduled) {
                     userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                     dataReportStatus = map.activeStatus
+                    dataReportDate = commonDaoServices.getCurrentDate()
                 }
                 val fileSaved2 = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
                 when (fileSaved2.first.status) {
@@ -2282,6 +2295,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
         with(workPlanScheduled){
             bsNumberStatus = 1
+            bsNumberDatedAdded = commonDaoServices.getCurrentDate()
             timelineStartDate = commonDaoServices.getCurrentDate()
             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionBsNumberAdded.let { timeLine->
                 findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->

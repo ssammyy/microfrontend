@@ -14,6 +14,7 @@ import org.kebs.app.kotlin.apollo.store.model.ms.MsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelRemediationInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IMSSampleSubmissionRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.IMsSampleSubmissionViewRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.ISampleCollectionViewRepository
 import org.springframework.core.io.ResourceLoader
 import org.springframework.security.access.prepost.PreAuthorize
@@ -31,6 +32,7 @@ class MSJSONControllers(
     private val applicationMapProperties: ApplicationMapProperties,
     private val marketSurveillanceDaoServices: MarketSurveillanceFuelDaoServices,
     private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
+    private val iSampleSubmissionViewRepo: IMsSampleSubmissionViewRepository,
     private val sampleSubmitRepo: IMSSampleSubmissionRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
     private val commonDaoServices: CommonDaoServices,
@@ -325,31 +327,22 @@ class MSJSONControllers(
         map["signaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
         map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
 
-        val sampleSubmittedDtoList = mutableListOf<SampleSubmissionDtoPDF>()
-        val ssfFile = sampleSubmitRepo.findAllById(ssfID)
-        val sampleSubmittedParamList = marketSurveillanceDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(ssfID)
-        val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { marketSurveillanceDaoServices.mapSampleSubmissionParamListDto(it) }?.let { ssfFile?.let { it1 ->
-            mapSampleSubmissionDto(it1.get(0), it)
-        } }
 
-        if (sampleSubmittedDtoValues != null) {
-            sampleSubmittedDtoList.add(sampleSubmittedDtoValues)
-            val pdfReportStream = reportsDaoService.extractReport(
-                map,
-                applicationMapProperties.mapMSSampleSubmissionPath,
-                sampleSubmittedDtoList
-            )
-            response.contentType = "text/html"
-            response.contentType = "application/pdf"
-            response.setHeader("Content-Length", pdfReportStream.size().toString())
-            response.addHeader("Content-Dispostion", "inline; Sample-Submission-${sampleSubmittedDtoList[0].sampleReferences}.pdf;")
-            response.outputStream.let { responseOutputStream ->
-                responseOutputStream.write(pdfReportStream.toByteArray())
-                responseOutputStream.close()
-                pdfReportStream.close()
-            }
+        val ssfFile = iSampleSubmissionViewRepo.findAllById(ssfID.toString())
+        val pdfReportStream = reportsDaoService.extractReport(
+            map,
+            applicationMapProperties.mapMSSampleSubmissionPath,
+            ssfFile
+        )
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Sample-Submission-${ssfFile[0].sampleReferences}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
         }
-
     }
 
 

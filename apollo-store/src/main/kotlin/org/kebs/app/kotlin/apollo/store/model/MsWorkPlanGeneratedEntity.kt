@@ -236,6 +236,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var bsNumberStatus: Int? = 0
 
+    @Column(name = "BS_NUMBER_DATED_ADDED")
+    @Basic
+    var bsNumberDatedAdded: Date? = null
+
     @Column(name = "SSF_LABPARAMS_STATUS")
     @Basic
     var ssfLabparamsStatus: Int? = 0
@@ -279,6 +283,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "DATA_REPORT_STATUS")
     @Basic
     var dataReportStatus: Int? = 0
+
+    @Column(name = "DATA_REPORT_DATE")
+    @Basic
+    var dataReportDate: Date? = null
 
     @Column(name = "APPROVED_BY")
     @Basic

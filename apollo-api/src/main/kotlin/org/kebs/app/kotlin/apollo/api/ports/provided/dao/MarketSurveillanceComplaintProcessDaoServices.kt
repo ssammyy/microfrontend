@@ -65,6 +65,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val invoiceDaoService: InvoiceDaoService,
     private val reportsDaoService: ReportsDaoService,
     private val serviceRequestsRepo: IServiceRequestsRepository,
+    private val acknowledgementTimelineViewRepo: IMsAcknowledgementTimelineViewRepository,
+    private val complaintFeedbackTimelineViewRepo: IMsComplaintFeedbackViewRepository,
+    private val reportSubmittedTimelineViewRepo: IMsReportSubmittedCpViewRepository,
+    private val sampleSubmittedTimelineViewRepo: IMsSampleSubmittedCpViewRepository,
     private val commonDaoServices: CommonDaoServices
 ) {
     final var complaintSteps: Int = 6
@@ -210,6 +214,39 @@ class MarketSurveillanceComplaintProcessDaoServices(
             }
 
         return  response
+    }
+
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msAcknowledgementReportTimeLineLists(page: PageRequest): ApiResponseModel {
+        val complaintList = acknowledgementTimelineViewRepo.findAll(page)
+
+        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintFeedbackReportTimeLineLists(page: PageRequest): ApiResponseModel {
+        val complaintList = complaintFeedbackTimelineViewRepo.findAll(page)
+
+        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msReportSubmittedReportTimeLineLists(page: PageRequest): ApiResponseModel {
+        val complaintList = reportSubmittedTimelineViewRepo.findAll(page)
+
+        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msSampleSubmittedReportTimeLineLists(page: PageRequest): ApiResponseModel {
+        val complaintList = sampleSubmittedTimelineViewRepo.findAll(page)
+
+        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
     }
     
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
