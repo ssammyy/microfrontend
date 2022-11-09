@@ -29,12 +29,12 @@ import org.springframework.web.servlet.function.paramOrNull
 
 @Service
 class ApiDestinationInspectionHandler(
-        private val destinationInspectionService: DestinationInspectionService,
-        private val daoServices: DestinationInspectionDaoServices,
-        private val commonDaoServices: CommonDaoServices,
-        private val roleAssignmentsRepository: IUserRoleAssignmentsRepository,
-        private val consignmentAuditService: ConsignmentDocumentAuditService,
-        private val applicationMapProperties: ApplicationMapProperties
+    private val destinationInspectionService: DestinationInspectionService,
+    private val daoServices: DestinationInspectionDaoServices,
+    private val commonDaoServices: CommonDaoServices,
+    private val roleAssignmentsRepository: IUserRoleAssignmentsRepository,
+    private val consignmentAuditService: ConsignmentDocumentAuditService,
+    private val applicationMapProperties: ApplicationMapProperties
 ) {
     fun consignmentDocumentSupervisorTasks(req: ServerRequest): ServerResponse {
         val cdUuid = req.pathVariable("cdUuid")
@@ -46,9 +46,9 @@ class ApiDestinationInspectionHandler(
         try {
             // Load active blacklisted users
             commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    .let { map ->
-                        response.data = daoServices.findAllBlackListUsers(map.activeStatus)
-                    }
+                .let { map ->
+                    response.data = daoServices.findAllBlackListUsers(map.activeStatus)
+                }
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
         } catch (ex: Exception) {
@@ -92,9 +92,14 @@ class ApiDestinationInspectionHandler(
             val section = commonDaoServices.findSectionWIthId(portId)
 
             commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    .let { map ->
-                        response.data = SectionL2EntityDao.fromList(commonDaoServices.findAllFreightStationOnPortOfArrival(section, map.activeStatus))
-                    }
+                .let { map ->
+                    response.data = SectionL2EntityDao.fromList(
+                        commonDaoServices.findAllFreightStationOnPortOfArrival(
+                            section,
+                            map.activeStatus
+                        )
+                    )
+                }
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
         } catch (ex: Exception) {
@@ -110,13 +115,13 @@ class ApiDestinationInspectionHandler(
         try {
             // Load active ports
             commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    .let { map ->
-                        val ports = commonDaoServices.findAllSectionsListWithDivision(
-                                commonDaoServices.findDivisionWIthId(commonDaoServices.pointOfEntries.toLong()),
-                                map.activeStatus
-                        )
-                        response.data = SectionEntityDao.fromList(ports)
-                    }
+                .let { map ->
+                    val ports = commonDaoServices.findAllSectionsListWithDivision(
+                        commonDaoServices.findDivisionWIthId(commonDaoServices.pointOfEntries.toLong()),
+                        map.activeStatus
+                    )
+                    response.data = SectionEntityDao.fromList(ports)
+                }
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
         } catch (ex: Exception) {
@@ -128,29 +133,30 @@ class ApiDestinationInspectionHandler(
     }
 
     fun loadCommonUIComponents(req: ServerRequest): ServerResponse {
-        val s: ServiceMapsEntity = this.commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        val s: ServiceMapsEntity =
+            this.commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         val response = ApiResponseModel()
         response.data = mutableMapOf(
-                Pair("activeStatus", s.activeStatus),
-                Pair("inActiveStatus", s.inactiveStatus),
-                Pair("initStatus", s.initStatus),
-                Pair("currentDate", commonDaoServices.getCurrentDate()),
-                Pair("CDStatusTypes", daoServices.findCdManualAssignable(s.activeStatus)),
-                Pair("cdTypeGoodsCategory", daoServices.cdTypeGoodsCategory),
-                Pair("cdTypeVehiclesCategory", daoServices.cdTypeVehiclesCategory)
+            Pair("activeStatus", s.activeStatus),
+            Pair("inActiveStatus", s.inactiveStatus),
+            Pair("initStatus", s.initStatus),
+            Pair("currentDate", commonDaoServices.getCurrentDate()),
+            Pair("CDStatusTypes", daoServices.findCdManualAssignable(s.activeStatus)),
+            Pair("cdTypeGoodsCategory", daoServices.cdTypeGoodsCategory),
+            Pair("cdTypeVehiclesCategory", daoServices.cdTypeVehiclesCategory)
         )
         response.responseCode = ResponseCodes.SUCCESS_CODE
         response.message = "Success"
         return ServerResponse.ok()
-                .body(response)
+            .body(response)
     }
 
     fun uploadForeignConsignmentDocument(req: ServerRequest): ServerResponse {
         val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
-                ?: throw ResponseStatusException(
-                        HttpStatus.NOT_ACCEPTABLE,
-                        "Request is not a multipart request"
-                )
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_ACCEPTABLE,
+                "Request is not a multipart request"
+            )
         val multipartFile = multipartRequest.getFile("file")
         val fileType = multipartRequest.getParameter("file_type")
         val docType = multipartRequest.getParameter("docType")
@@ -158,28 +164,34 @@ class ApiDestinationInspectionHandler(
         val response = ApiResponseModel()
         if (multipartFile != null) {
             commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                    .let { map ->
-                        commonDaoServices.loggedInUserDetails()
-                                .let { loggedInUser ->
-                                    try {
-                                        val uploads = DiUploadsEntity()
-                                        uploads.documentType = docType.toUpperCase()
-                                        uploads.fileType = fileType
-                                        this.destinationInspectionService.saveUploadedCsvFileAndSendToKeSWS(multipartFile, uploads, loggedInUser, map, partnerId)
-                                        response.data = fileType
-                                        response.message = "${uploads.documentType?.toUpperCase()} successfully uploaded"
-                                        response.responseCode = ResponseCodes.SUCCESS_CODE
-                                    } catch (e: ExpectedDataNotFound) {
-                                        KotlinLogging.logger { }.error("FAILED TO UPLOAD COCs", e)
-                                        response.responseCode = ResponseCodes.FAILED_CODE
-                                        response.message = e.localizedMessage
-                                    } catch (e: Exception) {
-                                        KotlinLogging.logger { }.error("FAILED TO UPLOAD COCs", e)
-                                        response.responseCode = ResponseCodes.FAILED_CODE
-                                        response.message = "Upload failed, please check document format and try again"
-                                    }
-                                }
-                    }
+                .let { map ->
+                    commonDaoServices.loggedInUserDetails()
+                        .let { loggedInUser ->
+                            try {
+                                val uploads = DiUploadsEntity()
+                                uploads.documentType = docType.toUpperCase()
+                                uploads.fileType = fileType
+                                this.destinationInspectionService.saveUploadedCsvFileAndSendToKeSWS(
+                                    multipartFile,
+                                    uploads,
+                                    loggedInUser,
+                                    map,
+                                    partnerId
+                                )
+                                response.data = fileType
+                                response.message = "${uploads.documentType?.toUpperCase()} successfully uploaded"
+                                response.responseCode = ResponseCodes.SUCCESS_CODE
+                            } catch (e: ExpectedDataNotFound) {
+                                KotlinLogging.logger { }.error("FAILED TO UPLOAD COCs", e)
+                                response.responseCode = ResponseCodes.FAILED_CODE
+                                response.message = e.localizedMessage
+                            } catch (e: Exception) {
+                                KotlinLogging.logger { }.error("FAILED TO UPLOAD COCs", e)
+                                response.responseCode = ResponseCodes.FAILED_CODE
+                                response.message = "Upload failed, please check document format and try again"
+                            }
+                        }
+                }
         } else {
             response.message = "Please select upload file"
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -190,17 +202,17 @@ class ApiDestinationInspectionHandler(
 
     fun listConsignmentDocumentTypes(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
-                .body(this.destinationInspectionService.loadCDTypes())
+            .body(this.destinationInspectionService.loadCDTypes())
     }
 
     fun listMinistryStations(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
-                .body(this.destinationInspectionService.loadMinistryStations())
+            .body(this.destinationInspectionService.loadMinistryStations())
     }
 
     fun listApplicationTypes(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
-                .body(this.destinationInspectionService.applicationTypes())
+            .body(this.destinationInspectionService.applicationTypes())
     }
 
 
@@ -209,11 +221,22 @@ class ApiDestinationInspectionHandler(
             val auth = commonDaoServices.loggedInUserAuthentication()
             val usersEntity = commonDaoServices.findUserByUserName(auth.name)
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            val supervisorCount = this.roleAssignmentsRepository.checkUserHasRole("DI_Officer_Charge", map.activeStatus, usersEntity.id!!)
-            val inspectorCount = this.roleAssignmentsRepository.checkUserHasRole("DI_Inspection_Officers", map.activeStatus, usersEntity.id!!)
+            val supervisorCount =
+                this.roleAssignmentsRepository.checkUserHasRole("DI_Officer_Charge", map.activeStatus, usersEntity.id!!)
+            val inspectorCount = this.roleAssignmentsRepository.checkUserHasRole(
+                "DI_Inspection_Officers",
+                map.activeStatus,
+                usersEntity.id!!
+            )
             KotlinLogging.logger { }.info("S=${supervisorCount},I=${inspectorCount}")
             req.pathVariable("coUuid").let {
-                return ServerResponse.ok().body(this.destinationInspectionService.consignmentDocumentDetails(it, supervisorCount > 0, inspectorCount > 0))
+                return ServerResponse.ok().body(
+                    this.destinationInspectionService.consignmentDocumentDetails(
+                        it,
+                        supervisorCount > 0,
+                        inspectorCount > 0
+                    )
+                )
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("ERRO", ex)
@@ -230,29 +253,29 @@ class ApiDestinationInspectionHandler(
                 val comment = multipartRequest.getParameter("description")
                 if (docFile != null) {
                     req.pathVariable("cdUuid")
-                            .let { cdUuid ->
-                                commonDaoServices.loggedInUserDetails()
-                                        .let { loggedInUser ->
-                                            daoServices.findCDWithUuid(cdUuid)
-                                                    .let { cdDetails ->
+                        .let { cdUuid ->
+                            commonDaoServices.loggedInUserDetails()
+                                .let { loggedInUser ->
+                                    daoServices.findCDWithUuid(cdUuid)
+                                        .let { cdDetails ->
 
-                                                        daoServices.saveConsignmentAttachment(
-                                                                DiUploadsEntity()
-                                                                        .apply {
-                                                                            description = comment?.toString()
-                                                                        },
-                                                                docFile,
-                                                                "consignment_doc",
-                                                                loggedInUser,
-                                                                commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection),
-                                                                cdDetails
-                                                        )
-                                                        response.message = "Attachment successfully uploaded"
-                                                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                                            daoServices.saveConsignmentAttachment(
+                                                DiUploadsEntity()
+                                                    .apply {
+                                                        description = comment?.toString()
+                                                    },
+                                                docFile,
+                                                "consignment_doc",
+                                                loggedInUser,
+                                                commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection),
+                                                cdDetails
+                                            )
+                                            response.message = "Attachment successfully uploaded"
+                                            response.responseCode = ResponseCodes.SUCCESS_CODE
 
-                                                    }
                                         }
-                            }
+                                }
+                        }
                 } else {
                     response.message = "Please select a file to upload."
                     response.responseCode = ResponseCodes.EXCEPTION_STATUS
@@ -267,12 +290,13 @@ class ApiDestinationInspectionHandler(
         }
 
         return ServerResponse.ok()
-                .body(response)
+            .body(response)
     }
 
     fun deleteConsignmentDocumentAttachment(req: ServerRequest): ServerResponse {
         req.pathVariable("attachmentId").let {
-            return ServerResponse.ok().body(this.destinationInspectionService.deleteConsignmentDocumentAttachments(it.toLongOrDefault(0L)))
+            return ServerResponse.ok()
+                .body(this.destinationInspectionService.deleteConsignmentDocumentAttachments(it.toLongOrDefault(0L)))
         }
     }
 
@@ -319,7 +343,8 @@ class ApiDestinationInspectionHandler(
                 val page = extractPage(req)
                 var data: Page<ConsignmentDocumentDetailsEntity>? = null
                 when {
-                    auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
+                    auth.authorities.stream()
+                        .anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
                         val personalTasks = req.paramOrNull("personal")
                         var personal = true
                         personalTasks?.let {
@@ -327,9 +352,23 @@ class ApiDestinationInspectionHandler(
                         }
                         val supervisorCategory = req.paramOrNull("category")
                         if ("1".equals(activeDocument, false)) {
-                            response = destinationInspectionService.findDocumentsWithActions(usersEntity, supervisorCategory, personal, page)
+                            response = destinationInspectionService.findDocumentsWithActions(
+                                usersEntity,
+                                supervisorCategory,
+                                personal,
+                                page
+                            )
                         } else {
-                            data = daoServices.findAllInspectionsCdWithAssigner(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.QUERIED.code, ConsignmentApprovalStatus.NEW.code, ConsignmentApprovalStatus.UNDER_INSPECTION.code), page)
+                            data = daoServices.findAllInspectionsCdWithAssigner(
+                                usersEntity,
+                                cdType,
+                                arrayListOf(
+                                    ConsignmentApprovalStatus.QUERIED.code,
+                                    ConsignmentApprovalStatus.NEW.code,
+                                    ConsignmentApprovalStatus.UNDER_INSPECTION.code
+                                ),
+                                page
+                            )
                             // Add data to response
                             response.data = ConsignmentDocumentDao.fromList(data.toList())
                             response.pageNo = data.number
@@ -339,11 +378,28 @@ class ApiDestinationInspectionHandler(
                             response.responseCode = ResponseCodes.SUCCESS_CODE
                         }
                     }
-                    auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
+                    auth.authorities.stream()
+                        .anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                         data = if ("1".equals(activeDocument, false)) {
-                            daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.UNDER_INSPECTION.code, ConsignmentApprovalStatus.NEW.code), page)
+                            daoServices.findAllCdWithAssignedIoID(
+                                usersEntity,
+                                cdType,
+                                arrayListOf(
+                                    ConsignmentApprovalStatus.UNDER_INSPECTION.code,
+                                    ConsignmentApprovalStatus.NEW.code
+                                ),
+                                page
+                            )
                         } else {
-                            daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, arrayListOf(ConsignmentApprovalStatus.WAITING.code, ConsignmentApprovalStatus.QUERIED.code), page)
+                            daoServices.findAllCdWithAssignedIoID(
+                                usersEntity,
+                                cdType,
+                                arrayListOf(
+                                    ConsignmentApprovalStatus.WAITING.code,
+                                    ConsignmentApprovalStatus.QUERIED.code
+                                ),
+                                page
+                            )
                         }
                         // Add data to response
                         response.data = ConsignmentDocumentDao.fromList(data.toList())
@@ -354,8 +410,38 @@ class ApiDestinationInspectionHandler(
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                     }
                     else -> {
-                        response.message = "Unauthorized access"
-                        response.responseCode = ResponseCodes.FAILED_CODE
+                        val personalTasks = req.paramOrNull("personal")
+                        var personal = true
+                        personalTasks?.let {
+                            personal = it.toBoolean()
+                        }
+                        val supervisorCategory = req.paramOrNull("category")
+                        if ("1".equals(activeDocument, false)) {
+                            response = destinationInspectionService.findDocumentsWithActions(
+                                usersEntity,
+                                supervisorCategory,
+                                personal,
+                                page
+                            )
+                        } else {
+                            data = daoServices.findAllInspectionsCdWithAssigner(
+                                usersEntity,
+                                cdType,
+                                arrayListOf(
+                                    ConsignmentApprovalStatus.QUERIED.code,
+                                    ConsignmentApprovalStatus.NEW.code,
+                                    ConsignmentApprovalStatus.UNDER_INSPECTION.code
+                                ),
+                                page
+                            )
+                            // Add data to response
+                            response.data = ConsignmentDocumentDao.fromList(data.toList())
+                            response.pageNo = data.number
+                            response.totalPages = data.totalPages
+                            response.totalCount = data.totalElements
+                            response.message = "Assigned CD"
+                            response.responseCode = ResponseCodes.SUCCESS_CODE
+                        }
                     }
                 }
             }
@@ -367,7 +453,7 @@ class ApiDestinationInspectionHandler(
         return ServerResponse.ok().body(response)
     }
 
-    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_READ') || hasAuthority('DI_OFFICER_CHARGE_READ')")
+    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_READ') || hasAuthority('DI_OFFICER_CHARGE_READ') || hasAuthority('DI_DIRECTOR_READ')")
     fun ongoingAssignedConsignmentDocuments(req: ServerRequest): ServerResponse {
         val auth = commonDaoServices.loggedInUserAuthentication()
         val response = ApiResponseModel()
@@ -383,7 +469,16 @@ class ApiDestinationInspectionHandler(
                 val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                 val allUserCFS = daoServices.findAllCFSUserList(userProfilesEntity.id!!)
 
-                val pp = daoServices.findAllOngoingCdWithFreightStationID(allUserCFS, cdType, listOf(ConsignmentApprovalStatus.UNDER_INSPECTION.code, ConsignmentApprovalStatus.WAITING.code, ConsignmentApprovalStatus.QUERIED.code), page)
+                val pp = daoServices.findAllOngoingCdWithFreightStationID(
+                    allUserCFS,
+                    cdType,
+                    listOf(
+                        ConsignmentApprovalStatus.UNDER_INSPECTION.code,
+                        ConsignmentApprovalStatus.WAITING.code,
+                        ConsignmentApprovalStatus.QUERIED.code
+                    ),
+                    page
+                )
                 response.data = ConsignmentDocumentDao.fromList(pp.toList())
                 response.pageNo = pp.number
                 response.totalPages = pp.totalPages
@@ -418,7 +513,8 @@ class ApiDestinationInspectionHandler(
                     ConsignmentApprovalStatus.REJECTED_AMEND.code
                 )
                 when {
-                    auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
+                    auth.authorities.stream()
+                        .anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
                         val pp = daoServices.findAllCompleteCdWithAssigner(usersEntity, cdType, statuses, page)
                         response.data = ConsignmentDocumentDao.fromList(pp.toList())
                         response.totalPages = pp.totalPages
@@ -427,7 +523,8 @@ class ApiDestinationInspectionHandler(
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Success"
                     }
-                    auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
+                    auth.authorities.stream()
+                        .anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                         val pp = daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType, statuses, page)
                         response.data = ConsignmentDocumentDao.fromList(pp.toList())
                         response.pageNo = pp.number
@@ -446,7 +543,7 @@ class ApiDestinationInspectionHandler(
         return ServerResponse.ok().body(response)
     }
 
-    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_READ')|| hasAuthority('DI_INSPECTION_OFFICER_READ')")
+    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_READ')|| hasAuthority('DI_INSPECTION_OFFICER_READ') || hasAuthority('DI_DIRECTOR_READ')")
     fun availableConsignmentDocuments(req: ServerRequest): ServerResponse {
         val auth = commonDaoServices.loggedInUserAuthentication()
         val response = ApiResponseModel()
@@ -482,7 +579,13 @@ class ApiDestinationInspectionHandler(
 
     fun certificateOfConformance(req: ServerRequest): ServerResponse {
         req.pathVariable("coUuid").let {
-            return ServerResponse.ok().body(this.destinationInspectionService.certificateOfConformanceDetails(it, req.pathVariable("docType")))
+            return ServerResponse.ok()
+                .body(
+                    this.destinationInspectionService.certificateOfConformanceDetails(
+                        it,
+                        req.pathVariable("docType")
+                    )
+                )
         }
     }
 

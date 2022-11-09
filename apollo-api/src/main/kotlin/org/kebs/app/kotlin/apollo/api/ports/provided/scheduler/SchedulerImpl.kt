@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDate
 import java.util.*
 
 @Service
@@ -421,7 +422,10 @@ class SchedulerImpl(
                                         var sr = commonDaoServices.createServiceRequest(map)
                                         with(fuelInspection){
                                             timelineStartDate = commonDaoServices.getCurrentDate()
-                                            timelineEndDate = applicationMapProperties.mapMSLabResultsAvailabe.let { marketSurveillanceDaoServices.findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                                            timelineEndDate = applicationMapProperties.mapMSLabResultsAvailabe.let { timeLine->
+                                                marketSurveillanceDaoServices.findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                                                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                                            }
                                             msProcessId = applicationMapProperties.mapMSLabResultsAvailabe
                                             userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER
                                             lastModifiedBy = "SYSTEM SCHEDULER"

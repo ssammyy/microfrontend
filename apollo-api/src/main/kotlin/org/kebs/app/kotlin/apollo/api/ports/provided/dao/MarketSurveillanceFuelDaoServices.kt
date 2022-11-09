@@ -37,6 +37,7 @@ import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDate
 
 
 @Service
@@ -144,7 +145,10 @@ class MarketSurveillanceFuelDaoServices(
             fileInspectionList.forEach { it ->
                 with(it) {
                     timelineStartDate = commonDaoServices.getCurrentDate()
-                    timelineEndDate = applicationMapProperties.mapMSAssignOfficer.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                    timelineEndDate = applicationMapProperties.mapMSAssignOfficer.let { timeLine->
+                        findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                        commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                    }
                     msProcessId = applicationMapProperties.mapMSAssignOfficer
                     userTaskId = applicationMapProperties.mapMSUserTaskNameMANAGERPETROLEUM
                 }
@@ -579,7 +583,10 @@ class MarketSurveillanceFuelDaoServices(
                         }
                         with(fileInspectionDetail){
                             timelineStartDate = commonDaoServices.getCurrentDate()
-                            timelineEndDate = applicationMapProperties.mapMSSampleSubmision.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                            timelineEndDate = applicationMapProperties.mapMSSampleSubmision.let { timeLine->
+                                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                            }
                             msProcessId = applicationMapProperties.mapMSSampleSubmision
                             sampleCollectionStatus = map.activeStatus
                         }
@@ -684,7 +691,10 @@ class MarketSurveillanceFuelDaoServices(
         val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         with(fileInspectionDetail){
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.mapMSBsNumber.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            timelineEndDate = applicationMapProperties.mapMSBsNumber.let { timeLine->
+                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.mapMSBsNumber
             sampleSubmittedStatus = map.activeStatus
         }
@@ -776,7 +786,10 @@ class MarketSurveillanceFuelDaoServices(
         val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         with(fileInspectionDetail){
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.mapMSPendingLabResults.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+            timelineEndDate = applicationMapProperties.mapMSPendingLabResults.let { timeLine->
+                findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.mapMSPendingLabResults
             userTaskId = applicationMapProperties.mapMSUserTaskNameLAB
             bsNumberStatus = 1
@@ -935,7 +948,10 @@ class MarketSurveillanceFuelDaoServices(
                     }
                     else -> {
                         timelineStartDate = commonDaoServices.getCurrentDate()
-                        timelineEndDate = applicationMapProperties.mapMSRemediationInvoice.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                        timelineEndDate = applicationMapProperties.mapMSRemediationInvoice.let { timeLine->
+                            findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                            commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                        }
                         msProcessId = applicationMapProperties.mapMSRemediationInvoice
                         notCompliantStatus =  0
                         compliantStatus = 0
@@ -1241,7 +1257,10 @@ class MarketSurveillanceFuelDaoServices(
             map.successStatus -> {
                 with(fileInspectionDetail){
                     timelineStartDate = commonDaoServices.getCurrentDate()
-                    timelineEndDate = applicationMapProperties.mapMSEndFuel.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                    timelineEndDate = applicationMapProperties.mapMSEndFuel.let { timeLine->
+                        findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                        commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                    }
                     msProcessId = applicationMapProperties.mapMSEndFuel
                     remendiationCompleteStatus = map.activeStatus
                 }
@@ -2832,7 +2851,10 @@ class MarketSurveillanceFuelDaoServices(
                     var fuelInspection = findFuelInspectionDetailByID(remediationDetails.fuelInspectionId?: throw ExpectedDataNotFound("MISSING FUEL INSPECTION ID"))
                     with(fuelInspection){
                         timelineStartDate = commonDaoServices.getCurrentDate()
-                        timelineEndDate = applicationMapProperties.mapMSRemediationSchedule.let { findProcessNameByID( it, 1).timelinesDay?.let {it2-> commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it2) } }
+                        timelineEndDate = applicationMapProperties.mapMSRemediationSchedule.let { timeLine->
+                            findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
+                            commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let { daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                        }
                         msProcessId = applicationMapProperties.mapMSRemediationSchedule
                         remediationPaymentStatus = map.activeStatus
                         userTaskId = applicationMapProperties.mapMSUserTaskNameOFFICER

@@ -45,16 +45,16 @@ import java.time.format.DateTimeParseException
 
 @Component
 class InvoiceHandlers(
-        private val demandNoteRepository: IDemandNoteRepository,
-        private val commonDaoServices: CommonDaoServices,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val daoServices: DestinationInspectionDaoServices,
-        private val diBpmn: DestinationInspectionBpmn,
-        private val objectMapper: ObjectMapper,
-        private val invoicePaymentService: InvoicePaymentService,
-        private val sageServices: PostInvoiceToSageServices,
-        private val daoValidatorService: DaoValidatorService,
-        private val validator: Validator
+    private val demandNoteRepository: IDemandNoteRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val daoServices: DestinationInspectionDaoServices,
+    private val diBpmn: DestinationInspectionBpmn,
+    private val objectMapper: ObjectMapper,
+    private val invoicePaymentService: InvoicePaymentService,
+    private val sageServices: PostInvoiceToSageServices,
+    private val daoValidatorService: DaoValidatorService,
+    private val validator: Validator
 ) : AbstractValidationHandler() {
     final val errors = mutableMapOf<String, String>()
 
@@ -62,10 +62,10 @@ class InvoiceHandlers(
         val response = ApiResponseModel()
         try {
             val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
-                    ?: throw ResponseStatusException(
-                            HttpStatus.NOT_ACCEPTABLE,
-                            "Request is not a multipart request"
-                    )
+                ?: throw ResponseStatusException(
+                    HttpStatus.NOT_ACCEPTABLE,
+                    "Request is not a multipart request"
+                )
             val multipartFile = multipartRequest.getFile("file")
             val fileType = multipartRequest.getParameter("file_type")
             if (multipartFile != null) {
@@ -90,14 +90,20 @@ class InvoiceHandlers(
             when (rangeType) {
                 "RANGE" -> {
                     response.data = mapOf(
-                            Pair("today", daoServices.listExchangeRatesRange(req.param("date").orElse(""), req.param("endDate").orElse(""))),
-                            Pair("active", daoServices.listCurrentExchangeRates(1))
+                        Pair(
+                            "today",
+                            daoServices.listExchangeRatesRange(
+                                req.param("date").orElse(""),
+                                req.param("endDate").orElse("")
+                            )
+                        ),
+                        Pair("active", daoServices.listCurrentExchangeRates(1))
                     )
                 }
                 else -> {
                     response.data = mapOf(
-                            Pair("today", daoServices.listExchangeRates(req.param("date").orElse(""))),
-                            Pair("active", daoServices.listCurrentExchangeRates(1))
+                        Pair("today", daoServices.listExchangeRates(req.param("date").orElse(""))),
+                        Pair("active", daoServices.listCurrentExchangeRates(1))
                     )
                 }
             }
@@ -134,9 +140,12 @@ class InvoiceHandlers(
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 KotlinLogging.logger { }.info("TTT: ${map.workingStatus}")
                 response.data = mapOf(
-                        Pair("deleteSubmitEnabled", (noteWithID.status == map.workingStatus && noteWithID.postingStatus != map.activeStatus)),
-                        Pair("items", noteItems),
-                        Pair("note", DemandNoteDto.fromEntity(noteWithID, true))
+                    Pair(
+                        "deleteSubmitEnabled",
+                        (noteWithID.status == map.workingStatus && noteWithID.postingStatus != map.activeStatus)
+                    ),
+                    Pair("items", noteItems),
+                    Pair("note", DemandNoteDto.fromEntity(noteWithID, true))
                 )
                 response.message = "Invoice details"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -149,7 +158,7 @@ class InvoiceHandlers(
         }
         //
         return ServerResponse.ok()
-                .body(response)
+            .body(response)
     }
 
     fun generateDemandNote(req: ServerRequest): ServerResponse {
@@ -183,10 +192,10 @@ class InvoiceHandlers(
                             if (!invoiceForm.presentment) {
                                 item.dnoteStatus = map.activeStatus
                                 daoServices.updateCdItemDetailsInDB(
-                                        commonDaoServices.updateDetails(
-                                                item,
-                                                item
-                                        ) as CdItemDetailsEntity, loggedInUser
+                                    commonDaoServices.updateDetails(
+                                        item,
+                                        item
+                                    ) as CdItemDetailsEntity, loggedInUser
                                 )
                             }
                         } catch (ex: Exception) {
@@ -213,10 +222,10 @@ class InvoiceHandlers(
                         if (!invoiceForm.presentment) {
                             item.dnoteStatus = map.activeStatus
                             daoServices.updateCdItemDetailsInDB(
-                                    commonDaoServices.updateDetails(
-                                            item,
-                                            item
-                                    ) as CdItemDetailsEntity, loggedInUser
+                                commonDaoServices.updateDetails(
+                                    item,
+                                    item
+                                ) as CdItemDetailsEntity, loggedInUser
                             )
                         }
                     } catch (ex: Exception) {
@@ -277,11 +286,11 @@ class InvoiceHandlers(
             // Calculate demand note amount and save
             val demandNoteItems = mutableListOf<CdDemandNoteItemsDetailsEntity>()
             val demandNote = invoicePaymentService.generateDemandNoteWithItemList(
-                    demandRequest,
-                    demandNoteItems,
-                    map,
-                    PaymentPurpose.CONSIGNMENT,
-                    loggedInUser
+                demandRequest,
+                demandNoteItems,
+                map,
+                PaymentPurpose.CONSIGNMENT,
+                loggedInUser
             )
             if (invoiceForm.presentment) {
                 val dt = mutableMapOf<String, Any>()
@@ -436,7 +445,12 @@ class InvoiceHandlers(
 
         req.pathVariable("cdId").let {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            response.data = DemandNoteDto.fromList(demandNoteRepository.findAllByCdIdAndStatusIn(it.toLongOrDefault(0L), listOf(-1, 0, map.activeStatus, map.workingStatus, map.initStatus, map.invalidStatus)))
+            response.data = DemandNoteDto.fromList(
+                demandNoteRepository.findAllByCdIdAndStatusIn(
+                    it.toLongOrDefault(0L),
+                    listOf(-1, 0, map.activeStatus, map.workingStatus, map.initStatus, map.invalidStatus)
+                )
+            )
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
             return ServerResponse.ok().body(response)
@@ -452,10 +466,16 @@ class InvoiceHandlers(
                 transactionStatus = status.get().toIntOrNull()
             }
             val date = req.param("date")
+            val endDate = req.param("end_date")
             val transactionNo = req.param("trx")
             val page = extractPage(req)
-
-            val documents = this.invoicePaymentService.listTransactions(transactionStatus, date, transactionNo, page)
+            val documents = this.invoicePaymentService.listTransactions(
+                transactionStatus,
+                date,
+                endDate,
+                transactionNo,
+                page
+            )
             response.data = DemandNoteDto.fromList(documents.toList())
             response.pageNo = documents.number
             response.totalPages = documents.totalPages
@@ -522,20 +542,20 @@ class InvoiceHandlers(
     fun processPaymentSageNotification(req: ServerRequest): ServerResponse {
         return try {
             req.body<SageNotificationResponse>()
-                    .let { body ->
-                        val errors: Errors = BeanPropertyBindingResult(body, SageNotificationResponse::class.java.name)
-                        validator.validate(body, errors)
-                        if (errors.allErrors.isEmpty()) {
-                            val response = sageServices.processPaymentSageNotification(body)
-                            ServerResponse.ok().body(response)
+                .let { body ->
+                    val errors: Errors = BeanPropertyBindingResult(body, SageNotificationResponse::class.java.name)
+                    validator.validate(body, errors)
+                    if (errors.allErrors.isEmpty()) {
+                        val response = sageServices.processPaymentSageNotification(body)
+                        ServerResponse.ok().body(response)
 
-                        } else {
-                            onValidationErrors(errors)
-                        }
-
-
+                    } else {
+                        onValidationErrors(errors)
                     }
-                    ?: throw InvalidValueException("No Body found")
+
+
+                }
+                ?: throw InvalidValueException("No Body found")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.debug(e.message, e)

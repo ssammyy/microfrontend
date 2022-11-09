@@ -241,7 +241,7 @@ export class DestinationInspectionService {
         })
     }
 
-    demandNoteListAndSearch(search: any, date: any, status: number, page: number, size: number): Observable<any> {
+    demandNoteListAndSearch(search: any, date: any, dateEnd: any, status: any, page: number, size: number): Observable<any> {
         let params = {
             page: page.toString(),
             size: size.toString()
@@ -251,6 +251,9 @@ export class DestinationInspectionService {
         }
         if (date) {
             params['date'] = new DatePipe('en-US').transform(date, 'dd-MM-yyyy');
+        }
+        if (dateEnd) {
+            params['end_date'] = new DatePipe('en-US').transform(dateEnd, 'dd-MM-yyyy');
         }
         if (status) {
             params['status'] = status

@@ -558,6 +558,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.kebs.logo.path}")
     val mapKebsLogoPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.kebs.testSignature.path}")
+    val mapKebsTestSignaturePath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.checkmark.path}")
     val mapCheckmarkImagePath: String = ""
 
@@ -644,6 +647,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.sample.collection.path}")
     val mapMSSampleCollectionPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.sample.submission.path}")
+    val mapMSSampleSubmissionPath: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.payment.collection.path}")
     val mapSLPaymentPath: String = ""

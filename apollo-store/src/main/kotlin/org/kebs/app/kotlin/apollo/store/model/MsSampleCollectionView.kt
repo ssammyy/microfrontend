@@ -1,15 +1,13 @@
 package org.kebs.app.kotlin.apollo.store.model
 
-import org.kebs.app.kotlin.apollo.store.model.MsSampleCollectionEntityView
 import java.io.Serializable
 import java.sql.Date
-import java.sql.Time
 import java.util.*
 import javax.persistence.*
 
 @Entity
 @Table(name = "MS_SAMPLE_COLLECTION")
-class MsSampleCollectionEntityView: Serializable {
+class MsSampleCollectionView: Serializable {
     @Column(name = "ID")
 //    @SequenceGenerator(name = "DAT_KEBS_MS_DATA_REPORT_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_MS_DATA_REPORT_SEQ")
 //    @GeneratedValue(generator = "DAT_KEBS_MS_DATA_REPORT_SEQ_GEN", strategy = GenerationType.SEQUENCE)
@@ -87,7 +85,7 @@ class MsSampleCollectionEntityView: Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as MsSampleCollectionEntityView
+        val that = other as MsSampleCollectionView
         return productBrandName == that.productBrandName &&
                 batchSize == that.batchSize &&
                 batchNo == that.batchNo &&

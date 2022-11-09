@@ -631,6 +631,15 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     PUT("/start-ms-process", handler::updateComplaintByAddingClassificationDetails)
                 }
                 POST("/add/complaint-work-plan", handler::addComplaintToWorkPlanDetails)
+                "/reports".nest {
+                    "/timeline".nest {
+                        GET("/acknowledgement", handler::getAllAcknowledgementReportTimeLineList)
+                        GET("/feedback", handler::getAllComplaintFeedbackReportTimeLineList)
+                        GET("/reportSubmitted", handler::getAllReportSubmittedReportTimeLineList)
+                        GET("/sampleSubmitted", handler::getAllSampleSubmittedReportTimeLineList)
+                    }
+
+                }
             }
             "/workPlan".nest {
                 GET("/all-batch-list", handler::getAllWorkPlanBatchList)

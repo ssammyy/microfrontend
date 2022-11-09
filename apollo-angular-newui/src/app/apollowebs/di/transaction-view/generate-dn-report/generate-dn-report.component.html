@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>Generate Demand Note Report</h2>
+<mat-dialog-content>
+    <div class="row no_margin" [formGroup]="form">
+        <div class="col-sm-12 col-md-6">
+            <label for="stationId" class="waiver-form-label">Select Station</label>
+            <select id="stationId" name="stationId" class="waiver-form-input-master"
+                    formControlName="stationId">
+                <option value="" disabled selected>Select One</option>
+                <option *ngFor="let station of data.stations" [value]="station.cfsCode">{{station.cfsName}}</option>
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="payment-status" class="waiver-form-label">Select Payment status</label>
+            <select id="payment-status" class="waiver-form-input-master" formControlName="status">
+                <option [defaultSelected]="true">Payment Status</option>
+                <option value="">All Status</option>
+                <option value="1">Paid</option>
+                <option value="0">Not Paid</option>
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="startDate" class="waiver-form-label">Start Date</label>
+            <input id="startDate" type="date" class="waiver-form-input-master" formControlName="startDate">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="endDate" class="waiver-form-label">End Date</label>
+            <input id="endDate" type="date" class="waiver-form-input-master" formControlName="endDate">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="importer" class="waiver-form-label">Importer PIN</label>
+            <input id="importer" class="waiver-form-input-master" formControlName="importer">
+        </div>
+    </div>
+    <mat-error *ngIf="message">{{message}}</mat-error>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="row no_margin master-list-new-btn">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="form.invalid||loading" class="next-btn btn-gen new-btn" (click)="saveRecord()">DOWNLOAD
+            <mat-spinner [diameter]="20" color="warn" *ngIf="loading"></mat-spinner>
+        </button>
+    </div>
+</mat-dialog-actions>

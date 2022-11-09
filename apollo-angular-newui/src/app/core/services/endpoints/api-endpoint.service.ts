@@ -91,6 +91,7 @@ export class ApiEndpointService {
     public static MS_WORK_PLAN_ADD_CONTEXT = `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/add`;
     public static MS_COMPLAINT_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/complaint`;
     public static MS_COMPLAINT_UPDATE_CONTEXT = `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/update`;
+    public static MS_COMPLAINT_REPORT_CONTEXT = `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/reports`;
     public static MS_COMMON_CONTEXT = `${ApiEndpointService.MS_CONTEXT}/common`;
 
     /**
@@ -115,6 +116,7 @@ export class ApiEndpointService {
         REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
         COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
         USER_DETAILS: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/`,
+        USER_NOTIFICATION: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/notifications/`,
         USER_DETAILS_SIGNATURE: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/signature`,
         LOGOUT_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/logout`,
         COMPANY_DETAIL_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/companyDetails`,
@@ -619,6 +621,10 @@ export class ApiEndpointService {
 
     };
 
+    public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {
+        VIEW_PDF_SSF: `${ApiEndpointService.MS_CONTEXT}/report/sample-submission`,
+    }
+
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
         VIEW_PDF_LAB_RESULT: `${ApiEndpointService.MS_CONTEXT}/view/attached-lab-pdf`,
         VIEW_PDF_SAVED: `${ApiEndpointService.MS_CONTEXT}/view/attached`,
@@ -669,6 +675,14 @@ export class ApiEndpointService {
         MS_PREDEFINED_RESOURCES_REQUIRED: `${ApiEndpointService.MS_COMMON_CONTEXT}/predefinedResourcesRequired`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
+    };
+
+    public static MARKET_SURVEILLANCE_REPORTS = {
+        MS_TIMELINE_ACKNOWLEDGEMENT: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/acknowledgement`,
+        MS_TIMELINE_FEEDBACK: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/feedback`,
+        MS_TIMELINE_REPORT_SUBMITTED: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/reportSubmitted`,
+        MS_TIMELINE_SAMPLE_SUBMITTED: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/sampleSubmitted`,
+
     };
 
     public static MARKET_SURVEILLANCE_COMPLAINT = {

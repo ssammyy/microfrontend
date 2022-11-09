@@ -25,6 +25,7 @@ export class GenerateReportComponent implements OnInit {
             exporter: [null],
             clearing_agent: [null],
             hs_code: [null],
+            idf: [null],
             ucr_number: [null]
         })
     }

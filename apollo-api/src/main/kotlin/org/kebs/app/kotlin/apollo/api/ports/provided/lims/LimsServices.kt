@@ -33,7 +33,9 @@ import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
-import javax.net.ssl.HttpsURLConnection
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import javax.net.ssl.*
 
 
 @Service
@@ -71,6 +73,35 @@ class LimsServices(
         var response: String? = ""
         try {
             val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapID)
+
+
+            // Create a trust manager that does not validate certificate chains
+            // Create a trust manager that does not validate certificate chains
+            val trustAllCerts: Array<TrustManager> = arrayOf<TrustManager>(object : X509TrustManager {
+                override fun getAcceptedIssuers(): Array<X509Certificate>? {
+                    return null
+                }
+                override fun checkClientTrusted(certs: Array<X509Certificate?>?, authType: String?) {}
+                override fun checkServerTrusted(certs: Array<X509Certificate?>?, authType: String?) {}
+            }
+            )
+
+            // Install the all-trusting trust manager
+
+            // Install the all-trusting trust manager
+            val sc: SSLContext = SSLContext.getInstance("SSL")
+            sc.init(null, trustAllCerts, SecureRandom())
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
+
+            // Create all-trusting host name verifier
+
+            // Create all-trusting host name verifier
+            val allHostsValid = HostnameVerifier { hostname, session -> true }
+
+            // Install the all-trusting host verifier
+
+            // Install the all-trusting host verifier
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid)
 
             url = URL(config.url)
             val b = Base64()
@@ -176,7 +207,7 @@ class LimsServices(
         val resultsParam: RootTestResultsAndParameters = ObjectMapper().readValue(response, RootTestResultsAndParameters::class.java)
         var myStatus: Boolean = false
         //Loop
-        if (resultsParam.test_parameter?.isNullOrEmpty() == true) {
+        if (resultsParam.test_parameter?.isEmpty() == true) {
             KotlinLogging.logger {}.debug("List is null or empty")
             throw ExpectedDataNotFound("NO RESULTS FOUND")
 //            return myStatus
@@ -200,7 +231,7 @@ class LimsServices(
     fun labPdfListResponseResults(response: String): List<String>? {
         val resultsParam: RootLabPdfList = ObjectMapper().readValue(response, RootLabPdfList::class.java)
         //Loop
-        if (resultsParam.pdf_files?.isNullOrEmpty() == true) {
+        if (resultsParam.pdf_files?.isEmpty() == true) {
             println("List is null or empty")
             throw ExpectedDataNotFound("NO RESULTS PDF FOUND")
 //            return myStatus

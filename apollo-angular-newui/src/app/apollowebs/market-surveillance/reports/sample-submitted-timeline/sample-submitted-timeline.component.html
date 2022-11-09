@@ -1,0 +1,61 @@
+<div class="main-content">
+    <div class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                color="#fff"
+                size="medium"
+                type="ball-scale-multiple">
+            <p style="font-size: 20px; color: white">Loading Please Wait...</p>
+        </ngx-spinner>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">SS</i>
+                        </div>
+                        <h4 class="card-title">Sample Submitted Time Line List Details
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="btn-group btn-group-sm float-right" role="group" aria-label="Applications Status">
+                            </div>
+                        </div>
+
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <div class="table-responsive table-striped">
+                                    <ng2-smart-table class="table table-hover"
+                                                     [settings]="settings"
+                                                     [source]="dataSet">
+                                    </ng2-smart-table>
+                                    <br/>
+                                    <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
+                                                    [collectionSize]="totalCount"
+                                                    (pageChange)=pageChange($event)>
+                                        <ng-template ngbPaginationFirst>First</ng-template>
+                                        <ng-template ngbPaginationLast>Last</ng-template>
+                                        <ng-template ngbPaginationPrevious>Prev</ng-template>
+                                        <ng-template ngbPaginationNext>Next</ng-template>
+                                        <ng-template ngbPaginationEllipsis>...</ng-template>
+                                        <ng-template ngbPaginationNumber let-page>{{page}}</ng-template>
+                                    </ngb-pagination>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+
+</div>
+

@@ -14,7 +14,7 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons" *ngIf="workPlanInspection">Complaint Scheduled<</i>
+                            <i class="material-icons" *ngIf="workPlanInspection">Complaint Scheduled</i>
                         </div>
                         <h4 class="card-title" *ngIf="workPlanInspection">Ref No #{{workPlanInspection?.referenceNumber}}
                             <button class="btn btn-sm btn-default float-right mr-7"
@@ -1313,21 +1313,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <!--                                                <button *ngIf="workPlanInspection?.sampleCollectionStatus ==false"  mat-raised-button="" data-toggle="modal"-->
-                                                <!--                                                        data-target="#sampleCollectModal"-->
-                                                <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-                                                <!--                                                        class="mat-button-wrapper">ADD SAMPLE COLLECTION</span>-->
-                                                <!--                                                    <div class="mat-button-focus-overlay"></div>-->
-                                                <!--                                                </button>-->
-
-
-                                                <!--                                                <button *ngIf="workPlanInspection?.seizureDeclarationStatus ==false" (click)="openModalAddDetails('seizureDeclarationDetails')" mat-raised-button="" data-toggle="modal"-->
-                                                <!--                                                        data-target="#seizureDeclarationModal"-->
-                                                <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-                                                <!--                                                        class="mat-button-wrapper">ADD SEIZURE DECLARATION</span>-->
-                                                <!--                                                    <div class="mat-button-focus-overlay"></div>-->
-                                                <!--                                                </button>-->
                                             </div>
                                             <button  *ngIf="workPlanInspection?.approvedStatus && workPlanInspection?.onsiteStartStatus
                                                 && workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus ==false"
@@ -1418,7 +1403,7 @@
                                             && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal
                                             && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
                                                      (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
+                                                     data-target="#preliminaryReportFinalModal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">UPDATE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
@@ -1431,7 +1416,7 @@
                                             && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal
                                             && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
                                                      (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#myModal1"
+                                                     data-target="#preliminaryReportFinalModal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">UPDATE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
@@ -1439,19 +1424,20 @@
 
 
 
-                                            <button   *ngIf="productsDestructionRecommendationDone == productsDestructionRecommendation
+                                            <button   *ngIf="workPlanInspection?.directorRecommendationRemarksStatus && workPlanInspection?.hodRecommendationStatus
+                                             && productsDestructionRecommendationDone == productsDestructionRecommendation
                                             && workPlanInspection?.recommendationDoneStatus == false
                                             && workPlanInspection?.destructionRecommended"
                                                       (click)="onClickSaveEndRecommendationDone()" mat-raised-button="" data-toggle="modal"
-                                                      data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END RECOMMENDATION DONE</span>
+
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button   *ngIf="productsDestructionRecommendation == 0 && workPlanInspection?.recommendationDoneStatus == false
+                                            && workPlanInspection?.directorRecommendationRemarksStatus && workPlanInspection?.hodRecommendationStatus
                                             && workPlanInspection?.destructionRecommended == false"
                                                       (click)="onClickSaveEndRecommendationDone()" mat-raised-button="" data-toggle="modal"
-                                                      data-target="#myModal1"
                                                       class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END RECOMMENDATION DONE</span>
 
@@ -1571,6 +1557,11 @@
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.dataReportDocId}"
                                            (click)="viewWorkPlanFileSaved(data)"
                                            class="btn btn-sm btn-primary">Data Report View</i>
+                                    </div>
+                                    <div *ngIf="workPlanInspection.destructionDocId != null">
+                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.destructionDocId}"
+                                           (click)="viewWorkPlanFileSaved(data)"
+                                           class="btn btn-sm btn-primary">Destruction Report View</i>
                                     </div>
                                 </div>
 
@@ -2360,7 +2351,7 @@
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'addFinalRecommendationHOD')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveFinalRecommendationHOD(finalRecommendationForm.valid);"
+                            (click)="onClickSaveFinalRecommendationHOD();"
                             [disabled]="!finalRecommendationForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
@@ -5533,10 +5524,15 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <div *ngIf="addLabParamStatus == false">
+                            <button mat-raised-button type="button"  class="btn btn-success"
+                                    (click)="viewSSFPdfFile(selectedSFFDetails?.id, selectedSFFDetails?.fileRefNumber,'application/pdf')">Download</button>
+                        </div>
                         <button  (click)="onClickCloseSSF()" mat-raised-button type="button" class="btn btn-danger"
                                  data-dismiss="modal">
                             Close
                         </button>
+
                         <div *ngIf="addLabParamStatus">
                             <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"
                                      (click)="onClickSaveSampleSubmitted()">SUBMIT
@@ -5922,10 +5918,9 @@
                                     </li>
                                     <li *ngIf="selectedProductRecommendation?.clientAppealed" class="list-item-accordion">
                                         <div class="list-title-accordion">Appeal Status</div>
-
-                                        <div *ngIf="selectedProductRecommendation?.appealStatus"
+                                        <div *ngIf="selectedProductRecommendation?.appealStatus && selectedProductRecommendation?.destructedStatus ==false"
                                              class="list-text-accordion">APPEAL SUCCESSFUL</div>
-                                        <div *ngIf="selectedProductRecommendation?.destructionStatus==false"
+                                        <div *ngIf="selectedProductRecommendation?.appealStatus == false && selectedProductRecommendation?.destructionStatus==false"
                                              class="list-text-accordion">APPEAL NOT SUCCESSFUL</div>
                                     </li>
                                     <li *ngIf="selectedProductRecommendation?.destructionRecommended" class="list-item-accordion">
@@ -6227,7 +6222,7 @@
                                 <div class="form-group">
                                     <div>
                                         <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
-                                        <mat-form-field id="complianceStatusSSF">
+                                        <mat-form-field id="complianceStatusSSF4">
                                             <mat-select placeholder="Please Select an option"
                                                         formControlName="complianceStatus"
                                                         [class.is-invalid]="formSSFSaveComplianceStatusForm.complianceStatus.invalid && formSSFSaveComplianceStatusForm.complianceStatus.touched"
@@ -6238,7 +6233,7 @@
                                         </mat-form-field>
                                         <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for the whole Lab results:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea id="complianceRemarksSSF" matInput type="text"
+                                            <textarea id="complianceRemarksSSF4" matInput type="text"
                                                       formControlName="complianceRemarks"
                                                       name="complianceRemarks">
                                             </textarea>

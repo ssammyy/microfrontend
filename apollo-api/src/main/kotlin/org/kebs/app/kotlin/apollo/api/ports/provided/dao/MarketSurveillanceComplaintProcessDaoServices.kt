@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDate
 
 
 @Service
@@ -64,6 +65,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val invoiceDaoService: InvoiceDaoService,
     private val reportsDaoService: ReportsDaoService,
     private val serviceRequestsRepo: IServiceRequestsRepository,
+    private val acknowledgementTimelineViewRepo: IMsAcknowledgementTimelineViewRepository,
+    private val complaintFeedbackTimelineViewRepo: IMsComplaintFeedbackViewRepository,
+    private val reportSubmittedTimelineViewRepo: IMsReportSubmittedCpViewRepository,
+    private val sampleSubmittedTimelineViewRepo: IMsSampleSubmittedCpViewRepository,
     private val commonDaoServices: CommonDaoServices
 ) {
     final var complaintSteps: Int = 6
@@ -209,6 +214,39 @@ class MarketSurveillanceComplaintProcessDaoServices(
             }
 
         return  response
+    }
+
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msAcknowledgementReportTimeLineLists(page: PageRequest): ApiResponseModel {
+        val complaintList = acknowledgementTimelineViewRepo.findAll(page)
+
+        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintFeedbackReportTimeLineLists(page: PageRequest): ApiResponseModel {
+        val complaintList = complaintFeedbackTimelineViewRepo.findAll(page)
+
+        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msReportSubmittedReportTimeLineLists(page: PageRequest): ApiResponseModel {
+        val complaintList = reportSubmittedTimelineViewRepo.findAll(page)
+
+        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msSampleSubmittedReportTimeLineLists(page: PageRequest): ApiResponseModel {
+        val complaintList = sampleSubmittedTimelineViewRepo.findAll(page)
+
+        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
     }
     
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
@@ -691,11 +729,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val hofDetailsFound =commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned HOF ID"))
         with(complaintFound) {
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.msComplaintProcessAssignHOF?.let {
-                    findMsProcessComplaintByID(1, it)?.timelinesDay?.let {
-                        commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it)
-                    }
-                }
+            timelineEndDate = applicationMapProperties.msComplaintProcessAssignHOF?.let {timeLine->
+                findMsProcessComplaintByID(1, timeLine )?.timelinesDay}?.let {daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let {daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.msComplaintProcessAssignHOF
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
             hofAssigned = hofDetailsFound.id
@@ -756,11 +793,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
         with(complaintFound) {
             timelineStartDate = commonDaoServices.getCurrentDate()
-            timelineEndDate = applicationMapProperties.msComplaintProcessAssignOfficer?.let {
-                    findMsProcessComplaintByID(1, it)?.timelinesDay?.let {
-                        commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it)
-                    }
-                }
+            timelineEndDate = applicationMapProperties.msComplaintProcessAssignOfficer?.let {timeLine->
+                findMsProcessComplaintByID(1, timeLine )?.timelinesDay}?.let {daysCount->
+                commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let {daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+            }
             msProcessId = applicationMapProperties.msComplaintProcessAssignOfficer
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
             assignedRemarks = body.assignedRemarks
@@ -1043,12 +1079,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 serviceMapsId = map.id
                 msProcessStatus = map.inactiveStatus
                 timelineStartDate = commonDaoServices.getCurrentDate()
-                timelineEndDate =
-                    applicationMapProperties.msComplaintProcessOnlineSubmitted?.let {
-                        findMsProcessComplaintByID(1, it)?.timelinesDay?.let {
-                            commonDaoServices.addYDayToDate(commonDaoServices.getCurrentDate(), it)
-                        }
-                    }
+                timelineEndDate = applicationMapProperties.msComplaintProcessOnlineSubmitted?.let {timeLine->
+                    findMsProcessComplaintByID(1, timeLine )?.timelinesDay}?.let {daysCount->
+                    commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let {daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
+                }
                 msProcessId = applicationMapProperties.msComplaintProcessOnlineSubmitted
                 userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                 progressValue = progressSteps(complaintSteps).getInt("step-1")

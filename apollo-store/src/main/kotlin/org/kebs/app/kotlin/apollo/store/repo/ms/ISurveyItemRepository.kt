@@ -273,13 +273,6 @@ interface IDataReportRepository : HazelcastRepository<MsDataReportEntity, Long> 
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }
 
-@Repository
-interface ISampleCollectionViewRepository : HazelcastRepository<MsSampleCollectionEntityView, Long> {
-    override fun findAll(pageable: Pageable): Page<MsSampleCollectionEntityView>
-
-    fun findBySampleCollectionId(sampleCollectionId: Long): List<MsSampleCollectionEntityView>
-}
-
 
 
 @Repository
