@@ -131,6 +131,9 @@ export class StandardDevelopmentService {
     public getTCSECTasks(): Observable<StandardRequestB[]> {
         return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllStdsForNwi')
     }
+    public getRejectedReviewsForStandards(): Observable<StandardRequestB[]> {
+        return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllRejectedStdsForNwi')
+    }
 
     public uploadNWI(uploadNWI: Stdtsectask): Observable<any> {
 
