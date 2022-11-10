@@ -22,9 +22,53 @@ class MsSampleSubmissionEntity : Serializable{
     @Basic
     var labResultsStatus: Int? = null
 
+    @Column(name = "CREATED_USER_ID")
+    @Basic
+    var createdUserId: Long? = null
+
     @Column(name = "NAME_PRODUCT")
     @Basic
     var nameProduct: String? = null
+
+    @Column(name = "LB_ID_ANY_AOMARKING")
+    @Basic
+    var lbIdAnyAomarking: String? = null
+
+    @Column(name = "LB_ID_BATCH_NO")
+    @Basic
+    var lbIdBatchNo: String? = null
+
+    @Column(name = "LB_ID_CONT_DECL")
+    @Basic
+    var lbIdContDecl: String? = null
+
+    @Column(name = "LB_ID_DATE_OF_MANF")
+    @Basic
+    var lbIdDateOfManf: Date? = null
+
+    @Column(name = "LB_ID_EXPIRY_DATE")
+    @Basic
+    var lbIdExpiryDate: Date? = null
+
+    @Column(name = "RECEIVERS_DATE")
+    @Basic
+    var receiversDate: Date? = null
+
+    @Column(name = "LB_ID_TRADE_MARK")
+    @Basic
+    var lbIdTradeMark: String? = null
+
+    @Column(name = "NOTE_TRANS_RESULTS")
+    @Basic
+    var noteTransResults: String? = null
+
+    @Column(name = "SCF_NO")
+    @Basic
+    var scfNo: String? = null
+
+    @Column(name = "COC_NUMBER")
+    @Basic
+    var cocNumber: String? = null
 
     @Column(name = "BS_NUMBER")
     @Basic

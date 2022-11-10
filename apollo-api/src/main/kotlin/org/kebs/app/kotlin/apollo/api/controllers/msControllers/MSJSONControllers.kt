@@ -12,6 +12,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.MsSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
+import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelRemediationInvoiceRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IMSSampleSubmissionRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IMsSampleSubmissionViewRepository
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.io.ByteArrayInputStream
 import javax.servlet.http.HttpServletResponse
 
 
@@ -41,6 +43,7 @@ class MSJSONControllers(
     private val marketSurveillanceDaoComplaintServices: MarketSurveillanceComplaintProcessDaoServices,
     private val msWorkPlanDaoService: MarketSurveillanceWorkPlanDaoServices,
     private val msFuelDaoService: MarketSurveillanceFuelDaoServices,
+    private val usersSignatureRepository: UserSignatureRepository,
     private val limsServices: LimsServices,
     private val resourceLoader: ResourceLoader,
     private val companyProfileRepo: ICompanyProfileRepository
@@ -324,11 +327,25 @@ class MSJSONControllers(
     ) {
         val map = hashMapOf<String, Any>()
         map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
-        map["signaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
-        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
-
 
         val ssfFile = iSampleSubmissionViewRepo.findAllById(ssfID.toString())
+
+        val user = ssfFile[0].createdUserId?.let { commonDaoServices.findUserByID(it) }
+
+        if (user != null) {
+            val mySignature: ByteArray?
+            val image: ByteArrayInputStream?
+            println("UserID is" + user.id)
+            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+            if (signatureFromDb != null) {
+                mySignature= signatureFromDb.signature
+                image = ByteArrayInputStream(mySignature)
+                map["signaturePath"] = image
+
+            }
+        }
+//        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+
         val pdfReportStream = reportsDaoService.extractReport(
             map,
             applicationMapProperties.mapMSSampleSubmissionPath,

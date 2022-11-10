@@ -1862,6 +1862,16 @@ class MarketSurveillanceFuelDaoServices(
             invoiceNumber = body.invoiceNumber
             disposal = body.disposal
             remarks = body.remarks
+            receiversDate = body.receiversDate
+            lbIdAnyAomarking = body.lbIdAnyAomarking
+            lbIdBatchNo = body.lbIdBatchNo
+            lbIdContDecl = body.lbIdContDecl
+            lbIdDateOfManf = body.lbIdDateOfManf
+            lbIdExpiryDate = body.lbIdExpiryDate
+            lbIdTradeMark = body.lbIdTradeMark
+            noteTransResults = body.noteTransResults
+            scfNo = body.scfNo
+            cocNumber = body.cocNumber
 
             if (sampleCollected != null) {
                 sampleCollectionNumber = sampleCollected.id
@@ -3616,6 +3626,7 @@ class MarketSurveillanceFuelDaoServices(
             data.designation,
             data.address,
             data.sendersDate,
+            data.receiversDate,
             data.receiversName,
             data.testChargesKsh,
             data.receiptLpoNumber,
@@ -3624,6 +3635,15 @@ class MarketSurveillanceFuelDaoServices(
             data.remarks,
             data.sampleCollectionNumber,
             null,
+            data.lbIdAnyAomarking,
+            data.lbIdBatchNo,
+            data.lbIdContDecl,
+            data.lbIdDateOfManf,
+            data.lbIdExpiryDate,
+            data.lbIdTradeMark,
+            data.noteTransResults,
+            data.scfNo,
+            data.cocNumber,
             data.bsNumber,
             data2
         )
