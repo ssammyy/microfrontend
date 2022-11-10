@@ -36,14 +36,14 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'dashboard',
         privilege: ['USER', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
     },
-    {
-        path: '/notifications',
-        title: 'Notifications',
-        type: 'link',
-        collapse: 'notifications',
-        privilege: ['USER'],
-        icontype: 'business',
-    },
+    // {
+    //     path: '/notifications',
+    //     title: 'Notifications',
+    //     type: 'link',
+    //     collapse: 'notifications',
+    //     privilege: ['USER'],
+    //     icontype: 'business',
+    // },
 
     {
         path: '/admin',

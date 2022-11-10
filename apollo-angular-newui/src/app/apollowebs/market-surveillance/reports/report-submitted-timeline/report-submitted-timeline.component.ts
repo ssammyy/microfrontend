@@ -44,17 +44,17 @@ export class ReportSubmittedTimelineComponent implements OnInit {
     selectMode: 'single',  // single|multi
     hideHeader: false,
     hideSubHeader: false,
-    // actions: {
-    //   columnTitle: 'Actions',
-    //   add: false,
-    //   edit: false,
-    //   delete: false,
-    //   custom: [
-    //     //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-    //     // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
-    //   ],
-    //   position: 'right', // left|right
-    // },
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      // custom: [
+      //   //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+      //   // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
+      // ],
+      // position: 'right', // left|right
+    },
     delete: {
       deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
       confirmDelete: true,
