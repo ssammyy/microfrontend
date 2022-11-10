@@ -28,11 +28,15 @@ export class StandardTaskComponent implements OnInit {
     seasons: string[] = ['Develop a standard through committee draft', 'Adopt existing International Standard', 'Review existing Kenyan Standard',
         'Development of publicly available specification', 'Development of national workshop agreement', 'Adoption of EA and other regions standards'];
 
+    outputs: string[] = ['Approve For Review', 'Reject For Review'];
+
+
     // selected item
     sdOutput: string;
     blob: Blob;
     selectedDepartment: string;
     selectedStandard: number;
+    resultOutput: string;
 
 
     // to dynamically (by code) select item
@@ -40,11 +44,15 @@ export class StandardTaskComponent implements OnInit {
     @Input() selectSeason: string;
     public departments !: Department[];
     public tcSecs !: UsersEntity[];
+    @Input() selectDesiredResult: string;
 
     p = 1;
     p2 = 1;
     countLine = 0;
     tasks: StandardRequestB[] = [];
+    approvedTasks: StandardRequestB[] = [];
+    rejectedTasks: StandardRequestB[] = [];
+
     public actionRequest: StandardRequestB;
 
     public hofFeedback: HOFFeedback | undefined;
@@ -80,7 +88,12 @@ export class StandardTaskComponent implements OnInit {
 
     ngOnInit(): void {
         this.getHOFTasks();
+        this.getApprovedTasks();
+        this.getRejectedTasks();
+
         this.sdOutput = this.selectSeason;
+        this.resultOutput = this.selectDesiredResult;
+
         this.dtOptionsB = {
             searching: false,
             paging: false, info: false
@@ -97,6 +110,7 @@ export class StandardTaskComponent implements OnInit {
             sdOutput: ['', Validators.required],
             id: ['', Validators.required],
             sdRequestID: ['', Validators.required],
+            resultOutput: ['', Validators.required],
 
         });
 
@@ -104,6 +118,7 @@ export class StandardTaskComponent implements OnInit {
 
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
     @ViewChild('closeModalB') private closeModalB: ElementRef | undefined;
+    @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
 
     public hideModel() {
         this.closeModal?.nativeElement.click();
@@ -111,6 +126,10 @@ export class StandardTaskComponent implements OnInit {
 
     public hideModelB() {
         this.closeModalB?.nativeElement.click();
+    }
+
+    public hideModelC() {
+        this.closeModalC?.nativeElement.click();
     }
 
     get formStdRequest(): any {
@@ -121,6 +140,30 @@ export class StandardTaskComponent implements OnInit {
         this.standardDevelopmentService.getHOFTasks().subscribe(
             (response: StandardRequestB[]) => {
                 this.tasks = response;
+                this.rerender()
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    public getApprovedTasks(): void {
+        this.standardDevelopmentService.getTCSECTasks().subscribe(
+            (response: StandardRequestB[]) => {
+                this.approvedTasks = response;
+                this.rerender()
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    public getRejectedTasks(): void {
+        this.standardDevelopmentService.getRejectedReviewsForStandards().subscribe(
+            (response: StandardRequestB[]) => {
+                this.rejectedTasks = response;
                 this.rerender()
             },
             (error: HttpErrorResponse) => {
@@ -213,6 +256,15 @@ export class StandardTaskComponent implements OnInit {
             button.setAttribute('data-target', '#divisionChange');
             this.getDepartments()
             this.selectedDepartment = this.actionRequest.departmentName
+            this.selectedStandard = this.actionRequest.id
+
+
+        }
+        if (mode === 'view') {
+            this.actionRequest = task;
+            button.setAttribute('data-target', '#viewRequestModal');
+            this.getAllDocs(String(this.actionRequest.id))
+            this.getTcSecs()
             this.selectedStandard = this.actionRequest.id
 
 

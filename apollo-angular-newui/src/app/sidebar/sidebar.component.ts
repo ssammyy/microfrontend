@@ -431,7 +431,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Reports',
         type: 'sub',
         icontype: 'receipt',
-        privilege: ['QA_OFFICER_READ'],
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ','QA_DIRECTOR_READ'],
         collapse: 'reports',
         children: [
             {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
@@ -512,7 +512,7 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'requestModule',
         children: [
             {path: 'ms-standards', title: 'Review Standard Requests', ab: 'RSR'},
-            {path: 'std-tsc-sec-task', title: 'Prepare New Work Item', ab: 'PNWI'},
+            {path: 'std-tsc-sec-task', title: 'New Work Item', ab: 'NWI'},
             {path: 'std-tc-task', title: 'Vote On New Work Item', ab: 'V'},
             {path: 'upload-justification', title: 'Upload Justification', ab: 'UJ'},
             {path: 'decision-justification', title: 'Decision On Justification', ab: 'DOJ'},
@@ -712,7 +712,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Standards Review',
         type: 'sub',
         icontype: 'quiz',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN','TC_SEC_SD_READ','SPC_SEC_SD_READ','SAC_SEC_SD_READ','HOP_SD_READ','HO_SIC_SD_READ','STAKEHOLDERS_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ'],
         collapse: 'SR',
         children: [
             {path: 'standardsForReview', title: 'View Standards', ab: 'VW'},
@@ -726,7 +726,6 @@ export const ROUTES: RouteInfo[] = [
             {path: 'reviewStandardsDraughtsMan', title: 'Draughting', ab: 'DT'},
             {path: 'reviewStandardsGazette', title: 'Gazette Standard', ab: 'GS'},
             {path: 'reviewStandardsGazetteDate', title: 'Update Gazetted Standard', ab: 'UGS'},
-
 
 
         ],

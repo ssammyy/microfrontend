@@ -31,6 +31,8 @@ export class  StdTscSecTasksComponentComponent implements OnInit {
     public tscsecRequest !: Stdtsectask | undefined;
     public uploadedFiles: FileList;
     public uploadedFilesB: FileList;
+    public uploadedFilesC: FileList;
+
     public nwiRequest !: StandardRequestB | undefined;
 
     //public stdTSecFormGroup!: FormGroup;

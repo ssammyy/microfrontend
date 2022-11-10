@@ -46,25 +46,25 @@ enum class PaymentStatus(val code: Int) {
 
 @Service("invoiceService")
 class InvoicePaymentService(
-        private val iDemandNoteRepo: IDemandNoteRepository,
-        private val iDemandNoteItemRepo: IDemandNoteItemsDetailsRepository,
-        private val auditService: ConsignmentDocumentAuditService,
-        private val reportsDaoService: ReportsDaoService,
-        private val exchangeRateRepository: ICfgCurrencyExchangeRateRepository,
-        private val service: DaoService,
-        private val diBpmn: DestinationInspectionBpmn,
-        private val auctionRequestsRepository: IAuctionRequestsRepository,
-        private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
-        // Demand notes
-        private val currencyExchangeRateRepository: ICfgCurrencyExchangeRateRepository,
-        private val paymentRepository: CdDemandNotePaymentRepository,
-        private val feeRangesRepository: InspectionFeeRangesRepository,
-        private val daoServices: DestinationInspectionDaoServices,
-        private val invoiceDaoService: InvoiceDaoService,
-        private val commonDaoServices: CommonDaoServices,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val amountInWordsService: AmountInWordsService,
-        private val billingService: BillingService
+    private val iDemandNoteRepo: IDemandNoteRepository,
+    private val iDemandNoteItemRepo: IDemandNoteItemsDetailsRepository,
+    private val auditService: ConsignmentDocumentAuditService,
+    private val reportsDaoService: ReportsDaoService,
+    private val exchangeRateRepository: ICfgCurrencyExchangeRateRepository,
+    private val service: DaoService,
+    private val diBpmn: DestinationInspectionBpmn,
+    private val auctionRequestsRepository: IAuctionRequestsRepository,
+    private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
+    // Demand notes
+    private val currencyExchangeRateRepository: ICfgCurrencyExchangeRateRepository,
+    private val paymentRepository: CdDemandNotePaymentRepository,
+    private val feeRangesRepository: InspectionFeeRangesRepository,
+    private val daoServices: DestinationInspectionDaoServices,
+    private val invoiceDaoService: InvoiceDaoService,
+    private val commonDaoServices: CommonDaoServices,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val amountInWordsService: AmountInWordsService,
+    private val billingService: BillingService
 ) {
     final val DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     var dateTimeFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy")
@@ -101,10 +101,17 @@ class InvoicePaymentService(
                 consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
                 consignmentDocument.diProcessStatus = map.inactiveStatus
                 consignmentDocument.diProcessInstanceId = null
-                consignmentDocument = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_REJECTED)
+                consignmentDocument =
+                    daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.PAYMENT_REJECTED)
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 this.iDemandNoteRepo.save(demand)
-                this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "REJECT DEMAND NOTE", "Demand note ${demandNoteId} rejected")
+                this.auditService.addHistoryRecord(
+                    consignmentDocument.id!!,
+                    consignmentDocument.ucrNumber,
+                    remarks,
+                    "REJECT DEMAND NOTE",
+                    "Demand note ${demandNoteId} rejected"
+                )
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("DEMAND NOTE ERROR", ex)
@@ -128,7 +135,13 @@ class InvoicePaymentService(
                 this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
                 // Update demand note
                 this.iDemandNoteRepo.save(demand)
-                this.auditService.addHistoryRecord(consignmentDocument.id!!, consignmentDocument.ucrNumber, remarks, "APPROVED DEMAND NOTE", "Demand note ${demandNoteId} approved")
+                this.auditService.addHistoryRecord(
+                    consignmentDocument.id!!,
+                    consignmentDocument.ucrNumber,
+                    remarks,
+                    "APPROVED DEMAND NOTE",
+                    "Demand note ${demandNoteId} approved"
+                )
             }
 
         } catch (ex: Exception) {
@@ -151,16 +164,16 @@ class InvoicePaymentService(
                     consignmentDocument.varField10 = "Demand Approved, billed to user"
                     consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
                     daoServices.updateCDStatus(
-                            consignmentDocument,
-                            ConsignmentDocumentStatus.PAYMENT_MADE
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.PAYMENT_MADE
                     )
                 } else {
                     demand.varField3 = "UPDATED DEMAND NOTE STATUS"
                     consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
                     consignmentDocument.varField10 = "Demand Approved, awaiting payment"
                     daoServices.updateCDStatus(
-                            consignmentDocument,
-                            ConsignmentDocumentStatus.PAYMENT_APPROVED
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.PAYMENT_APPROVED
                     )
                 }
                 // Update Demand note status
@@ -187,19 +200,23 @@ class InvoicePaymentService(
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             // Try to add transaction to current bill or generate batch payment
             val loggedInUser = commonDaoServices.findUserByUserName(demandNote.createdBy ?: "NA")
-            this.billingService.registerBillTransaction(demandNote, demandNote.courierPin, consignmentDocument.cdType?.varField1
-                    ?: "", map)?.let { billTrx ->
+            this.billingService.registerBillTransaction(
+                demandNote, demandNote.courierPin, consignmentDocument.cdType?.varField1
+                    ?: "", map
+            )?.let { billTrx ->
                 demandNote.paymentStatus = PaymentStatus.BILLED.code
                 demandNote.receiptNo = billTrx.tempReceiptNumber
                 demandNote.billId = billTrx.id
                 val dn = this.iDemandNoteRepo.save(demandNote)
-                KotlinLogging.logger { }.info("Added demand note to bill transaction:${demandNote.demandNoteNumber} <=> ${billTrx.tempReceiptNumber}")
+                KotlinLogging.logger { }
+                    .info("Added demand note to bill transaction:${demandNote.demandNoteNumber} <=> ${billTrx.tempReceiptNumber}")
                 // Create bill payment on SAGE
                 invoiceDaoService.postRequestToSage(
-                        loggedInUser.userName!!,
-                        dn
+                    loggedInUser.userName!!,
+                    dn
                 )
-                KotlinLogging.logger { }.info("Posted demand note to SAGE:${demandNote.demandNoteNumber} <=> ${billTrx.tempReceiptNumber}")
+                KotlinLogging.logger { }
+                    .info("Posted demand note to SAGE:${demandNote.demandNoteNumber} <=> ${billTrx.tempReceiptNumber}")
             } ?: run {
                 demandNote.demandNoteNumber?.let {
                     KotlinLogging.logger { }.info("Generate demand note Sage:${demandNote.demandNoteNumber}")
@@ -207,10 +224,10 @@ class InvoicePaymentService(
                     val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
                     // Add demand note details to batch
                     val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
-                            demandNote,
-                            applicationMapProperties.mapInvoiceTransactionsForDemandNote,
-                            loggedInUser,
-                            batchInvoiceDetail
+                        demandNote,
+                        applicationMapProperties.mapInvoiceTransactionsForDemandNote,
+                        loggedInUser,
+                        batchInvoiceDetail
                     )
                     // Find recipient of the invoice from importer details
                     val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
@@ -222,8 +239,8 @@ class InvoicePaymentService(
                     KotlinLogging.logger { }.info("SENDING to SAGE FOR PAYMENT: $demandNoteId")
                     // Create payment on S                                                                                                                                                                                                                              AGE
                     invoiceDaoService.postRequestToSage(
-                            loggedInUser.userName!!,
-                            demandNote
+                        loggedInUser.userName!!,
+                        demandNote
                     )
                 } ?: ExpectedDataNotFound("Demand note number not set")
             }
@@ -255,10 +272,10 @@ class InvoicePaymentService(
                 val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser.userName!!, it)
                 // Add demand note details to batch
                 val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
-                        demandNote,
-                        applicationMapProperties.mapInvoiceTransactionsForDemandNote,
-                        loggedInUser,
-                        batchInvoiceDetail
+                    demandNote,
+                    applicationMapProperties.mapInvoiceTransactionsForDemandNote,
+                    loggedInUser,
+                    batchInvoiceDetail
                 )
                 // Find recipient of the invoice from importer details
                 val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
@@ -270,8 +287,8 @@ class InvoicePaymentService(
                 KotlinLogging.logger { }.info("SENDING to SAGE FOR PAYMENT: $demandNoteId")
                 // Create payment on SAGE
                 invoiceDaoService.postRequestToSage(
-                        loggedInUser.userName!!,
-                        demandNote
+                    loggedInUser.userName!!,
+                    demandNote
                 )
                 response.message = "Payment request submitted"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -322,20 +339,20 @@ class InvoicePaymentService(
             when (demandNote.paymentStatus) {
                 PaymentStatus.PAID.code -> {
                     daoServices.updateCDStatus(
-                            consignmentDocument,
-                            ConsignmentDocumentStatus.PAYMENT_MADE
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.PAYMENT_MADE
                     )
                 }
                 PaymentStatus.BILLED.code -> {
                     daoServices.updateCDStatus(
-                            consignmentDocument,
-                            ConsignmentDocumentStatus.PAYMENT_BILLED
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.PAYMENT_BILLED
                     )
                 }
                 PaymentStatus.PARTIAL_PAYMENT.code -> {
                     daoServices.updateCDStatus(
-                            consignmentDocument,
-                            ConsignmentDocumentStatus.PARTIAL_PAYMENT_MADE
+                        consignmentDocument,
+                        ConsignmentDocumentStatus.PARTIAL_PAYMENT_MADE
                     )
                 }
             }
@@ -350,11 +367,15 @@ class InvoicePaymentService(
             // 1. Send demand payment status to SW
             val demandNote = daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
                 if (amount != null) {
-                    daoServices.sendDemandNotePayedStatusToKWIS(demandNote, amount, consignmentDocument.version?.toString()
-                            ?: "1")
+                    daoServices.sendDemandNotePayedStatusToKWIS(
+                        demandNote, amount, consignmentDocument.version?.toString()
+                            ?: "1"
+                    )
                 } else {
-                    daoServices.sendDemandNotePayedStatusToKWIS(demandNote, demandNote.totalAmount, consignmentDocument.version?.toString()
-                            ?: "1")
+                    daoServices.sendDemandNotePayedStatusToKWIS(
+                        demandNote, demandNote.totalAmount, consignmentDocument.version?.toString()
+                            ?: "1"
+                    )
                 }
                 demandNote
             } ?: throw ExpectedDataNotFound("Demand note with $demandNoteId was not found")
@@ -422,22 +443,54 @@ class InvoicePaymentService(
     /**
      * List any active demand note transaction(approved by supervisor)
      */
-    fun listTransactions(status: Int?, date: Optional<String>, transactionNo: Optional<String>, page: PageRequest): Page<CdDemandNoteEntity> {
+    fun listTransactions(
+        status: Int?,
+        date: Optional<String>,
+        endDate: Optional<String>,
+        transactionNo: Optional<String>,
+        page: PageRequest,
+    ): Page<CdDemandNoteEntity> {
         val demandNotes: Page<CdDemandNoteEntity>
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         when {
             transactionNo.isPresent -> {
                 KotlinLogging.logger { }.info("Search by transaction NO")
-                demandNotes = iDemandNoteRepo.findByDemandNoteNumberContainingOrPostingReferenceContainingAndPaymentStatusInOrderByIdAsc(transactionNo.get(), transactionNo.get(), listOf(map.activeStatus, 0), page)
+                demandNotes =
+                    iDemandNoteRepo.findByDemandNoteNumberContainingOrPostingReferenceContainingAndPaymentStatusInOrderByIdAsc(
+                        transactionNo.get(),
+                        transactionNo.get(),
+                        listOf(map.activeStatus, 0),
+                        page
+                    )
+            }
+            date.isPresent && endDate.isPresent -> {
+                val searchDate = LocalDate.parse(date.get(), dateTimeFormat).atStartOfDay()
+                val periodEnd = LocalDate.parse(endDate.get(), dateTimeFormat).plusDays(1).atStartOfDay()
+                KotlinLogging.logger { }.info("Date range: Start Date: ${searchDate}, End Date: $periodEnd")
+                demandNotes = iDemandNoteRepo.findByDateGenerateBetweenAndPaymentStatusOrderByIdAsc(
+                    dateTimeFormat.format(searchDate),
+                    dateTimeFormat.format(periodEnd),
+                    listOf(map.activeStatus, map.initStatus, map.workingStatus),
+                    page
+                )
             }
             date.isPresent -> {
                 val searchDate = LocalDate.parse(date.get(), dateTimeFormat)
                 val startDate = searchDate.atStartOfDay()
-                val endDate = searchDate.plusDays(1).atStartOfDay()
-                KotlinLogging.logger { }.info("Start Date: ${startDate}, End Date: $endDate")
+                val periodEnd = searchDate.plusDays(1).atStartOfDay()
+                KotlinLogging.logger { }.info("Start Date: ${startDate}, End Date: $periodEnd")
                 demandNotes = when (status) {
-                    null -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndPaymentStatusOrderByIdAsc(dateTimeFormat.format(startDate), listOf(map.activeStatus, map.initStatus, map.workingStatus), page)
-                    else -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(dateTimeFormat.format(startDate), status, listOf(map.activeStatus, map.initStatus, map.workingStatus), page)
+                    null -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndPaymentStatusOrderByIdAsc(
+                        dateTimeFormat.format(startDate),
+                        listOf(map.activeStatus, map.initStatus, map.workingStatus),
+                        page
+                    )
+                    else -> iDemandNoteRepo.findByModifiedOnAndModifiedOnLessThanAndPaymentStatusAndStatusOrderByIdAsc(
+                        dateTimeFormat.format(startDate),
+                        status,
+                        listOf(map.activeStatus, map.initStatus, map.workingStatus),
+                        page
+                    )
                 }
             }
             status != null -> {
@@ -509,7 +562,7 @@ class InvoicePaymentService(
     fun paymentReceived(responseStatus: PaymentStatusResult): CallbackResponses {
         val response = CallbackResponses()
         val paymentRef = responseStatus.response?.demandNoteNo?.trim()?.toUpperCase()
-                ?: ""
+            ?: ""
         iDemandNoteRepo.findByPostingReference(paymentRef)?.let { demandNote ->
             if (demandNote.paymentStatus == PaymentStatus.PAID.code) {
                 throw ExpectedDataNotFound("Payment has already been made, duplicate callback")
@@ -536,14 +589,17 @@ class InvoicePaymentService(
                 response.message = "Full Payment received"
                 // Complete any bill payment with Demand Note
                 if (demandNoteUpdated.billId != null) {
-                    billingService.demandNoteTransactionPaid(demandNoteUpdated.demandNoteNumber
+                    billingService.demandNoteTransactionPaid(
+                        demandNoteUpdated.demandNoteNumber
                             ?: "", demandNoteUpdated.receiptNo
-                            ?: "", demandNoteUpdated.billId!!)
+                            ?: "", demandNoteUpdated.billId!!
+                    )
                 }
             } else {
                 response.data = mutableMapOf(
-                        Pair("amountPaid", demandNoteUpdated.amountPaid),
-                        Pair("totalAmount", demandNoteUpdated.totalAmount))
+                    Pair("amountPaid", demandNoteUpdated.amountPaid),
+                    Pair("totalAmount", demandNoteUpdated.totalAmount)
+                )
                 response.status = ResponseCodes.SUCCESS_CODE
                 response.message = "Partial Payment received"
             }
@@ -555,7 +611,11 @@ class InvoicePaymentService(
                     PaymentPurpose.CONSIGNMENT.code -> {
                         // Complete billed
                         when (demandNote.billId) {
-                            0.toLong(), null -> invoicePaymentCompleted(demandNoteUpdated.cdId!!, demandNoteUpdated.id!!, responseStatus.response?.paymentAmount)
+                            0.toLong(), null -> invoicePaymentCompleted(
+                                demandNoteUpdated.cdId!!,
+                                demandNoteUpdated.id!!,
+                                responseStatus.response?.paymentAmount
+                            )
                         }
                     }
                     PaymentPurpose.AUDIT.code -> {
@@ -564,12 +624,13 @@ class InvoicePaymentService(
                         }
                     }
                     else -> {
-                        KotlinLogging.logger { }.info("Unhandled payment completion ${demandNoteUpdated.id}-${demandNoteUpdated.paymentPurpose}")
+                        KotlinLogging.logger { }
+                            .info("Unhandled payment completion ${demandNoteUpdated.id}-${demandNoteUpdated.paymentPurpose}")
                     }
                 }
             }
         }
-                ?: throw ExpectedDataNotFound("Invalid transaction reference number: ${responseStatus.response?.demandNoteNo}")
+            ?: throw ExpectedDataNotFound("Invalid transaction reference number: ${responseStatus.response?.demandNoteNo}")
 
         return response
     }
@@ -587,109 +648,109 @@ class InvoicePaymentService(
 
     @Transactional
     fun generateDemandNoteWithItemList(
-            form: DemandNoteRequestForm,
-            items: MutableList<CdDemandNoteItemsDetailsEntity>,
-            map: ServiceMapsEntity,
-            purpose: PaymentPurpose,
-            user: UsersEntity,
+        form: DemandNoteRequestForm,
+        items: MutableList<CdDemandNoteItemsDetailsEntity>,
+        map: ServiceMapsEntity,
+        purpose: PaymentPurpose,
+        user: UsersEntity,
     ): CdDemandNoteEntity {
         return iDemandNoteRepo.findFirstByCdIdAndStatusIn(form.referenceId!!, listOf(map.workingStatus))
-                ?.let { demandNote ->
-                    var demandNoteDetails = demandNote
-                    // Remove all items for update
-                    val demandNoteItems = iDemandNoteItemRepo.findByDemandNoteId(demandNote.id!!)
-                    for (itm in demandNoteItems) {
-                        iDemandNoteItemRepo.delete(itm)
-                    }
-                    //Call Function to add Item Details To be attached To The Demand note
-                    demandNote.totalAmount = BigDecimal.ZERO
-                    demandNote.amountPayable = BigDecimal.ZERO
-                    demandNote.courierPin = form.courierPin
-                    demandNote.revenueLine = form.revenueLineNumber
-                    demandNote.courier = form.courier
-                    form.items?.forEach {
-                        items.add(addItemDetailsToDemandNote(it, demandNoteDetails, map, form.presentment, user))
-                    }
-                    // Foreign CoR without Items
-                    if (form.items?.isEmpty() == true) {
-                        demandNoteDetails.totalAmount = form.amount.toBigDecimal()
-                        demandNoteDetails.amountPayable = form.amount.toBigDecimal()
-                    }
-                    //Calculate the total Amount for Items In one Cd To be paid For
-                    if (!form.presentment) {
-                        demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, user, form.presentment)
-                    }
-                    demandNoteDetails
+            ?.let { demandNote ->
+                var demandNoteDetails = demandNote
+                // Remove all items for update
+                val demandNoteItems = iDemandNoteItemRepo.findByDemandNoteId(demandNote.id!!)
+                for (itm in demandNoteItems) {
+                    iDemandNoteItemRepo.delete(itm)
                 }
-                ?: kotlin.run {
-                    var demandNote = CdDemandNoteEntity()
-                    with(demandNote) {
-                        cdId = form.referenceId
-                        nameImporter = form.name
-                        importerPin = form.importerPin
-                        address = form.address
-                        telephone = form.phoneNumber
-                        cdRefNo = form.referenceNumber
-                        shippingAgent = form.customsOffice
-                        courier = form.courier
-                        entryNo = form.entryNo
-                        entryPoint = form.entryPoint
-                        entryAblNumber = form.ablNumber
-                        totalAmount = BigDecimal.ZERO
-                        amountPayable = BigDecimal.ZERO
-                        revenueLine = form.revenueLineNumber
-                        receiptNo = "NOT PAID"
-                        product = form.product ?: "UNKNOWN"
-                        rate = "UNKNOWN"
-                        currency = applicationMapProperties.applicationCurrencyCode
-                        courierPin = form.courierPin
-                        ucrNumber = form.ucrNumber
-                        cfvalue = BigDecimal.ZERO
-                        //Generate Demand note number
-                        demandNoteNumber =
-                                "KIMS${form.invoicePrefix}${
-                                    generateRandomText(
-                                            5,
-                                            map.secureRandom,
-                                            map.messageDigestAlgorithm,
-                                            true
-                                    )
-                                }".toUpperCase()
-                        paymentStatus = map.inactiveStatus
-                        paymentPurpose = purpose.code
-                        dateGenerated = commonDaoServices.getCurrentDate()
-                        generatedBy = commonDaoServices.concatenateName(user)
-                        status = map.workingStatus
-                        varField3 = "DRAFT"
-                        createdOn = commonDaoServices.getTimestamp()
-                        createdBy = commonDaoServices.getUserName(user)
-                    }
-                    if (!form.presentment) {
-                        demandNote = iDemandNoteRepo.save(demandNote)
-                    }
-                    //Call Function to add Item Details To be attached To The Demand note
-                    form.items?.forEach {
-                        items.add(addItemDetailsToDemandNote(it, demandNote, map, form.presentment, user))
-                    }
-                    if (!form.presentment) {
-                        demandNote = calculateTotalAmountDemandNote(demandNote, user, form.presentment)
-                    }
-                    // Foreign CoR/CoC without Items
-                    if (form.items?.isEmpty() == true) {
-                        demandNote.totalAmount = form.amount.toBigDecimal().setScale(2, RoundingMode.UP)
-                        demandNote.amountPayable = form.amount.toBigDecimal().setScale(2, RoundingMode.UP)
-                    }
-                    return demandNote
+                //Call Function to add Item Details To be attached To The Demand note
+                demandNote.totalAmount = BigDecimal.ZERO
+                demandNote.amountPayable = BigDecimal.ZERO
+                demandNote.courierPin = form.courierPin
+                demandNote.revenueLine = form.revenueLineNumber
+                demandNote.courier = form.courier
+                form.items?.forEach {
+                    items.add(addItemDetailsToDemandNote(it, demandNoteDetails, map, form.presentment, user))
+                }
+                // Foreign CoR without Items
+                if (form.items?.isEmpty() == true) {
+                    demandNoteDetails.totalAmount = form.amount.toBigDecimal()
+                    demandNoteDetails.amountPayable = form.amount.toBigDecimal()
+                }
+                //Calculate the total Amount for Items In one Cd To be paid For
+                if (!form.presentment) {
+                    demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, user, form.presentment)
+                }
+                demandNoteDetails
+            }
+            ?: kotlin.run {
+                var demandNote = CdDemandNoteEntity()
+                with(demandNote) {
+                    cdId = form.referenceId
+                    nameImporter = form.name
+                    importerPin = form.importerPin
+                    address = form.address
+                    telephone = form.phoneNumber
+                    cdRefNo = form.referenceNumber
+                    shippingAgent = form.customsOffice
+                    courier = form.courier
+                    entryNo = form.entryNo
+                    entryPoint = form.entryPoint
+                    entryAblNumber = form.ablNumber
+                    totalAmount = BigDecimal.ZERO
+                    amountPayable = BigDecimal.ZERO
+                    revenueLine = form.revenueLineNumber
+                    receiptNo = "NOT PAID"
+                    product = form.product ?: "UNKNOWN"
+                    rate = "UNKNOWN"
+                    currency = applicationMapProperties.applicationCurrencyCode
+                    courierPin = form.courierPin
+                    ucrNumber = form.ucrNumber
+                    cfvalue = BigDecimal.ZERO
+                    //Generate Demand note number
+                    demandNoteNumber =
+                        "KIMS${form.invoicePrefix}${
+                            generateRandomText(
+                                5,
+                                map.secureRandom,
+                                map.messageDigestAlgorithm,
+                                true
+                            )
+                        }".toUpperCase()
+                    paymentStatus = map.inactiveStatus
+                    paymentPurpose = purpose.code
+                    dateGenerated = commonDaoServices.getCurrentDate()
+                    generatedBy = commonDaoServices.concatenateName(user)
+                    status = map.workingStatus
+                    varField3 = "DRAFT"
+                    createdOn = commonDaoServices.getTimestamp()
+                    createdBy = commonDaoServices.getUserName(user)
+                }
+                if (!form.presentment) {
+                    demandNote = iDemandNoteRepo.save(demandNote)
+                }
+                //Call Function to add Item Details To be attached To The Demand note
+                form.items?.forEach {
+                    items.add(addItemDetailsToDemandNote(it, demandNote, map, form.presentment, user))
+                }
+                if (!form.presentment) {
+                    demandNote = calculateTotalAmountDemandNote(demandNote, user, form.presentment)
+                }
+                // Foreign CoR/CoC without Items
+                if (form.items?.isEmpty() == true) {
+                    demandNote.totalAmount = form.amount.toBigDecimal().setScale(2, RoundingMode.UP)
+                    demandNote.amountPayable = form.amount.toBigDecimal().setScale(2, RoundingMode.UP)
+                }
+                return demandNote
 
-                }
+            }
     }
 
     private fun demandNoteCalculation(
-            demandNoteItem: CdDemandNoteItemsDetailsEntity,
-            diInspectionFeeId: DestinationInspectionFeeEntity,
-            currencyCode: String,
-            documentType: String,
-            itemId: Long?
+        demandNoteItem: CdDemandNoteItemsDetailsEntity,
+        diInspectionFeeId: DestinationInspectionFeeEntity,
+        currencyCode: String,
+        documentType: String,
+        itemId: Long?
     ) {
         val cfiValue = demandNoteItem.cfvalue ?: BigDecimal.ZERO
         var minimumUsd: BigDecimal? = null
@@ -715,7 +776,12 @@ class InvoicePaymentService(
                 }
             }
             KotlinLogging.logger { }.info("$documentOrigin CFI DOCUMENT TYPE = $currencyCode-$cfiValue")
-            val feeRange = this.feeRangesRepository.findByInspectionFeeAndMinimumKshGreaterThanEqualAndMaximumKshLessThanEqual(diInspectionFeeId.id, cfiValue, documentOrigin)
+            val feeRange =
+                this.feeRangesRepository.findByInspectionFeeAndMinimumKshGreaterThanEqualAndMaximumKshLessThanEqual(
+                    diInspectionFeeId.id,
+                    cfiValue,
+                    documentOrigin
+                )
             if (feeRange.isEmpty()) {
                 throw Exception("Item details with Id = ${itemId}, does not Have any range For payment Fee Id Selected $cfiValue")
             } else {
@@ -771,40 +837,48 @@ class InvoicePaymentService(
                         }
                     }
                 }
-                demandNoteItem.adjustedAmount = amount?.setScale(2, RoundingMode.UP)
+                demandNoteItem.adjustedAmount = roundUpNextInteger(amount?.setScale(2, RoundingMode.UP))
                 KotlinLogging.logger { }.info("$feeType MY AMOUNT AFTER CALCULATION = $amount")
             }
             "FIXED" -> {
                 amount = fixedAmount
                 KotlinLogging.logger { }.info("FIXED AMOUNT BEFORE CALCULATION = $fixedAmount")
                 demandNoteItem.amountPayable = BigDecimal.ZERO
-                demandNoteItem.adjustedAmount = fixedAmount.setScale(2, RoundingMode.UP)
+                demandNoteItem.adjustedAmount = roundUpNextInteger(fixedAmount.setScale(2, RoundingMode.UP))
                 demandNoteItem.amountPayable = fixedAmount.setScale(2, RoundingMode.UP)
             }
             "MANUAL" -> {
                 // Not-Applicable to items
                 amount = BigDecimal.ZERO
-                demandNoteItem.adjustedAmount = amount?.setScale(2, RoundingMode.UP)
+                demandNoteItem.adjustedAmount = roundUpNextInteger(amount?.setScale(2, RoundingMode.UP))
                 demandNoteItem.amountPayable = amount?.setScale(2, RoundingMode.UP)
                 KotlinLogging.logger { }.info("MANUAL AMOUNT BEFORE CALCULATION = $amount")
             }
             else -> {
                 amount = BigDecimal.ZERO
-                demandNoteItem.adjustedAmount = amount?.setScale(2, RoundingMode.UP)
+                demandNoteItem.adjustedAmount = roundUpNextInteger(amount?.setScale(2, RoundingMode.UP))
                 demandNoteItem.amountPayable = amount?.setScale(2, RoundingMode.UP)
             }
         }
     }
 
     fun convertAmount(amount: BigDecimal?, currencyCode: String): BigDecimal {
-        return currencyExchangeRateRepository.findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc(currencyCode, DATE_FORMAT.format(LocalDate.now()))?.let { exchangeRateEntity ->
-            return amount?.times(exchangeRateEntity.exchangeRate
-                    ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
+        return currencyExchangeRateRepository.findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc(
+            currencyCode,
+            DATE_FORMAT.format(LocalDate.now())
+        )?.let { exchangeRateEntity ->
+            return amount?.times(
+                exchangeRateEntity.exchangeRate
+                    ?: BigDecimal.ZERO
+            ) ?: BigDecimal.ZERO
         } ?: run {
-            currencyExchangeRateRepository.findFirstByCurrencyCodeAndCurrentRateAndStatus(currencyCode, 1, 1)?.let { exchangeRateEntity ->
-                return amount?.times(exchangeRateEntity.exchangeRate
-                        ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
-            } ?: run {
+            currencyExchangeRateRepository.findFirstByCurrencyCodeAndCurrentRateAndStatus(currencyCode, 1, 1)
+                ?.let { exchangeRateEntity ->
+                    return amount?.times(
+                        exchangeRateEntity.exchangeRate
+                            ?: BigDecimal.ZERO
+                    ) ?: BigDecimal.ZERO
+                } ?: run {
                 throw ExpectedDataNotFound("Conversion rate for currency $currencyCode not found")
             }
         }
@@ -812,19 +886,27 @@ class InvoicePaymentService(
 
     fun convertAmount(amount: BigDecimal?, currencyCode: String, demandNoteItem: CdDemandNoteItemsDetailsEntity?) {
 //        val exchangeRate=BigDecimal.ZERO
-        currencyExchangeRateRepository.findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc(currencyCode, DATE_FORMAT.format(LocalDate.now()))?.let { exchangeRateEntity ->
+        currencyExchangeRateRepository.findFirstByCurrencyCodeAndApplicableDateOrderByApplicableDateDesc(
+            currencyCode,
+            DATE_FORMAT.format(LocalDate.now())
+        )?.let { exchangeRateEntity ->
             demandNoteItem?.exchangeRateId = exchangeRateEntity.id
             demandNoteItem?.rate = exchangeRateEntity.exchangeRate?.toPlainString() ?: "0.00"
-            demandNoteItem?.cfvalue = amount?.times(exchangeRateEntity.exchangeRate
-                    ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
+            demandNoteItem?.cfvalue = amount?.times(
+                exchangeRateEntity.exchangeRate
+                    ?: BigDecimal.ZERO
+            ) ?: BigDecimal.ZERO
         } ?: run {
             KotlinLogging.logger { }.warn("Exchange rate for today not found, using the last known exchange rate")
-            currencyExchangeRateRepository.findFirstByCurrencyCodeAndCurrentRateAndStatus(currencyCode, 1, 1)?.let { exchangeRateEntity ->
-                demandNoteItem?.cfvalue = amount?.times(exchangeRateEntity.exchangeRate
-                        ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
-                demandNoteItem?.exchangeRateId = exchangeRateEntity.id
-                demandNoteItem?.rate = exchangeRateEntity.exchangeRate?.toPlainString() ?: "0.00"
-            } ?: run {
+            currencyExchangeRateRepository.findFirstByCurrencyCodeAndCurrentRateAndStatus(currencyCode, 1, 1)
+                ?.let { exchangeRateEntity ->
+                    demandNoteItem?.cfvalue = amount?.times(
+                        exchangeRateEntity.exchangeRate
+                            ?: BigDecimal.ZERO
+                    ) ?: BigDecimal.ZERO
+                    demandNoteItem?.exchangeRateId = exchangeRateEntity.id
+                    demandNoteItem?.rate = exchangeRateEntity.exchangeRate?.toPlainString() ?: "0.00"
+                } ?: run {
                 demandNoteItem?.cfvalue = amount ?: BigDecimal.ZERO
                 throw ExpectedDataNotFound("Conversion rate for currency $currencyCode not found")
             }
@@ -832,12 +914,12 @@ class InvoicePaymentService(
     }
 
     private fun addItemDetailsToDemandNote(
-            itemDetails: DemandNoteRequestItem, demandNote: CdDemandNoteEntity, map: ServiceMapsEntity,
-            presentment: Boolean,
-            user: UsersEntity
+        itemDetails: DemandNoteRequestItem, demandNote: CdDemandNoteEntity, map: ServiceMapsEntity,
+        presentment: Boolean,
+        user: UsersEntity
     ): CdDemandNoteItemsDetailsEntity {
         val fee = itemDetails.fee
-                ?: throw Exception("Item details with Id = ${itemDetails.itemId}, does not Have any Details For payment Fee Id Selected ")
+            ?: throw Exception("Item details with Id = ${itemDetails.itemId}, does not Have any Details For payment Fee Id Selected ")
         var demandNoteItem = iDemandNoteItemRepo.findByItemIdAndDemandNoteId(itemDetails.itemId, demandNote.id)
         if (demandNoteItem == null) {
             demandNoteItem = CdDemandNoteItemsDetailsEntity()
@@ -852,7 +934,8 @@ class InvoicePaymentService(
                 else -> {
                     convertAmount(itemDetails.itemValue, "${itemDetails.currency}", demandNoteItem)
                     demandNote.rate = demandNoteItem.rate ?: "0.00"
-                    KotlinLogging.logger { }.warn("Exchange Rate for ${itemDetails.currency}:${itemDetails.itemValue} => ${demandNoteItem.cfvalue}")
+                    KotlinLogging.logger { }
+                        .warn("Exchange Rate for ${itemDetails.currency}:${itemDetails.itemValue} => ${demandNoteItem.cfvalue}")
                 }
             }
         } else {
@@ -874,7 +957,13 @@ class InvoicePaymentService(
             createdBy = commonDaoServices.getUserName(user)
         }
         // Apply fee type and adjustments
-        demandNoteCalculation(demandNoteItem, fee, applicationMapProperties.applicationCurrencyCode, itemDetails.route, itemDetails.itemId)
+        demandNoteCalculation(
+            demandNoteItem,
+            fee,
+            applicationMapProperties.applicationCurrencyCode,
+            itemDetails.route,
+            itemDetails.itemId
+        )
         // Skip saving for presentment
         if (!presentment) {
             return iDemandNoteItemRepo.save(demandNoteItem)
@@ -894,27 +983,34 @@ class InvoicePaymentService(
         return demandNoteItem
     }
 
-    private fun roundUpNextInteger(dd: BigDecimal?): BigDecimal{
-        return dd?.let { ddd->
-            val upped= ceil(ddd.toDouble())
+    private fun roundUpNextInteger(dd: BigDecimal?): BigDecimal {
+        return dd?.let { ddd ->
+            val upped = ceil(ddd.toDouble())
             BigDecimal.valueOf(upped).setScale(2, RoundingMode.HALF_UP)
-        }?:BigDecimal.ZERO
+        } ?: BigDecimal.ZERO
     }
+
     private fun calculateTotalAmountDemandNote(
-            demandNote: CdDemandNoteEntity,
-            user: UsersEntity,
-            presentment: Boolean,
+        demandNote: CdDemandNoteEntity,
+        user: UsersEntity,
+        presentment: Boolean,
     ): CdDemandNoteEntity {
         demandNote.amountPayable = BigDecimal.ZERO
         demandNote.totalAmount = BigDecimal.ZERO
         demandNote.cfvalue = BigDecimal.ZERO
         iDemandNoteItemRepo.findByDemandNoteId(demandNote.id!!).forEach { demandNoteItem ->
-            demandNote.amountPayable = demandNote.amountPayable?.plus(demandNoteItem.amountPayable
-                    ?: BigDecimal.ZERO)
-            demandNote.totalAmount = demandNote.totalAmount?.plus(demandNoteItem.adjustedAmount
-                    ?: BigDecimal.ZERO)
-            demandNote.cfvalue = demandNote.cfvalue?.plus(demandNoteItem.cfvalue
-                    ?: BigDecimal.ZERO)
+            demandNote.amountPayable = demandNote.amountPayable?.plus(
+                demandNoteItem.amountPayable
+                    ?: BigDecimal.ZERO
+            )
+            demandNote.totalAmount = demandNote.totalAmount?.plus(
+                demandNoteItem.adjustedAmount
+                    ?: BigDecimal.ZERO
+            )
+            demandNote.cfvalue = demandNote.cfvalue?.plus(
+                demandNoteItem.cfvalue
+                    ?: BigDecimal.ZERO
+            )
 
         }
 

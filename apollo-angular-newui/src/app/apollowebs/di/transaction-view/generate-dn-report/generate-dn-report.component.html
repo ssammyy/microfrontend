@@ -1,12 +1,21 @@
-<h2 mat-dialog-title> Generate IDF Report</h2>
+<h2 mat-dialog-title>Generate Demand Note Report</h2>
 <mat-dialog-content>
     <div class="row no_margin" [formGroup]="form">
         <div class="col-sm-12 col-md-6">
             <label for="stationId" class="waiver-form-label">Select Station</label>
             <select id="stationId" name="stationId" class="waiver-form-input-master"
-                    formControlName="station_id">
+                    formControlName="stationId">
                 <option value="" disabled selected>Select One</option>
                 <option *ngFor="let station of data.stations" [value]="station.cfsCode">{{station.cfsName}}</option>
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="payment-status" class="waiver-form-label">Select Payment status</label>
+            <select id="payment-status" class="waiver-form-input-master" formControlName="status">
+                <option [defaultSelected]="true">Payment Status</option>
+                <option value="">All Status</option>
+                <option value="1">Paid</option>
+                <option value="0">Not Paid</option>
             </select>
         </div>
         <div class="col-sm-12 col-md-6">
@@ -20,22 +29,6 @@
         <div class="col-sm-12 col-md-6">
             <label for="importer" class="waiver-form-label">Importer PIN</label>
             <input id="importer" class="waiver-form-input-master" formControlName="importer">
-        </div>
-        <div class="col-sm-12 col-md-6">
-            <label for="exporter" class="waiver-form-label">Exporter PIN</label>
-            <input id="exporter" class="waiver-form-input-master" formControlName="exporter">
-        </div>
-        <div class="col-sm-12 col-md-6">
-            <label for="clearing_agent" class="waiver-form-label">Clearing Agent</label>
-            <input id="clearing_agent" class="waiver-form-input-master" formControlName="clearing_agent">
-        </div>
-        <div class="col-sm-12 col-md-6">
-            <label for="hs_code" class="waiver-form-label">HS Code</label>
-            <input id="hs_code" class="waiver-form-input-master" formControlName="hs_code">
-        </div>
-        <div class="col-sm-12 col-md-6">
-            <label for="idf" class="waiver-form-label">IDF Number</label>
-            <input id="idf" class="waiver-form-input-master" formControlName="idf">
         </div>
     </div>
     <mat-error *ngIf="message">{{message}}</mat-error>
