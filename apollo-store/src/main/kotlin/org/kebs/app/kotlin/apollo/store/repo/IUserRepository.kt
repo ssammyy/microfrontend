@@ -422,8 +422,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getActiveFirmsFilter(
-        @Param("startDate") startDate: Date?,
-        @Param("endDate") endDate: Date?,
+        @Param("startDate") startDate: Timestamp?,
+        @Param("endDate") endDate: Timestamp?,
         @Param("businessLines") businessLines: Long?,
         @Param("region") region: Long?
     ): MutableList<RegisteredFirms>
@@ -452,8 +452,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getDormantFirmsFilter(
-        @Param("startDate") startDate: Date?,
-        @Param("endDate") endDate: Date?,
+        @Param("startDate") startDate: Timestamp?,
+        @Param("endDate") endDate: Timestamp?,
         @Param("businessLines") businessLines: Long?,
         @Param("region") region: Long?
     ): MutableList<RegisteredFirms>
@@ -469,8 +469,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getClosedFirmsFilter(
-        @Param("startDate") startDate: Date?,
-        @Param("endDate") endDate: Date?,
+        @Param("startDate") startDate: Timestamp?,
+        @Param("endDate") endDate: Timestamp?,
         @Param("businessLines") businessLines: Long?,
         @Param("region") region: Long?
     ): MutableList<RegisteredFirms>
@@ -661,8 +661,8 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getPenaltyReportFilter(
-        @Param("periodFrom") periodFrom: String?,
-        @Param("periodTo") periodTo: String?,
+        @Param("periodFrom") periodFrom: Timestamp?,
+        @Param("periodTo") periodTo: Timestamp?,
         @Param("businessLines") businessLines: Long?,
         @Param("region") region: Long?
     ): MutableList<AllLevyPayments>
