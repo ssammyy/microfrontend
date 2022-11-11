@@ -5193,15 +5193,76 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>LABELLING IDENTIFICATION</b></label>
-                                        <input [class.is-invalid]="formSampleSubmitForm.labellingIdentification.invalid && formSampleSubmitForm.labellingIdentification.errors"
+                                        <label><b>TRADE MARK</b></label>
+                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdTradeMark.invalid && formSampleSubmitForm.lbIdTradeMark.errors"
                                                class="form-control two-column-input"
-                                               formControlName="labellingIdentification" name="labellingIdentification" required type="text">
-                                        <div *ngIf="submitted && formSampleSubmitForm.labellingIdentification.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.labellingIdentification.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                               formControlName="lbIdTradeMark" name="lbIdTradeMark" required type="text">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>DATE OF  MANUFACTURE</b> </label>
+                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdDateOfManf.invalid && formSampleSubmitForm.lbIdDateOfManf.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="lbIdDateOfManf"
+                                               name="lbIdDateOfManf" type="date">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>EXPIRY DATE</b></label>
+                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdExpiryDate.invalid && formSampleSubmitForm.lbIdExpiryDate.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="lbIdExpiryDate" name="lbIdExpiryDate" type="date">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>CONTENT DECLARED</b> </label>
+                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdContDecl.invalid && formSampleSubmitForm.lbIdContDecl.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="lbIdContDecl"
+                                               name="lbIdContDecl" type="text">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>BATCH NO</b> </label>
+                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdBatchNo.invalid && formSampleSubmitForm.lbIdBatchNo.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="lbIdBatchNo"
+                                               name="lbIdBatchNo" type="text">
+
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>ANY OTHER MARKING</b> </label>
+                                        <input [class.is-invalid]="formSampleSubmitForm.lbIdAnyAomarking.invalid && formSampleSubmitForm.lbIdAnyAomarking.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="lbIdAnyAomarking"
+                                               name="lbIdAnyAomarking" type="text">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>SCF NUMBER</b> </label>
+                                        <input [class.is-invalid]="formSampleSubmitForm.scfNo.invalid && formSampleSubmitForm.scfNo.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="scfNo"
+                                               name="scfNo" required type="text">
                                     </div>
                                 </div>
 
@@ -5217,6 +5278,18 @@
                                                 required
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>NOTES OF TRANSMISSION OF RESULTS:</b></label>
+                                        <textarea
+                                                class="form-control two-column-input"
+                                                formControlName="noteTransResults"
+                                                name="noteTransResults" required type="text"></textarea>
                                     </div>
                                 </div>
 
@@ -5353,6 +5426,25 @@
                                         <label><b>RECEIVERS NAME</b> </label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="receiversName" name="receiversName">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>RECEIVERS DATE</b></label>
+                                        <input type="date" class="form-control two-column-input"
+                                               formControlName="receiversDate" name="receiversDate" >
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>C.O.C Number</b> </label>
+                                        <input type="text" class="form-control two-column-input"
+                                               formControlName="cocNumber" name="cocNumber">
 
                                     </div>
                                 </div>
@@ -5532,7 +5624,6 @@
                                  data-dismiss="modal">
                             Close
                         </button>
-
                         <div *ngIf="addLabParamStatus">
                             <button  *ngIf="sampleSubmitForm.invalid" mat-raised-button type="button"  class="btn btn-success"
                                      (click)="onClickSaveSampleSubmitted()">SUBMIT
@@ -5547,7 +5638,7 @@
             </div>
         </div>
     </div>
-    <!-- End Sample Collect Modal -->
+    <!-- End Sample Submitted Modal -->
 
     <!-- Work Plan UPDATE Modal -->
     <div class="modal fade" id="workPlanModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"

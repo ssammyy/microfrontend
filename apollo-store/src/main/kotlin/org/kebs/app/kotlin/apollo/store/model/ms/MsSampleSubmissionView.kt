@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.ms
 
 import java.io.Serializable
+import java.sql.Date
 import javax.persistence.*
 
 @Entity
@@ -9,6 +10,10 @@ class MsSampleSubmissionView : Serializable {
     @Id
     @Column(name = "ID")
     var id: String? = null
+
+    @Column(name = "CREATED_USER_ID")
+    @Basic
+    var createdUserId: Long? = null
 
     @Basic
     @Column(name = "NAME_PRODUCT")
@@ -101,4 +106,44 @@ class MsSampleSubmissionView : Serializable {
     @Basic
     @Column(name = "LABORATORY_NAME")
     var laboratoryName: String? = null
+
+    @Column(name = "LB_ID_ANY_AOMARKING")
+    @Basic
+    var lbIdAnyAomarking: String? = null
+
+    @Column(name = "LB_ID_BATCH_NO")
+    @Basic
+    var lbIdBatchNo: String? = null
+
+    @Column(name = "LB_ID_CONT_DECL")
+    @Basic
+    var lbIdContDecl: String? = null
+
+    @Column(name = "LB_ID_DATE_OF_MANF")
+    @Basic
+    var lbIdDateOfManf: String? = null
+
+    @Column(name = "LB_ID_EXPIRY_DATE")
+    @Basic
+    var lbIdExpiryDate: String? = null
+
+    @Column(name = "RECEIVERS_DATE")
+    @Basic
+    var receiversDate: String? = null
+
+    @Column(name = "LB_ID_TRADE_MARK")
+    @Basic
+    var lbIdTradeMark: String? = null
+
+    @Column(name = "NOTE_TRANS_RESULTS")
+    @Basic
+    var noteTransResults: String? = null
+
+    @Column(name = "SCF_NO")
+    @Basic
+    var scfNo: String? = null
+
+    @Column(name = "COC_NUMBER")
+    @Basic
+    var cocNumber: String? = null
 }

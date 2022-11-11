@@ -17,7 +17,7 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
     pageSize: number = 20;
     currentPageInternal: number = 0;
     totalCount: number;
-    stations = []
+    stations = null
     activeTab = 1
     public settings = {
         selectMode: 'single',  // single|multi

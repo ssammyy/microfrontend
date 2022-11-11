@@ -47,12 +47,19 @@ data class StandardsDto(
     var levelOfStandard: String? = null,
     var status: String? = null,
     var departmentName: String? = null,
+    //HOF Feedback
+    var tcSecAssigned: String? = null,
+    var reviewedBy: String? = null,
+    var reviewDate: Timestamp? = null,
+    var reason: String? = null,
+    var desiredOutput: String?=null,
+
+
     var createdBy: String? = null,
     var createdOn: Timestamp? = null,
     var modifiedOn: Timestamp? = null,
     var deletedOn: Timestamp? = null,
     var deleteBy: String? = null,
-    var tcSecAssigned: String? = null,
 
 
     )

@@ -1142,6 +1142,7 @@ export class SampleSubmissionDto {
     designation: string;
     address: string;
     sendersDate: Date;
+    receiversDate: Date;
     receiversName: string;
     testChargesKsh: number;
     receiptLpoNumber: string;
@@ -1150,6 +1151,15 @@ export class SampleSubmissionDto {
     remarks: string;
     sampleCollectionNumber: number;
     sampleCollectionProduct: number;
+    lbIdAnyAomarking: string;
+    lbIdBatchNo: string;
+    lbIdContDecl: string;
+    lbIdDateOfManf: Date;
+    lbIdExpiryDate: Date;
+    lbIdTradeMark: string;
+    noteTransResults: string;
+    scfNo: string;
+    cocNumber: string;
     bsNumber: string;
     parametersList: SampleSubmissionItemsDto[];
 }

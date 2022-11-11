@@ -274,26 +274,38 @@ class StandardRequestService(
         hofFeedback.sdOutput?.let { variable.put("sdOutput", it) }
         hofFeedback.sdRequestID?.let { variable.put("id", it) }
         hofFeedback.taskId?.let { variable.put("taskId", it) }
+        hofFeedback.sdResult?.let { variable.put("resultOutput", it) }
+        hofFeedback.reason?.let { variable.put("rejectionReason", it) }
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val standardRequestToUpdate = hofFeedback.sdRequestID?.let {
             standardRequestRepository.findById(it.toLong())
                 .orElseThrow { RuntimeException("No Standard Request found") }
         }
-
         if (standardRequestToUpdate != null) {
-            standardRequestToUpdate.status = "Assigned To TC Sec"
-            standardRequestToUpdate.process = hofFeedback.sdOutput
-            standardRequestToUpdate.tcSecAssigned = hofFeedback.isTc
-            standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
-            variable["modifiedOn"] = standardRequestToUpdate.modifiedOn!!
-            standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
-            variable["modifiedBy"] = standardRequestToUpdate.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+            if (hofFeedback.sdResult.equals("Approve For Review")) {
+                standardRequestToUpdate.status = "Assigned To TC Sec"
+                standardRequestToUpdate.process = hofFeedback.sdOutput
+                standardRequestToUpdate.tcSecAssigned = hofFeedback.isTc
+                standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+                variable["modifiedOn"] = standardRequestToUpdate.modifiedOn!!
+                standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+                variable["modifiedBy"] =
+                    standardRequestToUpdate.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+            } else if (hofFeedback.sdResult.equals("Reject For Review")) {
+                standardRequestToUpdate.status = "Rejected For Review"
+                standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+                variable["modifiedOn"] = standardRequestToUpdate.modifiedOn!!
+                standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+                variable["modifiedBy"] =
+                    standardRequestToUpdate.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+            }
             standardRequestRepository.save(standardRequestToUpdate)
-
         }
 
 
+        hofFeedback.reviewedBy = loggedInUser.id.toString()
+        hofFeedback.createdOn = Timestamp(System.currentTimeMillis())
 
         hofFeedbackRepository.save(hofFeedback)
 //        taskService.complete(hofFeedback.taskId)
@@ -308,6 +320,7 @@ class StandardRequestService(
 
     fun getAllStandardRequestsToPrepareNWI(): List<StandardsDto> {
         val standardRequest: List<StandardRequest> = standardRequestRepository.findByStatus("Assigned To TC Sec")!!
+
         return standardRequest.map { p ->
             StandardsDto(
                 p.id,
@@ -330,6 +343,62 @@ class StandardRequestService(
                 p.levelOfStandard,
                 p.status,
                 departmentRepository.findNameById(p.departmentId?.toLong()),
+                //Feedback Segment From Review
+                p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.lastName,
+
+                p.requestNumber?.let { returnUsername(it) },
+
+                p.requestNumber?.let { findHofFeedbackDetails(it)?.createdOn },
+
+                p.requestNumber?.let { findHofFeedbackDetails(it)?.reason },
+
+
+                p.requestNumber?.let { findHofFeedbackDetails(it)?.sdOutput },
+                )
+        }
+
+
+    }
+
+    fun getAllRejectedStandardRequestsToPrepareNWI(): List<StandardsDto> {
+        val standardRequest: List<StandardRequest> = standardRequestRepository.findByStatus("Rejected For Review")!!
+        return standardRequest.map { p ->
+            StandardsDto(
+                p.id,
+                p.requestNumber,
+                p.rank,
+                p.name,
+                p.phone,
+                p.email,
+                p.submissionDate,
+                p.departmentId,
+                p.tcId,
+                p.organisationName,
+                p.subject,
+                p.description,
+                p.economicEfficiency,
+                p.healthSafety,
+                p.environment,
+                p.integration,
+                p.exportMarkets,
+                p.levelOfStandard,
+                p.status,
+                departmentRepository.findNameById(p.departmentId?.toLong()),
+                //Feedback Segment From Review
+                p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.lastName,
+
+                p.requestNumber?.let { returnUsername(it) },
+
+                p.requestNumber?.let { findHofFeedbackDetails(it)?.createdOn },
+
+                p.requestNumber?.let { findHofFeedbackDetails(it)?.reason },
+
+
+                p.requestNumber?.let { findHofFeedbackDetails(it)?.sdOutput },
 
 
                 )
@@ -909,6 +978,25 @@ class StandardRequestService(
     fun getDocuments(standardId: Long): Collection<DatKebsSdStandardsEntity?>? {
 
         return draftDocumentService.findUploadedDIFileBYId(standardId)
+    }
+
+    fun findHofFeedbackDetails(sdRequestNumber: String): HOFFeedback? {
+        hofFeedbackRepository.findBySdRequestID(sdRequestNumber).let {
+            return it
+        }
+    }
+
+    fun returnUsername(sdRequestNumber: String): String {
+
+        val hofFeedback = findHofFeedbackDetails(sdRequestNumber)
+        return if (hofFeedback != null) {
+            val user = usersRepo.findByIdOrNull(hofFeedback.reviewedBy!!.toLong())
+            user?.firstName + " " + user?.lastName
+        } else {
+            "Not Assigned"
+        }
+
+
     }
 
 

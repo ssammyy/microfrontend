@@ -1473,7 +1473,9 @@ class QualityAssuranceHandler(
 
     @PreAuthorize(
         "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') " +
-                "or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"
+                "or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') " +
+                "or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') " +
+                "or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')"
     )
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun sectionListMigration(req: ServerRequest): ServerResponse {
@@ -1536,7 +1538,10 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ')")
+    @PreAuthorize(
+        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ')" +
+                " or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_DIRECTOR_READ')"
+    )
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun branchListMigration(req: ServerRequest): ServerResponse {
         try {

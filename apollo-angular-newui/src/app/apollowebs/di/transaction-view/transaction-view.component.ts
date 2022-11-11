@@ -3,6 +3,7 @@ import {DestinationInspectionService} from "../../../core/store/data/di/destinat
 import {CurrencyFormatterComponent} from "../../../core/shared/currency-formatter/currency-formatter.component";
 import {ViewDemandNoteComponent} from "../demand-note-list/view-demand-note/view-demand-note.component";
 import {MatDialog} from "@angular/material/dialog";
+import {GenerateDnReportComponent} from "./generate-dn-report/generate-dn-report.component";
 
 @Component({
     selector: 'app-transaction-view',
@@ -15,8 +16,10 @@ export class TransactionViewComponent implements OnInit {
     defaultPageSize = 20
     totalCount = 20
     transactionNo = null
+    transactionStatus = 1
     transactionDate = null
-    transactionStatus = null
+    transactionDateEnd = null
+    cfsStations = null
     demandNoteTransactions = null
     transactionStats = null
     settings = {
@@ -46,6 +49,10 @@ export class TransactionViewComponent implements OnInit {
             },
             dateGenerated: {
                 title: 'Date Generated',
+                type: 'string'
+            },
+            entryPoint: {
+                title: 'CFS',
                 type: 'string'
             },
             nameImporter: {
@@ -88,16 +95,46 @@ export class TransactionViewComponent implements OnInit {
         }
     };
 
-    constructor(private diService: DestinationInspectionService, private dialog:MatDialog) {
+    constructor(private diService: DestinationInspectionService, private dialog: MatDialog) {
     }
 
     ngOnInit(): void {
         this.loadData()
+        this.loadCfsStations()
+    }
+
+    loadCfsStations() {
+        this.diService.listMyCfs()
+            .subscribe(
+                res => {
+                    if (res.responseCode === '00') {
+                        this.cfsStations = res.data
+                    }
+                }
+            )
     }
 
     searchTransactions() {
-        this.currentPage=0
+        this.currentPage = 0
+        this.transactionStatus = null
         this.loadData()
+    }
+
+    downloadReport() {
+        this.dialog.open(GenerateDnReportComponent, {
+            data: {
+                stations: this.cfsStations
+            }
+        })
+            .afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.diService.downloadDocument("/api/v1/download/reports", {}, res)
+                    }
+                }
+            )
+
     }
 
     toggleStatus(status) {
@@ -115,7 +152,7 @@ export class TransactionViewComponent implements OnInit {
     pageChange(pageIndex?: number) {
         if (pageIndex && pageIndex != this.currentPage) {
             this.currentPage = pageIndex - 1;
-            console.log("Page: "+pageIndex+":"+this.currentPage)
+            console.log("Page: " + pageIndex + ":" + this.currentPage)
             this.loadData()
             this.loadTransactionStats()
         }
@@ -138,7 +175,7 @@ export class TransactionViewComponent implements OnInit {
 
     loadData() {
         this.demandNoteTransactions = []
-        this.diService.demandNoteListAndSearch(this.transactionNo, this.transactionDate, this.transactionStatus, this.currentPage, this.defaultPageSize)
+        this.diService.demandNoteListAndSearch(this.transactionNo, this.transactionDate, this.transactionDateEnd, this.transactionStatus, this.currentPage, this.defaultPageSize)
             .subscribe(
                 res => {
                     if (res.responseCode === "00") {
@@ -153,20 +190,22 @@ export class TransactionViewComponent implements OnInit {
                 }
             )
     }
-    viewDemandNote(demandNoteId: any){
-        this.dialog.open(ViewDemandNoteComponent,{
+
+    viewDemandNote(demandNoteId: any) {
+        this.dialog.open(ViewDemandNoteComponent, {
             data: {
                 id: demandNoteId
             }
         }).afterClosed()
             .subscribe(
-                res=> {
-                    if(res) {
+                res => {
+                    if (res) {
                         this.loadData()
                     }
                 }
             )
     }
+
     onCustomAction(action) {
         switch (action.action) {
             case 'viewRecord':

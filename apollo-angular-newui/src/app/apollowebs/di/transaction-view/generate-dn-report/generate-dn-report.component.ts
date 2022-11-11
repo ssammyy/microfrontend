@@ -1,14 +1,14 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {DestinationInspectionService} from "../../../../../core/store/data/di/destination-inspection.service";
+import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 
 @Component({
-    selector: 'app-generate-report',
-    templateUrl: './generate-report.component.html',
-    styleUrls: ['./generate-report.component.css']
+    selector: 'app-generate-dn-report',
+    templateUrl: './generate-dn-report.component.html',
+    styleUrls: ['./generate-dn-report.component.css']
 })
-export class GenerateReportComponent implements OnInit {
+export class GenerateDnReportComponent implements OnInit {
     public form: FormGroup;
     message: any;
     loading = false
@@ -18,20 +18,17 @@ export class GenerateReportComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            station_id: [null],
+            stationId: [null],
             startDate: [null],
             endDate: [null],
             importer: [null],
-            exporter: [null],
-            clearing_agent: [null],
-            hs_code: [null],
-            idf: [null],
-            ucr_number: [null]
+            cfs: [null],
+            status: [null]
         })
     }
 
     saveRecord() {
-        this.dialogRef.close(this.diService.formatDownloadReport(this.form.value, 'idf_report'))
+        this.dialogRef.close(this.diService.formatDownloadReport(this.form.value, 'demand_note_report'))
     }
 
 }
