@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 </mat-tab>
-                <mat-tab label="Approved For Review">
+                <mat-tab label="Approved For NWI">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
@@ -127,7 +127,7 @@
                     </div>
                 </mat-tab>
 
-                <mat-tab label="Rejected For Review">
+                <mat-tab label="Rejected For NWI">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
@@ -264,7 +264,7 @@
                                             <div class="material-datatables">
                                                 <table class="table table-striped table-bordered table-hover"
                                                        datatable
-                                                       [dtOptions]="dtOptionsB" [dtTrigger]="dtTrigger2">
+                                                       [dtOptions]="dtOptionsB" [dtTrigger]="dtTrigger4">
                                                     <thead>
                                                     <tr>
                                                         <th class="task">Document Name</th>
@@ -300,97 +300,106 @@
                             <br>
                             <form (ngSubmit)="onReviewTask()" [formGroup]="stdHOFReview">
 
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h3>Check Inputs</h3>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="col-sm-12 checkbox-radios">
-                                            <mat-checkbox
-                                                    aria-describedby="inputGroup-sizing-sm"
-                                                    aria-label="Small"
-                                                    name="isTcSec"
-                                                    formControlName="isTcSec"
-                                                    class="form-check-input" value="1"
-                                                    id="isTcSec">
-                                                Technical Committee Secretary is available?
-                                            </mat-checkbox>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
 
-                                        <div class="form-group">
-                                            <label><b>Tc Sec Assignment</b></label>
-                                            <mat-form-field>
-                                                <mat-select
-                                                        aria-label="Small"
-                                                        aria-describedby="inputGroup-sizing-lg"
-                                                        class="form-control" required
-                                                        name="isTc"
-                                                        formControlName="isTc"
-                                                        placeholder="Assign Tc Secretary">
-                                                    <mat-option *ngFor="let tcSec of tcSecs"
-                                                                value="{{tcSec.id}}">{{tcSec.firstName}} {{tcSec.lastName}}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br><br>
-
-                                <div class="row">
-                                    <div class="col-6">
-                                        <h5>Desired Output</h5>
-                                        <div class="col-md-4">
-                                            <div class="col-sm-12 checkbox-radios">
-                                                <mat-radio-group
-                                                        aria-labelledby="example-radio-group-label"
-                                                        class="example-radio-group"
-                                                        name="sdOutput"
-                                                        formControlName="sdOutput">
-                                                    <mat-radio-button
-                                                            aria-describedby="inputGroup-sizing-sm"
-                                                            aria-label="Small"
-                                                            *ngFor="let season of seasons"
-                                                            [value]="season">
-                                                        {{season}}
-
-                                                    </mat-radio-button>
-                                                </mat-radio-group>
-                                                <br>
-                                                <br>
-
+                                <div class="col-md-12">
+                                    <div class="card ">
+                                        <div class="card-header card-header-rose card-header-text">
+                                            <div class="card-text">
+                                                <h4 class="card-title">Review Standard Request</h4>
                                             </div>
                                         </div>
+                                        <div class="card-body ">
+                                            <div class="row">
 
-                                    </div>
-                                    <div class="col-6">
-                                        <h5>Desired Result</h5>
-                                        <div class="col-md-4">
-                                            <div class="col-sm-12 checkbox-radios">
-                                                <mat-radio-group
-                                                        aria-labelledby="example-radio-group-label"
-                                                        class="example-radio-group"
-                                                        name="resultOutput"
-                                                        formControlName="resultOutput">
-                                                    <mat-radio-button
+                                                <div class="col-sm-6 checkbox-radios">
+
+                                                    <mat-checkbox
                                                             aria-describedby="inputGroup-sizing-sm"
                                                             aria-label="Small"
-                                                            *ngFor="let season of outputs"
-                                                            [value]="season">
-                                                        {{season}}
+                                                            name="isTcSec"
+                                                            formControlName="isTcSec"
+                                                            class="example-margin mb-0" value="1"
+                                                            id="isTcSec">
+                                                        Technical Committee Secretary is available?
+                                                    </mat-checkbox>
 
-                                                    </mat-radio-button>
-                                                </mat-radio-group>
-                                                <br>
-                                                <br>
+                                                </div>
+                                                <div class="col-sm-6 checkbox-radios">
+                                                    <label><b>Tc Sec Assignment</b></label>
+                                                    <mat-form-field>
+                                                        <mat-select
+                                                                aria-label="Small"
+                                                                aria-describedby="inputGroup-sizing-lg"
+                                                                class="form-control" required
+                                                                name="isTc"
+                                                                formControlName="isTc"
+                                                                placeholder="Assign Tc Secretary">
+                                                            <mat-option *ngFor="let tcSec of tcSecs"
+                                                                        value="{{tcSec.id}}">{{tcSec.firstName}} {{tcSec.lastName}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-6 checkbox-radios">
+                                                    <h5><b>Desired Output</b></h5>
+                                                    <div class="col-sm-12 checkbox-radios">
+                                                        <mat-radio-group
+                                                                aria-labelledby="example-radio-group-label"
+                                                                class="example-radio-group"
+                                                                name="sdOutput"
+                                                                formControlName="sdOutput">
+                                                            <mat-radio-button
+                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                    aria-label="Small"
+                                                                    *ngFor="let season of seasons"
+                                                                    [value]="season">
+                                                                {{season}}
+
+                                                            </mat-radio-button>
+                                                        </mat-radio-group>
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-sm-6 checkbox-radios">
+                                                    <h5><b>Desired Result</b></h5>
+                                                    <div class="col-md-4">
+                                                        <div class="col-sm-12 checkbox-radios">
+                                                            <mat-radio-group
+                                                                    aria-labelledby="example-radio-group-label"
+                                                                    class="example-radio-group"
+                                                                    name="sdResult"
+                                                                    formControlName="sdResult">
+                                                                <mat-radio-button
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        *ngFor="let season of outputs"
+                                                                        [value]="season">
+                                                                    {{season}}
+
+                                                                </mat-radio-button>
+                                                            </mat-radio-group>
+                                                            <br>
+                                                            <br>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <mat-form-field class="example-full-width">
+                                                        <input matInput type="text" placeholder="Reason For Decision"
+                                                               formControlName="reason">
+                                                    </mat-form-field>
+
+                                                </div>
 
                                             </div>
+
+
                                         </div>
-
                                     </div>
-
                                 </div>
                                 <input hidden formControlName="id"
                                        [ngModel]="selectedStandard" name="id">
@@ -546,7 +555,7 @@
                                             <div class="material-datatables">
                                                 <table class="table table-striped table-bordered table-hover"
                                                        datatable
-                                                       [dtOptions]="dtOptionsB" [dtTrigger]="dtTrigger2">
+                                                       [dtOptions]="dtOptionsB" [dtTrigger]="dtTrigger5">
                                                     <thead>
                                                     <tr>
                                                         <th class="task">Document Name</th>
@@ -580,6 +589,37 @@
                             </div>
 
                             <br>
+                            <div class="row">
+                                <div class=" col-12">
+                                    <ul class="list-group">
+                                        <li class="list-group-item active">Review Details</li>
+                                        <li style="background: lightgray"
+                                            class="list-group-item"><b>TC Secretary
+                                            Assigned:</b>{{ actionRequest?.tcSecAssigned}}</li>
+
+                                        <li style="background: lightgray"
+                                            class="list-group-item"><b>Desired
+                                            Output: </b>{{actionRequest?.desiredOutput}}</li>
+                                        <li style="background: lightgray"
+                                            class="list-group-item"><b>Desired
+                                            Result: </b>{{actionRequest?.desiredResult}}</li>
+                                        <li style="background: lightgray"
+                                            class="list-group-item"><b>Reason For Result: </b>{{actionRequest?.reason}}
+                                        </li>
+                                        <li style="background: lightgray"
+                                            class="list-group-item"><b>Reviewed By: </b>{{actionRequest?.reviewedBy}}
+                                        </li>
+                                        <li style="background: lightgray"
+                                            class="list-group-item"><b>Reviewed
+                                            On: </b>{{formatFormDate(actionRequest?.reviewDate)}}
+                                        </li>
+                                        <li style="background: lightgray"
+                                            class="list-group-item"><b>Status: </b>{{actionRequest?.status}}</li>
+
+
+                                    </ul>
+                                </div>
+                            </div>
 
 
                         </div>

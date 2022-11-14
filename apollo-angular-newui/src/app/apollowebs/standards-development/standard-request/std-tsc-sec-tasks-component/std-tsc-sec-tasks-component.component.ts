@@ -1,5 +1,5 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder} from "@angular/forms";
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {LiaisonOrganization, StandardRequestB, Stdtsectask} from "../../../../core/store/data/std/request_std.model";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -9,13 +9,21 @@ import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {ErrorStateMatcher} from "@angular/material/core";
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+        const isSubmitted = form && form.submitted;
+        return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    }
+}
 
 @Component({
     selector: 'app-std-tsc-sec-tasks-component',
     templateUrl: './std-tsc-sec-tasks-component.component.html',
     styleUrls: ['./std-tsc-sec-tasks-component.component.css']
 })
-export class  StdTscSecTasksComponentComponent implements OnInit {
+export class StdTscSecTasksComponentComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
     @ViewChild(DataTableDirective, {static: false})
@@ -29,9 +37,16 @@ export class  StdTscSecTasksComponentComponent implements OnInit {
 
     public secTasks: StandardRequestB[] = [];
     public tscsecRequest !: Stdtsectask | undefined;
+
+
+    @Input() errorMsg: string;
+    @Input() displayError: boolean;
+    stdNwiFormGroup: FormGroup;
     public uploadedFiles: FileList;
     public uploadedFilesB: FileList;
     public uploadedFilesC: FileList;
+    validTextType: boolean = false;
+    validNumberType: boolean = false;
 
     public nwiRequest !: StandardRequestB | undefined;
 
@@ -54,14 +69,32 @@ export class  StdTscSecTasksComponentComponent implements OnInit {
     ) {
     }
 
+    isFieldValid(form: FormGroup, field: string) {
+        return !form.get(field).valid && form.get(field).touched;
+    }
+
+    displayFieldCss(form: FormGroup, field: string) {
+        return {
+            'has-error': this.isFieldValid(form, field),
+            'has-feedback': this.isFieldValid(form, field)
+        };
+    }
+
+
+    validateAllFormFields(formGroup: FormGroup) {
+        Object.keys(formGroup.controls).forEach(field => {
+            const control = formGroup.get(field);
+            if (control instanceof FormControl) {
+                control.markAsTouched({onlySelf: true});
+            } else if (control instanceof FormGroup) {
+                this.validateAllFormFields(control);
+            }
+        });
+    }
+
     ngOnInit(): void {
         this.getTCSECTasks();
         this.getLiasisonOrganization();
-
-
-        console.log(this.dropdownList);
-
-
         this.dropdownSettings = {
             singleSelection: false,
             idField: 'id',
@@ -72,6 +105,34 @@ export class  StdTscSecTasksComponentComponent implements OnInit {
             allowSearchFilter: true
         };
 
+        this.stdNwiFormGroup = this.formBuilder.group({
+
+            proposalTitle: ['', Validators.required],
+            scope: ['', Validators.required],
+            purpose: ['', Validators.required],
+            targetDate: ['', Validators.required],
+            similarStandards: ['', Validators.required],
+            liaisonOrganisationData: [this.selectedItems, Validators.required],
+            draftAttached: [''],
+            outlineAttached: [''],
+            draftOutlineImpossible: [''],
+            outlineSentLater: [''],
+            nameOfProposer: ['', Validators.required],
+            organization: ['', Validators.required],
+            circulationDate: ['', Validators.required],
+            closingDate: ['', Validators.required],
+            dateOfPresentation: ['', Validators.required],
+            nameOfTC: ['', Validators.required],
+            referenceNumber: ['', Validators.required],
+            standardId: ['', Validators.required],
+
+        });
+
+
+    }
+
+    get formStdRequest(): any {
+        return this.stdNwiFormGroup.controls;
     }
 
     public getLiasisonOrganization(): void {
@@ -130,13 +191,13 @@ export class  StdTscSecTasksComponentComponent implements OnInit {
 
     }
 
+
     public onUpload(secTask: Stdtsectask): void {
         this.SpinnerService.show();
 
         if (secTask.liaisonOrganisationData != null) {
             //console.log(JSON.stringify(secTask.liaisonOrganisationData.name));
             secTask.liaisonOrganisation = JSON.stringify(secTask.liaisonOrganisationData);
-            console.log(secTask);
         }
 
         this.standardDevelopmentService.uploadNWI(secTask).subscribe(
@@ -154,18 +215,6 @@ export class  StdTscSecTasksComponentComponent implements OnInit {
             }
         )
     }
-
-    /*uploadNWI(): void {
-      this.standardDevelopmentService.uploadNWI(this.stdTSecFormGroup.value).subscribe(
-        (response: Stdtsectask) => {
-          console.log(response);
-          this.getTCSECTasks();
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
-        }
-      );
-    }*/
 
     public onOpenModal(secTask: StandardRequestB, mode: string): void {
 
@@ -185,6 +234,27 @@ export class  StdTscSecTasksComponentComponent implements OnInit {
         container.appendChild(button);
         button.click();
 
+    }
+
+    textValidationType(e) {
+        this.validTextType = !!e;
+    }
+
+    numberValidationType(e) {
+        this.validNumberType = !!e;
+    }
+
+    saveNwi(formDirective): void {
+        if (this.stdNwiFormGroup.invalid) {
+            this.stdNwiFormGroup.markAllAsTouched();
+            this.validateAllFormFields(this.stdNwiFormGroup);
+
+            return;
+        } else {
+            this.onUpload(this.stdNwiFormGroup.value)
+            formDirective.resetForm();
+            this.stdNwiFormGroup.reset()
+        }
     }
 
 }

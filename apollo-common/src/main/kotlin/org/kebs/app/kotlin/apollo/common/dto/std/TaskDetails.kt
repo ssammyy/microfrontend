@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.common.dto.std
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
+import javax.print.attribute.standard.DateTimeAtCreation
 import kotlin.collections.HashMap
 
 
@@ -51,9 +52,9 @@ data class StandardsDto(
     var tcSecAssigned: String? = null,
     var reviewedBy: String? = null,
     var reviewDate: Timestamp? = null,
-    var reason: String? = null,
     var desiredOutput: String?=null,
-
+    var desiredResult: String?=null,
+    var reason: String? = null,
 
     var createdBy: String? = null,
     var createdOn: Timestamp? = null,
