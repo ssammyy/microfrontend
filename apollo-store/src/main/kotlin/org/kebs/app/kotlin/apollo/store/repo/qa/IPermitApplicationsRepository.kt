@@ -296,6 +296,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitAwardStatus: Int,
     ): List<PermitApplicationsEntity>?
 
+
+
     fun findByPermitTypeAndOldPermitStatusIsNotNullAndPermitAwardStatus(
         permitType: Long,
         permitAwardStatus: Int,

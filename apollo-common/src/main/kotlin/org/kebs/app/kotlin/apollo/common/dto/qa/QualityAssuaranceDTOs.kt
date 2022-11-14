@@ -441,8 +441,8 @@ data class ReportPermitEntityDto(
     var physicalAddress: String? = null,
     var telephoneNo: String? = null,
     var email: String? = null,
-    var pscApprovalDate: Timestamp?=null,
-    var inspectionDate:  Date? = null,
+    var pscApprovalDate: Timestamp? = null,
+    var inspectionDate: Date? = null,
 
 
     )
@@ -647,6 +647,21 @@ data class FilterDto(
 
 
     )
+
+data class KebsWebistePermitEntityDto(
+    var companyName: String? = null,
+    var physical_address: String? = null,
+    var product_id: String? = null,
+    var product_name: String? = null,
+    var product_brand: String? = null,
+    var KS_NO: String? = null,
+    var ks_title: String? = null,
+    var issue_date: String? = null,
+    var expiry_date: String? = null,
+
+
+    )
+
 
 
 

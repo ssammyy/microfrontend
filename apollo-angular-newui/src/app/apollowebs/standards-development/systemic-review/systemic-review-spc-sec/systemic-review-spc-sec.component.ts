@@ -208,7 +208,7 @@ export class SystemicReviewSpcSecComponent implements OnInit {
   }
 
   toggleDisplayRecommendationsTab(){
-    this.isShowRecommendationsTab = !this.isShowProposalCommentsTab;
+    this.isShowRecommendationsTab = !this.isShowRecommendationsTab;
     this.isShowProposalCommentsTab= true;
   }
 

@@ -78,7 +78,7 @@ class HOFFeedback {
     }
 
     override fun toString(): String {
-        return "HOFFeedback(id=$id, sdRequestID=$sdRequestID, isTc=$isTc, isTcSec=$isTcSec, sdOutput=$sdOutput, reviewedBy=$reviewedBy,  taskId=$taskId)"
+        return "HOFFeedback(id=$id, sdRequestID=$sdRequestID, isTc=$isTc, isTcSec=$isTcSec, sdOutput=$sdOutput, reviewedBy=$reviewedBy, sdResult=$sdResult, taskId=$taskId)"
     }
 
 

@@ -139,4 +139,8 @@ class StandardRequest {
     @Basic
     var tcSecAssigned: String? = null
 
+    @Column(name = "NWI_STATUS")
+    @Basic
+    var nwiStatus: String? = null
+
 }

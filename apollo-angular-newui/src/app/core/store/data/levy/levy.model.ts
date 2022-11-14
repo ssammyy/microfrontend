@@ -126,16 +126,16 @@ export interface CompanyModel {
 
 }
 export class LevyFilterDto {
-    startDate: string;
-    endDate: string;
+    startDate: Timestamp<any>;
+    endDate: Timestamp<any>;
     businessLines: number;
     region : number;
 
 }
 
 export class LevyFiltersDto {
-    periodFrom: string;
-    periodTo: string;
+    periodFrom: Timestamp<any>;
+    periodTo: Timestamp<any>;
     businessLines: number;
     region : number;
 

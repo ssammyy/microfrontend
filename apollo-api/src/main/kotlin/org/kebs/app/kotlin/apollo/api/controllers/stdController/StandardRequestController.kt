@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.StandardRequestServ
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.std.StandardNWIRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.StandardRequestRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
@@ -30,6 +31,8 @@ class StandardRequestController(
     val relevantDocumentsNWIService: RelevantDocumentsNWIService,
     val referenceMaterialJustificationService: ReferenceMaterialJustificationService,
     private val standardRequestRepository: StandardRequestRepository,
+    private val standardNWIRepository: StandardNWIRepository,
+
 
     ) {
 
@@ -172,7 +175,6 @@ class StandardRequestController(
     @PostMapping("standard/hof/review")
     @ResponseBody
     fun hofReview(@RequestBody hofFeedback: HOFFeedback): ServerResponse {
-        println(hofFeedback)
         return ServerResponse(
             HttpStatus.OK,
             "Successfully completed HOF review",
@@ -517,6 +519,45 @@ class StandardRequestController(
         @RequestParam("standardId") standardId: Long,
     ): Collection<DatKebsSdStandardsEntity?>? {
         return standardRequestService.getDocuments(standardId)
+    }
+
+    //NWI Upload Documents
+    @PostMapping("/upload/uploadDocs")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadDocs(
+        @RequestParam("nwiId") nwiId: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        @RequestParam("type") type: String,
+        @RequestParam("docDescription") docDescription: String,
+
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+
+        val nwi = standardNWIRepository.findByIdOrNull(nwiId)
+            ?: throw Exception("APPLICATION DOES NOT EXIST")
+        docFile.forEach { u ->
+            val upload = DatKebsSdStandardsEntity()
+            with(upload) {
+                sdDocumentId = nwi.id
+                documentTypeDef = type
+
+            }
+
+            standardRequestService.uploadSDFileCommittee(
+                upload,
+                u,
+                "NWI Documents",
+                nwi.id,
+                docDescription
+
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Documents Uploaded successfully"
+
+        return sm
     }
 
 

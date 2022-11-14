@@ -68,8 +68,8 @@
                                                                 <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                                                                     <a class="nav-item nav-link active" id="nav-proposal-tab" data-toggle="tab" href="#nav-proposal" role="tab" aria-controls="nav-proposal" aria-selected="true">Proposal</a>
                                                                     <a class="nav-item nav-link" id="nav-proposal-comments-tab" (click)=toggleStandardsProposalCommentsTab(actionRequest?.taskData?.reviewID) data-toggle="tab" href="#nav-proposal-comments" role="tab" aria-controls="nav-proposal-comments" aria-selected="false">Stakeholders Comments</a>
-                                                                    <a class="nav-item nav-link" id="nav-approve-proposal-tab" data-toggle="tab" href="#nav-approve-proposal" role="tab" aria-controls="nav-approve-proposal" aria-selected="false">Approve</a>
-                                                                    <a class="nav-item nav-link" id="nav-reject-proposal-tab" data-toggle="tab" href="#nav-reject-proposal" role="tab" aria-controls="nav-reject-proposal" aria-selected="false">Reject</a>
+                                                                    <a class="nav-item nav-link" id="nav-approve-proposal-tab" (click)=toggleDisplayRecommendationsTab() data-toggle="tab" href="#nav-approve-proposal" role="tab" aria-controls="nav-approve-proposal" aria-selected="false">Approve</a>
+                                                                    <a class="nav-item nav-link" id="nav-reject-proposal-tab" (click)=toggleDisplayRecommendationsTab() data-toggle="tab" href="#nav-reject-proposal" role="tab" aria-controls="nav-reject-proposal" aria-selected="false">Reject</a>
                                                                 </div>
                                                             </nav>
                                                             <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">

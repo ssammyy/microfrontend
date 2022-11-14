@@ -1,107 +1,109 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
-
-import java.io.File
 import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
-@Table(name="SD_NWI")
+@Table(name = "SD_NWI")
 class StandardNWI {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="ID")
-    var id:Long=0
+    @Column(name = "ID")
+    var id: Long = 0
 
     @Transient
     @JsonProperty("taskId")
-    var taskId:String?=null
+    var taskId: String? = null
 
-    @Column(name="PROPOSAL_TITLE")
+    @Column(name = "PROPOSAL_TITLE")
     @Basic
-    var proposalTitle:String? =null
+    var proposalTitle: String? = null
 
-    @Column(name="SCOPE")
+    @Column(name = "SCOPE")
     @Basic
-    var scope:String? =null
+    var scope: String? = null
 
-    @Column(name="PURPOSE")
+    @Column(name = "PURPOSE")
     @Basic
-    var purpose:String? =null
+    var purpose: String? = null
 
-    @Column(name="TARGET_DATE")
+    @Column(name = "TARGET_DATE")
     @Basic
-    var targetDate:String? =null
+    var targetDate: String? = null
 
-    @Column(name="SIMILAR_STANDARDS")
+    @Column(name = "SIMILAR_STANDARDS")
     @Basic
-    var similarStandards:String? =null
+    var similarStandards: String? = null
 
-    @Column(name="LIAISON_ORGANIZATION")
+    @Column(name = "LIAISON_ORGANIZATION")
     @Basic
-    var liaisonOrganisation:String? =null
+    var liaisonOrganisation: String? = null
 
 
-    @Column(name="DRAFT_ATTACHED")
+    @Column(name = "DRAFT_ATTACHED")
     @Basic
-    var draftAttached:String? =null
+    var draftAttached: String? = null
 
-    @Column(name="OUTLINE_ATTACHED")
+    @Column(name = "OUTLINE_ATTACHED")
     @Basic
-    var outlineAttached:String? =null
+    var outlineAttached: String? = null
 
-    @Column(name="DRAFT_OUTLINE_IMPOSSIBLE")
+    @Column(name = "DRAFT_OUTLINE_IMPOSSIBLE")
     @Basic
-    var draftOutlineImpossible:String? =null
+    var draftOutlineImpossible: String? = null
 
-    @Column(name="OUTLINE_SENT_LATER")
+    @Column(name = "OUTLINE_SENT_LATER")
     @Basic
-    var outlineSentLater:String? =null
+    var outlineSentLater: String? = null
 
-    @Column(name="NAME_OF_PROPOSER")
+    @Column(name = "NAME_OF_PROPOSER")
     @Basic
-    var nameOfProposer:String? =null
+    var nameOfProposer: String? = null
 
-    @Column(name="ORGANIZATION")
+    @Column(name = "ORGANIZATION")
     @Basic
-    var organization:String? =null
+    var organization: String? = null
 
-    @Column(name="CIRCULATION_DATE")
+    @Column(name = "CIRCULATION_DATE")
     @Basic
-    var circulationDate:String? =null
+    var circulationDate: String? = null
 
-    @Column(name="CLOSING_DATE")
+    @Column(name = "CLOSING_DATE")
     @Basic
-    var closingDate:String? =null
+    var closingDate: String? = null
 
-    @Column(name="DATE_OF_PRESENTATION")
+    @Column(name = "DATE_OF_PRESENTATION")
     @Basic
-    var dateOfPresentation:String? =null
+    var dateOfPresentation: String? = null
 
-    @Column(name="NAME_OF_TC")
+    @Column(name = "NAME_OF_TC")
     @Basic
-    var nameOfTC:String? =null
+    var nameOfTC: String? = null
 
-    @Column(name="REFERENCE_NUMBER")
+    @Column(name = "REFERENCE_NUMBER")
     @Basic
-    var referenceNumber:String? =null
+    var referenceNumber: String? = null
 
-    @Column(name="CREATED_ON")
+    @Column(name = "CREATED_ON")
     @Basic
-    var createdOn:Timestamp? =null
+    var createdOn: Timestamp? = null
 
-    @Column(name="MODIFIED_ON")
+    @Column(name = "MODIFIED_ON")
     @Basic
-    var modifiedOn:Timestamp? =null
+    var modifiedOn: Timestamp? = null
 
-    @Column(name="DELETED_ON")
+    @Column(name = "DELETED_ON")
     @Basic
-    var deletedOn:Timestamp? =null
+    var deletedOn: Timestamp? = null
 
-    @Column(name="STATUS")
+    @Column(name = "STATUS")
     @Basic
-    var status:String? =null
+    var status: String? = null
+
+    @Column(name = "STANDARD_ID")
+    @Basic
+    var standardId: Long? = null
 
 
     override fun equals(other: Any?): Boolean {

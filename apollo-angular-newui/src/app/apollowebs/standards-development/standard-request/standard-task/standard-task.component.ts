@@ -11,6 +11,7 @@ import {Department, StandardRequest, UsersEntity} from "../../../../core/store/d
 import {MatSelect} from "@angular/material/select";
 import {MatOption} from "@angular/material/core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {formatDate} from "@angular/common";
 
 @Component({
     selector: 'app-standard-task',
@@ -24,6 +25,10 @@ export class StandardTaskComponent implements OnInit {
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
+    dtTrigger4: Subject<any> = new Subject<any>();
+    dtTrigger5: Subject<any> = new Subject<any>();
+    dtTrigger6: Subject<any> = new Subject<any>();
+
     // data source for the radio buttons:
     seasons: string[] = ['Develop a standard through committee draft', 'Adopt existing International Standard', 'Review existing Kenyan Standard',
         'Development of publicly available specification', 'Development of national workshop agreement', 'Adoption of EA and other regions standards'];
@@ -36,8 +41,10 @@ export class StandardTaskComponent implements OnInit {
     blob: Blob;
     selectedDepartment: string;
     selectedStandard: number;
-    resultOutput: string;
+    sdResult: string;
 
+    dateFormat = "yyyy-MM-dd";
+    language = "en";
 
     // to dynamically (by code) select item
     // from the calling component add:
@@ -87,17 +94,21 @@ export class StandardTaskComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.getHOFTasks();
-        this.getApprovedTasks();
-        this.getRejectedTasks();
-
-        this.sdOutput = this.selectSeason;
-        this.resultOutput = this.selectDesiredResult;
-
+        this.dtOptions = {
+            pagingType: 'full_numbers',
+            processing: true,
+            deferRender: true,
+            destroy:true
+        };
         this.dtOptionsB = {
             searching: false,
-            paging: false, info: false
+            paging: false, info: false,
+            destroy:true
+
         };
+
+        this.sdOutput = this.selectSeason;
+        this.sdResult = this.selectDesiredResult;
 
         this.stdDepartmentChange = this.formBuilder.group({
             departmentId: ['', Validators.required],
@@ -110,9 +121,14 @@ export class StandardTaskComponent implements OnInit {
             sdOutput: ['', Validators.required],
             id: ['', Validators.required],
             sdRequestID: ['', Validators.required],
-            resultOutput: ['', Validators.required],
+            sdResult: ['', Validators.required],
+            reason: ['', Validators.required],
 
         });
+        this.getHOFTasks();
+        this.getApprovedTasks();
+        this.getRejectedTasks();
+
 
     }
 
@@ -193,6 +209,8 @@ export class StandardTaskComponent implements OnInit {
                     this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
                     this.SpinnerService.hide();
                     this.getHOFTasks();
+                    this.getApprovedTasks();
+                    this.getRejectedTasks();
                     this.stdHOFReview.reset();
                     this.hideModel()
                 },
@@ -218,6 +236,7 @@ export class StandardTaskComponent implements OnInit {
                 (response) => {
                     this.showToasterSuccess(response.httpStatus, `Section Reassigned`);
                     this.getHOFTasks();
+
                     this.hideModelB()
                     this.clear()
 
@@ -292,6 +311,9 @@ export class StandardTaskComponent implements OnInit {
             this.dtTrigger1.next();
             this.dtTrigger2.next();
             this.dtTrigger3.next();
+            this.dtTrigger4.next();
+            this.dtTrigger5.next();
+            this.dtTrigger6.next();
 
         });
 
@@ -359,6 +381,21 @@ export class StandardTaskComponent implements OnInit {
     showToasterError(title: string, message: string) {
         this.notifyService.showError(message, title)
 
+    }
+
+    ngOnDestroy(): void {
+        // Do not forget to unsubscribe the event
+        this.dtTrigger1.unsubscribe();
+        this.dtTrigger2.unsubscribe();
+        this.dtTrigger3.unsubscribe();
+        this.dtTrigger4.unsubscribe();
+        this.dtTrigger5.unsubscribe();
+        this.dtTrigger6.unsubscribe();
+
+    }
+
+    formatFormDate(date: Date) {
+        return formatDate(date, this.dateFormat, this.language);
     }
 
 }

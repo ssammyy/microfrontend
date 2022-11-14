@@ -30,6 +30,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDa
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.api.security.service.CustomAuthenticationProvider
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaMessageDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaPushDto
@@ -75,9 +76,11 @@ class QualityAssuranceHandler(
     private val limsServices: LimsServices,
     private val qaDaoServices: QADaoServices,
     private val jasyptStringEncryptor: StringEncryptor,
-    private val iQaProcessStatusRepository: IQaProcessStatusRepository
+    private val iQaProcessStatusRepository: IQaProcessStatusRepository,
+    private val reactiveAuthenticationManager: CustomAuthenticationProvider,
 
-) {
+
+    ) {
 
 
     var employeeUserTypeId = 5L
@@ -4079,4 +4082,84 @@ class QualityAssuranceHandler(
         }
 
     }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllFmarksAwardedPermitsForReportsApi(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = 3
+
+            var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
+
+
+            permitListAllApplications = qaDaoServices.listPermitsWebsite(
+                qaDaoServices.findReportAllAwardedPermitsKebsWebsite(
+                    permitTypeID.toLong(),
+                    map.activeStatus,
+                    map.inactiveStatus
+                ), map
+            )
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllSmarksAwardedPermitsForReportsApi(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = 2
+
+            var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
+
+
+            permitListAllApplications = qaDaoServices.listPermitsWebsite(
+                qaDaoServices.findReportAllAwardedPermitsKebsWebsite(
+                    permitTypeID.toLong(),
+                    map.activeStatus,
+                    map.inactiveStatus
+                ), map
+            )
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllDmarksAwardedPermitsForReportsApi(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = 1
+
+            var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
+
+
+            permitListAllApplications = qaDaoServices.listPermitsWebsite(
+                qaDaoServices.findReportAllAwardedPermitsKebsWebsite(
+                    permitTypeID.toLong(),
+                    map.activeStatus,
+                    map.inactiveStatus
+                ), map
+            )
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
 }
