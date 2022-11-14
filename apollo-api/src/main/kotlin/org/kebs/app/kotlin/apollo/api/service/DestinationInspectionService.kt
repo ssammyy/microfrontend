@@ -1944,7 +1944,7 @@ class DestinationInspectionService(
             // Start BPM process for assigning inspection
             this.diBpmn.startAssignmentProcesses(data, cdDetails)
             // Wait for BPM process to complete
-            Thread.sleep(10_000)
+            Thread.sleep(2_000)
 
             KotlinLogging.logger { }.info("AUTO ASSIGN COMPLETED: ${cdDetails.uuid}-> Supervisor[${it.userName}]")
         } ?: KotlinLogging.logger { }.info("AUTO ASSIGN FAILED UNABLE TO GET SUPERVISOR for CFS")
