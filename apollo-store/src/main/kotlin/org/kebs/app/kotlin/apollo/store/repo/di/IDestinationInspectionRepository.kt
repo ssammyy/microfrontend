@@ -23,22 +23,31 @@ import java.util.*
 @Repository
 interface IConsignmentDocumentDetailsRepository : HazelcastRepository<ConsignmentDocumentDetailsEntity, Long> {
     fun findByFreightStation_IdInAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
-            freightStation: List<Long>,
-            cdType: ConsignmentDocumentTypesEntity,
-            page: Pageable
+        freightStation: List<Long>,
+        cdType: ConsignmentDocumentTypesEntity,
+        page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
+        cdType: ConsignmentDocumentTypesEntity,
+        page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
+        page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
-            freightStation: List<Long>,
-            page: Pageable
+        freightStation: List<Long>,
+        page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
 
     fun findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
-            assignedInspectionOfficer: UsersEntity,
-            cdType: ConsignmentDocumentTypesEntity,
-            statuses: List<Int?>,
-            page: Pageable
+        assignedInspectionOfficer: UsersEntity,
+        cdType: ConsignmentDocumentTypesEntity,
+        statuses: List<Int?>,
+        page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findAllByAssignerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
@@ -70,37 +79,64 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     fun findByUuid(uuid: String): ConsignmentDocumentDetailsEntity?
     fun findByUuidIn(uuid: Iterable<String>): List<ConsignmentDocumentDetailsEntity>
     fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndCompliantStatusIn(
-            cfsIds: MutableList<Long>,
-            cdType: ConsignmentDocumentTypesEntity,
-            statuses: List<Int?>,
-            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+        cfsIds: MutableList<Long>,
+        cdType: ConsignmentDocumentTypesEntity,
+        statuses: List<Int?>,
+        page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findByFreightStation_IdInAndCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
-            cfsIds: MutableList<Long>,
-            cdType: ConsignmentDocumentTypesEntity,
-            statuses: List<Int?>,
-            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+        cfsIds: MutableList<Long>,
+        cdType: ConsignmentDocumentTypesEntity,
+        statuses: List<Int?>,
+        page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
+        cdType: ConsignmentDocumentTypesEntity,
+        statuses: List<Int?>,
+        page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findByFreightStation_IdInAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
-            cfsIds: MutableList<Long>,
-            statuses: List<Int?>,
-            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+        cfsIds: MutableList<Long>,
+        statuses: List<Int?>,
+        page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
+        statuses: List<Int?>,
+        page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
 
 
     fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
-            usersEntity: UsersEntity,
-            statuses: List<Int?>,
-            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+        usersEntity: UsersEntity,
+        statuses: List<Int?>,
+        page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
-            usersEntity: UsersEntity,
-            cdStatus: ConsignmentDocumentTypesEntity,
-            statuses: List<Int?>, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+        usersEntity: UsersEntity,
+        cdStatus: ConsignmentDocumentTypesEntity,
+        statuses: List<Int?>, page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findAllByCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
+        cdStatus: ConsignmentDocumentTypesEntity,
+        statuses: List<Int?>, page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findAllByUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
+        statuses: List<Int?>,
+        page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIn(
-            usersEntity: UsersEntity,
-            statuses: List<Int>,
-            page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+        usersEntity: UsersEntity,
+        statuses: List<Int>,
+        page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
 }
 
 @Repository
@@ -391,7 +427,11 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
 interface IDemandNoteItemsDetailsRepository : HazelcastRepository<CdDemandNoteItemsDetailsEntity, Long> {
     fun findByDemandNoteId(demandNoteId: Long): List<CdDemandNoteItemsDetailsEntity>
     fun findByItemId(itemId: Long?): List<CdDemandNoteItemsDetailsEntity>
-    fun findByItemIdAndDemandNoteId(itemId: Long?, demandNoteId: Long?): CdDemandNoteItemsDetailsEntity?
+    fun findByItemIdAndDemandNoteIdAndFeeId(
+        itemId: Long?,
+        demandNoteId: Long?,
+        feeId: Long?
+    ): CdDemandNoteItemsDetailsEntity?
 }
 
 @Repository

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Actions} from '@ngrx/effects';
 import {ToastrService} from 'ngx-toastr';
 import {HttpErrorResponse} from '@angular/common/http';
+import {throwError} from "rxjs";
 
 @Injectable({
     providedIn: 'root',
@@ -25,8 +26,11 @@ export class HandleErrorService {
             // Error handled during download
             err.error.text().then((txt) => {
                 const res = JSON.parse(txt);
-                this.toastrService.warning(res.message);
+                errorMessage = res.message
             });
+            if (errorMessage) {
+                throwError(errorMessage);
+            }
         } else {
             // The backend returned an unsuccessful response code.
             // errorMessage = `Error Code: ${err.status},  Message: ${err.error}`;

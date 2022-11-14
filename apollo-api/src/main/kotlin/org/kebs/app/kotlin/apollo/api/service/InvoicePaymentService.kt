@@ -920,7 +920,8 @@ class InvoicePaymentService(
     ): CdDemandNoteItemsDetailsEntity {
         val fee = itemDetails.fee
             ?: throw Exception("Item details with Id = ${itemDetails.itemId}, does not Have any Details For payment Fee Id Selected ")
-        var demandNoteItem = iDemandNoteItemRepo.findByItemIdAndDemandNoteId(itemDetails.itemId, demandNote.id)
+        var demandNoteItem =
+            iDemandNoteItemRepo.findByItemIdAndDemandNoteIdAndFeeId(itemDetails.itemId, demandNote.id, fee.id)
         if (demandNoteItem == null) {
             demandNoteItem = CdDemandNoteItemsDetailsEntity()
         }
@@ -947,6 +948,7 @@ class InvoicePaymentService(
             itemId = itemDetails.itemId
             varField1 = itemDetails.quantity.toString()
             demandNoteId = demandNote.id
+            feeId = fee.id
             product = itemDetails.productName
             rate = fee.rate?.toString()
             rateType = fee.rateType

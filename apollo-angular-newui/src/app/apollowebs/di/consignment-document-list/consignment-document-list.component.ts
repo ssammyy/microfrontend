@@ -22,7 +22,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     activeStatus: string = 'my-tasks';
     previousStatus: string = 'my-tasks'
     searchStatus: any
-    personalTasks = "false"
+    personalTasks = "true"
     defaultPageSize: number = 20
     currentPage: number = 0
     currentPageInternal: number = 0
@@ -146,6 +146,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     private documentTypeUuid: string
     private documentTypeId: any
     isAdmin: boolean = false
+    isReadOnly = false
     supervisorCharge: boolean = false
     inspectionOfficer: boolean = false
     search: Subject<string>
@@ -158,7 +159,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
         this.activeRoute.queryParamMap.subscribe(res => {
             if (res.has("tab")) {
                 this.previousStatus = this.activeStatus
-                if (res.get("tab") in this.allowedStatuses) {
+                if (this.allowedStatuses.includes(res.get("tab"))) {
                     this.activeStatus = res.get("tab")
                 }
             }
@@ -182,6 +183,13 @@ export class ConsignmentDocumentListComponent implements OnInit {
                     this.supervisorCharge = this.diService.hasRole(['DI_OFFICER_CHARGE_READ'], u.roles)
                     this.inspectionOfficer = this.diService.hasRole(['DI_INSPECTION_OFFICER_READ'], u.roles)
                     this.isAdmin = this.diService.hasRole(['DI_ADMIN'], u.roles)
+                    this.isReadOnly = this.diService.hasRole(['DI_DIRECTOR_READ'], u.roles)
+                    if (this.isReadOnly) {
+                        // Read only cannot view these tabs, override
+                        if (['my-tasks', 'waiting'].includes(this.activeStatus)) {
+                            this.toggleStatus('ongoing')
+                        }
+                    }
                 });
         })
     }
