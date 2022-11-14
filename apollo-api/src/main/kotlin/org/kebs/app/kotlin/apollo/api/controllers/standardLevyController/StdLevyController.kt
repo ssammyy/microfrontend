@@ -1895,6 +1895,9 @@ class StdLevyController(
 //        val startDate = Timestamp(parsedStartDate.time)
 //        val endDate = Timestamp(parsedEndDate.time)
 
+        val gson = Gson()
+       KotlinLogging.logger { }.info { " Filters:" + gson.toJson(levyFilterDTO) }
+
         return standardLevyService.getActiveFirmsFilter(startDate ,endDate ,businessLines ,region)
     }
     //Get List of Manufactures
