@@ -52,6 +52,18 @@
                                         <td>{{task.taskData.requestNumber}}</td>
                                         <td>{{task.taskData.departmentName}}</td>
                                         <td>{{task.taskData.issuesAddressed}}</td>
+                                        <td *ngIf="task.name ==='receiveComments'"><button mat-raised-button type="button" data-toggle="modal"
+                                                                                           (click)="viewJustificationPDF( task.taskData.ID,'Justification'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                            <i class="material-icons">visibility</i>
+
+                                        </button>
+                                        </td>
+                                        <td *ngIf="task.name ==='decisionOnJustification'"><button mat-raised-button type="button" data-toggle="modal"
+                                                                                                   (click)="viewJustificationPDF( task.taskData.ID,'Justification'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                            <i class="material-icons">visibility</i>
+
+                                        </button>
+                                        </td>
                                         <td *ngIf="task.name ==='View Justification'"><button mat-raised-button type="button" data-toggle="modal"
                                                                                                 (click)="viewJustificationPDF( task.taskData.ID,'Justification'+task.taskData.ID, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
                                             <i class="material-icons">visibility</i>
@@ -129,7 +141,9 @@
                                         <td style="width: fit-content">{{task.taskData.comments}}</td>
                                         <td >{{task.name}}</td>
                                         <td *ngIf="task.name ==='Review Justification'"><a  (click)="onOpenModal(task,'reviewJustification')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="reviewJustification">Approve Justification</a></td>
+                                        <td *ngIf="task.name ==='receiveComments'"><a  (click)="onOpenModal(task,'reviewJustification')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="reviewJustification">View Comments</a></td>
                                         <td *ngIf="task.name ==='View Justification'"><a  (click)="onOpenModal(task,'viewJustification')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="viewJustification">Approve Justification</a></td>
+                                        <td *ngIf="task.name ==='decisionOnJustification'"><a  (click)="onOpenModal(task,'viewJustification')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="viewJustification">Approve Justification</a></td>
                                         <td *ngIf="task.name ==='Prepare Justification for DI-SDT Approval'"><a  (click)="onOpenModal(task,'prepDiSdt')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px; color: white;" data-original-title="prepareDISDTJustification"> DI-SDT Justification</a></td>
                                         <td *ngIf="task.name==='View Justification For DiSDT Approval'"><a  (click)="onOpenModal(task,'approveDiJustification')" class="btn btn-info btn-sm " data-placement="top"  style="width: 160px; color: white;" data-original-title="Approve"> Approve DI Justification</a></td>
                                         <td *ngIf="task.name==='Prepare Preliminary Draft'"><a  (click)="onOpenModal(task,'preparePD')" class="btn btn-info btn-sm " data-placement="top"  style="width: 160px; color: white;" data-original-title="preparePD"> Prepare Preliminary Draft</a></td>

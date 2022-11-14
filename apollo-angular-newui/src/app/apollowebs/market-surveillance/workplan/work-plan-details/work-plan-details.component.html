@@ -242,7 +242,7 @@
                                     <mat-tab *ngIf="workPlanInspection?.workPlanFiles?.length!=0" label="8">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
-                                            COMPLAINT SCHEDULE ALL PHOTOS/DOCUMENTS ATTACHED
+                                            WORK-PLAN SCHEDULE ALL PHOTOS/DOCUMENTS ATTACHED
                                         </ng-template>
                                         <div class="panel" style="max-height: 388px;">
                                             <div *ngIf="workPlanInspection?.workPlanFiles.length!=0">
@@ -1532,11 +1532,6 @@
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.scfDocId}"
                                            (click)="viewWorkPlanFileSaved(data)"
                                            class="btn btn-sm btn-primary mr-2">Sample Collection View</i>
-                                    </div>
-                                    <div *ngIf="workPlanInspection.ssfDocId != null">
-                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.ssfDocId}"
-                                           (click)="viewWorkPlanFileSaved(data)"
-                                           class="btn btn-sm btn-primary mr-2">Sample Submission View</i>
                                     </div>
                                     <div *ngIf="workPlanInspection.seizureDocId != null">
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.seizureDocId}"
@@ -5206,7 +5201,7 @@
                                         <input [class.is-invalid]="formSampleSubmitForm.lbIdDateOfManf.invalid && formSampleSubmitForm.lbIdDateOfManf.errors"
                                                class="form-control two-column-input"
                                                formControlName="lbIdDateOfManf"
-                                               name="lbIdDateOfManf" type="text">
+                                               name="lbIdDateOfManf" type="date">
                                     </div>
                                 </div>
 
@@ -5217,7 +5212,7 @@
                                         <label><b>EXPIRY DATE</b></label>
                                         <input [class.is-invalid]="formSampleSubmitForm.lbIdExpiryDate.invalid && formSampleSubmitForm.lbIdExpiryDate.errors"
                                                class="form-control two-column-input"
-                                               formControlName="lbIdExpiryDate" name="lbIdExpiryDate" type="text">
+                                               formControlName="lbIdExpiryDate" name="lbIdExpiryDate" type="date">
                                     </div>
                                 </div>
 

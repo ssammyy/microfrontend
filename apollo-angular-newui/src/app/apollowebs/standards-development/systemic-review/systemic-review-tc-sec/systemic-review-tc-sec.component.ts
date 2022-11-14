@@ -85,6 +85,11 @@ export class SystemicReviewTcSecComponent implements OnInit {
     if (mode==='comment'){
       this.actionRequest=StandardReviewTask;
       button.setAttribute('data-target','#commentModal');
+      this.recommendationFormGroup.patchValue(
+          {
+            taskId: this.actionRequest.taskId,
+            proposalID: this.actionRequest.taskData.proposalId
+          });
 
     }
 
