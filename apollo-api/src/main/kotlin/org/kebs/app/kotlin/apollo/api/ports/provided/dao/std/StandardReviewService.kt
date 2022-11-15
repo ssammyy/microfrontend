@@ -253,28 +253,7 @@ class StandardReviewService(
             }
         }
 
-        //taskService.complete(nwaJustification.taskId, variables)
-
-//        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-//            ?.let { t ->
-//                t.list()[0]
-//                    ?.let { task ->
-//                        task.assignee =
-//                            "${standardReview.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-//
-//                        taskService.saveTask(task)
-//                    }
-//                    ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
-//
-//
-//            }
-//            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-//        bpmnService.slAssignTask(
-//            processInstance.processInstanceId,
-//            "makeRecommendations",
-//            standardReview?.assignedTo
-//                ?: throw NullValueNotAllowedException("invalid user id provided")
-//        )
+        //taskService.complete(standardReview.taskId, variables)
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
         return ProcessInstanceRecommendations(ispDetails.id, processInstance.id, processInstance.isEnded)
 
@@ -320,7 +299,7 @@ class StandardReviewService(
     }
 
     //Make Recommendations on Adoption Proposal
-    fun makeRecommendationsOnAdoptionProposal(standardReviewProposalRecommendations: StandardReviewProposalRecommendations) : ProcessInstanceRecommendations
+    fun makeRecommendationsOnAdoptionProposal(standardReviewProposalRecommendations: StandardReviewProposalRecommendations) : ProcessInstanceRecommendation
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = HashMap()
@@ -338,8 +317,8 @@ class StandardReviewService(
         variables["RecommendationID"] = ispDetails.id
 
         taskService.complete(standardReviewProposalRecommendations.taskId, variables)
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        return ProcessInstanceRecommendations(ispDetails.id, processInstance.id, processInstance.isEnded )
+        //val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+        return ProcessInstanceRecommendation(ispDetails.id )
     }
 
     // Decision on Recommendations
