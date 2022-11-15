@@ -85,9 +85,11 @@ export class SystemicReviewSpcSecComponent implements OnInit {
     this.SpinnerService.show();
     this.stdReviewService.getSpcSecTasks().subscribe(
         (response: StandardReviewTasks[])=> {
+          this.tasks = response;
+          console.log(this.tasks);
           this.SpinnerService.hide();
           this.rerender();
-          this.tasks = response;
+
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();

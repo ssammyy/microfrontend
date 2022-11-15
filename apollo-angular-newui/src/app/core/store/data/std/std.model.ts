@@ -1308,6 +1308,7 @@ export interface StandardReviews{
     standardID:number;
     requestNumber: string;
     draftId: number;
+    recommendationTime: Timestamp<any>;
 }
 
 export interface ReviewProposalComments{
