@@ -663,7 +663,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         GET("/end-onsite-activities", handler::endWorkPlanInspectionOnsiteDetails)
                         PUT("/end-all-recommendation-done", handler::endWorkPlanInspectionAllRecommendationDone)
                         PUT("/client-appealed-status", handler::updateWorkPlanClientAppealed)
-                        PUT("/client-appealed-successfully", handler::updateWorkPlanClientAppealSuccesful)
+                        PUT("/client-appealed-successfully", handler::updateWorkPlanClientAppealSuccessful)
+                        PUT("/final-remarks-seized", handler::updateWorkPlanScheduleFinalRemarkOnSized)
                         "/hof".nest {
                             PUT("/assign-io", handler::updateWorkPlanByAssigningIO)
                             PUT(

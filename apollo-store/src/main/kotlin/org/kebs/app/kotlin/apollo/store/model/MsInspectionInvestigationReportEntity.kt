@@ -60,6 +60,14 @@ class MsInspectionInvestigationReportEntity: Serializable {
     @Basic
     var backgroundInformation: String? = null
 
+    @Column(name = "ADDITIONAL_INFORMATION")
+    @Basic
+    var additionalInformation: String? = null
+
+    @Column(name = "ADDITIONAL_INFORMATION_STATUS")
+    @Basic
+    var additionalInformationStatus: Int? = 0
+
     @Column(name = "OBJECTIVE_INVESTIGATION")
     @Basic
     var objectiveInvestigation: String? = null

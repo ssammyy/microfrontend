@@ -91,6 +91,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 ) {
     final var complaintSteps: Int = 6
     private final val activeStatus: Int = 1
+    val gson = Gson()
 
     final var appId = applicationMapProperties.mapMarketSurveillance
 
@@ -776,6 +777,32 @@ class MarketSurveillanceWorkPlanDaoServices(
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
             }
         }
+
+    }
+
+
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun workPlanScheduleFinalRemarkOnSized(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: WorkPlanFeedBackDto
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        findDataReportByWorkPlanInspectionID(workPlanScheduled.id)?.let { dataReport->
+            with(dataReport) {
+                finalActionOnSized = map.activeStatus
+                finalActionSeizedGoods = body.hodFeedBackRemarks
+                modifiedBy= commonDaoServices.concatenateName(loggedInUser)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+            dataReportRepo.save(dataReport)
+
+            return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+        }?: throw ExpectedDataNotFound("MISSING DATA REPORT FOR SCHEDULER WITH REF NUMBER : ${workPlanScheduled.referenceNumber}")
 
     }
 
@@ -1949,8 +1976,15 @@ class MarketSurveillanceWorkPlanDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-        workPlanInspectionDetailsAddSeizureDeclaration(body, workPlanScheduled, map, loggedInUser)
-        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+        val productSized = workPlanInspectionDetailsAddSeizureDeclaration(body, workPlanScheduled, map, loggedInUser)
+        when (productSized.first.status) {
+            map.successStatus -> {
+                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(productSized.first))
+            }
+        }
     }
 
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
@@ -3896,6 +3930,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     inspectionInvestigation.statusActivity,
                     inspectionInvestigation.finalRemarkHod,
                     null,
+            gson.fromJson(inspectionInvestigation.additionalInformation, FieldReportAdditionalInfo::class.java),
+            inspectionInvestigation.additionalInformationStatus == 1
         )
     }
 
@@ -4350,19 +4386,18 @@ class MarketSurveillanceWorkPlanDaoServices(
     }
 
     fun mapKEBSOfficersNameListDto(officersName: String): List<KebsOfficersName>? {
-        val gson = Gson()
         val userListType: Type = object : TypeToken<ArrayList<KebsOfficersName?>?>() {}.type
         return gson.fromJson(officersName, userListType)
     }
 
     fun mapRecommendationListDto(recommendation: String): List<RecommendationDto>? {
-        val gson = Gson()
+
         val userListType: Type = object : TypeToken<ArrayList<RecommendationDto?>?>() {}.type
         return gson.fromJson(recommendation, userListType)
     }
 
     fun mapPredefinedResourcesRequiredListDto(predefinedResourcesRequired: String): List<PredefinedResourcesRequiredEntityDto>? {
-        val gson = Gson()
+
         val userListType: Type = object : TypeToken<ArrayList<PredefinedResourcesRequiredEntityDto?>?>() {}.type
         return gson.fromJson(predefinedResourcesRequired, userListType)
     }

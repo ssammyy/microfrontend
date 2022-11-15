@@ -13,10 +13,7 @@ import org.kebs.app.kotlin.apollo.store.model.MsSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
-import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelRemediationInvoiceRepository
-import org.kebs.app.kotlin.apollo.store.repo.ms.IMSSampleSubmissionRepository
-import org.kebs.app.kotlin.apollo.store.repo.ms.IMsSampleSubmissionViewRepository
-import org.kebs.app.kotlin.apollo.store.repo.ms.ISampleCollectionViewRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.*
 import org.springframework.core.io.ResourceLoader
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
@@ -40,6 +37,7 @@ class MSJSONControllers(
     private val commonDaoServices: CommonDaoServices,
     private val msDaoService: MarketSurveillanceFuelDaoServices,
     private val reportsDaoService: ReportsDaoService,
+    private val investInspectReportRepo: IMSInvestInspectReportRepository,
     private val marketSurveillanceDaoComplaintServices: MarketSurveillanceComplaintProcessDaoServices,
     private val msWorkPlanDaoService: MarketSurveillanceWorkPlanDaoServices,
     private val msFuelDaoService: MarketSurveillanceFuelDaoServices,
@@ -99,6 +97,50 @@ class MSJSONControllers(
                     "DATA_REPORT_FILE" -> {
                         fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
                         dataReportDocId = fileDocSaved!!.id
+                    }
+                }
+            }
+            workPlanScheduled = msWorkPlanDaoService.updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
+        }
+
+        return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+    }
+
+
+    @PostMapping("/work-plan/additional-info-field-report/save")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFilesForFieldReport(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("docTypeName") docTypeName: String,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        val fieldReport =  msWorkPlanDaoService.findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduled.id)?: throw ExpectedDataNotFound("Missing Filed report Not filled")
+        val gson = Gson()
+        val body = gson.fromJson(data, FieldReportAdditionalInfo::class.java)
+        val stringData = commonDaoServices.convertClassToJson(body)
+        with(fieldReport){
+            additionalInformation = stringData
+            additionalInformationStatus = map.activeStatus
+            modifiedBy = commonDaoServices.concatenateName(loggedInUser)
+            modifiedOn = commonDaoServices.getTimestamp()
+        }
+        investInspectReportRepo.save(fieldReport)
+
+        var fileDocSaved: MsUploadsEntity? = null
+        docFile.forEach { fileDoc ->
+            with(workPlanScheduled){
+                when (docTypeName) {
+                    "FIELD_REPORT_UPLOAD" -> {
+                        fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,docTypeName,workPlanScheduled).second
+                        fieldReportStatus = map.activeStatus
                     }
                 }
             }
@@ -330,7 +372,7 @@ class MSJSONControllers(
 
         val ssfFile = iSampleSubmissionViewRepo.findAllById(ssfID.toString())
 
-        val user = ssfFile[0].createdUserId?.let { commonDaoServices.findUserByID(it) }
+        val user = ssfFile[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
 
         if (user != null) {
             val mySignature: ByteArray?
@@ -351,6 +393,7 @@ class MSJSONControllers(
             applicationMapProperties.mapMSSampleSubmissionPath,
             ssfFile
         )
+
         response.contentType = "text/html"
         response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())

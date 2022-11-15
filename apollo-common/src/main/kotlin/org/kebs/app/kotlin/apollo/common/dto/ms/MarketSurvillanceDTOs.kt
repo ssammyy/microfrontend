@@ -513,6 +513,19 @@ data class DataReportParamsDto(
         var remarks: String? = null,
 )
 
+data class FieldReportBackDto(
+        var actionOnSeizedGoodsDetails: String? = null,
+)
+
+data class FieldReportAdditionalInfo(
+        var performanceOnTestSamples: String? = null,
+        var actionOnSeizedGoods: List<FieldReportBackDto>? = null,
+        var actionOnSeizedGoodsRemarks: String? = null,
+        var actionsOnRecommendationGiven: String? = null,
+        var followUpActivities: String? = null,
+        var others: String? = null,
+)
+
 data class InspectionInvestigationReportDto(
         var id: Long?= 0,
         var reportReference: String? = null,
@@ -536,6 +549,8 @@ data class InspectionInvestigationReportDto(
         var statusActivity: String? = null,
         var finalRemarkHod: String? = null,
         var remarks: String? = null,
+        var additionalInformation: FieldReportAdditionalInfo? = null,
+        var additionalInformationStatus: Boolean,
 )
 
 data class KebsOfficersName (
