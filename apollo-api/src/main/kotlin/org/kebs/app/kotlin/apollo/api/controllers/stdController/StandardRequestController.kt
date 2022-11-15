@@ -522,7 +522,7 @@ class StandardRequestController(
     }
 
     //NWI Upload Documents
-    @PostMapping("/upload/uploadDocs")
+    @PostMapping("/standard/uploadNWIDocs")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadDocs(
         @RequestParam("nwiId") nwiId: Long,

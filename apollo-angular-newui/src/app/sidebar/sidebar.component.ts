@@ -428,7 +428,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '',
-        title: 'Reports',
+        title: 'QA Reports',
         type: 'sub',
         icontype: 'receipt',
         privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ','QA_DIRECTOR_READ'],

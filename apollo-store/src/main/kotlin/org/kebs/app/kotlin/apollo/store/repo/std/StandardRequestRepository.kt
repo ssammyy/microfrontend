@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface StandardRequestRepository:JpaRepository<StandardRequest, Long> {
     fun findAllByOrderByIdDesc(): MutableList<StandardRequest>
-    fun findByStatus(status: String): List<StandardRequest>?
+    fun findAllByStatus(status: String): List<StandardRequest>
 
 }
