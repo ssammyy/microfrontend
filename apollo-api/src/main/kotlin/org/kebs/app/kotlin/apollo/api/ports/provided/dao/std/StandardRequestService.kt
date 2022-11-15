@@ -70,6 +70,7 @@ class StandardRequestService(
     private val userRolesAssignRepo: IUserRoleAssignmentsRepository,
     private val userRolesRepo: IUserRolesRepository,
     private val usersRepo: IUserRepository,
+    private val sdDocumentsRepository: StandardsDocumentsRepository,
 
     ) {
 
@@ -267,7 +268,6 @@ class StandardRequestService(
     }
 
     fun hofReview(hofFeedback: HOFFeedback): HOFFeedback {
-        println("HOF has finished the review and given suggestion")
         val variable: MutableMap<String, Any> = HashMap()
         hofFeedback.isTc?.let { variable.put("isTc", it) }
         hofFeedback.isTcSec?.let { variable.put("isTcSec", it) }
@@ -275,7 +275,7 @@ class StandardRequestService(
         hofFeedback.sdRequestID?.let { variable.put("id", it) }
         hofFeedback.taskId?.let { variable.put("taskId", it) }
         hofFeedback.sdResult?.let { variable.put("resultOutput", it) }
-        hofFeedback.reason?.let { variable.put("rejectionReason", it) }
+        hofFeedback.reason?.let { variable.put("reason", it) }
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val standardRequestToUpdate = hofFeedback.sdRequestID?.let {
@@ -283,7 +283,7 @@ class StandardRequestService(
                 .orElseThrow { RuntimeException("No Standard Request found") }
         }
         if (standardRequestToUpdate != null) {
-            if (hofFeedback.sdResult.equals("Approve For Review")) {
+            if (hofFeedback.sdResult == "Approve For Review") {
                 standardRequestToUpdate.status = "Assigned To TC Sec"
                 standardRequestToUpdate.process = hofFeedback.sdOutput
                 standardRequestToUpdate.tcSecAssigned = hofFeedback.isTc
@@ -292,7 +292,7 @@ class StandardRequestService(
                 standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
                 variable["modifiedBy"] =
                     standardRequestToUpdate.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
-            } else if (hofFeedback.sdResult.equals("Reject For Review")) {
+            } else if (hofFeedback.sdResult == "Reject For Review") {
                 standardRequestToUpdate.status = "Rejected For Review"
                 standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
                 variable["modifiedOn"] = standardRequestToUpdate.modifiedOn!!
@@ -348,14 +348,12 @@ class StandardRequestService(
                     ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.lastName,
 
-                p.requestNumber?.let { returnUsername(it) },
+                returnUsername(p.id.toString()),
+                p.id.let { findHofFeedbackDetails(it.toString())?.createdOn },
+                p.id.let { findHofFeedbackDetails(it.toString())?.sdOutput },
+                p.id.let { findHofFeedbackDetails(it.toString())?.sdResult },
+                p.id.let { findHofFeedbackDetails(it.toString())?.reason },
 
-                p.requestNumber?.let { findHofFeedbackDetails(it)?.createdOn },
-
-                p.requestNumber?.let { findHofFeedbackDetails(it)?.reason },
-
-
-                p.requestNumber?.let { findHofFeedbackDetails(it)?.sdOutput },
                 )
         }
 
@@ -391,14 +389,11 @@ class StandardRequestService(
                     ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.lastName,
 
-                p.requestNumber?.let { returnUsername(it) },
-
-                p.requestNumber?.let { findHofFeedbackDetails(it)?.createdOn },
-
-                p.requestNumber?.let { findHofFeedbackDetails(it)?.reason },
-
-
-                p.requestNumber?.let { findHofFeedbackDetails(it)?.sdOutput },
+                returnUsername(p.id.toString()),
+                p.id.let { findHofFeedbackDetails(it.toString())?.createdOn },
+                p.id.let { findHofFeedbackDetails(it.toString())?.sdOutput },
+                p.id.let { findHofFeedbackDetails(it.toString())?.sdResult },
+                p.id.let { findHofFeedbackDetails(it.toString())?.reason },
 
 
                 )
@@ -408,36 +403,10 @@ class StandardRequestService(
     }
 
 
-    fun uploadNWI(standardNWI: StandardNWI) {
-
+    fun uploadNWI(standardNWI: StandardNWI): ProcessInstanceResponseValue {
         println("TC-SEC has uploaded NWI")
-
-        val variable: MutableMap<String, Any> = HashMap()
-        standardNWI.proposalTitle?.let { variable.put("proposalTitle", it) }
-        standardNWI.nameOfProposer?.let { variable.put("nameOfProposer", it) }
-        standardNWI.scope?.let { variable.put("scope", it) }
-        standardNWI.purpose?.let { variable.put("purpose", it) }
-        standardNWI.targetDate?.let { variable.put("targetDate", it) }
-        standardNWI.similarStandards?.let { variable.put("similarStandards", it) }
-        //standardNWI.liaisonOrganisation?.let{variable.put("liaisonOrganisation", it)}
-        standardNWI.outlineAttached?.let { variable.put("outlineAttached", it) }
-        standardNWI.draftAttached?.let { variable.put("draftAttached", it) }
-        standardNWI.draftOutlineImpossible?.let { variable.put("draftOutlineImpossible", it) }
-        standardNWI.outlineSentLater?.let { variable.put("outlineSentLater", it) }
-        standardNWI.organization?.let { variable.put("organization", it) }
-        standardNWI.circulationDate?.let { variable.put("circulationDate", it) }
-        standardNWI.closingDate?.let { variable.put("closingDate", it) }
-        standardNWI.dateOfPresentation?.let { variable.put("dateOfPresentation", it) }
-        standardNWI.nameOfTC?.let { variable.put("nameOfTC", it) }
-        standardNWI.referenceNumber?.let { variable.put("referenceNumber", it) }
-        standardNWI.taskId?.let { variable.put("taskId", it) }
-
-        println(standardNWI)
-
-
         var allOrganization = ""
         val klaxon = Klaxon()
-
         JsonReader(StringReader(standardNWI.liaisonOrganisation!!)).use { reader ->
             reader.beginArray {
                 while (reader.hasNext()) {
@@ -447,18 +416,21 @@ class StandardRequestService(
                 }
             }
         }
-
         standardNWI.liaisonOrganisation = allOrganization
-        standardNWI.liaisonOrganisation?.let { variable.put("liaisonOrganisation", it) }
+
+        val standardRequestToUpdate = standardNWI.standardId?.let {
+            standardRequestRepository.findById(it)
+                .orElseThrow { RuntimeException("No Standard Request found") }
+        }
+        if (standardRequestToUpdate != null) {
+            standardRequestToUpdate.nwiStatus = "New Work Item Created For Voting"
+            standardRequestRepository.save(standardRequestToUpdate)
+
+        }
 
         standardNWI.status = "Vote ON NWI"
-        standardNWI.status?.let { variable.put("statud", it) }
-
         standardNWIRepository.save(standardNWI)
-        standardNWI.id.let { variable.put("id", it) }
-
-
-        taskService.complete(standardNWI.taskId, variable)
+        return ProcessInstanceResponseValue(standardNWI.id, "Complete", true, "standardNWI.id")
 
     }
 
@@ -997,6 +969,33 @@ class StandardRequestService(
         }
 
 
+    }
+
+    fun uploadSDFileCommittee(
+        uploads: DatKebsSdStandardsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        nwi: Long,
+        DocDescription: String
+    ): DatKebsSdStandardsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            sdDocumentId = nwi
+            createdBy = commonDaoServices.concatenateName(commonDaoServices.loggedInUserDetails())
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+
+        return sdDocumentsRepository.save(uploads)
     }
 
 

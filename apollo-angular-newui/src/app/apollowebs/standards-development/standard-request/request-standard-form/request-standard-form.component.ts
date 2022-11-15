@@ -56,8 +56,7 @@ export class RequestStandardFormComponent implements OnInit {
     register: FormGroup;
     stdRequestFormGroup: FormGroup;
 
-    login: FormGroup;
-    type: FormGroup;
+
     isFormSubmitted = false;
 
 

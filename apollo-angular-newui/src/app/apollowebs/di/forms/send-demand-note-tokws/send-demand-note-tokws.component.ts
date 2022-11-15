@@ -11,7 +11,7 @@ import {MatTableDataSource} from "@angular/material/table";
     styleUrls: ['./send-demand-note-tokws.component.css']
 })
 export class SendDemandNoteTokwsComponent implements OnInit {
-    pricingDisplayedColumns: string[] = ['feeName', 'cfvalue', 'rate', 'amountPayable', 'minimumAmount', 'maximumAmount', 'adjustedAmount'];
+    pricingDisplayedColumns: string[] = ['product', 'feeName', 'cfvalue', 'rate', 'amountPayable', 'minimumAmount', 'maximumAmount', 'adjustedAmount', 'actions'];
     displayedColumns: string[] = ['select', 'hsCode', 'description', 'quantity', 'unit_price', 'price', 'currency', 'pricing'];
     @Input() items: any[]
     paymentFees: any[]
@@ -24,7 +24,9 @@ export class SendDemandNoteTokwsComponent implements OnInit {
     selectionDataSource: MatTableDataSource<any>
     itemPricingDataSource: MatTableDataSource<any>
     selection: SelectionModel<any>
+    targetPricingSelection: any[]
     invalidFeeSelection: Boolean;
+    groupFeeApplicable: Boolean = false;
 
 
     constructor(public dialogRef: MatDialogRef<any>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any,
@@ -37,12 +39,16 @@ export class SendDemandNoteTokwsComponent implements OnInit {
             amount: ['']
         })
         this.items = this.data.items
+        // Selection
         this.selectionDataSource = new MatTableDataSource<any>(this.items)
+        this.targetPricingSelection = []
+        // Item price
         this.itemPricingDataSource = new MatTableDataSource<any>(this.items)
         this.paymentFees = this.data.paymentFees
         this.initialSelection = this.items
         this.invalidFeeSelection = true
         this.selection = new SelectionModel<any>(true, this.initialSelection);
+        this.groupFeeApplicable = this.checkGroupPricingApplicable()
         this.selection.changed
             .subscribe(
                 res => {
@@ -54,7 +60,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
 
     getItems() {
         let itemList = []
-        for (let i of this.selection.selected) {
+        for (let i of this.targetPricingSelection) {
             if (i.feeId) {
                 itemList.push({
                     "itemId": i.id,
@@ -65,8 +71,19 @@ export class SendDemandNoteTokwsComponent implements OnInit {
         return itemList
     }
 
+    // Remove item from list of selected demand notes
+    // Recalculate the total amount
+    removeDemandNoteItem(rowData, index: number) {
+        // Clear fee id
+        this.targetPricingSelection.splice(index, 1)
+        // Reload
+        this.saveRecord(true)
+
+    }
+
     selectionChanged(event, row) {
         event ? this.selection.toggle(row) : null
+        this.groupFeeApplicable = this.checkGroupPricingApplicable()
         this.invalidFeeSelection = this.checkPricingSelected()
         if (!this.invalidFeeSelection) {
             this.saveRecord(true)
@@ -77,16 +94,72 @@ export class SendDemandNoteTokwsComponent implements OnInit {
     // Returns false if all items had fee selected
     checkPricingSelected(): Boolean {
         for (let i of this.selection.selected) {
-            console.log(i.feeId)
             if (!i.feeId || !i.feeId.id || i.feeId == "None") {
-                return false
+                return true
             }
         }
         return false
     }
 
-    changePricing(row: any, event: any) {
+    // Checks if group pricing can be applied
+    // This is applicable when all items in selection have same feeId or have no fee applied
+    checkGroupPricingApplicable(): Boolean {
+        for (let i of this.selection.selected) {
+            if (!i.feeId || !i.feeId.id || i.feeId == "None") {
+                return true
+            }
+        }
+        return false
+    }
+
+    findFeeById(feeData: string) {
+        let feeId = parseInt(feeData)
+        console.log("Group pricing: " + feeId)
+        let fee = null
+        for (let f of this.paymentFees) {
+            if (f.id === feeId) {
+                fee = f;
+            }
+        }
+        return fee
+    }
+
+    changeGroupPricing(event: any) {
+        let fee = this.findFeeById(event.target.value)
+        if (!fee) {
+            return
+        }
+        let data = this.selection.selected
+        for (let i = 0; i < data.length; i++) {
+            if (!data[i].feeId) {
+                // Remove selection
+                let item = this.selection.selected[i]
+                item.feeId = fee
+                this.targetPricingSelection.push(item)
+            }
+        }
+        this.selection.clear()
+        this.groupFeeApplicable = false
+        // Recalculate charges
         this.invalidFeeSelection = this.checkPricingSelected()
+        if (!this.invalidFeeSelection) {
+            this.saveRecord(true)
+        }
+        console.log("Selection changes: " + this.invalidFeeSelection)
+    }
+
+    changePricing(row: any, event: any) {
+        console.log(event)
+        let fee = this.findFeeById(event.value)
+        if (!fee) {
+            return
+        }
+        let rowNew = Object.assign({}, row)
+        rowNew.feeId = fee
+        this.targetPricingSelection.push(rowNew)
+        this.selection.clear()
+        this.invalidFeeSelection = this.checkPricingSelected()
+        this.groupFeeApplicable = this.checkGroupPricingApplicable()
         if (!this.invalidFeeSelection) {
             this.saveRecord(true)
         }
@@ -104,13 +177,18 @@ export class SendDemandNoteTokwsComponent implements OnInit {
         this.isAllSelected() ?
             this.selection.clear() :
             this.selectionDataSource.data.forEach(row => this.selection.select(row));
+        // Check fee applicable
+        this.groupFeeApplicable = this.checkGroupPricingApplicable()
     }
 
     saveRecord(presentment: Boolean) {
         this.saveDisabled = true
+        this.selectionDataSource.filter = "Test"
         this.message = null
         let selectedItems = this.getItems()
         if (this.items.length > 0 && selectedItems.length == 0) {
+            this.saveDisabled = false
+            this.itemPricingDataSource.connect().next([])
             return
         }
         let data = this.form.value

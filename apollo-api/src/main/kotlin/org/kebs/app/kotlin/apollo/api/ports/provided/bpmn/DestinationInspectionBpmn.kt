@@ -394,18 +394,23 @@ class DestinationInspectionBpmn(
         val actionsQuery = taskService.createTaskQuery()
             .active()
             .processVariableExists("cdUuid")
+
         if (myTasks) {
-            actionsQuery.taskOwner(loggedInUser.userName)
+            KotlinLogging.logger { }.debug("Loading tasks assigned to me: ${loggedInUser.userName}")
+            actionsQuery.or()
+                .taskAssignee(loggedInUser.userName)
+                .taskOwner(loggedInUser.userName)
+                .endOr()
         } else {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val userProfilesEntity = commonDaoServices.findUserProfileByUserID(loggedInUser, map.activeStatus)
             val codes = daoServices.findAllCFSUserCodes(userProfilesEntity.id ?: 0L)
-            val cfs = mutableListOf<String>()
-            cfs.add("") // Empty cfs for initial
-            cfs.addAll(codes)
-            actionsQuery.taskCandidateGroupIn(cfs)
+            KotlinLogging.logger { }.debug("Loading tasks in my CFSs: ${loggedInUser.userName}: ${codes}")
+            actionsQuery.taskCandidateGroupIn(codes)
+                .ignoreAssigneeValue()
         }
         if (!category.isNullOrEmpty()) {
+            KotlinLogging.logger { }.debug("Loading tasks with category: $category")
             actionsQuery.taskCategory(category)
         }
         // 2. Get task details
@@ -427,11 +432,25 @@ class DestinationInspectionBpmn(
         return response
     }
 
+    /**
+     * Select or task that belong to this user or are within the user assigned CFS stations
+     *
+     * @param cdUuid Consignment identifier
+     */
     fun consignmentDocumentActions(cdUuid: String): List<DiTaskDetails> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        val userProfilesEntity = commonDaoServices.findUserProfileByUserID(loggedInUser, map.activeStatus)
+        val codes = daoServices.findAllCFSUserCodes(userProfilesEntity.id ?: 0L)
         val consignmentActions = taskService.createTaskQuery()
             .active() // Load active tasks only
             .orderByTaskCreateTime().desc()
             .processVariableValueEquals("cdUuid", cdUuid) // Tasks with parameter cdUuid
+            .or()
+            .taskAssignee(loggedInUser.userName)
+            .taskOwner(loggedInUser.userName)
+            .taskCandidateGroupIn(codes)
+            .endOr()
             .list()
         return getTaskDetails(consignmentActions)
     }

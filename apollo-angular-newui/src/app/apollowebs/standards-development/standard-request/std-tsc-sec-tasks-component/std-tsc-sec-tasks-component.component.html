@@ -71,7 +71,7 @@
                         </div>
                     </div>
                 </mat-tab>
-                <mat-tab label="Vote On NWIs"> NWI Votes</mat-tab>
+                <mat-tab label="Votes On NWIs"> NWI Votes</mat-tab>
                 <mat-tab label="Approved NWIs"> Approved Items</mat-tab>
                 <mat-tab label="Rejected NWIs"> Rejected Items</mat-tab>
 
@@ -90,37 +90,69 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form #editForm="ngForm">
+                        <form #editForm="ngForm" (ngSubmit)="saveNwi(editForm)" [formGroup]="stdNwiFormGroup">
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="form-group col-6">
-                                        <label><b>Enter Proposal title</b></label>
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="form-control one-column-input"
-                                                ngModel="{{tscsecRequest?.proposalTitle}}"
-                                                value=""
-                                                name="proposalTitle"
-                                                placeholder="Indicate subject matter of the proposed new standard"
-                                                type="text">
+                                        <!--                                        <label><b>Enter Proposal title</b></label>-->
+                                        <!--                                        <input-->
+                                        <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                        <!--                                                aria-label="Small"-->
+                                        <!--                                                class="form-control one-column-input"-->
+                                        <!--                                                ngModel="{{tscsecRequest?.proposalTitle}}"-->
+                                        <!--                                                value=""-->
+                                        <!--                                                name="proposalTitle"-->
+                                        <!--                                                placeholder="Indicate subject matter of the proposed new standard"-->
+                                        <!--                                                type="text">-->
+
+                                        <label><b>Enter Proposal title:</b></label>
+                                        <mat-form-field class="example-full-width has-label"
+                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'proposalTitle')">
+                                            <input type="text"
+                                                   matInput
+                                                   id="proposalTitle"
+                                                   placeholder="Indicate subject matter of the proposed new standard"
+                                                   (ngModelChange)="textValidationType($event)"
+                                                   formControlName="proposalTitle">
+                                            <app-field-error-display
+                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'proposalTitle')"
+                                                    errorMsg="Please Enter Proposal Title">
+                                            </app-field-error-display>
+                                        </mat-form-field>
+
+
                                     </div>
                                     <div class="form-group col-6">
                                         <label><b>Scope</b></label>
-                                        <textarea
-                                                ngModel="{{tscsecRequest?.scope}}"
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="form-control one-column-input"
-                                                name="scope"
-                                                placeholder="Give a clear indication of the coverage of the proposed new standard"
-                                                type="text"></textarea>
+                                        <!--                                        <textarea-->
+                                        <!--                                                ngModel="{{tscsecRequest?.scope}}"-->
+                                        <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                        <!--                                                aria-label="Small"-->
+                                        <!--                                                class="form-control one-column-input"-->
+                                        <!--                                                name="scope"-->
+                                        <!--                                                placeholder="Give a clear indication of the coverage of the proposed new standard"-->
+                                        <!--                                                type="text"></textarea>-->
+
+                                        <mat-form-field class="example-full-width has-label"
+                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'scope')">
+                                            <textarea type="text"
+                                                      matInput
+                                                      id="scope"
+                                                      placeholder="Give a clear indication of the coverage of the proposed new standard"
+                                                      (ngModelChange)="textValidationType($event)"
+                                                      formControlName="scope"></textarea>
+                                            <app-field-error-display
+                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'scope')"
+                                                    errorMsg="Please Enter Scope">
+                                            </app-field-error-display>
+                                        </mat-form-field>
 
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="form-group col-6">
+                                    <div class="form-group col-12">
+
                                         <label><b>Purpose & application</b><span
                                                 data-toggle="tooltip"
                                                 data-placement="right"
@@ -136,26 +168,32 @@
 (viii) Volume of production or operation
 (x) Ease of adoption and implementation
 (xi) Transfer of technology">i</span></label>
-                                        <textarea
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                data-toggle="tooltip" data-placement="right"
-                                                title="The justification information should be based on the following, inter alia:
-(i) Importance of economic field
-(ii) Degree of economic benefit
-(iii) Importance as export item
-(iv) Capacity as import substitute
-(v) Level of consumer protection
-(vi) Availability of reference material indicating whether the proposal is for adoption or adaption of the reference material
-(vii) Availability of testing facilities
-(viii) Volume of production or operation
-(x) Ease of adoption and implementation
-(xi) Transfer of technology" aria-label="Small"
-                                                class="form-control one-column-input"
-                                                name="purpose"
-                                                ngModel="{{tscsecRequest?.purpose}}"
-                                                placeholder="Give specific aims and reasons for the standard and main interests to benefit from the standard. Mention any relevant problems in the industry or technology."
-                                                type="text"></textarea>
+                                        <!--                                        <textarea-->
+                                        <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                        <!--                                                data-toggle="tooltip" data-placement="right"-->
+                                        <!--                                                aria-label="Small"-->
+                                        <!--                                                class="form-control one-column-input"-->
+                                        <!--                                                name="purpose"-->
+                                        <!--                                                ngModel="{{tscsecRequest?.purpose}}"-->
+                                        <!--                                                placeholder="Give specific aims and reasons for the standard and main interests to benefit from the standard. Mention any relevant problems in the industry or technology."-->
+                                        <!--                                                type="text"></textarea>-->
+                                        <mat-form-field class="example-full-width has-label"
+                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'purpose')">
+                                            <textarea type="text"
+                                                      matInput
+                                                      id="purpose"
+                                                      placeholder="Give specific aims and reasons for the standard and main interests to benefit from the standard. Mention any relevant problems in the industry or technology."
+                                                      (ngModelChange)="textValidationType($event)"
+                                                      formControlName="purpose"></textarea>
+                                            <app-field-error-display
+                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'purpose')"
+                                                    errorMsg="Please Enter Purpose">
+                                            </app-field-error-display>
+                                        </mat-form-field>
                                     </div>
+                                </div>
+                                <div class="row">
+
                                     <!--                            <div class="form-group col-6">-->
                                     <!--                                <label><b>Upload annex for Purpose & application(optional)</b></label>-->
                                     <!--                                <app-upload-files [itemId]="itemId"  [type]="filePurposeAnnex" ></app-upload-files>-->
@@ -182,24 +220,52 @@
                                 <div class="row">
                                     <div class="form-group col-6">
                                         <label><b>Target Date</b></label>
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                ngModel="{{tscsecRequest?.targetDate}}"
-                                                class="form-control one-column-input"
-                                                name="targetDate"
-                                                type="date">
+                                        <!--                                        <input-->
+                                        <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                        <!--                                                aria-label="Small"-->
+                                        <!--                                                ngModel="{{tscsecRequest?.targetDate}}"-->
+                                        <!--                                                class="form-control one-column-input"-->
+                                        <!--                                                name="targetDate"-->
+                                        <!--                                                type="date">-->
+
+                                        <mat-form-field class="example-full-width has-label"
+                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'targetDate')">
+                                            <input type="date"
+                                                   matInput
+                                                   id="targetDate"
+                                                   placeholder="Target Date"
+                                                   formControlName="targetDate">
+                                            <app-field-error-display
+                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'targetDate')"
+                                                    errorMsg="Please Enter Target Date">
+                                            </app-field-error-display>
+                                        </mat-form-field>
+
+
                                     </div>
                                     <div class="form-group col-6">
                                         <label><b>Similar Standards/Subject of
                                             Standardization</b></label>
-                                        <textarea
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                ngModel="{{tscsecRequest?.similarStandards}}"
-                                                aria-label="Small"
-                                                class="form-control one-column-input"
-                                                name="similarStandards"
-                                                placeholder=" " type="text"></textarea>
+                                        <!--                                        <textarea-->
+                                        <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                        <!--                                                ngModel="{{tscsecRequest?.similarStandards}}"-->
+                                        <!--                                                aria-label="Small"-->
+                                        <!--                                                class="form-control one-column-input"-->
+                                        <!--                                                name="similarStandards"-->
+                                        <!--                                                placeholder=" " type="text"></textarea>-->
+                                        <mat-form-field class="example-full-width has-label"
+                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'similarStandards')">
+                                            <textarea type="text"
+                                                      matInput
+                                                      id="similarStandards"
+                                                      placeholder="Similar Standards"
+                                                      (ngModelChange)="numberValidationType($event)"
+                                                      formControlName="similarStandards"></textarea>
+                                            <app-field-error-display
+                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'similarStandards')"
+                                                    errorMsg="Please Enter Similar Standards">
+                                            </app-field-error-display>
+                                        </mat-form-field>
 
                                     </div>
                                 </div>
@@ -231,12 +297,15 @@
                                                 [placeholder]="'Select Liaison Organization'"
                                                 [settings]="dropdownSettings"
                                                 [data]="dropdownList"
-                                                [(ngModel)]="selectedItems"
                                                 (onSelect)="onItemSelect($event)"
                                                 (onSelectAll)="onSelectAll($event)"
-                                                name="liaisonOrganisationData"
-                                        >
+                                                [class.is-invalid]="formStdRequest?.liaisonOrganisationData?.errors?.required && formStdRequest?.liaisonOrganisationData?.touched"
+                                                formControlName="liaisonOrganisationData"
+                                                name="liaisonOrganisationData">
                                         </ng-multiselect-dropdown>
+                                        <span *ngIf="formStdRequest?.liaisonOrganisationData?.errors?.required && formStdRequest?.liaisonOrganisationData?.touched"
+                                              style="color: red;">Liaison Organization is required </span>
+
                                     </div>
                                 </div>
                                 <div class="row">
@@ -255,27 +324,26 @@
                                     </div>
                                 </div>
 
-                                <h5>Preparatory Work</h5>
+                                <h5><b>Preparatory Work</b></h5>
                                 <div class="row">
                                     <div class="form-check col-6">
                                         <input
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 aria-label="Small"
                                                 class="one-column-input"
-                                                ngModel="{{tscsecRequest?.draftAttached}}"
-                                                name="draftAttached" value="0"
+                                                formControlName="draftAttached" value="0"
                                                 id="defaultCheck1" type="checkbox">
                                         <label class="form-check-label" for="defaultCheck1">
                                             A draft is attached
                                         </label>
+
                                     </div>
                                     <div class="form-check col-6">
                                         <input
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 aria-label="Small"
                                                 class=" one-column-input"
-                                                ngModel="{{tscsecRequest?.outlineAttached}}"
-                                                name="outlineAttached"
+                                                formControlName="outlineAttached"
                                                 id="defaultCheck2" type="checkbox">
                                         <label class="form-check-label" for="defaultCheck2">
                                             An outline is attached
@@ -288,8 +356,7 @@
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 aria-label="Small"
                                                 class="one-column-input"
-                                                ngModel="{{tscsecRequest?.draftOutlineImpossible}}"
-                                                name="draftOutlineImpossible"
+                                                formControlName="draftOutlineImpossible"
                                                 id="defaultCheck3" type="checkbox">
                                         <label class="form-check-label" for="defaultCheck3">
                                             It is not possible to attach either a draft or
@@ -301,8 +368,7 @@
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 aria-label="Small"
                                                 class=" one-column-input"
-                                                ngModel="{{tscsecRequest?.outlineSentLater}}"
-                                                name="outlineSentLater"
+                                                formControlName="outlineSentLater"
                                                 id="defaultCheck4" type="checkbox">
                                         <label class="form-check-label" for="defaultCheck4">
                                             An outline will be sent later
@@ -317,9 +383,11 @@
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 aria-label="Small"
                                                 class="form-control one-column-input" readonly
-                                                [ngModel]="nwiRequest?.name"
+                                                ngModel="{{nwiRequest?.name}}"
+                                                value="{{nwiRequest?.name}}"
                                                 name="nameOfProposer"
-                                                placeholder=" " type="text">
+                                                formControlName="nameOfProposer"
+                                                type="text">
                                     </div>
                                     <div class="form-group col-6">
                                         <label><b>Organization</b></label>
@@ -327,52 +395,93 @@
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 aria-label="Small"
                                                 class="form-control one-column-input"
-                                                ngModel="{{tscsecRequest?.organization}}"
+                                                readonly
+                                                ngModel="{{nwiRequest?.organisationName}}"
+                                                value="{{nwiRequest?.organisationName}}"
+                                                formControlName="organization"
                                                 name="organization"
-                                                placeholder=" " type="text">
+                                                type="text">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-6">
                                         <label><b>Date of Circulation</b></label>
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="form-control one-column-input"
-                                                ngModel="{{tscsecRequest?.circulationDate}}"
-                                                name="circulationDate"
-                                                type="date">
+                                        <!--                                        <input-->
+                                        <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                        <!--                                                aria-label="Small"-->
+                                        <!--                                                class="form-control one-column-input"-->
+                                        <!--                                                ngModel="{{tscsecRequest?.circulationDate}}"-->
+                                        <!--                                                name="circulationDate"-->
+                                        <!--                                                type="date">-->
+                                        <mat-form-field class="example-full-width has-label"
+                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'circulationDate')">
+                                            <input type="date"
+                                                   matInput
+                                                   id="circulationDate"
+                                                   placeholder="Circulation Date"
+                                                   formControlName="circulationDate">
+                                            <app-field-error-display
+                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'circulationDate')"
+                                                    errorMsg="Please Enter Circulation Date">
+                                            </app-field-error-display>
+                                        </mat-form-field>
                                     </div>
                                     <div class="form-group col-6">
                                         <label><b>Closing Date</b></label>
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="form-control one-column-input"
-                                                ngModel="{{tscsecRequest?.closingDate}}"
-                                                name="closingDate"
-                                                type="date">
+                                        <!--                                        <input-->
+                                        <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                        <!--                                                aria-label="Small"-->
+                                        <!--                                                class="form-control one-column-input"-->
+                                        <!--                                                ngModel="{{tscsecRequest?.closingDate}}"-->
+                                        <!--                                                name="closingDate"-->
+                                        <!--                                                type="date">-->
+                                        <mat-form-field class="example-full-width has-label"
+                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'closingDate')">
+                                            <input type="date"
+                                                   matInput
+                                                   id="closingDate"
+                                                   placeholder="Closing Date"
+                                                   formControlName="closingDate">
+                                            <app-field-error-display
+                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'closingDate')"
+                                                    errorMsg="Please Enter Closing Date">
+                                            </app-field-error-display>
+                                        </mat-form-field>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="form-group col-6">
                                         <label><b>Date of presentation</b></label>
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="form-control one-column-input"
-                                                ngModel="{{tscsecRequest?.dateOfPresentation}}"
-                                                name="dateOfPresentation"
-                                                type="date">
+                                        <!--                                        <input-->
+                                        <!--                                                aria-describedby="inputGroup-sizing-sm"-->
+                                        <!--                                                aria-label="Small"-->
+                                        <!--                                                class="form-control one-column-input"-->
+                                        <!--                                                ngModel="{{tscsecRequest?.dateOfPresentation}}"-->
+                                        <!--                                                name="dateOfPresentation"-->
+                                        <!--                                                type="date">-->
+                                        <mat-form-field class="example-full-width has-label"
+                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'dateOfPresentation')">
+                                            <input type="date"
+                                                   matInput
+                                                   id="dateOfPresentation"
+                                                   placeholder="Presentation Date"
+                                                   formControlName="dateOfPresentation">
+                                            <app-field-error-display
+                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'dateOfPresentation')"
+                                                    errorMsg="Please Enter Presentation Date">
+                                            </app-field-error-display>
+                                        </mat-form-field>
                                     </div>
                                     <div class="form-group col-6">
                                         <label><b>Name of TC</b></label>
                                         <input
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 aria-label="Small"
+                                                formControlName="nameOfTC"
                                                 class="form-control one-column-input" readonly
-                                                [ngModel]="nwiRequest?.departmentName"
+                                                ngModel="{{nwiRequest?.departmentName}}"
+                                                value="{{nwiRequest?.departmentName}}"
                                                 placeholder="" name="nameOfTC"
                                                 type="text">
                                     </div>
@@ -387,9 +496,13 @@
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 aria-label="Small"
                                                 class="form-control one-column-input" readonly
-                                                [ngModel]="nwiRequest?.requestNumber"
+                                                ngModel="{{nwiRequest?.requestNumber}}"
+                                                value="{{nwiRequest?.requestNumber}}"
+
+                                                formControlName="referenceNumber"
                                                 placeholder="" name="referenceNumber"
                                                 type="text">
+
                                     </div>
                                 </div>
 
@@ -398,8 +511,9 @@
                                             aria-describedby="inputGroup-sizing-sm"
                                             aria-label="Small"
                                             class="form-control one-column-input" hidden
-                                            ngModel="{{tscsecRequest?.taskId}}" type="text"
-                                            name="taskId" value="{{tscsecRequest?.taskId}}">
+                                            type="text"
+                                            ngModel="{{nwiRequest?.id}}"
+                                            formControlName="standardId" value="{{nwiRequest?.id}}">
                                 </div>
                             </div>
 
@@ -407,9 +521,11 @@
                                 <button type="button" class="btn btn-secondary" #closeModal
                                         (click)="hideModel()" data-dismiss="modal">Close
                                 </button>
-                                <button class="btn btn-info" (click)="onUpload(editForm.value)">
-                                    Submit
-                                </button>
+                                <!--                                <button class="btn btn-info" (click)="onUpload(editForm.value)">-->
+                                <!--                                    Submit-->
+                                <!--                                </button>-->
+                                <button class="btn btn-inf" type="submit">SUBMIT</button>
+
                             </div>
                         </form>
                     </div>

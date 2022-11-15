@@ -63,7 +63,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEnt
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
-import org.kebs.app.kotlin.apollo.common.dto.ms.SampleCollectionItemsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -73,7 +72,6 @@ import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationPropertie
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.MsCollectionParametersEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintsEmailVerificationEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
@@ -402,6 +400,8 @@ class CommonDaoServices(
         val gson = Gson()
         return gson.toJson(classToConvert)
     }
+
+
 
     fun getUserTypeDetails(usertypeID: Long): UserTypesEntity {
         userTypesRepo.findByIdOrNull(usertypeID)

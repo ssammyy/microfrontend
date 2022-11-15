@@ -1212,7 +1212,8 @@ class DestinationInspectionDaoServices(
     ) {
         val fee = itemDetails.paymentFeeIdSelected
             ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For payment Fee Id Selected ")
-        var demandNoteItem = iDemandNoteItemRepo.findByItemIdAndDemandNoteId(itemDetails.id, demandNote.id)
+        var demandNoteItem =
+            iDemandNoteItemRepo.findByItemIdAndDemandNoteIdAndFeeId(itemDetails.id, demandNote.id, fee.id)
         if (demandNoteItem == null) {
             demandNoteItem = CdDemandNoteItemsDetailsEntity()
         }
@@ -1234,6 +1235,7 @@ class DestinationInspectionDaoServices(
             demandNoteId = demandNote.id
             product = itemDetails.itemName
             rate = fee.rate?.toString()
+            feeId = fee.id
             rateType = fee.rateType
             feeName = fee.name ?: fee.description
             // Demand note Calculation Details
@@ -1260,7 +1262,8 @@ class DestinationInspectionDaoServices(
     ) {
         val fee = itemDetails.paymentFeeIdSelected
             ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For payment Fee Id Selected ")
-        var demandNoteItem = iDemandNoteItemRepo.findByItemIdAndDemandNoteId(itemDetails.id, demandNote.id)
+        var demandNoteItem =
+            iDemandNoteItemRepo.findByItemIdAndDemandNoteIdAndFeeId(itemDetails.id, demandNote.id, fee.id)
         if (demandNoteItem == null) {
             demandNoteItem = CdDemandNoteItemsDetailsEntity()
         }
@@ -1283,6 +1286,7 @@ class DestinationInspectionDaoServices(
             product = itemDetails.itemDescription ?: itemDetails.hsDescription ?: itemDetails.productTechnicalName
             rate = fee.rate?.toString()
             rateType = fee.rateType
+            feeId = fee.id
             feeName = fee.name ?: fee.description
             // Demand note Calculation Details
             status = map.activeStatus
@@ -2662,6 +2666,27 @@ class DestinationInspectionDaoServices(
 
     }
 
+    fun findAllAvailableConsignments(
+        cdType: ConsignmentDocumentTypesEntity?,
+        statuses: List<Int?>,
+        page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+
+        return cdType?.let {
+            iConsignmentDocumentDetailsRepo.findByCdTypeAndAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
+                cdType,
+                statuses,
+                page
+            )
+        } ?: run {
+            iConsignmentDocumentDetailsRepo.findByAssignedInspectionOfficerIsNullAndOldCdStatusIsNullAndStatusIn(
+                statuses,
+                page
+            )
+        }
+
+    }
+
 
     fun findAllOngoingCdWithFreightStationID(
         cfsEntity: List<UsersCfsAssignmentsEntity>,
@@ -2682,6 +2707,24 @@ class DestinationInspectionDaoServices(
         } ?: run {
             return iConsignmentDocumentDetailsRepo.findByFreightStation_IdInAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
                 cfsIds, page
+            )
+        }
+
+    }
+
+    fun findAllOngoingConsignments(
+        cdType: ConsignmentDocumentTypesEntity?,
+        statuses: List<Int?>,
+        page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+        return cdType?.let {
+            return iConsignmentDocumentDetailsRepo.findByCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
+                cdType,
+                page
+            )
+        } ?: run {
+            return iConsignmentDocumentDetailsRepo.findByUcrNumberIsNotNullAndOldCdStatusIsNullAndCompliantStatusIsNullAndApproveRejectCdStatusIsNull(
+                page
             )
         }
 
@@ -2726,6 +2769,26 @@ class DestinationInspectionDaoServices(
         } ?: run {
             iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
                 usersEntity,
+                statuses,
+                page
+            )
+        }
+    }
+
+    fun findAllCompleteConsignments(
+        usersEntity: UsersEntity,
+        cdType: ConsignmentDocumentTypesEntity?,
+        statuses: List<Int>,
+        page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+        return cdType?.let {
+            iConsignmentDocumentDetailsRepo.findAllByCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
+                it,
+                statuses,
+                page
+            )
+        } ?: run {
+            iConsignmentDocumentDetailsRepo.findAllByUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
                 statuses,
                 page
             )

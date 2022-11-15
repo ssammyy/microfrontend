@@ -262,7 +262,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/notifications", handler::notificationList)
                     "/details".nest {
                         GET("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
-                        POST("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
+                        POST("") {
+                            ServerResponse.badRequest().body("Invalid Request: Feature currently not supported")
+                        }
                         "/{userId}".nest {
                             PUT("", handler::handleUpdateLoggedInUserUserEntityDtoDetails)
                             GET("", handler::handleLoggedInUserUserEntityDtoDetails)
@@ -663,7 +665,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         GET("/end-onsite-activities", handler::endWorkPlanInspectionOnsiteDetails)
                         PUT("/end-all-recommendation-done", handler::endWorkPlanInspectionAllRecommendationDone)
                         PUT("/client-appealed-status", handler::updateWorkPlanClientAppealed)
-                        PUT("/client-appealed-successfully", handler::updateWorkPlanClientAppealSuccesful)
+                        PUT("/client-appealed-successfully", handler::updateWorkPlanClientAppealSuccessful)
+                        PUT("/final-remarks-seized", handler::updateWorkPlanScheduleFinalRemarkOnSized)
                         "/hof".nest {
                             PUT("/assign-io", handler::updateWorkPlanByAssigningIO)
                             PUT(
@@ -778,6 +781,18 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     fun kraApiRoutes(handler: StandardsLevyHandler) = router {
         "/api/v1/kra".nest {
             POST("/receiveSL2Payment".and(contentType(MediaType.APPLICATION_JSON)), handler::processReceiveSL2Payment)
+            //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
+
+        }
+    }
+
+    @Bean
+    fun KebsWebsiteApiRoutes(handler: QualityAssuranceHandler) = router {
+        "/api/v1/kebsWebsite/anonymous".nest {
+            GET("/getAwardedSmarkPermits", handler::loadAllSmarksAwardedPermitsForReportsApi)
+            GET("/getAwardedFmarkPermits", handler::loadAllFmarksAwardedPermitsForReportsApi)
+            GET("/getAwardedDmarkPermits", handler::loadAllDmarksAwardedPermitsForReportsApi)
+
             //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
 
         }

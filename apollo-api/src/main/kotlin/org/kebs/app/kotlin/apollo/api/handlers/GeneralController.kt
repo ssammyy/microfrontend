@@ -37,6 +37,7 @@ class GeneralController(
     private val invoicePaymentService: InvoicePaymentService,
     private val commonDaoServices: CommonDaoServices,
     private val limsServices: LimsServices,
+    private val objectMapper: ObjectMapper,
     private val auctionService: AuctionService,
     private val pvocService: PvocService,
     private val diReports: DIReports,
@@ -435,7 +436,7 @@ class GeneralController(
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to generate auction report"
             httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
-            httResponse.writer.write(ObjectMapper().writeValueAsString(response))
+            httResponse.writer.write(objectMapper.writeValueAsString(response))
         }
     }
 
@@ -460,7 +461,7 @@ class GeneralController(
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to generate demand note"
             httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
-            httResponse.writer.write(ObjectMapper().writeValueAsString(response))
+            httResponse.writer.write(objectMapper.writeValueAsString(response))
         }
 
     }
@@ -487,16 +488,17 @@ class GeneralController(
                 // Response with file
                 downloadFile(extractReport, fileName, httResponse)
             } else {
-                httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
-                httResponse.writer.write(ObjectMapper().writeValueAsString(reportDetails))
+                httResponse.status = HttpStatus.SC_BAD_REQUEST
+                httResponse.contentType = MediaType.APPLICATION_JSON_VALUE
+                httResponse.writer.write(objectMapper.writeValueAsString(reportDetails))
             }
-
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Download failed", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Failed to generate demand note"
-            httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
-            httResponse.writer.write(ObjectMapper().writeValueAsString(response))
+            httResponse.contentType = MediaType.APPLICATION_JSON_VALUE
+            httResponse.status = HttpStatus.SC_BAD_REQUEST
+            httResponse.writer.write(objectMapper.writeValueAsString(response))
         }
 
     }

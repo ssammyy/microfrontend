@@ -1,6 +1,18 @@
 <h2 mat-dialog-title>Generate Demand Note for Consignment</h2>
 <mat-dialog-content>
     <div class="row no_margin">
+        <div class="col-sm-12 col-md-11" [hidden]="!groupFeeApplicable">
+            <div class="input-group" [hidden]="!groupFeeApplicable">
+                <label for="groupFees" class="search-form-label" [hidden]="true">Select applicable fee for selected
+                    items</label>
+                <select id="groupFees" class="search-form-select"
+                        [hidden]="!selection.isEmpty() && selection.selected.length>1"
+                        (change)="changeGroupPricing($event)">
+                    <option [value]="">Select applicable fee</option>
+                    <option *ngFor="let d of paymentFees" [value]="d.id">{{d.description}}</option>
+                </select>
+            </div>
+        </div>
         <div class="col-sm-12 col-md-11" *ngIf="this.items && this.items.length>0">
             <p class="text-blue-dark">Consignment Items</p>
             <mat-table [dataSource]="selectionDataSource">
@@ -52,11 +64,9 @@
                     <mat-cell [attr.colspan]="2" *matCellDef="let row">
                         <mat-form-field>
                             <mat-select [hidden]="!selection.isSelected(row)"
-                                        (click)="changePricing(row,$event)"
-                                        [(value)]="row.feeId"
                                         (selectionChange)="changePricing(row,$event)">
                                 <mat-option [value]="">None</mat-option>
-                                <mat-option *ngFor="let d of paymentFees" [value]="d">{{d.description}}</mat-option>
+                                <mat-option *ngFor="let d of paymentFees" [value]="d.id">{{d.description}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </mat-cell>
@@ -70,6 +80,10 @@
             <p class="text-blue-dark">Pricing Applied</p>
             <div class="separator-gray w-100"></div>
             <mat-table [dataSource]="itemPricingDataSource">
+                <ng-container matColumnDef="product">
+                    <mat-header-cell *matHeaderCellDef>PRODUCT</mat-header-cell>
+                    <mat-cell ng-class="small" *matCellDef="let row"> {{row.product}} </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="feeName">
                     <mat-header-cell *matHeaderCellDef>FEE NAME</mat-header-cell>
                     <mat-cell ng-class="small" *matCellDef="let row"> {{row.feeName}} </mat-cell>
@@ -100,6 +114,13 @@
                 <ng-container matColumnDef="adjustedAmount">
                     <mat-header-cell *matHeaderCellDef>PAYABLE AMOUNT</mat-header-cell>
                     <mat-cell *matCellDef="let row"> {{row.adjustedAmount | money}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef>ACTIONS</mat-header-cell>
+                    <mat-cell *matCellDef="let row; let i = index">
+                        <button class="btn btn-primary" *ngIf="row.id" (click)="removeDemandNoteItem(row,i)"><i
+                                class="fa fa-trash-alt"></i></button>
+                    </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="pricingDisplayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: pricingDisplayedColumns;"></mat-row>
