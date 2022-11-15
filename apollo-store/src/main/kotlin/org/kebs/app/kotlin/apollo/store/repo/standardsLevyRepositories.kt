@@ -56,7 +56,9 @@ interface StandardLevySiteVisitRemarksRepository : HazelcastRepository<StandardL
 }
 
 interface StandardLevyOperationsClosureRepository : HazelcastRepository<StandardLevyOperationsClosure, Long> {
-    @Query(value = "SELECT c.NAME as companyName,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber,o.ID as id,o.COMPANY_ID as companyId,o.REASON as reason,o.STATUS as status,o.DESCRIPTION as description,o.DATE_OF_CLOSURE as dateOfClosure FROM DAT_KEBS_CLOSURE_OF_OPERATIONS o JOIN DAT_KEBS_COMPANY_PROFILE c ON o.COMPANY_ID=c.ID WHERE  o.STATUS='0'", nativeQuery = true)
+    @Query(value = "SELECT c.NAME as companyName,c.ENTRY_NUMBER as entryNumber,c.KRA_PIN as kraPin,c.REGISTRATION_NUMBER as registrationNumber," +
+            "o.ID as id,o.COMPANY_ID as companyId,o.REASON as reason,o.STATUS as status,o.DESCRIPTION as description," +
+            "cast(o.DATE_OF_CLOSURE as varchar(200)) AS dateOfClosure FROM DAT_KEBS_CLOSURE_OF_OPERATIONS o JOIN DAT_KEBS_COMPANY_PROFILE c ON o.COMPANY_ID=c.ID WHERE  o.STATUS='0'", nativeQuery = true)
     fun getCompanyClosureRequest(): MutableList<CompanyClosureList>
 }
 

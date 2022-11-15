@@ -183,7 +183,7 @@ data class CloseCompanyDto(
     var id: Long? = null,
     var name: String? = null,
     var reason: String? = null,
-    var dateOfClosure: String? = null,
+    var dateOfClosure: Timestamp? = null,
 
     ){
 

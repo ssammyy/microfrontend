@@ -13,11 +13,36 @@ import {Moment} from "moment";
 import {OverlayService} from "../../../shared/loader/overlay.service";
 import {formatDate} from "@angular/common";
 import swal from "sweetalert2";
+import {DateAdapter, MAT_DATE_FORMATS, NativeDateAdapter} from "@angular/material/core";
+
+export const PICK_FORMATS = {
+  parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
+  display: {
+    dateInput: 'input',
+    monthYearLabel: {year: 'numeric', month: 'short'},
+    dateA11yLabel: {year: 'numeric', month: 'long', day: 'numeric'},
+    monthYearA11yLabel: {year: 'numeric', month: 'long'}
+  }
+};
+
+class PickDateAdapter extends NativeDateAdapter {
+  format(date: Date, displayFormat: Object): string {
+    if (displayFormat === 'input') {
+      return formatDate(date, "yyyy-MM-dd'T'HH:mm:ss", this.locale);
+    } else {
+      return date.toDateString();
+    }
+  }
+}
 
 @Component({
   selector: 'app-standard-levy-penalty-report',
   templateUrl: './standard-levy-penalty-report.component.html',
-  styleUrls: ['./standard-levy-penalty-report.component.css']
+  styleUrls: ['./standard-levy-penalty-report.component.css'],
+  providers: [
+    {provide: DateAdapter, useClass: PickDateAdapter},
+    {provide: MAT_DATE_FORMATS, useValue: PICK_FORMATS}
+  ]
 })
 export class StandardLevyPenaltyReportComponent implements OnInit {
   paymentDetails: PaymentDetails[]=[];
@@ -142,6 +167,7 @@ export class StandardLevyPenaltyReportComponent implements OnInit {
     ) {
       this.error = true;
       this.spinnerService.hide();
+      this.spinnerService.hide();
 
       swal.fire({
         title: 'Please Select At Least One Filter.',
@@ -201,6 +227,7 @@ export class StandardLevyPenaltyReportComponent implements OnInit {
           (error: HttpErrorResponse) => {
             alert(error.message);
             this.SpinnerService.hide();
+            this.spinnerService.hide();
           }
       );
     }
