@@ -11,9 +11,9 @@ import javax.persistence.*
 class CdDemandNoteItemsDetailsEntity : Serializable {
     @Column(name = "ID")
     @SequenceGenerator(
-            name = "DAT_KEBS_CD_DEMAND_NOTE_ITEMS_DETAILS_SEQ_GEN",
-            sequenceName = "DAT_KEBS_CD_DEMAND_NOTE_ITEMS_DETAILS_SEQ",
-            allocationSize = 1
+        name = "DAT_KEBS_CD_DEMAND_NOTE_ITEMS_DETAILS_SEQ_GEN",
+        sequenceName = "DAT_KEBS_CD_DEMAND_NOTE_ITEMS_DETAILS_SEQ",
+        allocationSize = 1
     )
     @GeneratedValue(generator = "DAT_KEBS_CD_DEMAND_NOTE_ITEMS_DETAILS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
@@ -22,6 +22,10 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Column(name = "ITEM_ID")
     @Basic
     var itemId: Long? = null
+
+    @Column(name = "FEE_ID")
+    @Basic
+    var feeId: Long? = null
 
     @Column(name = "EXCHANGE_RATE_ID")
     @Basic

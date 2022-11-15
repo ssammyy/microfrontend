@@ -97,7 +97,10 @@ class QADaoServices(
     private val reportsDaoService: ReportsDaoService,
 //    private val reportsControllers: ReportsController,
     private val notifications: Notifications,
-) {
+    private val daoService: DaoFluxService,
+
+
+    ) {
 
 
     @Lazy
@@ -6948,6 +6951,43 @@ class QADaoServices(
             }
 
             ?: throw ExpectedDataNotFound("No Permit Found")
+    }
+
+    fun findReportAllAwardedPermitsKebsWebsite(
+        permitType: Long,
+        status: Int,
+        fmarkGeneratedStatus: Int
+    ): List<PermitApplicationsEntity> {
+        permitRepo.findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(
+            permitType,
+            status
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+    }
+
+    fun listPermitsWebsite(
+        permits: List<PermitApplicationsEntity>,
+        map: ServiceMapsEntity
+    ): List<KebsWebistePermitEntityDto> {
+        return permits.map { p ->
+            KebsWebistePermitEntityDto(
+                p.firmName,
+                p.physicalAddress,
+                p.commodityDescription,
+                p.productName,
+                p.tradeMark,
+                p.ksNumber,
+                p.commodityDescription,
+                p.effectiveDate.toString(),
+                p.dateOfExpiry.toString()
+
+                )
+        }
+
     }
 
 

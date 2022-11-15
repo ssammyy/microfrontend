@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
-import {Observable} from "rxjs";
+import {Observable, throwError} from "rxjs";
 import * as fileSaver from 'file-saver';
-import {map} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
 import swal from "sweetalert2";
 import {DatePipe} from "@angular/common";
 
@@ -351,11 +351,13 @@ export class DestinationInspectionService {
         try {
             const contentDisposition: string = response.headers.get('content-disposition');
             console.log(contentDisposition)
-            const r = /(?:filename=")(.+)(?:")/
-            filename = r.exec(contentDisposition)[1];
+            if (contentDisposition) {
+                const r = /(?:filename=")(.+)(?:")/
+                filename = r.exec(contentDisposition)[1];
+            }
         } catch (e) {
             console.error(e)
-            filename = 'FILE.pdf'
+            filename = null
         }
         return filename
     }
@@ -389,28 +391,48 @@ export class DestinationInspectionService {
         }
         observable.pipe(map((res: HttpResponse<any>) => {
                 if (res.ok) {
+                    console.log(res.body)
                     let fileName = this.getFileName(res)
-                    if (!fileName) {
-                        fileName = "sample.pdf"
+                    if (fileName) {
+                        // @ts-ignore
+                        let blob: any = new Blob([res.body], {type: res.headers.get("content-type")});
+                        fileSaver.saveAs(blob, fileName);
+                        return fileName
+                    } else {
+                        console.log(res.body.toString())
                     }
-                    // @ts-ignore
-                    let blob: any = new Blob([res.body], {type: res.headers.get("content-type")});
-                    fileSaver.saveAs(blob, fileName);
-                    return fileName
                 } else {
+                    console.log(res.body)
                     this.showError(res.body, null)
                 }
+                return null
             }
-        ))
-            .subscribe(
-                res => {
-                    console.log(res)
-                },
-                error => {
-                    console.log(error)
-                    this.showError(error.message ? error.message : "Download failed, please try again latter", null)
+            ),
+            catchError((err: HttpErrorResponse) => {
+                console.log(err)
+                var errorMessage = "Download failed, please try again latter"
+                if (err.error instanceof Blob) {
+                    // let txt = await err.error.stream().getReader()
+                    err.error.text().then(txt => {
+                        const res = JSON.parse(txt);
+                        errorMessage = res.message
+                    })
                 }
-            )
+                return throwError(errorMessage)
+            })
+        ).subscribe(
+            res => {
+                console.log(res)
+            },
+            err => {
+                console.log(err)
+                if (err instanceof Blob) {
+                    console.log("DOWNLOAD ERROR:")
+                } else {
+                    this.showError(err.message ? err.message : "Download failed, please try again latter", null)
+                }
+            }
+        )
     }
 
 

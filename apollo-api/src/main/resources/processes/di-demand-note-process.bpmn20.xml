@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="demandNoteGenerationProcess" name="Generate Demand Note for Consignment Documet" isExecutable="true" activiti:candidateStarterUsers="supervisor">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
+  <process id="demandNoteGenerationProcess" name="Generate Demand Note for Consignment Documet" isExecutable="true"
+           activiti:candidateStarterUsers="supervisor">
     <startEvent id="startDemandNoteGeneration" name="Start Targeting"></startEvent>
     <sequenceFlow id="flow4" name="Rejected" sourceRef="exclusivegateway2" targetRef="updateCocRejectionStatus">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!taskApproved}]]></conditionExpression>
     </sequenceFlow>
-    <serviceTask id="demandNoteApprovedStatus" name="Approve Demand Note" activiti:expression="#{invoiceService.approveDemandNoteGeneration(cdUuid,demandNoteId,supervisor,remarks)}"></serviceTask>
-    <serviceTask id="updateCocRejectionStatus" name="Update Demand Note Rejection Status" activiti:expression="#{invoiceService.rejectDemandNoteGeneration(cdUuid,demandNoteId,remarks)}"></serviceTask>
-    <sequenceFlow id="flow6" sourceRef="updateCocRejectionStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
-    <serviceTask id="updateConsignmentDocumentProcessFields" name="Update Consignment Document" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
+    <serviceTask id="demandNoteApprovedStatus" name="Approve Demand Note"
+                 activiti:expression="#{invoiceService.approveDemandNoteGeneration(cdUuid,demandNoteId,supervisor,remarks)}"></serviceTask>
+    <serviceTask id="updateCocRejectionStatus" name="Update Demand Note Rejection Status"
+                 activiti:expression="#{invoiceService.rejectDemandNoteGeneration(cdUuid,demandNoteId,remarks)}"></serviceTask>
+    <sequenceFlow id="flow6" sourceRef="updateCocRejectionStatus"
+                  targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
+    <serviceTask id="updateConsignmentDocumentProcessFields" name="Update Consignment Document"
+                 activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
     <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
     <sequenceFlow id="flow8" sourceRef="servicetask3" targetRef="endTargetConsignmentDocument"></sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="servicetask1" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
-    <userTask id="requestApprovalOfExcludedItems" name="Approve Demand Note Generation" activiti:assignee="${supervisor}" activiti:category="${cfs_code}"></userTask>
+    <userTask id="requestApprovalOfExcludedItems" name="Approve Demand Note Generation"
+              activiti:assignee="${supervisor}" activiti:candidateGroups="${cfs_code}"
+              activiti:category="${cfs_code}"></userTask>
     <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow12" sourceRef="requestApprovalOfExcludedItems" targetRef="exclusivegateway2"></sequenceFlow>
     <sequenceFlow id="flow13" name="Approved" sourceRef="exclusivegateway2" targetRef="demandNoteApprovedStatus">

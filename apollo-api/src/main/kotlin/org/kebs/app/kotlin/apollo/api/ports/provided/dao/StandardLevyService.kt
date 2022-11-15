@@ -2643,7 +2643,7 @@ return getUserTasks();
         return companyProfileRepo.getAllLevyPaymentsFilter(periodFrom,periodTo, businessLines,region)
     }
 
-    fun getPenaltyReportFilter(periodFrom : String?,periodTo : String?, businessLines : Long?,region : Long?): MutableList<AllLevyPayments> {
+    fun getPenaltyReportFilter(periodFrom : Timestamp?,periodTo : Timestamp?, businessLines : Long?,region : Long?): MutableList<AllLevyPayments> {
         return companyProfileRepo.getPenaltyReportFilter(periodFrom,periodTo, businessLines,region)
     }
     fun getActiveFirmsFilter(startDate : Timestamp?,endDate : Timestamp?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {

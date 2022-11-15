@@ -21,6 +21,14 @@ export interface StandardRequestB {
     integration: number;
     exportMarkets: number;
     levelOfStandard: string;
+    status: string;
+    tcSecAssigned: string;
+    reviewedBy: string;
+    reviewDate: Date;
+    reason: string;
+    desiredOutput: string;
+    desiredResult: string;
+
 }
 
 export interface ServerResponse {
