@@ -154,21 +154,21 @@ class StandardReviewController(
     //decision on Adoption Recommendation
     // @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnRecommendation")
-    fun decisionOnRecommendation(@RequestBody iSDecision: ISDecision,
+    fun decisionOnRecommendation(@RequestBody reviewDecision: ReviewDecision,
                                  internationalStandardRemarks: InternationalStandardRemarks) : List<StandardReviewTasks>
     {
-        return standardReviewService.decisionOnRecommendation(iSDecision,internationalStandardRemarks)
+        return standardReviewService.decisionOnRecommendation(reviewDecision,internationalStandardRemarks)
     }
 
     //Level Two Decision
     @PostMapping("/levelUpDecisionOnRecommendations")
     fun levelUpDecisionOnRecommendations(
-        @RequestBody iSDecision: ISDecision,
+        @RequestBody reviewDecision: ReviewDecision,
         internationalStandardRemarks: InternationalStandardRemarks,
         standard: Standard
     ): List<StandardReviewTasks> {
         return standardReviewService.levelUpDecisionOnRecommendations(
-            iSDecision,
+            reviewDecision,
             internationalStandardRemarks,
             standard
         )
@@ -179,16 +179,16 @@ class StandardReviewController(
     @PostMapping("/updateGazette")
     @ResponseBody
     fun updateGazette(@RequestBody internationalStandardRemarks: InternationalStandardRemarks,
-                      standard:Standard,iSDecision: ISDecision): ServerResponse
+                      standard:Standard,reviewDecision: ReviewDecision): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully Submitted Comments",standardReviewService.updateGazette(internationalStandardRemarks,standard,iSDecision))
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted Comments",standardReviewService.updateGazette(internationalStandardRemarks,standard,reviewDecision))
     }
 
     @PostMapping("/updateGazettementDate")
     @ResponseBody
-    fun updateGazettementDate(@RequestBody nWAGazettement: NWAGazettement,iSDecision: ISDecision): ServerResponse
+    fun updateGazettementDate(@RequestBody nWAGazettement: NWAGazettement,gazzettementDecision: GazzettementDecision): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully Submitted Comments",standardReviewService.updateGazettementDate(nWAGazettement,iSDecision))
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted Comments",standardReviewService.updateGazettementDate(nWAGazettement,gazzettementDecision))
     }
 
     @PostMapping("/submitDraftForEditing")
@@ -201,11 +201,11 @@ class StandardReviewController(
     //Level Two Decision
     @PostMapping("/checkRequirements")
     fun checkRequirements(
-        @RequestBody iSDecision: ISDecision,
+        @RequestBody reviewDecision: ReviewDecision,
         internationalStandardRemarks: InternationalStandardRemarks
     ): List<StandardReviewTasks> {
         return standardReviewService.checkRequirements(
-            iSDecision,
+            reviewDecision,
             internationalStandardRemarks
         )
     }
@@ -236,11 +236,11 @@ class StandardReviewController(
 
     @PostMapping("/checkStandardDraft")
     fun checkStandardDraft(
-        @RequestBody iSDecision: ISDecision,
+        @RequestBody reviewDecision: ReviewDecision,
         internationalStandardRemarks: InternationalStandardRemarks
     ): List<StandardReviewTasks> {
         return standardReviewService.checkStandardDraft(
-            iSDecision,
+            reviewDecision,
             internationalStandardRemarks
         )
     }
