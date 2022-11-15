@@ -6977,7 +6977,7 @@ class QADaoServices(
             KebsWebistePermitEntityDto(
                 p.firmName,
                 p.physicalAddress,
-                p.commodityDescription,
+                p.awardedPermitNumber,
                 p.productName,
                 p.tradeMark,
                 p.ksNumber,

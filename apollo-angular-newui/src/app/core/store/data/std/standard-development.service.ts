@@ -137,9 +137,28 @@ export class StandardDevelopmentService {
 
     public uploadNWI(uploadNWI: Stdtsectask): Observable<any> {
 
-        console.log(uploadNWI);
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadNWI', uploadNWI)
     }
+
+    //upload additinal info Document Nwi
+    public uploadFileDetailsNwi(draftStandardID: string, data: FormData, doctype: string, nomineeName: string): Observable<any> {
+        const url = `${this.apiServerUrl}uploadNWIDocs`;
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'requestId': draftStandardID, 'type': doctype, 'requesterName': nomineeName}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
 
     public getTCTasks(): Observable<StdTCTask[]> {
         return this.http.get<StdTCTask[]>(`${this.apiServerUrl}` + 'getTCTasks')

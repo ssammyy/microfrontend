@@ -85,8 +85,7 @@ Content-Type: application/json
 
 ###GET TCTasks
 GET https://localhost:8006/api/v1/migration/standard/getAllStdsForNwi
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxYW1nYXJpc3NhQG1haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY2ODAwMjQzNCwiZXhwIjoxNjY4MDA4NDM0LCJhZGRyZXNzIjoiMTI3LjAuMC4xIiwidXNlckFnZW50IjoiW0FwYWNoZS1IdHRwQ2xpZW50LzQuNS4xMyAoSmF2YS8xNy4wLjQuMSldIiwiZnVsbE5hbWUiOiJRQU0gR2FyaXNzYSIsInJvbGVzIjoiVVNFUixFTVBMT1lFRSxRQV9QU0NfTUVNQkVSU19SRUFELFFBX1BTQ19NRU1CRVJTX01PRElGWSxRQV9NQU5BR0VSX1JFQUQsUUFfTUFOQUdFUl9NT0RJRlksUUFfUENNX01PRElGWSxRQV9QQ01fUkVBRCJ9.UZnWTLU2aBv2ZSytOVwEVmcV_iSnreUUv2yuaEfoJ3XMQso7ei6bKO0-bGC8t20h2qje0dokD49mXY5ASmRp4g
-
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY2ODUxMDMwNCwiZXhwIjoxNjY4NTE2MzA0LCJhZGRyZXNzIjoiMTk3LjI0OC4xNjYuNjUiLCJ1c2VyQWdlbnQiOiJbTW96aWxsYS81LjAgKE1hY2ludG9zaDsgSW50ZWwgTWFjIE9TIFggMTBfMTVfNykgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEwNy4wLjAuMCBTYWZhcmkvNTM3LjM2XSIsImZ1bGxOYW1lIjoiSmFtZXMgTXVnYW5kYSIsInJvbGVzIjoiU1RBTkRBUkRTX0RFVkVMT1BNRU5UX0ZVTExfQURNSU4ifQ.fkOAMbl1n_AqMqcEs-61UMy_LJsmVA_pCg29I5KBE-ubdPKRFlj90Cy-VZdF7HoL0EDQuFN5h-mLxKNQViPkPg
 ###GET TCTasks
 GET https://localhost:8006/api/v1/migration/standard/getTCTasks
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY1OTU4NDg0NCwiZXhwIjoxNjU5NTkwODQ0LCJhZGRyZXNzIjoiMTI3LjAuMC4xIiwidXNlckFnZW50IjoiW0FwYWNoZS1IdHRwQ2xpZW50LzQuNS4xMyAoSmF2YS8xNy4wLjMpXSIsImZ1bGxOYW1lIjoiSmFtZXMgTXVnYW5kYSIsInJvbGVzIjoiU1RBTkRBUkRTX0RFVkVMT1BNRU5UX0ZVTExfQURNSU4ifQ.KghVligwb3o5gEQyJx-DZCgUC7OVsMEBEFbamN-xM5OREoH_WNt95rb_AORsVYIOtIUilmwvxBiYa3mJ7O4sbQ
@@ -687,4 +686,7 @@ Content-Type: application/json
 
 "{\"REQUEST\":{\"loginId\":\"vmuriuki\",\"password\":\"password\",\"hash\":\"cddca83b2d54cdd2cf42adae146e9b4ed6de67ebaae4ddbcf8dcfb285a60478c\",\"transmissionDate\":\"31-03-2021T16:31:25\",\"HEADER\":{\"entryNo\":\"3\",\"kraPin\":\"A001559909F\",\"manufacturerName\":\"DAISYLINES\",\"paymentSlipNo\":\"2020210002968981\",\"paymentSlipDate\":\"16-03-2022\",\"paymentType\":\"CASH\",\"paymentDate\":\"16-03-2022\",\"totalDeclAmt\":\"1\",\"totalPenaltyAmt\":\"0\",\"TotalPaymentAmt\":\"1\",\"Bank\":\"FAMILYBANKLTD\",\"bankRefNo\":\"123\"},\"DETAILS\":{\"DECLARATION\":[{\"commodityType\":\"COTTON\",\"periodFrom\":\"01-01-2022\",\"periodTo\":\"31-01-2022\",\"qtyManf\":\"1000\",\"exFactVal\":\"100\",\"levyPaid\":\"10\"},{\"commodityType\":\"BRASS\",\"periodFrom\":\"01-02-2022\",\"periodTo\":\"28-02-2022\",\"qtyManf\":\"2000\",\"exFactVal\":\"200\",\"levyPaid\":\"20\"}],\"PENALTY\":[{\"penaltyOrderNo\":\"4\",\"periodFrom\":\"01-01-2022\",\"periodTo\":\"31-01-2022\",\"penaltyPaid\":\"100\"},{\"penaltyOrderNo\":\"5\",\"periodFrom\":\"01-02-2022\",\"periodTo\":\"28-02-2022\",\"penaltyPaid\":\"200\"}]}}}"
 
+
+######
+GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedSmarkPermits
 

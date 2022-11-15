@@ -10,6 +10,7 @@ import {DataTableDirective} from "angular-datatables";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {ErrorStateMatcher} from "@angular/material/core";
+import swal from "sweetalert2";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -204,9 +205,21 @@ export class StdTscSecTasksComponentComponent implements OnInit {
             (response) => {
                 console.log(response);
                 this.showToasterSuccess(response.httpStatus, `New Work Item Uploaded`);
-                this.hideModel();
-                this.getTCSECTasks();
-                this.SpinnerService.hide();
+
+                if (this.uploadedFiles.length > 0) {
+                    this.uploadDocuments(response.body, "Annex Documents")
+                }
+                if (this.uploadedFilesB.length > 0) {
+                    this.uploadDocuments(response.body, "Relevant Documents")
+                }
+                if (this.uploadedFilesC.length > 0) {
+                    this.uploadDocuments(response.body, "Reference Documents")
+                } else {
+                    this.hideModel();
+                    this.SpinnerService.hide();
+                    this.getTCSECTasks();
+
+                }
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
@@ -256,5 +269,54 @@ export class StdTscSecTasksComponentComponent implements OnInit {
             this.stdNwiFormGroup.reset()
         }
     }
+
+
+    public uploadDocuments(nwiId: number, additionalInfo: string) {
+
+        let file = null;
+        if (additionalInfo == "Annex Documents") {
+            file = this.uploadedFiles;
+        }
+        if (additionalInfo == "Relevant Documents") {
+            file = this.uploadedFilesB;
+        }
+        if (additionalInfo == "Reference Documents") {
+            file = this.uploadedFilesC;
+        }
+        if (file != null) {
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.standardDevelopmentService.uploadFileDetailsNwi(String(nwiId), formData, additionalInfo, additionalInfo).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFiles = null;
+                    this.uploadedFilesB = null;
+                    this.uploadedFilesC = null;
+
+                    console.log(data);
+                    swal.fire({
+                        title: 'Uploaded Successfully.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    this.hideModel();
+                    this.getTCSECTasks();
+
+                    this.SpinnerService.hide();
+
+                    // this.router.navigate(['/draftStandard']);
+                    // this.getSACTasks();
+
+                },
+            );
+        }
+    }
+
 
 }
