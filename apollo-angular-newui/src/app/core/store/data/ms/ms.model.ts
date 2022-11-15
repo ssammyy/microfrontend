@@ -316,6 +316,10 @@ export class WorkPlanFeedBackDto {
     hodFeedBackRemarks: string;
 }
 
+export class FieldReportBackDto {
+    actionOnSeizedGoodsDetails: string;
+}
+
 export class DestructionNotificationDto {
     clientFullName: string;
     clientEmail: string;
@@ -510,7 +514,18 @@ export class InspectionInvestigationReportDto {
     recommendations: string;
     statusActivity: string;
     finalRemarkHod: string;
-    // remarks: string;
+    remarks: string;
+    additionalInformation: FieldReportAdditionalInfo;
+    additionalInformationStatus: boolean;
+}
+
+export class FieldReportAdditionalInfo {
+    performanceOnTestSamples: String;
+    actionOnSeizedGoods: FieldReportBackDto[];
+    actionOnSeizedGoodsRemarks: String;
+    actionsOnRecommendationGiven: String;
+    followUpActivities: String;
+    others: String;
 }
 
 export class ComplaintLocationDto {

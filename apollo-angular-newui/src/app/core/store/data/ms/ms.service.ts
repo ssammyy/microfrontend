@@ -2170,6 +2170,26 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     /*******************************************************************START OF FUEL SURVEILLANCE*****************************************************************************/
 
+    public saveFieldReportAdditionalInform(data: FormData): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPDATE_FIELD_REPORT_WORK_PLAN_FILE);
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+
     public loadMSFuelBatchList(page: string, records: string): Observable<FuelBatchDetailsDto[]> {
         // console.log(data);
          // tslint:disable-next-line:max-line-length

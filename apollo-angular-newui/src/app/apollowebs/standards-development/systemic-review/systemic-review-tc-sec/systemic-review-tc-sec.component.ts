@@ -66,9 +66,11 @@ export class SystemicReviewTcSecComponent implements OnInit {
     this.SpinnerService.show();
     this.stdReviewService.getTcSecTasks().subscribe(
         (response: StandardReviewTasks[])=> {
+          this.tasks = response;
+          console.log(this.tasks);
           this.SpinnerService.hide();
           this.rerender();
-          this.tasks = response;
+
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -144,7 +146,7 @@ export class SystemicReviewTcSecComponent implements OnInit {
   }
 
   submitRecommendation(): void {
-    //console.log(this.recommendationFormGroup.value)
+    console.log(this.recommendationFormGroup.value)
     this.loadingText = "Submitting Recommendation ...."
     this.SpinnerService.show();
     this.stdReviewService.makeRecommendationsOnAdoptionProposal(this.recommendationFormGroup.value).subscribe(

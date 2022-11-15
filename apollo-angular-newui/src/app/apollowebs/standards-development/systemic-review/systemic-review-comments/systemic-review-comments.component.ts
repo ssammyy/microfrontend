@@ -108,6 +108,7 @@ export class SystemicReviewCommentsComponent implements OnInit, OnDestroy {
         }
     );
     this.hideModelCDetails();
+    this.commentFormGroup.reset();
   }
   @ViewChild('closeModalCDetails') private closeModalCDetails: ElementRef | undefined;
 

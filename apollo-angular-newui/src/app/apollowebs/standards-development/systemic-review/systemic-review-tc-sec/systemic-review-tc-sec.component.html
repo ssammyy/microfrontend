@@ -43,7 +43,7 @@
                                         <td>{{i+1}}</td>
                                         <td>{{task.taskData.standardNumber}}</td>
                                         <td>{{task.taskData.standardType}}</td>
-                                        <td>{{task.taskData.datePrepared}}</td>
+                                        <td>{{task.taskData.recommendationTime}}</td>
                                         <td>{{task.taskData.title}}</td>
                                         <td>{{task.taskData.scope}}</td>
                                         <td *ngIf="task.name==='makeRecommendations'"><a  (click)="onOpenModal(task,'comment')" class="btn btn-outline-info btn-sm tooltips" data-placement="top"  data-original-title="Approve">Recommendations</a></td>
@@ -192,7 +192,7 @@
                                                                                                         <textarea class="form-control one-column-input" formControlName="summaryOfRecommendations" name="summaryOfRecommendations"></textarea>
 
                                                                                                     </div>
-                                                                                                    <input type="hidden" formControlName="proposalID" value="{{actionRequest?.taskData?.reviewID}}" name="proposalID" >
+                                                                                                    <input type="hidden" formControlName="proposalID" value="{{actionRequest?.taskData?.proposalId}}" name="proposalID" >
                                                                                                     <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
 
                                                                                                 </div>

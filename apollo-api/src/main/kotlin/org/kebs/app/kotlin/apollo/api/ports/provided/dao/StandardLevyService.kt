@@ -2634,25 +2634,25 @@ return getUserTasks();
         return companyProfileRepo.getClosedFirms()
     }
 
-    fun getRegisteredFirmsFilter(startDate : Timestamp?,endDate : Timestamp?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
+    fun getRegisteredFirmsFilter(startDate : Date?,endDate : Date?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
         return companyProfileRepo.getRegisteredFirmsFilter(startDate,endDate, businessLines,region)
 
     }
 
-    fun getAllLevyPaymentsFilter(periodFrom : Timestamp?,periodTo : Timestamp?, businessLines : Long?,region : Long?): MutableList<AllLevyPayments> {
+    fun getAllLevyPaymentsFilter(periodFrom : Date?,periodTo : Date?, businessLines : Long?,region : Long?): MutableList<AllLevyPayments> {
         return companyProfileRepo.getAllLevyPaymentsFilter(periodFrom,periodTo, businessLines,region)
     }
 
-    fun getPenaltyReportFilter(periodFrom : Timestamp?,periodTo : Timestamp?, businessLines : Long?,region : Long?): MutableList<AllLevyPayments> {
+    fun getPenaltyReportFilter(periodFrom : Date?,periodTo : Date?, businessLines : Long?,region : Long?): MutableList<AllLevyPayments> {
         return companyProfileRepo.getPenaltyReportFilter(periodFrom,periodTo, businessLines,region)
     }
-    fun getActiveFirmsFilter(startDate : Timestamp?,endDate : Timestamp?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
+    fun getActiveFirmsFilter(startDate : Date?,endDate : Date?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
         return companyProfileRepo.getActiveFirmsFilter(startDate,endDate, businessLines,region)
     }
-    fun getDormantFirmsFilter(startDate : Timestamp?,endDate : Timestamp?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
+    fun getDormantFirmsFilter(startDate : Date?,endDate : Date?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
         return companyProfileRepo.getDormantFirmsFilter(startDate,endDate, businessLines,region)
     }
-    fun getClosedFirmsFilter(startDate : Timestamp?,endDate : Timestamp?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
+    fun getClosedFirmsFilter(startDate : Date?,endDate : Date?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
         return companyProfileRepo.getClosedFirmsFilter(startDate,endDate, businessLines,region)
     }
 
