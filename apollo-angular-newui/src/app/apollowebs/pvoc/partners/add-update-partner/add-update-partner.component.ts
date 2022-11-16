@@ -80,7 +80,7 @@ export class AddUpdatePartnerComponent implements OnInit {
             billingContactName: [null, Validators.required],
             billingContactPhone: [null, Validators.required],
             billingContactEmail: [null, [Validators.required, Validators.email]],
-            billingLimitId: [null, Validators.required]
+            billingLimitId: [null]
         })
         this.countries = this.data.countries
         this.loadInvoiceDetails()

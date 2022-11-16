@@ -22,11 +22,13 @@ export class ConsignmentDocumentListComponent implements OnInit {
     activeStatus: string = 'my-tasks';
     previousStatus: string = 'my-tasks'
     searchStatus: any
-    personalTasks = "true"
+    personalTasks = "false"
     defaultPageSize: number = 20
     currentPage: number = 0
     currentPageInternal: number = 0
     totalCount: number = 0
+    inspectionOfficers = []
+    supervisors = []
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -190,6 +192,12 @@ export class ConsignmentDocumentListComponent implements OnInit {
                             this.toggleStatus('ongoing')
                         }
                     }
+                    if (!this.inspectionOfficer) {
+                        this.loadOfficers("io")
+                        this.loadOfficers("supervisors")
+                    } else {
+                        this.inspectionOfficers = []
+                    }
                 });
         })
     }
@@ -205,10 +213,34 @@ export class ConsignmentDocumentListComponent implements OnInit {
             )
     }
 
+    loadOfficers(designation: any) {
+        this.diService.listOfficersInMyStation(designation)
+            .subscribe(
+                res => {
+                    if (res.responseCode === '00') {
+                        switch (designation) {
+                            case 'io':
+                                this.inspectionOfficers = res.data
+                                break
+                            default:
+                                this.supervisors = res.data
+
+                        }
+                    }
+                }
+            )
+
+    }
+
     generateReport() {
         this.dialog.open(GenerateCDReportComponent, {
             data: {
                 stations: this.stations,
+                users: this.inspectionOfficers,
+                supervisors: this.supervisors,
+                is_supervisor: this.supervisorCharge,
+                is_officer: this.inspectionOfficer || this.isReadOnly,
+                is_admin: this.isAdmin,
                 documentTypes: this.documentTypes
             }
         })
@@ -238,9 +270,7 @@ export class ConsignmentDocumentListComponent implements OnInit {
     }
 
     onSupervisorChange(event: any) {
-
         if (this.supervisorCharge) {
-            this.personalTasks = event.target.value
             this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
         }
     }

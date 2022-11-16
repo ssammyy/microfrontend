@@ -383,6 +383,13 @@ class DestinationInspectionBpmn(
         return taskDetails
     }
 
+    /**
+     * Find all consignments with assigned CFS or assigned supervisor
+     * @param loggedInUser current user as per authentication context
+     * @param category Task category in case there is task grouping.
+     * @param myTasks when true, finds tasks assigned to this supervisor, otherwise, tasks submitted to supervisor within
+     *                  supervisor CFSs
+     */
     fun consignmentDocumentWithActions(
         loggedInUser: UsersEntity,
         category: String?,
