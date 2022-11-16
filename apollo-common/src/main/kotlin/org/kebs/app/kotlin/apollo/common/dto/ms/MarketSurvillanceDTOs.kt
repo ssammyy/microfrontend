@@ -1067,6 +1067,28 @@ data class MsRecommendationDto(
         var status: Boolean? = null,
 )
 
+data class NotificationBodyDto(
+        var taskRefNumber: String? = null,
+        var fromName: String? = null,
+        var toName: String? = null,
+        var batchReferenceNoFound: String? = null,
+        var referenceNoFound: String? = null,
+        var dateAssigned: Date? = null,
+        var bsNumberFound: String? = null,
+        var processType: String? = null,
+)
+
+data class MsNotificationTaskDto(
+        var id: Long?= 0,
+        var notificationBody: NotificationBodyDto? = null,
+        var notificationMsg: String? = null,
+        var notificationName: String? = null,
+        var notificationType: String? = null,
+        var fromUserId: Long? = null,
+        var toUserId: Long? = null,
+        var readStatus: Boolean? = null,
+)
+
 data class MsUsersDto(
         var id: Long?= 0,
         var firstName: String? = null,

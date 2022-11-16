@@ -129,6 +129,28 @@ export class NewComplaintDto {
     locationDetails: ComplaintLocationDto;
 }
 
+export class MsNotificationTaskDto {
+    id: number;
+    notificationBody: NotificationBodyDto;
+    notificationMsg: string;
+    notificationName: string;
+    notificationType: string;
+    fromUserId: number;
+    toUserId: number;
+    readStatus: boolean;
+}
+
+export class NotificationBodyDto {
+    taskRefNumber: string;
+    fromName: string;
+    toName: string;
+    batchReferenceNoFound: string;
+    referenceNoFound: string;
+    dateAssigned: Date;
+    bsNumber: string;
+    processType: string;
+}
+
 export class ApiResponseModel {
     totalCount: number;
     extras: any;

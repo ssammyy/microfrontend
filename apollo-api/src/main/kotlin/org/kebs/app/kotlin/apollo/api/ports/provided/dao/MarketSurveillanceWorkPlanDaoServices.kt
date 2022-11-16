@@ -16,6 +16,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
+import org.kebs.app.kotlin.apollo.store.repo.INotificationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IWorkPlanCreatedRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
@@ -56,6 +57,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val preliminaryRepo: IPreliminaryReportRepository,
     private val preliminaryOutletRepo: IPreliminaryOutletsRepository,
     private val recommendationRepo: ICfgRecommendationRepository,
+    private val msTaskNotificationsRepo: IMsTaskNotificationsRepository,
 
     private val msTypesRepo: IMsTypesRepository,
     private val complaintsRepo: IComplaintRepository,
@@ -86,6 +88,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val reportsDaoService: ReportsDaoService,
     private val serviceRequestsRepo: IServiceRequestsRepository,
     private val commonDaoServices: CommonDaoServices,
+    private val notificationsRepo: INotificationsRepository,
     private val msFuelDaoServices: MarketSurveillanceFuelDaoServices,
     private val msComplaintDaoServices: MarketSurveillanceComplaintProcessDaoServices
 ) {
@@ -104,6 +107,22 @@ class MarketSurveillanceWorkPlanDaoServices(
         return directoratesEntity?.sortedBy { it.id }?.map { MsRecommendationDto(it.id, it.recommendationName, it.description, it.status == 1) }
     }
 
+    fun listMsNotificationTasks(status: Int): List<MsNotificationTaskDto>? {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val taskNotification = loggedInUser.id?.let { msTaskNotificationsRepo.findAllByReadStatusAndToUserId(status, it) }
+        return taskNotification?.sortedBy { it.id }?.map { MsNotificationTaskDto(it.id, gson.fromJson(it.notificationBody, NotificationBodyDto::class.java), it.notificationMsg, it.notificationName,it.notificationType,it.fromUserId,it.toUserId, it.readStatus == 1) }
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateTaskRead(taskRefNumber: String): List<MsNotificationTaskDto>? {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val taskNotification = msTaskNotificationsRepo.findByTaskRefNumber(taskRefNumber)?: throw ExpectedDataNotFound("MISSING NOTIFICATION WITH REF NUMBER $taskRefNumber")
+        updateNotificationTask(taskNotification,map,loggedInUser)
+
+        return listMsNotificationTasks(map.inactiveStatus)
+    }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -457,6 +476,20 @@ class MarketSurveillanceWorkPlanDaoServices(
                         }
                     rmList
                         ?.forEach { mp ->
+                            val taskNotify = NotificationBodyDto().apply {
+                                fromName = commonDaoServices.concatenateName(loggedInUser)
+                                toName = commonDaoServices.concatenateName(mp)
+                                batchReferenceNoFound = batchReferenceNo
+                                referenceNoFound = workPlanScheduled.referenceNumber
+                                dateAssigned = commonDaoServices.getCurrentDate()
+                                processType = "WORK-PLAN"
+                            }
+
+                            createNotificationTask(taskNotify,
+                                applicationMapProperties.mapMsNotificationNewTask,
+                                map,null,loggedInUser,mp
+                            )
+
                             val scheduleEmailDetails = WorkPlanScheduledDTO()
                             with(scheduleEmailDetails) {
                                 baseUrl = applicationMapProperties.baseUrlValue
@@ -754,6 +787,21 @@ class MarketSurveillanceWorkPlanDaoServices(
                     map.successStatus -> {
                         runBlocking {
                             val userDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
+                            val taskNotify = NotificationBodyDto().apply {
+                                fromName = commonDaoServices.concatenateName(loggedInUser)
+                                toName = userDetails?.let { commonDaoServices.concatenateName(it) }
+                                batchReferenceNoFound = batchReferenceNo
+                                referenceNoFound = workPlanScheduled.referenceNumber
+                                dateAssigned = commonDaoServices.getCurrentDate()
+                                processType = "WORK-PLAN"
+                            }
+
+                            createNotificationTask(taskNotify,
+                                applicationMapProperties.mapMsNotificationNewTask,
+                                map,null,loggedInUser,userDetails
+                            )
+
+
                             with(scheduleEmailDetails){
                                 baseUrl= applicationMapProperties.baseUrlValue
                                 fullName = userDetails?.let { commonDaoServices.concatenateName(it) }
@@ -1265,6 +1313,23 @@ class MarketSurveillanceWorkPlanDaoServices(
                         runBlocking {
                             if(body.approvalStatus){
                                 val hodDetails = workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                val taskNotify = NotificationBodyDto().apply {
+                                    fromName = commonDaoServices.concatenateName(loggedInUser)
+                                    toName = hodDetails?.let { commonDaoServices.concatenateName(it) }
+                                    batchReferenceNoFound = batchReferenceNo
+                                    referenceNoFound = workPlanScheduled.referenceNumber
+                                    dateAssigned = commonDaoServices.getCurrentDate()
+                                    if(workPlanScheduled.complaintId!=null){
+                                        processType = "COMPLAINT-PLAN"
+                                    }else{
+                                        processType = "WORK-PLAN"
+                                    }
+                                }
+
+                                createNotificationTask(taskNotify,
+                                    applicationMapProperties.mapMsNotificationNewTask,
+                                    map,null,loggedInUser,hodDetails
+                                )
                                 with(scheduleEmailDetails){
                                     baseUrl= applicationMapProperties.baseUrlValue
                                     fullName = hodDetails?.let { commonDaoServices.concatenateName(it) }
@@ -1279,6 +1344,23 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 }
                             }else {
                                 val officerDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
+                                val taskNotify = NotificationBodyDto().apply {
+                                    fromName = commonDaoServices.concatenateName(loggedInUser)
+                                    toName = officerDetails?.let { commonDaoServices.concatenateName(it) }
+                                    batchReferenceNoFound = batchReferenceNo
+                                    referenceNoFound = workPlanScheduled.referenceNumber
+                                    dateAssigned = commonDaoServices.getCurrentDate()
+                                    if(workPlanScheduled.complaintId!=null){
+                                        processType = "COMPLAINT-PLAN"
+                                    }else{
+                                        processType = "WORK-PLAN"
+                                    }
+                                }
+
+                                createNotificationTask(taskNotify,
+                                    applicationMapProperties.mapMsNotificationNewTask,
+                                    map,null,loggedInUser,officerDetails
+                                )
                                 with(scheduleEmailDetails){
                                     baseUrl= applicationMapProperties.baseUrlValue
                                     fullName = officerDetails?.let { commonDaoServices.concatenateName(it) }
@@ -1408,6 +1490,26 @@ class MarketSurveillanceWorkPlanDaoServices(
                             msFinalReportStatus = map.activeStatus
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionFinalReportApprovedHODRM
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
+                            val directorDetails = commonDaoServices.findAllUsersByDesignation(map, applicationMapProperties.mapMsComplaintAndWorkPlanDesignationDirector)
+                            directorDetails.forEach { dt->
+                                val taskNotify = NotificationBodyDto().apply {
+                                    fromName = commonDaoServices.concatenateName(loggedInUser)
+                                    toName = dt.userId?.let { commonDaoServices.concatenateName(it) }
+                                    batchReferenceNoFound = batchReferenceNo
+                                    referenceNoFound = workPlanScheduled.referenceNumber
+                                    dateAssigned = commonDaoServices.getCurrentDate()
+                                    processType = if(workPlanScheduled.complaintId!=null){
+                                        "COMPLAINT-PLAN"
+                                    }else{
+                                        "WORK-PLAN"
+                                    }
+                                }
+
+                                createNotificationTask(taskNotify,
+                                    applicationMapProperties.mapMsNotificationNewTask,
+                                    map,null,loggedInUser,dt.userId
+                                )
+                            }
                         }
                         fetchedPreliminary.rejectedStatusHodFinal== map.activeStatus -> {
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionFinalReportRejectedHODRM
@@ -1454,6 +1556,23 @@ class MarketSurveillanceWorkPlanDaoServices(
                     map.successStatus -> {
                         runBlocking {
                             val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
+                            val taskNotify = NotificationBodyDto().apply {
+                                fromName = commonDaoServices.concatenateName(loggedInUser)
+                                toName = ioDetails?.let { commonDaoServices.concatenateName(it) }
+                                batchReferenceNoFound = batchReferenceNo
+                                referenceNoFound = workPlanScheduled.referenceNumber
+                                dateAssigned = commonDaoServices.getCurrentDate()
+                                processType = if(workPlanScheduled.complaintId!=null){
+                                    "COMPLAINT-PLAN"
+                                }else{
+                                    "WORK-PLAN"
+                                }
+                            }
+
+                            createNotificationTask(taskNotify,
+                                applicationMapProperties.mapMsNotificationNewTask,
+                                map,null,loggedInUser,ioDetails
+                            )
                             with(scheduleEmailDetails){
                                 baseUrl= applicationMapProperties.baseUrlValue
                                 fullName = ioDetails?.let { commonDaoServices.concatenateName(it) }
@@ -1609,6 +1728,27 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         when (fileSaved.first.status) {
             map.successStatus -> {
+                val directorDetails = commonDaoServices.findAllUsersByDesignation(map, applicationMapProperties.mapMsComplaintAndWorkPlanDesignationDirector)
+                directorDetails.forEach { dt->
+                    val taskNotify = NotificationBodyDto().apply {
+                        fromName = commonDaoServices.concatenateName(loggedInUser)
+                        toName = dt.userId?.let { commonDaoServices.concatenateName(it) }
+                        batchReferenceNoFound = batchReferenceNo
+                        referenceNoFound = workPlanScheduled.referenceNumber
+                        dateAssigned = commonDaoServices.getCurrentDate()
+                        processType = if(workPlanScheduled.complaintId!=null){
+                            "COMPLAINT-PLAN"
+                        }else{
+                            "WORK-PLAN"
+                        }
+                    }
+
+                    createNotificationTask(taskNotify,
+                        applicationMapProperties.mapMsNotificationNewTask,
+                        map,null,loggedInUser,dt.userId
+                    )
+                }
+
                 return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
             }
             else -> {
@@ -1617,6 +1757,8 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
 
     }
+
+
 
     @PreAuthorize("hasAuthority('MS_DIRECTOR_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -1630,6 +1772,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
 
         with(workPlanScheduled){
+            directorAssigned = loggedInUser.id
             directorRecommendationRemarksStatus= map.activeStatus
             timelineStartDate = commonDaoServices.getCurrentDate()
             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionDirectorRemarksADDED.let { timeLine->
@@ -1644,6 +1787,24 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         when (fileSaved.first.status) {
             map.successStatus -> {
+                val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
+                val taskNotify = NotificationBodyDto().apply {
+                    fromName = commonDaoServices.concatenateName(loggedInUser)
+                    toName = ioDetails?.let { commonDaoServices.concatenateName(it) }
+                    batchReferenceNoFound = batchReferenceNo
+                    referenceNoFound = workPlanScheduled.referenceNumber
+                    dateAssigned = commonDaoServices.getCurrentDate()
+                    processType = if(workPlanScheduled.complaintId!=null){
+                        "COMPLAINT-PLAN"
+                    }else{
+                        "WORK-PLAN"
+                    }
+                }
+
+                createNotificationTask(taskNotify,
+                    applicationMapProperties.mapMsNotificationNewTask,
+                    map,null,loggedInUser,ioDetails
+                )
                 return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
             }
             else -> {
@@ -1713,11 +1874,62 @@ class MarketSurveillanceWorkPlanDaoServices(
 
                             }
                             ioDetails?.email?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail, scheduleEmailDetails, map, remarksSaved.first) }
+                            var taskNotify = NotificationBodyDto().apply {
+                                fromName = commonDaoServices.concatenateName(loggedInUser)
+                                toName = ioDetails?.let { commonDaoServices.concatenateName(it) }
+                                batchReferenceNoFound = batchReferenceNo
+                                referenceNoFound = workPlanScheduled.referenceNumber
+                                dateAssigned = commonDaoServices.getCurrentDate()
+                                processType = if(workPlanScheduled.complaintId!=null){
+                                    "COMPLAINT-PLAN"
+                                }else{
+                                    "WORK-PLAN"
+                                }
+                            }
+
+                            createNotificationTask(taskNotify,
+                                applicationMapProperties.mapMsNotificationNewTask,
+                                map,null,loggedInUser,ioDetails
+                            )
                             val hofDetails = workPlanScheduled.hofAssigned?.let { commonDaoServices.findUserByID(it) }
                             scheduleEmailDetails.fullName = hofDetails?.let { commonDaoServices.concatenateName(it) }
+                           taskNotify = NotificationBodyDto().apply {
+                                fromName = commonDaoServices.concatenateName(loggedInUser)
+                                toName = hofDetails?.let { commonDaoServices.concatenateName(it) }
+                                batchReferenceNoFound = batchReferenceNo
+                                referenceNoFound = workPlanScheduled.referenceNumber
+                                dateAssigned = commonDaoServices.getCurrentDate()
+                                processType = if(workPlanScheduled.complaintId!=null){
+                                    "COMPLAINT-PLAN"
+                                }else{
+                                    "WORK-PLAN"
+                                }
+                            }
+
+                            createNotificationTask(taskNotify,
+                                applicationMapProperties.mapMsNotificationNewTask,
+                                map,null,loggedInUser,hofDetails
+                            )
                             hofDetails?.email?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail, scheduleEmailDetails, map, remarksSaved.first) }
                             val directorDetails = workPlanScheduled.directorAssigned?.let { commonDaoServices.findUserByID(it) }
                             scheduleEmailDetails.fullName = directorDetails?.let { commonDaoServices.concatenateName(it) }
+                            taskNotify = NotificationBodyDto().apply {
+                                fromName = commonDaoServices.concatenateName(loggedInUser)
+                                toName = directorDetails?.let { commonDaoServices.concatenateName(it) }
+                                batchReferenceNoFound = batchReferenceNo
+                                referenceNoFound = workPlanScheduled.referenceNumber
+                                dateAssigned = commonDaoServices.getCurrentDate()
+                                processType = if(workPlanScheduled.complaintId!=null){
+                                    "COMPLAINT-PLAN"
+                                }else{
+                                    "WORK-PLAN"
+                                }
+                            }
+
+                            createNotificationTask(taskNotify,
+                                applicationMapProperties.mapMsNotificationNewTask,
+                                map,null,loggedInUser,directorDetails
+                            )
                             directorDetails?.email?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail, scheduleEmailDetails, map, remarksSaved.first) }
                             scheduleEmailDetails.fullName = workPlanScheduled.destructionClientFullName
                             workPlanScheduled.destructionClientEmail?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsHodFinalFeedBackNotificationEmail, scheduleEmailDetails, map, remarksSaved.first) }
@@ -2218,6 +2430,23 @@ class MarketSurveillanceWorkPlanDaoServices(
                             runBlocking {
                                 hofList
                                     ?.forEach { mp->
+                                        val taskNotify = NotificationBodyDto().apply {
+                                            fromName = commonDaoServices.concatenateName(loggedInUser)
+                                            toName = commonDaoServices.concatenateName(mp)
+                                            batchReferenceNoFound = batchReferenceNo
+                                            referenceNoFound = workPlanScheduled.referenceNumber
+                                            dateAssigned = commonDaoServices.getCurrentDate()
+                                            if(workPlanScheduled.complaintId!=null){
+                                                processType = "COMPLAINT-PLAN"
+                                            }else{
+                                                processType = "WORK-PLAN"
+                                            }
+                                        }
+
+                                        createNotificationTask(taskNotify,
+                                            applicationMapProperties.mapMsNotificationNewTask,
+                                            map,null,loggedInUser,mp
+                                        )
                                         val scheduleEmailDetails =  WorkPlanScheduledDTO()
                                         with(scheduleEmailDetails){
                                             baseUrl= applicationMapProperties.baseUrlValue
@@ -2596,7 +2825,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val msType = findMsTypeDetailsWithUuid(applicationMapProperties.mapMsWorkPlanTypeUuid)
         val batchDetail  = findCreatedWorkPlanWIthRefNumber(referenceNumber)
 
-        var fileSaved=  saveNewWorkPlanActivity(body,msType, batchDetail, map, loggedInUser)
+        val fileSaved=  saveNewWorkPlanActivity(body,msType, batchDetail, map, loggedInUser)
         when (fileSaved.first.status) {
             map.successStatus -> {
                 val workPlanList = findALlWorkPlanDetailsAssociatedWithWorkPlanID(batchDetail.id,page).toList()
@@ -2842,6 +3071,103 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, workBatch)
+    }
+
+    fun createNotificationTask(
+        body: NotificationBodyDto,
+        uuid: String,
+        map: ServiceMapsEntity,
+        userFrom: String?,
+        userFromDB: UsersEntity?,
+        userSendTo: UsersEntity?
+    ): Pair<ServiceRequestsEntity, MsTaskNotificationsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        val mapNotifications = notificationsRepo.findByUuid(uuid)
+        var taskNotify = MsTaskNotificationsEntity()
+        try {
+            with(taskNotify) {
+                taskRefNumber = "TASK#${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                body.taskRefNumber = taskRefNumber
+                notificationType = mapNotifications?.notificationType?.typeCode
+                notificationName = mapNotifications?.notificationType?.description
+                notificationMsg = mapNotifications?.let { commonDaoServices.composeMessage(body, it) }
+                notificationBody = commonDaoServices.convertClassToJson(body)
+                fromUserId = userFromDB?.id
+                toUserId = userSendTo?.id
+                readStatus = map.inactiveStatus
+                createdBy = when (userFromDB) {
+                    null -> {
+                        userFromDB?.let { commonDaoServices.concatenateName(it) }
+                    }
+                    else -> {
+                        userFrom
+                    }
+                }
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            taskNotify = msTaskNotificationsRepo.save(taskNotify)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(taskNotify)}"
+            sr.names = "Notification Details"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, taskNotify)
+    }
+
+    fun updateNotificationTask(
+        taskBody: MsTaskNotificationsEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsTaskNotificationsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var taskNotify = taskBody
+        try {
+            with(taskNotify) {
+                readStatus = map.activeStatus
+                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+            taskNotify = msTaskNotificationsRepo.save(taskNotify)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(taskNotify)}"
+            sr.names = "Notification Details Read"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(taskBody)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, taskNotify)
     }
 
 

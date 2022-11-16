@@ -41,7 +41,7 @@ class StandardReviewService(
     private val standardReviewProposalRecommendationsRepo: StandardReviewProposalRecommendationsRepo,
     private val commonDaoServices: CommonDaoServices,
     private val bpmnService: StandardsLevyBpmn,
-    private val internationalStandardRemarksRepository : InternationalStandardRemarksRepository,
+    private val reviewStandardRemarksRepository : ReviewStandardRemarksRepository,
     private val iSAdoptionJustificationRepository: ISAdoptionJustificationRepository,
     private val departmentListRepository: DepartmentListRepository,
 ) {
@@ -253,28 +253,7 @@ class StandardReviewService(
             }
         }
 
-        //taskService.complete(nwaJustification.taskId, variables)
-
-//        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-//            ?.let { t ->
-//                t.list()[0]
-//                    ?.let { task ->
-//                        task.assignee =
-//                            "${standardReview.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-//
-//                        taskService.saveTask(task)
-//                    }
-//                    ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
-//
-//
-//            }
-//            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-//        bpmnService.slAssignTask(
-//            processInstance.processInstanceId,
-//            "makeRecommendations",
-//            standardReview?.assignedTo
-//                ?: throw NullValueNotAllowedException("invalid user id provided")
-//        )
+        //taskService.complete(standardReview.taskId, variables)
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
         return ProcessInstanceRecommendations(ispDetails.id, processInstance.id, processInstance.isEnded)
 
@@ -299,7 +278,11 @@ class StandardReviewService(
     //Submit Adoption Proposal comments
     fun submitAPComments(standardReviewProposalComments: StandardReviewProposalComments){
         val variables: MutableMap<String, Any> = HashMap()
-        standardReviewProposalComments.userName=standardReviewProposalComments.userName
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val fname=loggedInUser.firstName
+        val sname=loggedInUser.lastName
+        val usersName= "$fname  $sname"
+        standardReviewProposalComments.userName=usersName
         standardReviewProposalComments.adoptionComment=standardReviewProposalComments.adoptionComment
         standardReviewProposalComments.proposalId=standardReviewProposalComments.proposalId
         standardReviewProposalComments.title=standardReviewProposalComments.title
@@ -320,7 +303,7 @@ class StandardReviewService(
     }
 
     //Make Recommendations on Adoption Proposal
-    fun makeRecommendationsOnAdoptionProposal(standardReviewProposalRecommendations: StandardReviewProposalRecommendations) : ProcessInstanceRecommendations
+    fun makeRecommendationsOnAdoptionProposal(standardReviewProposalRecommendations: StandardReviewProposalRecommendations) : ProcessInstanceRecommendation
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = HashMap()
@@ -338,50 +321,55 @@ class StandardReviewService(
         variables["RecommendationID"] = ispDetails.id
 
         taskService.complete(standardReviewProposalRecommendations.taskId, variables)
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        return ProcessInstanceRecommendations(ispDetails.id, processInstance.id, processInstance.isEnded )
+        //val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+        return ProcessInstanceRecommendation(ispDetails.id )
+    }
+
+    fun getUserComments(id: Long): MutableIterable<ReviewStandardRemarks>? {
+        return reviewStandardRemarksRepository.findAllByProposalIdOrderByIdDesc(id)
     }
 
     // Decision on Recommendations
-    fun decisionOnRecommendation(iSDecision: ISDecision,
-                           internationalStandardRemarks: InternationalStandardRemarks
+    fun decisionOnRecommendation(reviewDecision: ReviewDecision,
+                                 reviewStandardRemarks: ReviewStandardRemarks
     ) : List<StandardReviewTasks> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        variables["Yes"] = iSDecision.accentTo
-        variables["No"] = iSDecision.accentTo
-        iSDecision.comments.let { variables.put("comments", it) }
-        iSDecision.taskId.let { variables.put("taskId", it) }
-        iSDecision.processId.let { variables.put("processId", it) }
-        iSDecision.assignedTo.let { variables.put("assignedTo", it) }
+        variables["Yes"] = reviewDecision.accentTo
+        variables["No"] = reviewDecision.accentTo
+        reviewDecision.comments.let { variables.put("comments", it) }
+        reviewDecision.taskId.let { variables.put("taskId", it) }
+        reviewDecision.processId.let { variables.put("processId", it) }
+        reviewDecision.assignedTo.let { variables.put("assignedTo", it) }
+        reviewDecision.taskType.let { variables.put("taskType", it) }
+        reviewDecision.reviewID.let { variables.put("reviewID", it) }
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= iSDecision.reviewID
-        internationalStandardRemarks.remarks= iSDecision.comments
-        internationalStandardRemarks.status = 1.toString()
-        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-        internationalStandardRemarks.remarkBy = usersName
-        val userIntType = iSDecision.taskType
+        reviewStandardRemarks.proposalId= reviewDecision.reviewID
+        reviewStandardRemarks.remarks= reviewDecision.comments
+        reviewStandardRemarks.status = 1.toString()
+        reviewStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        reviewStandardRemarks.remarkBy = usersName
+        val userIntType = reviewDecision.taskType
         val longProcess = 1L
         val shortProcess = 0L
 
         if(variables["Yes"]==true){
 
-            internationalStandardRemarksRepository.save(internationalStandardRemarks)
-                    taskService.complete(iSDecision.taskId, variables)
+            reviewStandardRemarksRepository.save(reviewStandardRemarks)
 
                     if (userIntType == longProcess) {
-                        taskService.complete(iSDecision.taskId, variables)
+                        taskService.complete(reviewDecision.taskId, variables)
                     }else {
-                        taskService.complete(iSDecision.taskId, variables)
+                        taskService.complete(reviewDecision.taskId, variables)
                     }
 
         }else if(variables["No"]==false) {
 
 
-            internationalStandardRemarksRepository.save(internationalStandardRemarks)
-            taskService.complete(iSDecision.taskId, variables)
+            reviewStandardRemarksRepository.save(reviewStandardRemarks)
+            taskService.complete(reviewDecision.taskId, variables)
 
         }
 
@@ -391,19 +379,20 @@ class StandardReviewService(
 
     // KNW SEC Decision on Justification
     fun levelUpDecisionOnRecommendations(
-        iSDecision: ISDecision,
-        internationalStandardRemarks: InternationalStandardRemarks,
+        reviewDecision: ReviewDecision,
+        reviewStandardRemarks: ReviewStandardRemarks,
         standard:Standard
     ) : List<StandardReviewTasks> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        variables["Yes"] = iSDecision.accentTo
-        variables["No"] = iSDecision.accentTo
+        variables["Yes"] = reviewDecision.accentTo
+        variables["No"] = reviewDecision.accentTo
         loggedInUser.id?.let { variables["originator"] = it }
-        iSDecision.comments.let { variables.put("comments", it) }
-        iSDecision.taskId?.let { variables.put("taskId", it) }
-        iSDecision.processId?.let { variables.put("processId", it) }
-        iSDecision.assignedTo= companyStandardRepository.getSpcSecId()
+        reviewDecision.comments.let { variables.put("comments", it) }
+        reviewDecision.taskId?.let { variables.put("taskId", it) }
+        reviewDecision.processId?.let { variables.put("processId", it) }
+        reviewDecision.reviewID?.let { variables.put("reviewID", it) }
+        reviewDecision.assignedTo= companyStandardRepository.getSpcSecId()
 
         //Save Standard
         standard.title?.let{ variables.put("title", it)}
@@ -422,14 +411,14 @@ class StandardReviewService(
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= iSDecision.reviewID
-        internationalStandardRemarks.remarks= iSDecision.comments
-        internationalStandardRemarks.status = 1.toString()
-        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-        internationalStandardRemarks.remarkBy = usersName
+        reviewStandardRemarks.proposalId= reviewDecision.reviewID
+        reviewStandardRemarks.remarks= reviewDecision.comments
+        reviewStandardRemarks.status = 1.toString()
+        reviewStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        reviewStandardRemarks.remarkBy = usersName
         if(variables["Yes"]==true){
 
-            internationalStandardRemarksRepository.save(internationalStandardRemarks)
+            reviewStandardRemarksRepository.save(reviewStandardRemarks)
             val standardDetails = standardRepository.save(standard)
             variables["standardID"] = standardDetails.id
 
@@ -445,30 +434,30 @@ class StandardReviewService(
                 }
             }
 
-
+            taskService.complete(reviewDecision.taskId, variables)
         }else if(variables["No"]==false) {
 
 
-            internationalStandardRemarksRepository.save(internationalStandardRemarks)
-            taskService.complete(iSDecision.taskId, variables)
+            reviewStandardRemarksRepository.save(reviewStandardRemarks)
+            taskService.complete(reviewDecision.taskId, variables)
         }
 
         return  getSacSecTasks()
     }
 
-    fun updateGazette(internationalStandardRemarks: InternationalStandardRemarks,
-                      standard:Standard,iSDecision: ISDecision): ProcessInstanceResponse
+    fun updateGazette(reviewStandardRemarks: ReviewStandardRemarks,
+                      standard:Standard,reviewDecision: ReviewDecision): ProcessInstanceResponse
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = HashMap()
 
-        standardRepository.findByIdOrNull(iSDecision.standardID)?.let { standard->
+        standardRepository.findByIdOrNull(reviewDecision.standardID)?.let { standard->
 
             with(standard){
                 standard.isGazetted=1
             }
             standardRepository.save(standard)
-            taskService.complete(iSDecision.taskId, variables)
+            taskService.complete(reviewDecision.taskId, variables)
             val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
             return ProcessInstanceResponse(processInstance.id, processInstance.isEnded
             )
@@ -478,17 +467,17 @@ class StandardReviewService(
     }
 
     // Upload NWA Gazette date
-    fun updateGazettementDate(nWAGazettement: NWAGazettement,iSDecision: ISDecision )
+    fun updateGazettementDate(nWAGazettement: NWAGazettement,gazzettementDecision: GazzettementDecision )
     {
         val variable:MutableMap<String, Any> = java.util.HashMap()
-        standardRepository.findByIdOrNull(iSDecision.standardID)?.let { standard->
+        standardRepository.findByIdOrNull(gazzettementDecision.standardID)?.let { standard->
 
             with(standard){
                 standard.dateOfGazettement=Timestamp(System.currentTimeMillis())
-                standard.description=iSDecision.description
+                standard.description=gazzettementDecision.description
             }
             standardRepository.save(standard)
-        taskService.complete(iSDecision.taskId, variable)
+        taskService.complete(gazzettementDecision.taskId, variable)
         }?: throw Exception("Standard ID Not Found")
 
         println("NWA Gazettement date has been updated")
@@ -545,36 +534,37 @@ class StandardReviewService(
 
 
     // Decision on Requirements
-    fun checkRequirements(iSDecision: ISDecision,
-                        internationalStandardRemarks: InternationalStandardRemarks
+    fun checkRequirements(reviewDecision: ReviewDecision,
+                          reviewStandardRemarks: ReviewStandardRemarks
     ) : List<StandardReviewTasks> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        variables["Yes"] = iSDecision.accentTo
-        variables["No"] = iSDecision.accentTo
-        iSDecision.comments.let { variables.put("comments", it) }
-        iSDecision.taskId.let { variables.put("taskId", it) }
-        iSDecision.processId.let { variables.put("processId", it) }
-        iSDecision.assignedTo.let { variables.put("assignedTo", it) }
+        variables["Yes"] = reviewDecision.accentTo
+        variables["No"] = reviewDecision.accentTo
+        reviewDecision.comments.let { variables.put("comments", it) }
+        reviewDecision.taskId.let { variables.put("taskId", it) }
+        reviewDecision.processId.let { variables.put("processId", it) }
+        reviewDecision.assignedTo.let { variables.put("assignedTo", it) }
+        reviewDecision.reviewID.let { variables.put("reviewID", it) }
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= iSDecision.reviewID
-        internationalStandardRemarks.remarks= iSDecision.comments
-        internationalStandardRemarks.status = 1.toString()
-        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-        internationalStandardRemarks.remarkBy = usersName
+        reviewStandardRemarks.proposalId= reviewDecision.reviewID
+        reviewStandardRemarks.remarks= reviewDecision.comments
+        reviewStandardRemarks.status = 1.toString()
+        reviewStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        reviewStandardRemarks.remarkBy = usersName
 
 
         if(variables["Yes"]==true){
 
-            internationalStandardRemarksRepository.save(internationalStandardRemarks)
+            reviewStandardRemarksRepository.save(reviewStandardRemarks)
 
         }else if(variables["No"]==false) {
-            internationalStandardRemarksRepository.save(internationalStandardRemarks)
+            reviewStandardRemarksRepository.save(reviewStandardRemarks)
 
         }
-        taskService.complete(iSDecision.taskId, variables)
+        taskService.complete(reviewDecision.taskId, variables)
         return  getHopTasks()
 
     }
@@ -704,36 +694,37 @@ class StandardReviewService(
     }
 
     // Decision on Requirements
-    fun checkStandardDraft(iSDecision: ISDecision,
-                          internationalStandardRemarks: InternationalStandardRemarks
+    fun checkStandardDraft(reviewDecision: ReviewDecision,
+                           reviewStandardRemarks: ReviewStandardRemarks
     ) : List<StandardReviewTasks> {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        variables["Yes"] = iSDecision.accentTo
-        variables["No"] = iSDecision.accentTo
-        iSDecision.comments.let { variables.put("comments", it) }
-        iSDecision.taskId.let { variables.put("taskId", it) }
-        iSDecision.processId.let { variables.put("processId", it) }
-        iSDecision.assignedTo.let { variables.put("assignedTo", it) }
+        variables["Yes"] = reviewDecision.accentTo
+        variables["No"] = reviewDecision.accentTo
+        reviewDecision.comments.let { variables.put("comments", it) }
+        reviewDecision.taskId.let { variables.put("taskId", it) }
+        reviewDecision.processId.let { variables.put("processId", it) }
+        reviewDecision.assignedTo.let { variables.put("assignedTo", it) }
+        reviewDecision.reviewID.let { variables.put("reviewID", it) }
         val fname=loggedInUser.firstName
         val sname=loggedInUser.lastName
         val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= iSDecision.reviewID
-        internationalStandardRemarks.remarks= iSDecision.comments
-        internationalStandardRemarks.status = 1.toString()
-        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-        internationalStandardRemarks.remarkBy = usersName
+        reviewStandardRemarks.proposalId= reviewDecision.reviewID
+        reviewStandardRemarks.remarks= reviewDecision.comments
+        reviewStandardRemarks.status = 1.toString()
+        reviewStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        reviewStandardRemarks.remarkBy = usersName
 
 
         if(variables["Yes"]==true){
 
-            internationalStandardRemarksRepository.save(internationalStandardRemarks)
+            reviewStandardRemarksRepository.save(reviewStandardRemarks)
 
         }else if(variables["No"]==false) {
-            internationalStandardRemarksRepository.save(internationalStandardRemarks)
+            reviewStandardRemarksRepository.save(reviewStandardRemarks)
 
         }
-
+        taskService.complete(reviewDecision.taskId, variables)
         return  getHopTasks()
 
     }

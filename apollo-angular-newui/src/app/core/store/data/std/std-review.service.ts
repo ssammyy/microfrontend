@@ -2,17 +2,30 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {
-  CommentsOnProposal, GazetteStandard, KNWCommittee, KNWDepartment,
+  CommentOnProposal,
+  CommentsOnProposal,
+  GazetteStandard,
+  InternationalStandardsComments,
+  KNWCommittee,
+  KNWDepartment,
   ProposalComment,
   ProposalComments,
-  ReviewComments, ReviewDecision, ReviewDraftEditing,
+  ReviewComments,
+  ReviewDecision,
+  ReviewDraftEditing,
   ReviewedStandards,
-  ReviewForm, ReviewProposalComments, ReviewRecommendation, RevProposalComments, StakeholderProposalComments,
+  ReviewForm,
+  ReviewProposalComments,
+  ReviewRecommendation,
+  ReviewStandardsComments,
+  RevProposalComments,
+  StakeholderProposalComments,
   StandardReviewComments,
   StandardReviewRecommendations,
   StandardReviewTasks,
   StandardsForReview,
-  SystemicAnalyseComments, UsersEntity
+  SystemicAnalyseComments,
+  UsersEntity
 } from "./std.model";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
@@ -115,10 +128,10 @@ export class StdReviewService {
     return this.http.get<RevProposalComments[]>(url, {params}).pipe();
   }
 
-  public submitAPComments(commentsOnProposal: CommentsOnProposal): Observable<any> {
+  public submitAPComments(commentsOnProposal: CommentOnProposal): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SUBMIT_PROPOSAL_COMMENTS);
     const params = new HttpParams();
-    return this.http.post<CommentsOnProposal>(url, commentsOnProposal, {params}).pipe(
+    return this.http.post<CommentOnProposal>(url, commentsOnProposal, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -158,6 +171,8 @@ export class StdReviewService {
     return this.http.get<StandardReviewTasks[]>(url, {params}).pipe();
   }
 
+
+
   public getHopTasks(): Observable<StandardReviewTasks[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_HOP_TASKS);
     const params = new HttpParams();
@@ -179,6 +194,12 @@ export class StdReviewService {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_PROPOSAL_COMMENTS);
     const params = new HttpParams().set('proposalId', proposalId);
     return this.http.get<ReviewProposalComments>(url, {params}).pipe();
+  }
+
+  public getUserComments(id: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_USER_COMMENTS);
+    const params = new HttpParams().set('id', id);
+    return this.http.get<ReviewStandardsComments>(url, {params}).pipe();
   }
 
   public makeRecommendationsOnAdoptionProposal(reviewRecommendation: ReviewRecommendation): Observable<any> {

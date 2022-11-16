@@ -1070,8 +1070,9 @@ export interface StandardReviewRecommendations{
     accentTo: string;
     comments: string;
     processId: string;
-    reviewID: string;
+    reviewID: number;
     taskType: string;
+    proposalId: number;
 
 }
 
@@ -1221,6 +1222,16 @@ export interface InternationalStandardsComments{
     description: string;
     dateOfRemark: Timestamp<any>;
 }
+export interface ReviewStandardsComments{
+    id: number;
+    proposalId: number;
+    remarks: string;
+    remarkBy: string;
+    status: string;
+    role: string;
+    description: string;
+    dateOfRemark: Timestamp<any>;
+}
 
 export interface StakeholderProposalComments{
     id: number;
@@ -1275,6 +1286,15 @@ export interface CommentsOnProposal{
     proposalID: number;
 }
 
+export interface CommentOnProposal{
+    adoptionComment: string;
+    title: string;
+    documentType: string;
+    paragraph: string;
+    typeOfComment: string;
+    proposedChange: string;
+    proposalId: number;
+}
 export interface StandardReviewTasks
 {
     taskId: string;
@@ -1309,6 +1329,11 @@ export interface StandardReviews{
     requestNumber: string;
     draftId: number;
     recommendationTime: Timestamp<any>;
+    comments : string;
+    userID: number;
+    assignedTo :number;
+    taskType : number;
+    RecommendationID: number;
 }
 
 export interface ReviewProposalComments{

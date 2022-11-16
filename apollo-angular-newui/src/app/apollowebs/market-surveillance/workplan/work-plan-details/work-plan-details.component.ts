@@ -135,7 +135,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveSeizureDeclaration: SeizureDto;
   dataSaveSeizureDeclarationList: SeizureDto[] = [];
   dataSaveInvestInspectReport: InspectionInvestigationReportDto;
-  dataSavePreliminaryReport: PreliminaryReportDto;
+  dataSavePreliminaryReport: PreliminaryReportDto | undefined;
   dataSavePreliminaryReportParamList: PreliminaryReportItemsDto[] = [];
   dataSavePreliminaryReportParam: PreliminaryReportItemsDto;
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
@@ -1778,7 +1778,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     });
 
     this.actionOnSiezedGoodsForm = this.formBuilder.group({
-      actionOnSeizedGoodsDetails: ['', Validators.required]
+      actionOnSeizedGoodsDetails: ['', Validators.required],
     });
 
     this.addNewScheduleForm = this.formBuilder.group({
@@ -2130,6 +2130,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickAddDataRecommendationDetails() {
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
+    // tslint:disable-next-line:max-line-length
     const  resourceName = this.dataSaveFinalRecommendationList.filter(x => String(this.dataSaveFinalRecommendationDetails.recommendationName) === String(x.recommendationName)).length;
     if (resourceName > 0) {
       this.msService.showWarning('You have already added ' + this.dataSaveFinalRecommendationDetails.recommendationName);
@@ -2225,6 +2226,8 @@ export class WorkPlanDetailsComponent implements OnInit {
       }
       this.dataSavePreliminaryReportParamList = [];
       for (let prod = 0; prod < this.workPlanInspection?.preliminaryReport?.parametersList.length; prod++) {
+        // tslint:disable-next-line:no-non-null-assertion
+        this.workPlanInspection!.preliminaryReport!.parametersList[prod].id = -1;
         this.dataSavePreliminaryReportParamList.push(this.workPlanInspection?.preliminaryReport?.parametersList[prod]);
       }
     }
@@ -2452,7 +2455,30 @@ export class WorkPlanDetailsComponent implements OnInit {
           let downloadURL = window.URL.createObjectURL(this.blob);
           const link = document.createElement('a');
           link.href = downloadURL;
-          link.download = fileName;
+          link.download = `Sample-Submission-${fileName}`;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  viewFieldReportPdfFile(workPlanGeneratedID: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadFieldReportDetailsPDF(String(workPlanGeneratedID)).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `Field-Report-${fileName}`;
           link.click();
           // this.pdfUploadsView = dataPdf;
         },
@@ -4095,7 +4121,12 @@ export class WorkPlanDetailsComponent implements OnInit {
       if (!this.workPlanInspection?.finalReportGenerated) {
         // @ts-ignore
         this.dataSavePreliminaryReport?.id = -1;
+        for (let i = 0; i < this.dataSavePreliminaryReport.parametersList.length; i++) {
+          // tslint:disable-next-line:no-non-null-assertion
+          this.dataSavePreliminaryReport!.parametersList[i]!.id = -1;
+        }
       }
+
       this.msService.msWorkPlanScheduleSaveFinalPreliminaryReport(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,

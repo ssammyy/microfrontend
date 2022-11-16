@@ -36,14 +36,14 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'dashboard',
         privilege: ['USER', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
     },
-    // {
-    //     path: '/notifications',
-    //     title: 'Notifications',
-    //     type: 'link',
-    //     collapse: 'notifications',
-    //     privilege: ['USER'],
-    //     icontype: 'business',
-    // },
+    {
+        path: '/notifications',
+        title: 'Notifications',
+        type: 'link',
+        collapse: 'notifications',
+        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
+        icontype: 'business',
+    },
 
     {
         path: '/admin',
@@ -712,7 +712,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Standards Review',
         type: 'sub',
         icontype: 'quiz',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ','EDITOR_SD_READ'],
         collapse: 'SR',
         children: [
             {path: 'standardsForReview', title: 'View Standards', ab: 'VW'},

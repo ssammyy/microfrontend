@@ -989,6 +989,13 @@ class CommonDaoServices(
             }
             ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [status = $status]")
     }
+    fun findAllUsersByDesignation(
+        map: ServiceMapsEntity,
+        designationID: Long
+    ): List<UserProfilesEntity> {
+        val designation = findDesignationByID(designationID)
+        return findAllUsersProfileWithDesignationAndStatus(designation, map.activeStatus)
+    }
 
     fun findAllUsersProfileWithDesignationAndStatus(
         designationsEntity: DesignationsEntity,
@@ -1613,7 +1620,7 @@ class CommonDaoServices(
 
     }
 
-    private fun composeMessage(data: Any?, notification: NotificationsEntity): String? {
+    fun composeMessage(data: Any?, notification: NotificationsEntity): String? {
         val p = notification.notificationType?.let { notifier ->
             notifier.delimiter?.let {
                 notification.spelProcessor?.split(it)?.replacePrefixedItemsWithObjectValues(

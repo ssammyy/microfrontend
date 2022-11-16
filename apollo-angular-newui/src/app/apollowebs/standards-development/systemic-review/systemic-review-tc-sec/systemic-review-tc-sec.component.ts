@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  ReviewProposalComments,
+  ReviewProposalComments, ReviewStandardsComments,
   StakeholderProposalComments,
   StandardReviewTasks
 } from "../../../../core/store/data/std/std.model";
@@ -30,6 +30,7 @@ export class SystemicReviewTcSecComponent implements OnInit {
   public isShowRecommendationsTab=true;
   public isShowProposalCommentsTab=true;
   public recommendationFormGroup!: FormGroup;
+  reviewStandardsComments: ReviewStandardsComments[] = [];
 
   constructor(
       private stdReviewService : StdReviewService,
@@ -90,7 +91,7 @@ export class SystemicReviewTcSecComponent implements OnInit {
       this.recommendationFormGroup.patchValue(
           {
             taskId: this.actionRequest.taskId,
-            proposalID: this.actionRequest.taskData.proposalId
+            proposalId: this.actionRequest.taskData.proposalId
           });
 
     }
@@ -164,6 +165,24 @@ export class SystemicReviewTcSecComponent implements OnInit {
         }
     );
     this.hideModelCDetails();
+
+  }
+
+  toggleDisplayCommentsTab(id: number){
+    this.loadingText = "Loading ...."
+    this.SpinnerService.show();
+    this.stdReviewService.getUserComments(id).subscribe(
+        (response: ReviewStandardsComments[]) => {
+          this.reviewStandardsComments = response;
+          this.SpinnerService.hide();
+          console.log(this.reviewStandardsComments)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          console.log(error.message);
+        }
+    );
+
 
   }
 

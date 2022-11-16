@@ -6,7 +6,7 @@
                 <label for="groupFees" class="search-form-label" [hidden]="true">Select applicable fee for selected
                     items</label>
                 <select id="groupFees" class="search-form-select"
-                        [hidden]="!selection.isEmpty() && selection.selected.length>1"
+                        [hidden]="selection.selected.length<=1"
                         (change)="changeGroupPricing($event)">
                     <option [value]="">Select applicable fee</option>
                     <option *ngFor="let d of paymentFees" [value]="d.id">{{d.description}}</option>

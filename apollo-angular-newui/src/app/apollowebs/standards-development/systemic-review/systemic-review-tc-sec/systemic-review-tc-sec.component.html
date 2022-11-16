@@ -68,6 +68,7 @@
                                                                 <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                                                                     <a class="nav-item nav-link active" id="nav-proposal-tab" data-toggle="tab" href="#nav-proposal" role="tab" aria-controls="nav-proposal" aria-selected="true">Proposal</a>
                                                                     <a class="nav-item nav-link" id="nav-proposal-comments-tab" (click)=toggleStandardsProposalCommentsTab(actionRequest?.taskData?.reviewID) data-toggle="tab" href="#nav-proposal-comments" role="tab" aria-controls="nav-proposal-comments" aria-selected="false">Stakeholders Comments</a>
+                                                                    <a class="nav-item nav-link" id="nav-proposal-officer-comments-tab" (click)=toggleDisplayCommentsTab(actionRequest?.taskData?.reviewID) data-toggle="tab" href="#nav-proposal-officer-comments" role="tab" aria-controls="nav-proposal-officer-comments" aria-selected="false">Other Comments</a>
                                                                     <a class="nav-item nav-link" id="nav-proposal-recommendations-tab" (click)=toggleDisplayRecommendationsTab() data-toggle="tab" href="#nav-proposal-recommendations" role="tab" aria-controls="nav-proposal-recommendations" aria-selected="false">Recommendations</a>
                                                                     <a class="nav-item nav-link" id="nav-approve-proposal-tab" data-toggle="tab" href="#nav-approve-proposal" role="tab" aria-controls="nav-approve-proposal" aria-selected="false">Approve</a>
                                                                     <a class="nav-item nav-link" id="nav-reject-proposal-tab" data-toggle="tab" href="#nav-reject-proposal" role="tab" aria-controls="nav-reject-proposal" aria-selected="false">Reject</a>
@@ -165,6 +166,27 @@
                                                                     </div>
 
                                                                 </div>
+                                                                <div class="tab-pane fade" id="nav-proposal-officer-comments" role="tabpanel" aria-labelledby="nav-proposal-officer-comments-tab">
+                                                                    <div class="modal-body">
+                                                                        <div class="col-12">
+                                                                            <div class="card" *ngFor="let reviewStandardsComment of reviewStandardsComments">
+                                                                                <div class="card-header">
+                                                                                    <span class="badge badge-info">Comment By</span>{{reviewStandardsComment.remarkBy}} On {{reviewStandardsComment.dateOfRemark }}
+                                                                                </div>
+                                                                                <div class="card-body">
+                                                                                    <blockquote class="blockquote mb-0">
+                                                                                        <p>Remark: {{reviewStandardsComment.remarks}}.</p>
+                                                                                    </blockquote>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
                                                                 <div class="tab-pane fade" id="nav-proposal-recommendations" role="tabpanel" aria-labelledby="nav-proposal-recommendations-tab">
                                                                     <div class="modal-body">
                                                                         <div class="form-body">
@@ -192,7 +214,7 @@
                                                                                                         <textarea class="form-control one-column-input" formControlName="summaryOfRecommendations" name="summaryOfRecommendations"></textarea>
 
                                                                                                     </div>
-                                                                                                    <input type="hidden" formControlName="proposalID" value="{{actionRequest?.taskData?.proposalId}}" name="proposalID" >
+                                                                                                    <input type="hidden" formControlName="proposalId" value="{{actionRequest?.taskData?.proposalId}}" name="proposalId" >
                                                                                                     <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
 
                                                                                                 </div>

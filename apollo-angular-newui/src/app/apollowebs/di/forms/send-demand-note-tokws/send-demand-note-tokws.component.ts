@@ -183,7 +183,6 @@ export class SendDemandNoteTokwsComponent implements OnInit {
 
     saveRecord(presentment: Boolean) {
         this.saveDisabled = true
-        this.selectionDataSource.filter = "Test"
         this.message = null
         let selectedItems = this.getItems()
         if (this.items.length > 0 && selectedItems.length == 0) {
