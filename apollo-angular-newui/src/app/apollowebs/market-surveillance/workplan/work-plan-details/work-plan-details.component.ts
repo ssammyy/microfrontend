@@ -65,6 +65,7 @@ import {Observable, throwError} from 'rxjs';
 export class WorkPlanDetailsComponent implements OnInit {
 
   active: Number = 0;
+  selectedFile: File;
   selectedRefNo: string;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
@@ -187,7 +188,10 @@ export class WorkPlanDetailsComponent implements OnInit {
   userLoggedInID: number;
   userProfile: LoggedInUser;
   blob: Blob;
+  uploadedFilesOnly: FileList;
+  uploadedFilesDestination: FileList;
   uploadedFiles: FileList;
+  fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
   selectedCounty = 0;
   selectedTown = 0;
@@ -218,6 +222,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   public productsDestructionRecommendation = 0;
   public productsCountRecommendationHOD = 0;
   public productsCountRecommendationDirector = 0;
+
 
   public settingsResourceRequierd = {
     selectMode: 'single',  // single|multi
@@ -2116,6 +2121,18 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.remediationForm.controls;
   }
 
+  onFileSelected(event: any) {
+    if (event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+    }
+  }
+
+  // public onFileSelected(event: EventEmitter<File[]>) {
+  //   const file: File = event[0];
+  //   console.log(file);
+  //
+  // }
+
   updateSelectedRecommendation() {
     this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
     // this.selectedRecommendationName = ;
@@ -3147,7 +3164,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveFilesResults(docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesOnly.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
@@ -3160,9 +3177,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   saveFilesResults(docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesOnly.length > 0) {
       this.SpinnerService.show();
-      const file = this.uploadedFiles;
+      const file = this.uploadedFilesOnly;
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
@@ -3241,7 +3258,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
 
   onClickSaveFilesDestructionNotification(valid: boolean, docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesDestination.length > 0) {
     this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
         // tslint:disable-next-line:max-line-length
         'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
@@ -3253,9 +3270,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   saveFilesDestructionNotification(valid: boolean, docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesDestination.length > 0) {
       this.SpinnerService.show();
-      const file = this.uploadedFiles;
+      const file = this.uploadedFilesDestination;
       this.dataSaveDestructionNotification = {...this.dataSaveDestructionNotification, ...this.clientEmailNotificationForm.value};
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection?.referenceNumber);
@@ -4280,4 +4297,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+  }
 }

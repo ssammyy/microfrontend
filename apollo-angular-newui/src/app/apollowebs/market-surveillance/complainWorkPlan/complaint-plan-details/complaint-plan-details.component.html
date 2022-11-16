@@ -14,7 +14,7 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons" *ngIf="workPlanInspection">Complaint Scheduled</i>
+                            <i class="material-icons" *ngIf="workPlanInspection">Work-Plan Scheduled</i>
                         </div>
                         <h4 class="card-title" *ngIf="workPlanInspection">Ref No #{{workPlanInspection?.referenceNumber}}
                             <button class="btn btn-sm btn-default float-right mr-7"
@@ -467,7 +467,7 @@
                                                         {{workPlanInspection?.sampleCollected?.dateWitness|date}}</div>
                                                 </li>
                                             </ul>
-                                            <!--                                            <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
+                                            <!--                                                                                        <button class="btn-sm btn-primary" (click)="viewSampleCollectPdfFile(workPlanInspection?.sampleCollected?.id, workPlanInspection?.referenceNumber,'application/pdf')">Download</button>-->
                                             <div class="form-row">
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Items</label>
@@ -630,8 +630,46 @@
                                                     <div class="list-title-accordion">Status Activity</div>
                                                     <div class="list-text-accordion">{{workPlanInspection?.inspectionInvestigationDto?.statusActivity}}</div>
                                                 </li>
+                                                <div *ngIf="workPlanInspection?.inspectionInvestigationDto?.additionalInformationStatus">
+                                                    <b class="text-secondary">Additional Information</b>
+                                                    <br/>
+                                                    <b class="text-secondary" style="font-size: 12px">a.Performance of test sample</b>
+                                                    <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.inspectionInvestigationDto?.additionalInformation?.performanceOnTestSamples}}</span></p>
+                                                    <b class="text-secondary" style="font-size: 12px">b.Action on seized goods</b>
+                                                    <div>
+                                                        <div class="material-datatables">
+                                                            <div class="table-responsive">
+                                                                <table id="datatablesInspector7s89"  class="table table-striped table-bordered table-hover">
+                                                                    <tbody>
+                                                                    <tr *ngFor="let r of workPlanInspection?.inspectionInvestigationDto?.additionalInformation?.actionOnSeizedGoods; let i=index">
+                                                                        <td style="font-size: 11px">{{r.actionOnSeizedGoodsDetails}}</td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <b class="text-secondary" style="font-size: 12px">Remarks</b>
+                                                    <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.inspectionInvestigationDto?.additionalInformation?.actionOnSeizedGoodsRemarks}}</span></p>
+                                                    <b class="text-secondary" style="font-size: 12px">c.Actions on recommendations given</b>
+                                                    <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.inspectionInvestigationDto?.additionalInformation?.actionsOnRecommendationGiven}}</span></p>
+                                                    <b class="text-secondary" style="font-size: 12px">d.Follow-up activities</b>
+                                                    <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.inspectionInvestigationDto?.additionalInformation?.followUpActivities}}</span></p>
+                                                    <b class="text-secondary" style="font-size: 12px">e.Others</b>
+                                                    <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.inspectionInvestigationDto?.additionalInformation?.others}}</span></p>
+                                                </div>
+
+
 
                                             </ul>
+                                            <button mat-raised-button type="button"  class="btn btn-success"
+                                                    (click)="viewFieldReportPdfFile(workPlanInspection?.id, workPlanInspection?.inspectionInvestigationDto?.reportReference,'application/pdf')">Download</button>
                                             <br>
                                         </div>
                                     </mat-tab>
@@ -1053,7 +1091,7 @@
 
                                 <b>Action:</b>
                                 <div *ngFor="let role of roles">
-                                    <div *ngIf="workPlanInspection?.msProcessEndedStatus == false">
+                                    <div *ngIf="!workPlanInspection?.msProcessEndedStatus">
                                         <div *ngIf="role == 'MS_DIRECTOR_MODIFY'">
                                             <button  *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false
                                                 && productsCountRecommendationDirector == workPlanInspection?.productList?.length"
@@ -1161,7 +1199,7 @@
                                                 <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#workPlanModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
-                                                        class="mat-button-wrapper">UPDATE WORK-PLAN</span>
+                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>
                                                     <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
@@ -1174,7 +1212,7 @@
                                                 <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#workPlanModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
-                                                        class="mat-button-wrapper">UPDATE WORK-PLAN</span>
+                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>
                                                     <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
@@ -1187,7 +1225,7 @@
                                                 <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
                                                         data-target="#workPlanModal"
                                                         class="btn btn-sm btn-primary mr-2"><span
-                                                        class="mat-button-wrapper">UPDATE WORK-PLAN</span>
+                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>
                                                     <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
@@ -1217,7 +1255,7 @@
                                             </button>
                                             <div *ngIf="workPlanInspection?.onsiteStartStatus && workPlanInspection?.onsiteEndStatus ==false">
                                                 <button   (click)="openModalAddDetails('uploadFiles')" mat-raised-button="" data-toggle="modal"
-                                                          data-target="#myModal1"
+                                                          data-target="#myModalUpload"
                                                           class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD ATTACHMENTS</span>
                                                     <div class="mat-button-focus-overlay"></div>
@@ -1235,14 +1273,14 @@
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <button  *ngIf="workPlanInspection?.dataReportDocId ==null && workPlanInspection?.dataReportStatus" (click)="openModalAddDetails('uploadDataReportFiles')" mat-raised-button="" data-toggle="modal"
-                                                         data-target="#myModal1"
+                                                         data-target="#myModalUpload"
                                                          class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD DATA REPORT</span>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
                                                 <div *ngIf="workPlanInspection?.dataReportStatus">
                                                     <button  *ngIf="workPlanInspection?.scfDocId ==null"  (click)="openModalAddDetails('uploadSCFFiles')" mat-raised-button="" data-toggle="modal"
-                                                             data-target="#myModal1"
+                                                             data-target="#myModalUpload"
                                                              class="btn btn-sm btn-primary mr-2"><span
                                                             class="mat-button-wrapper">UPLOAD SAMPLE COLLECTION FORM</span>
                                                         <div class="mat-button-focus-overlay"></div>
@@ -1260,20 +1298,14 @@
                                                         <div class="mat-button-focus-overlay"></div>
                                                     </button>
                                                     <button   *ngIf="workPlanInspection?.seizureDocId ==null && workPlanInspection?.seizureDeclarationStatus " (click)="openModalAddDetails('uploadSeizureFiles')" mat-raised-button="" data-toggle="modal"
-                                                              data-target="#myModal1"
+                                                              data-target="#myModalUpload"
                                                               class="btn btn-sm btn-primary mr-2"><span
                                                             class="mat-button-wrapper">UPLOAD SEIZURE & DECLARATION</span>
                                                         <div class="mat-button-focus-overlay"></div>
                                                     </button>
-                                                    <!--                                                    <button   *ngIf="workPlanInspection?.declarationDocId ==null && workPlanInspection?.seizureDeclarationStatus" (click)="openModalAddDetails('uploadDeclarationFiles')" mat-raised-button="" data-toggle="modal"-->
-                                                    <!--                                                              data-target="#myModal1"-->
-                                                    <!--                                                              class="btn btn-sm btn-primary mr-2"><span-->
-                                                    <!--                                                            class="mat-button-wrapper">UPLOAD DECLARATION</span>-->
-                                                    <!--                                                        <div class="mat-button-focus-overlay"></div>-->
-                                                    <!--                                                    </button>-->
                                                     <div *ngIf="workPlanInspection?.scfDocId!=null">
                                                         <button *ngIf="workPlanInspection?.chargeSheetDocId ==null"   (click)="openModalAddDetails('uploadChargeSheetFiles')" mat-raised-button="" data-toggle="modal"
-                                                                data-target="#myModal1"
+                                                                data-target="#myModalUpload"
                                                                 class="btn btn-sm btn-primary mr-2"><span
                                                                 class="mat-button-wrapper">UPLOAD CHARGE SHEET</span>
                                                             <div class="mat-button-focus-overlay"></div>
@@ -1293,7 +1325,7 @@
 
                                                         <div *ngIf="workPlanInspection?.sampleSubmittedStatus">
                                                             <button  *ngIf="workPlanInspection?.ssfDocId ==null" (click)="openModalAddDetails('uploadSSFFiles')" mat-raised-button="" data-toggle="modal"
-                                                                     data-target="#myModal1"
+                                                                     data-target="#myModalUpload"
                                                                      class="btn btn-sm btn-primary mr-2"><span
                                                                     class="mat-button-wrapper">UPLOAD SAMPLE SUBMISSION</span>
                                                                 <div class="mat-button-focus-overlay"></div>
@@ -1341,15 +1373,6 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <!--                                            <button  *ngIf="workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus &&-->
-                                            <!--                                                    workPlanInspection?.bsNumberStatus== false" (click)="openModalAddDetails('addBsNumber')"-->
-                                            <!--                                                     mat-raised-button="" data-toggle="modal"-->
-                                            <!--                                                     data-target="#myModal1"-->
-                                            <!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
-                                            <!--                                                    class="mat-button-wrapper">ADD BS NUMBER</span>-->
-
-                                            <!--                                                <div class="mat-button-focus-overlay"></div>-->
-                                            <!--                                            </button>-->
                                             <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
                                                     workPlanInspection?.msPreliminaryReportStatus == false"
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
@@ -1443,6 +1466,13 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+                                            <button *ngIf="workPlanInspection?.recommendationDoneStatus && workPlanInspection?.directorRecommendationRemarksStatus
+                                            && workPlanInspection?.hodRecommendationStatus && workPlanInspection?.inspectionInvestigationDto?.additionalInformationStatus == false"
+                                                    mat-raised-button="" data-toggle="modal" data-target="#updateFieldDataReportModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE FIELD REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
 
                                         </div>
                                         <div *ngIf="role == 'MS_HOF_MODIFY'">
@@ -1533,11 +1563,6 @@
                                            (click)="viewWorkPlanFileSaved(data)"
                                            class="btn btn-sm btn-primary mr-2">Sample Collection View</i>
                                     </div>
-                                    <div *ngIf="workPlanInspection.ssfDocId != null">
-                                        <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.ssfDocId}"
-                                           (click)="viewWorkPlanFileSaved(data)"
-                                           class="btn btn-sm btn-primary mr-2">Sample Submission View</i>
-                                    </div>
                                     <div *ngIf="workPlanInspection.seizureDocId != null">
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.seizureDocId}"
                                            (click)="viewWorkPlanFileSaved(data)"
@@ -1576,6 +1601,79 @@
         </div>
         <!-- end row -->
     </div>
+
+    <!-- Dynamic UPLOAD Modal -->
+    <div class="modal fade" id="myModalUpload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFilesOnly" name="files" id="files"
+                                                         fileslimit="5" accept=".pdf, .png, .jpg"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('ONSITE_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadSCFFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('SCF_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadSSFFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('SSF_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadSeizureFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('SEIZURE_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadDeclarationFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('DECLARATION_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadChargeSheetFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('CHARGE_SHEET_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadDataReportFiles')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFilesResults('DATA_REPORT_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  End Dynamic UPLOADS Modal -->
 
     <!-- Dynamic Modal -->
     <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -1930,160 +2028,7 @@
                             </div>
                         </form>
                     </div>
-                    <div *ngIf="(currDiv == 'uploadFiles')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Documents Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files"
-                                                         [fileslimit]="6" accept=".pdf, .png, .jpg"></file-upload>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'uploadChargeSheetFiles')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Documents Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
-                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'uploadSCFFiles')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Documents Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
-                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'uploadSSFFiles')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Documents Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
-                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'uploadSeizureFiles')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Documents Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
-                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'uploadDeclarationFiles')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Documents Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
-                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'uploadDataReportFiles')">
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="files"><b>Upload Documents Here</b></label>
-                                        <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files"
-                                                         [fileslimit]="1" accept=".pdf, .png, .jpg"></file-upload>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <!--                    <div *ngIf="(currDiv == 'uploadDestructionNotificationFile')">-->
-                    <!--                        <form  [formGroup]="clientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">-->
-                    <!--                            <div class="form-body">-->
-                    <!--                                <div class="form-group">-->
-                    <!--                                    <div>-->
-                    <!--                                        <label for="clientFullName"><b>Client Full Name</b></label>-->
-                    <!--                                        <mat-form-field class="example-full-width">-->
-                    <!--                                            <input id="clientFullName" matInput type="text" placeholder="Please Enter Client Full Name" formControlName="clientFullName" name="clientFullName"-->
-                    <!--                                                   [class.is-invalid]="formClientEmailNotificationForm.clientFullName.invalid-->
-                    <!--                                                    && formClientEmailNotificationForm.clientFullName.touched">-->
-                    <!--                                        </mat-form-field>-->
-                    <!--                                        <label for="clientEmail"><b>Client Email</b></label>-->
-                    <!--                                        <mat-form-field class="example-full-width">-->
-                    <!--                                            <input id="clientEmail" matInput type="text" placeholder="Please Enter Client Email" formControlName="clientEmail" name="clientEmail"-->
-                    <!--                                                   [class.is-invalid]="formClientEmailNotificationForm.clientEmail.invalid-->
-                    <!--                                                    && formClientEmailNotificationForm.clientEmail.touched">-->
-                    <!--                                        </mat-form-field>-->
-                    <!--                                        <label for="files"><b>Upload Document Here</b></label>-->
-                    <!--                                        <form #demoForm="ngForm">-->
-                    <!--                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files8"-->
-                    <!--                                                         [fileslimit]="1" accept=".pdf"></file-upload>-->
-                    <!--                                        </form>-->
-                    <!--                                        <label><b>Please write, in detail, your feedback for the Destruction Notification:</b></label>-->
-                    <!--                                        <mat-form-field class="example-full-width">-->
-                    <!--                                            <textarea matInput type="text"-->
-                    <!--                                                      formControlName="remarks"-->
-                    <!--                                                      name="remarks" required>-->
-                    <!--                                            </textarea>-->
-                    <!--                                        </mat-form-field>-->
-                    <!--                                    </div>-->
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!--                        </form>-->
-                    <!--                    </div>-->
-                    <!--                    <div *ngIf="(currDiv == 'uploadDestructionReport')">-->
-                    <!--                        <form  action="" class="form" enctype="multipart/form-data" method="post">-->
-                    <!--                            <div class="form-body">-->
-                    <!--                                <div class="form-group">-->
-                    <!--                                    <div>-->
-                    <!--                                        <label for="files"><b>Upload Document Here</b></label>-->
-                    <!--                                        <form #demoForm="ngForm">-->
-                    <!--                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files4"-->
-                    <!--                                                         fileslimit="1" accept=".pdf"></file-upload>-->
-                    <!--                                        </form>-->
-                    <!--                                    </div>-->
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!--                        </form>-->
-                    <!--                    </div>-->
+
                     <div *ngIf="(currDiv == 'pdfSaveCompliance')">
                         <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
                             <div class="form-body">
@@ -3863,6 +3808,212 @@
         </div>
     </div>
     <!-- End INSPECTION AND INVESTIGATION REPORT Modal -->
+
+    <!-- UPDATE ON DATA AND FIELD REPORT Modal -->
+    <div class="modal fade" id="updateFieldDataReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">FILL IN THE MS FIELD AND DATA REPORT DETAILS</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="fieldReportAdditionalInfortForm">
+                        <div >
+                            <h4 class="mb-3" style="color: #0066B1">MS FIELD REPORT DETAILS</h4>
+                            <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Performance of Test Samples</b> </label>
+                                        <textarea [class.is-invalid]="formFieldReportAdditionalInfoForm.performanceOnTestSamples.invalid && formFieldReportAdditionalInfoForm.performanceOnTestSamples.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="performanceOnTestSamples"
+                                                  name="performanceOnTestSamples" required type="text"></textarea>
+                                        <div *ngIf="submitted && formFieldReportAdditionalInfoForm.performanceOnTestSamples.errors" class="invalid-feedback">
+                                            <div *ngIf="formFieldReportAdditionalInfoForm.performanceOnTestSamples.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form [formGroup]="actionOnSiezedGoodsForm">
+                                <div >
+                                    <h5 class="mb-3" style="color: #0066B1">Actions Details</h5>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Action on seized goods</b></label>
+                                                <select [class.is-invalid]="formActionOnSiezedGoodsForm.actionOnSeizedGoodsDetails.invalid && formActionOnSiezedGoodsForm.actionOnSeizedGoodsDetails.errors"
+                                                        class="form-control two-column-input"
+                                                        formControlName="actionOnSeizedGoodsDetails" name="actionOnSeizedGoodsDetails" required type="text">
+                                                    <option  [value]="'Destroyed'">Destroyed</option>
+                                                    <option  [value]="'Conditional release'">Conditional release</option>
+                                                    <option  [value]="'Release'">Release</option>
+                                                </select>
+                                                <div *ngIf="submitted && formActionOnSiezedGoodsForm.actionOnSeizedGoodsDetails.errors && formActionOnSiezedGoodsForm.actionOnSeizedGoodsDetails.invalid" class="invalid-feedback">
+                                                    <div *ngIf="formActionOnSiezedGoodsForm.actionOnSeizedGoodsDetails.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <button *ngIf="actionOnSiezedGoodsForm.valid" mat-raised-button
+                                                        class="btn btn-success" (click)="onClickAddActionOnSiezedGoods()" type="button" >SAVE
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </form>
+                            <div>
+                                <div class="material-datatables">
+                                    <div class="table-responsive">
+                                        <table id="datatablesInspectors89"  class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>Action Name</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let r of dataSaveActionOnSiezedGoodsList; let i=index">
+                                                <td>{{r.actionOnSeizedGoodsDetails}}</td>
+                                                <td>
+                                                    <button (click)="removeDataActionOnSiezedGoods(i)"
+                                                            type="button"
+                                                            class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Remarks</b> </label>
+                                        <textarea [class.is-invalid]="formFieldReportAdditionalInfoForm.actionOnSeizedGoodsRemarks.invalid && formFieldReportAdditionalInfoForm.actionOnSeizedGoodsRemarks.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="actionOnSeizedGoodsRemarks"
+                                                  name="actionOnSeizedGoodsRemarks" required type="text"></textarea>
+                                        <div *ngIf="submitted && formFieldReportAdditionalInfoForm.actionOnSeizedGoodsRemarks.errors" class="invalid-feedback">
+                                            <div *ngIf="formFieldReportAdditionalInfoForm.actionOnSeizedGoodsRemarks.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Actions on Recommendations given</b> </label>
+                                        <textarea [class.is-invalid]="formFieldReportAdditionalInfoForm.actionsOnRecommendationGiven.invalid && formFieldReportAdditionalInfoForm.actionsOnRecommendationGiven.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="actionsOnRecommendationGiven"
+                                                  name="actionsOnRecommendationGiven" required type="text"></textarea>
+                                        <div *ngIf="submitted && formFieldReportAdditionalInfoForm.actionsOnRecommendationGiven.errors" class="invalid-feedback">
+                                            <div *ngIf="formFieldReportAdditionalInfoForm.actionsOnRecommendationGiven.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Follow-up activities</b> </label>
+                                        <textarea [class.is-invalid]="formFieldReportAdditionalInfoForm.followUpActivities.invalid && formFieldReportAdditionalInfoForm.followUpActivities.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="followUpActivities"
+                                                  name="followUpActivities" required type="text"></textarea>
+                                        <div *ngIf="submitted && formFieldReportAdditionalInfoForm.followUpActivities.errors" class="invalid-feedback">
+                                            <div *ngIf="formFieldReportAdditionalInfoForm.followUpActivities.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Others</b> </label>
+                                        <textarea [class.is-invalid]="formFieldReportAdditionalInfoForm.others.invalid && formFieldReportAdditionalInfoForm.others.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="others"
+                                                  name="others" required type="text"></textarea>
+                                        <div *ngIf="submitted && formFieldReportAdditionalInfoForm.others.errors" class="invalid-feedback">
+                                            <div *ngIf="formFieldReportAdditionalInfoForm.others.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div  class="form-group">
+                                        <label for="files"><b>Upload Documents Here</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files5"
+                                                         [fileslimit]="6" accept=".pdf"></file-upload>
+                                        </form>
+                                    </div>
+                                    <!--                                    <div class="form-group">-->
+                                    <!--                                        <label><b>Methodology Employed</b> </label>-->
+                                    <!--                                        <textarea [class.is-invalid]="formInvestInspectReportForm.methodologyEmployed.invalid && formInvestInspectReportForm.methodologyEmployed.errors"-->
+                                    <!--                                                  class="form-control two-column-input"-->
+                                    <!--                                                  formControlName="methodologyEmployed"-->
+                                    <!--                                                  name="methodologyEmployed" required type="text"></textarea>-->
+                                    <!--                                        <div *ngIf="submitted && formInvestInspectReportForm.methodologyEmployed.errors" class="invalid-feedback">-->
+                                    <!--                                            <div *ngIf="formInvestInspectReportForm.methodologyEmployed.errors.required">This field is-->
+                                    <!--                                                required-->
+                                    <!--                                            </div>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                        <button *ngIf="fieldReportAdditionalInfortForm.valid" mat-raised-button   data-dismiss="modal"
+                                class="btn btn-success" (click)="onClickSaveFieldReportAdditionalInfort()" type="button" >SUBMIT
+                        </button>
+                        <button *ngIf="fieldReportAdditionalInfortForm.invalid" mat-raised-button (click)="onClickSaveFieldReportAdditionalInfort()" class="btn btn-success" type="button" >SUBMIT
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End UPDATE ON DATA AND FIELD REPORT Modal -->
 
     <!-- Final Recommendation Modal -->
     <div class="modal fade" id="finalRecommendationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -6353,7 +6504,7 @@
                                         </mat-form-field>
                                         <label for="files"><b>Upload Document Here</b></label>
                                         <form #demoForm="ngForm">
-                                            <file-upload [(ngModel)]="uploadedFiles" name="files" id="files8"
+                                            <file-upload [(ngModel)]="uploadedFilesDestination" name="files" id="files8"
                                                          [fileslimit]="1" accept=".pdf"></file-upload>
                                         </form>
                                         <label><b>Please write, in detail, your feedback for the Destruction Notification:</b></label>

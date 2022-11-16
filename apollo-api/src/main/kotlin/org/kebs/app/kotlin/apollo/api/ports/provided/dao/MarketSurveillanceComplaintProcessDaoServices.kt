@@ -169,7 +169,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
                     processType = "COMPLAINT"
                 }
 
-                msWorkPlanDaoServices.createNotificationTask(taskNotify,applicationMapProperties.mapMsNotificationNewTask,map,taskNotify.fromName,null,hd.userId)
+                hd.userId?.let {
+                    msWorkPlanDaoServices.createNotificationTask(taskNotify,applicationMapProperties.mapMsNotificationNewTask,map,taskNotify.fromName,
+                        it,hd.userId)
+                }
 
                 val complaintReceivedEmailComposed = hd.userId?.let { complaintReceivedDTOEmailCompose(updatedComplaint, it) }
                     hd.userId?.let {

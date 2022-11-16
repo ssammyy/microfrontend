@@ -9,7 +9,7 @@ import {
   DataInspectorInvestDto,
   DataReportDto,
   DataReportParamsDto,
-  DestructionNotificationDto,
+  DestructionNotificationDto, FieldReportAdditionalInfo, FieldReportBackDto,
   FuelEntityRapidTestDto,
   InspectionInvestigationReportDto, KebsStandardsDto,
   LaboratoryDto, LaboratoryEntityDto, LIMSFilesFoundDto, MsBroadProductCategory,
@@ -65,7 +65,9 @@ import {ConsignmentStatusComponent} from '../../../../core/shared/customs/consig
 })
 export class ComplaintPlanDetailsComponent implements OnInit {
 
+
   active: Number = 0;
+  selectedFile: File;
   selectedRefNo: string;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
@@ -75,6 +77,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   submitted = false;
   addLabParamStatus = true;
   defaultPageSize = 20;
+  selectedSFFDetails: SampleSubmissionDto;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -88,6 +91,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   approveScheduleForm!: FormGroup;
   approvePreliminaryForm!: FormGroup;
   finalRemarkHODForm!: FormGroup;
+  investInspectReportForm!: FormGroup;
   finalRecommendationDetailsForm!: FormGroup;
   finalRecommendationForm!: FormGroup;
   preliminaryRecommendationForm!: FormGroup;
@@ -95,11 +99,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataReportForm!: FormGroup;
   dataReportParamForm!: FormGroup;
   seizureDeclarationForm!: FormGroup;
-  investInspectReportForm!: FormGroup;
+  fieldReportAdditionalInfortForm!: FormGroup;
   preliminaryReportForm!: FormGroup;
   preliminaryReportFinalForm!: FormGroup;
   preliminaryReportParamForm!: FormGroup;
   investInspectReportInspectorsForm!: FormGroup;
+  actionOnSiezedGoodsForm!: FormGroup;
   clientEmailNotificationForm!: FormGroup;
   // chargeSheetForm!: FormGroup;
 
@@ -123,6 +128,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSaveFinalReport: PreliminaryReportFinal;
   dataSaveChargeSheet: ChargeSheetDto;
   dataSaveDataReport: DataReportDto;
+  dataSaveFieldReportAdditional: FieldReportAdditionalInfo;
+  dataSaveActionOnSiezedGoods: FieldReportBackDto;
+  dataSaveActionOnSiezedGoodsList: FieldReportBackDto[] = [];
   dataSaveDataInspectorInvestList: DataInspectorInvestDto[] = [];
   dataSaveDataReportParamList: DataReportParamsDto[] = [];
   dataSaveDataReportParam: DataReportParamsDto;
@@ -130,7 +138,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSaveSeizureDeclaration: SeizureDto;
   dataSaveSeizureDeclarationList: SeizureDto[] = [];
   dataSaveInvestInspectReport: InspectionInvestigationReportDto;
-  dataSavePreliminaryReport: PreliminaryReportDto;
+  dataSavePreliminaryReport: PreliminaryReportDto | undefined;
   dataSavePreliminaryReportParamList: PreliminaryReportItemsDto[] = [];
   dataSavePreliminaryReportParam: PreliminaryReportItemsDto;
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
@@ -143,8 +151,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSaveResourcesRequiredList: PredefinedResourcesRequired[] = [];
   dataSaveFinalRecommendationDetails: RecommendationDto;
   dataSaveFinalRecommendationList: RecommendationDto[] = [];
-
-  selectedSFFDetails: SampleSubmissionDto;
 
 
   dataSaveAssignOfficer: ComplaintAssignDto;
@@ -184,7 +190,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   userLoggedInID: number;
   userProfile: LoggedInUser;
   blob: Blob;
+  uploadedFilesOnly: FileList;
+  uploadedFilesDestination: FileList;
   uploadedFiles: FileList;
+  fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
   selectedCounty = 0;
   selectedTown = 0;
@@ -215,6 +224,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   public productsDestructionRecommendation = 0;
   public productsCountRecommendationHOD = 0;
   public productsCountRecommendationDirector = 0;
+
 
   public settingsResourceRequierd = {
     selectMode: 'single',  // single|multi
@@ -1624,6 +1634,15 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       sampleSize: ['', Validators.required],
     });
 
+    this.fieldReportAdditionalInfortForm = this.formBuilder.group({
+      performanceOnTestSamples: ['', Validators.required],
+      actionOnSeizedGoods: null,
+      actionOnSeizedGoodsRemarks: ['', Validators.required],
+      actionsOnRecommendationGiven: ['', Validators.required],
+      followUpActivities: ['', Validators.required],
+      others: ['', Validators.required],
+    });
+
     this.sampleSubmitForm = this.formBuilder.group({
       id: null,
       nameProduct: ['', Validators.required],
@@ -1763,6 +1782,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       remarksDescription: null,
       remarksStatus: null,
       remarks: null,
+    });
+
+    this.actionOnSiezedGoodsForm = this.formBuilder.group({
+      actionOnSeizedGoodsDetails: ['', Validators.required],
     });
 
     this.addNewScheduleForm = this.formBuilder.group({
@@ -1911,7 +1934,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
-      this.loadStandards()
+      this.loadStandards();
 
     }
 
@@ -1976,6 +1999,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     );
   }
 
+  get formActionOnSiezedGoodsForm(): any {
+    return this.actionOnSiezedGoodsForm.controls;
+  }
+
   get formAssignOfficerForm(): any {
     return this.assignOfficerForm.controls;
   }
@@ -2031,6 +2058,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   get formInvestInspectReportForm(): any {
     return this.investInspectReportForm.controls;
+  }
+
+  get formFieldReportAdditionalInfoForm(): any {
+    return this.fieldReportAdditionalInfortForm.controls;
   }
 
   get formInvestInspectReportInspectorsForm(): any {
@@ -2092,6 +2123,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     return this.remediationForm.controls;
   }
 
+  onFileSelected(event: any) {
+    if (event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+    }
+  }
+
+  // public onFileSelected(event: EventEmitter<File[]>) {
+  //   const file: File = event[0];
+  //   console.log(file);
+  //
+  // }
+
   updateSelectedRecommendation() {
     this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
     // this.selectedRecommendationName = ;
@@ -2106,6 +2149,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickAddDataRecommendationDetails() {
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
+    // tslint:disable-next-line:max-line-length
     const  resourceName = this.dataSaveFinalRecommendationList.filter(x => String(this.dataSaveFinalRecommendationDetails.recommendationName) === String(x.recommendationName)).length;
     if (resourceName > 0) {
       this.msService.showWarning('You have already added ' + this.dataSaveFinalRecommendationDetails.recommendationName);
@@ -2114,30 +2158,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
     this.finalRecommendationDetailsForm?.reset();
   }
-
-  viewSSFPdfFile(ssfID: number, fileName: string, applicationType: string): void {
-    this.SpinnerService.show();
-    this.msService.loadSSFDetailsPDF(String(ssfID)).subscribe(
-        (dataPdf: any) => {
-          this.SpinnerService.hide();
-          this.blob = new Blob([dataPdf], {type: applicationType});
-
-          // tslint:disable-next-line:prefer-const
-          let downloadURL = window.URL.createObjectURL(this.blob);
-          const link = document.createElement('a');
-          link.href = downloadURL;
-          link.download = fileName;
-          link.click();
-          // this.pdfUploadsView = dataPdf;
-        },
-        error => {
-          this.SpinnerService.hide();
-          console.log(error);
-          this.msService.showError('AN ERROR OCCURRED');
-        },
-    );
-  }
-
 
   private loadData(referenceNumber: string, batchReferenceNumber: string ): any {
     this.SpinnerService.show();
@@ -2225,6 +2245,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       }
       this.dataSavePreliminaryReportParamList = [];
       for (let prod = 0; prod < this.workPlanInspection?.preliminaryReport?.parametersList.length; prod++) {
+        // tslint:disable-next-line:no-non-null-assertion
+        this.workPlanInspection!.preliminaryReport!.parametersList[prod].id = -1;
         this.dataSavePreliminaryReportParamList.push(this.workPlanInspection?.preliminaryReport?.parametersList[prod]);
       }
     }
@@ -2364,6 +2386,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   viewSSFRecord(data: SampleSubmissionDto) {
     this.sampleSubmitForm.patchValue(data);
+    this.selectedSFFDetails = data;
     const paramDetails = data.parametersList;
     this.dataSaveSampleSubmitParamList = [];
     for (let i = 0; i < paramDetails.length; i++) {
@@ -2436,6 +2459,52 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.SpinnerService.hide();
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  viewSSFPdfFile(ssfID: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadSSFDetailsPDF(String(ssfID)).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `Sample-Submission-${fileName}`;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  viewFieldReportPdfFile(workPlanGeneratedID: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadFieldReportDetailsPDF(String(workPlanGeneratedID)).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `Field-Report-${fileName}`;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
   }
@@ -2858,7 +2927,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           this.workPlanInspection = data;
           // console.log(data);
           this.SpinnerService.hide();
-          this.msService.showSuccess('COMPLAINT SCHEDULE DETAILS SUBMITTED SUCCESSFULLY');
+          this.msService.showSuccess('COMPLAINT DETAILS SUBMITTED SUCCESSFULLY');
         },
         error => {
           this.SpinnerService.hide();
@@ -3097,7 +3166,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveFilesResults(docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesOnly.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
@@ -3110,9 +3179,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   saveFilesResults(docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesOnly.length > 0) {
       this.SpinnerService.show();
-      const file = this.uploadedFiles;
+      const file = this.uploadedFilesOnly;
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
@@ -3191,7 +3260,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
 
   onClickSaveFilesDestructionNotification(valid: boolean, docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesDestination.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
@@ -3203,9 +3272,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   saveFilesDestructionNotification(valid: boolean, docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesDestination.length > 0) {
       this.SpinnerService.show();
-      const file = this.uploadedFiles;
+      const file = this.uploadedFilesDestination;
       this.dataSaveDestructionNotification = {...this.dataSaveDestructionNotification, ...this.clientEmailNotificationForm.value};
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection?.referenceNumber);
@@ -3504,11 +3573,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
 
-
-
   goBack() {
     console.log('TEST 101' + this.workPlanInspection.batchDetails.referenceNumber);
-    this.router.navigate([`/complaintPlan`, this.workPlanInspection.batchDetails.referenceNumber]);
+    this.router.navigate([`/workPlan`, this.workPlanInspection.batchDetails.referenceNumber]);
   }
 
   viewWorkPlanFileSaved(data: ComplaintsFilesFoundDto) {
@@ -3708,6 +3775,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     // this.sta10FormA.reset();
   }
 
+  onClickAddActionOnSiezedGoods() {
+    this.dataSaveActionOnSiezedGoods = this.actionOnSiezedGoodsForm.value;
+    this.dataSaveActionOnSiezedGoodsList.push(this.dataSaveActionOnSiezedGoods);
+    this.actionOnSiezedGoodsForm?.get('actionOnSeizedGoodsDetails')?.reset();
+    // this.sta10FormA.reset();
+  }
+
   onClickAddPreliminaryReportParam() {
     this.dataSavePreliminaryReportParam = this.preliminaryReportParamForm.value;
     this.dataSavePreliminaryReportParamList.push(this.dataSavePreliminaryReportParam);
@@ -3802,6 +3876,17 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.dataSaveDataInspectorInvestList.splice(index, index);
     }
   }
+
+  // Remove Form repeater values
+  removeDataActionOnSiezedGoods(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveActionOnSiezedGoodsList.splice(index, 1);
+    } else {
+      this.dataSaveActionOnSiezedGoodsList.splice(index, index);
+    }
+  }
+
   // Remove Form repeater values
   removeDataSampleCollectItems(index) {
     console.log(index);
@@ -3943,6 +4028,54 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickSaveFieldReportAdditionalInfort() {
+    this.submitted = true;
+    if (this.fieldReportAdditionalInfortForm.valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'UPDATE FIELD REPORT\' button to update details Before Saving', 'FIELD REPORT DETAILS SAVED SUCCESSFUL', () => {
+            this.saveFieldReportAdditionalInform();
+          });
+    }
+  }
+
+  saveFieldReportAdditionalInform() {
+    this.submitted = true;
+
+    if (this.fieldReportAdditionalInfortForm.valid) {
+      this.SpinnerService.show();
+      const file = this.uploadedFiles;
+      this.dataSaveFieldReportAdditional = {...this.dataSaveFieldReportAdditional, ...this.fieldReportAdditionalInfortForm.value};
+      this.dataSaveFieldReportAdditional.actionOnSeizedGoods = this.dataSaveActionOnSiezedGoodsList;
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
+      formData.append('docTypeName', 'FIELD_REPORT_UPLOAD');
+      formData.append('data', JSON.stringify(this.dataSaveFieldReportAdditional));
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+      }
+      this.msService.saveFieldReportAdditionalInform(formData).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FIELD REPORT UPDATED DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+
+    } else if (this.preliminaryReportForm.invalid) {
+      this.msService.showError('KINDLY FILL IN THE FIELDS DETAILS REQUIRED');
+    }
+  }
+
+
   onClickSavePreliminaryReport() {
     this.submitted = true;
     if (this.preliminaryReportForm.valid && this.dataSavePreliminaryReportParamList.length !== 0) {
@@ -4007,7 +4140,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       if (!this.workPlanInspection?.finalReportGenerated) {
         // @ts-ignore
         this.dataSavePreliminaryReport?.id = -1;
+        for (let i = 0; i < this.dataSavePreliminaryReport.parametersList.length; i++) {
+          // tslint:disable-next-line:no-non-null-assertion
+          this.dataSavePreliminaryReport!.parametersList[i]!.id = -1;
+        }
       }
+
       this.msService.msWorkPlanScheduleSaveFinalPreliminaryReport(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
@@ -4104,7 +4242,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (this.addNewScheduleForm.valid && this.dataSaveResourcesRequiredList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Update the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can click the \'UPDATE COMPLAINT SCHEDULE\' button to update details Before Saving', 'COMPLAINT SCHEDULE DETAILS SAVED SUCCESSFUL', () => {
+          'You can click the \'UPDATE COMPLAINT PLAN\' button to update details Before Saving', 'COMPLAINT SCHEDULE DETAILS SAVED SUCCESSFUL', () => {
             this.saveWorkPlanScheduled();
           });
     }
@@ -4125,7 +4263,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
                 console.log(data);
                 this.workPlanInspection = data;
                 this.SpinnerService.hide();
-                this.msService.showSuccess('COMPLAINT SCHEDULE UPDATED SUCCESSFULLY AND SUBMITTED FOR APPROVAL');
+                this.msService.showSuccess('COMPLAINT PLAN SCHEDULED UPDATED SUCCESSFULLY AND SUBMITTED FOR APPROVAL');
               },
               error => {
                 this.SpinnerService.hide();
@@ -4149,7 +4287,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
               console.log(data);
               this.workPlanInspection = data;
               this.SpinnerService.hide();
-              this.msService.showSuccess('COMPLAINT SCHEDULE UPDATED SUCCESSFULLY');
+              this.msService.showSuccess('COMPLAINT PLAN SCHEDULED UPDATED SUCCESSFULLY');
             },
             error => {
               this.SpinnerService.hide();
@@ -4161,4 +4299,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+  }
 }

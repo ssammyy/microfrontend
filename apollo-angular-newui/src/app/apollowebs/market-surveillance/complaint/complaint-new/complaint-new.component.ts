@@ -175,7 +175,7 @@ export class ComplaintNewComponent implements OnInit {
       email: new FormControl('', [Validators.required]),
       nameContactPerson: new FormControl('', [Validators.required]),
       phoneNumber: new FormControl('', [Validators.required]),
-      telephoneNumber: new FormControl('', [Validators.nullValidator]),
+      telephoneNumber: new FormControl(),
       businessAddress: new FormControl('', [Validators.required]),
     });
 

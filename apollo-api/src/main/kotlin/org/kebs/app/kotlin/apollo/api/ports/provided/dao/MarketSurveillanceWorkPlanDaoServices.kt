@@ -466,6 +466,26 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 dateSubmitted = commonDaoServices.getCurrentDate()
 
                             }
+                            val taskNotify = NotificationBodyDto().apply {
+                                fromName = commonDaoServices.concatenateName(loggedInUser)
+                                toName = commonDaoServices.concatenateName(mp)
+                                batchReferenceNoFound = batchReferenceNo
+                                referenceNoFound = workPlanScheduled.referenceNumber
+                                dateAssigned = commonDaoServices.getCurrentDate()
+                                processType = when {
+                                    workPlanScheduled.complaintId!=null -> {
+                                        "COMPLAINT-PLAN"
+                                    }
+                                    else -> {
+                                        "WORK-PLAN"
+                                    }
+                                }
+                            }
+
+                            createNotificationTask(taskNotify,
+                                applicationMapProperties.mapMsNotificationNewTask,
+                                map,null,loggedInUser,mp
+                            )
                             commonDaoServices.sendEmailWithUserEntity(
                                 mp,
                                 applicationMapProperties.mapMsWorkPlanScheduleSubmitedForApproval,
@@ -482,7 +502,11 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 batchReferenceNoFound = batchReferenceNo
                                 referenceNoFound = workPlanScheduled.referenceNumber
                                 dateAssigned = commonDaoServices.getCurrentDate()
-                                processType = "WORK-PLAN"
+                                processType = if(workPlanScheduled.complaintId!=null){
+                                    "COMPLAINT-PLAN"
+                                }else{
+                                    "WORK-PLAN"
+                                }
                             }
 
                             createNotificationTask(taskNotify,
@@ -3078,7 +3102,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         uuid: String,
         map: ServiceMapsEntity,
         userFrom: String?,
-        userFromDB: UsersEntity?,
+        userFromDB: UsersEntity,
         userSendTo: UsersEntity?
     ): Pair<ServiceRequestsEntity, MsTaskNotificationsEntity> {
 
@@ -3093,17 +3117,11 @@ class MarketSurveillanceWorkPlanDaoServices(
                 notificationName = mapNotifications?.notificationType?.description
                 notificationMsg = mapNotifications?.let { commonDaoServices.composeMessage(body, it) }
                 notificationBody = commonDaoServices.convertClassToJson(body)
-                fromUserId = userFromDB?.id
+                fromUserId = userFromDB.id
                 toUserId = userSendTo?.id
                 readStatus = map.inactiveStatus
-                createdBy = when (userFromDB) {
-                    null -> {
-                        userFromDB?.let { commonDaoServices.concatenateName(it) }
-                    }
-                    else -> {
-                        userFrom
-                    }
-                }
+                createdBy = userFrom ?: commonDaoServices.concatenateName(userFromDB)
+
                 createdOn = commonDaoServices.getTimestamp()
             }
             taskNotify = msTaskNotificationsRepo.save(taskNotify)
