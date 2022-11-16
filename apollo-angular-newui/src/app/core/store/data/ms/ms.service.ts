@@ -659,6 +659,23 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
+    public loadNotificationRead(taskRefNumber: string): Observable<MsNotificationTaskDto[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_NOTIFICATIONS_READ);
+        const params = new HttpParams()
+            .set('taskRefNumber', taskRefNumber);
+        return this.http.get<MsNotificationTaskDto[]>(url, {params}).pipe(
+            map(function (response: MsNotificationTaskDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
     /*******************************************************************START OF MARKET SURVEILLANCE REPORTS*****************************************************************************/
 
 

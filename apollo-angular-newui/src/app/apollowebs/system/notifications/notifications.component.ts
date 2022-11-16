@@ -141,6 +141,7 @@ export class NotificationsComponent implements OnInit {
     );
   }
 
+
   public onCustomAction(event: any): void {
     switch (event.action) {
       case 'viewRecord':
@@ -151,14 +152,28 @@ export class NotificationsComponent implements OnInit {
 
   // tslint:disable-next-line:no-shadowed-variable
   viewRecord(data: MsNotificationTaskDto) {
-    if (data?.notificationBody?.processType === 'COMPLAINT-PLAN') {
-      // tslint:disable-next-line:max-line-length
-      this.router.navigate([`/complaintPlan/details/`, data?.notificationBody?.referenceNoFound, data?.notificationBody?.batchReferenceNoFound]);
-    } else if (data?.notificationBody?.processType === 'WORK-PLAN') {
-      this.router.navigate([`/workPlan/details/`, data?.notificationBody?.referenceNoFound, data?.notificationBody?.batchReferenceNoFound]);
-    } else if (data?.notificationBody?.processType === 'COMPLAINT') {
-      this.router.navigate([`/complaint/details/`, data?.notificationBody?.referenceNoFound]);
-    }
+    this.msService.loadNotificationRead(data?.notificationBody?.taskRefNumber).subscribe(
+        (dataFound: MsNotificationTaskDto[]) => {
+          this.loadedData = dataFound;
+          this.totalCount = this.loadedData.length;
+          this.dataSet.load(this.loadedData);
+          if (data?.notificationBody?.processType === 'COMPLAINT-PLAN') {
+            // tslint:disable-next-line:max-line-length
+            this.router.navigate([`/complaintPlan/details/`, data?.notificationBody?.referenceNoFound, data?.notificationBody?.batchReferenceNoFound]);
+          } else if (data?.notificationBody?.processType === 'WORK-PLAN') {
+            // tslint:disable-next-line:max-line-length
+            this.router.navigate([`/workPlan/details/`, data?.notificationBody?.referenceNoFound, data?.notificationBody?.batchReferenceNoFound]);
+          } else if (data?.notificationBody?.processType === 'COMPLAINT') {
+            this.router.navigate([`/complaint/details/`, data?.notificationBody?.referenceNoFound]);
+          }
+          this.SpinnerService.hide();
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
 }
 
   pageChange(pageIndex?: any) {

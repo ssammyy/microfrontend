@@ -1074,7 +1074,7 @@ data class NotificationBodyDto(
         var batchReferenceNoFound: String? = null,
         var referenceNoFound: String? = null,
         var dateAssigned: Date? = null,
-        var bsNumber: String? = null,
+        var bsNumberFound: String? = null,
         var processType: String? = null,
 )
 

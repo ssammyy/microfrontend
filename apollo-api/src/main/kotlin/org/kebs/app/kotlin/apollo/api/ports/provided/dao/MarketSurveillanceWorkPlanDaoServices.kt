@@ -108,10 +108,21 @@ class MarketSurveillanceWorkPlanDaoServices(
     }
 
     fun listMsNotificationTasks(status: Int): List<MsNotificationTaskDto>? {
-        val taskNotification = msTaskNotificationsRepo.findAllByReadStatus(status)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val taskNotification = loggedInUser.id?.let { msTaskNotificationsRepo.findAllByReadStatusAndToUserId(status, it) }
         return taskNotification?.sortedBy { it.id }?.map { MsNotificationTaskDto(it.id, gson.fromJson(it.notificationBody, NotificationBodyDto::class.java), it.notificationMsg, it.notificationName,it.notificationType,it.fromUserId,it.toUserId, it.readStatus == 1) }
     }
 
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateTaskRead(taskRefNumber: String): List<MsNotificationTaskDto>? {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val taskNotification = msTaskNotificationsRepo.findByTaskRefNumber(taskRefNumber)?: throw ExpectedDataNotFound("MISSING NOTIFICATION WITH REF NUMBER $taskRefNumber")
+        updateNotificationTask(taskNotification,map,loggedInUser)
+
+        return listMsNotificationTasks(map.inactiveStatus)
+    }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

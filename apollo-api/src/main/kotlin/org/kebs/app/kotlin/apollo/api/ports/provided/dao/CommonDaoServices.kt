@@ -993,7 +993,7 @@ class CommonDaoServices(
         map: ServiceMapsEntity,
         designationID: Long
     ): List<UserProfilesEntity> {
-        val designation = commonDaoServices.findDesignationByID(designationID)
+        val designation = findDesignationByID(designationID)
         return findAllUsersProfileWithDesignationAndStatus(designation, map.activeStatus)
     }
 

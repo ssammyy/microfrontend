@@ -466,11 +466,12 @@ class SchedulerImpl(
                                                         toName = inspectionOfficer?.let { commonDaoServices.concatenateName(it) }
                                                         batchReferenceNoFound =workPlanCreatedRepository.findByIdOrNull(workPlan.workPlanYearId)?.referenceNumber
                                                         referenceNoFound = workPlan.referenceNumber
+                                                        bsNumberFound = ssfFound.bsNumber!!
                                                         dateAssigned = commonDaoServices.getCurrentDate()
-                                                        if(workPlan.complaintId!=null){
-                                                            processType = "COMPLAINT-PLAN"
+                                                        processType = if(workPlan.complaintId!=null){
+                                                            "COMPLAINT-PLAN"
                                                         }else{
-                                                            processType = "WORK-PLAN"
+                                                            "WORK-PLAN"
                                                         }
                                                     }
 

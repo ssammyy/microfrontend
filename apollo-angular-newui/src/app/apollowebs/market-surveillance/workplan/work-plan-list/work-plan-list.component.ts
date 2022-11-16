@@ -389,7 +389,7 @@ export class WorkPlanListComponent implements OnInit {
   get formNewScheduleForm(): any {
     return this.addNewScheduleForm.controls;
   }
-
+  // loadNotificationRead
   onClickAddResource() {
     this.dataSaveResourcesRequired = this.addResourceRequiredForm.value;
     console.log(this.dataSaveResourcesRequired);

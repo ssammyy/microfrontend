@@ -41,7 +41,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Notifications',
         type: 'link',
         collapse: 'notifications',
-        privilege: ['USER'],
+        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
         icontype: 'business',
     },
 

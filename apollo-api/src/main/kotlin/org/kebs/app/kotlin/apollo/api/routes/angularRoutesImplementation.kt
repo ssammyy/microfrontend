@@ -614,6 +614,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/productSubcategory", handler::msProductSubcategory)
                 GET("/recommendation-list", handler::msRecommendationList)
                 GET("/notification-list", handler::msNotificationTaskList)
+                PUT("/notification-read", handler::msNotificationTaskRead)
             }
             "/complaint".nest {
                 GET("/list", handler::getAllComplaintList)

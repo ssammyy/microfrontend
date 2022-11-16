@@ -119,6 +119,21 @@ class NewMarketSurveillanceHandler(
     }
 
 
+    fun msNotificationTaskRead(req: ServerRequest): ServerResponse {
+        try {
+            val taskRefNumber = req.paramOrNull("taskRefNumber") ?: throw ExpectedDataNotFound("Required taskRefNumber, check parameters")
+            marketSurveillanceWorkPlanDaoServices.updateTaskRead(taskRefNumber)
+                ?.let {
+                    return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Ms Notification found found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+
     fun msDivisions(req: ServerRequest): ServerResponse {
         try {
 //            val map = commonDaoServices.serviceMapDetails(appId)

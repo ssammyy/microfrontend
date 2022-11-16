@@ -678,6 +678,7 @@ export class ApiEndpointService {
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
         MS_NOTIFICATIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/notification-list`,
+        MS_NOTIFICATIONS_READ: `${ApiEndpointService.MS_COMMON_CONTEXT}/notification-read`,
     };
 
     public static MARKET_SURVEILLANCE_REPORTS = {
