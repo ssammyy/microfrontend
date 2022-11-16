@@ -572,6 +572,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             rejectedDate = commonDaoServices.getCurrentDate()
         }
 
+
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
             remarksDescription= body.rejectedRemarks
