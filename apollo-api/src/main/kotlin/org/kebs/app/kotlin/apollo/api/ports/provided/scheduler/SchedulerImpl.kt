@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.common.dto.ms.NotificationBodyDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -17,6 +18,7 @@ import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
+import org.kebs.app.kotlin.apollo.store.repo.IWorkPlanCreatedRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IFuelInspectionRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IWorkPlanGenerateRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
@@ -35,20 +37,22 @@ import java.util.*
 
 @Service
 class SchedulerImpl(
-        private val schedulerRepo: ISchedulerRepository,
-        private val notifications: Notifications,
-        private val bpmnCommonFunctions: BpmnCommonFunctions,
-        private val userRepo: IUserRepository,
-        private val companyRepo: ICompanyProfileRepository,
-        private val diBpmn: DestinationInspectionBpmn,
-        private val applicationMapProperties: ApplicationMapProperties,
+    private val schedulerRepo: ISchedulerRepository,
+    private val notifications: Notifications,
+    private val bpmnCommonFunctions: BpmnCommonFunctions,
+    private val userRepo: IUserRepository,
+    private val companyRepo: ICompanyProfileRepository,
+    private val diBpmn: DestinationInspectionBpmn,
+    private val applicationMapProperties: ApplicationMapProperties,
 //    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
-        private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
-        private val limsServices: LimsServices,
+    private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
+    private val limsServices: LimsServices,
 //    private val qaDaoServices: QADaoServices,
 //    private val diDaoServices: DestinationInspectionDaoServices,
-        private val commonDaoServices: CommonDaoServices,
-) {
+    private val commonDaoServices: CommonDaoServices,
+    private val  workPlanCreatedRepository: IWorkPlanCreatedRepository,
+
+    ) {
 
     @Lazy
     @Autowired
@@ -457,6 +461,23 @@ class SchedulerImpl(
                                                 commonDaoServices.findUserByID(it)
                                             }
                                                 runBlocking {
+                                                    val taskNotify = NotificationBodyDto().apply {
+                                                        fromName = "LIMS-SYSTEM"
+                                                        toName = inspectionOfficer?.let { commonDaoServices.concatenateName(it) }
+                                                        batchReferenceNoFound =workPlanCreatedRepository.findByIdOrNull(workPlan.workPlanYearId)?.referenceNumber
+                                                        referenceNoFound = workPlan.referenceNumber
+                                                        dateAssigned = commonDaoServices.getCurrentDate()
+                                                        if(workPlan.complaintId!=null){
+                                                            processType = "COMPLAINT-PLAN"
+                                                        }else{
+                                                            processType = "WORK-PLAN"
+                                                        }
+                                                    }
+
+                                                    marketSurveillanceWorkPlanDaoServices.createNotificationTask(taskNotify,
+                                                        applicationMapProperties.mapMsNotificationLabResultsTask,
+                                                        map,"LIMS-SYSTEM",null,inspectionOfficer
+                                                    )
                                                     if (inspectionOfficer != null) {
                                                         commonDaoServices.sendEmailWithUserEntity(
                                                             inspectionOfficer, applicationMapProperties.mapMsLabResultNotificationEmail, fileInspectionDetail, map, sr)

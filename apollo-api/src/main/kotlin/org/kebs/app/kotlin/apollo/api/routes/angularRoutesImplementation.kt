@@ -613,6 +613,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/products", handler::msProducts)
                 GET("/productSubcategory", handler::msProductSubcategory)
                 GET("/recommendation-list", handler::msRecommendationList)
+                GET("/notification-list", handler::msNotificationTaskList)
             }
             "/complaint".nest {
                 GET("/list", handler::getAllComplaintList)
@@ -716,10 +717,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/end-sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionEndBsNumber)
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
-                        PUT(
-                            "/final-ssf-compliance-status-save",
-                            handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd
-                        )
+                        PUT( "/final-ssf-compliance-status-save", handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd)
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
 //                        PUT("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
                         POST("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)

@@ -1,7 +1,7 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
-  ApiResponseModel,
+  ApiResponseModel, MsNotificationTaskDto,
   WorkPlanListDto, WorkPlanScheduleListDetailsDto,
 } from '../../../core/store/data/ms/ms.model';
 import {Observable, Subject} from 'rxjs';
@@ -41,7 +41,7 @@ export class NotificationsComponent implements OnInit {
   currentPage = 0;
   currentPageInternal = 0;
   selectedNotification: UserNotificationDetailsDto;
-  loadedData!: UserNotificationDetailsDto[];
+  loadedData!: MsNotificationTaskDto[];
   totalCount = 12;
   public settings = {
     selectMode: 'single',  // single|multi
@@ -54,7 +54,7 @@ export class NotificationsComponent implements OnInit {
       delete: false,
       custom: [
         //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View TASK</i>'},
       ],
       position: 'right', // left|right
     },
@@ -69,29 +69,14 @@ export class NotificationsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      transactionReference: {
-        title: 'REFERENCE NUMBER',
+      notificationName: {
+        title: 'NAME',
         type: 'string',
         filter: false,
       },
-      subject: {
-        title: 'SUBJECT',
+      notificationMsg: {
+        title: 'MESSAGE',
         type: 'string',
-        filter: true,
-      },
-      sender: {
-        title: 'SENDER',
-        type: 'string',
-        filter: true,
-      },
-      recipient: {
-        title: 'RECIPIENT',
-        type: 'string',
-        filter: true,
-      },
-      createdOn: {
-        title: 'SENT DATE',
-        type: 'date',
         filter: true,
       },
       readStatus: {
@@ -142,12 +127,10 @@ export class NotificationsComponent implements OnInit {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
     this.msService.loadNotificationList(String(page), String(records)).subscribe(
-        (data: ApiResponseModel) => {
-          if (data.responseCode === '00') {
-            this.loadedData = data.data;
-            this.totalCount = this.loadedData.length;
-            this.dataSet.load(this.loadedData);
-          }
+        (data: MsNotificationTaskDto[]) => {
+          this.loadedData = data;
+          this.totalCount = this.loadedData.length;
+          this.dataSet.load(this.loadedData);
           this.SpinnerService.hide();
         },
         error => {
@@ -167,11 +150,16 @@ export class NotificationsComponent implements OnInit {
   }
 
   // tslint:disable-next-line:no-shadowed-variable
-  viewRecord(data: UserNotificationDetailsDto) {
-    this.selectedNotification = data;
-    window.$('#myModal1').modal('show');
-    // this.router.navigate([`/workPlan/details/`, data.referenceNumber, this.selectedBatchRefNo]);
-  }
+  viewRecord(data: MsNotificationTaskDto) {
+    if (data?.notificationBody?.processType === 'COMPLAINT-PLAN') {
+      // tslint:disable-next-line:max-line-length
+      this.router.navigate([`/complaintPlan/details/`, data?.notificationBody?.referenceNoFound, data?.notificationBody?.batchReferenceNoFound]);
+    } else if (data?.notificationBody?.processType === 'WORK-PLAN') {
+      this.router.navigate([`/workPlan/details/`, data?.notificationBody?.referenceNoFound, data?.notificationBody?.batchReferenceNoFound]);
+    } else if (data?.notificationBody?.processType === 'COMPLAINT') {
+      this.router.navigate([`/complaint/details/`, data?.notificationBody?.referenceNoFound]);
+    }
+}
 
   pageChange(pageIndex?: any) {
     if (pageIndex) {

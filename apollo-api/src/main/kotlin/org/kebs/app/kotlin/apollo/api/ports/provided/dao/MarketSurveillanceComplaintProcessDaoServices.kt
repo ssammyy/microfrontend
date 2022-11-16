@@ -161,7 +161,17 @@ class MarketSurveillanceComplaintProcessDaoServices(
             runBlocking {
 
             hod.forEach {hd->
-                    val complaintReceivedEmailComposed = hd.userId?.let { complaintReceivedDTOEmailCompose(updatedComplaint, it) }
+                val taskNotify = NotificationBodyDto().apply {
+                    fromName = "${body.customerDetails.firstName} ${body.customerDetails.lastName}"
+                    toName = hd.userId?.let { commonDaoServices.concatenateName(it) }
+                    referenceNoFound = complaint.second.referenceNumber
+                    dateAssigned = commonDaoServices.getCurrentDate()
+                    processType = "COMPLAINT"
+                }
+
+                msWorkPlanDaoServices.createNotificationTask(taskNotify,applicationMapProperties.mapMsNotificationNewTask,map,taskNotify.fromName,null,hd.userId)
+
+                val complaintReceivedEmailComposed = hd.userId?.let { complaintReceivedDTOEmailCompose(updatedComplaint, it) }
                     hd.userId?.let {
                         if (complaintReceivedEmailComposed != null) {
                             commonDaoServices.sendEmailWithUserEntity(it, applicationMapProperties.mapMsComplaintSubmittedHodNotification, complaintReceivedEmailComposed, map, sr)
@@ -169,7 +179,6 @@ class MarketSurveillanceComplaintProcessDaoServices(
                     }
                 }
             }
-
 
             /**
              * TODO: Lets discuss to understand better how to keep track of schedules
@@ -719,12 +728,12 @@ class MarketSurveillanceComplaintProcessDaoServices(
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateComplaintAssignHOFStatus(
-        referenceNo: String,
+        referenceNoPassed: String,
         body: ComplaintAssignDto
     ): AllComplaintsDetailsDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        val complaintFound = findComplaintByRefNumber(referenceNo)
+        val complaintFound = findComplaintByRefNumber(referenceNoPassed)
 
         val hofDetailsFound =commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned HOF ID"))
         with(complaintFound) {
@@ -756,6 +765,16 @@ class MarketSurveillanceComplaintProcessDaoServices(
                  when (remarksSaved.first.status) {
                     map.successStatus -> {
                         runBlocking {
+                            val taskNotify = NotificationBodyDto().apply {
+                                fromName = commonDaoServices.concatenateName(loggedInUser)
+                                toName = commonDaoServices.concatenateName(hofDetailsFound)
+                                referenceNoFound = complaintFound.referenceNumber.toString()
+                                dateAssigned = commonDaoServices.getCurrentDate()
+                                processType = "COMPLAINT"
+                            }
+
+                            msWorkPlanDaoServices.createNotificationTask(taskNotify,applicationMapProperties.mapMsNotificationNewTask,map,null,loggedInUser,hofDetailsFound)
+
 
                             val complaintReceivedEmailComposed = complaintReceivedDTOEmailCompose(complaintUpdated.second, hofDetailsFound)
                             commonDaoServices.sendEmailWithUserEntity(
@@ -784,12 +803,12 @@ class MarketSurveillanceComplaintProcessDaoServices(
     @PreAuthorize("hasAuthority('MS_HOF_MODIFY') or hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateComplaintAssignIOStatus(
-        referenceNo: String,
+        referenceNoFound: String,
         body: ComplaintAssignDto
     ): AllComplaintsDetailsDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        val complaintFound = findComplaintByRefNumber(referenceNo)
+        val complaintFound = findComplaintByRefNumber(referenceNoFound)
 
         with(complaintFound) {
             timelineStartDate = commonDaoServices.getCurrentDate()
@@ -801,7 +820,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
             assignedRemarks = body.assignedRemarks
             assignedIoStatus = map.activeStatus
-            assignedIo = commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missong Assigned IO ID")).id
+            assignedIo = commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned IO ID")).id
             assignedDate = commonDaoServices.getCurrentDate()
             assignedBy = commonDaoServices.getUserName(loggedInUser)
         }
@@ -815,6 +834,16 @@ class MarketSurveillanceComplaintProcessDaoServices(
         }
 
         val complaintUpdated = updateComplaintDetailsInDB(complaintFound, map, loggedInUser)
+        val taskNotify = NotificationBodyDto().apply {
+            fromName = commonDaoServices.concatenateName(loggedInUser)
+            toName = commonDaoServices.concatenateName(commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned IO ID")))
+            this.referenceNoFound = complaintFound.referenceNumber.toString()
+            dateAssigned = commonDaoServices.getCurrentDate()
+            processType = "COMPLAINT"
+        }
+
+        msWorkPlanDaoServices.createNotificationTask(taskNotify,applicationMapProperties.mapMsNotificationNewTask,map,null,loggedInUser,commonDaoServices.findUserByID(body.assignedIo?: throw ExpectedDataNotFound("Missing Assigned IO ID")))
+
 
         when (complaintUpdated.first.status) {
             map.successStatus -> {

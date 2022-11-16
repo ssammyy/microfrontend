@@ -32,6 +32,7 @@ class MSJSONControllers(
     private val marketSurveillanceDaoServices: MarketSurveillanceFuelDaoServices,
     private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
     private val iSampleSubmissionViewRepo: IMsSampleSubmissionViewRepository,
+    private val iFieldReportViewRepo: IMsFieldReportViewRepository,
     private val sampleSubmitRepo: IMSSampleSubmissionRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
     private val commonDaoServices: CommonDaoServices,
@@ -398,6 +399,53 @@ class MSJSONControllers(
         response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Dispostion", "inline; Sample-Submission-${ssfFile[0].sampleReferences}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
+    @RequestMapping(value = ["/report/ms-field-report"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msFieldReportPDF(
+        response: HttpServletResponse,
+        @RequestParam(value = "workPlanGeneratedID") workPlanGeneratedID: String
+    ) {
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
+        map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
+//        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+
+        val user = fieldReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
+
+//        if (user != null) {
+//            val mySignature: ByteArray?
+//            val image: ByteArrayInputStream?
+//            println("UserID is" + user.id)
+//            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+//            if (signatureFromDb != null) {
+//                mySignature= signatureFromDb.signature
+//                image = ByteArrayInputStream(mySignature)
+//                map["signaturePath"] = image
+//
+//            }
+//        }
+//        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+
+        val pdfReportStream = reportsDaoService.extractReport(
+            map,
+            applicationMapProperties.mapMSFieldReportPath,
+            fieldReport
+        )
+
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Field-Report-${fieldReport[0].reportReference}.pdf;")
         response.outputStream.let { responseOutputStream ->
             responseOutputStream.write(pdfReportStream.toByteArray())
             responseOutputStream.close()

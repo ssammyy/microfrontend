@@ -27,13 +27,19 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.stereotype.Repository
-import java.math.BigInteger
 
 @Repository
 interface ISampleCollectionViewRepository : HazelcastRepository<MsSampleCollectionView, Long> {
     override fun findAll(pageable: Pageable): Page<MsSampleCollectionView>
 
     fun findBySampleCollectionId(sampleCollectionId: Long): List<MsSampleCollectionView>
+}
+
+@Repository
+interface IMsFieldReportViewRepository : HazelcastRepository<MsFieldReportView, String> {
+    override fun findAll(pageable: Pageable): Page<MsFieldReportView>
+
+    fun findByMsWorkplanGeneratedId(msWorkPlanGeneratedId: String): List<MsFieldReportView>
 }
 
 @Repository

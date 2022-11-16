@@ -104,6 +104,20 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun msNotificationTaskList(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            marketSurveillanceWorkPlanDaoServices.listMsNotificationTasks(map.inactiveStatus)
+                ?.let {
+                    return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Ms Recommendation found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
 
     fun msDivisions(req: ServerRequest): ServerResponse {
         try {

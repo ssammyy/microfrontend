@@ -623,6 +623,7 @@ export class ApiEndpointService {
 
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {
         VIEW_PDF_SSF: `${ApiEndpointService.MS_CONTEXT}/report/sample-submission`,
+        VIEW_PDF_FIELD_REPORT: `${ApiEndpointService.MS_CONTEXT}/report/ms-field-report`,
     }
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
@@ -675,6 +676,7 @@ export class ApiEndpointService {
         MS_PREDEFINED_RESOURCES_REQUIRED: `${ApiEndpointService.MS_COMMON_CONTEXT}/predefinedResourcesRequired`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
+        MS_NOTIFICATIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/notification-list`,
     };
 
     public static MARKET_SURVEILLANCE_REPORTS = {
